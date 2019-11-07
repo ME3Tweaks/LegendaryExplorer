@@ -13,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
-using KFreonLib.MEDirectories;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
@@ -118,8 +117,8 @@ namespace ME3Explorer
 
         private void changePathsButton_Click(object sender, RoutedEventArgs e)
         {
-            string game = InputComboBox.GetValue("Which game's path do you want to change?",
-                new string[] { "Mass Effect", "Mass Effect 2", "Mass Effect 3" }, "Mass Effect 3");
+            string game = InputComboBoxWPF.GetValue(this, "Which game's path do you want to change?",
+                new[] { "Mass Effect", "Mass Effect 2", "Mass Effect 3" }, "Mass Effect 3");
             if (game != "")
             {
                 OpenFileDialog ofd = new OpenFileDialog();

@@ -2,6 +2,7 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.MountEditor
 {
@@ -48,7 +49,10 @@ namespace ME3Explorer.MountEditor
         public MountEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Mount Editor", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Mount Editor" }
+            });
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_NoSaveFileDependency, "0x01 | No save file dependency on DLC"));
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_SaveFileDependency, "0x02 | Save file dependency on DLC"));
 
@@ -99,18 +103,26 @@ namespace ME3Explorer.MountEditor
             m.Filters.Add(new CommonFileDialogFilter("Mount files", ".dlc"));
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
-                MountFile mf = new MountFile(m.FileName);
-                ME2CheckBox.IsChecked = mf.IsME2;
-                DLCFolder_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
-                HumanReadable_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
-                var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
-                MountComboBox.SelectedItem = flag;
-                TLKID_TextBox.Text = mf.TLKID.ToString();
-                MountPriority_TextBox.Text = mf.MountPriority.ToString();
-
-                CurrentMountFileText = m.FileName;
+                LoadFile(m.FileName);
             }
 
+        }
+
+        private void LoadFile(string fileName)
+        {
+            MountFile mf = new MountFile(fileName);
+            IsME2 = mf.IsME2;
+            ME2CheckBox.IsChecked = IsME2;
+            DLCFolder_TextBox.Text = IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
+            HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
+            MountIDValues.ClearEx();
+            MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
+            var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
+            MountComboBox.SelectedItem = flag;
+            TLKID_TextBox.Text = mf.TLKID.ToString();
+            MountPriority_TextBox.Text = mf.MountPriority.ToString();
+
+            CurrentMountFileText = fileName;
         }
 
         private void SaveMountFile_Click(object sender, RoutedEventArgs e)
@@ -222,6 +234,38 @@ namespace ME3Explorer.MountEditor
             MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
             MountComboBox.SelectedIndex = 0;
             TLKID_TextChanged(null, null);
+        }
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                LoadFile(files[0]);
+            }
+        }
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (ext != ".dlc")
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
         }
     }
 }

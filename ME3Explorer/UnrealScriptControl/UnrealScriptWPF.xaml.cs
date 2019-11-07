@@ -62,12 +62,12 @@ namespace ME3Explorer
             InitializeComponent();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public override bool CanParse(ExportEntry exportEntry)
         {
-            return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && (exportEntry.FileRef.Game == MEGame.ME3 || exportEntry.FileRef.Game == MEGame.ME1);
+            return ((exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game != MEGame.UDK);
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
@@ -92,7 +92,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new UnrealScriptWPF(), CurrentLoadedExport);
-                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -116,7 +116,7 @@ namespace ME3Explorer
                 int pos = 12;
 
                 var functionSuperclass = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.getEntry(functionSuperclass) : null));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
 
                 pos += 4;
                 var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
@@ -138,7 +138,7 @@ namespace ME3Explorer
                 pos += 2;
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
             }
-            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.Game == MEGame.ME2)
             {
                 //Header
                 int pos = 16;
@@ -160,7 +160,8 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                int scriptSize = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;
                 BytecodeStart = pos;
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
@@ -178,6 +179,7 @@ namespace ME3Explorer
                 for (int i = 0; i < func.Statements.statements.Count; i++)
                 {
                     Statement s = func.Statements.statements[i];
+                    s.SetPaddingForScriptSize(scriptSize);
                     DecompiledScriptBlocks.Add(s);
                     if (s.Reader != null && i == 0)
                     {
@@ -211,7 +213,7 @@ namespace ME3Explorer
                 //}
 
                 int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.GetNameEntry(friendlyNameIndex)}", pos));
                 pos += 4;
 
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
@@ -260,11 +262,11 @@ namespace ME3Explorer
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;
                 int len = (int)ScriptEditor_Hexbox.SelectionLength;
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
-                //TODO: Optimize this so this is only called when data has changed
-                byte[] currentData = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
                 try
                 {
-                    if (currentData != null && start != -1 && start < size)
+                    //TODO: Optimize this so this is only called when data has changed
+                    byte[] currentData = ((DynamicByteProvider)ScriptEditor_Hexbox.ByteProvider).Bytes.ToArray();
+                    if (start != -1 && start < size)
                     {
                         string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                         if (start <= currentData.Length - 4)
@@ -272,9 +274,9 @@ namespace ME3Explorer
                             int val = BitConverter.ToInt32(currentData, start);
                             s += $", Int: {val}";
                             s += $", Float: {BitConverter.ToSingle(currentData, start)}";
-                            if (CurrentLoadedExport.FileRef.isName(val))
+                            if (CurrentLoadedExport.FileRef.IsName(val))
                             {
-                                s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                s += $", Name: {CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                             }
                             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                             {
@@ -282,24 +284,24 @@ namespace ME3Explorer
                                 s += $", OpCode: {m}";
                             }
 
-                            if (CurrentLoadedExport.FileRef.getEntry(val) is IEntry ent)
+                            if (CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
                             {
-                                string type = ent is IExportEntry ? "Export" : "Import";
+                                string type = ent is ExportEntry ? "Export" : "Import";
                                 if (ent.ObjectName == CurrentLoadedExport.ObjectName)
                                 {
-                                    s += $", {type}: {ent.GetFullPath}";
+                                    s += $", {type}: {ent.InstancedFullPath}";
                                 }
                                 else
                                 {
-                                    s += $", {type}: {ent.ObjectName}";
+                                    s += $", {type}: {ent.ObjectName.Instanced}";
                                 }
                             }
                         }
-                        s += $" | Start=0x{start.ToString("X8")} ";
+                        s += $" | Start=0x{start:X8} ";
                         if (len > 0)
                         {
-                            s += $"Length=0x{len.ToString("X8")} ";
-                            s += $"End=0x{(start + len - 1).ToString("X8")}";
+                            s += $"Length=0x{len:X8} ";
+                            s += $"End=0x{(start + len - 1):X8}";
                         }
                         StatusBar_LeftMostText.Text = s;
                     }
@@ -420,7 +422,7 @@ namespace ME3Explorer
                 this.value = $"{value}";
                 if (callingEntry != null)
                 {
-                    this.value += $" ({ callingEntry.FileRef.getEntry(value).GetFullPath})";
+                    this.value += $" ({ callingEntry.FileRef.GetEntry(value).FullPath})";
                 }
                 else
                 {

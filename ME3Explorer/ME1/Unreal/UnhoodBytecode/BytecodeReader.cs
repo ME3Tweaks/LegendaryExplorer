@@ -115,7 +115,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class UncondJumpToken : JumpToken
     {
-        public UncondJumpToken(int targetOffset, int offset) : base("jump " + targetOffset, targetOffset, offset)
+        public UncondJumpToken(int targetOffset, int offset) : base("jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
         {
         }
     }
@@ -125,7 +125,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly BytecodeToken _condition;
 
         public JumpIfNotToken(int targetOffset, BytecodeToken condition, int offset)
-            : base("if (!" + condition + ") jump " + targetOffset, targetOffset, offset)
+            : base("if (!" + condition + ") jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
         {
             _condition = condition;
         }
@@ -201,7 +201,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class EndOfScriptToken : BytecodeToken
     {
-        public EndOfScriptToken(int offset) : base("", offset) { }
+        public EndOfScriptToken(int offset) : base("[End of script]", offset) { }
     }
 
     public class LabelTableToken : BytecodeToken
@@ -458,10 +458,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_LocalVariable:
                 case ME1OpCodes.EX_InstanceVariable:
                 case ME1OpCodes.EX_NativeParm:
-                    return ReadRef(r => r.ObjectName);
+                    return ReadRef(r => r.ObjectName.Instanced);
 
                 case ME1OpCodes.EX_DefaultVariable:
-                    return ReadRef(r => "Default." + r.ObjectName);
+                    return ReadRef(r => $"Default.{r.ObjectName.Instanced}");
 
                 case ME1OpCodes.EX_Return:
                     {
@@ -472,7 +472,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     {
                         _reader.ReadInt16();
                         _reader.ReadByte();
-                        return WrapNextBytecode(c => new BytecodeToken("assert(" + c + ")", readerpos));
+                        return WrapNextBytecode(c => new BytecodeToken($"assert({c})", readerpos));
                     }
 
                 case ME1OpCodes.EX_Switch:
@@ -572,7 +572,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_StringConst:
                     {
                         var s = ReadAsciiz().Replace("\n", "\\n").Replace("\t", "\\t");
-                        return Token("\"" + s + "\"", readerpos);
+                        return Token($"\"{s}\"", readerpos);
                     }
 
                 case ME1OpCodes.EX_ByteConst:
@@ -582,13 +582,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_ObjectConst:
                     {
                         int objectIndex = _reader.ReadInt32();
-                        var item = _package.getEntry(objectIndex);
+                        var item = _package.GetEntry(objectIndex);
                         if (item == null) return ErrToken("Unresolved class item " + objectIndex);
-                        return Token(item.ClassName + "'" + item.ObjectName + "'", readerpos);
+                        return Token($"{item.ClassName}'{item.ObjectName.Instanced}'", readerpos);
                     }
 
                 case ME1OpCodes.EX_NameConst:
-                    return Token("'" + _package.getNameEntry((int)_reader.ReadInt64()) + "'", readerpos);
+                    return Token($"'{ReadName()}'", readerpos);
 
                 case ME1OpCodes.EX_EndFunctionParms:
                     return new EndParmsToken(")", readerpos);
@@ -601,8 +601,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         int exprSize = _reader.ReadInt16();
                         int bSize = _reader.ReadByte();
                         var value = ReadNext();
-                        if (IsInvalid(value)) return WrapErrToken(context + "." + value, value);
-                        return Token(context + "." + value, readerpos);
+                        if (IsInvalid(value)) return WrapErrToken($"{context}.{value}", value);
+                        return Token($"{context}.{value}", readerpos);
                     }
 
                 case ME1OpCodes.EX_InterfaceContext:
@@ -611,9 +611,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_FinalFunction:
                     {
                         int functionIndex = _reader.ReadInt32();
-                        var item = _package.getEntry(functionIndex);
+                        var item = _package.GetEntry(functionIndex);
                         if (item == null) return ErrToken("Unresolved function item " + item);
-                        string functionName = item.ObjectName;
+                        string functionName = item.ObjectName.Instanced;
                         return ReadCall(functionName);
                     }
 
@@ -634,7 +634,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return ReadNext();
                 case ME1OpCodes.EX_ByteToInt:
                     int objectRefIdx = _reader.ReadInt32();
-                    if (_package.isEntry(objectRefIdx))
+                    if (_package.IsEntry(objectRefIdx))
                     {
                         return Token($"ByteToInt({_package.getObjectName(objectRefIdx)})", readerpos);
                     }
@@ -645,16 +645,16 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_DynamicCast:
                     {
                         int typeIndex = _reader.ReadInt32();
-                        var item = _package.getEntry(typeIndex);
-                        return WrapNextBytecode(op => Token(item.ObjectName + "(" + op + ")", readerpos));
+                        var item = _package.GetEntry(typeIndex);
+                        return WrapNextBytecode(op => Token($"{item.ObjectName.Instanced}({op})", readerpos));
                     }
 
                 case ME1OpCodes.EX_Metacast:
                     {
                         int typeIndex = _reader.ReadInt32();
-                        var item = _package.getEntry(typeIndex);
+                        var item = _package.GetEntry(typeIndex);
                         if (item == null) return ErrToken("Unresolved class item " + typeIndex);
-                        return WrapNextBytecode(op => Token("Class<" + item.ObjectName + ">(" + op + ")", readerpos));
+                        return WrapNextBytecode(op => Token($"Class<{item.ObjectName.Instanced}>({op})", readerpos));
                     }
 
                 case ME1OpCodes.EX_StructMember:
@@ -664,7 +664,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         int wSkip = _reader.ReadInt16();
                         var token = ReadNext();
                         if (IsInvalid(token)) return token;
-                        return Token(token + "." + field.ObjectName, readerpos);
+                        return Token($"{token}.{field.ObjectName.Instanced}", readerpos);
                     }
 
                 case ME1OpCodes.EX_ArrayElement:
@@ -674,11 +674,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         if (IsInvalid(index)) return index;
                         var array = ReadNext();
                         if (IsInvalid(array)) return array;
-                        return Token(array + "[" + index + "]", readerpos);
+                        return Token($"{array}[{index}]", readerpos);
                     }
 
                 case ME1OpCodes.EX_DynArrayLength:
-                    return WrapNextBytecode(op => Token(op + ".Length", readerpos));
+                    return WrapNextBytecode(op => Token($"{op}.Length", readerpos));
 
                 case ME1OpCodes.EX_StructCmpEq:
                     return CompareStructs("==");
@@ -704,9 +704,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_LocalOutVariable:
                     int valueIndex = _reader.ReadInt32();
-                    var packageItem = _package.getEntry(valueIndex);
+                    var packageItem = _package.GetEntry(valueIndex);
                     if (packageItem == null) return ErrToken("Unresolved package item " + packageItem);
-                    return Token(packageItem.ObjectName, readerpos);
+                    return Token(packageItem.ObjectName.Instanced, readerpos);
 
                 case ME1OpCodes.EX_Iterator:
                     var expr = ReadNext();
@@ -729,24 +729,24 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     if (IsInvalid(flags)) return flags;
                     var cls = ReadNext();
                     if (IsInvalid(cls)) return cls;
-                    return Token("new(" + JoinTokens(outer, name, flags, cls) + ")", readerpos);
+                    return Token($"new({JoinTokens(outer, name, flags, cls)})", readerpos);
 
                 case ME1OpCodes.EX_VectorConst:
                     var f1 = _reader.ReadSingle();
                     var f2 = _reader.ReadSingle();
                     var f3 = _reader.ReadSingle();
-                    return Token("vect(" + f1 + "," + f2 + "," + f3 + ")", readerpos);
+                    return Token($"vect({f1},{f2},{f3})", readerpos);
 
                 case ME1OpCodes.EX_RotationConst:
                     var i1 = _reader.ReadInt32();
                     var i2 = _reader.ReadInt32();
                     var i3 = _reader.ReadInt32();
-                    return Token("rot(" + i1 + "," + i2 + "," + i3 + ")", readerpos);
+                    return Token($"rot({i1},{i2},{i3})", readerpos);
 
                 case ME1OpCodes.EX_InterfaceCast:
                     {
                         var interfaceName = ReadRef();
-                        return WrapNextBytecode(op => Token(interfaceName.ObjectName + "(" + op + ")", readerpos));
+                        return WrapNextBytecode(op => Token($"{interfaceName.ObjectName.Instanced}({op})", readerpos));
                     }
 
                 case ME1OpCodes.EX_Conditional:
@@ -756,15 +756,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         var trueSize = _reader.ReadInt16();
                         var pos = _reader.BaseStream.Position;
                         var truePart = ReadNext();
-                        if (IsInvalid(truePart)) return WrapErrToken(condition + " ? " + truePart, truePart);
+                        if (IsInvalid(truePart)) return WrapErrToken($"{condition} ? {truePart}", truePart);
                         if (_reader.BaseStream.Position != pos + trueSize)
                             return ErrToken("conditional true part size mismatch");
                         var falseSize = _reader.ReadInt16();
                         pos = _reader.BaseStream.Position;
                         var falsePart = ReadNext();
-                        if (IsInvalid(truePart)) return WrapErrToken(condition + " ? " + truePart + " : " + falsePart, falsePart);
+                        if (IsInvalid(truePart)) return WrapErrToken($"{condition} ? {truePart} : {falsePart}", falsePart);
                         Debug.Assert(_reader.BaseStream.Position == pos + falseSize);
-                        return Token(condition + " ? " + truePart + " : " + falsePart, readerpos);
+                        return Token($"{condition} ? {truePart} : {falsePart}", readerpos);
                     }
 
                 case ME1OpCodes.EX_DynArrayFind:
@@ -931,14 +931,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal string ReadName()
         {
-            var nameIndex = _reader.ReadInt64();
-            return _package.getNameEntry((int)nameIndex);
+            return new NameReference(_package.GetNameEntry(_reader.ReadInt32()), _reader.ReadInt32()).Instanced;
         }
 
         internal IEntry ReadRef()
         {
             int idx = _reader.ReadInt32();
-            return _package.getEntry(idx);
+            return _package.GetEntry(idx);
         }
 
         internal BytecodeToken ReadRef(Func<IEntry, string> func)
@@ -946,7 +945,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             int pos = (int)_reader.BaseStream.Position - 1; //We already read the bytecode token.
 
             int index = _reader.ReadInt32();
-            IEntry item = _package.getEntry(index);
+            IEntry item = _package.GetEntry(index);
             if (item == null)
             {
                 return ErrToken("// unresolved reference " + index);

@@ -1,24 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ME3Explorer.CurveEd;
+using System.Windows.Threading;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
-using Newtonsoft.Json;
+using Path = System.IO.Path;
 
 namespace ME3Explorer.FaceFX
 {
@@ -27,30 +16,97 @@ namespace ME3Explorer.FaceFX
     /// </summary>
     public partial class FaceFXEditor : WPFBase
     {
-        struct Animation
+        public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new ObservableCollectionExtended<ExportEntry>();
+
+        private ExportEntry _selectedExport;
+
+        public ExportEntry SelectedExport
         {
-            public string Name { get; set; }
-            public LinkedList<CurvePoint> points;
+            get => _selectedExport;
+            set => SetProperty(ref _selectedExport, value);
         }
-        
-        public List<IExportEntry> animSets;
-        public IFaceFXAnimSet FaceFX;
-        public ME3FaceFXLine selectedLine;
-        private Point dragStart;
-        private bool dragEnabled;
+
+        private string FileQueuedForLoad;
+        private ExportEntry ExportQueuedForFocusing;
+        private string LineQueuedForFocusing;
 
         public FaceFXEditor()
         {
             InitializeComponent();
+            LoadCommands();
+            DataContext = this;
         }
 
-        private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
+        public FaceFXEditor(ExportEntry export, string lineName = null) : this()
         {
-            OpenFileDialog d = new OpenFileDialog{ Filter = "Supported file types|*.pcc;*.u;*.upk"};
+            FileQueuedForLoad = export.FileRef.FilePath;
+            ExportQueuedForFocusing = export;
+            LineQueuedForFocusing = lineName;
+        }
+
+        public ICommand OpenCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ICommand SaveAsCommand { get; set; }
+        public ICommand LoadAnimsetCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            OpenCommand = new GenericCommand(OpenPackage);
+            SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
+            SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            LoadAnimsetCommand = new GenericCommand(LoadAnimset, CanLoadAnimset);
+        }
+
+        private bool CanLoadAnimset()
+        {
+            return SelectedExport != null;
+        }
+
+        private void LoadAnimset()
+        {
+            editorControl.SaveChanges();
+            editorControl.LoadExport(SelectedExport);
+        }
+
+        private void SavePackageAs()
+        {
+            string extension = Path.GetExtension(Pcc.FilePath);
+            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                LoadFile(d.FileName);
+                editorControl.SaveChanges();
+                Pcc.Save(d.FileName);
+                MessageBox.Show("Done.");
             }
+        }
+
+        private void SavePackage()
+        {
+            editorControl.SaveChanges();
+            Pcc.Save();
+        }
+
+        private void OpenPackage()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+                    LoadFile(d.FileName);
+                    Title = $"FaceFXEditor - {Pcc.FilePath}";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+            }
+        }
+
+        private bool PackageIsLoaded()
+        {
+            System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
+            return Pcc != null;
         }
 
         public void LoadFile(string fileName)
@@ -58,446 +114,28 @@ namespace ME3Explorer.FaceFX
             try
             {
                 LoadMEPackage(fileName);
-                selectedLine = null;
-                FaceFX = null;
-                treeView.Nodes.Clear();
-                linesListBox.ItemsSource = null;
-                animationListBox.ItemsSource = null;
-                graph.Clear();
+                editorControl.UnloadExport();
                 RefreshComboBox();
             }
             catch (Exception ex)
             {
                 UnLoadMEPackage();
-                MessageBox.Show("Error:\n" + ex.Message);
+                MessageBox.Show($"Error:\n{ex.Message}");
             }
         }
 
         private void RefreshComboBox()
         {
-            var item = FaceFXAnimSetComboBox.SelectedItem as IExportEntry;
-            animSets = new List<IExportEntry>();
-            foreach (IExportEntry exp in Pcc.Exports)
+            ExportEntry item = SelectedExport;
+            AnimSets.ClearEx();
+            AnimSets.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"));
+            if (AnimSets.Contains(item))
             {
-                if (exp.ClassName == "FaceFXAnimSet")
-                    animSets.Add(exp);
-            }
-            FaceFXAnimSetComboBox.ItemsSource = animSets;
-            FaceFXAnimSetComboBox.SelectedIndex = 0;
-            if (animSets.Contains(item))
-            {
-                FaceFXAnimSetComboBox.SelectedItem = item;
-            }
-        }
-
-        private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (Pcc != null)
-            {
-                SaveChanges();
-                Pcc.save();
-                MessageBox.Show("Done!");
-            }
-        }
-
-        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = Pcc != null;
-        }
-
-        private void LoadButton_Click(object sender, RoutedEventArgs e)
-        {
-            SaveChanges();
-            loadFaceFXAnimset();
-        }
-
-        private void loadFaceFXAnimset()
-        {
-            switch (Pcc.Game)
-            {
-                case MEGame.ME1:
-                    FaceFX = new ME1FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = (FaceFX.Data as ME3DataAnimSetStruct).Data;
-                    break;
-                case MEGame.ME2:
-                    FaceFX = new ME2FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
-                    break;
-                case MEGame.ME3:
-                    FaceFX = new ME3FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                    break;
-            }
-            treeView.Nodes.Clear();
-            graph.Clear();
-        }
-
-        private void animationListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count != 1)
-            {
-                return;
-            }
-            Animation a = (Animation)e.AddedItems[0];
-
-            Curve curve = new Curve(a.Name, a.points)
-            {
-                SaveChanges = SaveChanges
-            };
-            graph.SelectedCurve = curve;
-            graph.Paint(true);
-        }
-
-        private void linesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            animationListBox.ItemsSource = null;
-            lineText.Text = null;
-
-            if (e.AddedItems.Count != 1)
-            {
-                return;
-            }
-            selectedLine = (ME3FaceFXLine)e.AddedItems[0];
-            updateAnimListBox();
-            if (int.TryParse(selectedLine.ID, out int tlkID))
-            {
-                lineText.Text = Pcc.Game == MEGame.ME3
-                    ? ME3TalkFiles.findDataById(tlkID)
-                    : ME2Explorer.ME2TalkFiles.findDataById(tlkID);
-            }
-            treeView.Nodes.Clear();
-            System.Windows.Forms.TreeNode[] treeNodes = FaceFX.DataToTree2(selectedLine);
-            treeView.Nodes.AddRange(treeNodes);
-        }
-
-        private void updateAnimListBox()
-        {
-            var points = selectedLine.points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
-
-            var anims = new List<Animation>();
-            int pos = 0;
-            for (int i = 0; i < selectedLine.animations.Length; i++)
-            {
-                int animLength = selectedLine.numKeys[i];
-                anims.Add(new Animation
-                {
-                    Name = FaceFX.Header.Names[selectedLine.animations[i].index],
-                    points = new LinkedList<CurvePoint>(points.Skip(pos).Take(animLength))
-                });
-                pos += animLength;
-            }
-            animationListBox.ItemsSource = anims;
-            graph.Clear();
-        }
-
-        private void SaveChanges()
-        {
-            if (selectedLine != null && animationListBox.ItemsSource != null)
-            {
-                List<CurvePoint> curvePoints = new List<CurvePoint>();
-                List<int> numKeys = new List<int>();
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    List<ME3NameRef> animations = new List<ME3NameRef>();
-                    foreach (Animation anim in animationListBox.ItemsSource)
-                    {
-                        animations.Add(new ME3NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0 });
-                        curvePoints.AddRange(anim.points);
-                        numKeys.Add(anim.points.Count);
-                    }
-                    selectedLine.animations = animations.ToArray();
-                }
-                else
-                {
-                    List<ME2NameRef> animations = new List<ME2NameRef>();
-                    foreach (Animation anim in animationListBox.ItemsSource)
-                    {
-                        animations.Add(new ME2NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0, unk1 = 1 });
-                        curvePoints.AddRange(anim.points);
-                        numKeys.Add(anim.points.Count);
-                    }
-                    selectedLine.animations = animations.ToArray();
-                }
-                selectedLine.points = curvePoints.Select(x => new ControlPoint
-                {
-                    time = x.InVal,
-                    weight = x.OutVal,
-                    inTangent = x.ArriveTangent,
-                    leaveTangent = x.LeaveTangent
-                }).ToArray();
-                selectedLine.numKeys = numKeys.ToArray();
-                FaceFX.Save();
-            }
-        }
-
-        #region Line dragging
-
-        private void linesListBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            dragEnabled = false;
-        }
-
-        private void linesListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            dragStart = e.GetPosition(linesListBox);
-            dragEnabled = true;
-        }
-
-        private void linesListBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0, 0)) && dragEnabled)
-            {
-                System.Windows.Vector diff = dragStart - e.GetPosition(linesListBox);
-                if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
-                {
-                    try
-                    {
-                        dragStart = new Point(0, 0);
-                        if (!(e.OriginalSource is ScrollViewer) && linesListBox.SelectedItem != null)
-                        {
-                            ME3FaceFXLine d = (linesListBox.SelectedItem as ME3FaceFXLine).Clone();
-                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new { line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                        throw;
-                    }
-                }
-            }
-        }
-
-        private void linesListBox_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent("FaceFxLine"))
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
-        }
-
-        private void linesListBox_Drop(object sender, DragEventArgs e)
-        {
-            this.RestoreAndBringToFront();
-            if (e.Data.GetDataPresent("FaceFXLine"))
-            {
-                dynamic d = e.Data.GetData("FaceFXLine");
-                string[] sourceNames = d.sourceNames;
-                List<string> names = FaceFX.Header.Names.ToList();
-                ME3FaceFXLine line = d.line;
-                line.Name = names.FindOrAdd(sourceNames[line.Name]);
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    (FaceFX as ME3FaceFXAnimSet).FixNodeTable();
-                    line.animations = line.animations.Select(x => new ME3NameRef
-                    {
-                        index = names.FindOrAdd(sourceNames[x.index]),
-                        unk2 = x.unk2
-                    }).ToArray();
-                    FaceFX.Data.Data = FaceFX.Data.Data.Append(line).ToArray();
-                    FaceFX.Header.Names = names.ToArray();
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                }
-                else
-                {
-                    if (!(line is ME2FaceFXLine))
-                    {
-                        var result = MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. " +
-                                                     "If you require this feature, please make an issue on the project's Github page. Would you like to go the Github page now?",
-                                                     "Feature Not Implemented", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start(App.BugReportURL);
-                        }
-                        return;
-                    }
-                    line.animations = line.animations.Select(x => new ME2NameRef
-                    {
-                        index = names.FindOrAdd(sourceNames[x.index]),
-                        unk2 = x.unk2
-                    }).ToArray();
-                    ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
-                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Append(line as ME2FaceFXLine).ToArray();
-                    FaceFX.Header.Names = names.ToArray();
-                    linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
-                }
-            }
-            SaveChanges();
-        }
-
-        #endregion
-
-        #region anim dragging
-        private void animationListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            dragStart = e.GetPosition(null);
-        }
-
-        private void animationListBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0,0)))
-            {
-                System.Windows.Vector diff = dragStart - e.GetPosition(null);
-                if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
-                {
-                    try
-                    {
-                        dragStart = new Point(0,0);
-                        if (!(e.OriginalSource is ScrollViewer) && animationListBox.SelectedItem != null)
-                        {
-                            Animation a = (Animation)animationListBox.SelectedItem;
-                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new { anim = a, group = selectedLine.numKeys[animationListBox.SelectedIndex] }), DragDropEffects.Copy);
-                        }
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-            }
-        }
-
-        private void animationListBox_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent("FaceFXAnim"))
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
-        }
-
-        private void animationListBox_Drop(object sender, DragEventArgs e)
-        {
-            this.RestoreAndBringToFront();
-            if (e.Data.GetDataPresent("FaceFXAnim"))
-            {
-                dynamic d = e.Data.GetData("FaceFXAnim");
-                int group = d.group;
-                Animation a = d.anim;
-                List<string> names = FaceFX.Header.Names.ToList();
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    selectedLine.animations = selectedLine.animations.Append(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
-                }
-                else
-                {
-                    selectedLine.animations = selectedLine.animations.Append(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
-                }
-                FaceFX.Header.Names = names.ToArray();
-                selectedLine.points = selectedLine.points.Concat(a.points.Select(x => new ControlPoint
-                {
-                    time = x.InVal,
-                    weight = x.OutVal,
-                    inTangent = x.ArriveTangent,
-                    leaveTangent = x.LeaveTangent
-                })).ToArray();
-                selectedLine.numKeys = selectedLine.numKeys.Append(group).ToArray();
-                updateAnimListBox();
-            }
-            SaveChanges();
-        }
-        #endregion
-
-        private void DeleteAnim_Click(object sender, RoutedEventArgs e)
-        {
-            Animation a = (Animation)animationListBox.SelectedItem;
-            List<Animation> anims = animationListBox.ItemsSource.Cast<Animation>().ToList();
-            anims.Remove(a);
-            animationListBox.ItemsSource = anims;
-            SaveChanges();
-        }
-
-        private void DeleteLine_Click(object sender, RoutedEventArgs e)
-        {
-            ME3FaceFXLine line = (ME3FaceFXLine)linesListBox.SelectedItem;
-            if (Pcc.Game == MEGame.ME3)
-            {
-                List<ME3FaceFXLine> lines = FaceFX.Data.Data.ToList();
-                lines.Remove(line);
-                FaceFX.Data.Data = lines.ToArray();
-                linesListBox.ItemsSource = FaceFX.Data.Data; 
+                SelectedExport = item;
             }
             else
             {
-                ME2DataAnimSetStruct me2DataAnimSetStruct = (FaceFX.Data as ME2DataAnimSetStruct);
-                List<ME2FaceFXLine> lines = me2DataAnimSetStruct.Data.ToList();
-                lines.Remove(line as ME2FaceFXLine);
-                me2DataAnimSetStruct.Data = lines.ToArray();
-                linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
-            }
-            SaveChanges();
-        }
-
-        private void treeView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
-
-        {
-            var t = treeView.SelectedNode;
-            if (t == null)
-                return;
-            string result; int i; float f = 0;
-            int subidx = t.Index;
-            switch (subidx)
-            {
-                case 0://Name
-                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", FaceFX.Header.Names.ElementAtOrDefault(selectedLine.Name), true);
-                    if (result == string.Empty)
-                    {
-                        break;
-                    }
-                    if (FaceFX.Header.Names.Contains(result))
-                    {
-                        selectedLine.Name = FaceFX.Header.Names.IndexOf(result);
-                    }
-                    else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
-                    {
-                        FaceFX.Header.Names = FaceFX.Header.Names.Append(result).ToArray();
-                        selectedLine.Name = FaceFX.Header.Names.Length - 1;
-                    }
-                    break;
-                case 1://FadeInTime
-                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.FadeInTime.ToString(), true);
-                    if (float.TryParse(result, out f))
-                        selectedLine.FadeInTime = f;
-                    break;
-                case 2://FadeInTime
-                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.FadeOutTime.ToString(), true);
-                    if (float.TryParse(result, out f))
-                        selectedLine.FadeOutTime = f;
-                    break;
-                case 3://unk2
-                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.unk2.ToString(), true);
-                    i = -1;
-                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                        selectedLine.unk2 = i;
-                    break;
-                case 4://Path
-                    selectedLine.path = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.path, true);
-                    break;
-                case 5://ID
-                    selectedLine.ID = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.ID, true);
-                    break;
-                case 6://unk3
-                    result = PromptDialog.Prompt(null, "Please enter new value", "ME3Explorer", selectedLine.index.ToString(), true);
-                    i = -1;
-                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                        selectedLine.index = i;
-                    break;
-                default:
-                    return;
-            }
-            treeView.Nodes.Clear();
-            treeView.Nodes.AddRange(FaceFX.DataToTree2(selectedLine));
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Delete || e.Key == Key.Back)
-            {
-                graph.DeleteSelectedKey();
+                SelectedExport = AnimSets.FirstOrDefault();
             }
         }
 
@@ -507,26 +145,21 @@ namespace ME3Explorer.FaceFX
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (FaceFX != null && updatedExports.Contains(FaceFX.Export.Index))
+            if (SelectedExport != null && updatedExports.Contains(SelectedExport.Index))
             {
-                int index = FaceFX.Export.Index;
+                int index = SelectedExport.Index;
                 //loaded FaceFXAnimset is no longer a FaceFXAnimset
-                if (FaceFX.Export.ClassName != "FaceFXAnimSet")
+                if (SelectedExport.ClassName != "FaceFXAnimSet")
                 {
-                    selectedLine = null;
-                    FaceFX = null;
-                    treeView.Nodes.Clear();
-                    linesListBox.ItemsSource = null;
-                    animationListBox.ItemsSource = null;
-                    graph.Clear();
+                    editorControl.UnloadExport();
                 }
                 else if (!this.IsForegroundWindow())
                 {
-                    loadFaceFXAnimset();
+                    editorControl.LoadExport(SelectedExport);
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(animSets.Select(x => x.Index)).Any())
+            if (updatedExports.Intersect(AnimSets.Select(x => x.Index)).Any())
             {
                 RefreshComboBox();
             }
@@ -543,203 +176,32 @@ namespace ME3Explorer.FaceFX
             }
         }
 
-        (float start, float end, float span) getTimeRange()
+        private void WPFBase_Loaded(object sender, RoutedEventArgs e)
         {
-            string startS = PromptDialog.Prompt(this, "Please enter start time:");
-            string endS = PromptDialog.Prompt(this, "Please enter end time:");
-            if (!(float.TryParse(startS, out float start) && float.TryParse(endS, out float end)))
+            if (!string.IsNullOrEmpty(FileQueuedForLoad))
             {
-                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
-                return (0, 0, -1);
-            }
-            float span = end - start;
-            if(span <= 0)
-            {
-                MessageBox.Show("The end time must be after the start time!");
-                return (0, 0, -1);
-            }
-            return (start, end, span);
-        }
-
-        private void DelLineSec_Click(object sender, RoutedEventArgs e)
-        {
-            var (start, end, span) = getTimeRange();
-            if(span < 0)
-            {
-                return;
-            }
-            var newPoints = new List<ControlPoint>();
-            ControlPoint tmp;
-            int keptPoints;
-            for (int i = 0, j = 0; i < selectedLine.numKeys.Length; i++)
-            {
-                keptPoints = 0;
-                for(int k = 0; k < selectedLine.numKeys[i]; k++)
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                    tmp = selectedLine.points[j + k];
-                    if(tmp.time < start)
-                    {
-                        newPoints.Add(tmp);
-                        keptPoints++;
-                    }
-                    else if (tmp.time > end)
-                    {
-                        tmp.time -= span;
-                        newPoints.Add(tmp);
-                        keptPoints++;
-                    }
-                }
-                j += selectedLine.numKeys[i];
-                selectedLine.numKeys[i] = keptPoints;
-            }
-            selectedLine.points = newPoints.ToArray();
-            FaceFX.Save();
-            updateAnimListBox();
-        }
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
 
-        private struct LineSection
-        {
-            public float span;
-            public Dictionary<string, List<ControlPoint>> animSecs;
-        }
-
-        private void ImpLineSec_Click(object sender, RoutedEventArgs e)
-        {
-            string startS = PromptDialog.Prompt(this, "Please enter the time to insert at");
-            if (!float.TryParse(startS, out float start))
-            {
-                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
-                return;
-            }
-            var ofd = new OpenFileDialog();
-            ofd.Filter = $"*.json|*.json|All Files (*.*)|*.*";
-            ofd.CheckFileExists = true;
-            if(ofd.ShowDialog() == true)
-            {
-                var lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
-                var newPoints = new List<ControlPoint>();
-                for (int i = 0, j = 0; i < selectedLine.animations.Length; i++)
-                {
-                    int k = 0;
-                    int newNumPoints = 0;
-                    ControlPoint tmp;
-                    for (; k < selectedLine.numKeys[i]; k++)
+                    if (AnimSets.Contains(ExportQueuedForFocusing))
                     {
-                        tmp = selectedLine.points[j + k];
-                        if (tmp.time >= start)
+                        SelectedExport = ExportQueuedForFocusing;
+                        RefreshComboBox();
+                        editorControl.LoadExport(SelectedExport);
+                        if (LineQueuedForFocusing != null)
                         {
-                            break;
+                            editorControl.SelectLineByName(LineQueuedForFocusing);
                         }
-                        newPoints.Add(tmp);
-                        newNumPoints++;
                     }
-                    string animName = FaceFX.Header.Names[selectedLine.animations[i].index];
-                    if (lineSec.animSecs.TryGetValue(animName, out var points))
-                    {
-                        newPoints.AddRange(points.Select(p => { p.time += start; return p; }));
-                        newNumPoints += points.Count;
-                        lineSec.animSecs.Remove(animName);
-                    }
-                    for (; k < selectedLine.numKeys[i]; k++)
-                    {
-                        tmp = selectedLine.points[j + k];
-                        tmp.time += lineSec.span;
-                        newPoints.Add(tmp);
-                        newNumPoints++;
-                    }
-                    j += selectedLine.numKeys[i];
-                    selectedLine.numKeys[i] = newNumPoints;
-                }
-                //if the line we are importing from had more animations than this one, we need to add some animations
-                if(lineSec.animSecs.Count > 0)
-                {
-                    var newNumKeys = selectedLine.numKeys.ToList();
-                    var newAnims = selectedLine.animations.ToList();
-                    List<string> names = FaceFX.Header.Names.ToList();
-                    foreach (var animSec in lineSec.animSecs)
-                    {
-                        newAnims.Add(Pcc.Game == MEGame.ME3
-                                         ? new ME3NameRef {index = names.FindOrAdd(animSec.Key), unk2 = 0}
-                                         : new ME2NameRef {index = names.FindOrAdd(animSec.Key), unk1 = 1});
-                        newNumKeys.Add(animSec.Value.Count);
-                        newPoints.AddRange(animSec.Value.Select(p => { p.time += start; return p; }));
-                    }
-                    selectedLine.animations = newAnims.ToArray();
-                    selectedLine.numKeys = newNumKeys.ToArray();
-                    FaceFX.Header.Names = names.ToArray();
-                }
-                selectedLine.points = newPoints.ToArray();
-                FaceFX.Save();
-                updateAnimListBox();
-                return;
-            }
-        }
+                    ExportQueuedForFocusing = null;
+                    LineQueuedForFocusing = null;
 
-        private void ExpLineSec_Click(object sender, RoutedEventArgs e)
-        {
-            var (start, end, span) = getTimeRange();
-            if (span < 0)
-            {
-                return;
+                    Activate();
+                }));
             }
-            var animSecs = new Dictionary<string, List<ControlPoint>>();
-            for (int i = 0, j = 0; i < selectedLine.animations.Length; i++)
-            {
-                var points = new List<ControlPoint>();
-                for (int k = 0; k < selectedLine.numKeys[i]; k++)
-                {
-                    ControlPoint tmp = selectedLine.points[j + k];
-                    if (tmp.time >= start && tmp.time <= end)
-                    {
-                        tmp.time -= start;
-                        points.Add(tmp);
-                    }
-                }
-                j += selectedLine.numKeys[i];
-                animSecs.Add(FaceFX.Header.Names[selectedLine.animations[i].index], points);
-            }
-            string output = JsonConvert.SerializeObject(new LineSection { span = span + 0.01f, animSecs = animSecs });
-            var sfd = new SaveFileDialog
-            {
-                Filter = "*.json|*.json",
-                AddExtension = true
-            };
-            if (sfd.ShowDialog() == true)
-            {
-                File.WriteAllText(sfd.FileName, output);
-            }
-        }
-
-        private void OffsetKeysAfterTime_Click(object sender, RoutedEventArgs e)
-        {
-            string startS = PromptDialog.Prompt(this, "Please enter the start time (keys at or after this time will be offset):");
-            string offsetS = PromptDialog.Prompt(this, "Please enter offset amount:");
-            if (!(float.TryParse(startS, out float start) && float.TryParse(offsetS, out float offset)))
-            {
-                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
-                return;
-            }
-            for (int i = 0, j = 0; i < selectedLine.numKeys.Length; i++)
-            {
-                for (int k = 0; k < selectedLine.numKeys[i]; k++)
-                {
-                    if (k > 0 && (selectedLine.points[j + k].time + offset <= selectedLine.points[j + k - 1].time))
-                    {
-                        MessageBox.Show($"Offsetting every key after {start} by {offset} would lead to reordering in at least one animation", 
-                                        "Cannot Reorder keys", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-                }
-            }
-            for (int i = 0; i < selectedLine.points.Length; i++)
-            {
-                if (selectedLine.points[i].time >= start)
-                {
-                    selectedLine.points[i].time += offset;
-                }
-            }
-            FaceFX.Save();
-            updateAnimListBox();
         }
     }
 }

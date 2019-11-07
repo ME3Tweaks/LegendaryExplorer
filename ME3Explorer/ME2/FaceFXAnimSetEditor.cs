@@ -34,7 +34,7 @@ namespace ME2Explorer
                 {
                     LoadME2Package(d.FileName);
                     Objects = new List<int>();
-                    IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+                    IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
                     for (int i = 0; i < Exports.Count; i++)
                     {
                         if (Exports[i].ClassName == "FaceFXAnimSet")
@@ -54,7 +54,7 @@ namespace ME2Explorer
         {
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add($"#{n} : {Pcc.Exports[n].GetFullPath}");
+                listBox1.Items.Add($"#{n} : {Pcc.Exports[n].FullPath}");
         }
 
         private void FaceFXRefresh(int n, IEnumerable<string> expandedNodes = null, string topNodeName = null)
@@ -131,7 +131,7 @@ namespace ME2Explorer
         {
             if (Pcc == null)
                 return;
-            Pcc.save();
+            Pcc.Save();
             MessageBox.Show("Done.");
         }
 

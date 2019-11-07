@@ -8,6 +8,9 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Icon="..\Resources\mounteditor_256x256.ico"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Title="Mount Editor" Height="358" Width="500">
     <StackPanel>
         <TextBlock Text="Use this tool to create new or modify existing mount.dlc files." Background="LightGray" Padding="5,5,5,0"/>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,9 +17,15 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Gibbed.IO;
+using Gammtek.Conduit;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
+using SharpDX;
+using StreamHelpers;
+using Matrix = SharpDX.Matrix;
+using Point = System.Windows.Point;
 
 namespace ME3Explorer
 {
@@ -36,7 +43,7 @@ namespace ME3Explorer
             return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
         }
 
-        //argument passed to continuationn>
+        //argument passed to continuation
         public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
         {
             return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
@@ -65,31 +72,13 @@ namespace ME3Explorer
                 return nodes;
             }
         }
-    }
-
-    public static class TreeViewItemExtension
-    {
-        public static IEnumerable<System.Windows.Controls.TreeViewItem> FlattenTreeView(this System.Windows.Controls.TreeView tv)
-        {
-            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(FlattenTree);
-
-            List<System.Windows.Controls.TreeViewItem> FlattenTree(System.Windows.Controls.TreeViewItem rootNode)
-            {
-                var nodes = new List<System.Windows.Controls.TreeViewItem> { rootNode };
-                foreach (System.Windows.Controls.TreeViewItem node in rootNode.Items)
-                {
-                    nodes.AddRange(FlattenTree(node));
-                }
-                return nodes;
-            }
-        }
 
         /// <summary>
         /// Select specified item in a TreeView
         /// </summary>
-        public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
+        public static void SelectItem(this TreeView treeView, object item)
         {
-            if (treeView.ItemContainerGenerator.ContainerFromItem(item) is System.Windows.Controls.TreeViewItem tvItem)
+            if (treeView.ItemContainerGenerator.ContainerFromItemRecursive(item) is TreeViewItem tvItem)
             {
                 tvItem.IsSelected = true;
             }
@@ -200,6 +189,15 @@ namespace ME3Explorer
             throw new ArgumentOutOfRangeException();
         }
 
+        public static T First<T>(this LinkedList<T> list)
+        {
+            return list.First.Value;
+        }
+        public static T Last<T>(this LinkedList<T> list)
+        {
+            return list.Last.Value;
+        }
+
         /// <summary>
         /// Overwrites a portion of an array starting at offset with the contents of another array.
         /// Accepts negative indexes
@@ -226,6 +224,20 @@ namespace ME3Explorer
             {
                 dest[offset + i] = source[i];
             }
+        }
+
+        public static byte[] Slice(this byte[] src, int start, int length)
+        {
+            var slice = new byte[length];
+            Buffer.BlockCopy(src, start, slice, 0, length);
+            return slice;
+        }
+
+        public static T[] Slice<T>(this T[] src, int start, int length)
+        {
+            var slice = new T[length];
+            Array.Copy(src, start, slice, 0, length);
+            return slice;
         }
 
         public static T[] TypedClone<T>(this T[] src)
@@ -301,6 +313,28 @@ namespace ME3Explorer
         {
             return src.Where(obj => obj != null);
         }
+
+        public static string StringJoin<T>(this IEnumerable<T> values, string separator)
+        {
+            return string.Join(separator, values);
+        }
+
+        public static T MaxBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
+        {
+            return en.Select(t => (obj: t, key: evaluate(t)))
+                .Aggregate((max, next) => next.key.CompareTo(max.key) > 0 ? next : max).obj;
+        }
+
+        public static T MinBy<T, R>(this IEnumerable<T> en, Func<T, R> evaluate) where R : IComparable<R>
+        {
+            return en.Select(t => (obj: t, key: evaluate(t)))
+                .Aggregate((max, next) => next.key.CompareTo(max.key) < 0 ? next : max).obj;
+        }
+
+        public static bool SubsetOf<T>(this IList<T> src, IList<T> compare)
+        {
+            return src.All(compare.Contains);
+        }
     }
 
     public static class DictionaryExtensions
@@ -317,16 +351,21 @@ namespace ME3Explorer
             }
             list.Add(value);
         }
-
-        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
-        {
-            key = kvp.Key;
-            value = kvp.Value;
-        }
     }
 
     public static class StringExtensions
     {
+        /// <summary>
+        /// Splits on Environment.Newline
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string[] SplitLines(this string s, StringSplitOptions options = StringSplitOptions.None)
+        {
+            return s.Split(new[] {Environment.NewLine}, options);
+        }
+
         public static bool isNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
@@ -393,6 +432,16 @@ namespace ME3Explorer
             }
             return false;
         }
+
+
+
+        public static Guid ToGuid(this string src) //Do not edit this function!
+        {
+            byte[] stringbytes = Encoding.UTF8.GetBytes(src);
+            byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
+            Array.Resize(ref hashedBytes, 16);
+            return new Guid(hashedBytes);
+        }
     }
 
     public static class WPFExtensions
@@ -453,6 +502,16 @@ namespace ME3Explorer
         public static FrameworkElement GetChild(this ItemsControl itemsControl, string withName)
         {
             return itemsControl.Items.OfType<FrameworkElement>().FirstOrDefault(m => m.Name == withName);
+        }
+
+        public static System.Windows.Media.Color ToWPFColor(this System.Drawing.Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public static System.Drawing.Color ToWinformsColor(this System.Windows.Media.Color color)
+        {
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
     }
 
@@ -529,7 +588,7 @@ namespace ME3Explorer
             COMBINED_PRINTFLAGS = PRF_CLIENT | PRF_CHILDREN | PRF_NON_CLIENT;
 
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(control.Width, control.Height);
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
+            using System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
 
             // paint control onto graphics
             IntPtr hWnd = control.Handle;
@@ -558,7 +617,7 @@ namespace ME3Explorer
 
         private static void OnIsExternalChanged(object sender, DependencyPropertyChangedEventArgs args)
         {
-            var hyperlink = sender as Hyperlink;
+            var hyperlink = (Hyperlink)sender;
 
             if ((bool)args.NewValue)
                 hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
@@ -575,28 +634,58 @@ namespace ME3Explorer
 
     public static class IOExtensions
     {
-        public static void WriteStringASCII(this Stream stream, string value)
+        public static string ReadUnrealString(this Stream stream)
         {
-            stream.WriteValueS32(value.Length + 1);
-            stream.WriteStringZ(value, Encoding.ASCII);
+            int length = stream.ReadInt32();
+            if (length == 0)
+            {
+                return "";
+            }
+            return length < 0 ? stream.ReadStringUnicodeNull(length * -2) : stream.ReadStringASCIINull(length);
         }
 
-        public static void WriteStringUnicode(this Stream stream, string value)
+        public static void WriteUnrealString(this Stream stream, string value, MEGame game)
         {
-            if (value.Length > 0)
+            if (game == MEGame.ME3)
             {
-                stream.WriteValueS32(-(value.Length + 1));
-                stream.WriteStringZ(value, Encoding.Unicode);
+                stream.WriteUnrealStringUnicode(value);
             }
             else
             {
-                stream.WriteValueS32(0);
+                stream.WriteUnrealStringASCII(value);
             }
         }
 
-        public static void WriteStream(this Stream stream, MemoryStream value)
+        public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
-            value.WriteTo(stream);
+            if (value?.Length > 0)
+            {
+                stream.WriteInt32(value.Length + 1);
+                stream.WriteStringASCIINull(value);
+            }
+            else
+            {
+                stream.WriteInt32(0);
+            }
+        }
+
+        public static void WriteUnrealStringUnicode(this Stream stream, string value)
+        {
+            if (value?.Length > 0)
+            {
+                stream.WriteInt32(-(value.Length + 1));
+                stream.WriteStringUnicodeNull(value);
+            }
+            else
+            {
+                stream.WriteInt32(0);
+            }
+        }
+
+        public static void WriteStream(this Stream stream, Stream value)
+        {
+            value.Position = 0;
+            value.CopyTo(stream);
         }
 
         /// <summary>
@@ -615,6 +704,17 @@ namespace ME3Explorer
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
+        }
+
+        public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)
+        {
+            return new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
+        }
+
+        public static void WriteNameReference(this Stream stream, NameReference name, IMEPackage pcc)
+        {
+            stream.WriteInt32(pcc.FindNameOrAdd(name.Name));
+            stream.WriteInt32(name.Number);
         }
     }
 
@@ -689,7 +789,7 @@ namespace ME3Explorer
         /// Converts Degrees to Unreal rotation units
         /// </summary>
         public static int ToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
-
+        
         /// <summary>
         /// Converts Unreal rotation units to Degrees
         /// </summary>
@@ -748,6 +848,86 @@ namespace ME3Explorer
                 typeToCheck = typeToCheck.BaseType;
             }
         }
+
+        public static float AsFloat16(this ushort float16bits)
+        {
+            int sign = (float16bits >> 15) & 0x00000001;
+            int exp = (float16bits >> 10) & 0x0000001F;
+            int mant = float16bits & 0x000003FF;
+            switch (exp)
+            {
+                case 0:
+                    return 0f;
+                case 31:
+                    return 65504f;
+            }
+            exp += (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            return BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+        }
+
+        public static ushort ToFloat16bits(this float f)
+        {
+            byte[] bytes = BitConverter.GetBytes((double)f);
+            ulong bits = BitConverter.ToUInt64(bytes, 0);
+            ulong exponent = bits & 0x7ff0000000000000L;
+            ulong mantissa = bits & 0x000fffffffffffffL;
+            ulong sign = bits & 0x8000000000000000L;
+            int placement = (int)((exponent >> 52) - 1023);
+            if (placement > 15 || placement < -14)
+                return 0;
+            ushort exponentBits = (ushort)((15 + placement) << 10);
+            ushort mantissaBits = (ushort)(mantissa >> 42);
+            ushort signBits = (ushort)(sign >> 48);
+            return (ushort)(exponentBits | mantissaBits | signBits);
+        }
+
+        /// <summary>
+        /// expects a float in range -1 to 1, anything outside that will be clamped to it.
+        /// </summary>
+        public static byte PackToByte(this float f)
+        {
+            return (byte)((int)(f * 127.5f + 128.0f)).Clamp(0, 255);
+        }
+
+        public static uint bits(this uint word, byte from, byte to)
+        {
+            Contract.Assert(from < 32);
+            Contract.Assert(to < 32);
+            Contract.Assert(to < from);
+
+            return (word << (31 - from)) >> (31 - from + to);
+        }
+
+        public static unsafe bool IsBinarilyIdentical(this float f1, float f2)
+        {
+            return *((int*)&f1) == *((int*)&f2);
+        }
+
+        public static Rotator GetRotator(this Matrix m)
+        {
+            var xAxis = new Vector3(m[0, 0], m[0, 1], m[0, 2]);
+            var yAxis = new Vector3(m[1, 0], m[1, 1], m[1, 2]);
+            var zAxis = new Vector3(m[2, 0], m[2, 1], m[2, 2]);
+
+            var pitch = Math.Atan2(xAxis.Z, Math.Sqrt(Math.Pow(xAxis.X, 2) + Math.Pow(xAxis.Y, 2)));
+            var yaw = Math.Atan2(xAxis.Y, xAxis.X);
+
+            var sy = Math.Sin(yaw);
+            var cy = Math.Cos(yaw);
+
+
+            var syAxis = new Vector3((float)-sy, (float)cy, 0f);
+
+            var roll = Math.Atan2(Vector3.Dot(zAxis, syAxis), Vector3.Dot(yAxis, syAxis));
+
+            return new Rotator(RadToURR(pitch), RadToURR(yaw), RadToURR(roll));
+
+            static int RadToURR(double d)
+            {
+                return ((float)(d * (180.0 / Math.PI))).ToUnrealRotationUnits();
+            }
+        }
     }
 
     public static class Enums
@@ -755,6 +935,10 @@ namespace ME3Explorer
         public static T[] GetValues<T>() where T : Enum
         {
             return (T[])Enum.GetValues(typeof(T));
+        }
+        public static string[] GetNames<T>() where T : Enum
+        {
+            return Enum.GetNames(typeof(T));
         }
 
         public static T Parse<T>(string val) where T : Enum
@@ -777,6 +961,53 @@ namespace ME3Explorer
         public static object InvokeGenericMethod(this Type type, string methodName, Type genericType, object invokeOn, params object[] parameters)
         {
             return type.GetMethod(methodName).MakeGenericMethod(genericType).Invoke(invokeOn, parameters);
+        }
+    }
+
+    /// <summary>
+    /// For use with List initializers
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var intList = new List&lt;int&gt;
+    /// {
+    ///     1,
+    ///     2,
+    ///     3,
+    ///     InitializerHelper.ConditionalAdd(shouldAdd465, () =&gt; new[]
+    ///     {
+    ///         4,
+    ///         5,
+    ///         6
+    ///     }),
+    ///     7,
+    ///     8
+    /// }
+    /// //intList would only contain 4,5, and 6 if shouldAdd456 was true 
+    /// </code>
+    /// </example>
+    public static class ListInitHelper
+    {
+        public class InitCollection<T> : List<T>
+        {
+            public InitCollection(IEnumerable<T> collection) : base(collection) { }
+            public InitCollection() { }
+        }
+
+        public static InitCollection<T> ConditionalAddOne<T>(bool condition, Func<T> elem) => condition ? new InitCollection<T> { elem() } : null;
+
+        public static InitCollection<T> ConditionalAddOne<T>(bool condition, Func<T> ifTrue, Func<T> ifFalse) => new InitCollection<T> { condition ? ifTrue() : ifFalse() };
+
+        public static InitCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> elems) => condition ? new InitCollection<T>(elems()) : null;
+
+        public static InitCollection<T> ConditionalAdd<T>(bool condition, Func<IEnumerable<T>> ifTrue, Func<IEnumerable<T>> ifFalse) =>
+            new InitCollection<T>(condition ? ifTrue() : ifFalse());
+
+        //this may appear to have no references, but it is implicitly called whenever ConditionalAdd is used in a List initializer
+        //VS's "Find All References" can't figure this out, but Resharper's "Find Usages" can 
+        public static void Add<T>(this List<T> list, InitCollection<T> range)
+        {
+            if(range != null) list.AddRange(range);
         }
     }
 }

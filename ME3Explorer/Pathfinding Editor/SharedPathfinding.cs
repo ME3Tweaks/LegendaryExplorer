@@ -21,61 +21,19 @@ namespace ME3Explorer.Pathfinding_Editor
         private static bool ClassesDBLoaded;
         internal static string ClassesDatabasePath = Path.Combine(App.ExecFolder, "pathfindingclassdb.json");
 
-        /// <summary>
-        /// Converts struct property to SharpDX Vector 3
-        /// </summary>
-        /// <param name="vectorStruct">Vector Struct to convert</param>
-        /// <returns></returns>
-        public static Vector3 GetVector3(StructProperty vectorStruct)
-        {
-            Vector3 v = new Vector3
-            {
-                X = vectorStruct.GetProp<FloatProperty>("X"),
-                Y = vectorStruct.GetProp<FloatProperty>("Y"),
-                Z = vectorStruct.GetProp<FloatProperty>("Z")
-            };
-            return v;
-        }
-
-        /// <summary>
-        /// Converts struct property to SharpDX Vector 2
-        /// </summary>
-        /// <param name="vectorStruct">Vector Struct to convert</param>
-        /// <returns></returns>
-        public static Vector2 GetVector2(StructProperty vectorStruct)
-        {
-            Vector2 v = new Vector2
-            {
-                X = vectorStruct.GetProp<FloatProperty>("X"),
-                Y = vectorStruct.GetProp<FloatProperty>("Y")
-            };
-            return v;
-        }
-
-        public static void GenerateNewRandomGUID(IExportEntry export)
+        public static void GenerateNewNavGUID(ExportEntry export)
         {
             StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
             if (guidProp != null)
             {
-                Random rnd = new Random();
-                IntProperty A = guidProp.GetProp<IntProperty>("A");
-                IntProperty B = guidProp.GetProp<IntProperty>("B");
-                IntProperty C = guidProp.GetProp<IntProperty>("C");
-                IntProperty D = guidProp.GetProp<IntProperty>("D");
-                byte[] data = export.Data;
-
-                data.OverwriteRange((int)A.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)B.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)C.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                data.OverwriteRange((int)D.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                export.Data = data;
+                export.WriteProperty(CommonStructs.Guid(Guid.NewGuid(), "NavGuid"));
             }
         }
 
-        public static void CreateReachSpec(IExportEntry startNode, bool createTwoWay, IExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, PropertyCollection externalGUIDProperties = null)
+        public static void CreateReachSpec(ExportEntry startNode, bool createTwoWay, ExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, PropertyCollection externalGUIDProperties = null)
         {
             IMEPackage Pcc = startNode.FileRef;
-            IExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
+            ExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
 
             if (externalGUIDProperties != null) //EXTERNAL
             {
@@ -84,13 +42,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 if (reachSpectoClone != null)
                 {
-                    IExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(outgoingSpec);
+                    ExportEntry outgoingSpec = reachSpectoClone.Clone();
+                    Pcc.AddExport(outgoingSpec);
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
-                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                    outgoingSpec.Class = reachSpecClassImp;
+                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
 
                     var properties = outgoingSpec.GetProperties();
                     ObjectProperty outgoingSpecStartProp = properties.GetProp<ObjectProperty>("Start"); //START
@@ -127,19 +85,19 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (reachSpectoClone != null)
                 {
-                    IExportEntry outgoingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(outgoingSpec);
-                    IExportEntry incomingSpec = null;
+                    ExportEntry outgoingSpec = reachSpectoClone.Clone();
+                    Pcc.AddExport(outgoingSpec);
+                    ExportEntry incomingSpec = null;
                     if (createTwoWay)
                     {
                         incomingSpec = reachSpectoClone.Clone();
-                        Pcc.addExport(incomingSpec);
+                        Pcc.AddExport(incomingSpec);
                     }
 
                     IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
-                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                    outgoingSpec.Class = reachSpecClassImp;
+                    outgoingSpec.ObjectName = reachSpecClassImp.ObjectName;
 
                     var outgoingSpecProperties = outgoingSpec.GetProperties();
                     if (reachSpecClass == "Engine.SlotToSlotReachSpec")
@@ -166,8 +124,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (createTwoWay)
                     {
-                        incomingSpec.idxClass = reachSpecClassImp.UIndex;
-                        incomingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                        incomingSpec.Class = reachSpecClassImp;
+                        incomingSpec.ObjectName = reachSpecClassImp.ObjectName;
                         var incomingSpecProperties = incomingSpec.GetProperties();
                         if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                         {
@@ -225,7 +183,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <param name="spec"></param>
         /// <param name="radius"></param>
         /// <param name="height"></param>
-        public static void SetReachSpecSize(IExportEntry spec, int radius, int height)
+        public static void SetReachSpecSize(ExportEntry spec, int radius, int height)
         {
             PropertyCollection specProperties = spec.GetProperties();
             SetReachSpecSize(specProperties, radius, height);
@@ -245,11 +203,11 @@ namespace ME3Explorer.Pathfinding_Editor
             var fullPathMappingList = new List<(string fullpath, IEntry entry)>();
             foreach (ImportEntry imp in Pcc.Imports)
             {
-                fullPathMappingList.Add((imp.GetFullPath, imp));
+                fullPathMappingList.Add((imp.FullPath, imp));
             }
-            foreach (IExportEntry exp in Pcc.Exports)
+            foreach (ExportEntry exp in Pcc.Exports)
             {
-                fullPathMappingList.Add((exp.GetFullPath, exp));
+                fullPathMappingList.Add((exp.FullPath, exp));
             }
 
             var directMapping = fullPathMappingList.Where(x => x.fullpath == importFullName).ToList();
@@ -265,7 +223,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 upstreamfullpath = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
-                if (upstreammatchinglist.Where(x=>x.entry is IExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
+                if (upstreammatchinglist.Where(x=>x.entry is ExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
                 {
                     upstreamEntryToAttachTo = upstreammatchinglist[0].entry;
                     break;
@@ -323,12 +281,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 string fullobjectname = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 Dictionary<string, string> importdbinfo = ImportClassDB[fullobjectname];
 
-                int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Length - upstreamCount - 1]);
-                Debug.WriteLine(Pcc.Names[downstreamName]);
+                var downstreamName = importParts[importParts.Length - upstreamCount - 1];
+                Debug.WriteLine(downstreamName);
                 int downstreamLinkIdx = upstreamEntryToAttachTo.UIndex;
-                Debug.WriteLine(upstreamEntryToAttachTo.GetFullPath);
+                Debug.WriteLine(upstreamEntryToAttachTo.FullPath);
 
-                int downstreamPackageName = Pcc.FindNameOrAdd(importdbinfo["packagefile"]);
+                var downstreamPackageName = importdbinfo["packagefile"];
                 string downstreamClassName = importdbinfo["fullclasspath"];
                 int lastPeriodIndex = downstreamClassName.LastIndexOf(".");
                 if (lastPeriodIndex > 0)
@@ -337,8 +295,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 }
 
-                int downstreamClassNameIdx = Pcc.FindNameOrAdd(downstreamClassName);
-                Debug.WriteLine("Finding name " + downstreamClassName);
                 //ImportEntry classImport = getOrAddImport();
                 //int downstreamClass = 0;
                 //if (classImport != null) {
@@ -351,29 +307,14 @@ namespace ME3Explorer.Pathfinding_Editor
                 mostdownstreamimport = new ImportEntry(Pcc)
                 {
                     idxLink = downstreamLinkIdx,
-                    idxClassName = downstreamClassNameIdx,
-                    idxObjectName = downstreamName,
-                    idxPackageFile = downstreamPackageName
+                    ClassName = downstreamClassName,
+                    ObjectName = downstreamName,
+                    PackageFile = downstreamPackageName
                 };
-                Pcc.addImport(mostdownstreamimport);
+                Pcc.AddImport(mostdownstreamimport);
                 upstreamEntryToAttachTo = mostdownstreamimport;
             }
             return mostdownstreamimport;
-        }
-
-        /// <summary>
-        /// Writes the buffer to the memory array starting at position pos
-        /// </summary>
-        /// <param name="memory">Memory array to overwrite onto</param>
-        /// <param name="pos">Position to start writing at</param>
-        /// <param name="buff">byte array to write, in order</param>
-        /// <returns>Modified memory</returns>
-        public static byte[] WriteMem(byte[] memory, int pos, byte[] buff)
-        {
-            for (int i = 0; i < buff.Length; i++)
-                memory[pos + i] = buff[i];
-
-            return memory;
         }
 
         /// <summary>
@@ -381,7 +322,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
         /// <returns>Actor for ME2/ME3, Nav for ME1</returns>
-        public static string GetReachSpecEndName(IExportEntry export) => export.FileRef.Game == MEGame.ME1 ? "Nav" : "Actor";
+        public static string GetReachSpecEndName(ExportEntry export) => export.FileRef.Game == MEGame.ME1 ? "Nav" : "Actor";
 
         /// <summary>
         /// Rounds a double to an int. Because apparently Microsoft doesn't know how to round numbers.
@@ -402,7 +343,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export"></param>
         /// <returns></returns>
-        public static UnrealGUID GetNavGUID(IExportEntry export)
+        public static UnrealGUID GetNavGUID(ExportEntry export)
         {
             StructProperty navGuid = export.GetProperty<StructProperty>("NavGuid");
             if (navGuid != null)
@@ -422,13 +363,13 @@ namespace ME3Explorer.Pathfinding_Editor
         /// USE WITH CAUTION!
         /// </summary>
         /// <param name="exportToReindex">Export that contains the path you want to reindex</param>
-        public static void ReindexMatchingObjects(IExportEntry exportToReindex)
+        public static void ReindexMatchingObjects(ExportEntry exportToReindex)
         {
-            string fullpath = exportToReindex.GetFullPath;
+            string fullpath = exportToReindex.FullPath;
             int index = 1; //we'll start at 1.
-            foreach (IExportEntry export in exportToReindex.FileRef.Exports)
+            foreach (ExportEntry export in exportToReindex.FileRef.Exports)
             {
-                if (fullpath == export.GetFullPath && export.ClassName != "Class")
+                if (fullpath == export.FullPath && !export.IsClass)
                 {
                     export.indexValue = index;
                     index++;
@@ -459,23 +400,23 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export">export to read PathList from</param>
         /// <returns></returns>
-        internal static List<IExportEntry> GetReachspecExports(IExportEntry export)
+        internal static List<ExportEntry> GetReachspecExports(ExportEntry export)
         {
             var pathlist = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-            if (pathlist == null) return new List<IExportEntry>(); //nothing
-            var returnlist = new List<IExportEntry>(pathlist.Count);
+            if (pathlist == null) return new List<ExportEntry>(); //nothing
+            var returnlist = new List<ExportEntry>(pathlist.Count);
             foreach (ObjectProperty prop in pathlist)
             {
                 if (prop.Value > 0)
                 {
-                    returnlist.Add(export.FileRef.getUExport(prop.Value));
+                    returnlist.Add(export.FileRef.GetUExport(prop.Value));
                 }
             }
 
             return returnlist;
         }
 
-        internal static IExportEntry GetReachSpecEndExport(IExportEntry reachSpec, PropertyCollection props = null)
+        internal static ExportEntry GetReachSpecEndExport(ExportEntry reachSpec, PropertyCollection props = null)
         {
             if (props == null)
             {
@@ -484,15 +425,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
                 endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(reachSpec)) is ObjectProperty otherNodeValue
-                && reachSpec.FileRef.isUExport(otherNodeValue.Value))
+                && reachSpec.FileRef.IsUExport(otherNodeValue.Value))
             {
-                return reachSpec.FileRef.getUExport(otherNodeValue.Value);
+                return reachSpec.FileRef.GetUExport(otherNodeValue.Value);
             }
 
             return null; //can't get end, or is external
         }
 
-        public static Point3D GetLocation(IExportEntry export)
+        public static Point3D GetLocation(ExportEntry export)
         {
             float x = 0, y = 0, z = int.MinValue;
             var prop = export.GetProperty<StructProperty>("location");
@@ -518,11 +459,9 @@ namespace ME3Explorer.Pathfinding_Editor
             return null;
         }
 
-        public static void SetLocation(IExportEntry export, float x, float y, float z)
+        public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            StructProperty prop = export.GetProperty<StructProperty>("location");
-            SetLocation(prop, x, y, z);
-            export.WriteProperty(prop);
+            export.WriteProperty(CommonStructs.Vector3(x, y, z, "location"));
         }
 
         public static void SetLocation(StructProperty prop, float x, float y, float z)
@@ -536,7 +475,7 @@ namespace ME3Explorer.Pathfinding_Editor
     public class UnrealGUID
     {
         public readonly int A, B, C, D;
-        public IExportEntry export;
+        public ExportEntry export;
 
         public UnrealGUID(StructProperty guid)
         {

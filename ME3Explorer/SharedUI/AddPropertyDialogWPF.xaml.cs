@@ -57,7 +57,7 @@ namespace ME3Explorer.SharedUI
             return PropertiesListView.SelectedItem != null;
         }
 
-        public static (string, PropertyInfo)? GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
+        public static (string, PropertyInfo)? GetProperty(ExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
         {
             string origname = export.ClassName;
             string temp = export.ClassName;
@@ -85,14 +85,14 @@ namespace ME3Explorer.SharedUI
             //        Debug.WriteLine(entry.Key);
             //    }
             //}
-            if (!classList.ContainsKey(temp) && export.idxClass < 0)
+            if (!classList.ContainsKey(temp) && export.Class is ImportEntry)
             {
                 //lookup import parent info
-                temp = export.ClassParent;
+                temp = export.SuperClassName;
             }
-            else if (!classList.ContainsKey(temp) && export.idxClass > 0)
+            else if (!classList.ContainsKey(temp) && export.Class is ExportEntry classExport)
             {
-                export = export.FileRef.Exports[export.idxClass - 1];
+                export = classExport;
                 //current object is not in classes db, temporarily add it to the list
                 ClassInfo currentInfo;
                 switch (game)
@@ -108,9 +108,20 @@ namespace ME3Explorer.SharedUI
                         currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
                         break;
                 }
-                currentInfo.baseClass = export.ClassParent;
+                currentInfo.baseClass = export.SuperClassName;
                 classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
                 classList[temp] = currentInfo;
+                classExport = classExport.SuperClass as ExportEntry;
+                while (!classList.ContainsKey(currentInfo.baseClass) && classExport != null)
+                {
+                    currentInfo = UnrealObjectInfo.generateClassInfo(classExport);
+                    if (currentInfo == null)
+                    {
+                        break;
+                    }
+                    classList[classExport.ObjectName] = currentInfo;
+                    classExport = classExport.SuperClass as ExportEntry;
+                }
             }
             while (classList.ContainsKey(temp) && temp != "Object")
             {
@@ -142,7 +153,7 @@ namespace ME3Explorer.SharedUI
         {
             string className = (string)ClassesListView.SelectedItem;
             SelectedClassName = className;
-            var props = classList[className].properties.Where(x => !x.Value.transient && !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            var props = classList[className].properties.Where(x => !x.Value.Transient && !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             //props.Sort();
             PropertiesListView.ItemsSource = props;
         }

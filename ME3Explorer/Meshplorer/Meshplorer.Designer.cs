@@ -29,26 +29,19 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadFromDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectMatForSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lOD3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serializeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromUDKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.importOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotatingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wireframeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +81,6 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
             this.lODToolStripMenuItem,
             this.transferToolStripMenuItem,
             this.viewToolStripMenuItem,
@@ -103,7 +95,6 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadPCCToolStripMenuItem,
-            this.loadFromDatabaseToolStripMenuItem,
             this.savePCCToolStripMenuItem,
             this.toolStripSeparator1,
             this.recentToolStripMenuItem});
@@ -117,13 +108,6 @@
             this.loadPCCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadPCCToolStripMenuItem.Text = "Load PCC";
             this.loadPCCToolStripMenuItem.Click += new System.EventHandler(this.loadPCCToolStripMenuItem_Click);
-            // 
-            // loadFromDatabaseToolStripMenuItem
-            // 
-            this.loadFromDatabaseToolStripMenuItem.Name = "loadFromDatabaseToolStripMenuItem";
-            this.loadFromDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.loadFromDatabaseToolStripMenuItem.Text = "Load from Database";
-            this.loadFromDatabaseToolStripMenuItem.Click += new System.EventHandler(this.loadFromDatabaseToolStripMenuItem_Click);
             // 
             // savePCCToolStripMenuItem
             // 
@@ -142,21 +126,6 @@
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.recentToolStripMenuItem.Text = "Recent";
-            // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectMatForSectionToolStripMenuItem});
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
-            // 
-            // selectMatForSectionToolStripMenuItem
-            // 
-            this.selectMatForSectionToolStripMenuItem.Name = "selectMatForSectionToolStripMenuItem";
-            this.selectMatForSectionToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.selectMatForSectionToolStripMenuItem.Text = "Select Mat for Section";
-            this.selectMatForSectionToolStripMenuItem.Click += new System.EventHandler(this.selectMatForSectionToolStripMenuItem_Click);
             // 
             // lODToolStripMenuItem
             // 
@@ -205,31 +174,13 @@
             // transferToolStripMenuItem
             // 
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportToPSKToolStripMenuItem,
-            this.exportTo3DSToolStripMenuItem,
             this.exportToOBJToolStripMenuItem,
             this.serializeToFileToolStripMenuItem,
-            this.importFromUDKToolStripMenuItem,
             this.importFromOBJToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.importOptionsToolStripMenuItem});
+            this.toolStripMenuItem1,});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
             this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
-            // 
-            // exportToPSKToolStripMenuItem
-            // 
-            this.exportToPSKToolStripMenuItem.Name = "exportToPSKToolStripMenuItem";
-            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.exportToPSKToolStripMenuItem.Text = "Export to PSK";
-            this.exportToPSKToolStripMenuItem.Click += new System.EventHandler(this.exportToPSKToolStripMenuItem_Click);
-            // 
-            // exportTo3DSToolStripMenuItem
-            // 
-            this.exportTo3DSToolStripMenuItem.Name = "exportTo3DSToolStripMenuItem";
-            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.exportTo3DSToolStripMenuItem.Text = "Export to 3DS";
-            this.exportTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportTo3DSToolStripMenuItem_Click);
             // 
             // exportToOBJToolStripMenuItem
             // 
@@ -245,13 +196,6 @@
             this.serializeToFileToolStripMenuItem.Text = "Serialize to file";
             this.serializeToFileToolStripMenuItem.Click += new System.EventHandler(this.serializeToFileToolStripMenuItem_Click);
             // 
-            // importFromUDKToolStripMenuItem
-            // 
-            this.importFromUDKToolStripMenuItem.Name = "importFromUDKToolStripMenuItem";
-            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.importFromUDKToolStripMenuItem.Text = "Import from UDK...";
-            this.importFromUDKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKToolStripMenuItem_Click);
-            // 
             // importFromOBJToolStripMenuItem
             // 
             this.importFromOBJToolStripMenuItem.Name = "importFromOBJToolStripMenuItem";
@@ -263,13 +207,6 @@
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
-            // 
-            // importOptionsToolStripMenuItem
-            // 
-            this.importOptionsToolStripMenuItem.Name = "importOptionsToolStripMenuItem";
-            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.importOptionsToolStripMenuItem.Text = "Import Options";
-            this.importOptionsToolStripMenuItem.Click += new System.EventHandler(this.importOptionsToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -478,7 +415,7 @@
             this.view.Size = new System.Drawing.Size(562, 690);
             this.view.TabIndex = 1;
             this.view.TabStop = false;
-            this.view.Wireframe = false;
+            this.view.Context.Wireframe = false;
             this.view.Update += new System.EventHandler<float>(this.view_Update);
             this.view.Render += new System.EventHandler(this.view_Render);
             // 
@@ -544,7 +481,6 @@
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.Timer timer1;
         public System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem exportToPSKToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem serializeToFileToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lODToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD0ToolStripMenuItem;
@@ -556,19 +492,13 @@
         public System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem exportTreeToolStripMenuItem;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-        public System.Windows.Forms.ToolStripMenuItem importOptionsToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem loadFromDatabaseToolStripMenuItem;
         private System.ComponentModel.IContainer components;
-        private System.Windows.Forms.ToolStripMenuItem exportTo3DSToolStripMenuItem;
         public System.Windows.Forms.SplitContainer splitContainer2;
         public System.Windows.Forms.SplitContainer splitContainer3;
         public System.Windows.Forms.ListBox listBox1;
         public System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.RichTextBox rtb1;
         public System.Windows.Forms.ToolStripMenuItem dumpBinaryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromUDKToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem selectMatForSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox MaterialBox;
         private System.Windows.Forms.ToolStripButton MaterialApplyButton;
         private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;

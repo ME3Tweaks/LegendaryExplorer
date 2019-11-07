@@ -25,32 +25,34 @@ namespace ME3Explorer.ActorNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getUExport(index);
+            export = pcc.GetUExport(index);
             comment = new SText(GetComment(), commentColor, false)
             {
                 X = 0
             };
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
-            
+
             if (drawRotationLine)
             {
+                float theta = 0;
                 if (export.GetProperty<StructProperty>("Rotation") is StructProperty rotation)
                 {
-                    var theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
-                    float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
-                    float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
-                    float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
-                    float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
-
-                    float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
-                    float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
-                    PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
-                    directionShape.Pen = Pens.BlanchedAlmond;
-                    directionShape.Brush = directionBrush;
-                    directionShape.Pickable = false;
-                    AddChild(directionShape);
+                    theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
                 }
+
+                float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));
+                float circleY1 = (float)(25 + 20 * Math.Sin((theta + 5) * Math.PI / 180));
+                float circleX2 = (float)(25 + 20 * Math.Cos((theta - 5) * Math.PI / 180));
+                float circleY2 = (float)(25 + 20 * Math.Sin((theta - 5) * Math.PI / 180));
+
+                float circleTipX = (float)(25 + 25 * Math.Cos(theta * Math.PI / 180));
+                float circleTipY = (float)(25 + 25 * Math.Sin(theta * Math.PI / 180));
+                PPath directionShape = PPath.CreatePolygon(new[] { new PointF(25, 25), new PointF(circleX1, circleY1), new PointF(circleTipX, circleTipY), new PointF(circleX2, circleY2) });
+                directionShape.Pen = Pens.BlanchedAlmond;
+                directionShape.Brush = directionBrush;
+                directionShape.Pickable = false;
+                AddChild(directionShape);
             }
             this.AddChild(comment);
             this.Pickable = true;
@@ -193,6 +195,22 @@ namespace ME3Explorer.ActorNodes
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
 
+    public class BioPawn : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 100, 100);
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(25, 50) };
+
+        public BioPawn(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool showRotation = false)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+        {
+            shape.Brush = biopawnPathfindingNodeBrush;
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
 
     //This is technically not a pathnode...
     public class SFXObjectiveSpawnPoint : ActorNode
@@ -237,7 +255,7 @@ namespace ME3Explorer.ActorNodes
             var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
             if (annexZoneLocProp != null)
             {
-                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
+                //ExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
 
                 PathfindingNodeMaster othernode = null;
                 int othernodeidx = annexZoneLocProp.Value;
@@ -393,7 +411,7 @@ namespace ME3Explorer.ActorNodes
         private static readonly PointF[] outlineShape = { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50), new PointF(25, 30) };
 
         public PendingActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
         }
 
@@ -413,10 +431,10 @@ namespace ME3Explorer.ActorNodes
         protected Brush backgroundBrush = new SolidBrush(Color.FromArgb(160, 120, 0));
 
         public EverythingElseNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             shape.Brush = backgroundBrush;
-            comment.Text = export.ObjectName + comment.Text;
+            comment.Text = export.ObjectName.Instanced + comment.Text;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -435,13 +453,13 @@ namespace ME3Explorer.ActorNodes
             ObjectProperty smc = export.GetProperty<ObjectProperty>("StaticMeshComponent");
             if (smc != null)
             {
-                IExportEntry smce = pcc.Exports[smc.Value - 1];
+                ExportEntry smce = pcc.GetUExport(smc.Value);
                 //smce.GetProperty<ObjectProperty>("St")
                 var meshObj = smce.GetProperty<ObjectProperty>("StaticMesh");
                 if (meshObj != null)
                 {
-                    IExportEntry sme = pcc.Exports[meshObj.Value - 1];
-                    comment.Text = sme.ObjectName;
+                    ExportEntry sme = pcc.GetUExport(meshObj.Value);
+                    comment.Text = sme.ObjectName.Instanced;
                 }
             }
         }
@@ -584,7 +602,7 @@ namespace ME3Explorer.ActorNodes
         public SFXPlaceable(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
-            comment.Text = $"{export.ObjectName}_{export.indexValue}";
+            comment.Text = export.ObjectName.Instanced;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -619,13 +637,13 @@ namespace ME3Explorer.ActorNodes
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
             {
-                IEntry meshexp = pcc.getEntry(sm.Value);
+                IEntry meshexp = pcc.GetEntry(sm.Value);
                 string text = comment.Text;
                 if (text != "")
                 {
                     text += "\n";
                 }
-                comment.Text = text + meshexp.ObjectName;
+                comment.Text = text + meshexp.ObjectName.Instanced;
             }
         }
         public override Color GetDefaultShapeColor() => outlinePenColor;

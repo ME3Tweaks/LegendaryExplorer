@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME2Explorer.Unreal
@@ -17,8 +18,9 @@ namespace ME2Explorer.Unreal
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
+        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-        private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME2ObjectInfo.json");
+        private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME2ObjectInfo.json");
 
         public static void loadfromJSON()
         {
@@ -29,14 +31,28 @@ namespace ME2Explorer.Unreal
                 {
                     string raw = File.ReadAllText(jsonPath);
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
+                    //SequenceObjects = blob.SequenceObjects;
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
+                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    {
+                        classInfo.ClassName = className;
+                    }
+                    foreach ((string className, ClassInfo classInfo) in Structs)
+                    {
+                        classInfo.ClassName = className;
+                    }
                 }
             }
             catch
             {
             }
+        }
+
+        public static SequenceObjectInfo getSequenceObjectInfo(string className)
+        {
+            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
         }
 
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
@@ -46,7 +62,7 @@ namespace ME2Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
             }
-            return p?.reference;
+            return p?.Reference;
         }
 
         public static List<NameReference> getEnumfromProp(string className, string propName, bool inStruct = false)
@@ -56,22 +72,21 @@ namespace ME2Explorer.Unreal
             {
                 ClassInfo info = temp[className];
                 //look in class properties
-                if (info.properties.ContainsKey(propName))
+                if (info.properties.TryGetValue(propName, out var propInfo))
                 {
-                    PropertyInfo p = info.properties[propName];
-                    if (Enums.ContainsKey(p.reference))
+                    if (Enums.ContainsKey(propInfo.Reference))
                     {
-                        return Enums[p.reference];
+                        return Enums[propInfo.Reference];
                     }
                 }
                 //look in structs
                 else
                 {
-                    foreach (PropertyInfo p in info.properties.Values)
+                    foreach (PropertyInfo p in info.properties.Values())
                     {
-                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
+                        if (p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty)
                         {
-                            List<NameReference> vals = getEnumfromProp(p.reference, propName, true);
+                            List<NameReference> vals = getEnumfromProp(p.Reference, propName, true);
                             if (vals != null)
                             {
                                 return vals;
@@ -92,11 +107,6 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        internal static ClassInfo generateClassInfo(IExportEntry export)
-        {
-            return generateClassInfo(export.Index, export.FileRef as ME2Package);
-        }
-
         public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))
@@ -111,20 +121,20 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, ExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export) 
                           ?? getPropertyInfo(className, propName, !inStruct, containingExport: export);
             if (p == null && export != null)
             {
-                if (export.ClassName != "Class" && export.idxClass > 0)
+                if (export.Class is ExportEntry classExport)
                 {
-                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                    export = classExport;
                 }
-                if (export.ClassName == "Class")
+                if (export.IsClass)
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
-                    currentInfo.baseClass = export.ClassParent;
+                    currentInfo.baseClass = export.SuperClassName;
                     p = getPropertyInfo(className, propName, inStruct, currentInfo, containingExport: export)
                      ?? getPropertyInfo(className, propName, !inStruct, currentInfo, containingExport: export);
                 }
@@ -139,35 +149,35 @@ namespace ME2Explorer.Unreal
         {
             if (p != null)
             {
-                if (p.reference == "NameProperty")
+                if (p.Reference == "NameProperty")
                 {
                     return ArrayType.Name;
                 }
-                if (Enums.ContainsKey(p.reference))
+                if (Enums.ContainsKey(p.Reference))
                 {
                     return ArrayType.Enum;
                 }
-                if (p.reference == "BoolProperty")
+                if (p.Reference == "BoolProperty")
                 {
                     return ArrayType.Bool;
                 }
-                if (p.reference == "ByteProperty")
+                if (p.Reference == "ByteProperty")
                 {
                     return ArrayType.Byte;
                 }
-                if (p.reference == "StrProperty")
+                if (p.Reference == "StrProperty")
                 {
                     return ArrayType.String;
                 }
-                if (p.reference == "FloatProperty")
+                if (p.Reference == "FloatProperty")
                 {
                     return ArrayType.Float;
                 }
-                if (p.reference == "IntProperty")
+                if (p.Reference == "IntProperty")
                 {
                     return ArrayType.Int;
                 }
-                if (Structs.ContainsKey(p.reference))
+                if (Structs.ContainsKey(p.Reference))
                 {
                     return ArrayType.Struct;
                 }
@@ -182,7 +192,7 @@ namespace ME2Explorer.Unreal
             return ArrayType.Int;
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, IExportEntry containingExport = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__"))
             {
@@ -198,17 +208,17 @@ namespace ME2Explorer.Unreal
             if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
             {
                 //look in class properties
-                if (info.properties.ContainsKey(propName))
+                if (info.properties.TryGetValue(propName, out var propInfo))
                 {
-                    return info.properties[propName];
+                    return propInfo;
                 }
                 //look in structs
 
-                foreach (PropertyInfo p in info.properties.Values)
+                foreach (PropertyInfo p in info.properties.Values())
                 {
-                    if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
+                    if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
                     {
-                        PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
+                        PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo, reSearch: false);
                         if (val != null)
                         {
                             return val;
@@ -227,11 +237,10 @@ namespace ME2Explorer.Unreal
                 else
                 {
                     //Baseclass may be modified as well...
-                    if (containingExport != null && containingExport.idxClassParent > 0)
+                    if (containingExport?.SuperClass is ExportEntry parentExport)
                     {
                         //Class parent is in this file. Generate class parent info and attempt refetch
-                        IExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
-                        return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
+                        return getPropertyInfo(parentExport.SuperClassName, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
             }
@@ -244,9 +253,8 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static bool inheritsFrom(IEntry entry, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass)
         {
-            string className = entry.ClassName;
             while (Classes.ContainsKey(className))
             {
                 if (className == baseClass)
@@ -259,151 +267,67 @@ namespace ME2Explorer.Unreal
         }
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform", "NavReference", "FontCharacter", "CovPosInfo",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
-        public static bool isImmutableStruct(string structName)
+        public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
 
-        #region struct default values
-        private readonly static byte[] CoverReferenceDefault = { 
-            // >> CoverReference
-            //CoverReference: Direction
-            0x99, 0x1A, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0xE6, 0x2D, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x04, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-
-
-            //CoverReference: SlotIdx
-            0x2C, 0x49, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0xE6, 0x2D, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x04, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-
-
-            // >> NavReference
-            //NavReference: Nav (ObjectProperty)
-            0xD4, 0x36, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x4A, 0x39, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x04, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0xC9, 0x2A, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-
-            //NavReference: Guid (GUID)
-            0xC9, 0x4B, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x10, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0xC9, 0x2A, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, //A
-            0x00, 0x00, 0x00, 0x00, //B
-            0x00, 0x00, 0x00, 0x00, //C
-            0x00, 0x00, 0x00, 0x00, //D
-
-             //None
-            0x08, 0x83, 0, 0, 0, 0, 0, 0 };
-
-        /*
-            //SlotIdx
-            0x78, 0x45, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Direction
-            0x28, 0x1B, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Guid
-            0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0x17, 0x48, 0, 0, 0, 0, 0, 0, 0x10, 0, 0, 0, 0, 0, 0, 0, 0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Actor
-            0xF7, 0, 0, 0, 0, 0, 0, 0, 0x62, 0x34, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-*/
-
-        private static byte[] PlaneDefault = { 
-            //TODO: THIS IS COPIED FROM ME3. REBUILD BYTES AS THEY WOULD APPEAR IN THE ENGINE.PCC WITH CORRECT NAME INDICES
-            //X
-            0x09, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Y
-            0x0D, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //Z
-            0x12, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //W
-            0x04, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            //None
-            0xF0, 0x01, 0, 0, 0, 0, 0, 0 };
-        #endregion
-
-
-        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients = true)
+        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
+            bool isImmutable = UnrealObjectInfo.IsImmutable(className, MEGame.ME2);
             if (Structs.ContainsKey(className))
             {
-                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME2);
                 ClassInfo info = Structs[className];
                 try
                 {
-                    if (info.pccPath != "ME3Explorer_CustomNativeAdditions")
+                    PropertyCollection structProps = new PropertyCollection();
+                    ClassInfo tempInfo = info;
+                    while (tempInfo != null)
                     {
-                        string filepath = (Path.Combine(ME2Directory.gamePath, @"BioGame\" + info.pccPath));
-                        if (File.Exists(info.pccPath))
+                        foreach ((string propName, PropertyInfo propInfo) in tempInfo.properties)
                         {
-                            filepath = info.pccPath; //Used for dynamic lookup
+                            if (stripTransients && propInfo.Transient)
+                            {
+                                continue;
+                            }
+                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is UProperty uProp)
+                            {
+                                structProps.Add(uProp);
+                            }
                         }
-                        using (ME2Package importPCC = MEPackageHandler.OpenME2Package(filepath))
+                        if (!Structs.TryGetValue(tempInfo.baseClass, out tempInfo))
                         {
-                            byte[] buff;
-                            //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                            //thus, I have hardcoded what those default values should be 
-                            if (className == "Plane")
-                            {
-                                buff = PlaneDefault;
-                            }
-                            else if (className == "CoverReference")
-                            {
-                                buff = CoverReferenceDefault;
-                            }
-                            else
-                            {
-                                var exportToRead = importPCC.Exports[info.exportIndex];
-                                buff = exportToRead.Data.Skip(0x30).ToArray();
-                            }
-                            PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                            if (stripTransients)
-                            {
-                                var toRemove = new List<UProperty>();
-                                foreach (var prop in props)
-                                {
-                                    //remove transient props
-                                    if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
-                                    {
-                                        if (propInfo.transient)
-                                        {
-                                            toRemove.Add(prop);
-                                        }
-                                    }
-                                    //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
-                                    //{
-                                    //    toRemove.Add(prop);
-                                    //}
-                                }
-                                foreach (var prop in toRemove)
-                                {
-                                    Debug.WriteLine($"ME2: Get Default Struct value ({className}) - removing transient prop: {prop.Name}");
-                                    props.Remove(prop);
-                                }
-                            }
-                            return props;
+                            tempInfo = null;
                         }
                     }
+                    structProps.Add(new NoneProperty());
+
+                    string filepath = Path.Combine(ME2Directory.gamePath, "BioGame", info.pccPath);
+                    if (File.Exists(info.pccPath))
+                    {
+                        filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                    {
+                        filepath = App.CustomResourceFilePath(MEGame.ME2);
+                    }
+                    if (File.Exists(filepath))
+                    {
+                        using (IMEPackage importPCC = MEPackageHandler.OpenME2Package(filepath))
+                        {
+                            var exportToRead = importPCC.GetUExport(info.exportIndex);
+                            byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
+                            PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
+                            foreach (var prop in defaults)
+                            {
+                                structProps.TryReplaceProp(prop);
+                            }
+                        }
+                    }
+                    return structProps;
                 }
                 catch
                 {
@@ -411,6 +335,66 @@ namespace ME2Explorer.Unreal
                 }
             }
             return null;
+        }
+
+        public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        {
+            switch (propInfo.Type)
+            {
+                case PropertyType.IntProperty:
+                    return new IntProperty(0, propName);
+                case PropertyType.FloatProperty:
+                    return new FloatProperty(0f, propName);
+                case PropertyType.DelegateProperty:
+                    return new DelegateProperty(0, "None");
+                case PropertyType.ObjectProperty:
+                    return new ObjectProperty(0, propName);
+                case PropertyType.NameProperty:
+                    return new NameProperty("None", propName);
+                case PropertyType.BoolProperty:
+                    return new BoolProperty(false, propName);
+                case PropertyType.ByteProperty when propInfo.IsEnumProp():
+                    return new EnumProperty(propInfo.Reference, MEGame.ME2, propName);
+                case PropertyType.ByteProperty:
+                    return new ByteProperty(0, propName);
+                case PropertyType.StrProperty:
+                    return new StrProperty("", propName);
+                case PropertyType.StringRefProperty:
+                    return new StringRefProperty(propName);
+                case PropertyType.BioMask4Property:
+                    return new BioMask4Property(0, propName);
+                case PropertyType.ArrayProperty:
+                    switch (getArrayType(propInfo))
+                    {
+                        case ArrayType.Object:
+                            return new ArrayProperty<ObjectProperty>(propName);
+                        case ArrayType.Name:
+                            return new ArrayProperty<NameProperty>(propName);
+                        case ArrayType.Enum:
+                            return new ArrayProperty<EnumProperty>(propName);
+                        case ArrayType.Struct:
+                            return new ArrayProperty<StructProperty>(propName);
+                        case ArrayType.Bool:
+                            return new ArrayProperty<BoolProperty>(propName);
+                        case ArrayType.String:
+                            return new ArrayProperty<StrProperty>(propName);
+                        case ArrayType.Float:
+                            return new ArrayProperty<FloatProperty>(propName);
+                        case ArrayType.Int:
+                            return new ArrayProperty<IntProperty>(propName);
+                        case ArrayType.Byte:
+                            return new ImmutableByteArrayProperty(propName);
+                        default:
+                            return null;
+                    }
+                case PropertyType.StructProperty:
+                    isImmutable = isImmutable || UnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.ME2);
+                    return new StructProperty(propInfo.Reference, getDefaultStructValue(propInfo.Reference, stripTransients), propName, isImmutable);
+                case PropertyType.None:
+                case PropertyType.Unknown:
+                default:
+                    return null;
+            }
         }
 
         #region Generating
@@ -421,56 +405,84 @@ namespace ME2Explorer.Unreal
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
             var NewEnums = new Dictionary<string, List<NameReference>>();
+            var NewSequenceObjects = new Dictionary<string, SequenceObjectInfo>();
 
-            string path = ME2Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            foreach (string file in files)
+            foreach (string filePath in MELoadedFiles.GetOfficialFiles(MEGame.ME2))
             {
-                if (file.ToLower().EndsWith(".pcc")/* && file.Contains("Engine")*/)
+                if (Path.GetExtension(filePath) == ".pcc")
                 {
-                    using (ME2Package pcc = MEPackageHandler.OpenME2Package(file))
+                    using IMEPackage pcc = MEPackageHandler.OpenME2Package(filePath);
+                    for (int j = 1; j <= pcc.ExportCount; j++)
                     {
-                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                        for (int j = 0; j < Exports.Count; j++)
+                        ExportEntry exportEntry = pcc.GetUExport(j);
+                        string className = exportEntry.ClassName;
+                        if (className == "Enum")
                         {
-                            IExportEntry exportEntry = Exports[j];
-                            if (exportEntry.ClassName == "Enum")
+                            generateEnumValues(exportEntry, NewEnums);
+                        }
+                        else if (className == "Class")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewClasses.ContainsKey(objectName))
                             {
-                                generateEnumValues(j, pcc, NewEnums);
-                            }
-                            else if (exportEntry.ClassName == "Class")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewClasses.ContainsKey(objectName))
-                                {
-                                    NewClasses.Add(objectName, generateClassInfo(j, pcc));
-                                }
-                            }
-                            else if (exportEntry.ClassName == "ScriptStruct")
-                            {
-                                string objectName = exportEntry.ObjectName;
-                                if (!NewStructs.ContainsKey(objectName))
-                                {
-                                    NewStructs.Add(objectName, generateClassInfo(j, pcc));
-
-                                }
+                                NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
                         }
-                        Debug.WriteLine("Releasing " + pcc.FileName);
+                        else if (className == "ScriptStruct")
+                        {
+                            string objectName = exportEntry.ObjectName;
+                            if (!NewStructs.ContainsKey(objectName))
+                            {
+                                NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+
+                            }
+                        }
+                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        {
+                            if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                            {
+                                seqObjInfo = new SequenceObjectInfo();
+                                NewSequenceObjects.Add(className, seqObjInfo);
+                            }
+
+                            int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
+                            if (objInstanceVersion > seqObjInfo.ObjInstanceVersion)
+                            {
+                                seqObjInfo.ObjInstanceVersion = objInstanceVersion;
+                            }
+                        }
                     }
+                    //Debug.WriteLine("Releasing " + pcc.FileName);
                 }
             }
 
             //CUSTOM ADDITIONS
-            ClassInfo info = new ClassInfo
-            {
-                baseClass = "Texture2D",
-                exportIndex = 0,
-                pccPath = "ME3Explorer_CustomNativeAdditions"
-            };
             try
             {
-                NewClasses.Add("LightMapTexture2D", info);
+                NewClasses.Add("LightMapTexture2D", new ClassInfo
+                {
+                    baseClass = "Texture2D",
+                    exportIndex = 0,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                });
+
+                NewClasses["StaticMesh"] = new ClassInfo
+                {
+                    baseClass = "Object",
+                    exportIndex = 0,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                    properties =
+                    {
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                        new KeyValuePair<string, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                        new KeyValuePair<string, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
+                        new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
+                    }
+                };
             }
             catch (Exception)
             {
@@ -478,144 +490,143 @@ namespace ME2Explorer.Unreal
             }
 
             //SFXPhysicalMaterialDecals missing items
-            ClassInfo sfxpmd = Classes["SFXPhysicalMaterialDecals"];
+            ClassInfo sfxpmd = NewClasses["SFXPhysicalMaterialDecals"];
             string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun", "FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
             foreach (string decal in decalComponentArrays)
             {
-                sfxpmd.properties[decal] = new PropertyInfo
-                {
-                    type = PropertyType.ArrayProperty,
-                    reference = "DecalComponent"
-                };
+                sfxpmd.properties.Add(decal, new PropertyInfo(PropertyType.ArrayProperty, "DecalComponent"));
             }
 
-            ClassInfo sfxweapon = Classes["SFXWeapon"];
-            sfxpmd.properties["InstantHitDamageTypes"] = new PropertyInfo
-            {
-                type = PropertyType.ArrayProperty,
-                reference = "Class"
-            };
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
-            MessageBox.Show("Done");
+            NewClasses["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
+
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { SequenceObjects = NewSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
 
-        private static ClassInfo generateClassInfo(int index, ME2Package pcc)
+        public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
+            IMEPackage pcc = export.FileRef;
             ClassInfo info = new ClassInfo
             {
-                baseClass = pcc.Exports[index].ClassParent,
-                exportIndex = index
+                baseClass = export.SuperClassName,
+                exportIndex = export.UIndex,
+                ClassName = export.ObjectName
             };
-            if (pcc.FileName.Contains("BioGame"))
+            if (!isStruct)
             {
-                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BioGame") + 8).ToArray());
+                ME3Explorer.Unreal.BinaryConverters.UClass classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.UClass>(export);
+                info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
+            }
+            if (pcc.FilePath.Contains("BioGame"))
+            {
+                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
             }
             else
             {
-                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+                info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
 
-            foreach (IExportEntry entry in pcc.Exports)
+            int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);
+            while (nextExport > 0)
             {
-                if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
+                var entry = pcc.GetUExport(nextExport);
+                if (entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
-                    //Skip if property is transient (only used during execution, will never be in game files)
-                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
+                    if (!info.properties.ContainsKey(entry.ObjectName))
                     {
-                        PropertyInfo p = getProperty(pcc, entry);
+                        PropertyInfo p = getProperty(entry);
                         if (p != null)
                         {
                             info.properties.Add(entry.ObjectName, p);
                         }
                     }
-                    //else
-                    //{
-                    //    //Debug.WriteLine("Skipping property due to flag: " + entry.ObjectName);
-                    //}
                 }
+                nextExport = BitConverter.ToInt32(entry.Data, 0x10);
             }
             return info;
         }
 
-        private static void generateEnumValues(int index, ME2Package pcc, Dictionary<string, List<NameReference>> NewEnums = null)
+        private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
             var enumTable = NewEnums ?? Enums;
-            string enumName = pcc.Exports[index].ObjectName;
+            string enumName = export.ObjectName;
             if (!enumTable.ContainsKey(enumName))
             {
                 var values = new List<NameReference>();
-                byte[] buff = pcc.Exports[index].Data;
-                int count = BitConverter.ToInt32(buff, 20);
+                byte[] buff = export.Data;
+                int count = BitConverter.ToInt32(buff, 20) - 1;
                 for (int i = 0; i < count; i++)
                 {
                     int enumValIndex = 24 + i * 8;
-                    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
+                    values.Add(new NameReference(export.FileRef.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
                 }
 
                 enumTable.Add(enumName, values);
             }
         }
 
-        private static PropertyInfo getProperty(ME2Package pcc, IExportEntry entry)
+        private static PropertyInfo getProperty(ExportEntry entry)
         {
-            PropertyInfo p = new PropertyInfo();
+            IMEPackage pcc = entry.FileRef;
+
+            string reference = null;
+            PropertyType type;
             switch (entry.ClassName)
             {
                 case "IntProperty":
-                    p.type = PropertyType.IntProperty;
+                    type = PropertyType.IntProperty;
                     break;
                 case "StringRefProperty":
-                    p.type = PropertyType.StringRefProperty;
+                    type = PropertyType.StringRefProperty;
                     break;
                 case "FloatProperty":
-                    p.type = PropertyType.FloatProperty;
+                    type = PropertyType.FloatProperty;
                     break;
                 case "BoolProperty":
-                    p.type = PropertyType.BoolProperty;
+                    type = PropertyType.BoolProperty;
                     break;
                 case "StrProperty":
-                    p.type = PropertyType.StrProperty;
+                    type = PropertyType.StrProperty;
                     break;
                 case "NameProperty":
-                    p.type = PropertyType.NameProperty;
+                    type = PropertyType.NameProperty;
                     break;
                 case "DelegateProperty":
-                    p.type = PropertyType.DelegateProperty;
+                    type = PropertyType.DelegateProperty;
                     break;
                 case "ClassProperty":
                 case "ObjectProperty":
                 case "ComponentProperty":
-                    p.type = PropertyType.ObjectProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.ObjectProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "StructProperty":
-                    p.type = PropertyType.StructProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.StructProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
-                    p.type = PropertyType.ByteProperty;
-                    p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    type = PropertyType.ByteProperty;
+                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
                 case "ArrayProperty":
-                    p.type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc, pcc.Exports[BitConverter.ToInt32(entry.Data, 44) - 1]);
+                    type = PropertyType.ArrayProperty;
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
                     if (arrayTypeProp != null)
                     {
-                        switch (arrayTypeProp.type)
+                        switch (arrayTypeProp.Type)
                         {
                             case PropertyType.ObjectProperty:
                             case PropertyType.StructProperty:
                             case PropertyType.ArrayProperty:
-                                p.reference = arrayTypeProp.reference;
+                                reference = arrayTypeProp.Reference;
                                 break;
                             case PropertyType.ByteProperty:
                                 //if (arrayTypeProp.reference == "")
-                                if (arrayTypeProp.reference == "Class")
-                                    p.reference = arrayTypeProp.type.ToString();
+                                if (arrayTypeProp.Reference == "Class")
+                                    reference = arrayTypeProp.Type.ToString();
                                 else
-                                    p.reference = arrayTypeProp.reference;
+                                    reference = arrayTypeProp.Reference;
                                 break;
                             case PropertyType.IntProperty:
                             case PropertyType.FloatProperty:
@@ -624,32 +635,27 @@ namespace ME2Explorer.Unreal
                             case PropertyType.StrProperty:
                             case PropertyType.StringRefProperty:
                             case PropertyType.DelegateProperty:
-                                p.reference = arrayTypeProp.type.ToString();
+                                reference = arrayTypeProp.Type.ToString();
                                 break;
                             case PropertyType.None:
                             case PropertyType.Unknown:
                             default:
                                 Debugger.Break();
-                                p = null;
-                                break;
+                                return null;
                         }
                     }
                     else
                     {
-                        p = null;
+                        return null;
                     }
                     break;
                 case "InterfaceProperty":
                 default:
-                    p = null;
-                    break;
+                    return null;
             }
-            if (p != null && (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0)
-            {
-                //Transient
-                p.transient = true;
-            }
-            return p;
+
+            bool transient = ((UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(entry.Data, 24)).HasFlag(UnrealFlags.EPropertyFlags.Transient);
+            return new PropertyInfo(type, reference, transient);
         }
         #endregion
     }

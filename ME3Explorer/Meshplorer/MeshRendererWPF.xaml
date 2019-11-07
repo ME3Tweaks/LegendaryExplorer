@@ -1,0 +1,50 @@
+﻿<me3Explorer:ExportLoaderControl x:Class="ME3Explorer.Meshplorer.MeshRendererWPF"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer.Meshplorer"
+             xmlns:me3Explorer="clr-namespace:ME3Explorer"
+             xmlns:scene3D="clr-namespace:ME3Explorer.Scene3D"
+                                 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                                 xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+                                 mc:Ignorable="d" 
+             Loaded="MeshRenderer_Loaded"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Control.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Control.Resources>
+    <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar">
+                <Setter Property="Maximum" Value="{Binding BusyProgressBarMax}"/>
+                <Setter Property="Value" Value="{Binding BusyProgressBarValue}"/>
+                <Setter Property="IsIndeterminate" Value="{Binding BusyProgressIndeterminate}"/>
+                <Setter Property="Height" Value="14"/>
+                <Setter Property="Margin" Value="5,0,5,5"/>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
+        <DockPanel>
+            <StatusBar DockPanel.Dock="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Name="Wireframe_Checkbox" IsChecked="{Binding Wireframe}" Content="Wireframe"  VerticalAlignment="Center" Margin="2,0"/>
+                    <CheckBox Name="Solid_Checkbox" IsChecked="{Binding Solid}"  Content="Solid"  VerticalAlignment="Center"  Margin="2,0"/>
+                    <CheckBox Name="FirstPerson_Checkbox" IsChecked="{Binding FirstPerson}"  Content="FirstPerson"  VerticalAlignment="Center" Margin="2,0"/>
+                    <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
+                    <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
+                          Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
+
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+
+                    <TextBlock Text="Background color:" VerticalAlignment="Center" Margin="2,0"/>
+                    <xctk:ColorPicker Name="Background_ColorPicker" Width="40" UsingAlphaChannel="False" xctk:ColorPicker.SelectedColorChanged="BackgroundColorPicker_Changed" Margin="2,0"/>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+                    <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0">
+                        <Image Source="/Meshplorer/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                </StackPanel>
+            </StatusBar>
+            <scene3D:SceneRenderControlWPF x:Name="SceneViewer" Render="SceneViewer_Render" />
+        </DockPanel>
+    </xctk:BusyIndicator>
+</me3Explorer:ExportLoaderControl>

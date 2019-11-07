@@ -1,4 +1,4 @@
-﻿using FontAwesome.WPF;
+﻿using FontAwesome5;
 using System.Windows.Media;
 
 namespace ME3Explorer.SharedUI
@@ -12,8 +12,8 @@ namespace ME3Explorer.SharedUI
         private string _header;
         public string Header { get => _header; set => SetProperty(ref _header, value); }
 
-        private FontAwesomeIcon _icon = FontAwesomeIcon.Spinner;
-        public FontAwesomeIcon Icon { get => _icon; set => SetProperty(ref _icon, value); }
+        private EFontAwesomeIcon _icon = EFontAwesomeIcon.Solid_Spinner;
+        public EFontAwesomeIcon Icon { get => _icon; set => SetProperty(ref _icon, value); }
 
         private Brush _foreground = Brushes.Gray;
         public Brush Foreground { get => _foreground; set => SetProperty(ref _foreground, value); }
@@ -38,7 +38,7 @@ namespace ME3Explorer.SharedUI
         internal void Complete(string newHeader)
         {
             Header = newHeader;
-            Icon = FontAwesomeIcon.CheckSquare;
+            Icon = EFontAwesomeIcon.Solid_CheckSquare;
             Spinning = false;
             Foreground = Brushes.Green;
         }

@@ -8,26 +8,25 @@ namespace ME1Explorer.Unreal.Classes
     public class BioTlkFileSet : ITalkFile
     {
         public List<TalkFile> talkFiles;
-        public ME1Package pcc;
-        public int index;
+        public IMEPackage pcc;
+        private int uIndex;
         public int selectedTLK;
-        public string Name { get { return index != -1 ? (pcc.Exports[index].ObjectName  + "."): null; } }
+        public string Name => uIndex != 0 ? (pcc.getObjectName(uIndex)): null;
 
-        public BioTlkFileSet(ME1Package _pcc)
+        public BioTlkFileSet(IMEPackage _pcc)
         {
             pcc = _pcc;
-            index = -1;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-            for (int i = 0; i < Exports.Count; i++)
+            uIndex = 0;
+            foreach (ExportEntry exp in pcc.Exports)
             {
-                if (Exports[i].ClassName == "BioTlkFileSet")
+                if (exp.ClassName == "BioTlkFileSet")
                 {
-                    index = i;
+                    uIndex = exp.UIndex;
                 }
             }
-            if (index != -1)
+            if (uIndex != 0)
             {
-                loadData(index);
+                loadData(uIndex);
             }
             else
             {
@@ -35,20 +34,13 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public BioTlkFileSet(ME1Package _pcc, int _index)
+        public void loadData(int _uIndex = 0)
         {
-            pcc = _pcc;
-            index = _index;
-            loadData();
-        }
-
-        public void loadData(int _index = -1)
-        {
-            if (_index != -1)
+            if (_uIndex != 0)
             {
-                index = _index;
+                uIndex = _uIndex;
             }
-            BinaryReader r = new BinaryReader(new MemoryStream(pcc.Exports[index].Data));
+            BinaryReader r = new BinaryReader(new MemoryStream(pcc.GetUExport(uIndex).Data));
 
             //skip properties
             r.BaseStream.Seek(12, SeekOrigin.Begin);
@@ -57,13 +49,12 @@ namespace ME1Explorer.Unreal.Classes
             {
                 int count = r.ReadInt32();
                 talkFiles = new List<TalkFile>(count);
-                int langRef;
                 for (int i = 0; i < count; i++)
                 {
-                    langRef = r.ReadInt32();
+                    int langRef = r.ReadInt32();
                     r.ReadInt64();
-                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, index));
-                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, index));
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, uIndex));
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, uIndex));
                 }
                 for (int i = 0; i < talkFiles.Count; i++)
                 {

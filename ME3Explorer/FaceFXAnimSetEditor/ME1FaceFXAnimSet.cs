@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
-using Gibbed.IO;
+using StreamHelpers;
 using System.Diagnostics;
 
 namespace ME3Explorer.FaceFX
@@ -14,22 +14,16 @@ namespace ME3Explorer.FaceFX
     public class ME1FaceFXAnimSet : IFaceFXAnimSet
     {
         IMEPackage pcc;
-        public IExportEntry export;
-        public IExportEntry Export { get { return export; } }
+        public ExportEntry export;
+        public ExportEntry Export => export;
         ME3HeaderStruct header;
-        public HeaderStruct Header
-        {
-            get
-            {
-                return header;
-            }
-        }
+        public HeaderStruct Header => header;
         public ME3DataAnimSetStruct Data { get; private set; }
 
         public ME1FaceFXAnimSet()
         {
         }
-        public ME1FaceFXAnimSet(IMEPackage Pcc, IExportEntry Entry)
+        public ME1FaceFXAnimSet(IMEPackage Pcc, ExportEntry Entry)
         {
 
             pcc = Pcc;
@@ -150,7 +144,7 @@ namespace ME3Explorer.FaceFX
                     u.leaveTangent = Container + u.leaveTangent;
                     d.points[j] = u;
                 }
-                if (d.animations.Length > 0)
+                if (d.points.Length > 0)
                 {
                     count2 = 0;
                     if (!Container.isLoading)
@@ -163,7 +157,7 @@ namespace ME3Explorer.FaceFX
                 }
                 else if (Container.isLoading)
                 {
-                    d.numKeys = new int[0];
+                    d.numKeys = new int[d.animations.Length];
                 }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;
@@ -326,9 +320,9 @@ namespace ME3Explorer.FaceFX
             MemoryStream res = new MemoryStream();
             int start = export.propsEnd();
             res.Write(export.Data, 0, start);
-            res.WriteValueS32((int)m.Length);
+            res.WriteInt32((int)m.Length);
             res.WriteStream(m);
-            res.WriteValueS32(0);
+            res.WriteInt32(0);
             export.Data = res.ToArray();
         }
 

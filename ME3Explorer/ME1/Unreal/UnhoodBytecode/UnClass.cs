@@ -10,16 +10,16 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
     public abstract class UnBytecodeOwner// : Decompilable
     {
-        protected readonly IExportEntry _self;
+        protected readonly ExportEntry _self;
         protected readonly byte[] _bytecode;
 
-        protected UnBytecodeOwner(IExportEntry self, byte[] bytecode)
+        protected UnBytecodeOwner(ExportEntry self, byte[] bytecode)
         {
             _self = self;
             _bytecode = bytecode;
         }
 
-        public IExportEntry Export { get { return _self; } }
+        public ExportEntry Export { get { return _self; } }
         public IMEPackage Package { get { return _self.FileRef; } }
 
         public abstract void Decompile(TextBuilder result);
@@ -45,7 +45,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     //extra bytes at the end can trigger this. They are not used. may be something like byte aligning or something
                     break;
                 }
-                if (bc == null || bc is EndOfScriptToken) break;
+                if (bc == null /*|| bc is EndOfScriptToken*/) break;
                 statements.Add(new Statement(startOffset, (int)s.Position, bc, bcReader));
                 if (bc is ErrorBytecodeToken)
                 {
@@ -94,16 +94,16 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
     {
         protected readonly IEntry _super;
 
-        protected UnContainer(IExportEntry self, int superIndex, byte[] bytecode)
+        protected UnContainer(ExportEntry self, int superIndex, byte[] bytecode)
             : base(self, bytecode)
         {
-            _super = superIndex == 0 ? null : _self.FileRef.getEntry(superIndex);
+            _super = superIndex == 0 ? null : _self.FileRef.GetEntry(superIndex);
         }
 
         //protected void DecompileChildren(TextBuilder result, bool reverse)
         //{
         //    var collection = reverse ? _self.Children.Reverse() : _self.Children;
-        //    foreach (IExportEntry export in collection)
+        //    foreach (ExportEntry export in collection)
         //    {
         //        try
         //        {
@@ -124,7 +124,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         //    }
         //}
 
-        internal IExportEntry FindMemberExport(string name)
+        internal ExportEntry FindMemberExport(string name)
         {
             var export = _self.FileRef.Exports.SingleOrDefault(e => e.ObjectName == name && e.idxLink == _self.UIndex);
             if (export != null) return export;
@@ -152,7 +152,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly List<string> _hideCategories;
         private readonly List<IEntry> _interfaces;
 
-        internal UnClass(IExportEntry self, int superIndex, IEntry outerInstance, byte[] bytecode, FlagValues flags,
+        internal UnClass(ExportEntry self, int superIndex, IEntry outerInstance, byte[] bytecode, FlagValues flags,
             IEntry defaults, string config, List<string> hideCategories, List<IEntry> interfaces)
             : base(self, superIndex, bytecode)
         {
@@ -166,12 +166,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public override void Decompile(TextBuilder result)
         {
-            result.Append("class ").Append(_self.ObjectName);
+            result.Append("class ").Append(_self.ObjectName.Instanced);
             if (_super != null)
-                result.Append(" extends ").Append(_super.ObjectName);
+                result.Append(" extends ").Append(_super.ObjectName.Instanced);
             if (_outerInstance != null && _outerInstance.ObjectName != "Object")
             {
-                result.NewLine().Append("    within ").Append(_outerInstance.ObjectName);
+                result.NewLine().Append("    within ").Append(_outerInstance.ObjectName.Instanced);
             }
             if (_hideCategories.Count > 0)
             {
@@ -179,7 +179,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
             if (_interfaces.Count > 0)
             {
-                var intfNames = _interfaces.ConvertAll(e => e.ObjectName).ToArray();
+                var intfNames = _interfaces.ConvertAll(e => e.ObjectName.Instanced).ToArray();
                 result.NewLine().Append("    implements(").Append(string.Join(",", intfNames)).Append(")");
             }
             if (_config != "None")
@@ -248,7 +248,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         //            result.Indent().Append(name).Append("=").Append(ValueToString(prop.Value, prop.Type)).NewLine();
         //        }
         //    }
-        //    foreach (IExportEntry export in defaultsExport.Children)
+        //    foreach (ExportEntry export in defaultsExport.Children)
         //    {
         //        result.Indent().Append("// child object " + export.ObjectName + " of type " + export.ClassName).NewLine();
         //    }
@@ -279,7 +279,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             var result = new List<string>();
             Debug.WriteLine("Looking for replicated properties... TODO");
-            //foreach (IExportEntry export in _self.Children)
+            //foreach (ExportEntry export in _self.Children)
             //{
             //    var instance = export.ReadInstance() as UnClassProperty;
             //    if (instance != null && instance.RepOffset == offset)

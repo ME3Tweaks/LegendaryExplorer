@@ -54,7 +54,7 @@ namespace ME3Explorer.WwiseBankEditor
         public void ListRefresh()
         {
             objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "WwiseBank")
                     objects.Add(i);
@@ -62,7 +62,7 @@ namespace ME3Explorer.WwiseBankEditor
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
-                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName);
+                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName.Instanced);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,17 +86,17 @@ namespace ME3Explorer.WwiseBankEditor
                     {
                         int val = BitConverter.ToInt32(memory, start);
                         s += $", Int: {val} (0x{val.ToString("X8")})";
-                        if (Pcc.isName(val))
+                        if (Pcc.IsName(val))
                         {
-                            s += $", Name: {Pcc.getNameEntry(val)}";
+                            s += $", Name: {Pcc.GetNameEntry(val)}";
                         }
-                        if (Pcc.getEntry(val) is IExportEntry exp)
+                        if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $", Export: {exp.ObjectName.Instanced}";
                         }
-                        else if (Pcc.getEntry(val) is ImportEntry imp)
+                        else if (Pcc.GetEntry(val) is ImportEntry imp)
                         {
-                            s += $", Import: {imp.ObjectName}";
+                            s += $", Import: {imp.ObjectName.Instanced}";
                         }
                     }
                     s += $" | Start=0x{start.ToString("X8")} ";
@@ -275,7 +275,7 @@ namespace ME3Explorer.WwiseBankEditor
             SaveFileDialog d = new SaveFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }

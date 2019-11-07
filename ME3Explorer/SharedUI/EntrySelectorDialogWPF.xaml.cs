@@ -20,6 +20,15 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class EntrySelector : NotifyPropertyChangedWindowBase, IDisposable
     {
+
+        [Flags]
+        public enum SupportedTypes
+        {
+            Exports = 1,
+            Imports = 2,
+            ExportsAndImports = 3
+        }
+
         private IMEPackage Pcc;
         public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
 
@@ -29,7 +38,8 @@ namespace ME3Explorer.SharedUI
         /// <param name="owner">WPF owning window. Used for centering. Set to null if the calling window is not WPF based</param>
         /// <param name="pcc">Package file to load entries from</param>
         /// <param name="supportedInputTypes">Supported selection types</param>
-        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null)
+        /// <param name="entryPredicate">A predicate to narrow the displayed entries</param>
+        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null, Predicate<IEntry> entryPredicate = null)
         {
             this.Pcc = pcc;
             this.SupportedInputTypes = supportedInputTypes;
@@ -40,14 +50,20 @@ namespace ME3Explorer.SharedUI
             {
                 for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
                 {
-                    allEntriesBuilding.Add(Pcc.Imports[i]);
+                    if (entryPredicate?.Invoke(Pcc.Imports[i]) ?? true)
+                    {
+                        allEntriesBuilding.Add(Pcc.Imports[i]);
+                    }
                 }
             }
             if (SupportedInputTypes.HasFlag(SupportedTypes.Exports))
             {
-                foreach (IExportEntry exp in Pcc.Exports)
+                foreach (ExportEntry exp in Pcc.Exports)
                 {
-                    allEntriesBuilding.Add(exp);
+                    if (entryPredicate?.Invoke(exp) ?? true)
+                    {
+                        allEntriesBuilding.Add(exp);
+                    }
                 }
             }
             AllEntriesList.ReplaceAll(allEntriesBuilding);
@@ -58,10 +74,24 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static IEntry GetEntry(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null)
+        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<IEntry> entryPredicate = null) where T : class, IEntry
         {
-            var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText);
-            return dlg.ShowDialog() == true ? dlg.ChosenEntry : null;
+            SupportedTypes supportedInputTypes = SupportedTypes.ExportsAndImports;
+            if (typeof(T) == typeof(ExportEntry))
+            {
+                supportedInputTypes = SupportedTypes.Exports;
+            }
+            else if (typeof(T) == typeof(ImportEntry))
+            {
+                supportedInputTypes = SupportedTypes.Imports;
+            }
+            var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
+            if (dlg.ShowDialog() == true)
+            {
+                return dlg.ChosenEntry as T;
+            }
+
+            return null;
         }
 
         public ICommand OKCommand { get; set; }
@@ -83,14 +113,6 @@ namespace ME3Explorer.SharedUI
         }
 
         private IEntry ChosenEntry;
-
-        [Flags]
-        public enum SupportedTypes
-        {
-            Exports = 1,
-            Imports = 2,
-            ExportsAndImports = 3
-        }
 
         private readonly SupportedTypes SupportedInputTypes;
 

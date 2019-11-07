@@ -12,7 +12,7 @@ namespace ME3Explorer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,114 +20,6 @@ namespace ME3Explorer.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME3Path {
-            get {
-                return ((string)(this["TexplorerME3Path"]));
-            }
-            set {
-                this["TexplorerME3Path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int NumThreads {
-            get {
-                return ((int)(this["NumThreads"]));
-            }
-            set {
-                this["NumThreads"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME3DLCPath {
-            get {
-                return ((string)(this["TexplorerME3DLCPath"]));
-            }
-            set {
-                this["TexplorerME3DLCPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
-        public int TexplorerGameVersion {
-            get {
-                return ((int)(this["TexplorerGameVersion"]));
-            }
-            set {
-                this["TexplorerGameVersion"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME1Path {
-            get {
-                return ((string)(this["TexplorerME1Path"]));
-            }
-            set {
-                this["TexplorerME1Path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME1DLCPath {
-            get {
-                return ((string)(this["TexplorerME1DLCPath"]));
-            }
-            set {
-                this["TexplorerME1DLCPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME2Path {
-            get {
-                return ((string)(this["TexplorerME2Path"]));
-            }
-            set {
-                this["TexplorerME2Path"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TexplorerME2DLCPath {
-            get {
-                return ((string)(this["TexplorerME2DLCPath"]));
-            }
-            set {
-                this["TexplorerME2DLCPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
-        public int TPFToolsGameVersion {
-            get {
-                return ((int)(this["TPFToolsGameVersion"]));
-            }
-            set {
-                this["TPFToolsGameVersion"] = value;
             }
         }
         
@@ -337,18 +229,6 @@ namespace ME3Explorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PackageEditorWPF_TreeViewShowEntryIndex {
-            get {
-                return ((bool)(this["PackageEditorWPF_TreeViewShowEntryIndex"]));
-            }
-            set {
-                this["PackageEditorWPF_TreeViewShowEntryIndex"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EmbeddedTextureViewer_AutoLoad {
             get {
@@ -394,19 +274,184 @@ namespace ME3Explorer.Properties {
                 this["InterpreterWPF_Colorize"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PropertyDBPath
-        {
-            get
-            {
-                return ((string)(this["PropertyDBPath"]));
+        public string ME1Directory {
+            get {
+                return ((string)(this["ME1Directory"]));
             }
-            set
-            {
-                this["PropertyDBPath"] = value;
+            set {
+                this["ME1Directory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ME2Directory {
+            get {
+                return ((string)(this["ME2Directory"]));
+            }
+            set {
+                this["ME2Directory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ME3Directory {
+            get {
+                return ((string)(this["ME3Directory"]));
+            }
+            set {
+                this["ME3Directory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AssetDBPath {
+            get {
+                return ((string)(this["AssetDBPath"]));
+            }
+            set {
+                this["AssetDBPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TLKGender_IsMale {
+            get {
+                return ((bool)(this["TLKGender_IsMale"]));
+            }
+            set {
+                this["TLKGender_IsMale"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("INT")]
+        public string TLKLanguage {
+            get {
+                return ((string)(this["TLKLanguage"]));
+            }
+            set {
+                this["TLKLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InterpreterWPF_LimitArrayPropertySize {
+            get {
+                return ((bool)(this["InterpreterWPF_LimitArrayPropertySize"]));
+            }
+            set {
+                this["InterpreterWPF_LimitArrayPropertySize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditorWPF_ShowImpExpPrefix {
+            get {
+                return ((bool)(this["PackageEditorWPF_ShowImpExpPrefix"]));
+            }
+            set {
+                this["PackageEditorWPF_ShowImpExpPrefix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditorWPF_ShowExportIcons {
+            get {
+                return ((bool)(this["PackageEditorWPF_ShowExportIcons"]));
+            }
+            set {
+                this["PackageEditorWPF_ShowExportIcons"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SequenceEditor_ShowParsedInfo {
+            get {
+                return ((bool)(this["SequenceEditor_ShowParsedInfo"]));
+            }
+            set {
+                this["SequenceEditor_ShowParsedInfo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        public ushort SequenceEditor_MaxVarStringLength {
+            get {
+                return ((ushort)(this["SequenceEditor_MaxVarStringLength"]));
+            }
+            set {
+                this["SequenceEditor_MaxVarStringLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#999999")]
+        public string MeshplorerBackgroundColor {
+            get {
+                return ((string)(this["MeshplorerBackgroundColor"]));
+            }
+            set {
+                this["MeshplorerBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ME3")]
+        public string AssetDBGame {
+            get {
+                return ((string)(this["AssetDBGame"]));
+            }
+            set {
+                this["AssetDBGame"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditor_HideInterpreterHexBox {
+            get {
+                return ((bool)(this["PackageEditor_HideInterpreterHexBox"]));
+            }
+            set {
+                this["PackageEditor_HideInterpreterHexBox"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UDKCustomPath {
+            get {
+                return ((string)(this["UDKCustomPath"]));
+            }
+            set {
+                this["UDKCustomPath"] = value;
             }
         }
     }

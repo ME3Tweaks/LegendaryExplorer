@@ -10,11 +10,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
-using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using FontAwesome5.WPF;
 
 namespace ME3Explorer
 {
@@ -58,8 +57,8 @@ namespace ME3Explorer
 #if DEBUG
                 version += " DEBUG";
 #else
-                //Commented out as this is a stable build
-                //version += ""; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+                //This is what will be placed in release. Comment this out when building for a stable!
+                version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #endif
                 return version;
             }
@@ -147,6 +146,7 @@ namespace ME3Explorer
                 {
                     //?
                 }
+                App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {
                 //StartingUpPanel.Visibility = Visibility.Invisible;
@@ -161,6 +161,7 @@ namespace ME3Explorer
                 {
                     LoadingPanel.Visibility = Visibility.Collapsed;
                     ME3TweaksLogoButton.Visibility = Visibility.Visible;
+                    LoadingPanel.Children.Remove(LoadingSpinnerImage); //This will remove the storyboard
                     DoubleAnimation fadein = new DoubleAnimation
                     {
                         From = 0,

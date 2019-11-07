@@ -30,7 +30,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Path=Value.type}" Foreground="Gray"/>
+                        <TextBlock Text="{Binding Path=Value.Type}" Foreground="Gray"/>
                         <TextBlock Margin="5,0,0,0" Text="{Binding Path=Key}" />
                         </StackPanel>
                 </DataTemplate>

@@ -1,6 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Gammtek.Conduit.Extensions;
-using Gibbed.IO;
+using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System;
@@ -26,24 +26,30 @@ namespace ME3Explorer
         public List<string> RowNames { get; set; }
         public List<string> ColumnNames { get; set; }
 
-        public int RowCount
+        public int RowCount => RowNames?.Count ?? 0;
+
+        public int ColumnCount => ColumnNames?.Count ?? 0;
+
+        public bool IsModified
         {
             get
             {
-                return RowNames == null ? 0 : RowNames.Count;
+                if (Cells == null) return false;
+                for (int i = 0; i < RowCount; i++)
+                {
+                    for (int j = 0; j < ColumnCount; j++)
+                    {
+                        Bio2DACell c = Cells[i, j];
+                        if (c == null) continue;
+                        if (c.IsModified) return true;
+                    }
+                }
+                return false;
             }
         }
 
-        public int ColumnCount
-        {
-            get
-            {
-                return ColumnNames == null ? 0 : ColumnNames.Count;
-            }
-        }
-
-        IExportEntry export;
-        public Bio2DA(IExportEntry export)
+        ExportEntry export;
+        public Bio2DA(ExportEntry export)
         {
             //Console.WriteLine("Loading " + export.ObjectName);
             this.export = export;
@@ -53,8 +59,7 @@ namespace ME3Explorer
             RowNames = new List<string>();
             if (export.ClassName == "Bio2DA")
             {
-                string rowLabelsVar = "m_sRowLabel";
-                var properties = export.GetProperties();
+                const string rowLabelsVar = "m_sRowLabel";
                 var props = export.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
                 if (props != null)
                 {
@@ -83,7 +88,7 @@ namespace ME3Explorer
                 else
                 {
                     Debug.WriteLine("Unable to find row names property (m_lstRowNumbers)!");
-                    Debugger.Break();
+                    //Debugger.Break();
                     return;
                 }
             }
@@ -98,7 +103,7 @@ namespace ME3Explorer
                 int colindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
                 currentcoloffset += 8; //names in this case don't use nameindex values.
                 int nameindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
-                string name = pcc.getNameEntry(nameindex);
+                string name = pcc.GetNameEntry(nameindex);
                 ColumnNames.Insert(0, name);
                 colcount--;
             }
@@ -148,7 +153,7 @@ namespace ME3Explorer
                     byte dataType = data[curroffset];
                     int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
-                    byte[] celldata = new byte[dataSize];
+                    var celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
                     this[row, col] = cell;
@@ -209,7 +214,7 @@ namespace ME3Explorer
         public void Write2DAToExcel(string path)
         {
             var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add(export.ObjectName.Truncate(30));
+            var worksheet = workbook.Worksheets.Add(export.ObjectName.Name.Truncate(30));
 
             //write labels
             for (int rowindex = 0; rowindex < RowCount; rowindex++)
@@ -230,11 +235,12 @@ namespace ME3Explorer
                     if (Cells[rowindex, colindex] != null)
                     {
                         var cell = Cells[rowindex, colindex];
-                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.GetDisplayableValue();
+                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.DisplayableValue;
                         if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
                         {
                             int stringId = cell.GetIntValue();
-                            string tlkLookup = ME1Explorer.ME1TalkFiles.findDataById(stringId);
+                            //Unsure if we will have reference to filerefs here depending on which constructor was used. Hopefully we will.
+                            string tlkLookup = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(stringId, export.FileRef.Game, export.FileRef);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
                                 worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);
@@ -319,16 +325,16 @@ namespace ME3Explorer
                 PropertyCollection props = new PropertyCollection();
                 if (export.ClassName == "Bio2DA")
                 {
-                    var indicies = new ArrayProperty<NameProperty>(ArrayType.Name, "m_sRowLabel");
+                    var indicies = new ArrayProperty<NameProperty>("m_sRowLabel");
                     foreach (var rowname in RowNames)
                     {
-                        indicies.Add(new NameProperty { Value = rowname });
+                        indicies.Add(new NameProperty(rowname));
                     }
                     props.Add(indicies);
                 }
                 else
                 {
-                    var indices = new ArrayProperty<IntProperty>(ArrayType.Int, "m_lstRowNumbers");
+                    var indices = new ArrayProperty<IntProperty>("m_lstRowNumbers");
                     foreach (var rowname in RowNames)
                     {
                         indices.Add(new IntProperty(int.Parse(rowname)));
@@ -358,10 +364,10 @@ namespace ME3Explorer
             }
         }
 
-        public static Bio2DA ReadExcelTo2DA(IExportEntry export, string Filename)
+        public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
-            IXLWorksheet iWorksheet = null;
+            IXLWorksheet iWorksheet;
             if ( Workbook.Worksheets.Count() > 1)
             {
                 try
@@ -452,11 +458,7 @@ namespace ME3Explorer
 
         public Bio2DACell this[int rowindex, int colindex]
         {
-            get
-            {
-                // get the item for that index.
-                return Cells[rowindex, colindex];
-            }
+            get => Cells[rowindex, colindex];
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.

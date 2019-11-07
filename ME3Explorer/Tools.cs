@@ -6,12 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.Matinee;
 
 namespace ME3Explorer
 {
@@ -67,20 +67,7 @@ namespace ME3Explorer
                     (new AutoTOCWPF()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-                description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
-            });
-            set.Add(new Tool
-            {
-                name = "Mod Maker",
-                type = typeof(ModMaker),
-                icon = Application.Current.FindResource("iconModMaker") as ImageSource,
-                open = () =>
-                {
-                    (new ModMaker()).Show();
-                },
-                tags = new List<string> { "utility", ".mod", "mod", "mesh" },
-                subCategory = "Mod Packagers",
-                description = "MOD MAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nMod Maker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
+                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
 #if DEBUG
             set.Add(new Tool
@@ -111,19 +98,6 @@ namespace ME3Explorer
                 description = "File Hex Analyzer is a package hex viewer that shows references in the package hex. It also works with non-package files, but won't show any references, obviously."
             });
 #endif
-            set.Add(new Tool
-            {
-                name = "TPF Tools",
-                type = typeof(KFreonTPFTools3),
-                icon = Application.Current.FindResource("iconTPFTools") as ImageSource,
-                open = () =>
-                {
-                    (new KFreonTPFTools3()).Show();
-                },
-                tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
-                subCategory = "Mod Packagers",
-                description = "TPF TOOLS IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTPF Tools allows for permanent insertion of textures into game files. TPF tools can also be used by modders to package textures into TPFs for distribution.\n\nThis tool has been mostly superceded by Mass Effect Modder (MEM)."
-            });
             #endregion
 
             #region Utilities
@@ -142,6 +116,32 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "ASI Manager",
+                type = typeof(ASI.ASIManager),
+                icon = Application.Current.FindResource("iconASIManager") as ImageSource,
+                open = () =>
+                {
+                    (new ASI.ASIManager()).Show();
+                },
+                tags = new List<string> { "utility", "asi", "debug", "log" },
+                subCategory = "Debugging",
+                description = "ASI Manager allows you to install and uninstall ASI mods for all three Mass Effect Trilogy games. ASI mods allow you to run native mods that allow you to do things such as kismet logging or function call monitoring."
+            });
+            set.Add(new Tool
+            {
+                name = "Audio Localizer",
+                type = typeof(AudioLocalizer),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new AudioLocalizer()).Show();
+                },
+                tags = new List<string> { "utility", "localization", "LOC_INT", "translation" },
+                subCategory = "Utilities",
+                description = "Audio Localizer allows you to copy the afc offsets and filenames from localized files to your mods LOC_INT files."
+            });
+            set.Add(new Tool
+            {
                 name = "Bik Movie Extractor",
                 type = typeof(BIKExtract),
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
@@ -149,7 +149,7 @@ namespace ME3Explorer
                 {
                     (new BIKExtract()).Show();
                 },
-                tags = new List<string> { "utility", "bik", "movie" },
+                tags = new List<string> { "utility", "bik", "movie", "bink", "video", "tfc" },
                 subCategory = "Extractors + Repackers",
                 description = "BIK Movie Extractor is a utility for extracting BIK videos from the ME3 Movies.tfc. This file contains small resolution videos played during missions, such as footage of Miranda in Sanctuary.",
             });
@@ -189,7 +189,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Hex Converter",
-                //type = typeof(HexConverter.Hexconverter),
+                type = typeof(HexConverter.MainWindow),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
@@ -202,30 +202,18 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Image Engine",
-                type = typeof(CSharpImageLibrary.MainWindow),
-                icon = Application.Current.FindResource("iconImageEngine") as ImageSource,
-                open = () =>
-                {
-                    (new CSharpImageLibrary.MainWindow()).Show();
-                },
-                tags = new List<string> { "utility", "texture", "convert", "dds", "bmp", "jpg", "png" },
-                subCategory = "Converters",
-                description = "Image Engine is a texture conversion utility. It supports BMP, JPG, PNG, TGA files, as well as a variety of DDS formats and compressions. Modification to mipmaps are also supported.",
-            });
-            set.Add(new Tool
-            {
                 name = "Interp Viewer",
-                type = typeof(Matinee.InterpEditor),
+                type = typeof(InterpEditor),
                 icon = Application.Current.FindResource("iconInterpViewer") as ImageSource,
                 open = () =>
                 {
-                    (new Matinee.InterpEditor()).Show();
+                    (new InterpEditor()).Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
+#if DEBUG
             set.Add(new Tool
             {
                 name = "Meshplorer",
@@ -239,6 +227,35 @@ namespace ME3Explorer
                 subCategory = "Meshes + Textures",
                 description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
             });
+#endif
+            set.Add(new Tool
+            {
+                name = "Meshplorer WPF",
+                type = typeof(MeshplorerWPF),
+                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+                open = () =>
+                {
+                    (new MeshplorerWPF()).Show();
+                },
+                tags = new List<string> { "developer", "mesh" },
+                subCategory = "Meshes + Textures",
+                description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            });
+            set.Add(new Tool
+            {
+                name = "TLK Editor",
+                type = typeof(ExportLoaderHostedWindow),
+                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                open = () =>
+                {
+                    ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF());
+                    elhw.Title = $"TLK Editor";
+                    elhw.Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text", "strin'" },
+                subCategory = "Extractors + Repackers",
+                description = "TLK Editor is an editor for localized text, located in TLK files. These files are embedded in package files in Mass Effect 1 and stored externally in Mass Effect 2 and 3.",
+            });
             set.Add(new Tool
             {
                 name = "ME3 + ME2 TLK Editor",
@@ -250,7 +267,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
                 subCategory = "Extractors + Repackers",
-                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, such as Notepad++.",
+                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, like Notepad++.",
             });
             set.Add(new Tool
             {
@@ -267,6 +284,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Dialogue Dumper",
+                type = typeof(DialogueDumper.DialogueDumper),
+                icon = Application.Current.FindResource("iconDialogueDumper") as ImageSource,
+                open = () =>
+                {
+                    (new DialogueDumper.DialogueDumper()).Show();
+                },
+                tags = new List<string> { "utility", "convo", "dialogue", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Dialogue Dumper is a utility for dumping conversation strings from games into an excel file. It shows the actor that spoke the line and which file the line is taken from. It also produces a table of who owns which conversation, for those that the owner is anonymous."
+            });
+            set.Add(new Tool
+            {
                 name = "Plot Database",
                 type = typeof(PlotVarDB.PlotVarDB),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
@@ -280,16 +310,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Property Database",
-                type = typeof(Propertydb.PropertyDB),
-                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
+                name = "Asset Database",
+                type = typeof(AssetDatabase.AssetDB),
+                icon = Application.Current.FindResource("iconAssetDatabase") as ImageSource,
                 open = () =>
                 {
-                    (new Propertydb.PropertyDB()).Show();
+                    (new AssetDatabase.AssetDB()).Show();
                 },
-                tags = new List<string> { "utility" },
+                tags = new List<string> { "utility", "mesh", "material", "class", "animation" },
                 subCategory = "Databases",
-                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
+                description = "Scans games and creates a database of classes, animations, materials, textures, particles and meshes.\n\nIndividual assets can be opened directly from the interface with tools for editing."
             });
             set.Add(new Tool
             {
@@ -306,19 +336,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "PSK Viewer",
-                type = typeof(PSKViewer.PSKViewer),
-                icon = Application.Current.FindResource("iconPSKViewer") as ImageSource,
-                open = () =>
-                {
-                    (new PSKViewer.PSKViewer()).Show();
-                },
-                tags = new List<string> { "utility", "mesh" },
-                subCategory = "Explorers",
-                description = "View the data contained in a PSK skeletal mesh file extracted using Gildor's umodel toolkit."
-            });
-            set.Add(new Tool
-            {
                 name = "Script Database",
                 type = typeof(ScriptDB.ScriptDB),
                 icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
@@ -332,16 +349,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Subtitle Scanner",
-                type = typeof(SubtitleScanner.SubtitleScanner),
-                icon = Application.Current.FindResource("iconSubtitleScanner") as ImageSource,
+                name = "TFC Compactor",
+                type = typeof(TFCCompactor.TFCCompactor),
+                icon = Application.Current.FindResource("iconTFCCompactor") as ImageSource,
                 open = () =>
                 {
-                    (new SubtitleScanner.SubtitleScanner()).Show();
+                    (new TFCCompactor.TFCCompactor()).Show();
                 },
-                tags = new List<string> { "utility", "dialogue", "text", "line" },
-                subCategory = "Explorers",
-                description = "Subtitle Scanner is a utility for ME3 that scans game files for all subtitles and displays the results in a searchable dialog.",
+                tags = new List<string> { "utility", "deployment", "textures", "compression" },
+                subCategory = "Deployment",
+                description = "TFC Compactor can compact your ME2 or ME3 DLC mod TFC file by effectively removing unreferenced chunks in it and compressing the referenced textures. It also can be used to reduce or remove TFC dependencies so users do not have to have DLC installed for certain textures to work.",
             });
             #endregion
 
@@ -358,14 +375,6 @@ namespace ME3Explorer
             //    tags = new List<string> { "developer", "afc", "sound", "wwise" },
             //    subCategory = "Core",
             //});
-            set.Add(new Tool
-            {
-                name = "Binary Interpreter",
-                type = typeof(BinaryInterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
             set.Add(new Tool
             {
                 name = "Conditionals Editor",
@@ -390,42 +399,15 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Dialogue Editor",
-                type = typeof(DialogEditor.DialogEditor),
+                type = typeof(Dialogue_Editor.DialogueEditorWPF),
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
-                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new[] { "ME3", "ME2", "ME1" }, "ME3", true);
-                    switch (result)
-                    {
-                        case "ME3":
-                            (new DialogEditor.DialogEditor()).Show();
-                            break;
-                        case "ME2":
-                            (new ME2Explorer.DialogEditor()).Show();
-                            break;
-                        case "ME1":
-                            (new ME1Explorer.DialogEditor()).Show();
-                            break;
-                    }
-
+                    (new Dialogue_Editor.DialogueEditorWPF()).Show();
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
-                description = "Dialogue Editor is a cross-game tool used to edit Bioconversation objects, which control the flow of dialogue during a conversation.",
-            });
-            set.Add(new Tool
-            {
-                name = "ME2 Dialogue Editor",
-                type = typeof(ME2Explorer.DialogEditor),
-                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-                tags = new List<string>(),
-            });
-            set.Add(new Tool
-            {
-                name = "ME3 Dialogue Editor",
-                type = typeof(ME1Explorer.DialogEditor),
-                icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
-                tags = new List<string>(),
+                description = "Dialogue Editor is a visual tool used to edit in-game conversations. It works with all the games.",
             });
             set.Add(new Tool
             {
@@ -438,7 +420,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
                 subCategory = "Scene Shop",
-                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit ME3 and ME2 FaceFX AnimSets (FXEs).",
+                description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
             set.Add(new Tool
             {
@@ -463,14 +445,6 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
             });
-            set.Add(new Tool
-            {
-                name = "Interpreter",
-                type = typeof(InterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = other,
-            });
             //Benji's tool. Uncomment when we have more progress.
             /*set.Add(new Tool
             {
@@ -488,19 +462,6 @@ namespace ME3Explorer
             });*/
             set.Add(new Tool
             {
-                name = "Mesh Database",
-                type = typeof(Meshplorer2.MeshDatabase),
-                icon = Application.Current.FindResource("iconMeshDatabase") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer2.MeshDatabase()).Show();
-                },
-                tags = new List<string> { "utility", "mesh" },
-                subCategory = "Databases",
-                description = "Scans ME3 (no DLC) for meshes and makes a database. This tool is deprecated and no longer supported."
-            });
-            set.Add(new Tool
-            {
                 name = "Mount Editor",
                 type = typeof(MountEditor.MountEditorWPF),
                 icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
@@ -514,7 +475,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "TLK Manager WPF",
+                name = "TLK Manager",
                 type = typeof(TlkManagerNS.TLKManagerWPF),
                 icon = Application.Current.FindResource("iconTLKManager") as ImageSource,
                 open = () =>
@@ -523,21 +484,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
                 subCategory = "Core",
-                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
-            });
-            set.Add(new Tool
-            {
-                name = "Package Editor (Old)",
-                type = typeof(PackageEditor),
-                icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
-                open = () =>
-                {
-                    PackageEditor pck = new PackageEditor();
-                    pck.Show();
-                },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
-                subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
+                description = "TLK Manager manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
             });
             set.Add(new Tool
             {
@@ -550,7 +497,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. Edit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
+                description = "Package Editor is ME3Explorer's general purpose editing tool for unreal package files. It can edit ME3 and ME2 .pcc files, as well as ME1 .sfm, .upk, and .u files." +
+                              "\n\nEdit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
             });
             set.Add(new Tool
             {
@@ -563,7 +511,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
-                description = "Pathfinding Editor WPF allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
             {
@@ -590,7 +538,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
-                description = "Sequence Editor WPF is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
+                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             set.Add(new Tool
             {
@@ -614,24 +562,10 @@ namespace ME3Explorer
                 {
                     (new Soundplorer.SoundplorerWPF()).Show();
                 },
-                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is a complete rewrite of the original  Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
-            set.Add(new Tool
-            {
-                name = "Texplorer",
-                type = typeof(Texplorer2),
-                icon = Application.Current.FindResource("iconTexplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Texplorer2()).Show();
-                },
-                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
-                subCategory = "Meshes + Textures",
-                description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
-            });
-
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",
@@ -644,23 +578,6 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "dialogue", "text", "line" },
                 subCategory = "Scene Shop",
                 description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
-            });
-            set.Add(new Tool
-            {
-                name = "UDK Explorer",
-                type = typeof(UDKExplorer.MainWindow),
-                icon = Application.Current.FindResource("iconUDKExplorer") as ImageSource,
-                open = () =>
-                {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\UDKExplorer.exe"))
-                    {
-                        Process.Start(loc + "\\UDKExplorer.exe");
-                    }
-                },
-                tags = new List<string> { "developer" },
-                subCategory = other,
-                description = "Edits .udk and .upk files created by the UDK. This tool is deprecated and no longer supported."
             });
             #endregion
 

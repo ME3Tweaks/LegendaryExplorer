@@ -12,7 +12,7 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public IExportEntry export;
+        public ExportEntry export;
         public int ExportIndex;
         public IMEPackage pcc;
         public List<byte[]> Chunks;
@@ -21,7 +21,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] didx_data;
         public byte[] data_data;
 
-        public WwiseBank(IExportEntry export)
+        public WwiseBank(ExportEntry export)
         {
             this.export = export;
             ExportIndex = export.Index;

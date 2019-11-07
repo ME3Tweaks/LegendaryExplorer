@@ -18,8 +18,12 @@
                 <StackPanel Grid.Column="1">
                     <StackPanel Orientation="Horizontal" Height="48">
                         <Image Source="{Binding icon}" Width="48" Height="48"  RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <Label Content="{Binding name}" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="23" 
-                                   VerticalAlignment="Center" Foreground="{StaticResource LabelTextBrush}" Background="#54808080" Width="233" Height="46" BorderThickness="0,2,2,2" BorderBrush="#54CFCFCF"/>
+                        <Label FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="23" 
+                                   VerticalAlignment="Center" Foreground="{StaticResource LabelTextBrush}" Background="#54808080" Width="233" Height="46" BorderThickness="0,2,2,2" BorderBrush="#54CFCFCF">
+                            <Viewbox>
+                                <TextBlock Text="{Binding name}"/>
+                            </Viewbox>
+                        </Label>
                     </StackPanel>
                     <ScrollViewer Margin="15" Height="350" VerticalScrollBarVisibility="Hidden">
                         <TextBlock Text="{Binding description}" TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Width="252"/>

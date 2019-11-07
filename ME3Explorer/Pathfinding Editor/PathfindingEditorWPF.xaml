@@ -8,7 +8,7 @@
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
     mc:Ignorable="d"
         DragOver="Window_DragOver"
@@ -44,13 +44,13 @@
             <MenuItem Header="Open sequence reference in Sequence Editor" ItemsSource="{Binding CurrentNodeSequenceReferences}" IsEnabled="{Binding Path=CurrentNodeSequenceReferences.Count, Converter={StaticResource IsIntNotEqualConverter}, ConverterParameter=0}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
-                        <Setter Property="Header" Value="{Binding GetIndexedFullPath}"/>
+                        <Setter Property="Header" Value="{Binding InstancedFullPath}"/>
                         <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.OpenRefInSequenceEditorCommand}" />
                         <Setter Property="CommandParameter" Value="{Binding}" />
                     </Style>
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
@@ -186,7 +186,7 @@
                                             <Grid.InputBindings>
                                                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding NodeTypeChangeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                                             </Grid.InputBindings>
-                                            <fa:ImageAwesome Icon="CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
+                                            <fa:ImageAwesome Icon="Solid_CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
                                                 <fa:ImageAwesome.Style>
                                                     <Style TargetType="{x:Type fa:ImageAwesome}">
                                                         <Style.Triggers>
@@ -230,7 +230,7 @@
                     </TabItem>
                 </TabControl>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
+            <DockPanel DockPanel.Dock="Bottom" MinHeight="200" MaxHeight="200" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
                 <StackPanel DockPanel.Dock="Left">
                     <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
@@ -247,10 +247,6 @@
                             <LineBreak/>
                                 -  0 indicates null, empty, or "Class", depending on the context
                              <LineBreak/>
-                                <LineBreak/>
-                                Pathfinding Editor WPF is still in development and not all features are functional or ported
-                                <LineBreak/>
-                                over from the classic version.
                     </TextBlock>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center">
@@ -282,7 +278,7 @@
                     </Grid>
                 </StackPanel>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
+            <DockPanel DockPanel.Dock="Bottom" MinHeight="300" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                 <DockPanel DockPanel.Dock="Left">
                     <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" MaxWidth="310">
                         <Expander.Header>
@@ -336,14 +332,7 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding UIndex}" />
-                                        <TextBlock Grid.Column="1">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}_{1}">
-                                                    <Binding Path="ObjectName" />
-                                                    <Binding Path="indexValue" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -382,7 +371,7 @@
                 </DockPanel>
 
                 <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF"/>
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
             </DockPanel>
             <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
                 <local:PathingGraphEditor DragEnter="GraphEditor_DragEnter" DragDrop="GraphEditor_DragDrop"/>

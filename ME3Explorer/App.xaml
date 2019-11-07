@@ -145,14 +145,13 @@
         <!--<BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_icon.ico"/>-->
         <!--<BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>-->
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Resources/plotdatabase_256x256.ico"/>
-        <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/propertydatabase_256x256.ico"/>
+        <BitmapImage x:Key="iconAssetDatabase" UriSource="Resources/AssetDatabase_256x256.ico"/>
         <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psaviewer_256x256.ico"/>
         <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/pskviewer_256x256.ico"/>
         <!--<BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>-->
         <!--<BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>-->
         <BitmapImage x:Key="iconPathfindingEditor" UriSource="Resources/pathfindingeditor_256x256.ico"/>
         <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/scriptdatabase_256x256.ico"/>
-        <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitlescanner_256x256.ico"/>
         <!--<BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>-->
         <!--<BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>-->
         <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebankeditor_256x256.ico"/>
@@ -164,6 +163,7 @@
 
         <!--<BitmapImage x:Key="iconAudioEditor" UriSource="Resources/audio_editor_icon.ico"/>-->
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animationexplorer_256x256.ico"/>
+        <BitmapImage x:Key="iconASIManager" UriSource="Resources/asimanager_256x256.ico"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalescededitor_256x256.ico"/>
         <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_256x256.ico"/>
@@ -181,21 +181,29 @@
         <BitmapImage x:Key="iconMountEditor" UriSource="Resources/mounteditor_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/packageeditorwpf_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_256x256.ico"/>
+        <BitmapImage x:Key="iconDialogueDumper" UriSource="Resources/dialoguedumper_256x256.ico"/>
         <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_256x256.ico"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/ploteditor_256x256.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequenceeditor_256x256.ico"/>
         <BitmapImage x:Key="iconSFAREditor" UriSource="Resources/sfareditor_256x256.ico"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorerwpf_256x256.ico"/>
+        <BitmapImage x:Key="iconTFCCompactor" UriSource="Resources/tfccompactor_256x256.ico"/>
         <BitmapImage x:Key="iconTLKManager" UriSource="Resources/tlkmanager_256x256.ico"/>
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/me2me3tlkeditor_256x256.ico"/>
-        <BitmapImage x:Key="iconTexplorer" UriSource="Resources/texplorer_256x256.ico"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Resources/udkexplorer_256x256.ico"/>
+        <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/tlkeditor_256x256.ico"/>
+        <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/loadingspinner.png"/>
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList >
-            
+            <JumpTask Title="Dialogue Editor" 
+                      Description="Opens a new instance of Dialogue Editor" 
+                      Arguments="JUMPLIST_DIALOGUEEDITOR"/>
+            <JumpTask Title="Meshplorer" 
+                      Description="Opens a new instance of Meshplorer WPF" 
+                      Arguments="JUMPLIST_MESHPLORER"/>
             <JumpTask Title="Package Editor" 
-                      Description="Opens a new instance of Package Editor WPF" 
+                      Description="Opens a new instance of Package Editor" 
                       Arguments="JUMPLIST_PACKAGE_EDITOR"/>
             <JumpTask Title="Pathfinding Editor" 
                       Description="Opens a new instance of Pathfinding Editor" 
@@ -204,7 +212,7 @@
                       Description="Opens a new instance of Sequence Editor" 
                       Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
             <JumpTask Title="Soundplorer" 
-                      Description="Opens a new instance of Soundplorer WPF" 
+                      Description="Opens a new instance of Soundplorer" 
                       Arguments="JUMPLIST_SOUNDPLORER"/>
         </JumpList>
     </JumpList.JumpList>

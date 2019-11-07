@@ -44,8 +44,8 @@ namespace ME3Explorer.Pathfinding_Editor
             set => SetProperty(ref _externalFile, value);
         }
 
-        private IExportEntry _externalPersisentLevelExport;
-        public IExportEntry ExternalPersisentLevelExport
+        private ExportEntry _externalPersisentLevelExport;
+        public ExportEntry ExternalPersisentLevelExport
         {
             get => _externalPersisentLevelExport;
             set => SetProperty(ref _externalPersisentLevelExport, value);
@@ -248,10 +248,10 @@ namespace ME3Explorer.Pathfinding_Editor
             if (CurrentLoadedExport == null) return false;
             IMEPackage packageToValidateAgainst = ToExternalNodeChecked ? ExternalFile : CurrentLoadedExport.FileRef;
             if (CurrentLoadedExport != null && int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) &&
-                packageToValidateAgainst != null && packageToValidateAgainst.isUExport(destIndex))
+                packageToValidateAgainst != null && packageToValidateAgainst.IsUExport(destIndex))
             {
                 //Parse
-                IExportEntry destExport = packageToValidateAgainst.getUExport(destIndex);
+                ExportEntry destExport = packageToValidateAgainst.GetUExport(destIndex);
                 var uguid = SharedPathfinding.GetNavGUID(destExport);
 
                 if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
@@ -267,7 +267,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             {
                                 if (specref.Value != 0) //0 might be there if user manually added item to the list. we should ignore it.
                                 {
-                                    IExportEntry spec = CurrentLoadedExport.FileRef.getUExport(specref.Value);
+                                    ExportEntry spec = CurrentLoadedExport.FileRef.GetUExport(specref.Value);
                                     StructProperty outgoingEndStructProp = spec.GetProperty<StructProperty>("End"); //Embeds END
                                     ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)); //END  
 
@@ -318,7 +318,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     //nested because we don't want to switch to the other case if this is null
                     if (ExternalFile != null)
                     {
-                        IExportEntry destExport = ExternalFile.getUExport(destIndex);
+                        ExportEntry destExport = ExternalFile.GetUExport(destIndex);
 
                         var navguid = destExport.GetProperty<StructProperty>("NavGuid");
 
@@ -329,15 +329,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 else
                 {
                     //Parse
-                    IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                    ExportEntry destExport = CurrentLoadedExport.FileRef.GetUExport(destIndex);
                     SharedPathfinding.CreateReachSpec(CurrentLoadedExport, CreateReturningReachSpec, destExport, (string)CreateReachspecType_ComboBox.SelectedItem, (ReachSpecSize)CreateReachSpecSize_ComboBox.SelectedItem);
                 }
             }
         }
 
-        public override bool CanParse(IExportEntry export) => true;
+        public override bool CanParse(ExportEntry export) => true;
 
-        public override void LoadExport(IExportEntry export)
+        public override void LoadExport(ExportEntry export)
         {
             AllowChanges = false;
             CurrentLoadedExport = export;
@@ -377,7 +377,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     if (prop.Value == 0) { continue; } //unassigned, will cause issue in game, but will be better for editor to not throw errors
                     ReachSpec spec = new ReachSpec();
-                    IExportEntry outgoingSpec = export.FileRef.getUExport(prop.Value);
+                    ExportEntry outgoingSpec = export.FileRef.GetUExport(prop.Value);
 
 
 
@@ -387,7 +387,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
                     if (outgoingSpecEndProp != null && outgoingSpecEndProp.Value - 1 > 0)
                     {
-                        spec.EndNode = export.FileRef.getUExport(outgoingSpecEndProp.Value);
+                        spec.EndNode = export.FileRef.GetUExport(outgoingSpecEndProp.Value);
                     }
                     else
                     {
@@ -471,7 +471,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (radius != null && height != null)
                 {
-                    string destNode = selectedSpec.ExternalTarget ? "External node" : $"{selectedSpec.EndNode.ObjectName}_{selectedSpec.EndNode.UIndex}";
+                    string destNode = selectedSpec.ExternalTarget ? "External node" : $"{selectedSpec.EndNode.ObjectName.Instanced}";
                     ReachSpecSizeToText = "ReachSpec size to " + destNode;
                     ReachSpecSize specSize = new ReachSpecSize
                     {
@@ -507,10 +507,10 @@ namespace ME3Explorer.Pathfinding_Editor
         private void RecalculateDestinationUI()
         {
             var DestinationPackageToUse = ToExternalNodeChecked ? ExternalFile : CurrentLoadedExport.FileRef;
-            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && DestinationPackageToUse.isUExport(destIndex))
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && DestinationPackageToUse.IsUExport(destIndex))
             {
                 //Parse
-                IExportEntry destExport = DestinationPackageToUse.getUExport(destIndex);
+                ExportEntry destExport = DestinationPackageToUse.GetUExport(destIndex);
                 if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
                 {
                     var destPoint = SharedPathfinding.GetLocation(destExport);
@@ -523,13 +523,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         //Calculate direction vectors
                         if (distance != 0)
                         {
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
 
                             float dirX = (float)((destPoint.X - sourcePoint.X) / distance);
                             float dirY = (float)((destPoint.Y - sourcePoint.Y) / distance);
                             float dirZ = (float)((destPoint.Z - sourcePoint.Z) / distance);
 
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
                             NewReachSpecDistance = "Distance: " + distance.ToString("0.##");
                             NewReachSpecDirectionX = "Direction X: " + dirX.ToString("0.#####");
                             NewReachSpecDirectionY = "Direction Y: " + dirY.ToString("0.#####");
@@ -538,7 +538,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         else
                         {
                             //Distance 0
-                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName.Instanced}";
                             NewReachSpecDistance = "Distance: 0 - Move node";
                             SetDirectionsNA();
                         }
@@ -584,11 +584,11 @@ namespace ME3Explorer.Pathfinding_Editor
             // If parsing is successful, set Handled to false
             if (ToExternalNodeChecked)
             {
-                e.Handled = !(int.TryParse(fullText, out int val) && ExternalFile != null && ExternalFile.isUExport(val));
+                e.Handled = !(int.TryParse(fullText, out int val) && ExternalFile != null && ExternalFile.IsUExport(val));
             }
             else
             {
-                e.Handled = !(int.TryParse(fullText, out int val) && CurrentLoadedExport.FileRef.isUExport(val));
+                e.Handled = !(int.TryParse(fullText, out int val) && CurrentLoadedExport.FileRef.IsUExport(val));
             }
         }
 
@@ -602,9 +602,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void FocusDestinationNode_Click(object sender, RoutedEventArgs e)
         {
-            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.IsUExport(destIndex))
             {
-                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                ExportEntry destExport = CurrentLoadedExport.FileRef.GetUExport(destIndex);
                 if (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport))
                 {
                     //Parse
@@ -615,17 +615,17 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-        [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName} outbound from {StartNode.UIndex}")]
+        [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName.Instanced} outbound from {StartNode.UIndex}")]
         public class ReachSpec
         {
             public ReachSpecSize SpecSize { get; internal set; }
-            public IExportEntry SpecExport { get; internal set; }
-            public IExportEntry StartNode { get; internal set; }
-            public IExportEntry EndNode { get; internal set; }
+            public ExportEntry SpecExport { get; internal set; }
+            public ExportEntry StartNode { get; internal set; }
+            public ExportEntry EndNode { get; internal set; }
             public bool ExternalTarget { get; internal set; }
             public string DestinationTextUI => ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
 
-            public string DestinationTypeTextUI => ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
+            public string DestinationTypeTextUI => ExternalTarget ? "External Node" : $"{EndNode.ObjectName.Instanced}";
         }
 
         [DebuggerDisplay("NodeSize | {Header} {NodeHeight}x{NodeRadius}")]
@@ -726,7 +726,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 if (ExternalFile != null)
                 {
-                    PathfindingEditorWPF pe = new PathfindingEditorWPF(ExternalFile.FileName);
+                    PathfindingEditorWPF pe = new PathfindingEditorWPF(ExternalFile.FilePath);
                     pe.Show();
                 }
             }

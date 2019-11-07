@@ -10,8 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
-using KFreonLib.MEDirectories;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 
 namespace ME3Explorer.ScriptDB
 {
@@ -48,17 +47,17 @@ namespace ME3Explorer.ScriptDB
                 DebugOutput.PrintLn(count + "\\" + files.Length + " : Scanning " + Path.GetFileName(file) + " ...");
                 try
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(file))
+                    using (IMEPackage pcc = MEPackageHandler.OpenME3Package(file))
                     {
                         int count2 = 0;
-                        foreach (IExportEntry ent in pcc.Exports)
+                        foreach (ExportEntry ent in pcc.Exports)
                         {
                             if (ent.ClassName == "Function")
                             {
                                 Function f = new Function(ent.Data, ent);
                                 ScriptEntry n = new ScriptEntry();
                                 n.file = Path.GetFileName(file);
-                                n.name = ent.PackageFullName + "." + ent.ObjectName;
+                                n.name = ent.InstancedFullPath;
                                 f.ParseFunction();
                                 n.script = f.ScriptText;
                                 database.Add(n);

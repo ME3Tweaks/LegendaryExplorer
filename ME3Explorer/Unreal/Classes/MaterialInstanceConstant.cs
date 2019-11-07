@@ -1,91 +1,198 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using KFreonLib.MEDirectories;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
-using AmaroK86.ImageFormat;
-using System.Drawing;
+using ME3Explorer.Scene3D;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public IMEPackage pcc;
-        public byte[] memory;
-        public int memsize;
-        public int index;
-        public List<PropertyReader.Property> props;
-        public List<TextureParam> Textures;
+        public ExportEntry Export;
+        public List<IEntry> Textures = new List<IEntry>();
 
-        public struct TextureParam
+        public StaticParameterSet StaticParameterSet;
+        public MaterialShaderMap ShaderMap;
+        public List<Shader> Shaders;
+
+        //public List<TextureParam> Textures = new List<TextureParam>();
+
+        //public struct TextureParam
+        //{
+        //    public int TexIndex;
+        //    public string Desc;
+        //}
+
+        public MaterialInstanceConstant(ExportEntry export)
         {
-            public int TexIndex;
-            public string Desc;
+            this.Export = export;
+            ReadMaterial(export);
+
+            //bool me1Parsed = false;
+            //if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
+            //{
+            //    try
+            //    {
+            //        me1Parsed = true;
+            //    }
+            //    catch (Exception e)
+            //    {
+
+            //    }
+            //}
+
+
+            //if (export.Game == MEGame.ME3 || !me1Parsed)
+            //{
+            //    if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
+            //    {
+            //        foreach (StructProperty paramVal in paramVals)
+            //        {
+            //            Textures.Add(export.FileRef.getEntry(paramVal.GetProp<ObjectProperty>("ParameterValue").Value));
+            //        }
+            //    }
+            //}
         }
 
-        public MaterialInstanceConstant(IMEPackage Pcc,int Idx)
+        private void ReadMaterial(ExportEntry export)
         {
-            
-            pcc = Pcc;
-            index = Idx;
-            memory = pcc.Exports[index].Data;
-            memsize = memory.Length;
-            ReadProperties();         
-        }
-
-        public void ReadProperties()
-        {
-            props = PropertyReader.getPropList(pcc.Exports[index]);
-            Textures = new List<TextureParam>();
-            for (int i = 0; i < props.Count(); i++)
+            if (export.ClassName == "Material")
             {
-                string name = pcc.getNameEntry(props[i].Name);
-                switch (name)
+                var parsedMaterial = ObjectBinary.From<Material>(export);
+                StaticParameterSet = (StaticParameterSet)parsedMaterial.SM3MaterialResource.ID;
+                foreach (var v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
-                    case "TextureParameterValues":
-                        ReadTextureParams(props[i].raw);
-                        break;
+                    IEntry tex = export.FileRef.GetEntry(v.value);
+                    if (tex != null)
+                    {
+                        Textures.Add(tex);
+                    }
+                }
+            }
+            else if (export.ClassName == "MaterialInstanceConstant")
+            {
+                if (ObjectBinary.From(export) is MaterialInstance matInstBin)
+                {
+                    StaticParameterSet = matInstBin.SM3StaticParameterSet;
+                }
+                //Read Local
+                if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
+                {
+                    foreach (var param in textureparams)
+                    {
+                        var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
+                        var texntry = export.FileRef.GetEntry(paramValue.Value);
+                        if (texntry?.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                        {
+                            Textures.Add(texntry);
+                        }
+                    }
+                }
+
+                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+                {
+                    foreach (var obj in textures)
+                    {
+                        var texntry = export.FileRef.GetEntry(obj.Value);
+                        if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                        {
+                            Textures.Add(texntry);
+                        }
+                    }
+                }
+
+                //Read parent
+                if (export.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
+                {
+                    // This is an instance... maybe?
+                    if (parentObjProp.Value > 0)
+                    {
+                        // Local export
+                        ReadMaterial(export.FileRef.GetUExport(parentObjProp.Value));
+                    }
+                    else
+                    {
+                        ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
+                        if (externalEntry != null)
+                        {
+                            ReadMaterial(externalEntry);
+                        }
+                    }
                 }
             }
         }
 
-        public void ReadTextureParams(byte[] raw)
+        //very slow for basegame files. find a way to stick shader info in a database
+        public void GetShaders(string vertexFactory = "FLocalVertexFactory")
         {
-            int count = BitConverter.ToInt32(raw, 24);            
-            int pos = 28;
-            for (int i = 0; i < count; i++)
+            Shaders = new List<Shader>();
+            ShaderCache shaderCache;
+            if (Export.FileRef.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheEntry)
             {
-                List<PropertyReader.Property> tp = PropertyReader.ReadProp(pcc, raw, pos);
-                string name = pcc.getNameEntry(tp[1].Value.IntValue);
-                int Idx = tp[2].Value.IntValue;
-                TextureParam t = new TextureParam();
-                t.Desc = name;
-                t.TexIndex = Idx;
-                Textures.Add(t);
-                pos = tp[tp.Count -1].offend;
+                shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheEntry);
+            }
+            else
+            {
+                //Hardcode ME3 path for now.
+                string globalShaderCachPath = Path.Combine(ME3Directory.cookedPath, "RefShaderCache-PC-D3D-SM3.upk");
+                if (File.Exists(globalShaderCachPath))
+                {
+                    using (var shaderUPK = MEPackageHandler.OpenMEPackage(globalShaderCachPath))
+                    {
+                        shaderCache = ObjectBinary.From<ShaderCache>(shaderUPK.Exports.First(exp => exp.ClassName == "ShaderCache"));
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (shaderCache.MaterialShaderMaps.TryGetValue(StaticParameterSet, out ShaderMap))
+            {
+                IEnumerable<Guid> shaderGuids;
+                if (ShaderMap.MeshShaderMaps.FirstOrDefault(msm => msm.VertexFactoryType == vertexFactory) is MeshShaderMap meshShaderMap)
+                {
+                    shaderGuids = meshShaderMap.Shaders.Values().Select(shaderRef => shaderRef.Id);
+                }
+                else
+                {
+                    //Can't find the vertex factory we want, so just grab the first one? I have no idea what I'm doing
+                    shaderGuids = ShaderMap.MeshShaderMaps.First().Shaders.Values().Select(shaderRef => shaderRef.Id);
+                }
+
+                foreach (Guid id in shaderGuids)
+                {
+                    if (shaderCache.Shaders.TryGetValue(id, out Shader shader))
+                    {
+                        Shaders.Add(shader);
+                    }
+                }
+
             }
         }
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode("#" + index + " \"" + pcc.Exports[index].ObjectName + "\"");
-            for (int i = 0; i < Textures.Count(); i++)
+            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName.Instanced}\"");
+            for (int i = 0; i < Textures.Count; i++)
             {
-                string s = Textures[i].Desc + " = #" + (Textures[i].TexIndex - 1);
-                s += " \"" + pcc.getObjectName(Textures[i].TexIndex) + "\"";
+                string s = $"{Textures[i].FullPath} = #{Textures[i].UIndex}";
+                s += $" \"{Export.FileRef.getObjectName(Textures[i].UIndex)}\"";
                 res.Nodes.Add(s);
             }
             TreeNode propsnode = new TreeNode("Properties");
             res.Nodes.Add(propsnode);
-            props = PropertyReader.getPropList(pcc.Exports[index]);
-            for (int i = 0; i < props.Count(); i++) // Loop through props of export
+
+            foreach (var prop in Export.GetProperties())
             {
-                string name = pcc.getNameEntry(props[i].Name);
-                TreeNode propnode = new TreeNode(name + " | " + props[i].TypeVal.ToString());
-                propsnode.Nodes.Add(propnode);
+                propsnode.Nodes.Add(new TreeNode($"{prop.Name} | {prop.PropType}"));
             }
 
             return res;

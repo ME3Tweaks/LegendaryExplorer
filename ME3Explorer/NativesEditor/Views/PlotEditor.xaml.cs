@@ -12,6 +12,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
 namespace MassEffect.NativesEditor.Views
@@ -21,13 +22,17 @@ namespace MassEffect.NativesEditor.Views
         public PlotEditor()
         {
             ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Editor", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Plot Editor" }
+            });
             InitializeComponent();
             LoadRecentList();
             RefreshRecent(false);
             FindObjectUsagesControl.parentRef = this;
         }
 
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "Select a file to load";
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
 
         public void OpenFile()
         {
@@ -85,7 +90,7 @@ namespace MassEffect.NativesEditor.Views
             if (CodexMapControl != null)
             {
 
-                if (CodexMapView.TryFindCodexMap(Pcc, out IExportEntry export, out int _))
+                if (CodexMapView.TryFindCodexMap(Pcc, out ExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -102,7 +107,7 @@ namespace MassEffect.NativesEditor.Views
             if (QuestMapControl != null)
             {
 
-                if (QuestMapControl.TryFindQuestMap(Pcc, out IExportEntry export, out int _))
+                if (QuestMapControl.TryFindQuestMap(Pcc, out ExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -119,7 +124,7 @@ namespace MassEffect.NativesEditor.Views
             if (StateEventMapControl != null)
             {
 
-                if (StateEventMapView.TryFindStateEventMap(Pcc, out IExportEntry export))
+                if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -133,7 +138,7 @@ namespace MassEffect.NativesEditor.Views
                 }
             }
 
-            Pcc.save();
+            Pcc.Save();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)

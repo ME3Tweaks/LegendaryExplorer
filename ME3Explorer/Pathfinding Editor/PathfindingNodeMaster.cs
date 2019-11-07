@@ -31,15 +31,16 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
         public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
+        protected static Brush biopawnPathfindingNodeBrush = new SolidBrush(Color.FromArgb(255, 70, 70));
         protected static Brush medkitBrush = new SolidBrush(Color.FromArgb(200, 15, 15));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public List<IExportEntry> SequenceReferences = new List<IExportEntry>();
+        public List<ExportEntry> SequenceReferences = new List<ExportEntry>();
         public int UIndex => index;
 
         protected int index;
-        public IExportEntry export;
+        public ExportEntry export;
         protected Pen outlinePen;
         public SText comment;
         public string NodeTag;
@@ -129,7 +130,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return -1;
                 }
-                IExportEntry brush = export.FileRef.getUExport(brushComponent.Value);
+                ExportEntry brush = export.FileRef.GetUExport(brushComponent.Value);
                 List<PointF> graphVertices = new List<PointF>();
                 List<Vector3> brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();
@@ -216,7 +217,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return null;
                 }
-                IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                ExportEntry brush = export.FileRef.GetUExport(brushComponent.Value);
                 var graphVertices = new List<PointF>();
                 var brushVertices = new List<Vector3>();
                 PropertyCollection brushProps = brush.GetProperties();

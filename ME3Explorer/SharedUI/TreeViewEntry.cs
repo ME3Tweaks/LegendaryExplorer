@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -12,8 +14,6 @@ namespace ME3Explorer
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
     public class TreeViewEntry : NotifyPropertyChangedBase
     {
-        private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
-
         public bool IsProgramaticallySelecting;
 
         private bool isSelected;
@@ -143,11 +143,11 @@ namespace ME3Explorer
                 try
                 {
                     if (_displayName != null) return _displayName;
-                    string type = UIndex < 0 ? "Imp" : "Exp";
-                    string returnvalue = $"({type}) {UIndex} {Entry.ObjectName}";
-                    if (Properties.Settings.Default.PackageEditorWPF_TreeViewShowEntryIndex && Entry.indexValue != 0)
+                    string type = UIndex < 0 ? "(Imp) " : "(Exp) ";
+                    string returnvalue = $"{UIndex} {Entry.ObjectName.Instanced}";
+                    if (Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix)
                     {
-                        returnvalue += $"_{Entry.indexValue}";
+                        returnvalue = type + returnvalue;
                     }
                     returnvalue += $"({Entry.ClassName})";
                     return returnvalue;
@@ -162,15 +162,19 @@ namespace ME3Explorer
 
         public int UIndex => Entry?.UIndex ?? 0;
 
+        private System.Windows.Media.Brush _foregroundColor;
         public System.Windows.Media.Brush ForegroundColor
         {
-            get => Entry == null ? System.Windows.Media.Brushes.Black : UIndex > 0 ? System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray;
+            get => Entry is ImportEntry ? ImportEntryBrush : ExportEntryBrush;
             set
             {
                 _foregroundColor = value;
                 OnPropertyChanged();
             }
         }
+
+        private static SolidColorBrush ImportEntryBrush => SystemColors.GrayTextBrush;
+        private static SolidColorBrush ExportEntryBrush => SystemColors.ControlTextBrush;
 
         public override string ToString()
         {
@@ -183,7 +187,7 @@ namespace ME3Explorer
         internal void SortChildren()
         {
             var exportNodes = Sublinks.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
-            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
+            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderByDescending(x => x.UIndex).ToList();
 
             exportNodes.AddRange(importNodes);
             Sublinks.ClearEx();

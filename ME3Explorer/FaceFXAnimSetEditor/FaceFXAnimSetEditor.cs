@@ -45,13 +45,13 @@ namespace ME3Explorer.FaceFX
         public void ListRefresh()
         {
             Objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "FaceFXAnimSet")
                     Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].GetFullPath);
+                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].FullPath);
         }
 
         private void FaceFXRefresh(int n)
@@ -70,7 +70,7 @@ namespace ME3Explorer.FaceFX
                 topNodeName = treeView2.TopNode.Name;
 
             }
-            IExportEntry exportEntry = Pcc.Exports[n];
+            ExportEntry exportEntry = Pcc.Exports[n];
             FaceFX = new ME3FaceFXAnimSet(Pcc, exportEntry);
             hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();
@@ -125,7 +125,7 @@ namespace ME3Explorer.FaceFX
             if (FaceFX == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.FileName = FaceFX.export.ObjectName + ".fxa";
+            d.FileName = $"{FaceFX.export.ObjectName}.fxa";
             d.Filter = "*.fxa|*.fxa";
             if(d.ShowDialog() == DialogResult.OK)
             {
@@ -138,7 +138,7 @@ namespace ME3Explorer.FaceFX
         {
             if (Pcc == null)
                 return;
-            Pcc.save();
+            Pcc.Save();
             MessageBox.Show("Done.");
         }
 

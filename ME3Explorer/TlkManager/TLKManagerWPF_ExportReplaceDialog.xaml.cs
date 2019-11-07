@@ -68,10 +68,10 @@ namespace ME3Explorer.TlkManagerNS
             if (TLKList.SelectedItem is LoadedTLK tlk && tlk.embedded)
             {
                 //Need to find a way for the export loader to register usage of the pcc.
-                ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
-                var export = pcc.getUExport(tlk.exportNumber);
+                IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
+                var export = pcc.GetUExport(tlk.exportNumber);
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF(), export);
-                elhw.Title = $"TLK Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                elhw.Title = $"TLK Editor - {export.UIndex} {export.InstancedFullPath} - {export.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -101,7 +101,7 @@ namespace ME3Explorer.TlkManagerNS
                         //ME1
                         loadingWorker.DoWork += delegate
                         {
-                            using (ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
+                            using (IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
                                 ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(pcc, tlk.exportNumber);
                                 talkfile.saveToFile(saveFileDialog.FileName);
@@ -149,9 +149,9 @@ namespace ME3Explorer.TlkManagerNS
                         {
                             ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                             compressor.LoadInputData(openFileDialog.FileName);
-                            using (ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
+                            using (IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
-                                compressor.serializeTalkfileToExport(pcc, pcc.getUExport(tlk.exportNumber), true); //Code uses 0 based
+                                compressor.serializeTalkfileToExport(pcc.GetUExport(tlk.exportNumber), true); 
                             };
                         };
                     }

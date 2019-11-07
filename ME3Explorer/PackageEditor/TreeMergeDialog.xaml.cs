@@ -23,29 +23,22 @@ namespace ME3Explorer.PackageEditorWPFControls
     /// </summary>
     public partial class TreeMergeDialog : NotifyPropertyChangedWindowBase
     {
-        public enum PortingOption
-        {
-            CloneTreeAsChild,
-            AddSingularAsChild,
-            ReplaceSingular,
-            MergeTreeChildren,
-            Cancel
-        }
-        public PortingOption PortingOptionChosen = PortingOption.Cancel; //Click X, get cancel
+        public EntryImporter.PortingOption PortingOptionChosen = EntryImporter.PortingOption.Cancel; //Click X, get cancel
         private readonly IEntry sourceEntry;
         private readonly IEntry targetEntry;
         private readonly bool sourceHasChildren;
         private readonly bool targetHasChildren;
 
-        public string TargetEntryObjectName => targetEntry == null ? "Root" : targetEntry.ObjectName;
-        public string SourceEntryObjectName => sourceEntry.ObjectName;
+        public string TargetEntryObjectName => targetEntry == null ? "Root" : targetEntry.ObjectName.Instanced;
+        public string SourceEntryObjectName => sourceEntry.ObjectName.Instanced;
 
         public ICommand ReplaceDataCommand { get; set; }
         public ICommand AddSingularCommand { get; set; }
         public ICommand MergeTreeCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
+        public ICommand CloneAllReferencesCommand { get; set; }
 
-        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry)
+        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry, MEGame targetGame)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
@@ -58,69 +51,84 @@ namespace ME3Explorer.PackageEditorWPFControls
 
             LoadCommands();
             InitializeComponent();
+
+            if (sourceEntry.Game != targetGame)
+            {
+                cloneAllRefsButton.IsEnabled = false;
+                cloneAllRefsText.Text = "Cannot do this when cross-game porting";
+            }
         }
 
         private void LoadCommands()
         {
-            ReplaceDataCommand = new RelayCommand(ReplaceData, CanReplaceData);
-            MergeTreeCommand = new RelayCommand(MergeTree, CanMergeTree);
-            AddSingularCommand = new RelayCommand(AddSingular, CanAddSingular);
-            CloneTreeCommand = new RelayCommand(CloneTree, CanCloneTree);
+            ReplaceDataCommand = new GenericCommand(ReplaceData, CanReplaceData);
+            MergeTreeCommand = new GenericCommand(MergeTree, CanMergeTree);
+            AddSingularCommand = new GenericCommand(AddSingular, CanAddSingular);
+            CloneTreeCommand = new GenericCommand(CloneTree, CanCloneTree);
+            CloneAllReferencesCommand = new GenericCommand(CloneAllReferences);
         }
 
-        private void CloneTree(object obj)
+        private void CloneAllReferences()
         {
-            PortingOptionChosen = PortingOption.CloneTreeAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.CloneAllDependencies;
             Close();
         }
 
-        private void AddSingular(object obj)
+        private void CloneTree()
         {
-            PortingOptionChosen = PortingOption.AddSingularAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
         }
 
-        private void MergeTree(object obj)
+        private void AddSingular()
         {
-            PortingOptionChosen = PortingOption.MergeTreeChildren;
+            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
-        private bool CanMergeTree(object obj)
+        private void MergeTree()
+        {
+            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
+            Close();
+        }
+
+        private bool CanMergeTree()
         {
             return /*EntryTypesMatch() &&*/ sourceHasChildren && targetHasChildren;
         }
 
-        private bool CanAddSingular(object obj)
+        private bool CanAddSingular()
         {
             return true; //this is always allowed
         }
 
-        private bool CanCloneTree(object obj)
+        private bool CanCloneTree()
         {
             return sourceHasChildren;
         }
 
         private bool EntryTypesMatch()
         {
-            return (sourceEntry is IExportEntry && targetEntry is IExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
+            return (sourceEntry is ExportEntry && targetEntry is ExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
         }
 
-        private void ReplaceData(object obj)
+        private void ReplaceData()
         {
-            PortingOptionChosen = PortingOption.ReplaceSingular;
+            PortingOptionChosen = EntryImporter.PortingOption.ReplaceSingular;
             Close();
         }
 
-        private bool CanReplaceData(object obj)
+        private bool CanReplaceData()
         {
-            return (sourceEntry is IExportEntry && targetEntry is IExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
+            return (sourceEntry is ExportEntry && targetEntry is ExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
         }
 
-        public static PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
+        public static EntryImporter.PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem, MEGame targetGame)
         {
-            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry);
-            tmd.Owner = w;
+            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry, targetGame)
+            {
+                Owner = w
+            };
             tmd.ShowDialog(); //modal
 
             return tmd.PortingOptionChosen;
@@ -128,26 +136,26 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void MergeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.MergeTreeChildren;
+            PortingOptionChosen = EntryImporter.PortingOption.MergeTreeChildren;
             Close();
         }
 
         private void CloneTreeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.CloneTreeAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.CloneTreeAsChild;
             Close();
 
         }
 
         private void AddSingularButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.AddSingularAsChild;
+            PortingOptionChosen = EntryImporter.PortingOption.AddSingularAsChild;
             Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.Cancel;
+            PortingOptionChosen = EntryImporter.PortingOption.Cancel;
             Close();
         }
     }

@@ -636,7 +636,7 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, IExportEntry export, int pos = 0x20)
+        public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export, int pos = 0x20)
         {
 
             string s = "";
@@ -682,7 +682,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static List<Token> ReadAll(int start, IExportEntry export)
+        public static List<Token> ReadAll(int start, ExportEntry export)
         {
             var res = new List<Token>();
             int pos = start;
@@ -704,7 +704,7 @@ namespace ME3Explorer.Unreal
             return res;
         }
 
-        public static Token ReadToken(int start, IExportEntry export)
+        public static Token ReadToken(int start, ExportEntry export)
         {
             int thiscount = DebugCounter;
             DebugCounter++;
@@ -758,6 +758,11 @@ namespace ME3Explorer.Unreal
                         newTok = ReadJumpIfNot(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
+                        res = newTok;
+                        break;
+                    case EX_Stop: //0x08
+                        newTok = ReadStopToken(start, export);
+                        newTok.stop = false;
                         res = newTok;
                         break;
                     case EX_Assert: // 0x09
@@ -1277,7 +1282,7 @@ namespace ME3Explorer.Unreal
             return res;
         }
 
-        private static Token ReadNative(int start, IExportEntry export)
+        private static Token ReadNative(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = null, b = null, c = null;
@@ -1312,6 +1317,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     break;
                 case (int)ENatives.NATIVE_AndAnd_BoolBool: //0x0082
@@ -1611,6 +1618,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -1814,6 +1823,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -1831,6 +1842,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -1855,6 +1868,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -1900,6 +1915,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2066,6 +2083,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;//
@@ -2083,6 +2102,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2100,6 +2121,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2117,6 +2140,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2134,6 +2159,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2151,6 +2178,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2186,6 +2215,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2203,6 +2234,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2220,6 +2253,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2237,6 +2272,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2254,6 +2291,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2271,6 +2310,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2288,6 +2329,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2305,6 +2348,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2349,6 +2394,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2366,6 +2413,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2383,6 +2432,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2400,6 +2451,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2435,6 +2488,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2452,6 +2507,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2469,6 +2526,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;//
@@ -2486,6 +2545,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2503,6 +2564,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2570,6 +2633,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2587,6 +2652,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2604,6 +2671,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2621,6 +2690,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2638,6 +2709,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2655,6 +2728,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2672,6 +2747,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2689,6 +2766,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2706,6 +2785,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2759,6 +2840,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2785,6 +2868,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2802,6 +2887,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2819,6 +2906,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2836,6 +2925,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2853,6 +2944,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2870,6 +2963,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2887,6 +2982,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2904,6 +3001,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2924,6 +3023,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2941,6 +3042,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -2958,6 +3061,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3047,6 +3152,8 @@ namespace ME3Explorer.Unreal
                         else if (!(a.raw.Length == 1 && a.raw[0] == 0x4A))
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3082,6 +3189,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3099,6 +3208,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3116,6 +3227,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3133,6 +3246,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3172,6 +3287,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3189,6 +3306,8 @@ namespace ME3Explorer.Unreal
                         else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3206,6 +3325,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3223,6 +3344,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3240,6 +3363,8 @@ namespace ME3Explorer.Unreal
                         else
                             t.text += a.text;
                         count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
                     }
                     t.text += ")";
                     break;
@@ -3268,7 +3393,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        //private static Token ReadClassContext(int start, IExportEntry export)
+        //private static Token ReadClassContext(int start, ExportEntry export)
         //{
         //    Token t = new Token();
         //    Token a = ReadToken(start + 2);
@@ -3288,7 +3413,7 @@ namespace ME3Explorer.Unreal
         //    return t;
         //}
 
-        private static Token ReadUnkn15(int start, IExportEntry export)
+        private static Token ReadUnkn15(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3297,6 +3422,9 @@ namespace ME3Explorer.Unreal
             Token b = ReadToken(pos, export);
             pos += b.raw.Length;
             Token c = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
             pos += c.raw.Length;
             t.text = b.text + "(" + a.text + ");";
             int len = pos - start;
@@ -3306,11 +3434,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn14(int start, IExportEntry export)
+        private static Token ReadUnkn14(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 3;
             Token a = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3319,11 +3448,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn13(int start, IExportEntry export)
+        private static Token ReadUnkn13(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 2;
             Token a = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3332,11 +3462,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGoWVal(int start, IExportEntry export)
+        private static Token ReadGoWVal(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 2;
             Token a = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3345,11 +3476,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token Read4FAdd(int start, IExportEntry export)
+        private static Token Read4FAdd(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 5;
             Token a = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3358,7 +3490,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAdd(int start, IExportEntry export)
+        private static Token ReadAdd(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3387,11 +3519,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn12(int start, IExportEntry export)
+        private static Token ReadUnkn12(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 3;
             Token a = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
             pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
@@ -3401,13 +3534,15 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel(int start, string arg, IExportEntry export)
+        private static Token ReadCompareDel(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos, export);
             pos += a.raw.Length + 2;
             Token b = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
             pos += b.raw.Length;
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
@@ -3417,13 +3552,15 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel2(int start, string arg, IExportEntry export)
+        private static Token ReadCompareDel2(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos, export);
             pos += a.raw.Length;
             Token b = ReadToken(pos, export);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
             pos += b.raw.Length;
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
@@ -3433,7 +3570,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelFunc(int start, IExportEntry export)
+        private static Token ReadDelFunc(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3441,10 +3578,10 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            int index = (Int32)BitConverter.ToInt64(memory, pos);
+            int index = BitConverter.ToInt32(memory, pos);
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
             pos += 8;
-            string s = export.FileRef.getNameEntry(index);
+            string s = export.FileRef.GetNameEntry(index);
             t.text = a.text + "." + s + "(";
             int count = 0;
             while (pos < memsize - 6)
@@ -3470,13 +3607,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGlobalFunc(int start, IExportEntry export)
+        private static Token ReadGlobalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "Global." + export.FileRef.getNameEntry(index) + "(";
+            t.text = "Global." + export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -3502,7 +3639,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareStructs(int start, string s, IExportEntry export)
+        private static Token ReadCompareStructs(int start, string s, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 5;
@@ -3522,7 +3659,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAssert(int start, IExportEntry export)
+        private static Token ReadAssert(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 4;
@@ -3539,7 +3676,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInterfaceContext(int start, IExportEntry export)
+        private static Token ReadInterfaceContext(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3556,7 +3693,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNew(int start, IExportEntry export)
+        private static Token ReadNew(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3582,7 +3719,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg2(int start, string arg, bool skip2byte, IExportEntry export)
+        private static Token ReadArrayArg2(int start, string arg, bool skip2byte, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3607,7 +3744,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg(int start, string arg, IExportEntry export)
+        private static Token ReadArrayArg(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3631,7 +3768,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1b(int start, IExportEntry export)
+        private static Token ReadUnkn1b(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3654,7 +3791,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCase(int start, IExportEntry export)
+        private static Token ReadCase(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3674,22 +3811,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadMetacast(int start, IExportEntry export)
+        private static Token ReadMetacast(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
-            int index = BitConverter.ToInt32(memory, pos);
-            string s = "";
-            if (index > 0 && index <= export.FileRef.Exports.Count)
-                s = export.FileRef.Exports[index - 1].ObjectName;
-            if (index * -1 > 0 && index * -1 <= export.FileRef.Imports.Count)
-                s = export.FileRef.Imports[index * -1 - 1].ObjectName;
+            int uIndex = BitConverter.ToInt32(memory, pos);
             pos += 4;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            t.text = "Class<" + s + ">(" + a.text + ")";
+            t.text = $"Class<{export.FileRef.getObjectName(uIndex)}>({a.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -3698,7 +3830,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVectorConst(int start, IExportEntry export)
+        private static Token ReadVectorConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3715,7 +3847,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadRotatorConst(int start, IExportEntry export)
+        private static Token ReadRotatorConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3732,7 +3864,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadConditional(int start, IExportEntry export)
+        private static Token ReadConditional(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3761,7 +3893,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEatReturn(int start, IExportEntry export)
+        private static Token ReadEatReturn(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 5, export);
@@ -3775,7 +3907,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn8(int start, IExportEntry export)
+        private static Token ReadUnkn8(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3797,7 +3929,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntOne(int start, IExportEntry export)
+        private static Token ReadIntOne(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "1";
@@ -3806,7 +3938,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn7(int start, IExportEntry export)
+        private static Token ReadUnkn7(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3840,7 +3972,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyDel(int start, IExportEntry export)
+        private static Token ReadEmptyDel(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3858,7 +3990,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStruct(int start, IExportEntry export)
+        private static Token ReadStruct(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3866,6 +3998,7 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
 
             int type = BitConverter.ToInt32(memory, start + 5);
+            t.inPackageReferences.Add((start + 5, Token.INPACKAGEREFTYPE_ENTRY, type));
             int skip = BitConverter.ToInt16(memory, start + 7);
             int pos = start + 11;
             Token a = ReadToken(pos, export);
@@ -3881,7 +4014,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadPrimitiveCast(int start, IExportEntry export)
+        private static Token ReadPrimitiveCast(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 2, export);
@@ -3897,7 +4030,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSkip(int start, IExportEntry export)
+        private static Token ReadSkip(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a;
@@ -3908,6 +4041,7 @@ namespace ME3Explorer.Unreal
             while (pos < memsize - 6)
             {
                 a = ReadToken(pos, export);
+                t.inPackageReferences.AddRange(a.inPackageReferences);
                 pos += a.raw.Length;
                 if (a.raw != null && a.raw[0] == 0x16)
                     break;
@@ -3924,13 +4058,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn6(int start, IExportEntry export)
+        private static Token ReadUnkn6(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             int pos = start + 11;
             t.text += "(";
             int count = 0;
@@ -3957,11 +4091,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadExtNative(int start, IExportEntry export)
+        private static Token ReadExtNative(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -3973,7 +4107,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayElement(int start, IExportEntry export)
+        private static Token ReadDynArrayElement(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -3993,7 +4127,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelLet(int start, IExportEntry export)
+        private static Token ReadDelLet(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 2, export);
@@ -4009,7 +4143,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterNext(int start, IExportEntry export)
+        private static Token ReadIterNext(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\Next";
@@ -4018,7 +4152,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterPop(int start, IExportEntry export)
+        private static Token ReadIterPop(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4033,7 +4167,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterator(int start, IExportEntry export)
+        private static Token ReadIterator(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4053,7 +4187,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStringConst(int start, IExportEntry export)
+        private static Token ReadStringConst(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4069,7 +4203,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynCast(int start, IExportEntry export)
+        private static Token ReadDynCast(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4088,7 +4222,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn4(int start, IExportEntry export)
+        private static Token ReadUnkn4(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4103,7 +4237,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayItr(int start, IExportEntry export)
+        private static Token ReadDynArrayItr(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -4134,7 +4268,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadBoolExp(int start, IExportEntry export)
+        private static Token ReadBoolExp(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4149,7 +4283,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn3(int start, IExportEntry export)
+        private static Token ReadUnkn3(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4164,7 +4298,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocOutVar(int start, IExportEntry export)
+        private static Token ReadLocOutVar(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4179,7 +4313,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayLen(int start, IExportEntry export)
+        private static Token ReadDynArrayLen(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4194,7 +4328,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteConst(int start, IExportEntry export)
+        private static Token ReadByteConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4206,11 +4340,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntConst(int start, IExportEntry export)
+        private static Token ReadIntConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int n = (Int32)BitConverter.ToInt32(memory, start + 1);
+            int n = BitConverter.ToInt32(memory, start + 1);
             t.text = n.ToString();
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -4218,7 +4352,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyParm(int start, IExportEntry export)
+        private static Token ReadEmptyParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "null"; //normally ""
@@ -4227,39 +4361,39 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelegateProp(int start, IExportEntry export)
+        private static Token ReadDelegateProp(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadInstDelegate(int start, IExportEntry export)
+        private static Token ReadInstDelegate(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(index);
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadObjectConst(int start, IExportEntry export)
+        private static Token ReadObjectConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = " '" + export.FileRef.getObjectName(index) + "'";
@@ -4273,20 +4407,20 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadFinalFunc(int start, IExportEntry export)
+        private static Token ReadFinalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-            IEntry referenced = export.FileRef.getEntry(index);
+            IEntry referenced = export.FileRef.GetEntry(index);
             if (referenced.ObjectName == export.ObjectName && referenced != export)
             {
-                t.text = referenced.GetFullPath + "(";
+                t.text = referenced.InstancedFullPath + "(";
             }
             else
             {
-                t.text = referenced.ObjectName + "(";
+                t.text = referenced.ObjectName.Instanced + "(";
             }
 
             int pos = start + 5;
@@ -4312,11 +4446,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1(int start, IExportEntry export)
+        private static Token ReadUnkn1(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4326,21 +4460,22 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNameConst(int start, IExportEntry export)
+        private static Token ReadNameConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
+            int num = BitConverter.ToInt32(memory, start + 5);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "'" + export.FileRef.getNameEntry(index) + "'";
+            t.text = $"'{new NameReference(export.FileRef.GetNameEntry(index), num).Instanced}'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }
 
-        private static Token ReadNone(int start, IExportEntry export)
+        private static Token ReadNone(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "None";
@@ -4349,7 +4484,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadZero(int start, IExportEntry export)
+        private static Token ReadZero(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "0";
@@ -4358,13 +4493,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVirtualFunc(int start, IExportEntry export)
+        private static Token ReadVirtualFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.getNameEntry(index) + "(";
+            t.text = export.FileRef.GetNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
@@ -4390,7 +4525,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSelf(int start, IExportEntry export)
+        private static Token ReadSelf(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "this";
@@ -4399,11 +4534,11 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteToInt(int start, IExportEntry export)
+        private static Token ReadByteToInt(int start, ExportEntry export)
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = BitConverter.ToInt32(memory, start + 1);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = "ByteToInt(" + export.FileRef.getObjectName(index) + ")";
@@ -4413,7 +4548,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStatFloat(int start, IExportEntry export)
+        private static Token ReadStatFloat(int start, ExportEntry export)
         {
             Token t = new Token();
             float f = BitConverter.ToSingle(memory, start + 1);
@@ -4424,7 +4559,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndParmVal(int start, IExportEntry export)
+        private static Token ReadEndParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "//EndParmVal";
@@ -4433,7 +4568,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndFuncParm(int start, IExportEntry export)
+        private static Token ReadEndFuncParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4442,7 +4577,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadTrue(int start, IExportEntry export)
+        private static Token ReadTrue(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "True";
@@ -4451,7 +4586,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadFalse(int start, IExportEntry export)
+        private static Token ReadFalse(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "False";
@@ -4460,7 +4595,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadContext(int start, IExportEntry export)
+        private static Token ReadContext(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4469,7 +4604,8 @@ namespace ME3Explorer.Unreal
             int pos = start + a.raw.Length + 1;
             int expSize = BitConverter.ToInt16(memory, pos);
             pos += 2;
-            int bSize = memory[pos];
+            int unkRef = BitConverter.ToInt32(memory, pos);
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
             pos += 5;
             Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(b.inPackageReferences);
@@ -4484,7 +4620,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDefaultParmVal(int start, IExportEntry export)
+        private static Token ReadDefaultParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
             int size = BitConverter.ToInt16(memory, start + 1);
@@ -4502,7 +4638,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEqual(int start, IExportEntry export)
+        private static Token ReadEqual(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4520,7 +4656,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSwitch(int start, IExportEntry export)
+        private static Token ReadSwitch(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 6, export);
@@ -4534,7 +4670,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJumpIfNot(int start, IExportEntry export)
+        private static Token ReadJumpIfNot(int start, ExportEntry export)
         {
             Token t = new Token();
             int offset = BitConverter.ToInt16(memory, start + 1);
@@ -4551,7 +4687,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLet(int start, IExportEntry export)
+        private static Token ReadLet(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4574,7 +4710,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadReturn(int start, IExportEntry export)
+        private static Token ReadReturn(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "Return (";
@@ -4589,7 +4725,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNativeParm(int start, IExportEntry export)
+        private static Token ReadNativeParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4617,7 +4753,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocalVar(int start, IExportEntry export)
+        private static Token ReadLocalVar(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4634,7 +4770,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInstanceVar(int start, IExportEntry export)
+        private static Token ReadInstanceVar(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = BitConverter.ToInt32(memory, start + 1);
@@ -4648,7 +4784,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJump(int start, IExportEntry export)
+        private static Token ReadJump(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "Goto(0x";
@@ -4661,7 +4797,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLableTable(int start, IExportEntry export)
+        private static Token ReadLableTable(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4673,7 +4809,7 @@ namespace ME3Explorer.Unreal
 
             if (index >= 0 && index < export.FileRef.Names.Count)
             {
-                t.text = export.FileRef.getNameEntry(index);
+                t.text = export.FileRef.GetNameEntry(index);
                 t.inPackageReferences.Add((position: start + 1, type: Token.INPACKAGEREFTYPE_NAME, value: index));
             }
             else
@@ -4684,7 +4820,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnknown(int start, IExportEntry export)
+        private static Token ReadUnknown(int start, ExportEntry export)
         {
             Token t = new Token();
             t.raw = new byte[1];
@@ -4693,7 +4829,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNothing(int start, IExportEntry export)
+        private static Token ReadNothing(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4701,136 +4837,22 @@ namespace ME3Explorer.Unreal
             t.raw[0] = memory[start];
             return t;
         }
+        private static Token ReadStopToken(int start, ExportEntry export)
+        {
+            Token t = new Token();
+            t.text = "\\\\Stop?";
+            t.raw = new byte[1];
+            t.raw[0] = memory[start];
+            return t;
+        }
 
-        private static Token ReadEndOfScript(int start, IExportEntry export)
+        private static Token ReadEndOfScript(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\End of Script";
             t.raw = new byte[1];
             t.raw[0] = memory[start];
             return t;
-        }
-
-        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
-        {
-            //Copy function bytes
-            byte[] originalData = sourceExport.Data;
-            byte[] script = new byte[sourceExport.Data.Length - 0x20];
-            byte[] newscript = new byte[sourceExport.Data.Length - 0x20];
-            for (int i = 0; i < script.Length; i++)
-            {
-                script[i] = originalData[i + 0x20];
-                newscript[i] = originalData[i + 0x20];
-            }
-
-            //Perform relink
-            var parsedSource = ParseBytecode(script, sourceExport);
-            var parsedDest = ParseBytecode(script, destinationExport);
-
-            (List<Token> topLevelTokens, _) = parsedSource;
-            foreach (Token t in topLevelTokens)
-            {
-                RelinkToken(t, newscript, sourceExport, destinationExport, relinkFailedReport, crossFileRefObjectMap);
-            }
-
-            //Copy relinked data to new destination
-            byte[] newExpData = destinationExport.Data;
-
-            int functionSuperclass = BitConverter.ToInt32(originalData, 0x0C);
-            if (functionSuperclass != 0)
-            {
-                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(functionSuperclass), out IEntry relinkedValue))
-                {
-                    Debug.WriteLine($"Function superclass relink hit @ 0x0C, new value {relinkedValue.GetFullPath}");
-                    newscript.OverwriteRange(0x0C, BitConverter.GetBytes(relinkedValue.UIndex));
-                }
-                else if (functionSuperclass < 0)
-                {
-                    var sourceEntry = sourceExport.FileRef.getEntry(functionSuperclass);
-                    if (SharedPathfinding.GetEntryOrAddImport(destinationExport.FileRef, sourceEntry.GetFullPath) is IEntry ent)
-                    {
-                        //Todo: Add to relink map
-                        Debug.WriteLine($"Function superclass relink crossported @ 0x0C, new value {ent.GetFullPath}");
-                        newExpData.OverwriteRange(0x0C, BitConverter.GetBytes(ent.UIndex));
-                        //crossFileRefObjectMap.Add(sourceEntry, ent); //Can't add or we will modify the enumeration of this colelction. GetEntryOrAddImport should still catch this
-                    }
-                    else
-                    {
-                        relinkFailedReport.Add($"0x0C Function superclass relink failed: Unable to get or add cross import for: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
-                    }
-                }
-                else
-                {
-                    relinkFailedReport.Add($"0x0C Function superclass relink failed: Cannot relink reference to export that was not mapped from another package: {sourceExport.FileRef.getObjectName(functionSuperclass)}");
-                }
-            }
-
-            {
-                //Scoped
-                int childProbeUIndex = BitConverter.ToInt32(originalData, 0x14);
-                if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(childProbeUIndex), out IEntry relinkedValue))
-                {
-                    Debug.WriteLine($"Function child probe start relink hit @ 0x14, new value {relinkedValue.GetFullPath}");
-                    newExpData.OverwriteRange(0x14, BitConverter.GetBytes(relinkedValue.UIndex));
-                }
-                else
-                {
-                    relinkFailedReport.Add($"0x0C Function child probe start relink failed: Referenced object was not cross ported: {sourceExport.FileRef.getObjectName(childProbeUIndex)}");
-                }
-            }
-
-            for (int i = 0; i < newscript.Length; i++)
-            {
-                newExpData[i + 0x20] = newscript[i];
-            }
-            destinationExport.Data = newExpData;
-        }
-
-        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, Dictionary<IEntry, IEntry> crossFileRefObjectMap)
-        {
-            Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
-
-            foreach ((int pos, int type, int value) relinkItem in t.inPackageReferences)
-            {
-                switch (relinkItem.type)
-                {
-                    case Token.INPACKAGEREFTYPE_NAME:
-                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.getNameEntry(relinkItem.value));
-                        Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a name: {sourceExport.FileRef.getNameEntry(relinkItem.value)}");
-
-                        newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newValue));
-                        break;
-                    case Token.INPACKAGEREFTYPE_ENTRY:
-                        if (relinkItem.value > 0)
-                        {
-                            //Export
-
-                            if (crossFileRefObjectMap.TryGetValue(sourceExport.FileRef.getEntry(relinkItem.value), out IEntry relinkedValue))
-                            {
-                                Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
-                                newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(relinkedValue.UIndex));
-                            }
-                            else
-                            {
-                                relinkFailedReport.Add($"0x{t.pos + relinkItem.pos:X6} Function relink failed: Cannot relink reference to export from another package: {sourceExport.FileRef.getObjectName(relinkItem.value)}");
-                            }
-                            continue;
-                        }
-                        if (relinkItem.value < 0)
-                        {
-                            //Import
-                            ImportEntry newCrossImport = PackageEditorWPF.getOrAddCrossImport(sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
-                            if (newCrossImport == null)
-                            {
-                                relinkFailedReport.Add($"0x{relinkItem.pos:X6} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
-                                continue;
-                            }
-                            Debug.WriteLine($"Function relink hit @ 0x{t.pos + relinkItem.pos:X6}, cross ported an import: {sourceExport.FileRef.getEntry(relinkItem.value).GetFullPath}");
-                            newscript.OverwriteRange(relinkItem.pos, BitConverter.GetBytes(newCrossImport.UIndex));
-                        }
-                        break;
-                }
-            }
         }
     }
 

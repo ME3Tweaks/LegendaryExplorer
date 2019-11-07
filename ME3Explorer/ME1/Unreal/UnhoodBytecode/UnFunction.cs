@@ -25,7 +25,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public StatementList Statements { get; set; }
         public List<BytecodeSingularToken> Tokens;
 
-        internal UnFunction(IExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
+        internal UnFunction(ExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
             : base(export, bytecode)
         {
             _name = name;
@@ -90,17 +90,17 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             {
                 result.Append(type).Append(" ");
             }
-            result.Append(_self.ObjectName).Append("(");
+            result.Append(_self.ObjectName.Instanced).Append("(");
             int paramCount = 0;
-            var locals = new List<IExportEntry>();
+            var locals = new List<ExportEntry>();
 
             Tokens = new List<BytecodeSingularToken>();
             Statements = ReadBytecode();
-            List<IExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
+            List<ExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
             childrenReversed.Reverse();
 
             //Get local children of this function
-            foreach (IExportEntry export in childrenReversed)
+            foreach (ExportEntry export in childrenReversed)
             {
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
@@ -116,18 +116,18 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
                             var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
-                            IEntry entry = export.FileRef.getEntry(uindexOfOuter);
+                            IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
-                                result.Append(entry.ObjectName + " ");
+                                result.Append($"{entry.ObjectName.Instanced} ");
                             }
                         }
                         else
                         {
-                            result.Append(GetPropertyType(export) + " ");
+                            result.Append($"{GetPropertyType(export)} ");
                         }
 
-                        result.Append(export.ObjectName);
+                        result.Append(export.ObjectName.Instanced);
                         paramCount++;
 
                         if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
@@ -188,7 +188,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 result.PushIndent();
                 foreach (var local in locals)
                 {
-                    result.Indent().Append("local ").Append(GetPropertyType(local)).Append(" ").Append(local.ObjectName).Append(";").NewLine();
+                    result.Indent().Append("local ").Append(GetPropertyType(local)).Append(" ").Append(local.ObjectName.Instanced).Append(";").NewLine();
                 }
                 result.PopIndent();   // will be pushed again in DecompileBytecode()
                 DecompileBytecode(Statements, result, createControlStatements);
@@ -200,7 +200,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
         }
 
-        public static string GetPropertyType(IExportEntry exp)
+        public static string GetPropertyType(ExportEntry exp)
         {
             switch (exp.ClassName)
             {
@@ -226,6 +226,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "ArrayProperty";
                 case "DelegateProperty":
                     return "delegate";
+                case "InterfaceProperty":
+                    return "interface";
                 default:
                     Debug.WriteLine("Unknown property type for ME1 Function signature parsing: " + exp.ClassName);
                     return "???";
@@ -240,7 +242,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
                 {
                     var uindexOfOuter = BitConverter.ToInt32(returnValue.Data, returnValue.Data.Length - 4);
-                    IEntry entry = returnValue.FileRef.getEntry(uindexOfOuter);
+                    IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
                     if (entry != null)
                     {
                         return entry.ObjectName;

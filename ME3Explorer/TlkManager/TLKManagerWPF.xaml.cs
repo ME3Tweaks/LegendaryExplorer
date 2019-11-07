@@ -1,5 +1,4 @@
-﻿using KFreonLib.MEDirectories;
-using ME1Explorer;
+﻿using ME1Explorer;
 using ME2Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -24,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.TlkManagerNS
 {
@@ -43,14 +43,17 @@ namespace ME3Explorer.TlkManagerNS
         public TLKManagerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "TLK Manager" }
+            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();
             ME1TLKItems.CollectionChanged += ME1CollectionChangedEventHandler;
             ME2TLKItems.CollectionChanged += ME2CollectionChangedEventHandler;
             ME3TLKItems.CollectionChanged += ME3CollectionChangedEventHandler;
-            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.uindex, x.pcc.getUExport(x.uindex).ObjectName, true)));
+            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FilePath, x.uindex, x.pcc.getObjectName(x.uindex), true)));
             ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
 
@@ -238,9 +241,9 @@ namespace ME3Explorer.TlkManagerNS
             m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk;*.sfm")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
-                using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
+                using (IMEPackage upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
-                    foreach (IExportEntry exp in upk.Exports)
+                    foreach (ExportEntry exp in upk.Exports)
                     {
                         if (exp.ClassName == "BioTlkFile")
                         {
@@ -301,6 +304,13 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME1ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            //ME1 TLKs are held in Package Files
+            //For a proper full reload we have to reload the package from disk
+            ME1TalkFiles.ClearLoadedTlks();
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                
+            }
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
@@ -311,6 +321,8 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            ME2TalkFiles.ClearLoadedTlks();
+
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
@@ -321,6 +333,8 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
+            ME3TalkFiles.ClearLoadedTlks();
+
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);
@@ -421,8 +435,8 @@ namespace ME3Explorer.TlkManagerNS
                 foreach (string tlk in tlkfiles)
                 {
                     //don't dispose the ME1Package, as this will prvent the talkfile from working
-                    ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
-                    foreach (IExportEntry exp in upk.Exports)
+                    IMEPackage upk = MEPackageHandler.OpenME1Package(tlk);
+                    foreach (ExportEntry exp in upk.Exports)
                     {
                         tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
                     }
@@ -652,27 +666,54 @@ namespace ME3Explorer.TlkManagerNS
         /// <summary>
         /// Looks up current loaded file game ID and returns appropriate string reference.
         /// </summary>
-        /// <param name="stringRefID"></param>
-        /// <param name="game"></param>
+        /// <param name="stringRefID">The StringRef ID you want to resolve</param>
+        /// <param name="game">Which game to look up TLK data for</param>
+        /// <param name="me1Package">ME1 package to parse. You can pass in null if you're not using a ME1 Pacakge, or don't have a reference to one you need</param>
         /// <returns></returns>
-        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game)
+        public static string GlobalFindStrRefbyID(int stringRefID, MEGame game, IMEPackage me1Package)
         {
             if (stringRefID <= 0)
             {
                 return null;
             }
 
-            if (game == MEGame.ME1)
+            switch (game)
             {
-                return ME1TalkFiles.findDataById(stringRefID);
+                case MEGame.ME1:
+                    return ME1TalkFiles.findDataById(stringRefID, me1Package);
+                case MEGame.ME2:
+                    return ME2TalkFiles.findDataById(stringRefID);
+                case MEGame.ME3:
+                    return ME3TalkFiles.findDataById(stringRefID);
+                default:
+                    return "UDK String Refs Not Supported";
             }
-            else if (game == MEGame.ME2)
+        }
+
+        /// <summary>
+        /// Looks up current loaded file game ID and returns appropriate string reference.
+        /// </summary>
+        /// <param name="stringRefID">The StringRef ID you want to resolve</param>
+        /// <param name="package">The package that is being looked up.  Used to determine the game and pass on local TLKs.</param>
+        /// <returns></returns>
+        public static string GlobalFindStrRefbyID(int stringRefID, IMEPackage package)
+        {
+
+            if (stringRefID <= 0)
             {
-                return ME2TalkFiles.findDataById(stringRefID);
+                return null;
             }
-            else
+
+            switch (package.Game)
             {
-                return ME3TalkFiles.findDataById(stringRefID);
+                case MEGame.ME1:
+                    return ME1TalkFiles.findDataById(stringRefID, package);
+                case MEGame.ME2:
+                    return ME2TalkFiles.findDataById(stringRefID);
+                case MEGame.ME3:
+                    return ME3TalkFiles.findDataById(stringRefID);
+                default:
+                    return "UDK String Refs Not Supported";
             }
         }
     }

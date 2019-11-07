@@ -1,30 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ME3Explorer.Packages;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
-using UsefulThings.WPF;
 using System.Collections;
 using System.Diagnostics;
-using KFreonLib.Debugging;
 using System.Collections.Concurrent;
 using System.Reflection;
+using ME3Explorer.SharedUI;
+using StreamHelpers;
 using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
 
 namespace ME3Explorer.Unreal
 {
-    public class PropertyCollection : ObservableCollection<UProperty>
+    public class PropertyCollection : ObservableCollectionExtended<UProperty>
     {
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new ConcurrentDictionary<string, PropertyCollection>();
 
         public int endOffset;
+        public bool IsImmutable;
+
+        private readonly string TypeName;
+        private readonly ClassInfo info;
+        private readonly MEGame game;
+        private readonly ExportEntry _export;
 
         /// <summary>
         /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
@@ -32,11 +35,11 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty or null if not found</returns>
-        public T GetProp<T>(string name) where T : UProperty
+        public T GetProp<T>(NameReference name) where T : UProperty
         {
             foreach (var prop in this)
             {
-                if (prop.Name != null && prop.Name.Name.ToLower() == name.ToLower())
+                if (prop.Name == name)
                 {
                     return prop as T;
                 }
@@ -44,26 +47,69 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public void AddOrReplaceProp(UProperty prop)
+        /// <summary>
+        /// Gets the UProperty with the specified name. Will get default values for properties that are part of the type but do not appear in the collection.
+        /// The property name is checked case insensitively. 
+        /// Ensure the property name is spelled correctly and that generic type matches the result you want or it will throw an exception.
+        /// </summary>
+        /// <param name="name">Name of property to find</param>
+        /// <returns>specified UProperty</returns>
+        public T GetPropOrDefault<T>(string name) where T : UProperty
+        {
+            foreach (var prop in this)
+            {
+                if (prop.Name.Name != null && string.Equals(prop.Name.Name, name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return (T)prop;
+                }
+            }
+
+            if (info.TryGetPropInfo(name, game, out PropertyInfo propInfo))
+            {
+                return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+            }
+            //dynamic lookup
+            ExportEntry exportToBuildFor = _export;
+            if (!_export.IsClass && _export.Class is ExportEntry classExport)
+            {
+                exportToBuildFor = classExport;
+            }
+            ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+            if (classInfo.TryGetPropInfo(name, game, out propInfo))
+            {
+                return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+            }
+            throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
+        }
+
+        public bool TryReplaceProp(UProperty prop)
         {
             for (int i = 0; i < this.Count; i++)
             {
-                if (this[i].Name.Name == prop.Name.Name)
+                if (this[i].Name == prop.Name)
                 {
                     this[i] = prop;
-                    return;
+                    return true;
                 }
             }
-            this.Add(prop);
+            return false;
+        }
+
+        public void AddOrReplaceProp(UProperty prop)
+        {
+            if (!TryReplaceProp(prop))
+            {
+                this.Add(prop);
+            }
         }
 
         public void WriteTo(Stream stream, IMEPackage pcc, bool requireNoneAtEnd = true)
         {
             foreach (var prop in this)
             {
-                prop.WriteTo(stream, pcc);
+                prop.WriteTo(stream, pcc, IsImmutable);
             }
-            if (requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
+            if (!IsImmutable && requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
             {
                 stream.WriteNoneProperty(pcc);
             }
@@ -79,47 +125,51 @@ namespace ME3Explorer.Unreal
             return Count > 0 && this.Any(x => x.Name == name);
         }
 
-        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
-        {
-            //Uncomment this for debugging property engine
-            /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
-            if (pcc.FileName == "C:\\Users\\Dev\\Downloads\\ME2_Placeables.upk")
-            {
-              Debugger.Break();
-            }*/
+        public PropertyCollection() { }
 
-            PropertyCollection props = new PropertyCollection();
+        public PropertyCollection(ExportEntry export, string typeName)
+        {
+            _export = export;
+            TypeName = typeName;
+            game = export.FileRef.Game;
+            info = UnrealObjectInfo.GetClassOrStructInfo(game, typeName);
+        }
+
+        public static PropertyCollection ReadProps(ExportEntry export, Stream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
+        {
+            PropertyCollection props = new PropertyCollection(export, typeName);
             long startPosition = stream.Position;
+            IMEPackage pcc = export.FileRef;
             try
             {
                 while (stream.Position + 8 <= stream.Length)
                 {
                     long propertyStartPosition = stream.Position;
-                    int nameIdx = stream.ReadValueS32();
-                    if (!pcc.isName(nameIdx))
+                    int nameIdx = stream.ReadInt32();
+                    if (!pcc.IsName(nameIdx))
                     {
                         stream.Seek(-4, SeekOrigin.Current);
                         break;
                     }
-                    string name = pcc.getNameEntry(nameIdx);
+                    string name = pcc.GetNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
+                        props.Add(new NoneProperty(stream) { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
-                    NameReference nameRef = new NameReference (name, stream.ReadValueS32());
-                    int typeIdx = stream.ReadValueS32();
+                    NameReference nameRef = new NameReference(name, stream.ReadInt32());
+                    int typeIdx = stream.ReadInt32();
                     stream.Seek(4, SeekOrigin.Current);
-                    int size = stream.ReadValueS32();
-                    if (!pcc.isName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
+                    int size = stream.ReadInt32();
+                    if (!pcc.IsName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
                     {
                         stream.Seek(-16, SeekOrigin.Current);
                         break;
                     }
-                    stream.Seek(4, SeekOrigin.Current);
+                    int staticArrayIndex = stream.ReadInt32();
                     PropertyType type;
-                    string namev = pcc.getNameEntry(typeIdx);
+                    string namev = pcc.GetNameEntry(typeIdx);
                     //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
                     if (Enum.IsDefined(typeof(PropertyType), namev))
                     {
@@ -129,42 +179,43 @@ namespace ME3Explorer.Unreal
                     {
                         type = PropertyType.Unknown;
                     }
+
+                    UProperty prop = null;
                     switch (type)
                     {
                         case PropertyType.StructProperty:
-                            string structType = pcc.getNameEntry(stream.ReadValueS32());
+                            string structType = pcc.GetNameEntry(stream.ReadInt32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
-                            if (UnrealObjectInfo.isImmutable(structType, pcc.Game))
+                            if (UnrealObjectInfo.IsImmutable(structType, pcc.Game))
                             {
-                                PropertyCollection structProps = ReadImmutableStruct(pcc, stream, structType, size, entry);
-                                props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
+                                PropertyCollection structProps = ReadImmutableStruct(export, stream, structType, size, entry);
+                                prop = new StructProperty(structType, structProps, nameRef, true) { ValueOffset = valOffset };
                             }
                             else
                             {
-                                PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty, entry: entry);
-                                props.Add(new StructProperty(structType, structProps, nameRef) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
+                                PropertyCollection structProps = ReadProps(export, stream, structType, includeNoneProperty, entry: entry);
+                                prop = new StructProperty(structType, structProps, nameRef) { ValueOffset = valOffset };
                             }
                             break;
                         case PropertyType.IntProperty:
                             IntProperty ip = new IntProperty(stream, nameRef);
-                            ip.StartOffset = propertyStartPosition;
-                            props.Add(ip);
+                            prop = ip;
                             break;
                         case PropertyType.FloatProperty:
-                            props.Add(new FloatProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new FloatProperty(stream, nameRef);
                             break;
                         case PropertyType.ObjectProperty:
-                            props.Add(new ObjectProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new ObjectProperty(stream, nameRef);
                             break;
                         case PropertyType.NameProperty:
-                            props.Add(new NameProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new NameProperty(stream, pcc, nameRef);
                             break;
                         case PropertyType.BoolProperty:
-                            props.Add(new BoolProperty(stream, pcc.Game, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new BoolProperty(stream, pcc.Game, nameRef);
                             break;
                         case PropertyType.BioMask4Property:
-                            props.Add(new BioMask4Property(stream, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new BioMask4Property(stream, nameRef);
                             break;
                         case PropertyType.ByteProperty:
                             {
@@ -173,7 +224,7 @@ namespace ME3Explorer.Unreal
                                     NameReference enumType;
                                     if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                                     {
-                                        enumType = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
+                                        enumType = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
                                     else
                                     {
@@ -182,19 +233,9 @@ namespace ME3Explorer.Unreal
                                         //Attempt to get info without lookup first
                                         var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                         ClassInfo classInfo = null;
-                                        if (enumname == null)
+                                        if (enumname == null && entry is ExportEntry exp)
                                         {
-                                            if (entry != null)
-                                            {
-                                                if (entry.FileRef.Game == MEGame.ME1)
-                                                {
-                                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
-                                                }
-                                                if (entry.FileRef.Game == MEGame.ME2)
-                                                {
-                                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
-                                                }
-                                            }
+                                            classInfo = UnrealObjectInfo.generateClassInfo(exp);
                                         }
 
                                         //Use DB info or attempt lookup
@@ -202,57 +243,65 @@ namespace ME3Explorer.Unreal
                                     }
                                     try
                                     {
-                                        props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
+                                        prop = new EnumProperty(stream, pcc, enumType, nameRef);
                                     }
                                     catch (Exception)
                                     {
                                         //ERROR
                                         //Debugger.Break();
-                                        var unknownEnum = new UnknownProperty(stream, 0, enumType, nameRef) { StartOffset = propertyStartPosition };
-                                        props.Add(unknownEnum);
+                                        prop = new UnknownProperty(stream, 0, enumType, nameRef);
                                     }
                                 }
                                 else
                                 {
-                                    if (pcc.Game == MEGame.ME3)
+                                    if (pcc.Game >= MEGame.ME3)
                                     {
                                         stream.Seek(8, SeekOrigin.Current);
                                     }
-                                    props.Add(new ByteProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                                    prop = new ByteProperty(stream, nameRef);
                                 }
                             }
                             break;
                         case PropertyType.ArrayProperty:
                             {
                                 //Debug.WriteLine("Reading array properties, starting at 0x" + stream.Position.ToString("X5"));
-                                UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
-                                ap.StartOffset = propertyStartPosition;
-                                props.Add(ap);
+                                var valStart = stream.Position;
+                                prop = ReadArrayProperty(stream, export, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
+                                //this can happen with m_aObjComments that were hex edited with old versions of the toolset
+                                //technically valid, so we should support reading them
+                                if (stream.Position < valStart + size)
+                                {
+                                    stream.JumpTo(valStart + size);
+                                }
                             }
                             break;
                         case PropertyType.StrProperty:
                             {
-                                props.Add(new StrProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                                prop = new StrProperty(stream, nameRef);
                             }
                             break;
                         case PropertyType.StringRefProperty:
-                            props.Add(new StringRefProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new StringRefProperty(stream, nameRef);
                             break;
                         case PropertyType.DelegateProperty:
-                            props.Add(new DelegateProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
+                            prop = new DelegateProperty(stream, pcc, nameRef);
                             break;
                         case PropertyType.Unknown:
                             {
                                 // Debugger.Break();
-                                props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
+                                prop = new UnknownProperty(stream, size, pcc.GetNameEntry(typeIdx), nameRef);
                             }
                             break;
                         case PropertyType.None:
-                            if (includeNoneProperty)
-                            {
-                                props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
-                            }
+                            prop = new NoneProperty(stream);
                             break;
+                    }
+
+                    if (prop != null)
+                    {
+                        prop.StaticArrayIndex = staticArrayIndex;
+                        prop.StartOffset = propertyStartPosition;
+                        props.Add(prop);
                     }
                 }
             }
@@ -267,7 +316,8 @@ namespace ME3Explorer.Unreal
                 {
                     if (entry != null)
                     {
-                        Debug.WriteLine(entry.UIndex + " " + entry.ObjectName + " - Invalid properties: Does not end with None");
+                        Debug.WriteLine(entry.FileRef.FilePath);
+                        Debug.WriteLine($"#{entry.UIndex} {entry.ObjectName.Instanced} - Invalid properties: Does not end with None");
                     }
 #if DEBUG
                     props.endOffset = (int)stream.Position;
@@ -278,7 +328,7 @@ namespace ME3Explorer.Unreal
 #endif
                 }
                 //remove None Property
-                if (!includeNoneProperty)
+                if (props[props.Count - 1].PropType == PropertyType.None && !includeNoneProperty)
                 {
                     props.RemoveAt(props.Count - 1);
                 }
@@ -287,292 +337,82 @@ namespace ME3Explorer.Unreal
             return props;
         }
 
-        public static PropertyCollection ReadImmutableStruct(IMEPackage pcc, MemoryStream stream, string structType, int size, IEntry parsingEntry = null)
+        public static PropertyCollection ReadImmutableStruct(ExportEntry export, Stream stream, string structType, int size, IEntry parsingEntry = null)
         {
-            PropertyCollection props = new PropertyCollection();
-            if (pcc.Game == MEGame.ME3)
-            {
-                if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
-                {
-                    bool stripTransients = true;
-                    if (parsingEntry != null && parsingEntry.ClassName == "Class")
-                    {
-                        stripTransients = false;
-                    }
-                    PropertyCollection defaultProps;
-                    //cache
-                    if (defaultStructValuesME3.ContainsKey(structType) && stripTransients)
-                    {
-                        defaultProps = defaultStructValuesME3[structType];
-                    }
-                    else
-                    {
-                        defaultProps = ME3UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
-                        if (defaultProps == null)
-                        {
-                            long startPos = stream.Position;
-                            props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
-                            return props;
-                        }
-                        if (stripTransients)
-                        {
-                            defaultStructValuesME3.TryAdd(structType, defaultProps);
-                        }
-                    }
-                    foreach (var prop in defaultProps)
-                    {
-                        UProperty uProperty = null;
-                        if (prop is StructProperty defaultStructProperty)
-                        {
-                            //Set correct struct type
-                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType, defaultStructProperty.StructType);
-                        }
-                        else
-                        {
-                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
-                        }
+            IMEPackage pcc = export.FileRef;
+            //strip transients unless this is a class definition
+            bool stripTransients = !(parsingEntry != null && (parsingEntry.ClassName == "Class" || parsingEntry.ClassName == "ScriptStruct"));
 
-                        if (uProperty.PropType != PropertyType.None)
-                        {
-                            props.Add(uProperty);
-                        }
-                    }
+            PropertyCollection props = new PropertyCollection(export, structType);
+            PropertyCollection defaultProps;
+            ConcurrentDictionary<string, PropertyCollection> defaultStructDict;
+            Func<string, bool, PropertyCollection> getDefaultStructValueFunc;
+            switch (pcc.Game)
+            {
+                case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesME3;
+                    getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                case MEGame.ME2 when ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesME2;
+                    getDefaultStructValueFunc = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                case MEGame.ME1 when ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.ContainsKey(structType):
+                    defaultStructDict = defaultStructValuesME1;
+                    getDefaultStructValueFunc = ME1Explorer.Unreal.ME1UnrealObjectInfo.getDefaultStructValue;
+                    break;
+                default:
+                    Debug.WriteLine("Unknown struct type: " + structType);
+                    props.Add(new UnknownProperty(stream, size) { StartOffset = stream.Position });
                     return props;
-                }
             }
 
-            //TODO: implement getDefaultClassValue() for ME1 and ME2 so this isn't needed
-            if (structType == "Rotator")
+            //cache
+            if (defaultStructDict.ContainsKey(structType) && stripTransients)
             {
-                string[] labels = { "Pitch", "Yaw", "Roll" };
-                for (int i = 0; i < 3; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Vector2d" || structType == "Vector2D" || structType == "RwVector2")
-            {
-                string[] labels = { "X", "Y" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Vector" || structType == "RwVector3")
-            {
-                string[] labels = { "X", "Y", "Z" };
-                for (int i = 0; i < 3; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Color")
-            {
-                string[] labels = { "B", "G", "R", "A" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new ByteProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "LinearColor")
-            {
-                string[] labels = { "R", "G", "B", "A" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            //uses EndsWith to support RwQuat, RwVector4, and RwPlane
-            else if (structType.EndsWith("Quat") || structType.EndsWith("Vector4") || structType.EndsWith("Plane"))
-            {
-                string[] labels = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "TwoVectors")
-            {
-                string[] labels = { "X", "Y", "Z", "X", "Y", "Z" };
-                for (int i = 0; i < 6; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Matrix" || structType == "RwMatrix44")
-            {
-                string[] labels = { "X Plane", "Y Plane", "Z Plane", "W Plane" };
-                string[] labels2 = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long planePos = stream.Position;
-                    PropertyCollection structProps = new PropertyCollection();
-                    for (int j = 0; j < 4; j++)
-                    {
-                        long startPos = stream.Position;
-                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
-                    }
-                    props.Add(new StructProperty("Plane", structProps, labels[i], true) { StartOffset = planePos });
-                }
-            }
-            else if (structType == "Guid")
-            {
-                string[] labels = { "A", "B", "C", "D" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "NavReference")
-            {
-                props.Add(new ObjectProperty(stream, "Actor"));
-                string[] labels = { "A", "B", "C", "D" };
-                for (int i = 0; i < 4; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "IntPoint")
-            {
-                string[] labels = { "X", "Y" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long startPos = stream.Position;
-                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
-                }
-            }
-            else if (structType == "Box" || structType == "BioRwBox")
-            {
-                string[] labels = { "Min", "Max" };
-                string[] labels2 = { "X", "Y", "Z" };
-                for (int i = 0; i < 2; i++)
-                {
-                    long vectorPos = stream.Position;
-                    PropertyCollection structProps = new PropertyCollection();
-                    for (int j = 0; j < 3; j++)
-                    {
-                        long startPos = stream.Position;
-                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
-                    }
-                    props.Add(new StructProperty("Vector", structProps, labels[i], true) { StartOffset = vectorPos });
-                }
-                long validPos = stream.Position;
-                props.Add(new ByteProperty(stream, "IsValid") { StartOffset = validPos });
+                defaultProps = defaultStructDict[structType];
             }
             else
             {
-                //Fallback: Attempt lookup. This may be able to be promoted to main lookup now, but we'll do that later
-                if (pcc.Game == MEGame.ME2)
+                defaultProps = getDefaultStructValueFunc(structType, stripTransients);
+                if (defaultProps == null)
                 {
-                    if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType))
-                    {
-                        PropertyCollection defaultProps;
-                        bool stripTransients = true;
-                        if (parsingEntry != null && parsingEntry.ClassName == "Class")
-                        {
-                            stripTransients = false;
-                        }
-                        //Cache
-                        if (defaultStructValuesME2.ContainsKey(structType) && stripTransients)
-                        {
-                            defaultProps = defaultStructValuesME2[structType];
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Build&cache for ME2 struct: " + structType);
-                            defaultProps = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
-                            if (defaultProps == null)
-                            {
-                                long pos = stream.Position;
-                                props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
-                                return props;
-                            }
-                            if (stripTransients)
-                            {
-                                defaultStructValuesME2.TryAdd(structType, defaultProps);
-                            }
-                        }
-                        //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
-                        foreach (var prop in defaultProps)
-                        {
-                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
-                            //Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
-                            if (uProperty.PropType != PropertyType.None)
-                            {
-                                props.Add(uProperty);
-                            }
-
-                        }
-                        return props;
-                    }
+                    long startPos = stream.Position;
+                    props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                    return props;
                 }
-                else if (pcc.Game == MEGame.ME1)
+                if (stripTransients)
                 {
-                    if (ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.ContainsKey(structType))
-                    {
-                        PropertyCollection defaultProps;
-                        bool stripTransients = true;
-                        if (parsingEntry != null && parsingEntry.ClassName == "Class")
-                        {
-                            stripTransients = false;
-                        }
-                        //Cache
-                        if (defaultStructValuesME1.ContainsKey(structType) && stripTransients)
-                        {
-                            defaultProps = defaultStructValuesME1[structType];
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Build&cache for ME1 struct: " + structType);
-                            defaultProps = ME1Explorer.Unreal.ME1UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
-                            if (defaultProps == null)
-                            {
-                                long pos = stream.Position;
-                                props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
-                                return props;
-                            }
-                            if (stripTransients)
-                            {
-                                defaultStructValuesME1.TryAdd(structType, defaultProps);
-                            }
-                        }
-                        //Debug.WriteLine("ME1: Build immuatable struct properties for struct type " + structType);
-                        foreach (var prop in defaultProps)
-                        {
-                            //Debug.WriteLine("  > ME1: Building immutable property: " + prop.Name + " at 0x" + stream.Position.ToString("X5"));
+                    defaultStructDict.TryAdd(structType, defaultProps);
+                }
+            }
 
-                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
-                            //Debug.WriteLine("  >> ME1: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
-                            if (uProperty.PropType != PropertyType.None)
-                            {
-                                props.Add(uProperty);
-                            }
-
-                        }
-                        return props;
-                    }
+            foreach (var prop in defaultProps)
+            {
+                UProperty uProperty;
+                if (prop is StructProperty defaultStructProperty)
+                {
+                    //Set correct struct type
+                    uProperty = ReadImmutableStructProp(export, stream, prop, structType, defaultStructProperty.StructType);
+                }
+                else
+                {
+                    uProperty = ReadImmutableStructProp(export, stream, prop, structType);
                 }
 
-                Debug.WriteLine("Unknown struct type: " + structType);
-                long startPos = stream.Position;
-                Debugger.Break();
-                props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
+                if (uProperty.PropType != PropertyType.None)
+                {
+                    props.Add(uProperty);
+                }
             }
             return props;
         }
 
         //Nested struct type is for structs in structs
-        static UProperty ReadImmutableStructProp(IMEPackage pcc, MemoryStream stream, UProperty template, string structType, string nestedStructType = null)
+        static UProperty ReadImmutableStructProp(ExportEntry export, Stream stream, UProperty template, string structType, string nestedStructType = null)
         {
+            IMEPackage pcc = export.FileRef;
             if (stream.Position + 1 >= stream.Length)
             {
                 throw new EndOfStreamException("tried to read past bounds of Export Data");
@@ -606,32 +446,35 @@ namespace ME3Explorer.Unreal
                 case PropertyType.StrProperty:
                     return new StrProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.ArrayProperty:
-                    var arrayProperty = ReadArrayProperty(stream, pcc, structType, template.Name, true);
+                    var arrayProperty = ReadArrayProperty(stream, export, structType, template.Name, true);
                     arrayProperty.StartOffset = startPos;
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
-                    var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true);
-                    structProp.StartOffset = startPos;
-                    structProp.ValueOffset = valuePos;
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).Reference, 0);
+                    var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
+                    {
+                        StartOffset = startPos,
+                        ValueOffset = valuePos
+                    };
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.None:
-                    return new NoneProperty(template.Name) { StartOffset = startPos };
+                    return new NoneProperty { StartOffset = startPos };
                 case PropertyType.DelegateProperty:
-                    throw new NotImplementedException("cannot read Delegate property of Immutable struct");
+                    return new DelegateProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.Unknown:
+                default:
                     throw new NotImplementedException("cannot read Unknown property of Immutable struct");
             }
-            throw new NotImplementedException("cannot read Unknown property of Immutable struct");
         }
 
-        public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
+        public static UProperty ReadArrayProperty(Stream stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
         {
+            IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
             //Debug.WriteLine("Reading array length at 0x" + stream.Position.ToString("X5"));
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             switch (arrayType)
             {
                 case ArrayType.Object:
@@ -642,7 +485,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new ObjectProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Name:
                     {
@@ -652,26 +495,16 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new NameProperty(stream, pcc) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<NameProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<NameProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Enum:
                     {
                         //Attempt to get info without lookup first
                         var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
                         ClassInfo classInfo = null;
-                        if (enumname == null)
+                        if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            if (parsingEntry != null)
-                            {
-                                if (parsingEntry.FileRef.Game == MEGame.ME1)
-                                {
-                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
-                                }
-                                if (parsingEntry.FileRef.Game == MEGame.ME2)
-                                {
-                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
-                                }
-                            }
+                            classInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
                         }
 
                         //Use DB info or attempt lookup
@@ -683,7 +516,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new EnumProperty(stream, pcc, enumType) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<EnumProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<EnumProperty>(arrayOffset, props, name) { Reference = enumType };
                     }
                 case ArrayType.Struct:
                     {
@@ -691,35 +524,21 @@ namespace ME3Explorer.Unreal
 
                         var props = new List<StructProperty>();
                         var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType);
-                        if (propertyInfo == null && parsingEntry != null)
+                        if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
-                            ClassInfo currentInfo;
-                            switch (parsingEntry.FileRef.Game)
-                            {
-                                case MEGame.ME1:
-                                    currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
-                                    break;
-                                case MEGame.ME2:
-                                    currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
-                                    break;
-                                case MEGame.ME3:
-                                default:
-                                    currentInfo = ME3UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
-                                    break;
-                            }
-                            currentInfo.baseClass = (parsingEntry as IExportEntry).ClassParent;
-                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
+                            var currentInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
+                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo, parsingExport);
                         }
 
-                        string arrayStructType = propertyInfo?.reference;
-                        if (IsInImmutable || UnrealObjectInfo.isImmutable(arrayStructType, pcc.Game))
+                        string arrayStructType = propertyInfo?.Reference;
+                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Game))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)
                             {
                                 stream.Seek(-16, SeekOrigin.Current);
                                 //Debug.WriteLine("Arraysize at 0x" + stream.Position.ToString("X5"));
-                                arraySize = stream.ReadValueS32();
+                                arraySize = stream.ReadInt32();
                                 stream.Seek(12, SeekOrigin.Current);
                             }
                             for (int i = 0; i < count; i++)
@@ -727,7 +546,7 @@ namespace ME3Explorer.Unreal
                                 long offset = stream.Position;
                                 try
                                 {
-                                    PropertyCollection structProps = ReadImmutableStruct(pcc, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry);
+                                    PropertyCollection structProps = ReadImmutableStruct(export, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry);
                                     props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true)
                                     {
                                         StartOffset = offset,
@@ -737,7 +556,7 @@ namespace ME3Explorer.Unreal
                                 catch (Exception e)
                                 {
                                     Debug.WriteLine("ERROR READING ARRAY PROP");
-                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                                 }
                             }
                         }
@@ -747,7 +566,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties,entry: parsingEntry);
+                                PropertyCollection structProps = ReadProps(export, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry);
 #if DEBUG
                                 try
                                 {
@@ -761,12 +580,12 @@ namespace ME3Explorer.Unreal
                                 }
                                 catch (Exception e)
                                 {
-                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                                 }
 #endif
                             }
                         }
-                        return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<StructProperty>(arrayOffset, props, name) { Reference = arrayStructType };
                     }
                 case ArrayType.Bool:
                     {
@@ -776,7 +595,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new BoolProperty(stream, pcc.Game, isArrayContained: true) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<BoolProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.String:
                     {
@@ -786,7 +605,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new StrProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<StrProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<StrProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Float:
                     {
@@ -796,18 +615,10 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new FloatProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<FloatProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name);
                     }
                 case ArrayType.Byte:
-                    {
-                        var props = new List<ByteProperty>();
-                        for (int i = 0; i < count; i++)
-                        {
-                            long startPos = stream.Position;
-                            props.Add(new ByteProperty(stream) { StartOffset = startPos });
-                        }
-                        return new ArrayProperty<ByteProperty>(arrayOffset, props, arrayType, name);
-                    }
+                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name);
                 case ArrayType.Int:
                 default:
                     {
@@ -817,17 +628,35 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new IntProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<IntProperty>(arrayOffset, props, arrayType, name);
+                        return new ArrayProperty<IntProperty>(arrayOffset, props, name);
                     }
             }
         }
 
+        /// <summary>
+        /// Removes the first matching property name from the collection.
+        /// </summary>
+        /// <param name="propname">Property name to remove</param>
+        internal bool RemoveNamedProperty(string propname)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                var property = this[i];
+                if (property.Name.Name.Equals(propname, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
-    public abstract class UProperty : ViewModelBase
+    public abstract class UProperty : NotifyPropertyChangedBase
     {
-        public PropertyType PropType;
+        public abstract PropertyType PropType { get; }
         private NameReference _name;
+        public int StaticArrayIndex { get; set; }
         /// <summary>
         /// Offset to the value for this property - note not all properties have actual values.
         /// </summary>
@@ -849,6 +678,11 @@ namespace ME3Explorer.Unreal
             _name = name ?? new NameReference();
         }
 
+        protected UProperty()
+        {
+            _name = new NameReference();
+        }
+
         public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
 
         /// <summary>
@@ -868,15 +702,13 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("NoneProperty")]
     public class NoneProperty : UProperty
     {
-        public NoneProperty(NameReference? name = null) : base(name)
-        {
-            PropType = PropertyType.None;
-        }
+        public override PropertyType PropType => PropertyType.None;
 
-        public NoneProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public NoneProperty() : base("None") { }
+
+        public NoneProperty(Stream stream) : this()
         {
             ValueOffset = stream.Position;
-            PropType = PropertyType.None;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
@@ -891,30 +723,45 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("StructProperty | {Name.Name} - {StructType}")]
     public class StructProperty : UProperty
     {
-        public readonly bool IsImmutable;
+        public override PropertyType PropType => PropertyType.StructProperty;
+
+        private bool _isImmutable;
+        private PropertyCollection _properties;
 
         public string StructType { get; }
-        public PropertyCollection Properties { get; set; }
+
+        public PropertyCollection Properties
+        {
+            get => _properties;
+            set
+            {
+                _properties = value;
+                _properties.IsImmutable = _isImmutable;
+            }
+        }
+
+        public bool IsImmutable
+        {
+            get => _isImmutable;
+            set => Properties.IsImmutable = _isImmutable = value;
+        }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
             StructType = structType;
-            Properties = props;
+            Properties = props ?? new PropertyCollection();
             IsImmutable = isImmutable;
-            PropType = PropertyType.StructProperty;
         }
 
         public StructProperty(string structType, bool isImmutable, params UProperty[] props) : base(null)
         {
             StructType = structType;
-            IsImmutable = isImmutable;
-            PropType = PropertyType.StructProperty;
             Properties = new PropertyCollection();
+            IsImmutable = isImmutable;
             foreach (var prop in props)
             {
                 Properties.Add(prop);
             }
-
         }
 
         public T GetProp<T>(string name) where T : UProperty
@@ -922,208 +769,25 @@ namespace ME3Explorer.Unreal
             return Properties.GetProp<T>(name);
         }
 
+        public T GetPropOrDefault<T>(string name) where T : UProperty
+        {
+            return Properties.GetPropOrDefault<T>(name);
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (valueOnly)
             {
-                foreach (var prop in Properties)
-                {
-                    //Debug.WriteLine("Writing struct prop " + prop.Name + " at 0x" + stream.Position.ToString("X4"));
-                    prop.WriteTo(stream, pcc, IsImmutable);
-                }
-                if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty)))
-                {
-                    stream.WriteNoneProperty(pcc);
-                }
+                Properties.WriteTo(stream, pcc);
             }
             else
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    MemoryStream m = new MemoryStream();
-                    foreach (var prop in Properties)
-                    {
-                        prop.WriteTo(m, pcc, IsImmutable);
-                    }
-
-                    if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty))) //ensure ending none
-                    {
-                        m.WriteNoneProperty(pcc);
-                    }
+                    Stream m = new MemoryStream();
+                    Properties.WriteTo(m, pcc);
                     return m;
-                });
-            }
-        }
-
-        /// <summary>
-        /// EXPERIMENTAL - USE WITH CAUTION - ONLY WORKS FOR ME3
-        /// </summary>
-        public T GetStruct<T>() where T : class, new()
-        {
-            T uStruct = new T();
-            MethodInfo getPropMethodInfo = this.GetType().GetMethod(nameof(GetProp));
-            if (typeof(T).Name != StructType)
-            {
-                throw new NotSupportedException($"{typeof(T).Name} does not match the StructProperty's struct type: {StructType}");
-            }
-
-            if (!ME3UnrealObjectInfo.Structs.TryGetValue(StructType, out ClassInfo classInfo))
-            {
-                throw new ArgumentException($"{StructType} is not a recognized struct!");
-            }
-            FieldInfo[] fields = typeof(T).GetFields();
-            foreach (FieldInfo info in fields)
-            {
-                if (classInfo.properties.TryGetValue(info.Name, out PropertyInfo propInfo)
-                 && getPropMethodInfo.MakeGenericMethod(getUPropertyType(propInfo)).Invoke(this, new object[]{ info.Name }) is UProperty uProp)
-                {
-                    info.SetValue(uStruct, getUPropertyValue(uProp, propInfo));
-                }
-            }
-
-            return uStruct;
-
-            Type getUPropertyType(PropertyInfo propInfo)
-            {
-                switch (propInfo.type)
-                {
-                    case PropertyType.StructProperty:
-                        return typeof(StructProperty);
-                    case PropertyType.IntProperty:
-                        return typeof(IntProperty);
-                    case PropertyType.FloatProperty:
-                        return typeof(FloatProperty);
-                    case PropertyType.DelegateProperty:
-                        return typeof(DelegateProperty);
-                    case PropertyType.ObjectProperty:
-                        return typeof(ObjectProperty);
-                    case PropertyType.NameProperty:
-                        return typeof(NameProperty);
-                    case PropertyType.BoolProperty:
-                        return typeof(BoolProperty);
-                    case PropertyType.BioMask4Property:
-                        return typeof(BioMask4Property);
-                    case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                        return typeof(EnumProperty);
-                    case PropertyType.ByteProperty:
-                        return typeof(ByteProperty);
-                    case PropertyType.ArrayProperty:
-                    {
-                        if (Enum.TryParse(propInfo.reference, out PropertyType arrayType))
-                        {
-                            return typeof(ArrayProperty<>).MakeGenericType(getUPropertyType(new PropertyInfo {type = arrayType }));
-                        }
-                        if (ME3UnrealObjectInfo.Classes.ContainsKey(propInfo.reference))
-                        {
-                            return typeof(ArrayProperty<ObjectProperty>);
-                        }
-                        return typeof(ArrayProperty<StructProperty>);
-                    }
-                    case PropertyType.StrProperty:
-                        return typeof(StrProperty);
-                    case PropertyType.StringRefProperty:
-                        return typeof(StringRefProperty);
-                    case PropertyType.None:
-                    case PropertyType.Unknown:
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            object getUPropertyValue(UProperty prop, PropertyInfo propInfo)
-            {
-                switch (prop)
-                {
-                    case ArrayPropertyBase arrayPropertyBase:
-                    {
-                        List<object> objVals = arrayPropertyBase.Properties.Select(p => getUPropertyValue(p, propInfo)).ToList();
-                        Type arrayType = getArrayPropertyValueType(arrayPropertyBase, propInfo);
-                        //IEnumerable<arrayType> typedEnumerable = objVals.Cast<arrayType>();
-                        var typedEnumerable = typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.Cast), arrayType, null, objVals);
-                        //return typedEnumerable.ToArray();
-                        return typeof(Enumerable).InvokeGenericMethod(nameof(Enumerable.ToArray), arrayType, null, typedEnumerable);
-                    }
-                    case BioMask4Property bioMask4Property:
-                        return bioMask4Property.Value;
-                    case BoolProperty boolProperty:
-                        return boolProperty.Value;
-                    case ByteProperty byteProperty:
-                        return byteProperty.Value;
-                    case DelegateProperty delegateProperty:
-                        return delegateProperty.unk;
-                    case EnumProperty enumProperty:
-                        var enumType = Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
-                        return Enum.Parse(enumType, enumProperty.Value.InstancedString);
-                    case FloatProperty floatProperty:
-                        return floatProperty.Value;
-                    case IntProperty intProperty:
-                        return intProperty.Value;
-                    case NameProperty nameProperty:
-                        return nameProperty.Value;
-                    case ObjectProperty objectProperty:
-                        return objectProperty.Value;
-                    case StringRefProperty stringRefProperty:
-                        return stringRefProperty.Value;
-                    case StrProperty strProperty:
-                        return strProperty.Value;
-                    case StructProperty structProperty:
-                    {
-                        Type structType = Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
-                        //return structProperty.GetStruct<structType>();
-                        return typeof(StructProperty).InvokeGenericMethod(nameof(structProperty.GetStruct), structType, structProperty);
-                    }
-                    case UnknownProperty unknownProperty:
-                    case NoneProperty noneProperty:
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            Type getArrayPropertyValueType(ArrayPropertyBase arrProp, PropertyInfo propInfo)
-            {
-                switch (arrProp)
-                {
-                    case ArrayProperty<IntProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<StringRefProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<ObjectProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<DelegateProperty> _:
-                        return typeof(int);
-                    case ArrayProperty<FloatProperty> _:
-                        return typeof(float);
-                    case ArrayProperty<BoolProperty> _:
-                        return typeof(bool);
-                    case ArrayProperty<StrProperty> _:
-                        return typeof(string);
-                    case ArrayProperty<ByteProperty> _:
-                        return typeof(byte);
-                    case ArrayProperty<BioMask4Property> _:
-                        return typeof(byte);
-                    case ArrayProperty<NameProperty> _:
-                        return typeof(NameReference);
-                    case ArrayProperty<EnumProperty> _:
-                        return Type.GetType($"Unreal.ME3Enums.{propInfo.reference}");
-                    case ArrayProperty<StructProperty> _:
-                        return Type.GetType($"Unreal.ME3Structs.{propInfo.reference}");
-                    default:
-                        throw new  NotImplementedException();
-                }
-            }
-        }
-    }
-
-    public static class StructArrayExtensions
-    {
-        /// <summary>
-        /// EXPERIMENTAL - ONLY WORKS FOR ME3
-        /// </summary>
-        public static IEnumerable<T> AsStructs<T>(this ArrayProperty<StructProperty> arrayProperty) where T : class, new()
-        {
-            foreach (StructProperty structProperty in arrayProperty)
-            {
-                yield return structProperty.GetStruct<T>();
+                }, StaticArrayIndex);
             }
         }
     }
@@ -1131,6 +795,8 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
     public class IntProperty : UProperty, IComparable
     {
+        public override PropertyType PropType => PropertyType.IntProperty;
+
         int _value;
         public int Value
         {
@@ -1138,28 +804,28 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public IntProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public IntProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
-            PropType = PropertyType.IntProperty;
+            Value = stream.ReadInt32();
         }
 
         public IntProperty(int val, NameReference? name = null) : base(name)
         {
             Value = val;
-            PropType = PropertyType.IntProperty;
         }
+
+        public IntProperty() { }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteIntProperty(pcc, Name, Value);
+                stream.WriteIntProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
 
@@ -1183,42 +849,53 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator int(IntProperty p)
         {
-            return p.Value;
+            return p?.Value ?? 0;
         }
     }
 
     [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
     public class FloatProperty : UProperty, IComparable
     {
+        public override PropertyType PropType => PropertyType.FloatProperty;
+
         float _value;
         public float Value
         {
             get => _value;
-            set => SetProperty(ref _value, value);
+            set
+            {
+                //There is more than one way to represent 0 for float binary, and the normal == does not distinguish between them
+                //for our purposes, we need to write out the exact binary we read in if no changes were made, so a custom comparison is needed
+                if (!_value.IsBinarilyIdentical(value))
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
+            }
         }
 
-        public FloatProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public FloatProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueF32();
-            PropType = PropertyType.FloatProperty;
+            Value = stream.ReadFloat();
         }
 
         public FloatProperty(float val, NameReference? name = null) : base(name)
         {
             Value = val;
-            PropType = PropertyType.FloatProperty;
         }
+
+        public FloatProperty() { }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteFloatProperty(pcc, Name, Value);
+                stream.WriteFloatProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueF32(Value);
+                stream.WriteFloat(Value);
             }
         }
 
@@ -1242,13 +919,15 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator float(FloatProperty p)
         {
-            return p.Value;
+            return p?.Value ?? 0;
         }
     }
 
     [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class ObjectProperty : UProperty, IComparable
     {
+        public override PropertyType PropType => PropertyType.ObjectProperty;
+
         int _value;
         public int Value
         {
@@ -1256,34 +935,33 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public ObjectProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public ObjectProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
-            PropType = PropertyType.ObjectProperty;
+            Value = stream.ReadInt32();
         }
 
         public ObjectProperty(int val, NameReference? name = null) : base(name)
         {
             Value = val;
-            PropType = PropertyType.ObjectProperty;
         }
 
         public ObjectProperty(IEntry referencedEntry, NameReference? name = null) : base(name)
         {
             Value = referencedEntry.UIndex;
-            PropType = PropertyType.ObjectProperty;
         }
+
+        public ObjectProperty() { }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteObjectProperty(pcc, Name, Value);
+                stream.WriteObjectProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
 
@@ -1314,7 +992,7 @@ namespace ME3Explorer.Unreal
             }
 
             // Optimization for a common success case.
-            if (object.ReferenceEquals(this, p))
+            if (ReferenceEquals(this, p))
             {
                 return true;
             }
@@ -1335,6 +1013,8 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("NameProperty | {Name} = {Value}")]
     public class NameProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.NameProperty;
+
         NameReference _value;
         public NameReference Value
         {
@@ -1342,32 +1022,35 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public NameProperty(NameReference? propertyName = null, NameReference? value = null) : base(propertyName)
+        public NameProperty(NameReference value, NameReference? propertyName = null) : base(propertyName)
         {
-            PropType = PropertyType.NameProperty;
             if (value is NameReference name)
             {
                 Value = name;
             }
         }
 
-        public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
+        public NameProperty(Stream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
-            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
-            PropType = PropertyType.NameProperty;
+            Value = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
+        }
+
+        public NameProperty()
+        {
+            Value = "None";
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteNameProperty(pcc, Name, Value);
+                stream.WriteNameProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteInt32(Value.Number);
             }
         }
 
@@ -1411,6 +1094,8 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
     public class BoolProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.BoolProperty;
+
         bool _value;
         public bool Value
         {
@@ -1418,37 +1103,37 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public BoolProperty(MemoryStream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
+        public BoolProperty(Stream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
-            if (game != MEGame.ME3 && game != MEGame.UDK && isArrayContained)
+            if (game < MEGame.ME3 && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
-                Value = stream.ReadValueB8();
+                Value = stream.ReadBoolByte();
             }
             else
             {
-                Value = (game == MEGame.ME3 || game == MEGame.UDK) ? stream.ReadValueB8() : stream.ReadValueB32();
+                Value = (game >= MEGame.ME3) ? stream.ReadBoolByte() : stream.ReadBoolInt();
             }
-            PropType = PropertyType.BoolProperty;
         }
 
         public BoolProperty(bool val, NameReference? name = null) : base(name)
         {
             Value = val;
-            PropType = PropertyType.BoolProperty;
         }
+
+        public BoolProperty() { }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteBoolProperty(pcc, Name, Value);
+                stream.WriteBoolProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueB8(Value);
+                stream.WriteBoolByte(Value);
 
                 //if (pcc.Game == MEGame.ME3 || isArrayContained)
                 //{
@@ -1468,13 +1153,15 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator bool(BoolProperty p)
         {
-            return p.Value;
+            return p?.Value == true;
         }
     }
 
     [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
     public class ByteProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.ByteProperty;
+
         byte _value;
         public byte Value
         {
@@ -1485,31 +1172,31 @@ namespace ME3Explorer.Unreal
         public ByteProperty(byte val, NameReference? name = null) : base(name)
         {
             Value = val;
-            PropType = PropertyType.ByteProperty;
         }
 
-        public ByteProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public ByteProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueU8();
-            PropType = PropertyType.ByteProperty;
+            Value = (byte)stream.ReadByte();
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteByteProperty(pcc, Name, Value);
+                stream.WriteByteProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueU8(Value);
+                stream.WriteByte(Value);
             }
         }
     }
 
     public class BioMask4Property : UProperty
     {
+        public override PropertyType PropType => PropertyType.BioMask4Property;
+
         byte _value;
         public byte Value
         {
@@ -1517,26 +1204,32 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public BioMask4Property(MemoryStream stream, NameReference? name = null) : base(name)
+        public BioMask4Property(byte val, NameReference? name = null) : base(name)
+        {
+            Value = val;
+        }
+
+        public BioMask4Property(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueU8();
-            PropType = PropertyType.BioMask4Property;
+            Value = (byte)stream.ReadByte();
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WritePropHeader(pcc, Name, PropType, 1);
+                stream.WritePropHeader(pcc, Name, PropType, 1, StaticArrayIndex);
             }
-            stream.WriteValueU8(Value);
+            stream.WriteByte(Value);
         }
     }
 
     [DebuggerDisplay("EnumProperty | {Name} = {Value.Name}")]
     public class EnumProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.ByteProperty;
+
         public NameReference EnumType { get; }
         NameReference _value;
         public NameReference Value
@@ -1546,62 +1239,63 @@ namespace ME3Explorer.Unreal
         }
         public List<NameReference> EnumValues { get; }
 
-        public EnumProperty(MemoryStream stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
+        public EnumProperty(Stream stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
-            var eNameIdx = stream.ReadValueS32();
-            var eName = pcc.getNameEntry(eNameIdx);
-            var eNameNumber = stream.ReadValueS32();
+            var eNameIdx = stream.ReadInt32();
+            var eName = pcc.GetNameEntry(eNameIdx);
+            var eNameNumber = stream.ReadInt32();
 
             Value = new NameReference(eName, eNameNumber);
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
-            PropType = PropertyType.ByteProperty;
         }
 
-        public EnumProperty(NameReference value, NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        public EnumProperty(NameReference value, NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
             EnumType = enumType;
             NameReference enumVal = value;
             Value = enumVal;
-            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
-            PropType = PropertyType.ByteProperty;
+            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
         }
 
         /// <summary>
         /// Creates an enum property and sets the value to the first item in the values list.
         /// </summary>
         /// <param name="enumType">Name of enum</param>
-        /// <param name="pcc">PCC to lookup information from</param>
+        /// <param name="meGame">Which game this property is for</param>
         /// <param name="name">Optional name of EnumProperty</param>
-        public EnumProperty(NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        public EnumProperty(NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)
         {
             EnumType = enumType;
-            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
             if (EnumValues == null)
             {
                 Debugger.Break();
             }
             Value = EnumValues[0];
-            PropType = PropertyType.ByteProperty;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteEnumProperty(pcc, Name, EnumType, Value);
+                stream.WriteEnumProperty(pcc, Name, EnumType, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(pcc.FindNameOrAdd(Value.Name));
+                stream.WriteInt32(Value.Number);
             }
         }
     }
 
     public abstract class ArrayPropertyBase : UProperty, IEnumerable
     {
+        public string Reference;
+
+        public override PropertyType PropType => PropertyType.ArrayProperty;
+
         public abstract IReadOnlyList<UProperty> Properties { get; }
         public abstract int Count { get; }
         public bool IsReadOnly => true;
@@ -1621,33 +1315,80 @@ namespace ME3Explorer.Unreal
         public abstract void SwapElements(int i, int j);
     }
 
-    [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
+    public class ImmutableByteArrayProperty : ArrayPropertyBase
+    {
+        public byte[] bytes;
+        public ImmutableByteArrayProperty(long startOffset, int count, Stream stream, NameReference? name) : base(name)
+        {
+            ValueOffset = startOffset;
+            bytes = stream.ReadToBuffer(count);
+        }
+
+        public ImmutableByteArrayProperty(byte[] array, NameReference? name) : base(name)
+        {
+            bytes = array;
+        }
+        public ImmutableByteArrayProperty(NameReference? name) : base(name)
+        {
+            bytes = Array.Empty<byte>();
+        }
+
+        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        {
+            if (!valueOnly)
+            {
+                stream.WriteArrayProperty(pcc, Name, bytes.Length, () =>
+                {
+                    Stream m = new MemoryStream();
+                    m.WriteFromBuffer(bytes);
+                    return m;
+                }, StaticArrayIndex);
+            }
+            else
+            {
+                stream.WriteInt32(bytes.Length);
+                stream.WriteFromBuffer(bytes);
+            }
+        }
+
+        public override IReadOnlyList<UProperty> Properties => new List<UProperty>();
+        public override int Count => bytes.Length;
+        public override void Clear()
+        {
+            bytes = Array.Empty<byte>();
+        }
+
+        public override void RemoveAt(int index)
+        {
+        }
+
+        public override void SwapElements(int i, int j)
+        {
+        }
+    }
+
+    [DebuggerDisplay("ArrayProperty<{typeof(T).Name,nq}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
         public List<T> Values { get; set; }
         public override IReadOnlyList<UProperty> Properties => Values;
-        public readonly ArrayType arrayType;
 
-        public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(long startOffset, List<T> values, NameReference name) : this(values, name)
         {
             ValueOffset = startOffset;
-            PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = values;
         }
 
-        public ArrayProperty(List<T> values, ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(NameReference name) : this(new List<T>(), name)
         {
-            PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = values;
         }
 
-        public ArrayProperty(ArrayType type, NameReference name) : base(name)
+        public ArrayProperty(IEnumerable<T> values, NameReference name) : this(values.ToList(), name)
         {
-            PropType = PropertyType.ArrayProperty;
-            arrayType = type;
-            Values = new List<T>();
+        }
+
+        public ArrayProperty(List<T> values, NameReference name) : base(name)
+        {
+            Values = values;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
@@ -1656,17 +1397,17 @@ namespace ME3Explorer.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    MemoryStream m = new MemoryStream();
+                    Stream m = new MemoryStream();
                     foreach (var prop in Values)
                     {
                         prop.WriteTo(m, pcc, true);
                     }
                     return m;
-                });
+                }, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(Values.Count);
+                stream.WriteInt32(Values.Count);
                 foreach (var prop in Values)
                 {
                     prop.WriteTo(stream, pcc, true);
@@ -1756,6 +1497,8 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("StrProperty | {Name} = {Value}")]
     public class StrProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.StrProperty;
+
         string _value;
         public string Value
         {
@@ -1763,25 +1506,25 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public StrProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public StrProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            int count = stream.ReadValueS32();
+            int count = stream.ReadInt32();
             var streamPos = stream.Position;
 
             if (count < -1) // originally 0
             {
                 count *= -2;
-                Value = stream.ReadString(count, true, Encoding.Unicode);
+                Value = stream.ReadStringUnicodeNull(count);
             }
             else if (count > 0)
             {
-                Value = stream.ReadString(count, true, Encoding.ASCII);
+                Value = stream.ReadStringASCIINull(count);
             }
             else
             {
                 Value = string.Empty;
-                //ME3Explroer 3.0.2 and below wrote a null terminator character when writing an empty string.
+                //ME3Explorer 3.0.2 and below wrote a null terminator character when writing an empty string.
                 //The game however does not write an empty string if the length is 0 - it just happened to still work but not 100% of the time
                 //This is for backwards compatibility with that as it will have a count of 0 instead of -1
                 if (count == -1)
@@ -1795,31 +1538,28 @@ namespace ME3Explorer.Unreal
             {
                 stream.Seek(streamPos + count, SeekOrigin.Begin);
             }
-
-            PropType = PropertyType.StrProperty;
         }
 
         public StrProperty(string val, NameReference? name = null) : base(name)
         {
             Value = val ?? string.Empty;
-            PropType = PropertyType.StrProperty;
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteStringProperty(pcc, Name, Value);
+                stream.WriteStringProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
                 if (pcc.Game == MEGame.ME3)
                 {
-                    stream.WriteStringUnicode(Value);
+                    stream.WriteUnrealStringUnicode(Value);
                 }
                 else
                 {
-                    stream.WriteStringASCII(Value);
+                    stream.WriteUnrealStringASCII(Value);
                 }
             }
         }
@@ -1843,6 +1583,8 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("StringRefProperty | {Name} = {Value}")]
     public class StringRefProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.StringRefProperty;
+
         int _value;
         public int Value
         {
@@ -1850,64 +1592,77 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public StringRefProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        public StringRefProperty(Stream stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadValueS32();
-            PropType = PropertyType.StringRefProperty;
+            Value = stream.ReadInt32();
+        }
+
+        public StringRefProperty(int val, NameReference? name = null) : base(name)
+        {
+            Value = val;
         }
 
         /// <summary>
         /// For constructing new property
         /// </summary>
         /// <param name="name"></param>
-        public StringRefProperty(NameReference? name = null) : base(name)
-        {
-            PropType = PropertyType.StringRefProperty;
-        }
+        public StringRefProperty(NameReference? name = null) : base(name) { }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteStringRefProperty(pcc, Name, Value);
+                stream.WriteStringRefProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(Value);
+                stream.WriteInt32(Value);
             }
         }
     }
 
     public class DelegateProperty : UProperty
     {
-        public int unk;
-        public NameReference Value;
+        public override PropertyType PropType => PropertyType.DelegateProperty;
 
-        public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        private ScriptDelegate _value;
+
+        public ScriptDelegate Value
         {
-            unk = stream.ReadValueS32();
-            Value = new NameReference(pcc.getNameEntry(stream.ReadValueS32()), stream.ReadValueS32());
-            PropType = PropertyType.DelegateProperty;
+            get => _value;
+            set => SetProperty(ref _value, value);
+        }
+
+        public DelegateProperty(Stream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        {
+            ValueOffset = stream.Position;
+            Value = new ScriptDelegate(stream.ReadInt32(), new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32()));
+        }
+
+        public DelegateProperty(int _object, NameReference functionName, NameReference? name = null) : base(name)
+        {
+            Value = new ScriptDelegate(_object, functionName);
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteDelegateProperty(pcc, Name, unk, Value);
+                stream.WriteDelegateProperty(pcc, Name, Value, StaticArrayIndex);
             }
             else
             {
-                stream.WriteValueS32(unk);
-                stream.WriteValueS32(pcc.FindNameOrAdd(Value.Name));
-                stream.WriteValueS32(Value.Number);
+                stream.WriteInt32(Value.Object);
+                stream.WriteNameReference(Value.FunctionName, pcc);
             }
         }
     }
 
     public class UnknownProperty : UProperty
     {
+        public override PropertyType PropType => PropertyType.Unknown;
+
         public byte[] raw;
         public readonly string TypeName;
 
@@ -1916,26 +1671,23 @@ namespace ME3Explorer.Unreal
             raw = new byte[0];
         }
 
-        public UnknownProperty(MemoryStream stream, int size, string typeName = null, NameReference? name = null) : base(name)
+        public UnknownProperty(Stream stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             TypeName = typeName ?? "Unknown";
-            raw = stream.ReadBytes(size);
-            PropType = PropertyType.Unknown;
+            raw = stream.ReadToBuffer(size);
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(Name));
-                stream.WriteValueS32(0);
-                stream.WriteValueS32(pcc.FindNameOrAdd(TypeName));
-                stream.WriteValueS32(0);
-                stream.WriteValueS32(raw.Length);
-                stream.WriteValueS32(0);
+                stream.WriteNameReference(Name, pcc);
+                stream.WriteNameReference(TypeName, pcc);
+                stream.WriteInt32(raw.Length);
+                stream.WriteInt32(StaticArrayIndex);
             }
-            stream.WriteBytes(raw);
+            stream.WriteFromBuffer(raw);
         }
     }
 }

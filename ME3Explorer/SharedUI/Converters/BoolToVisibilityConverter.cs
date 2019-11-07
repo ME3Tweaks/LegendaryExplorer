@@ -16,6 +16,10 @@ namespace ME3Explorer.SharedUI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (parameter is string param && param == "Not")
+            {
+                return ((bool)value) ? Visibility.Collapsed : Visibility.Visible;
+            }
             return ((bool)value) ? Visibility.Visible : Visibility.Collapsed; 
         }
 

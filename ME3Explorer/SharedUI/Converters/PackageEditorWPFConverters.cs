@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,45 +38,33 @@ namespace ME3Explorer.SharedUI.Converters
         }
     }
 
-    [ValueConversion(typeof(IExportEntry), typeof(string))]
+    [ValueConversion(typeof(ExportEntry), typeof(string))]
     public class ObjectStructPropertyTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is IExportEntry))
+            if (!(value is ExportEntry))
             {
                 return "";
             }
-            IExportEntry export = (IExportEntry)value;
+            ExportEntry export = (ExportEntry)value;
             if (export.ClassName != "StructProperty" && export.ClassName != "ObjectProperty")
             {
                 return "";
             }
 
             //attempt to find type
-            string s = "";
             byte[] data = export.Data;
             int importindex = BitConverter.ToInt32(data, data.Length - 4);
-            if (importindex < 0)
+            if (export.FileRef.GetEntry(importindex) is ImportEntry imp)
             {
-                //import
-                importindex *= -1;
-                if (importindex > 0) importindex--;
-                if (importindex <= export.FileRef.Imports.Count)
-                {
-                    s += " (" + export.FileRef.Imports[importindex].ObjectName + ")";
-                }
+                return $" ({imp.ObjectName.Instanced})";
             }
-            else
+            if (export.FileRef.GetEntry(importindex) is ExportEntry exp)
             {
-                //export
-                if (importindex > 0) importindex--;
-                if (importindex <= export.FileRef.Exports.Count)
-                {
-                    s += " [" + export.FileRef.Exports[importindex].ObjectName + "]";
-                }
+                return $" [{exp.ObjectName.Instanced}]";
             }
-            return s;
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -89,7 +78,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && !exp.IsDefaultObject && PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName))
             {
                 switch (exp.ClassName)
                 {
@@ -100,7 +89,32 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_texture2d.png";
                     case "WwiseStream":
                         return "/PackageEditor/EntryIcons/icon_sound.png";
+                    case "BioTlkFile":
+                        return "/PackageEditor/EntryIcons/icon_tlkfile.png";
+                    case "World":
+                        return "/PackageEditor/EntryIcons/icon_world.png";
+                    case "Function":
+                        return "/PackageEditor/EntryIcons/icon_function.png";
+                    case "Class":
+                        return "/PackageEditor/EntryIcons/icon_class.png";
+                    case "Package":
+                        string fname = Path.GetFileNameWithoutExtension(exp.FileRef.FilePath);
+                        return fname != null && fname.Equals(exp.ObjectName.Name, StringComparison.InvariantCultureIgnoreCase)
+                            ? "/PackageEditor/EntryIcons/icon_package_fileroot.png"
+                            : "/PackageEditor/EntryIcons/icon_package.png";
+                    case "SkeletalMesh":
+                    case "StaticMesh":
+                    case "FracturedStaticMesh":
+                        return "/PackageEditor/EntryIcons/icon_mesh.png";
+                    case "Sequence":
+                        return "/PackageEditor/EntryIcons/icon_sequence.png";
+                    case "Material":
+                        return "/PackageEditor/EntryIcons/icon_material.png";
                 }
+            }
+            else if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)
+            {
+                return "/PackageEditor/EntryIcons/icon_default.png";
             }
 
             return null;
@@ -117,7 +131,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && (exp.IsDefaultObject || PackageEditorWPF.ExportIconTypes.Contains(exp.ClassName)))
             {
                 return Visibility.Visible;
             }
@@ -136,7 +150,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && parameter is string type)
+            if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp && parameter is string type)
             {
                 return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -155,7 +169,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp)
+            if (value is ExportEntry exp)
             {
                 switch (exp.ClassName)
                 {

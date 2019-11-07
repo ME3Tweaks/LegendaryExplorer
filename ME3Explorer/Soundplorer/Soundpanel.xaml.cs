@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -9,28 +7,21 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
-using FontAwesome.WPF;
-using KFreonLib.MEDirectories;
+using FontAwesome5;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using NAudio.Wave;
@@ -74,14 +65,14 @@ namespace ME3Explorer
 
 
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
-        //private Dictionary<IExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<IExportEntry, List<Tuple<string, int, double>>>();
+        //private Dictionary<ExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<ExportEntry, List<Tuple<string, int, double>>>();
 
         public override void PopOut()
         {
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
-                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Height = 400;
                 elhw.Width = 400;
                 elhw.Show();
@@ -92,16 +83,16 @@ namespace ME3Explorer
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
 
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();
             CurrentVolume = 0.65f;
             _playbackState = PlaybackState.Stopped;
-            seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 1);
+            seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             seekbarUpdateTimer.Tick += UpdateSeekBarPos;
             InitializeComponent();
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             try
             {
@@ -114,8 +105,8 @@ namespace ME3Explorer
                 {
                     //update
                     WemIdsToWwwiseEventIdMapping.Clear();
-                    List<IExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
-                    foreach (IExportEntry wwiseEvent in wwiseEventExports)
+                    List<ExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+                    foreach (ExportEntry wwiseEvent in wwiseEventExports)
                     {
                         StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
                         IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
@@ -144,7 +135,7 @@ namespace ME3Explorer
 
                 }
                 CurrentPackage = exportEntry.FileRef;*/
-                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName}");
+                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
@@ -163,7 +154,7 @@ namespace ME3Explorer
                     {
                         try
                         {
-                            var samefolderpath = Directory.GetParent(exportEntry.FileRef.FileName);
+                            var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
                             string samefolderfilepath = System.IO.Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
                             byte[] headerbytes = new byte[0x56];
                             bool bytesread = false;
@@ -388,10 +379,17 @@ namespace ME3Explorer
             _audioPlayer?.Dispose();
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
+        public static bool CanParseStatic(ExportEntry exportEntry)
         {
             //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
-            return !exportEntry.ObjectName.StartsWith("Default__") && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
+            return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
+        }
+
+        public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);
+
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            //todo: improve ui layout on popout
         }
 
         /// <summary>
@@ -399,7 +397,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
-        public Stream getPCMStream(IExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
+        public Stream getPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
             if (CurrentLoadedISACTEntry != null)
             {
@@ -411,7 +409,7 @@ namespace ME3Explorer
             }
             else
             {
-                IExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
+                ExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
                 if (localCurrentExport != null || forcedWemFile != null)
                 {
                     if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
@@ -420,11 +418,11 @@ namespace ME3Explorer
                         string path;
                         if (wwiseStream.IsPCCStored)
                         {
-                            path = localCurrentExport.FileRef.FileName;
+                            path = localCurrentExport.FileRef.FilePath;
                         }
                         else
                         {
-                            path = wwiseStream.getPathToAFC(); // only to check if AFC exists.
+                            path = wwiseStream.GetPathToAFC(); // only to check if AFC exists.
                         }
                         if (path != "")
                         {
@@ -468,8 +466,8 @@ namespace ME3Explorer
             set => SetProperty(ref _repeating, value);
         }
 
-        private FontAwesomeIcon _playPauseImageSource;
-        public FontAwesomeIcon PlayPauseIcon
+        private EFontAwesomeIcon _playPauseImageSource;
+        public EFontAwesomeIcon PlayPauseIcon
         {
             get => _playPauseImageSource;
             set => SetProperty(ref _playPauseImageSource, value);
@@ -581,6 +579,7 @@ namespace ME3Explorer
             set
             {
                 if (value.Equals(_currentTrackPosition)) return;
+                Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
                 OnPropertyChanged(nameof(CurrentTrackPosition));
@@ -892,15 +891,14 @@ namespace ME3Explorer
             MessageBox.Show("Done");
         }
 
-        public async Task ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
+        public async Task ReplaceAudioFromWave(string sourceFile = null, ExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
             string wwisePath = GetWwiseCLIPath(false);
             if (wwisePath == null) return;
             if (sourceFile == null)
             {
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                if (d.ShowDialog() == true)
                 {
                     sourceFile = d.FileName;
                 }
@@ -913,7 +911,7 @@ namespace ME3Explorer
             if (conversionSettings == null)
             {
                 SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
-                if (srod.ShowDialog().Value)
+                if (srod.ShowDialog() == true)
                 {
                     conversionSettings = srod.ChosenSettings;
                 }
@@ -929,10 +927,7 @@ namespace ME3Explorer
                 HostingControl.BusyText = "Converting and replacing audio";
                 HostingControl.IsBusy = true;
             }
-            var conversion = await Task.Run(async () =>
-            {
-                return await RunWwiseConversion(wwisePath, sourceFile, conversionSettings);
-            });
+            var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport);
         }
@@ -1148,10 +1143,10 @@ namespace ME3Explorer
                         Filter = "Wave PCM File|*.wav",
                         FileName = CurrentLoadedExport.ObjectName + ".wav"
                     };
-                    if (d.ShowDialog().Value)
+                    if (d.ShowDialog() == true)
                     {
                         WwiseStream w = new WwiseStream(CurrentLoadedExport);
-                        string wavPath = w.CreateWave(w.getPathToAFC());
+                        string wavPath = w.CreateWave(w.GetPathToAFC());
                         if (wavPath != null && File.Exists(wavPath))
                         {
                             File.Copy(wavPath, d.FileName, true);
@@ -1168,7 +1163,7 @@ namespace ME3Explorer
                         Filter = "Wave PCM|*.wav",
                         FileName = $"{CurrentLoadedExport.ObjectName}_0x{currentWEMItem.Id:X8}.wav"
                     };
-                    if (d.ShowDialog().Value)
+                    if (d.ShowDialog() == true)
                     {
                         Stream ms = getPCMStream();
                         ms.Seek(0, SeekOrigin.Begin);
@@ -1188,7 +1183,7 @@ namespace ME3Explorer
                     Filter = "Wave PCM File|*.wav",
                     FileName = CurrentLoadedISACTEntry.FileName
                 };
-                if (d.ShowDialog().Value)
+                if (d.ShowDialog() == true)
                 {
                     MemoryStream waveStream = CurrentLoadedISACTEntry.GetWaveStream();
                     waveStream.Seek(0, SeekOrigin.Begin);
@@ -1208,7 +1203,7 @@ namespace ME3Explorer
                     Filter = "Wave PCM File|*.wav",
                     FileName = presetfilename
                 };
-                if (d.ShowDialog().Value)
+                if (d.ShowDialog() == true)
                 {
                     Stream s = WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))
@@ -1461,7 +1456,7 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackStopped()
         {
             _playbackState = PlaybackState.Stopped;
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
 
             CommandManager.InvalidateRequerySuggested();
             CurrentTrackPosition = 0;
@@ -1477,14 +1472,14 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackResumed()
         {
             _playbackState = PlaybackState.Playing;
-            PlayPauseIcon = FontAwesomeIcon.Pause;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
         }
 
         private void _audioPlayer_PlaybackPaused()
         {
             UpdateSeekBarPos(null, null);
             _playbackState = PlaybackState.Paused;
-            PlayPauseIcon = FontAwesomeIcon.Play;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
         }
 
         #endregion
@@ -1532,9 +1527,9 @@ namespace ME3Explorer
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
         /// </summary>
         /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
-        public void ReplaceAudioFromWwiseOgg(string oggPath = null, IExportEntry forcedExport = null)
+        public void ReplaceAudioFromWwiseOgg(string oggPath = null, ExportEntry forcedExport = null)
         {
-            IExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
+            ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportToWorkOn);
@@ -1558,7 +1553,7 @@ namespace ME3Explorer
                         return;
                     }
                 }
-                w.ImportFromFile(oggPath, w.getPathToAFC());
+                w.ImportFromFile(oggPath, w.GetPathToAFC());
                 CurrentLoadedExport.Data = w.memory.TypedClone();
                 if (HostingControl != null)
                 {
@@ -1788,7 +1783,7 @@ namespace ME3Explorer
                             {
                                 s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
                             }
-                            //if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                            //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
                             //{
                             //    s += $", Export: {exp.ObjectName}";
                             //}

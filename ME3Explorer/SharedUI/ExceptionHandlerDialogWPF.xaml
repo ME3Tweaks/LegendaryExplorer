@@ -26,6 +26,8 @@
             <Button Content="Continue" Width="80" Grid.Column="2" HorizontalAlignment="Right" Click="Continue_Click"/>
             <Button Content="Quit" Width="80" Grid.Column="3" HorizontalAlignment="Right" Click="Quit_Click"/>
         </Grid>
-        <TextBox Name="ExceptionStackTrace_TextBox" TextWrapping="Wrap" Text="Exception message goes here." FontFamily="Consolas"/>
+        <ScrollViewer>
+            <TextBox Name="ExceptionStackTrace_TextBox" TextWrapping="Wrap" Text="Exception message goes here." FontFamily="Consolas" />
+        </ScrollViewer>
     </DockPanel>
 </Window>

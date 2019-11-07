@@ -22,10 +22,36 @@ using StreamHelpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static ME3Explorer.BinaryInterpreter;
 
 namespace ME3Explorer
 {
+    /// <summary>
+    /// Storage Types for Texture2D
+    /// </summary>
+    public enum StorageTypes
+    {
+        pccUnc = StorageFlags.noFlags,                                     // ME1 (Compressed PCC), ME2 (Compressed PCC)
+        pccLZO = StorageFlags.compressedLZO,                               // ME1 (Uncompressed PCC)
+        pccZlib = StorageFlags.compressedZlib,                             // ME1 (Uncompressed PCC)
+        extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
+        extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
+        extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
+        empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
+    }
+
+    /// <summary>
+    /// Storage type flags for Texture2D
+    /// </summary>
+    [Flags]
+    public enum StorageFlags
+    {
+        noFlags = 0,
+        externalFile = 1 << 0,
+        compressedZlib = 1 << 1,
+        compressedLZO = 1 << 4,
+        unused = 1 << 5,
+    }
+
     static public class TextureCompression
     {
         const uint textureTag = 0x9E2A83C1;
@@ -50,7 +76,67 @@ namespace ME3Explorer
             public List<ChunkBlock> blocks;
         }
 
-        static public void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
+        public static byte[] CompressTexture(byte[] inputData, StorageTypes type)
+        {
+            using (MemoryStream ouputStream = new MemoryStream())
+            {
+                uint compressedSize = 0;
+                uint dataBlockLeft = (uint)inputData.Length;
+                uint newNumBlocks = ((uint)inputData.Length + maxBlockSize - 1) / maxBlockSize;
+                List<ChunkBlock> blocks = new List<ChunkBlock>();
+                using (MemoryStream inputStream = new MemoryStream(inputData))
+                {
+                    // skip blocks header and table - filled later
+                    ouputStream.Seek(SizeOfChunk + SizeOfChunkBlock * newNumBlocks, SeekOrigin.Begin);
+
+                    for (int b = 0; b < newNumBlocks; b++)
+                    {
+                        ChunkBlock block = new ChunkBlock();
+                        block.uncomprSize = Math.Min(maxBlockSize, dataBlockLeft);
+                        dataBlockLeft -= block.uncomprSize;
+                        block.uncompressedBuffer = inputStream.ReadToBuffer(block.uncomprSize);
+                        blocks.Add(block);
+                    }
+                }
+
+                Parallel.For(0, blocks.Count, b =>
+                {
+                    ChunkBlock block = blocks[b];
+                    if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
+                        block.compressedBuffer = LZO2Helper.LZO2.Compress(block.uncompressedBuffer);
+                    else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
+                        block.compressedBuffer = ZlibHelper.Zlib.Compress(block.uncompressedBuffer);
+                    else
+                        throw new Exception("Compression type not expected!");
+                    if (block.compressedBuffer.Length == 0)
+                        throw new Exception("Compression failed!");
+                    block.comprSize = (uint)block.compressedBuffer.Length;
+                    blocks[b] = block;
+                });
+
+                for (int b = 0; b < blocks.Count; b++)
+                {
+                    ChunkBlock block = blocks[b];
+                    ouputStream.Write(block.compressedBuffer, 0, (int)block.comprSize);
+                    compressedSize += block.comprSize;
+                }
+
+                ouputStream.SeekBegin();
+                ouputStream.WriteUInt32(textureTag);
+                ouputStream.WriteUInt32(maxBlockSize);
+                ouputStream.WriteUInt32(compressedSize);
+                ouputStream.WriteInt32(inputData.Length);
+                foreach (ChunkBlock block in blocks)
+                {
+                    ouputStream.WriteUInt32(block.comprSize);
+                    ouputStream.WriteUInt32(block.uncomprSize);
+                }
+
+                return ouputStream.ToArray();
+            }
+        }
+
+        public static void DecompressTexture(byte[] DecompressedBuffer, MemoryStream stream, StorageTypes type, int uncompressedSize, int compressedSize)
         {
             uint blockTag = stream.ReadUInt32();
             if (blockTag != textureTag)
@@ -67,12 +153,14 @@ namespace ME3Explorer
             if ((compressedChunkSize + SizeOfChunk + SizeOfChunkBlock * blocksCount) != compressedSize)
                 throw new Exception("Texture header broken");
 
-            List<ChunkBlock> blocks = new List<ChunkBlock>();
+            var blocks = new List<ChunkBlock>();
             for (uint b = 0; b < blocksCount; b++)
             {
-                ChunkBlock block = new ChunkBlock();
-                block.comprSize = stream.ReadUInt32();
-                block.uncomprSize = stream.ReadUInt32();
+                ChunkBlock block = new ChunkBlock
+                {
+                    comprSize = stream.ReadUInt32(),
+                    uncomprSize = stream.ReadUInt32()
+                };
                 blocks.Add(block);
             }
 
@@ -86,7 +174,7 @@ namespace ME3Explorer
 
             Parallel.For(0, blocks.Count, b =>
             {
-                uint dstLen = 0;
+                uint dstLen;
                 ChunkBlock block = blocks[b];
                 if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
                     dstLen = LZO2Helper.LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);

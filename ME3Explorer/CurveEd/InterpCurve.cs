@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Unreal;
-using Gibbed.IO;
 using System.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -241,9 +240,9 @@ namespace ME3Explorer.CurveEd
                                 new FloatProperty(point.OutVal, "OutVal"),
                                 new FloatProperty(point.ArriveTangent, "ArriveTangent"),
                                 new FloatProperty(point.LeaveTangent, "LeaveTangent"),
-                                new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                                new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc.Game, "InterpMode")
                             })
-                        ).ToList(), ArrayType.Struct, "Points")
+                        ), "Points")
                     }, Name);
                 case CurveType.InterpCurveVector:
                     var points = new List<StructProperty>();
@@ -273,7 +272,7 @@ namespace ME3Explorer.CurveEd
                                 new FloatProperty(yNode.Value.LeaveTangent),
                                 new FloatProperty(zNode.Value.LeaveTangent)
                             }, "LeaveTangent", true),
-                            new EnumProperty(xNode.Value.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                            new EnumProperty(xNode.Value.InterpMode.ToString(), "EInterpCurveMode", pcc.Game, "InterpMode")
                         }));
                         xNode = xNode.Next;
                         yNode = yNode.Next;
@@ -281,7 +280,7 @@ namespace ME3Explorer.CurveEd
                     }
                     return new StructProperty("InterpCurveVector", new PropertyCollection
                     {
-                        new ArrayProperty<StructProperty>(points, ArrayType.Struct, "Points")
+                        new ArrayProperty<StructProperty>(points, "Points")
                     }, Name);
                 case CurveType.InterpCurveVector2D:
                     break;

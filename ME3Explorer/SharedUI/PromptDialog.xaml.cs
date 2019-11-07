@@ -22,11 +22,20 @@ namespace ME3Explorer.SharedUI
         public enum InputType
         {
             Text,
-            Password
+            Password,
+            Multiline
         }
 
         private InputType _inputType;
 
+        /// <summary>
+        /// Creates a new prompt dialog with the specified question, title, and default value. Ensure yo/su set the owner before showing if this if being called from a WPF window.
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="title"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="selectText"></param>
+        /// <param name="inputType"></param>
         public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
             InitializeComponent();
@@ -39,6 +48,16 @@ namespace ME3Explorer.SharedUI
                 txtResponse.SelectAll();
             }
             _inputType = inputType;
+            if (inputType == InputType.Multiline)
+            {
+                txtResponse.AcceptsReturn = true;
+                txtResponse.Height = 100;
+            }
+            else
+            {
+                txtResponse.AcceptsReturn = false;
+                txtResponse.MaxLines = 1;
+            }
         }
 
         void PromptDialog_Loaded(object sender, RoutedEventArgs e)
@@ -46,12 +65,14 @@ namespace ME3Explorer.SharedUI
             txtResponse.Focus();
         }
 
-        public static string Prompt(Window owner, string question, string title = "", string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
+        public static string Prompt(Control owner, string question, string title = "", string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
-            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType)
+            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType);
+            if (owner != null)
             {
-                Owner = owner
-            };
+                inst.Owner = owner as Window ?? GetWindow(owner);
+                inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;

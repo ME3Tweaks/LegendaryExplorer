@@ -20,7 +20,7 @@ namespace ME3Explorer.SplineNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getUExport(index);
+            export = pcc.GetUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
@@ -35,7 +35,7 @@ namespace ME3Explorer.SplineNodes
             index = idx;
             if (idx >= 0)
             {
-                export = pcc.getUExport(index);
+                export = pcc.GetUExport(index);
                 comment = new SText(GetComment(), commentColor, false);
             }
 
@@ -106,7 +106,7 @@ namespace ME3Explorer.SplineNodes
     public class SplineActorNode : SplineNode
     {
         private static readonly Color color = Color.FromArgb(255, 30, 30);
-        readonly PointF[] edgeShape = { new PointF(0, 50), new PointF(0, 25), new PointF(10, 15), new PointF(15, 10), new PointF(30, 5), new PointF(40, 0), new PointF(50, 0), new PointF(40,5), new PointF(30, 10), new PointF(15, 15), new PointF(5, 25) };
+        readonly PointF[] edgeShape = { new PointF(0, 50), new PointF(0, 25), new PointF(10, 15), new PointF(15, 10), new PointF(30, 5), new PointF(40, 0), new PointF(50, 0), new PointF(40, 5), new PointF(30, 10), new PointF(15, 15), new PointF(5, 25) };
         public SplineActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
@@ -148,10 +148,10 @@ namespace ME3Explorer.SplineNodes
                 var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
                 StructProperty point0 = pointsProp[0];
                 StructProperty point1 = pointsProp[1];
-                a = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("OutVal"));
-                tan1 = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
-                tan2 = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
-                d = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("OutVal"));
+                a = CommonStructs.GetVector2(point0.GetProp<StructProperty>("OutVal"));
+                tan1 = CommonStructs.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
+                tan2 = CommonStructs.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
+                d = CommonStructs.GetVector2(point1.GetProp<StructProperty>("OutVal"));
                 const float w = 25;
                 const float h = 25;
                 shape = PPath.CreateEllipse(0, 0, w, h);
@@ -179,21 +179,25 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// This beginning node of the spline connects to the destination point over a bezier curve.
         /// </summary>
-        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> graphNodes)
         {
-            PathfindingEditorEdge edge = new PathfindingEditorEdge();
-            edge.Pen = splineconnnectorPen;
+            PathfindingEditorEdge edge = new PathfindingEditorEdge()
+            {
+                EndPoints = { [0] = this, [1] = destinationPoint },
+                OutboundConnections = { [0] = true, [1] = true},
+                Pen = splineconnnectorPen
+            };
 
             //TODO: Calculate where points B and C lie in actual space for calculating the overhead curve
             //edge.BezierPoints = new float[2];
             //SharpDX.Vector2 b = a + tan1 / 3.0f; // Operator overloading is lovely. Java can go die in a hole.
             //SharpDX.Vector2 c = d - tan2 / 3.0f;
 
-            ((ArrayList)Tag).Add(edge);
-            ((ArrayList)destinationPoint.Tag).Add(edge);
-            edge.Tag = new ArrayList();
-            ((ArrayList)edge.Tag).Add(this);
-            ((ArrayList)edge.Tag).Add(destinationPoint);
+            //((ArrayList)Tag).Add(edge);
+            //((ArrayList)destinationPoint.Tag).Add(edge);
+            //edge.Tag = new ArrayList();
+            //((ArrayList)edge.Tag).Add(this);
+            //((ArrayList)edge.Tag).Add(destinationPoint);
             g.edgeLayer.AddChild(edge);
         }
     }

@@ -17,57 +17,166 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class ExportLoaderHostedWindow : WPFBase
     {
-        public IExportEntry LoadedExport { get; }
-        private readonly ExportLoaderControl hostedControl;
+        public ExportEntry LoadedExport { get; private set; }
+        public readonly ExportLoaderControl HostedControl;
         public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
-        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, IExportEntry exportToLoad)
+        public bool SupportsRecents => HostedControl is FileExportLoaderControl;
+
+        private bool _fileHasPendingChanges;
+        public bool FileHasPendingChanges
+        {
+            get => _fileHasPendingChanges;
+            set
+            {
+                SetProperty(ref _fileHasPendingChanges, value);
+                OnPropertyChanged(nameof(IsModifiedProxy));
+            }
+        }
+        public bool IsModifiedProxy
+        {
+            get
+            {
+                if (LoadedExport != null)
+                {
+                    return LoadedExport.EntryHasPendingChanges;
+                }
+                if (HostedControl is FileExportLoaderControl felc)
+                {
+                    return felc.FileModified;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Opens ELHW with an export and the specified tool.
+        /// </summary>
+        /// <param name="hostedControl"></param>
+        /// <param name="exportToLoad"></param>
+        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad)
         {
             DataContext = this;
-            this.hostedControl = hostedControl;
+            this.HostedControl = hostedControl;
             this.LoadedExport = exportToLoad;
+            LoadedExport.EntryModifiedChanged += NotifyPendingChangesStatusChanged;
             NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
             LoadCommands();
             InitializeComponent();
+            HostedControl.PoppedOut(Recents_MenuItem);
             RootPanel.Children.Add(hostedControl);
+        }
+
+        private void NotifyPendingChangesStatusChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsModifiedProxy));
+        }
+
+        /// <summary>
+        /// Opens ELFH with a file loader and an optional file.
+        /// </summary>
+        /// <param name="hostedControl"></param>
+        /// <param name="file"></param>
+        public ExportLoaderHostedWindow(FileExportLoaderControl hostedControl, string file = null)
+        {
+            DataContext = this;
+            this.HostedControl = hostedControl;
+            hostedControl.ModifiedStatusChanging += NotifyPendingChangesStatusChanged;
+            //NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
+            LoadCommands();
+            InitializeComponent();
+            HostedControl.PoppedOut(Recents_MenuItem);
+            RootPanel.Children.Add(hostedControl);
+            if (file != null)
+            {
+                hostedControl.LoadFile(file);
+            }
         }
 
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
+        public ICommand LoadFileCommand { get; set; }
+        public ICommand OpenFileCommand { get; set; }
         private void LoadCommands()
         {
-            SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
-            SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            SaveCommand = new GenericCommand(SavePackage, CanSave);
+            SaveAsCommand = new GenericCommand(SavePackageAs, CanSave);
+            LoadFileCommand = new GenericCommand(LoadFile, CanLoadFile);
+            OpenFileCommand = new GenericCommand(OpenFile, CanLoadFile);
+
+        }
+
+        private bool CanSave()
+        {
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                return felc.CanSave();
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void OpenFile()
+        {
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                FileHasPendingChanges = false;
+                felc.OpenFile();
+            }
+        }
+
+        private bool CanLoadFile()
+        {
+            return HostedControl is FileExportLoaderControl felc && felc.CanLoadFile();
+        }
+
+        private void LoadFile()
+        {
+            var felc = HostedControl as FileExportLoaderControl;
+            felc.OpenFile();
         }
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
-            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
-            if (d.ShowDialog() == true)
+            if (HostedControl is FileExportLoaderControl felc)
             {
-                Pcc.save(d.FileName);
-                MessageBox.Show("Done");
+                felc.SaveAs();
+                FileHasPendingChanges = false;
+            }
+            else
+            {
+                string extension = Path.GetExtension(Pcc.FilePath);
+                SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+                if (d.ShowDialog() == true)
+                {
+                    Pcc.Save(d.FileName);
+                    MessageBox.Show("Done");
+                }
             }
         }
 
         private void SavePackage()
         {
-            Pcc.save();
+            if (HostedControl is FileExportLoaderControl felc)
+            {
+                felc.Save();
+                FileHasPendingChanges = false;
+            }
+            else
+            {
+                Pcc.Save();
+            }
         }
 
-        private bool PackageIsLoaded()
-        {
-            return Pcc != null;
-        }
-
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FileName) : "";
+        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             if (updates.Any(x => x.change == PackageChange.Names))
             {
-                hostedControl.SignalNamelistAboutToUpdate();
+                HostedControl.SignalNamelistAboutToUpdate();
                 NamesList.ReplaceAll(Pcc.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
-                hostedControl.SignalNamelistChanged();
+                HostedControl.SignalNamelistChanged();
             }
 
             //Put code to reload the export here
@@ -76,12 +185,7 @@ namespace ME3Explorer.SharedUI
                 if ((update.change == PackageChange.ExportAdd || update.change == PackageChange.ExportData)
                     && update.index == LoadedExport.Index)
                 {
-                    if (hostedControl is CurveEditor)
-                    {
-                        //CurveEditor handles its own refresh
-                        continue;
-                    }
-                    hostedControl.LoadExport(LoadedExport); //reload export
+                    HostedControl.LoadExport(LoadedExport); //reload export
                     return;
                 }
             }
@@ -91,9 +195,12 @@ namespace ME3Explorer.SharedUI
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
             {
-                LoadMEPackage(LoadedExport.FileRef.FileName); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
-                hostedControl.LoadExport(LoadedExport);
-                OnPropertyChanged(nameof(CurrentFile));
+                if (LoadedExport != null)
+                {
+                    LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
+                    HostedControl.LoadExport(LoadedExport);
+                    OnPropertyChanged(nameof(CurrentFile));
+                }
             }));
         }
 
@@ -101,7 +208,49 @@ namespace ME3Explorer.SharedUI
         {
             if (!e.Cancel)
             {
-                hostedControl.Dispose();
+                if (LoadedExport != null)
+                {
+                    LoadedExport.EntryModifiedChanged -= NotifyPendingChangesStatusChanged;
+                    LoadedExport = null;
+                }
+                if (HostedControl is FileExportLoaderControl felc)
+                {
+                    felc.ModifiedStatusChanging -= NotifyPendingChangesStatusChanged;
+                }
+
+                HostedControl.Dispose();
+            }
+        }
+
+        private void ExportLoaderHostedWindow_OnDrop(object sender, DragEventArgs e)
+        {
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && HostedControl is FileExportLoaderControl felc)
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                if (felc.CanLoadFileExtension(Path.GetExtension(files[0])))
+                {
+                    felc.LoadFile(files[0]);
+                }
+            }
+        }
+
+        private void ExportLoaderHostedWindow_OnDragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && HostedControl is FileExportLoaderControl felc)
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = Path.GetExtension(files[0]).ToLower();
+                if (!felc.CanLoadFileExtension(ext))
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
             }
         }
     }

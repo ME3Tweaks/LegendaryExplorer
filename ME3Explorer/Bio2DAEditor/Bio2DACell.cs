@@ -14,7 +14,8 @@ namespace ME3Explorer
         public byte[] Data { get; set; }
         public int Offset { get; private set; }
         public IMEPackage Pcc { get; set; }
-        private bool _isModified = false;
+        private bool _isModified;
+
         public bool IsModified
         {
             get => _isModified;
@@ -52,19 +53,45 @@ namespace ME3Explorer
             Data = data;
         }
 
-        public string GetDisplayableValue()
+        //public string GetDisplayableValue()
+        //{
+        //    switch (Type)
+        //    {
+        //        case Bio2DADataType.TYPE_INT:
+        //            return BitConverter.ToInt32(Data, 0).ToString();
+        //        case Bio2DADataType.TYPE_NAME:
+        //            int name = BitConverter.ToInt32(Data, 0);
+        //            var nameVal = Pcc.getNameEntry(name);
+        //            int index = BitConverter.ToInt32(Data, 4);
+        //            if (index > 0)
+        //            {
+        //                nameVal += "_" + index;
+        //            }
+
+        //            return nameVal;
+        //        case Bio2DADataType.TYPE_FLOAT:
+        //            return BitConverter.ToSingle(Data, 0).ToString();
+        //    }
+
+        //    return "Unknown type " + Type;
+        //}
+
+        /// <summary>
+        /// This is a string because that's what the UI passes here
+        /// </summary>
+        public string NameIndex
         {
-            switch (Type)
+            get => Type != Bio2DADataType.TYPE_NAME ? "-1" : BitConverter.ToInt32(Data, 4).ToString();
+            set
             {
-                case Bio2DADataType.TYPE_INT:
-                    return BitConverter.ToInt32(Data, 0).ToString();
-                case Bio2DADataType.TYPE_NAME:
-                    int name = BitConverter.ToInt32(Data, 0);
-                    return Pcc.getNameEntry(name);
-                case Bio2DADataType.TYPE_FLOAT:
-                    return BitConverter.ToSingle(Data, 0).ToString();
+                if (Type != Bio2DADataType.TYPE_NAME) return;
+                if (int.TryParse(value, out int parsed) && parsed >= 0)
+                {
+                    BitConverter.GetBytes(parsed).CopyTo(Data, 4); 
+                    IsModified = true;
+                    OnPropertyChanged(nameof(DisplayableValue));
+                }
             }
-            return "Unknown type " + Type;
         }
 
         public string DisplayableValue
@@ -77,7 +104,14 @@ namespace ME3Explorer
                         return BitConverter.ToInt32(Data, 0).ToString();
                     case Bio2DADataType.TYPE_NAME:
                         int name = BitConverter.ToInt32(Data, 0);
-                        return Pcc.getNameEntry(name);
+                        var nameVal = Pcc.GetNameEntry(name);
+                        int index = BitConverter.ToInt32(Data, 4);
+                        if (index > 0)
+                        {
+                            nameVal += "_" + index;
+                        }
+
+                        return nameVal;
                     case Bio2DADataType.TYPE_FLOAT:
                         return BitConverter.ToSingle(Data, 0).ToString();
                 }
@@ -98,9 +132,14 @@ namespace ME3Explorer
                         break;
                     case Bio2DADataType.TYPE_NAME:
                         {
-                            if (int.TryParse(value, out int parsed) && Pcc.isName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes(parsed)))
+                            if (Data == null)
                             {
-                                Data = BitConverter.GetBytes((long)parsed);
+                                Data = new byte[8];
+                            }
+                            if (int.TryParse(value, out int parsed) && Pcc.IsName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes((long)parsed))) //has to be cast as long as 4 vs 8 bytes will never be equal
+                            {
+                                
+                                BitConverter.GetBytes(parsed).CopyTo(Data,0);
                                 IsModified = true;
                             }
                         }
@@ -118,10 +157,7 @@ namespace ME3Explorer
             }
         }
 
-        public override string ToString()
-        {
-            return GetDisplayableValue();
-        }
+        public override string ToString() => DisplayableValue;
 
         public int GetIntValue()
         {

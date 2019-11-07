@@ -9,7 +9,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class Function
     {
-        public IExportEntry export;
+        public ExportEntry export;
         //public IMEPackage pcc;
         public byte[] memory;
         public byte[] script;
@@ -40,7 +40,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, IExportEntry export, int clippingSize = 32)
+        public Function(byte[] raw, ExportEntry export, int clippingSize = 32)
         {
             this.export = export;
             memory = raw;
@@ -80,17 +80,17 @@ namespace ME3Explorer.Unreal.Classes
             {
                 result += type + " ";
             }
-            result += export.ObjectName + "(";
+            result += export.ObjectName.Instanced + "(";
             int paramCount = 0;
-            var locals = new List<IExportEntry>();
+            var locals = new List<ExportEntry>();
 
             //Tokens = new List<BytecodeSingularToken>();
             //Statements = ReadBytecode();
-            List<IExportEntry> childrenReversed = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).ToList();
+            List<ExportEntry> childrenReversed = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).ToList();
             childrenReversed.Reverse();
 
             //Get local children of this function
-            foreach (IExportEntry export in childrenReversed)
+            foreach (ExportEntry export in childrenReversed)
             {
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
@@ -106,10 +106,10 @@ namespace ME3Explorer.Unreal.Classes
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
                             var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
-                            IEntry entry = export.FileRef.getEntry(uindexOfOuter);
+                            IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
-                                result += entry.ObjectName + " ";
+                                result += entry.ObjectName.Instanced + " ";
                             }
                         }
                         else
@@ -117,7 +117,7 @@ namespace ME3Explorer.Unreal.Classes
                             result += UnFunction.GetPropertyType(export) + " ";
                         }
 
-                        result += export.ObjectName;
+                        result += export.ObjectName.Instanced;
                         paramCount++;
 
                         //if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
@@ -174,7 +174,7 @@ namespace ME3Explorer.Unreal.Classes
                 if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
                 {
                     var uindexOfOuter = BitConverter.ToInt32(returnValue.Data, returnValue.Data.Length - 4);
-                    IEntry entry = returnValue.FileRef.getEntry(uindexOfOuter);
+                    IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
                     if (entry != null)
                     {
                         return entry.ObjectName;

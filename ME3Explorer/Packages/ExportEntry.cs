@@ -4,31 +4,131 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gibbed.IO;
+using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Unreal;
-using UsefulThings.WPF;
+using ME3Explorer.Unreal.BinaryConverters;
+using StreamHelpers;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : ViewModelBase, IEntry
+    [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
+
+    public class ExportEntry : NotifyPropertyChangedBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
+
+        public MEGame Game => FileRef.Game;
 
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
-        protected ExportEntry(IMEPackage file)
+        public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
             OriginalDataSize = 0;
+            _header = new byte[HasComponentMap ? 72 : 68];
+            DataOffset = 0;
+            ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
+
+            var ms = new MemoryStream();
+            if (prePropBinary == null)
+            {
+                prePropBinary = new byte[4];
+            }
+            ms.WriteFromBuffer(prePropBinary);
+            if (!isClass)
+            {
+                if (properties == null)
+                {
+                    properties = new PropertyCollection();
+                }
+                properties.WriteTo(ms, file);
+            }
+
+            binary?.WriteTo(ms, file);
+
+            _data = ms.ToArray();
+            DataSize = _data.Length;
         }
 
-        public bool HasStack => (ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0;
+        public ExportEntry(IMEPackage file, Stream stream)
+        {
+            FileRef = file;
+            OriginalDataSize = 0;
+            HeaderOffset = (uint)stream.Position;
+            switch (file.Game)
+            {
+                case MEGame.ME1:
+                case MEGame.ME2:
+                    {
 
-        /// <summary>
-        /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
-        /// </summary>
-        protected byte[] _header;
+                        long start = stream.Position;
+                        stream.Seek(40, SeekOrigin.Current);
+                        int count = stream.ReadInt32();
+                        stream.Seek(4 + count * 12, SeekOrigin.Current);
+                        count = stream.ReadInt32();
+                        stream.Seek(16, SeekOrigin.Current);
+                        stream.Seek(4 + count * 4, SeekOrigin.Current);
+                        long end = stream.Position;
+                        stream.Seek(start, SeekOrigin.Begin);
+                        //read header
+                        _header = stream.ReadToBuffer((int)(end - start));
+                        break;
+                    }
+                case MEGame.ME3:
+                case MEGame.UDK:
+                    {
+                        stream.Seek(44, SeekOrigin.Current);
+                        int count = stream.ReadInt32();
+                        stream.Seek(-48, SeekOrigin.Current);
+
+                        int expInfoSize = 68 + (count * 4);
+                        _header = stream.ReadToBuffer(expInfoSize);
+                        break;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            OriginalDataSize = DataSize;
+            long headerEnd = stream.Position;
+
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadToBuffer(DataSize);
+            stream.Seek(headerEnd, SeekOrigin.Begin);
+            if (file.Game == MEGame.ME1 && ClassName.Contains("Property") || file.Game != MEGame.ME1 && HasStack)
+            {
+                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0;
+            }
+            else
+            {
+                ReadsFromConfig = false;
+            }
+        }
+
+        public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
+
+        public byte[] GetStack()
+        {
+            if (!HasStack)
+            {
+                return Array.Empty<byte>();
+            }
+
+            return _data.Slice(0, stackLength);
+        }
+
+        public void SetStack(byte[] stack)
+        {
+            byte[] data = Data;
+            Buffer.BlockCopy(stack, 0, data, 0, stackLength);
+            Data = data;
+        }
+
+        //should only have to check the flag, but custom mod classes might not have set it properly
+        public bool IsDefaultObject => ObjectFlags.HasFlag(EObjectFlags.ClassDefaultObject) || ObjectName.Name.StartsWith("Default__");
+
+        private byte[] _header;
 
         /// <summary>
         /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
@@ -44,13 +144,12 @@ namespace ME3Explorer.Packages
                     return; //if the data is the same don't write it and trigger the side effects
                 }
 
-                bool isFirstLoad = _header == null;
+                int dataSize = _header != null ? DataSize : (_data?.Length ?? 0);
                 _header = value;
-                if (!isFirstLoad)
-                {
-                    HeaderChanged = true;
-                    EntryHasPendingChanges = true;
-                }
+                DataSize = dataSize; //should never be altered by Header overwrite
+
+                EntryHasPendingChanges = true;
+                HeaderChanged = true;
             }
         }
 
@@ -63,252 +162,275 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
+        public byte[] GenerateHeader(MEGame game, bool clearComponentMap = false) => GenerateHeader(null, null, game == MEGame.ME1 || game == MEGame.ME2, clearComponentMap);
+
+        public void RegenerateHeader(MEGame game, bool clearComponentMap = false) => Header = GenerateHeader(game, clearComponentMap);
+
+        private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
+        {
+            var bin = new MemoryStream();
+            bin.WriteInt32(idxClass);
+            bin.WriteInt32(idxSuperClass);
+            bin.WriteInt32(idxLink);
+            bin.WriteInt32(idxObjectName);
+            bin.WriteInt32(indexValue);
+            bin.WriteInt32(idxArchetype);
+            bin.WriteUInt64((ulong)ObjectFlags);
+            bin.WriteInt32(DataSize);
+            bin.WriteInt32(DataOffset);
+            if (hasComponentMap ?? HasComponentMap)
+            {
+                if (clearComponentMap)
+                {
+                    bin.WriteInt32(0);
+                }
+                else
+                {
+                    OrderedMultiValueDictionary<NameReference, int> cmpMap = componentMap ?? ComponentMap;
+                    bin.WriteInt32(cmpMap.Count);
+                    foreach ((NameReference name, int uIndex) in cmpMap)
+                    {
+                        bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
+                        bin.WriteInt32(name.Number);
+                        bin.WriteInt32(uIndex);
+                    }
+                }
+            }
+            bin.WriteUInt32((uint)ExportFlags);
+            int[] genobjCounts = generationNetObjectCount ?? GenerationNetObjectCount;
+            bin.WriteInt32(genobjCounts.Length);
+            foreach (int count in genobjCounts)
+            {
+                bin.WriteInt32(count);
+            }
+            bin.WriteGuid(PackageGUID);
+            bin.WriteUInt32((uint)PackageFlags);
+            return bin.ToArray();
+        }
+
+        private void RegenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null)
+        {
+            Header = GenerateHeader(componentMap, generationNetObjectCount, hasComponentMap);
+        }
+
         public uint HeaderOffset { get; set; }
 
-        public int idxClass
+        private int idxClass
         {
-            get => BitConverter.ToInt32(Header, 0);
+            get => BitConverter.ToInt32(_header, 0);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
-        public int idxClassParent
+        private int idxSuperClass
         {
-            get => BitConverter.ToInt32(Header, 4);
+            get => BitConverter.ToInt32(_header, 4);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 4, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int idxLink
         {
-            get => BitConverter.ToInt32(Header, 8);
+            get => BitConverter.ToInt32(_header, 8);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
-        public int idxObjectName
+        private int idxObjectName
         {
-            get => BitConverter.ToInt32(Header, 12);
+            get => BitConverter.ToInt32(_header, 12);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 12, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
         public int indexValue
         {
-            get => BitConverter.ToInt32(Header, 16);
+            get => BitConverter.ToInt32(_header, 16);
             set
             {
                 if (indexValue != value)
                 {
-                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int));
+                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int));
                     HeaderChanged = true;
                 }
             }
         }
 
-        public int idxArchtype
+        private int idxArchetype
         {
-            get => BitConverter.ToInt32(Header, 20);
+            get => BitConverter.ToInt32(_header, 20);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
-        public int LinkerIndex
+        public EObjectFlags ObjectFlags
         {
-            get => BitConverter.ToInt32(_data, 0);
-            //set
-            //{
-            //    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int));
-            //    HeaderChanged = true;
-            //}
-        }
-
-        public ulong ObjectFlags
-        {
-            get => BitConverter.ToUInt64(Header, 24);
+            get => (EObjectFlags)BitConverter.ToUInt64(_header, 24);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long));
+                Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, _header, 24, sizeof(ulong));
                 HeaderChanged = true;
             }
         }
 
         public int DataSize
         {
-            get => BitConverter.ToInt32(Header, 32);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int));
+            get => BitConverter.ToInt32(_header, 32);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
         }
 
         public int DataOffset
         {
-            get => BitConverter.ToInt32(Header, 36);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
+            get => BitConverter.ToInt32(_header, 36);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
         }
 
-        //if me1 or me2: int unkcount1
-        byte[][] unkList1; //if me1 or me2: unkcount1 * 12 bytes
+        public bool HasComponentMap => FileRef.Game == MEGame.ME1 || FileRef.Game == MEGame.ME2;
 
-        int unk1; //int unk1 
-
-        //int unkcount2 
-        int unk2; //int unk2 
-        public Guid PackageGUID { get; set; } //GUID
-        int[] unkList2; //unkcount2 * 4 bytes 
-
-        public string ObjectName => FileRef.Names[idxObjectName];
-
-        public string ClassName
+        //me1 and me2 only
+        public OrderedMultiValueDictionary<NameReference, int> ComponentMap
         {
             get
             {
-                int val = idxClass;
-                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
-                else return "Class";
-            }
-        }
-
-        public string ClassParent
-        {
-            get
-            {
-                int val = idxClassParent;
-                if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName];
-                else return "Class";
-            }
-        }
-
-        public string ArchtypeName
-        {
-            get
-            {
-                int val = idxArchtype;
-                if (val != 0) return FileRef.getNameEntry(FileRef.getEntry(val).idxObjectName);
-                else return "None";
-            }
-        }
-
-        public string PackageName
-        {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
+                var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
+                if (!HasComponentMap) return componentMap;
+                int count = BitConverter.ToInt32(_header, 40);
+                for (int i = 0; i < count; i++)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    return FileRef.Names[entry.idxObjectName];
+                    int pairIndex = 44 + i * 12;
+                    string name = FileRef.GetNameEntry(BitConverter.ToInt32(_header, pairIndex));
+                    componentMap.Add(new NameReference(name, BitConverter.ToInt32(_header, pairIndex + 4)),
+                                                                          BitConverter.ToInt32(_header, pairIndex + 8));
                 }
-                else return "Package";
+                return componentMap;
+            }
+            set
+            {
+                if (!HasComponentMap) return;
+                RegenerateHeader(value, null);
             }
         }
 
-        public string PackageNameInstanced
+        public int ExportFlagsOffset => HasComponentMap ? 44 + BitConverter.ToInt32(_header, 40) * 12 : 40;
+
+        public EExportFlags ExportFlags
+        {
+            get => (EExportFlags)BitConverter.ToUInt32(_header, ExportFlagsOffset);
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, ExportFlagsOffset, sizeof(uint));
+                HeaderChanged = true;
+            }
+        }
+
+        public int[] GenerationNetObjectCount
         {
             get
             {
-                int val = idxLink;
-                if (val != 0)
+                int count = BitConverter.ToInt32(_header, ExportFlagsOffset + 4);
+                var result = new int[count];
+                for (int i = 0; i < count; i++)
                 {
-                    IEntry entry = FileRef.getEntry(val);
-                    string result =  FileRef.Names[entry.idxObjectName];
-                    if (entry.indexValue > 0)
-                    {
-                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
-                    }
-                    return result;
-                }
-                else return "Package";
-            }
-        }
-
-        public string PackageFullName
-        {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
-
-                while (idxNewPackName != 0)
-                {
-                    string newPackageName = FileRef.getEntry(idxNewPackName).PackageName;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
-                }
-
-                return result;
-            }
-        }
-
-        public string GetFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullName != "Class" && PackageFullName != "Package")
-                    s += PackageFullName + ".";
-                s += ObjectName;
-                return s;
-            }
-        }
-
-        public string GetIndexedFullPath => GetFullPath + "_" + indexValue;
-
-        public string PackageFullNameInstanced
-        {
-            get
-            {
-                string result = PackageNameInstanced;
-                int idxNewPackName = idxLink;
-
-                while (idxNewPackName != 0)
-                {
-                    IEntry e = FileRef.getEntry(idxNewPackName);
-                    string newPackageName = e.PackageNameInstanced;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
+                    result[i] = BitConverter.ToInt32(_header, ExportFlagsOffset + 8 + i * 4);
                 }
                 return result;
             }
+            set => RegenerateHeader(null, value);
         }
 
-        public string GetInstancedFullPath
+        public int PackageGuidOffset => ExportFlagsOffset + 8 + BitConverter.ToInt32(_header, ExportFlagsOffset + 4) * 4;
+
+        public Guid PackageGUID
         {
-            get
+            get => new Guid(_header.Slice(PackageGuidOffset, 16));
+            set
             {
-                string s = "";
-                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
-                    s += PackageFullNameInstanced + ".";
-                s += ObjectName;
-                if (indexValue > 0)
-                {
-                    s += "_" + indexValue; // Should be -1, but will wait for 4.1 to correct this for consistency
-                }
-                return s;
+                Buffer.BlockCopy(value.ToByteArray(), 0, _header, PackageGuidOffset, 16);
+                HeaderChanged = true;
             }
         }
 
-        public bool HasParent => FileRef.isEntry(idxLink);
+        public EPackageFlags PackageFlags
+        {
+            get => (EPackageFlags)BitConverter.ToUInt32(_header, PackageGuidOffset + 16);
+            set
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, PackageGuidOffset + 16, sizeof(uint));
+                HeaderChanged = true;
+            }
+        }
+
+        public string ObjectNameString
+        {
+            get => FileRef.Names[idxObjectName];
+            set => idxObjectName = FileRef.FindNameOrAdd(value);
+        }
+
+        public NameReference ObjectName
+        {
+            get => new NameReference(ObjectNameString, indexValue);
+            set => (ObjectNameString, indexValue) = value;
+        }
+
+        public string ClassName => Class?.ObjectName.Name ?? "Class";
+
+        public string SuperClassName => SuperClass?.ObjectName.Name ?? "Class";
+
+        public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
+
+        public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
+
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
+
+        public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
+
+        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
+
+        public bool HasParent => FileRef.IsEntry(idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.getEntry(idxLink);
-            set => idxLink = value.UIndex;
+            get => FileRef.GetEntry(idxLink);
+            set => idxLink = value?.UIndex ?? 0;
+        }
+
+        public bool HasArchetype => FileRef.IsEntry(idxArchetype);
+
+        public IEntry Archetype
+        {
+            get => FileRef.GetEntry(idxArchetype);
+            set => idxArchetype = value?.UIndex ?? 0;
+        }
+
+        public bool HasSuperClass => FileRef.IsEntry(idxSuperClass);
+
+        public IEntry SuperClass
+        {
+            get => FileRef.GetEntry(idxSuperClass);
+            set => idxSuperClass = value?.UIndex ?? 0;
+        }
+
+        public bool IsClass => idxClass == 0;
+
+        public IEntry Class
+        {
+            get => FileRef.GetEntry(idxClass);
+            set => idxClass = value?.UIndex ?? 0;
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
@@ -380,7 +502,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private bool _entryHasPendingChanges = false;
+        private bool _entryHasPendingChanges;
 
         public bool EntryHasPendingChanges
         {
@@ -391,9 +513,12 @@ namespace ME3Explorer.Packages
                 {
                     _entryHasPendingChanges = value;
                     OnPropertyChanged();
+                    EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
+
+        public event EventHandler EntryModifiedChanged;
 
         PropertyCollection properties;
 
@@ -410,9 +535,9 @@ namespace ME3Explorer.Packages
                 return properties;
             }
 
-            if (ClassName == "Class")
+            if (IsClass)
             {
-                return new PropertyCollection();
+                return new PropertyCollection { endOffset = 4, IsImmutable = true };
             } //no properties
 
             //else if (!includeNoneProperties)
@@ -428,18 +553,13 @@ namespace ME3Explorer.Packages
             MemoryStream stream = new MemoryStream(_data, false);
             stream.Seek(start, SeekOrigin.Current);
             IEntry parsingClass = this;
-            if (ObjectName.StartsWith("Default__"))
+            if (IsDefaultObject)
             {
-                parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
+                parsingClass = Class; //class we are defaults of
             }
 
-            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
             //  }
-        }
-
-        public T GetProperty<T>(string name) where T : UProperty
-        {
-            return GetProperties().GetProp<T>(name);
         }
 
         public void WriteProperties(PropertyCollection props)
@@ -449,96 +569,53 @@ namespace ME3Explorer.Packages
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             byte[] propData = m.ToArray();
-            this.Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
+            Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
         }
-
-        public void WriteProperty(UProperty prop)
-        {
-            var props = GetProperties();
-            props.AddOrReplaceProp(prop);
-            WriteProperties(props);
-        }
-
-        public bool RemoveProperty(string propname)
-        {
-            var props = GetProperties();
-            UProperty propToRemove = null;
-            foreach (UProperty prop in props)
-            {
-                if (prop.Name.Name == propname)
-                {
-                    propToRemove = prop;
-                    break;
-                }
-            }
-
-            //outside for concurrent collection modification
-            if (propToRemove != null)
-            {
-                props.Remove(propToRemove);
-                WriteProperties(props);
-                return true;
-            }
-
-            return false;
-        }
-
 
         public int GetPropertyStart()
         {
-            IMEPackage pcc = FileRef;
-            if ((ObjectFlags & (ulong) UnrealFlags.EObjectFlags.HasStack) != 0)
+            if (HasStack)
             {
-                if (pcc.Game != MEGame.ME3)
-                {
-                    return 32;
-                }
-
-                return 30;
+                return stackLength;
             }
 
-            //if (!ObjectName.StartsWith("Default__"))
-            //{
-            //    switch (ClassName)
-            //    {
-            //        case "ParticleSystemComponent":
-            //            return 0x10;
-            //    }
-            //}
-            int result = 8;
-            int test0 = BitConverter.ToInt32(_data, 0);
-            int test1 = BitConverter.ToInt32(_data, 4);
-            int test2 = BitConverter.ToInt32(_data, 8); //Name index if Test1 is actually a name. Should be 0 since we wouldn't have indexes here
-            if (pcc.isName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
-                result = 4;
-            if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
-                result = 8;
+            int start = 0;
 
-            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
+            if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
-                int test3 = BitConverter.ToInt32(_data, 0x10);
-                string namev = pcc.getNameEntry(test3);
-                //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
-                if (namev != null && Enum.IsDefined(typeof(PropertyType), namev) && Enum.TryParse(namev, out PropertyType propertyType))
-                {
-                    if (propertyType > PropertyType.None)
-                    {
-                        //Edge case
-                        return 0x8;
-                    }
-                }
-
-                //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
-                return 0x10; //Primitive Component
+                //DominantLightShadowMap, which goes before everything for some reason
+                int count = BitConverter.ToInt32(_data, 0);
+                start += count * 2 + 4;
             }
 
-            return result;
+
+            if (!IsDefaultObject && this.IsOrInheritsFrom("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
+            {
+                start += 4; //TemplateOwnerClass
+                if (ParentFullPath.Contains("Default__"))
+                {
+                    start += 8; //TemplateName
+                }
+            }
+
+            start += 4; //NetIndex
+
+            return start;
         }
+
+        private int stackLength =>
+            Game switch
+            {
+                MEGame.UDK => 26,
+                MEGame.ME3 => 30,
+                _ => 32
+            };
 
         public int NetIndex
         {
             get => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
-            set {
+            set
+            {
                 if (value != NetIndex)
                 {
                     var data = Data;
@@ -568,241 +645,19 @@ namespace ME3Explorer.Packages
 
         public void setBinaryData(byte[] binaryData)
         {
-            this.Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
-        }
-    }
-
-    [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
-    public class UDKExportEntry : ExportEntry, IExportEntry
-    {
-        public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
-        {
-            HeaderOffset = (uint)stream.Position;
-            stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
-            stream.Seek(-48, SeekOrigin.Current);
-
-            int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadBytes(expInfoSize);
-            OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
-
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-            {
-                ReadsFromConfig = (Data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
+            Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }
 
-        public UDKExportEntry(UDKPackage pccFile) : base(pccFile)
+        public ExportEntry Clone()
         {
-        }
-
-        public IExportEntry Clone()
-        {
-            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
+            return new ExportEntry(FileRef)
             {
-                Header = this.Header.TypedClone(),
+                _header = _header.TypedClone(),
                 HeaderOffset = 0,
-                Data = this.Data
+                Data = this.Data,
+                indexValue = FileRef.GetNextIndexForName(ObjectName),
+                DataOffset = 0
             };
-            int index = 0;
-            string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME3ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME3ExportEntry : ExportEntry, IExportEntry
-    {
-        public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
-        {
-            HeaderOffset = (uint)stream.Position;
-            stream.Seek(44, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
-            stream.Seek(-48, SeekOrigin.Current);
-
-            int expInfoSize = 68 + (count * 4);
-            Header = stream.ReadBytes(expInfoSize);
-            OriginalDataSize = DataSize;
-            long headerEnd = stream.Position;
-
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(headerEnd, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-            {
-                ReadsFromConfig = (Data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME3ExportEntry(ME3Package pccFile) : base(pccFile)
-        {
-        }
-
-        public IExportEntry Clone()
-        {
-            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
-            int index = 0;
-            string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME2ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME2ExportEntry : ExportEntry, IExportEntry
-    {
-        public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
-        {
-            //determine header length
-            long start = stream.Position;
-            stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
-            stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadValueS32();
-            stream.Seek(16, SeekOrigin.Current);
-            stream.Seek(4 + count * 4, SeekOrigin.Current);
-            long end = stream.Position;
-            stream.Seek(start, SeekOrigin.Begin);
-
-            //read header
-            Header = stream.ReadBytes((int)(end - start));
-            HeaderOffset = (uint)start;
-            OriginalDataSize = DataSize;
-
-            //read data
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(end, SeekOrigin.Begin);
-            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-            {
-                ReadsFromConfig = (Data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME2ExportEntry(ME2Package pccFile) : base(pccFile)
-        {
-        }
-
-        public IExportEntry Clone()
-        {
-            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
-            int index = 0;
-            string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
-        }
-    }
-
-    [DebuggerDisplay("ME1ExportEntry | {UIndex} = {GetFullPath}")]
-    public class ME1ExportEntry : ExportEntry, IExportEntry
-    {
-        public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
-        {
-            //determine header length
-            long start = stream.Position;
-            stream.Seek(40, SeekOrigin.Current);
-            int count = stream.ReadValueS32();
-            stream.Seek(4 + count * 12, SeekOrigin.Current);
-            count = stream.ReadValueS32();
-            stream.Seek(16, SeekOrigin.Current);
-            stream.Seek(4 + count * 4, SeekOrigin.Current);
-            long end = stream.Position;
-            stream.Seek(start, SeekOrigin.Begin);
-
-            //read header
-            Header = stream.ReadBytes((int)(end - start));
-            HeaderOffset = (uint)start;
-            OriginalDataSize = DataSize;
-
-            //read data
-            stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadBytes(DataSize);
-            stream.Seek(end, SeekOrigin.Begin);
-            if (ClassName.Contains("Property"))
-            {
-                ReadsFromConfig = Data.Length > 25 && (Data[25] & 64) != 0;
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
-        }
-
-        public ME1ExportEntry(ME1Package file) : base(file)
-        {
-        }
-
-        public IExportEntry Clone()
-        {
-            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
-            {
-                Header = this.Header.TypedClone(),
-                HeaderOffset = 0,
-                Data = this.Data
-            };
-            int index = 0;
-            string name = ObjectName;
-            foreach (IExportEntry ent in FileRef.Exports)
-            {
-                if (name == ent.ObjectName && ent.indexValue > index)
-                {
-                    index = ent.indexValue;
-                }
-            }
-            index++;
-            newExport.indexValue = index;
-            return newExport;
         }
     }
 }

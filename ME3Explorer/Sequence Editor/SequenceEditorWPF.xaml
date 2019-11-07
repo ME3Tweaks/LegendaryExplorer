@@ -7,37 +7,45 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ME3Explorer.Sequence_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
+        xmlns:packages="clr-namespace:ME3Explorer.Packages"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
-        Title="Sequence Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Sequence Editor" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
-            <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
+            <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
+            <MenuItem Header="Open in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
+            <MenuItem Header="Open in Dialogue Editor" Click="OpenInDialogueEditor_Clicked" Name="dialogueEditorMenuItem"/>
             <MenuItem Header="Open Referenced State Event in Plot Editor" Name="plotEditorMenuItem" Click="PlotEditorMenuItem_Click"/>
             <Separator />
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Clone InterpData tree" Click="CloneInterpData_Clicked" Name="cloneInterpDataMenuItem" ToolTip="Clone InterpData and all of its children"/>
+            <MenuItem Header="Edit Comment" Click="EditComment_Click" ToolTip="Add or edit this node's comment"/>
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
-                <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
-                <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
-                <MenuItem Header="Event Links" Name="eventLinksMenuItem"></MenuItem>
-                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
+                <MenuItem Header="Output Links" Name="outputLinksMenuItem"/>
+                <MenuItem Header="Var Links" Name="varLinksMenuItem"/>
+                <MenuItem Header="Event Links" Name="eventLinksMenuItem"/>
+                <MenuItem Header="Break All" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
             </MenuItem>
-            <MenuItem Header="Remove from sequence" Name="removeFromSequenceMenuItem" Click="RemoveFromSequence_Click"/>
+            <MenuItem Header="Repoint incoming references" Name="repointIncomingReferences" Click="RepointIncomingReferences_Click"/>
+            <MenuItem Header="Trash and remove from sequence" Name="removeFromSequenceMenuItem" Click="TrashAndRemoveFromSequence_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="backContextMenu">
-            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
+            <MenuItem Header="Add Existing Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
@@ -63,14 +71,27 @@
                 <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence"/>
-                <MenuItem Header="Open Kismet Log" Command="{Binding KismetLogCommand}"/>
                 <MenuItem Header="Open Kismet Log (restricted to opened file)" Command="{Binding KismetLogCommand}" CommandParameter="{StaticResource True}"/>
+                <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME3}"/>
+                <MenuItem Header="Open Kismet Log for ME2" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME2}"/>
+                <!-- TODO: Uncomment when ME1 Kismet Logger is created -->
+                <!--<MenuItem Header="Open Kismet Log for ME1" Command="{Binding KismetLogCommand}" CommandParameter="{x:Static packages:MEGame.ME1}"/>-->
             </MenuItem>
 
             <MenuItem Header="View Options" Padding="4">
                 <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                 <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
                 <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
+                <MenuItem Name="ShowAdditionalInfoInCommentTextMenuItem" Header="Show parsed information in comments" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SequenceEditor_ShowParsedInfo, Mode=TwoWay}" IsCheckable="True" Click="ShowAdditionalInfoInCommentTextMenuItem_OnClick"/>
+                <MenuItem Name="MaxVarStringLength_MenuItem" StaysOpenOnClick="True" VerticalContentAlignment="Center">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Maximum Var String Length" Margin="0,2,3,0"/>
+                            <xctk:IntegerUpDown Value="{Binding Source={x:Static properties:Settings.Default}, Path=SequenceEditor_MaxVarStringLength, Mode=TwoWay}"
+                                                ClipValueToMinMax="True" Minimum="5" Maximum="1000" ValueChanged="IntegerUpDown_ValueChanged" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Layout" Padding="4">
@@ -123,14 +144,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding Export.UIndex}" />
-                            <TextBlock Grid.Column="1">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}_{1}">
-                                        <Binding Path="Export.ObjectName" />
-                                        <Binding Path="Export.indexValue" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                            <TextBlock Grid.Column="1" Text="{Binding Export.ObjectName.Instanced}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -157,9 +171,9 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Sequence Editor WPF, the rewritten version of Sequence Editor" FontWeight="Bold"/>
+                    <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Sequence Editor WPF is a bit different from the classic Sequence Editor.
+                            The new Sequence Editor is a bit different from the classic Sequence Editor.
                                 <LineBreak/>
                                 Indexes are done strictly by UIndex, which is how they appear in game code.
                                 <LineBreak/>
@@ -250,11 +264,45 @@
                     </i:Interaction.Behaviors>
                 </TreeView>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HideHexBox="True"
+                                       Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
-            <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
-                <grapheditor:GraphEditor/>
-            </WindowsFormsHost>
+            <Grid Grid.Column="0" Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <WindowsFormsHost Grid.Column="1" Name="GraphHost" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <grapheditor:GraphEditor />
+                </WindowsFormsHost>
+                <Expander Grid.Column="0" Name="toolBoxExpander" HorizontalAlignment="Left" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"
+                          ExpandDirection="Right" IsExpanded="False" Background="Orange" SharedUI:Bindings.VisibilityToEnabled="True">
+                    <Expander.Header>
+                        <TextBlock Text="Sequence Object Toolbox" Foreground="Black" VerticalAlignment="Center" Margin="0,0,4,0">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="-90" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
+                    <TabControl>
+                        <TabItem Header="Common">
+                            <SharedUI:ToolBox x:Name="commonToolBox" />
+                        </TabItem>
+                        <TabItem Header="Events">
+                            <SharedUI:ToolBox x:Name="eventsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Actions">
+                            <SharedUI:ToolBox x:Name="actionsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Conditions">
+                            <SharedUI:ToolBox x:Name="conditionsToolBox" />
+                        </TabItem>
+                        <TabItem Header="Variables">
+                            <SharedUI:ToolBox x:Name="variablesToolBox" />
+                        </TabItem>
+                    </TabControl>
+                </Expander>
+            </Grid>
             <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ElementName=kismetLogParser, Path=Visibility}"/>
             <local:KismetLogParser x:Name="kismetLogParser" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Collapsed"/>
         </Grid>

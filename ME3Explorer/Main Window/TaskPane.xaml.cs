@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer
@@ -104,7 +103,7 @@ namespace ME3Explorer
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            ((sender as Button)?.DataContext as IMEPackage)?.save();
+            ((sender as Button)?.DataContext as IMEPackage)?.Save();
         }
     }
 }

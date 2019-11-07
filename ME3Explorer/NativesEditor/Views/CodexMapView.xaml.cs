@@ -13,6 +13,7 @@ using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace MassEffect.NativesEditor.Views
 {
@@ -21,6 +22,8 @@ namespace MassEffect.NativesEditor.Views
 	/// </summary>
 	public partial class CodexMapView : NotifyPropertyChangedControlBase
 	{
+        public static IMEPackage package;
+
 		/// <summary>
 		///   Initializes a new instance of the <see cref="CodexMapView" /> class.
 		/// </summary>
@@ -214,6 +217,7 @@ namespace MassEffect.NativesEditor.Views
             CodexPages.Remove(SelectedCodexPage);
 
             AddCodexPage(dlg.ObjectId, codexSection);
+
         }
 
         public void ChangeCodexSectionId()
@@ -283,7 +287,7 @@ namespace MassEffect.NativesEditor.Views
             addCodexSection(dlg.ObjectId, new BioCodexSection(SelectedCodexSection.Value));
         }
 
-        public static bool TryFindCodexMap(IMEPackage pcc, out IExportEntry export, out int dataOffset)
+        public static bool TryFindCodexMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;
             dataOffset = -1;
@@ -304,7 +308,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindCodexMap(pcc, out IExportEntry export, out int dataOffset))
+            if (!TryFindCodexMap(pcc, out ExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -312,11 +316,14 @@ namespace MassEffect.NativesEditor.Views
             using (var stream = new MemoryStream(export.Data))
             {
                 stream.Seek(dataOffset, SeekOrigin.Begin);
-                var codexMap = BinaryBioCodexMap.Load(stream, pcc is ME3Package ? Encoding.UTF8 : Encoding.ASCII);
+                var codexMap = BinaryBioCodexMap.Load(stream, pcc.Game == MEGame.ME3 ? Encoding.UTF8 : Encoding.ASCII);
 
                 CodexPages = InitCollection(codexMap.Pages.OrderBy(pair => pair.Key));
                 CodexSections = InitCollection(codexMap.Sections.OrderBy(pair => pair.Key));
             }
+
+            package = pcc;
+
         }
 
         public void RemoveCodexPage()
@@ -365,7 +372,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void SaveToPcc(IMEPackage pcc)
         {
-            IExportEntry export;
+            ExportEntry export;
             try
             {
                 export = pcc.Exports.First(exp => exp.ClassName == "BioCodexMap");
@@ -488,6 +495,17 @@ namespace MassEffect.NativesEditor.Views
         private void AddCodexPage_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             AddCodexPage();
+        }
+
+        private void txt_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            if(package != null)
+            {
+                txt_cdxPgeDesc.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Description, package);
+                txt_cdxPgeTitle.Text = GlobalFindStrRefbyID(SelectedCodexPage.Value.Title, package);
+                txt_cdxSecDesc.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Description, package);
+                txt_cdxSecTitle.Text = GlobalFindStrRefbyID(SelectedCodexSection.Value.Title, package);
+            }
         }
     }
 }

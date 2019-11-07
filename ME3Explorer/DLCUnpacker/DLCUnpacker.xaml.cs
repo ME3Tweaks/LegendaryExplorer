@@ -17,7 +17,6 @@
 */
 
 using ByteSizeLib;
-using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using System;
@@ -29,6 +28,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.SharedUI;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.DLCUnpacker
 {
@@ -216,7 +216,10 @@ namespace ME3Explorer.DLCUnpacker
         public DLCUnpacker()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("DLC Unpacker", new WeakReference(this));
-
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "DLC Unpacker" }
+            });
             LoadCommands();
             RequiredSpaceText = "Calculating...";
             InitializeComponent();

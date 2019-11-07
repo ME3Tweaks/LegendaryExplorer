@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     mc:Ignorable="d"
     Loaded="AutoTOCWPF_Loaded"
     Icon="/Resources/autotoc_256x256.ico"
@@ -13,7 +13,7 @@
         <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="AutoTOC generates table of content (TOC) files for Mass Effect 3. These files list the filesize of all files that can be loaded and are used so the engine can allocate the correct amount of memory when loading the file.&#10;AutoTOC can be safely run at any time. AutoTOC must only be run before game launch as only at run time do TOC files matter."/>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,5,0,5">
-            <Button Content="Generate file list for ME1" Command="{Binding BuildME1FileListCommand}"  Padding="4" Margin="2" ToolTip="Experimental: Generate a file list of Mass Effect 1" Visibility="{x:Static global:App.IsDebug}"/>
+            <Button Content="Mount ME1 DLCs" Command="{Binding BuildME1FileListCommand}"  Padding="4" Margin="2" ToolTip="Experimental: Generate a file list of Mass Effect 1" Visibility="{x:Static global:App.IsDebugVisibility}"/>
             <Button Content="Generate/Update TOC file for DLC" Command="{Binding GenerateDLCTOCCommand}"  Padding="4" Margin="2" ToolTip="Calculate and generate a PCConsoleTOC for a DLC folder (inside or outside of the game)"/>
             <Button Content="Run AutoTOC" Command="{Binding RunAutoTOCCommand}" Padding="4" Margin="2" ToolTip="Calculate and generate/update all PCConsoleTOC toc files in the current game installation"/>
         </StackPanel>

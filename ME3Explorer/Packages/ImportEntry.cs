@@ -2,13 +2,15 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using UsefulThings.WPF;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
 {
-    [DebuggerDisplay("ImportEntry | {UIndex} = {GetFullPath}")]
-    public class ImportEntry : ViewModelBase, IEntry
+    [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
+    public class ImportEntry : NotifyPropertyChangedBase, IEntry
     {
+        public MEGame Game => FileRef.Game;
+
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {
             HeaderOffset = importData.Position;
@@ -61,141 +63,63 @@ namespace ME3Explorer.Packages
             return _header.TypedClone();
         }
 
-        public bool HasParent => FileRef.isEntry(idxLink);
+        public bool HasParent => FileRef.IsEntry(idxLink);
 
         public IEntry Parent
         {
-            get => FileRef.getEntry(idxLink);
-            set => idxLink = value.UIndex;
+            get => FileRef.GetEntry(idxLink);
+            set => idxLink = value?.UIndex ?? 0;
         }
 
-        public int idxPackageFile { get => BitConverter.ToInt32(Header, 0);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
+        private int idxPackageFile { get => BitConverter.ToInt32(_header, 0);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
-        public int idxClassName { get => BitConverter.ToInt32(Header, 8);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
+        private int idxClassName { get => BitConverter.ToInt32(_header, 8);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; } }
         //int ClassNameNumber
-        public int idxLink { get => BitConverter.ToInt32(Header, 16);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; } }
-        public int idxObjectName { get => BitConverter.ToInt32(Header, 20);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; } }
-        public int indexValue { get => BitConverter.ToInt32(Header, 24);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(int)); HeaderChanged = true; } }
+        public int idxLink { get => BitConverter.ToInt32(_header, 16);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int)); HeaderChanged = true; } }
+        private int idxObjectName { get => BitConverter.ToInt32(_header, 20);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; } }
+        public int indexValue { get => BitConverter.ToInt32(_header, 24);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; } }
 
 
 
 
-        public string ClassName => FileRef.Names[idxClassName];
-        public string PackageFile => FileRef.Names[idxPackageFile] + ".pcc"; //Is this valid for ME1?
-        public string ObjectName => FileRef.Names[idxObjectName];
-        public string PackageFileNoExtension { get { return FileRef.Names[idxPackageFile]; } }
-
-
-        public string PackageName
+        public string ClassName
         {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.getEntry(val);
-                    return FileRef.Names[entry.idxObjectName];
-                }
-                else return "Package";
-            }
+            get => FileRef.Names[idxClassName];
+            set => idxClassName = FileRef.FindNameOrAdd(value);
         }
 
-        public string PackageNameInstanced
+        private string ObjectNameString
         {
-            get
-            {
-                int val = idxLink;
-                if (val != 0)
-                {
-                    IEntry entry = FileRef.getEntry(val);
-                    string result = FileRef.Names[entry.idxObjectName];
-                    if (entry.indexValue > 0)
-                    {
-                        return result + "_" + entry.indexValue; //Should be -1 for 4.1, will remain as-is for 4.0
-                    }
-                    return result;
-                }
-                else return "Package";
-            }
+            get => FileRef.Names[idxObjectName];
+            set => idxObjectName = FileRef.FindNameOrAdd(value);
         }
 
-        public string PackageFullName
+        public NameReference ObjectName
         {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
-
-                while (idxNewPackName != 0)
-                {
-                    string newPackageName = FileRef.getEntry(idxNewPackName).PackageName;
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
-                }
-                return result;
-            }
+            get => new NameReference(ObjectNameString, indexValue);
+            set => (ObjectNameString, indexValue) = value;
         }
 
-        public string GetFullPath
+        public string PackageFile
         {
-            get
-            {
-                string s = "";
-                if (PackageFullName != "Class" && PackageFullName != "Package")
-                    s += PackageFullName + ".";
-                s += ObjectName;
-                return s;
-            }
-        }
-        public string GetIndexedFullPath
-        {
-            get
-            {
-                return GetFullPath + "_" + indexValue;
-            }
+            get => FileRef.Names[idxPackageFile];
+            set => idxPackageFile = FileRef.FindNameOrAdd(value);
         }
 
-        public string PackageFullNameInstanced
-        {
-            get
-            {
-                string result = PackageName;
-                int idxNewPackName = idxLink;
+        public string ParentName => FileRef.GetEntry(idxLink)?.ObjectName ?? "";
 
-                while (idxNewPackName != 0)
-                {
-                    IEntry e = FileRef.getEntry(idxNewPackName);
-                    string newPackageName = e.PackageName;
-                    if (e.indexValue > 0)
-                    {
-                        newPackageName += "_" + e.indexValue;
-                    }
-                    if (newPackageName != "Package")
-                        result = newPackageName + "." + result;
-                    idxNewPackName = FileRef.getEntry(idxNewPackName).idxLink;
-                }
-                return result;
-            }
-        }
+        public string ParentFullPath => FileRef.GetEntry(idxLink)?.FullPath ?? "";
 
-        public string GetInstancedFullPath
-        {
-            get
-            {
-                string s = "";
-                if (PackageFullNameInstanced != "Class" && PackageFullNameInstanced != "Package")
-                    s += PackageFullNameInstanced + ".";
-                s += ObjectName;
-                s += "_" + indexValue;
-                return s;
-            }
-        }
+        public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
+
+        public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
+
+        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         bool headerChanged;
         public bool HeaderChanged
@@ -210,8 +134,7 @@ namespace ME3Explorer.Packages
         }
 
 
-        private bool _entryHasPendingChanges = false;
-        private IEntry _entryImplementation;
+        private bool _entryHasPendingChanges;
 
         public bool EntryHasPendingChanges
         {
@@ -226,10 +149,12 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public bool IsClass => ClassName == "Class";
+
         public ImportEntry Clone()
         {
             ImportEntry newImport = (ImportEntry)MemberwiseClone();
-            newImport.Header = (byte[])Header.Clone();
+            newImport.Header = Header.TypedClone();
             return newImport;
         }
     }

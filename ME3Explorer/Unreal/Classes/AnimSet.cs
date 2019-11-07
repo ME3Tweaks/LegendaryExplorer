@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using SharpDX;
-using KFreonLib.Debugging;
+using ME3Explorer.Debugging;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -21,7 +21,7 @@ namespace ME3Explorer.Unreal.Classes
 
         //Name Properties
 
-        public int PreviewSkelMeshName;
+        public string PreviewSkelMeshName;
         //Object Properties
 
         public int m_pBioAnimSetData;
@@ -31,65 +31,32 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
-        public int MyIndex;
-        public ME3Package pcc;
+        public ExportEntry Export;
+        public IMEPackage pcc;
         public byte[] data;
-        public List<PropertyReader.Property> Props;
         public BioAnimSetData SetData;
 
-        public AnimSet(ME3Package Pcc, int Index)
+        public AnimSet(ExportEntry export)
         {
-            pcc = Pcc;
-            MyIndex = Index;
-            if (pcc.isExport(Index))
-                data = pcc.Exports[Index].Data;
-            Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            
-            Sequences = new List<int>();
-            foreach (PropertyReader.Property p in Props)
-                switch (pcc.getNameEntry(p.Name))
-                {
+            pcc = export.FileRef;
+            Export = export;
+            data = export.Data;
 
-                    case "PreviewSkelMeshName":
-                        PreviewSkelMeshName = p.Value.IntValue;
-                        break;
-                    case "m_pBioAnimSetData":
-                        m_pBioAnimSetData = p.Value.IntValue;
-                        if (pcc.isExport(m_pBioAnimSetData - 1) && pcc.Exports[m_pBioAnimSetData - 1].ClassName == "BioAnimSetData")
-                            SetData = new BioAnimSetData(pcc, m_pBioAnimSetData - 1);
-                        break;
-                    case "Sequences":
-                        ReadSequences(p.raw);
-                        break;
-                }
-        }
-
-        public void ReadSequences(byte[] raw)
-        {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
-            for (int i = 0; i < count; i++)
-                Sequences.Add(BitConverter.ToInt32(buff, i * 4) - 1);
-        }
-
-        public int GetArrayCount(byte[] raw)
-        {
-            return BitConverter.ToInt32(raw, 24);
-        }
-
-        public byte[] GetArrayContent(byte[] raw)
-        {
-            byte[] buff = new byte[raw.Length - 28];
-            for (int i = 0; i < raw.Length - 28; i++)
-                buff[i] = raw[i + 28];
-            return buff;
+            PropertyCollection props = export.GetProperties();
+            m_pBioAnimSetData = props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
+            if (pcc.IsUExport(m_pBioAnimSetData))
+            {
+                SetData = new BioAnimSetData(pcc.GetUExport(m_pBioAnimSetData));
+            }
+            PreviewSkelMeshName = props.GetPropOrDefault<NameProperty>("PreviewSkelMeshName").Value.Instanced;
+            Sequences = props.GetPropOrDefault<ArrayProperty<ObjectProperty>>("Sequences").Select(prop => prop.Value).ToList();
         }
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode("AnimSet : " + pcc.Exports[MyIndex].ObjectName + "(#" + MyIndex + ")");
-            res.Nodes.Add("PreviewSkelMeshName : " + pcc.getNameEntry(PreviewSkelMeshName));
-            res.Nodes.Add("m_pBioAnimSetData : " + m_pBioAnimSetData);
+            TreeNode res = new TreeNode($"AnimSet : {Export.ObjectName.Instanced}(#{Export.UIndex})");
+            res.Nodes.Add($"PreviewSkelMeshName : {PreviewSkelMeshName}");
+            res.Nodes.Add($"m_pBioAnimSetData : {m_pBioAnimSetData}");
             if (SetData != null)
                 res.Nodes.Add(SetData.ToTree());
             res.Nodes.Add(SequencesToTree());
@@ -101,9 +68,9 @@ namespace ME3Explorer.Unreal.Classes
             TreeNode res = new TreeNode("Sequences");
             foreach (int idx in Sequences)
             {
-                if (pcc.isExport(idx) && pcc.Exports[idx].ClassName == "AnimSequence")
+                if (pcc.IsUExport(idx) && pcc.GetUExport(idx).ClassName == "AnimSequence")
                 {
-                    AnimSequence ans = new AnimSequence(pcc, idx);
+                    var ans = new AnimSequence(pcc.GetUExport(idx));
                     res.Nodes.Add(ans.ToTree());
                 }
                 else                    
@@ -124,9 +91,10 @@ namespace ME3Explorer.Unreal.Classes
             {
                 PSAFile.PSABone b = new PSAFile.PSABone();
                 b.name = s;
-                if (count++ == 0)
+                if (count == 0)
                     b.parent = -1;
                 d.Bones.Add(b);
+                count++;
             }
             d.Infos = new List<PSAFile.PSAAnimInfo>();              //Export Sequences
             d.Keys = new List<PSAFile.PSAAnimKeys>();
@@ -135,15 +103,15 @@ namespace ME3Explorer.Unreal.Classes
             {
                 int idx = Sequences[i];
                 int idxn = Sequences[i + 1];
-                AnimSequence seq = new AnimSequence(pcc, idx);
-                AnimSequence seqn = new AnimSequence(pcc, idxn);
+                AnimSequence seq = new AnimSequence(pcc.GetUExport(idx));
+                AnimSequence seqn = new AnimSequence(pcc.GetUExport(idxn));
                 PSAFile.PSAAnimInfo inf = new PSAFile.PSAAnimInfo();
                 inf.AnimRate = 30;
                 inf.TotalBones = d.Bones.Count;
                 inf.FirstRawFrame = currframe;
                 inf.TrackTime = inf.NumRawFrames = seq.NumFrames;
                 inf.KeyQuotum = inf.NumRawFrames * inf.TotalBones;
-                inf.name = pcc.getNameEntry(seq.SequenceName);
+                inf.name = seq.SequenceName;
                 inf.group = "None";
                 d.Infos.Add(inf);
                 for (int j = 0; j < inf.NumRawFrames; j++)
@@ -158,27 +126,29 @@ namespace ME3Explorer.Unreal.Classes
                         float t = j / (float)(inf.NumRawFrames - 1);
                         Vector3 currV = Vector3.Lerp(fromV, toV, t);
                         Quaternion qc = Quaternion.Slerp(q1, q2, t);
-                        PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();
-                        key.location = new PSAFile.PSAPoint(currV);
-                        key.rotation = new PSAFile.PSAQuad(QToVec4(qc));
-                        key.time = 1;
+                        PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys
+                        {
+                            location = new PSAFile.PSAPoint(currV),
+                            rotation = new PSAFile.PSAQuad(QToVec4(qc)),
+                            time = 1
+                        };
                         d.Keys.Add(key);
                     }
                 currframe += seq.NumFrames;
             }
-            AnimSequence s1 = new AnimSequence(pcc, Sequences[Sequences.Count-1]);
+            AnimSequence s1 = new AnimSequence(pcc.GetUExport(Sequences[Sequences.Count-1]));
             AnimSequence s2;
             if (s1.bNoLoopingInterpolation)
-                s2 = new AnimSequence(pcc, Sequences[Sequences.Count - 1]);
+                s2 = new AnimSequence(pcc.GetUExport(Sequences[Sequences.Count - 1]));
             else
-                s2 = new AnimSequence(pcc, Sequences[0]);
+                s2 = new AnimSequence(pcc.GetUExport(Sequences[0]));
             PSAFile.PSAAnimInfo inf2 = new PSAFile.PSAAnimInfo();
             inf2.AnimRate = 30;
             inf2.TotalBones = d.Bones.Count;
             inf2.FirstRawFrame = currframe;
             inf2.TrackTime = inf2.NumRawFrames = s1.NumFrames;
             inf2.KeyQuotum = inf2.NumRawFrames * inf2.TotalBones;
-            inf2.name = pcc.getNameEntry(s1.SequenceName);
+            inf2.name = s1.SequenceName;
             inf2.group = "None";
             d.Infos.Add(inf2);
             for (int j = 0; j < inf2.NumRawFrames; j++)
@@ -193,10 +163,12 @@ namespace ME3Explorer.Unreal.Classes
                     float t = j / (float)(inf2.NumRawFrames - 1);
                     Vector3 currV = Vector3.Lerp(fromV, toV, t);
                     Quaternion qc = Quaternion.Slerp(q1, q2, t);
-                    PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys();
-                    key.location = new PSAFile.PSAPoint(currV);
-                    key.rotation = new PSAFile.PSAQuad(QToVec4(qc));
-                    key.time = 1;
+                    PSAFile.PSAAnimKeys key = new PSAFile.PSAAnimKeys
+                    {
+                        location = new PSAFile.PSAPoint(currV),
+                        rotation = new PSAFile.PSAQuad(QToVec4(qc)),
+                        time = 1
+                    };
                     d.Keys.Add(key);
                 }
             psa.data = d;
@@ -227,21 +199,21 @@ namespace ME3Explorer.Unreal.Classes
             }
             for (int i = 0; i < Sequences.Count; i++)
             {
-                AnimSequence ans = new AnimSequence(pcc, Sequences[i]);
-                if (d.Infos[i].name != pcc.getNameEntry(ans.SequenceName))
+                AnimSequence ans = new AnimSequence(pcc.GetUExport(Sequences[i]));
+                if (d.Infos[i].name != ans.SequenceName)
                 {
                     MessageBox.Show("Cant import: couldnt match all sequences");
                     return false;
                 }
             }
             int pos = 0;
+            List<Vector4> rot = new List<Vector4>();
             for (int i = 0; i < Sequences.Count; i++)
             {
-                DebugOutput.PrintLn("Importing into AnimSequence #" + Sequences[i] + " ...");
-                AnimSequence ans = new AnimSequence(pcc, Sequences[i]);
+                DebugOutput.PrintLn($"Importing into AnimSequence #{Sequences[i]} ...");
+                AnimSequence ans = new AnimSequence(pcc.GetUExport(Sequences[i]));
                 PSAFile.PSAAnimInfo inf = d.Infos[i];
-                List<Vector3> loc = new List<Vector3>();
-                List<Vector4> rot = new List<Vector4>();
+                var loc = new List<Vector3>();
                 for (int j = 0; j < inf.TotalBones; j++)
                 {
                     PSAFile.PSAAnimKeys key = d.Keys[pos + j];
@@ -252,7 +224,7 @@ namespace ME3Explorer.Unreal.Classes
                 ans.SaveChanges();
                 pos += inf.KeyQuotum;
             }
-            pcc.save();
+            pcc.Save();
             return true;
         }
 

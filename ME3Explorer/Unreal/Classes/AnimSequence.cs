@@ -13,6 +13,7 @@ using ME3Explorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using SharpDX;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -22,15 +23,15 @@ namespace ME3Explorer.Unreal.Classes
 
         //Byte Properties
 
-        public int RotationCompressionFormat;
-        public int KeyEncodingFormat;
+        public string RotationCompressionFormat;
+        public string KeyEncodingFormat;
         //Bool Properties
 
-        public bool bIsAdditive = false;
-        public bool bNoLoopingInterpolation = false;
+        public bool bIsAdditive;
+        public bool bNoLoopingInterpolation;
         //Name Properties
 
-        public int SequenceName;
+        public string SequenceName;
         //Object Properties
 
         public int m_pBioAnimSetData;
@@ -57,94 +58,54 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion
 
-        public int MyIndex;
-        public ME3Package pcc;
+        public float Rate;
+
+        public IMEPackage pcc;
+        private readonly ExportEntry Export;
+        private readonly PropertyCollection Props;
         public byte[] data;
-        public List<PropertyReader.Property> Props;
         public byte[] CompressedBlob;
-        public int Unknown;
 
-        public AnimSequence(ME3Package Pcc, int Index)
+        public AnimSequence(ExportEntry export)
         {
-            pcc = Pcc;
-            MyIndex = Index;
-            if (pcc.isExport(Index))
-                data = pcc.Exports[Index].Data;            
-            Props = PropertyReader.getPropList(pcc.Exports[Index]);
-            
-            Unknown = BitConverter.ToInt32(data, 0);
-            foreach (PropertyReader.Property p in Props)
-                switch (pcc.getNameEntry(p.Name))
-                {
+            pcc = export.FileRef;
+            Export = export;
+            data = export.Data;
 
-                    case "RotationCompressionFormat":
-                        RotationCompressionFormat = p.Value.IntValue;
-                        break;
-                    case "KeyEncodingFormat":
-                        KeyEncodingFormat = p.Value.IntValue;
-                        break;
-                    case "bIsAdditive":
-                        if (p.raw[p.raw.Length - 1] == 1)
-                            bIsAdditive = true;
-                        break;
-                    case "bNoLoopingInterpolation":
-                        if (p.raw[p.raw.Length - 1] == 1)
-                            bNoLoopingInterpolation = true;
-                        break;
-                    case "SequenceName":
-                        SequenceName = p.Value.IntValue;
-                        break;
-                    case "m_pBioAnimSetData":
-                        m_pBioAnimSetData = p.Value.IntValue;
-                        break;
-                    case "SequenceLength":
-                        SequenceLength = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                        break;
-                    case "RateScale":
-                        RateScale = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
-                        break;
-                    case "NumFrames":
-                        NumFrames = p.Value.IntValue;
-                        break;
-                    case "CompressedTrackOffsets":
-                        ReadTrackOffsets(p.raw);
-                        break;
-                }
+            Props = export.GetProperties();
+
+            RotationCompressionFormat = Props.GetPropOrDefault<EnumProperty>("RotationCompressionFormat").Value.Instanced;
+            KeyEncodingFormat = Props.GetPropOrDefault<EnumProperty>("KeyEncodingFormat").Value.Instanced;
+            bIsAdditive = Props.GetPropOrDefault<BoolProperty>("bIsAdditive").Value;
+            bNoLoopingInterpolation = Props.GetPropOrDefault<BoolProperty>("bNoLoopingInterpolation").Value;
+            SequenceName = Props.GetPropOrDefault<NameProperty>("SequenceName").Value.Instanced;
+            m_pBioAnimSetData = Props.GetPropOrDefault<ObjectProperty>("m_pBioAnimSetData").Value;
+            SequenceLength = Props.GetPropOrDefault<FloatProperty>("SequenceLength").Value;
+            RateScale = Props.GetProp<FloatProperty>("RateScale")?.Value ?? 1;
+            NumFrames = Props.GetPropOrDefault<IntProperty>("NumFrames").Value;
+            ReadTrackOffsets(Props.GetPropOrDefault<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(p => p.Value).ToArray());
             ReadCompressedBlob();
+            Rate = NumFrames / SequenceLength * RateScale;
         }
 
-        public void ReadTrackOffsets(byte[] raw)
+        public void ReadTrackOffsets(int[] raw)
         {
-            int count = GetArrayCount(raw);
-            byte[] buff = GetArrayContent(raw);
             CompressedTrackOffsets = new List<TrackOffsets>();
-            for (int i = 0; i < count / 4; i++)
+            for (int i = 0; i < raw.Length / 4; i++)
             {
-                TrackOffsets t = new TrackOffsets();
-                t.TransOffset = BitConverter.ToInt32(buff, i * 16);
-                t.RotNumKeys = BitConverter.ToInt32(buff, i * 16 + 4);
-                t.RotOffset = BitConverter.ToInt32(buff, i * 16 + 8);
-                t.RotNumKeys = BitConverter.ToInt32(buff, i * 16 + 12);
-                CompressedTrackOffsets.Add(t);
+                CompressedTrackOffsets.Add(new TrackOffsets
+                {
+                    TransOffset = raw[i],
+                    TransNumKeys = raw[i + 1],
+                    RotOffset = raw[i + 2],
+                    RotNumKeys = raw[i + 3]
+                });
             }
-        }
-
-        public int GetArrayCount(byte[] raw)
-        {
-            return BitConverter.ToInt32(raw, 24);
-        }
-
-        public byte[] GetArrayContent(byte[] raw)
-        {
-            byte[] buff = new byte[raw.Length - 28];
-            for (int i = 0; i < raw.Length - 28; i++)
-                buff[i] = raw[i + 28];
-            return buff;
         }
 
         public void ReadCompressedBlob()
         {
-            int pos = Props[Props.Count() - 1].offend;
+            int pos = Props.endOffset;
             int size = BitConverter.ToInt32(data, pos);
             CompressedBlob = new byte[size];
             pos += 4;
@@ -183,21 +144,23 @@ namespace ME3Explorer.Unreal.Classes
 
         public Vector3 ReadVector3(int pos)
         {
-            Vector3 q = new Vector3();
-            q.X = BitConverter.ToSingle(CompressedBlob, pos);
-            q.Y = BitConverter.ToSingle(CompressedBlob, pos + 4) * -1f;
-            q.Z = BitConverter.ToSingle(CompressedBlob, pos + 8);
+            Vector3 q = new Vector3
+            {
+                X = BitConverter.ToSingle(CompressedBlob, pos),
+                Y = BitConverter.ToSingle(CompressedBlob, pos + 4) * -1f,
+                Z = BitConverter.ToSingle(CompressedBlob, pos + 8)
+            };
             return q;
         }
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode(pcc.Exports[MyIndex].ObjectName + "(#" + MyIndex + ")");
-            res.Nodes.Add("RotationCompressionFormat : " + pcc.getNameEntry(RotationCompressionFormat));
-            res.Nodes.Add("KeyEncodingFormat : " + pcc.getNameEntry(KeyEncodingFormat));
+            TreeNode res = new TreeNode($"{Export.ObjectName.Instanced}(#{Export.UIndex})");
+            res.Nodes.Add("RotationCompressionFormat : " + RotationCompressionFormat);
+            res.Nodes.Add("KeyEncodingFormat : " + KeyEncodingFormat);
             res.Nodes.Add("bIsAdditive : " + bIsAdditive);
             res.Nodes.Add("bNoLoopingInterpolation : " + bNoLoopingInterpolation);
-            res.Nodes.Add("SequenceName : " + pcc.getNameEntry(SequenceName));
+            res.Nodes.Add("SequenceName : " + SequenceName);
             res.Nodes.Add("m_pBioAnimSetData : " + m_pBioAnimSetData);
             res.Nodes.Add("SequenceLength : " + SequenceLength);
             res.Nodes.Add("RateScale : " + RateScale);
@@ -212,8 +175,8 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < CompressedTrackOffsets.Count; i++)
             {
                 TrackOffsets t = CompressedTrackOffsets[i];
-                string s = i + " :  Location( " + t.Trans.X + ", " + t.Trans.Y + ", " + t.Trans.Z + ") Trans.Numkeys(" + t.TransNumKeys + ") " ;
-                s += "Rotation( " + t.Rot.X + ", " + t.Rot.Y + ", " + t.Rot.Z + ", " + t.Rot.W + ") Rot.Numkeys(" + t.RotNumKeys + ")";
+                string s = $"{i} :  Location( {t.Trans.X}, {t.Trans.Y}, {t.Trans.Z}) Trans.Numkeys({t.TransNumKeys}) ";
+                s += $"Rotation( {t.Rot.X}, {t.Rot.Y}, {t.Rot.Z}, {t.Rot.W}) Rot.Numkeys({t.RotNumKeys})";
                 res.Nodes.Add(s);
             }
             return res;
@@ -223,11 +186,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             MemoryStream m = new MemoryStream();
             int pos = 0;
-            int pos2 = 28;
-            byte[] buff = new byte[0];
-            foreach (PropertyReader.Property p in Props)
-                if (pcc.getNameEntry(p.Name) == "CompressedTrackOffsets")
-                    buff = p.raw;
+            var temp = new int[CompressedTrackOffsets.Count];
             for (int i = 0; i < CompressedTrackOffsets.Count; i++)
             {
                 m.Write(BitConverter.GetBytes(loc[i].X), 0, 4);
@@ -245,40 +204,25 @@ namespace ME3Explorer.Unreal.Classes
                 t.RotNumKeys = time;
                 CompressedTrackOffsets[i] = t;
                 pos += 24;
-                byte[] buff2 = BitConverter.GetBytes(t.TransOffset);
-                for (int j = 0; j < 4; j++)
-                    buff[pos2 + j] = buff2[j];
-                buff2 = BitConverter.GetBytes(t.TransNumKeys);
-                for (int j = 0; j < 4; j++)
-                    buff[pos2 + j + 4] = buff2[j];
-                buff2 = BitConverter.GetBytes(t.RotOffset);
-                for (int j = 0; j < 4; j++)
-                    buff[pos2 + j + 8] = buff2[j];
-                buff2 = BitConverter.GetBytes(t.RotNumKeys);
-                for (int j = 0; j < 4; j++)
-                    buff[pos2 + j + 12] = buff2[j];
-                pos2 += 16;
-            }            
-            foreach (PropertyReader.Property p in Props)
-                if (pcc.getNameEntry(p.Name) == "CompressedTrackOffsets")
-                    p.raw = buff;
-            buff = BitConverter.GetBytes(time);
-            foreach (PropertyReader.Property p in Props)
-                if (pcc.getNameEntry(p.Name) == "NumFrames")
-                    for (int j = 0; j < 4; j++)
-                        p.raw[p.raw.Length + j - 4] = buff[j];
+
+                temp[i * 4] = t.TransOffset;
+                temp[i * 4 + 1] = t.TransNumKeys;
+                temp[i * 4 + 2] = t.RotOffset;
+                temp[i * 4 + 3] = t.RotNumKeys;
+            }
+
+            Props.AddOrReplaceProp(new ArrayProperty<IntProperty>(temp.Select(i => new IntProperty(i)), "CompressedTrackOffsets"));
+            Props.AddOrReplaceProp(new IntProperty(time, "NumFrames"));
             CompressedBlob = m.ToArray();
         }
 
         public void SaveChanges()
         {
+            Export.WriteProperties(Props);
             MemoryStream m = new MemoryStream();
-            m.Write(BitConverter.GetBytes(Unknown), 0, 4);
-            foreach (PropertyReader.Property p in Props)
-                m.Write(p.raw, 0, p.raw.Length);
-            m.Write(BitConverter.GetBytes(CompressedBlob.Length), 0, 4);
-            m.Write(CompressedBlob, 0, CompressedBlob.Length);
-            pcc.Exports[MyIndex].Data = m.ToArray();
+            m.WriteInt32(CompressedBlob.Length);
+            m.WriteFromBuffer(CompressedBlob);
+            Export.setBinaryData(m.ToArray());
         }
 
     }

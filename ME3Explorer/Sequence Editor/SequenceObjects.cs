@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
+using Gammtek.Conduit.Extensions;
 using ME1Explorer;
 
 namespace ME3Explorer.SequenceObjects
@@ -39,7 +40,7 @@ namespace ME3Explorer.SequenceObjects
         public int inputIndex;
     }
 
-    [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SObj | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SObj : PNode, IDisposable
     {
         public IMEPackage pcc;
@@ -69,14 +70,14 @@ namespace ME3Explorer.SequenceObjects
         public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
-        public IExportEntry Export => export;
+        public ExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
-        protected IExportEntry export;
+        protected ExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
 
-        protected SObj(IExportEntry entry, GraphEditor grapheditor)
+        protected SObj(ExportEntry entry, GraphEditor grapheditor)
         {
             pcc = entry.FileRef;
             export = entry;
@@ -105,6 +106,52 @@ namespace ME3Explorer.SequenceObjects
                 foreach (var s in comments)
                 {
                     res += s + "\n";
+                }
+            }
+
+            if (Properties.Settings.Default.SequenceEditor_ShowParsedInfo)
+            {
+                //Parse and show relevant info so user doesn't have to dig info file to find
+
+                //I am sure there is a more efficient way to do this we will want to move to if we expand this feature
+                var properties = export.GetProperties();
+                switch (export.ClassName)
+                {
+                    case "BioSeqAct_AreaTransition":
+                        var newMap = properties.GetProp<NameProperty>("AreaName");
+                        var startPoint = properties.GetProp<NameProperty>("startPoint");
+                        string newText = "";
+                        if (newMap != null)
+                        {
+                            newText += $"Map: :{newMap}\n";
+                        }
+                        if (startPoint != null)
+                        {
+                            newText += $"Startpoint: {startPoint}";
+                        }
+                        res += newText;
+                        break;
+                    case "SeqAct_Delay":
+                        var delayValue = properties.GetProp<FloatProperty>("Duration");
+                        res += $"Delay: {delayValue?.Value ?? 1}s";
+                        break;
+                    case "SeqAct_PlaySound":
+                        var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
+                        if (soundObjRef != null)
+                        {
+                            res += export.FileRef.GetEntry(soundObjRef.Value).InstancedFullPath;
+                        }
+                        break;
+                    case "BioSeqAct_SetWeapon":
+                        //This might depend on game
+
+                        //ME1:
+                        var weaponEnum = properties.GetProp<EnumProperty>("eWeapon");
+                        if (weaponEnum != null)
+                        {
+                            res += weaponEnum.Value;
+                        }
+                        break;
                 }
             }
             return res;
@@ -156,7 +203,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SVar | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SVar | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SVar : SObj
     {
         public const float RADIUS = 30;
@@ -172,7 +219,7 @@ namespace ME3Explorer.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SVar(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             string s = export.ObjectName;
@@ -189,7 +236,7 @@ namespace ME3Explorer.SequenceObjects
             shape.Pickable = false;
             AddChild(shape);
             Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(GetValue());
+            val = new SText(GetValue().Truncate(Properties.Settings.Default.SequenceEditor_MaxVarStringLength, true));
             val.Pickable = false;
             val.TextAlignment = StringAlignment.Center;
             val.X = w / 2 - val.Width / 2;
@@ -288,15 +335,15 @@ namespace ME3Explorer.SequenceObjects
                                     return strProp.Value;
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
                                     {
-                                        IEntry entry = pcc.getEntry(objProp.Value);
+                                        IEntry entry = pcc.GetEntry(objProp.Value);
                                         if (entry == null) return "???";
-                                        if (entry is IExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
+                                        if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName}\n{ tagProp.Value}";
+                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
                                         }
                                         else
                                         {
-                                            return $"#{UIndex}\n{entry.ObjectName}";
+                                            return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}";
                                         }
                                     }
                             }
@@ -308,17 +355,7 @@ namespace ME3Explorer.SequenceObjects
                             if ((prop.Name == "m_srValue" || prop.Name == "m_srStringID")
                                 && prop is StringRefProperty strRefProp)
                             {
-                                switch (pcc.Game)
-                                {
-                                    case MEGame.ME1:
-                                        return ME1TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.ME2:
-                                        return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.ME3:
-                                        return ME3TalkFiles.findDataById(strRefProp.Value);
-                                    case MEGame.UDK:
-                                        return "UDK StrRef not supported";
-                                }
+                                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
                             }
                         }
                         return "???";
@@ -423,15 +460,14 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SFrame | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SFrame : SObj
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SFrame(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
-            string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
             float h = 0;
             var props = export.GetProperties();
@@ -446,7 +482,7 @@ namespace ME3Explorer.SequenceObjects
                     h = (prop as IntProperty);
                 }
             }
-            MakeTitleBox(s);
+            MakeTitleBox(export.ObjectName.Instanced);
             shape = PPath.CreateRectangle(0, -titleBox.Height, w, h + titleBox.Height);
             outlinePen = new Pen(Color.Black);
             shape.Pen = outlinePen;
@@ -487,7 +523,7 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SBox | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SBox | #{UIndex}: {export.ObjectName.Instanced}")]
     public abstract class SBox : SObj
     {
         public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>()
@@ -545,7 +581,7 @@ namespace ME3Explorer.SequenceObjects
         protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
         protected PPath CreateVarLinkBox() => PPath.CreateRectangle(-4, 0, 8, 10);
 
-        protected SBox(IExportEntry entry, GraphEditor grapheditor)
+        protected SBox(ExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             varDragHandler = new VarDragHandler(grapheditor, this);
@@ -760,13 +796,10 @@ namespace ME3Explorer.SequenceObjects
                             Edges = new List<ActionEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc")
                         };
-                        for (int i = 0; i < linksProp.Count; i++)
+                        foreach (StructProperty outputInputLink in linksProp)
                         {
-                            int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
-                            l.Links.Add(linkedOp);
-                            l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
-                            if (OutputNumbers)
-                                l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
+                            l.Links.Add(outputInputLink.GetProp<ObjectProperty>("LinkedOp").Value);
+                            l.InputIndices.Add(outputInputLink.GetProp<IntProperty>("InputLinkIdx"));
                         }
                         l.node = CreateActionLinkBox();
                         l.node.Brush = outputBrush;
@@ -967,7 +1000,7 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
@@ -981,7 +1014,6 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            linkDesc = OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc;
             int inputIndex = -1;
             foreach (InputLink l in end.InLinks)
             {
@@ -1013,7 +1045,7 @@ namespace ME3Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
@@ -1044,7 +1076,7 @@ namespace ME3Explorer.SequenceObjects
         public void CreateEventlink(PNode p1, SEvent end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = start.export;
+            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (EventLink l in start.EventLinks)
             {
@@ -1091,7 +1123,6 @@ namespace ME3Explorer.SequenceObjects
         public void RemoveOutlink(int linkconnection, int linkIndex)
         {
             string linkDesc = Outlinks[linkconnection].Desc;
-            linkDesc = (OutputNumbers ? linkDesc.Substring(0, linkDesc.LastIndexOf(":")) : linkDesc);
             var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
             {
@@ -1196,22 +1227,21 @@ namespace ME3Explorer.SequenceObjects
         }
     }
 
-    [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SEvent | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SEvent : SBox
     {
         public List<EventEdge> connections = new List<EventEdge>();
         public override IEnumerable<SeqEdEdge> Edges => connections.Union(base.Edges);
 
-        public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SEvent(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             outlinePen = new Pen(EventColor);
-            string s = export.ObjectName;
+            string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqEvt_", "");
             s = s.Replace("SFXSeqEvt_", "");
             s = s.Replace("SeqEvt_", "");
             s = s.Replace("SeqEvent_", "");
-            s += "_" + export.indexValue;
             float starty = 0;
             float w = 15;
             float midW = 0;
@@ -1240,7 +1270,12 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox = new PPath();
             for (int i = 0; i < Outlinks.Count; i++)
             {
-                SText t2 = new SText(Outlinks[i].Desc);
+                string linkDesc = Outlinks[i].Desc;
+                if (OutputNumbers && Outlinks[i].Links.Any())
+                {
+                    linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
+                }
+                SText t2 = new SText(linkDesc);
                 if (t2.Width + 10 > midW) midW = t2.Width + 10;
                 //t2.TextAlignment = StringAlignment.Far;
                 //t2.ConstrainWidthToTextWidth = false;
@@ -1343,7 +1378,7 @@ namespace ME3Explorer.SequenceObjects
         //}
     }
 
-    [DebuggerDisplay("SAction | #{UIndex}: {export.ObjectName}")]
+    [DebuggerDisplay("SAction | #{UIndex}: {export.ObjectName.Instanced}")]
     public class SAction : SBox
     {
         public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
@@ -1356,7 +1391,7 @@ namespace ME3Explorer.SequenceObjects
 
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
-        public SAction(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+        public SAction(ExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
             GetVarLinks();
@@ -1395,7 +1430,7 @@ namespace ME3Explorer.SequenceObjects
         public override void Layout(float x, float y)
         {
             outlinePen = new Pen(Color.Black);
-            string s = export.ObjectName;
+            string s = export.ObjectName.Instanced;
             s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
                  .Replace("SeqAct_", "").Replace("SeqCond_", "");
             float starty = 8;
@@ -1437,7 +1472,12 @@ namespace ME3Explorer.SequenceObjects
             float outW = 0;
             for (int i = 0; i < Outlinks.Count; i++)
             {
-                SText t2 = new SText(Outlinks[i].Desc);
+                string linkDesc = Outlinks[i].Desc;
+                if (OutputNumbers && Outlinks[i].Links.Any())
+                {
+                    linkDesc += $": {string.Join(",", Outlinks[i].Links.Select(l => $"#{l}"))}";
+                }
+                SText t2 = new SText(linkDesc);
                 if (t2.Width + 10 > outW) outW = t2.Width + 10;
                 t2.X = 0 - t2.Width;
                 t2.Y = starty;
@@ -1474,11 +1514,10 @@ namespace ME3Explorer.SequenceObjects
                 {
                     case ObjectProperty objProp when objProp.Name == "oSequenceReference":
                         {
-                            string seqName = pcc.getEntry(objProp.Value).ObjectName;
-                            if (pcc.Game == MEGame.ME1
-                                && objProp.Value > 0
+                            string seqName = pcc.GetEntry(objProp.Value)?.ObjectName ?? "";
+                            if (pcc.IsUExport(objProp.Value)
                                 && seqName == "Sequence"
-                                && pcc.getExport(objProp.Value - 1).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
+                                && pcc.GetUExport(objProp.Value).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
                             {
                                 seqName = objNameProp;
                             }
@@ -1492,7 +1531,7 @@ namespace ME3Explorer.SequenceObjects
                         s += $"\n\"{strProp}\"";
                         break;
                     case ObjectProperty objProp when objProp.Name == "m_pEffect":
-                        s += $"\n\"{pcc.getEntry(objProp.Value).ObjectName}\"";
+                        s += $"\n\"{pcc.GetEntry(objProp.Value)?.ObjectName.Instanced ?? ""}\"";
                         break;
                 }
             }
@@ -1532,7 +1571,7 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    inputLinksProp = pcc.GetUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                 }
             }
 
@@ -1564,7 +1603,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 try
                 {
-                    if (ME3UnrealObjectInfo.getSequenceObjectInfo(export.ClassName)?.inputLinks is List<string> inputLinks)
+                    if (ME3UnrealObjectInfo.getSequenceObjectInfoInputLinks(export.ClassName) is List<string> inputLinks)
                     {
                         for (int i = 0; i < inputLinks.Count; i++)
                         {
@@ -1659,41 +1698,41 @@ namespace ME3Explorer.SequenceObjects
 
         private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
-        private static PrivateFontCollection fontcollection;
-        private static Font kismetFont;
+        //Making fontcollection a local variable causes font to be unloaded
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private static readonly PrivateFontCollection fontcollection;
+        private static readonly Font kismetFont;
 
-        public SText(string s, bool shadows = true)
+        public SText(string s, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
             base.Font = kismetFont;
-
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 
-        public SText(string s, Color c, bool shadows = true)
+        public SText(string s, Color c, bool shadows = true, float scale = 1)
             : base(s)
         {
             base.TextBrush = new SolidBrush(c);
             base.Font = kismetFont;
+            base.GlobalScale = scale;
             shadowRendering = shadows;
         }
 
-        //must be called once in the program before SText can be used
-        public static void LoadFont()
+        //Static constructor
+        static SText()
         {
-            if (fontcollection == null || fontcollection.Families.Length < 1)
-            {
-                fontcollection = new PrivateFontCollection();
-                byte[] fontData = Properties.Resources.KismetFont;
-                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
-                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-                fontcollection.AddMemoryFont(fontPtr, fontData.Length);
-                uint tmp = 0;
-                AddFontMemResourceEx(fontPtr, (uint)(fontData.Length), IntPtr.Zero, ref tmp);
-                Marshal.FreeCoTaskMem(fontPtr);
-                kismetFont = new Font(fontcollection.Families[0], 6, GraphicsUnit.Pixel);
-            }
+            fontcollection = new PrivateFontCollection();
+            byte[] fontData = Properties.Resources.KismetFont;
+            IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+            Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+            fontcollection.AddMemoryFont(fontPtr, fontData.Length);
+            uint tmp = 0;
+            AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, ref tmp);
+            Marshal.FreeCoTaskMem(fontPtr);
+            kismetFont = new Font(fontcollection.Families[0], 6, GraphicsUnit.Pixel);
         }
 
         protected override void Paint(PPaintContext paintContext)

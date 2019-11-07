@@ -10,6 +10,7 @@ using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace MassEffect.NativesEditor.Views
 {
@@ -392,7 +393,7 @@ namespace MassEffect.NativesEditor.Views
             AddQuestTask(new BioQuestTask(SelectedQuestTask));
         }
 
-        public bool TryFindQuestMap(IMEPackage pcc, out IExportEntry export, out int dataOffset)
+        public bool TryFindQuestMap(IMEPackage pcc, out ExportEntry export, out int dataOffset)
         {
             export = null;
             dataOffset = -1;
@@ -413,7 +414,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            if (!TryFindQuestMap(pcc, out IExportEntry export, out int dataOffset))
+            if (!TryFindQuestMap(pcc, out ExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -695,6 +696,29 @@ namespace MassEffect.NativesEditor.Views
         private void RemoveQuestTaskPlotItemIndex_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             RemoveQuestTaskPlotItemIndex(QuestTaskPlotItemIndicesListBox.SelectedIndex);
+        }
+
+        private void txt_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (CodexMapView.package != null)
+            {
+                if (SelectedQuestGoal != null)
+                {
+                    txt_goalName.Text = GlobalFindStrRefbyID(SelectedQuestGoal.Name, CodexMapView.package);
+                    txt_goalDesc.Text = GlobalFindStrRefbyID(SelectedQuestGoal.Description, CodexMapView.package);
+                }
+
+                if(SelectedQuestTask != null)
+                {
+                    txt_taskName.Text = GlobalFindStrRefbyID(SelectedQuestTask.Name, CodexMapView.package);
+                }
+
+                if(SelectedQuestPlotItem != null)
+                {
+                    txt_PlotitmDesc.Text = GlobalFindStrRefbyID(SelectedQuestPlotItem.Name, CodexMapView.package);
+                }
+                
+            }
         }
     }
 }

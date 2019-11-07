@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:local="clr-namespace:ME3Explorer.Soundplorer"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
@@ -15,7 +15,7 @@
         Drop="Window_Drop"
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Soundplorer" Height="450" Width="830">
+        Title="Soundplorer" Height="450" Width="830" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -92,7 +92,7 @@
                         <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
-                <fa:ImageAwesome Icon="Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <fa:ImageAwesome Icon="Solid_Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <StatusBarItem Padding="0">
                     <TextBlock Name="StatusBar_LeftMostText" Text="{Binding TaskbarText}"/>
                 </StatusBarItem>

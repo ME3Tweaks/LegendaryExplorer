@@ -7,109 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
-using Gibbed.IO;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 using Newtonsoft.Json;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
-    #region PropGrid Properties
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct ObjectProp
-    {
-        [DesignOnly(true)]
-        public string objectName { get; set; }
-
-        public int index { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct NameProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public int nameindex { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct StructProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public int[] data { get; set; }
-
-        public int nameindex { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct ColorProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public byte Alpha { get; set; }
-
-        public byte Red { get; set; }
-
-        public byte Green { get; set; }
-
-        public byte Blue { get; set; }
-
-        public int nameindex { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct VectorProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public float X { get; set; }
-
-        public float Y { get; set; }
-
-        public float Z { get; set; }
-
-        public int nameindex { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct RotatorProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public float Pitch { get; set; }
-
-        public float Yaw { get; set; }
-
-        public float Roll { get; set; }
-
-        public int nameindex { get; set; }
-    }
-
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    struct LinearColorProp
-    {
-        [DesignOnly(true)]
-        public string name { get; set; }
-
-        public float Red { get; set; }
-
-        public float Green { get; set; }
-
-        public float Blue { get; set; }
-
-        public float Alpha { get; set; }
-
-        public int nameindex { get; set; }
-    }
-    #endregion
-
-    public struct NameReference
+    public readonly struct NameReference : IEquatable<NameReference>
     {
         public string Name { get; }
         public int Number { get; }
@@ -122,7 +25,7 @@ namespace ME3Explorer.Unreal
 
         //https://api.unrealengine.com/INT/API/Runtime/Core/UObject/FName/index.html
         [JsonIgnore]
-        public string InstancedString => Number > 0 ? $"{Name}_{Number - 1}" : Name;
+        public string Instanced => Number > 0 ? $"{Name}_{Number - 1}" : Name;
 
         public static implicit operator NameReference(string s)
         {
@@ -141,16 +44,37 @@ namespace ME3Explorer.Unreal
 
         public static bool operator ==(NameReference r, string s)
         {
-            return s == r.Name;
+            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool operator !=(NameReference r, string s)
         {
-            return s != r.Name;
+            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+
+        public static bool operator ==(string s, NameReference r)
+        {
+            return string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool operator !=(string s, NameReference r)
+        {
+            return !string.Equals(s, r.Name, StringComparison.OrdinalIgnoreCase);
+        }
+        #region IEquatable
+        public static bool operator ==(NameReference n1, NameReference n2)
+        {
+            return n1.Equals(n2);
+        }
+
+        public static bool operator !=(NameReference n1, NameReference n2)
+        {
+            return !n1.Equals(n2);
         }
         public bool Equals(NameReference other)
         {
-            return string.Equals(Name, other.Name) && Number == other.Number;
+            return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && Number == other.Number;
         }
 
         public override bool Equals(object obj)
@@ -165,6 +89,52 @@ namespace ME3Explorer.Unreal
                 return (Name.GetHashCode() * 397) ^ Number;
             }
         }
+        #endregion
+    }
+
+
+    public readonly struct ScriptDelegate : IEquatable<ScriptDelegate>
+    {
+        public int Object { get; }
+        public NameReference FunctionName { get; }
+
+        public ScriptDelegate(int _object, NameReference functionName)
+        {
+            Object = _object;
+            FunctionName = functionName;
+        }
+
+        #region IEquatable
+
+        public bool Equals(ScriptDelegate other)
+        {
+            return Object == other.Object && FunctionName.Equals(other.FunctionName);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ScriptDelegate other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Object * 397) ^ FunctionName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(ScriptDelegate left, ScriptDelegate right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ScriptDelegate left, ScriptDelegate right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
     }
 
     public enum PropertyType
@@ -185,967 +155,148 @@ namespace ME3Explorer.Unreal
         BioMask4Property
     }
 
-    [Obsolete("Use IExportEntry's GetProperties() instead")]
-    public static class PropertyReader
+    public static class UPropertyExtensions
     {
-        public class Property
+        public static void WritePropHeader(this Stream stream, IMEPackage pcc, NameReference propName, PropertyType type, int size, int staticArrayIndex)
         {
-            public int Name;
-            public PropertyType TypeVal;
-            public int Size;
-            public int offsetval;
-            public int offend;
-            public PropertyValue Value;
-            public byte[] raw;
-        }
-
-        public struct PropertyValue
-        {
-            public int len;
-            public string StringValue;
-            public int IntValue;
-            public float FloatValue;
-            public NameReference NameValue;
-            public List<PropertyValue> Array;
-        }
-
-        public static List<Property> getPropList(IExportEntry export)
-        {
-            Application.DoEvents();
-            byte[] data = export.Data;
-            int start = detectStart(export.FileRef, data, export.ObjectFlags);
-            return ReadProp(export.FileRef, data, start);
-        }
-
-        public static string TypeToString(int type)
-        {
-            switch (type)
-            {
-                case 1: return "Struct Property";
-                case 2: return "Integer Property";
-                case 3: return "Float Property";
-                case 4: return "Object Property";
-                case 5: return "Name Property";
-                case 6: return "Bool Property";
-                case 7: return "Byte Property";
-                case 8: return "Array Property";
-                case 9: return "String Property";
-                case 10: return "String Ref Property";
-                default: return "Unknown/None";
-            }
-        }
-
-        public static CustomProperty PropertyToGrid(Property p, IMEPackage pcc)
-        {
-            string cat = p.TypeVal.ToString();
-            CustomProperty pg;
-            NameProp pp;
-            switch (p.TypeVal)
-            {
-                case PropertyType.BoolProperty:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, (p.Value.IntValue == 1), typeof(bool), false, true);
-                    break;
-                case PropertyType.FloatProperty:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.FloatValue, typeof(float), false, true);
-                    break;
-                case PropertyType.ByteProperty:
-                    if (p.Size != 8)
-                    {
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, (byte)p.Value.IntValue, typeof(byte), false, true);
-                    }
-                    else
-                    {
-
-                        pp = new NameProp();
-                        pp.name = pcc.getNameEntry(p.Value.IntValue);
-                        pp.nameindex = p.Value.IntValue;
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, pp, typeof(NameProp), false, true);
-                    }
-                    break;
-                case PropertyType.NameProperty:
-                    pp = new NameProp();
-                    pp.name = pcc.getNameEntry(p.Value.IntValue);
-                    pp.nameindex = p.Value.IntValue;
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, pp, typeof(NameProp), false, true);
-                    break;
-                case PropertyType.ObjectProperty:
-                    ObjectProp ppo = new ObjectProp();
-                    ppo.objectName = pcc.getObjectName(p.Value.IntValue);
-                    ppo.index = p.Value.IntValue;
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, ppo, typeof(ObjectProp), false, true);
-                    break;
-                case PropertyType.StrProperty:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.StringValue, typeof(string), false, true);
-                    break;
-                case PropertyType.ArrayProperty:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, BitConverter.ToInt32(p.raw, 24) + " elements", typeof(string), false, true);
-                    break;
-                case PropertyType.StructProperty:
-                    string structType = pcc.getNameEntry(p.Value.IntValue);
-                    switch (structType)
-                    {
-                        case "Color":
-                            System.Drawing.Color color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(p.raw, 32));
-                            ColorProp cp = new ColorProp
-                            {
-                                name = structType,
-                                nameindex = p.Value.IntValue,
-                                Alpha = color.A,
-                                Red = color.R,
-                                Green = color.G,
-                                Blue = color.B
-                            };
-                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, cp, typeof(ColorProp), false, true);
-                            break;
-                        case "Vector":
-                            VectorProp vp = new VectorProp
-                            {
-                                name = structType,
-                                nameindex = p.Value.IntValue,
-                                X = BitConverter.ToSingle(p.raw, 32),
-                                Y = BitConverter.ToSingle(p.raw, 36),
-                                Z = BitConverter.ToSingle(p.raw, 40)
-                            };
-                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, vp, typeof(VectorProp), false, true);
-                            break;
-                        case "Rotator":
-                            RotatorProp rp = new RotatorProp
-                            {
-                                name = structType,
-                                nameindex = p.Value.IntValue,
-                                Pitch = BitConverter.ToInt32(p.raw, 32).ToDegrees(),
-                                Yaw = BitConverter.ToInt32(p.raw, 36).ToDegrees(),
-                                Roll = BitConverter.ToInt32(p.raw, 40).ToDegrees()
-                            };
-                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
-                            break;
-                        case "LinearColor":
-                            LinearColorProp lcp = new LinearColorProp
-                            {
-                                name = structType,
-                                nameindex = p.Value.IntValue,
-                                Red = BitConverter.ToSingle(p.raw, 32),
-                                Green = BitConverter.ToSingle(p.raw, 36),
-                                Blue = BitConverter.ToSingle(p.raw, 40),
-                                Alpha = BitConverter.ToSingle(p.raw, 44)
-                            };
-                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, lcp, typeof(VectorProp), false, true);
-                            break;
-                        default:
-                            byte[] buf = new byte[p.Value.Array.Count()];
-                            for (int i = 0; i < p.Value.Array.Count(); i++)
-                                buf[i] = (byte)p.Value.Array[i].IntValue;
-                            List<int> buf2 = new List<int>();
-                            for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                                buf2.Add(BitConverter.ToInt32(buf, i * 4));
-                            StructProp ppp = new StructProp
-                            {
-                                name = structType,
-                                nameindex = p.Value.IntValue,
-                                data = buf2.ToArray()
-                            };
-                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, ppp, typeof(StructProp), false, true);
-                            break;
-                    }
-
-                    break;
-                default:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.IntValue, typeof(int), false, true);
-                    break;
-            }
-            return pg;
-        }
-
-        public static List<Property> ReadProp(IMEPackage pcc, byte[] raw, int start)
-        {
-            Property p;
-            PropertyValue v;
-            int sname;
-            List<Property> result = new List<Property>();
-            int pos = start;
-            if (raw.Length - pos < 8)
-                return result;
-            //int name = (int)BitConverter.ToInt64(raw, pos);
-            int name = (int)BitConverter.ToInt32(raw, pos);
-
-            if (!pcc.isName(name))
-                return result;
-            string t = pcc.getNameEntry(name);
-            p = new Property();
-            p.Name = name;
-            //Debug.WriteLine(t +" at "+start);
-            if (t == "None")
-            {
-                p.TypeVal = PropertyType.None;
-                p.offsetval = pos;
-                p.Size = 8;
-                p.Value = new PropertyValue();
-                p.raw = BitConverter.GetBytes((long)name);
-                p.offend = pos + 8;
-                result.Add(p);
-                return result;
-            }
-            //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
-            int type = (int)BitConverter.ToInt32(raw, pos + 8);
-            if (!pcc.isName(type))
-            {
-                return result;
-            }
-            p.Size = BitConverter.ToInt32(raw, pos + 16);
-            if (p.Size < 0 || p.Size >= raw.Length)
-            {
-                return result;
-            }
-            string tp = pcc.getNameEntry(type);
-            switch (tp)
-            {
-
-                case "DelegateProperty":
-                    p.TypeVal = PropertyType.DelegateProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.IntValue = BitConverter.ToInt32(raw, pos + 28);
-                    v.len = p.Size;
-                    v.Array = new List<PropertyValue>();
-                    pos += 24;
-                    for (int i = 0; i < p.Size; i++)
-                    {
-                        PropertyValue v2 = new PropertyValue();
-                        if (pos < raw.Length)
-                            v2.IntValue = raw[pos];
-                        v.Array.Add(v2);
-                        pos++;
-                    }
-                    p.Value = v;
-                    break;
-                case "ArrayProperty":
-                    int count = BitConverter.ToInt32(raw, pos + 24);
-                    p.TypeVal = PropertyType.ArrayProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.IntValue = type;
-                    v.len = p.Size - 4;
-                    count = v.len;//TODO can be other objects too
-                    v.Array = new List<PropertyValue>();
-                    pos += 28;
-                    for (int i = 0; i < count; i++)
-                    {
-                        PropertyValue v2 = new PropertyValue();
-                        if (pos < raw.Length)
-                            v2.IntValue = raw[pos];
-                        v.Array.Add(v2);
-                        pos++;
-                    }
-                    p.Value = v;
-                    break;
-                case "StrProperty":
-                    count = BitConverter.ToInt32(raw, pos + 24);
-                    p.TypeVal = PropertyType.StrProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.IntValue = type;
-                    v.len = count;
-                    pos += 28;
-                    string s = "";
-                    if (count < 0)
-                    {
-                        count *= -1;
-                        for (int i = 1; i < count; i++)
-                        {
-                            s += (char)raw[pos];
-                            pos += 2;
-                        }
-                        pos += 2;
-                    }
-                    else if (count > 0)
-                    {
-                        for (int i = 1; i < count; i++)
-                        {
-                            s += (char)raw[pos];
-                            pos++;
-                        }
-                        pos++;
-                    }
-                    v.StringValue = s;
-                    p.Value = v;
-                    break;
-                case "StructProperty":
-                    sname = BitConverter.ToInt32(raw, pos + 24);
-                    p.TypeVal = PropertyType.StructProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.IntValue = sname;
-                    v.len = p.Size;
-                    v.Array = new List<PropertyValue>();
-                    pos += 32;
-                    for (int i = 0; i < p.Size; i++)
-                    {
-                        PropertyValue v2 = new PropertyValue();
-                        if (pos < raw.Length)
-                            v2.IntValue = raw[pos];
-                        v.Array.Add(v2);
-                        pos++;
-                    }
-                    p.Value = v;
-                    break;
-                case "BioMask4Property":
-                    p.TypeVal = PropertyType.ByteProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.len = p.Size;
-                    pos += 24;
-                    v.IntValue = raw[pos];
-                    pos += p.Size;
-                    p.Value = v;
-                    break;
-                case "ByteProperty":
-                    sname = BitConverter.ToInt32(raw, pos + 24);
-                    p.TypeVal = PropertyType.ByteProperty;
-                    v = new PropertyValue();
-                    v.len = p.Size;
-                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
-                    {
-                        p.offsetval = pos + 32;
-                        v.StringValue = pcc.getNameEntry(sname);
-                        pos += 32;
-                        if (p.Size == 8)
-                        {
-                            v.IntValue = BitConverter.ToInt32(raw, pos);
-                        }
-                        else
-                        {
-                            v.IntValue = raw[pos];
-                        }
-                        pos += p.Size;
-                    }
-                    else
-                    {
-                        p.offsetval = pos + 24;
-                        if (p.Size != 1)
-                        {
-                            v.StringValue = pcc.getNameEntry(sname);
-                            v.IntValue = sname;
-                            pos += 32;
-                        }
-                        else
-                        {
-                            v.StringValue = "";
-                            v.IntValue = raw[pos + 24];
-                            pos += 25;
-                        }
-                    }
-                    p.Value = v;
-                    break;
-                case "FloatProperty":
-                    sname = BitConverter.ToInt32(raw, pos + 24);
-                    p.TypeVal = PropertyType.FloatProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.FloatValue = BitConverter.ToSingle(raw, pos + 24);
-                    v.len = p.Size;
-                    pos += 28;
-                    p.Value = v;
-                    break;
-                case "BoolProperty":
-                    p = new Property();
-                    p.Name = name;
-                    p.TypeVal = PropertyType.BoolProperty;
-                    p.offsetval = pos + 24;
-                    v = new PropertyValue();
-                    v.IntValue = raw[pos + 24];
-                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK) //THIS NEEDS TESTED!!! From when merging UDK
-                    {
-                        v.len = 1;
-                    }
-                    else
-                    {
-                        v.len = 4;
-                    }
-                    pos += v.len + 24;
-                    p.Value = v;
-                    break;
-                default:
-                    p.TypeVal = getType(pcc, type);
-                    p.offsetval = pos + 24;
-                    p.Value = ReadValue(pcc, raw, pos + 24, type);
-                    pos += p.Value.len + 24;
-                    break;
-            }
-            p.raw = new byte[pos - start];
-            p.offend = pos;
-            if (pos < raw.Length)
-                for (int i = 0; i < pos - start; i++)
-                    p.raw[i] = raw[start + i];
-            result.Add(p);
-            if (pos != start) result.AddRange(ReadProp(pcc, raw, pos));
-            return result;
-        }
-
-        static PropertyType getType(IMEPackage pcc, int type)
-        {
-            switch (pcc.getNameEntry(type))
-            {
-                case "None": return PropertyType.None;
-                case "StructProperty": return PropertyType.StructProperty;
-                case "IntProperty": return PropertyType.IntProperty;
-                case "FloatProperty": return PropertyType.FloatProperty;
-                case "ObjectProperty": return PropertyType.ObjectProperty;
-                case "NameProperty": return PropertyType.NameProperty;
-                case "BoolProperty": return PropertyType.BoolProperty;
-                case "ByteProperty": return PropertyType.ByteProperty;
-                case "ArrayProperty": return PropertyType.ArrayProperty;
-                case "DelegateProperty": return PropertyType.DelegateProperty;
-                case "StrProperty": return PropertyType.StrProperty;
-                case "StringRefProperty": return PropertyType.StringRefProperty;
-                default:
-                    return PropertyType.Unknown;
-            }
-        }
-
-        static PropertyValue ReadValue(IMEPackage pcc, byte[] raw, int start, int type)
-        {
-            PropertyValue v = new PropertyValue();
-            switch (pcc.getNameEntry(type))
-            {
-                case "IntProperty":
-                case "ObjectProperty":
-                case "StringRefProperty":
-                    v.IntValue = BitConverter.ToInt32(raw, start);
-                    v.len = 4;
-                    break;
-                case "NameProperty":
-                    v.IntValue = BitConverter.ToInt32(raw, start);
-                    v.NameValue = new NameReference(pcc.getNameEntry(v.IntValue), BitConverter.ToInt32(raw, start + 4));
-                    v.StringValue = v.NameValue.InstancedString;
-                    v.len = 8;
-                    break;
-            }
-            return v;
-        }
-
-        public static int detectStart(IMEPackage pcc, byte[] raw, ulong flags)
-        {
-            if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-            {
-                if (pcc.Game != MEGame.ME3)
-                {
-                    return 32;
-                }
-                return 30;
-            }
-            int result = 8;
-            int test1 = BitConverter.ToInt32(raw, 4);
-            int test2 = BitConverter.ToInt32(raw, 8);
-            if (pcc.isName(test1) && test2 == 0)
-                result = 4;
-            if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
-                result = 8;
-            return result;
-        }
-
-        public static void ImportProperty(IMEPackage pcc, IMEPackage importpcc, Property p, string className, MemoryStream m, bool inStruct = false)
-        {
-            string name = importpcc.getNameEntry(p.Name);
-            int idxname = pcc.FindNameOrAdd(name);
-            m.Write(BitConverter.GetBytes(idxname), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            if (name == "None")
-                return;
-            string type = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 8));
-            int idxtype = pcc.FindNameOrAdd(type);
-            m.Write(BitConverter.GetBytes(idxtype), 0, 4);
-            m.Write(new byte[4], 0, 4);
-            string name2;
-            int idxname2;
-            int size, count, pos;
-            List<Property> Props;
-            switch (type)
-            {
-                case "IntProperty":
-                case "FloatProperty":
-                case "ObjectProperty":
-                case "StringRefProperty":
-                    m.Write(BitConverter.GetBytes(4), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    break;
-                case "NameProperty":
-                    m.Write(BitConverter.GetBytes(8), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.getNameEntry(p.Value.IntValue))), 0, 4);
-                    //preserve index or whatever the second part of a namereference is
-                    m.Write(p.raw, 28, 4);
-                    break;
-                case "BoolProperty":
-                    m.Write(new byte[8], 0, 8);
-                    m.WriteByte((byte)p.Value.IntValue);
-                    if (pcc.Game != MEGame.ME3)
-                    {
-                        m.Write(new byte[3], 0, 3);
-                    }
-                    break;
-                case "BioMask4Property":
-                    m.Write(BitConverter.GetBytes(p.Size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.WriteByte((byte)p.Value.IntValue);
-                    break;
-                case "ByteProperty":
-                    m.Write(BitConverter.GetBytes(p.Size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    if (pcc.Game == MEGame.ME3)
-                    {
-                        name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
-                        idxname2 = pcc.FindNameOrAdd(name2);
-                        m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    if (p.Size != 1)
-                    {
-                        m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.getNameEntry(p.Value.IntValue))), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    else
-                    {
-                        m.WriteByte(Convert.ToByte(p.Value.IntValue));
-                    }
-                    break;
-                case "DelegateProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    if (size == 0xC)
-                    {
-                        name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 28));
-                        idxname2 = pcc.FindNameOrAdd(name2);
-                        m.Write(BitConverter.GetBytes(0xC), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    else
-                    {
-                        m.Write(BitConverter.GetBytes(size), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[24 + i]);
-                    }
-                    break;
-                case "StrProperty":
-                    name2 = p.Value.StringValue;
-                    if (p.Value.StringValue.Length > 0)
-                    {
-                        name2 += '\0';
-                    }
-                    if (p.Value.len < 0)
-                    {
-                        //unicode
-                        m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
-                        foreach (char c in name2)
-                        {
-                            m.WriteByte((byte)c);
-                            m.WriteByte(0);
-                        }
-                    }
-                    else
-                    {
-                        //ascii
-                        m.Write(BitConverter.GetBytes(4 + name2.Length), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                        m.Write(BitConverter.GetBytes(name2.Length), 0, 4);
-                        foreach (char c in name2)
-                        {
-                            m.WriteByte((byte)c);
-                        }
-                    }
-                    break;
-                case "StructProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    pos = 32;
-                    Props = new List<Property>();
-                    try
-                    {
-                        Props = ReadProp(importpcc, p.raw, pos);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(idxname2), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    if (Props.Count == 0 || Props[0].TypeVal == PropertyType.Unknown)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else
-                    {
-                        foreach (Property pp in Props)
-                            ImportProperty(pcc, importpcc, pp, className, m, inStruct);
-                    }
-                    break;
-                case "ArrayProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    count = BitConverter.ToInt32(p.raw, 24);
-                    PropertyInfo info = ME3UnrealObjectInfo.getPropertyInfo(className, name, inStruct);
-                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(info);
-                    pos = 28;
-                    List<Property> AllProps = new List<Property>();
-
-                    if (arrayType == ArrayType.Struct)
-                    {
-                        for (int i = 0; i < count; i++)
-                        {
-                            Props = new List<Property>();
-                            try
-                            {
-                                Props = ReadProp(importpcc, p.raw, pos);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                            AllProps.AddRange(Props);
-                            if (Props.Count != 0)
-                            {
-                                pos = Props[Props.Count - 1].offend;
-                            }
-                        }
-                    }
-                    m.Write(BitConverter.GetBytes(size), 0, 4);
-                    m.Write(new byte[4], 0, 4);
-                    m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0 && (info == null || !UnrealObjectInfo.isImmutable(info.reference,pcc.Game)))
-                    {
-                        foreach (Property pp in AllProps)
-                            ImportProperty(pcc, importpcc, pp, className, m, inStruct);
-                    }
-                    else if (arrayType == ArrayType.Name)
-                    {
-                        for (int i = 0; i < count; i++)
-                        {
-                            string s = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 28 + i * 8));
-                            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(s)), 0, 4);
-                            //preserve index or whatever the second part of a namereference is
-                            m.Write(p.raw, 32 + i * 8, 4);
-                        }
-                    }
-                    else
-                    {
-                        m.Write(p.raw, 28, size - 4);
-                    }
-                    break;
-                default:
-                    throw new Exception(type);
-            }
-        }
-
-        public static void ImportImmutableProperty(ME3Package pcc, ME3Package importpcc, Property p, string className, MemoryStream m, bool inStruct = false)
-        {
-            string name = importpcc.getNameEntry(p.Name);
-            int idxname = pcc.FindNameOrAdd(name);
-            if (name == "None")
-                return;
-            string type = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 8));
-            int idxtype = pcc.FindNameOrAdd(type);
-            string name2;
-            int idxname2;
-            int size, count, pos;
-            List<Property> Props;
-            switch (type)
-            {
-                case "IntProperty":
-                case "FloatProperty":
-                case "ObjectProperty":
-                case "StringRefProperty":
-                    m.Write(BitConverter.GetBytes(p.Value.IntValue), 0, 4);
-                    break;
-                case "NameProperty":
-                    m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.getNameEntry(p.Value.IntValue))), 0, 4);
-                    //preserve index or whatever the second part of a namereference is
-                    m.Write(p.raw, 28, 4);
-                    break;
-                case "BoolProperty":
-                    m.WriteByte((byte)p.Value.IntValue);
-                    break;
-                case "BioMask4Property":
-                    m.WriteByte((byte)p.Value.IntValue);
-                    break;
-                case "ByteProperty":
-                    name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    if (p.Size == 8)
-                    {
-                        m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(importpcc.getNameEntry(p.Value.IntValue))), 0, 4);
-                        m.Write(new byte[4], 0, 4);
-                    }
-                    else
-                    {
-                        m.WriteByte(p.raw[32]);
-                    }
-                    break;
-                case "StrProperty":
-                    name2 = p.Value.StringValue;
-                    if (name2.Length > 0)
-                    {
-                        name2 += '\0';
-                    }
-                    m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
-                    foreach (char c in name2)
-                    {
-                        m.WriteByte((byte)c);
-                        m.WriteByte(0);
-                    }
-                    break;
-                case "StructProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    name2 = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 24));
-                    idxname2 = pcc.FindNameOrAdd(name2);
-                    pos = 32;
-                    Props = new List<Property>();
-                    try
-                    {
-                        Props = ReadProp(importpcc, p.raw, pos);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    if (Props.Count == 0 || Props[0].TypeVal == PropertyType.Unknown)
-                    {
-                        for (int i = 0; i < size; i++)
-                            m.WriteByte(p.raw[32 + i]);
-                    }
-                    else
-                    {
-                        foreach (Property pp in Props)
-                            ImportImmutableProperty(pcc, importpcc, pp, className, m, inStruct);
-                    }
-                    break;
-                case "ArrayProperty":
-                    size = BitConverter.ToInt32(p.raw, 16);
-                    count = BitConverter.ToInt32(p.raw, 24);
-                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name));
-                    pos = 28;
-                    List<Property> AllProps = new List<Property>();
-
-                    if (arrayType == ArrayType.Struct)
-                    {
-                        for (int i = 0; i < count; i++)
-                        {
-                            Props = new List<Property>();
-                            try
-                            {
-                                Props = ReadProp(importpcc, p.raw, pos);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                            AllProps.AddRange(Props);
-                            if (Props.Count != 0)
-                            {
-                                pos = Props[Props.Count - 1].offend;
-                            }
-                        }
-                    }
-                    m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0)
-                    {
-                        foreach (Property pp in AllProps)
-                            ImportImmutableProperty(pcc, importpcc, pp, className, m, inStruct);
-                    }
-                    else if (arrayType == ArrayType.Name)
-                    {
-                        for (int i = 0; i < count; i++)
-                        {
-                            string s = importpcc.getNameEntry(BitConverter.ToInt32(p.raw, 28 + i * 8));
-                            m.Write(BitConverter.GetBytes(pcc.FindNameOrAdd(s)), 0, 4);
-                            //preserve index or whatever the second part of a namereference is
-                            m.Write(p.raw, 32 + i * 8, 4);
-                        }
-                    }
-                    else
-                    {
-                        m.Write(p.raw, 28, size - 4);
-                    }
-                    break;
-                default:
-                case "DelegateProperty":
-                    throw new NotImplementedException(type);
-            }
-        }
-
-        public static void WritePropHeader(this Stream stream, IMEPackage pcc, string propName, PropertyType type, int size)
-        {
-            stream.WriteValueS32(pcc.FindNameOrAdd(propName));
-            stream.WriteValueS32(0);
-            stream.WriteValueS32(pcc.FindNameOrAdd(type.ToString()));
-            stream.WriteValueS32(0);
-            stream.WriteValueS32(size);
-            stream.WriteValueS32(0);
+            stream.WriteNameReference(propName, pcc);
+            stream.WriteNameReference(type.ToString(), pcc);
+            stream.WriteInt32(size);
+            stream.WriteInt32(staticArrayIndex);
         }
 
         public static void WriteNoneProperty(this Stream stream, IMEPackage pcc)
         {
             //Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
-
-            stream.WriteValueS32(pcc.FindNameOrAdd("None"));
-            stream.WriteValueS32(0);
+            stream.WriteNameReference("None", pcc);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, byte[] value)
-        {
-            //Debug.WriteLine("Writing struct property " + propName + ", type: " + structName + " at 0x" + stream.Position.ToString("X6"));
-
-            stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, value.Length);
-            stream.WriteValueS32(pcc.FindNameOrAdd(structName));
-            stream.WriteValueS32(0);
-            stream.WriteBytes(value);
-        }
-
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, MemoryStream value)
+        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length);
-            stream.WriteValueS32(pcc.FindNameOrAdd(structName));
-            stream.WriteValueS32(0);
+            stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length, staticArrayIndex);
+            stream.WriteNameReference(structName, pcc);
             stream.WriteStream(value);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, Func<MemoryStream> func)
+        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Func<Stream> func, int staticArrayIndex)
         {
-            stream.WriteStructProperty(pcc, propName, structName, func());
+            stream.WriteStructProperty(pcc, propName, structName, func(), staticArrayIndex);
         }
 
-        public static void WriteIntProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteIntProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4);
-            stream.WriteValueS32(value);
+            stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4, staticArrayIndex);
+            stream.WriteInt32(value);
         }
 
-        public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, string propName, float value)
+        public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, NameReference propName, float value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4);
-            stream.WriteValueF32(value);
+            stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4, staticArrayIndex);
+            stream.WriteFloat(value);
         }
 
-        public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4);
-            stream.WriteValueS32(value);
+            stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4, staticArrayIndex);
+            stream.WriteInt32(value);
         }
 
-        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, NameReference value)
+        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
-            stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteValueS32(value.Number);
+            stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8, staticArrayIndex);
+            stream.WriteNameReference(value, pcc);
         }
 
-        public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
+        public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, NameReference propName, bool value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0);
-            if (pcc.Game == MEGame.ME3)
+            stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0, staticArrayIndex);
+            if (pcc.Game >= MEGame.ME3)
             {
-                stream.WriteValueB8(value);
+                stream.WriteBoolByte(value);
             }
             else
             {
-                stream.WriteValueB32(value);
+                stream.WriteBoolInt(value);
             }
         }
 
-        public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, byte value)
+        public static void WriteByteProperty(this Stream stream, IMEPackage pcc, NameReference propName, byte value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
-            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1);
-            if (pcc.Game == MEGame.ME3)
+            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1, staticArrayIndex);
+            if (pcc.Game >= MEGame.ME3)
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd("None"));
-                stream.WriteValueS32(0);
+                stream.WriteNameReference("None", pcc);
             }
             stream.WriteByte(value);
         }
 
-        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, string propName, NameReference enumName, NameReference enumValue)
+        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference enumName, NameReference enumValue, int staticArrayIndex)
         {
-            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8);
-            if (pcc.Game == MEGame.ME3)
+            stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8, staticArrayIndex);
+            if (pcc.Game >= MEGame.ME3)
             {
-                stream.WriteValueS32(pcc.FindNameOrAdd(enumName.Name));
-                stream.WriteValueS32(enumName.Number);
+                stream.WriteNameReference(enumName, pcc);
             }
-            stream.WriteValueS32(pcc.FindNameOrAdd(enumValue.Name));
-            stream.WriteValueS32(enumValue.Number);
+            stream.WriteNameReference(enumValue, pcc);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)
+        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
-            stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length);
-            stream.WriteValueS32(count);
+            stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length, staticArrayIndex);
+            stream.WriteInt32(count);
             stream.WriteStream(value);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, Func<MemoryStream> func)
+        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Func<Stream> func, int staticArrayIndex)
         {
-            stream.WriteArrayProperty(pcc, propName, count, func());
+            stream.WriteArrayProperty(pcc, propName, count, func(), staticArrayIndex);
         }
 
-        public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
+        public static void WriteStringProperty(this Stream stream, IMEPackage pcc, NameReference propName, string value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
-                if (propName != null)
-                {
-                    stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
-                }
-                stream.WriteStringUnicode(value);
+                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4, staticArrayIndex);
+                stream.WriteUnrealStringUnicode(value);
             }
             else
             {
-                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4);
-                stream.WriteStringASCII(value);
+                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4, staticArrayIndex);
+                stream.WriteUnrealStringASCII(value);
             }
         }
 
-        public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, string propName, int value)
+        public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4);
-            stream.WriteValueS32(value);
+            stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4, staticArrayIndex);
+            stream.WriteInt32(value);
         }
 
-        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, string propName, int unk, NameReference value)
+        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, NameReference propName, ScriptDelegate value, int staticArrayIndex)
         {
-            stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12);
-            stream.WriteValueS32(unk);
-            stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteValueS32(value.Number);
+            stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12, staticArrayIndex);
+            stream.WriteInt32(value.Object);
+            stream.WriteNameReference(value.FunctionName, pcc);
         }
 
-        public static void WriteStructPropVector(this Stream stream, IMEPackage pcc, string propName, float x, float y, float z)
-        {
-            MemoryStream m = new MemoryStream(12);
-            m.WriteValueF32(x);
-            m.WriteValueF32(y);
-            m.WriteValueF32(z);
-            stream.WriteStructProperty(pcc, propName, "Vector", m.ToArray());
-        }
+        public static StructProperty ToGuidStructProp(this Guid guid, NameReference propName) => CommonStructs.Guid(guid, propName);
     }
 }

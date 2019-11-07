@@ -1,5 +1,4 @@
-﻿using KFreonLib.MEDirectories;
-using ME3Explorer.ActorNodes;
+﻿using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;
@@ -22,6 +21,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
@@ -53,7 +53,10 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan","SFXNav_InteractionCannibal", "PlayerStart",
             "SFXNav_InteractionCenturion","SFXNav_InteractionGuardPose", "SFXNav_InteractionHusk","SFXNav_InteractionInspectOmniTool",
             "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
-            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield"
+            "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield",
+
+            //ME1
+            "BioWp_DefensePoint", "BioWp_AssaultPoint", "BioWp_ActionStation"
         };
 
         public static string[] actorNodeClasses =
@@ -63,7 +66,8 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator",
             "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer",
             "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor",
-            "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint"
+            "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint",
+            "BioPawn"
         };
 
         public static string[] splineNodeClasses = { "SplineActor" };
@@ -76,7 +80,7 @@ namespace ME3Explorer.Pathfinding_Editor
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
         private bool ChangingSelectionByGraphClick;
-        private IExportEntry PersistentLevelExport;
+        private ExportEntry PersistentLevelExport;
 
         private readonly PathingGraphEditor graphEditor;
         private bool AllowRefresh;
@@ -84,8 +88,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private string FileQueuedForLoad;
 
-        public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
-        public ObservableCollectionExtended<IExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
 
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
@@ -95,8 +99,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
-        private readonly List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
-        private readonly List<IExportEntry> AllOverlayObjects = new List<IExportEntry>();
+        private readonly List<ExportEntry> AllLevelObjects = new List<ExportEntry>();
+        private readonly List<ExportEntry> AllOverlayObjects = new List<ExportEntry>();
         public string CurrentFile;
         private readonly PathfindingMouseListener pathfindingMouseListener;
 
@@ -111,6 +115,10 @@ namespace ME3Explorer.Pathfinding_Editor
         public PathfindingEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Pathfinding Editor" }
+            });
             DataContext = this;
             StatusText = "Select package file to load";
             LoadCommands();
@@ -303,47 +311,47 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void CalculateInterpStartEndTargetpoint()
         {
-if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
-{
-    var movingObject = EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select a level object that will be moved along the curve. This will be the starting point.");
-    if (movingObject == null) return;
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry targetpointAnchorEnd && targetpointAnchorEnd.ClassName == "TargetPoint")
+            {
+                var movingObject = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select a level object that will be moved along the curve. This will be the starting point.");
+                if (movingObject == null) return;
 
-    ActiveNodes_ListBox.SelectedItem = movingObject as IExportEntry;
+                ActiveNodes_ListBox.SelectedItem = movingObject as ExportEntry;
 
-    var interpTrack = (IExportEntry) EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports, "Select the interptrackmove data that we will modify for these points.");
-    if (interpTrack == null) return;
+                var interpTrack = (ExportEntry)EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select the interptrackmove data that we will modify for these points.");
+                if (interpTrack == null) return;
 
-    var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
-    var locationStart = SharedPathfinding.GetLocation(movingObject as IExportEntry);
+                var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
+                var locationStart = SharedPathfinding.GetLocation(movingObject as ExportEntry);
 
-    if (locationStart == null)
-    {
-        MessageBox.Show("Start point doesn't have a location property. Ensure you picked the correct export.");
-        return;
-    }
+                if (locationStart == null)
+                {
+                    MessageBox.Show("Start point doesn't have a location property. Ensure you picked the correct export.");
+                    return;
+                }
 
-    double deltaX = locationTarget.X - locationStart.X;
-    double deltaY = locationTarget.Y - locationStart.Y;
-    double deltaZ = locationTarget.Z - locationStart.Z;
+                double deltaX = locationTarget.X - locationStart.X;
+                double deltaY = locationTarget.Y - locationStart.Y;
+                double deltaZ = locationTarget.Z - locationStart.Z;
 
-    var posTrack = interpTrack.GetProperty<StructProperty>("PosTrack");
-    if (posTrack == null)
-    {
-        MessageBox.Show("Selected interpdata doesn't have a postrack.");
-        return;
-    }
+                var posTrack = interpTrack.GetProperty<StructProperty>("PosTrack");
+                if (posTrack == null)
+                {
+                    MessageBox.Show("Selected interpdata doesn't have a postrack.");
+                    return;
+                }
 
-    var posTrackPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
-    SharedPathfinding.SetLocation(posTrackPoints[0].GetProp<StructProperty>("OutVal"), (float)deltaX, (float)deltaY, (float)deltaZ);
-    SharedPathfinding.SetLocation(posTrackPoints[posTrackPoints.Count - 1].GetProp<StructProperty>("OutVal"), 0,0,0);
+                var posTrackPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+                SharedPathfinding.SetLocation(posTrackPoints[0].GetProp<StructProperty>("OutVal"), (float)deltaX, (float)deltaY, (float)deltaZ);
+                SharedPathfinding.SetLocation(posTrackPoints[posTrackPoints.Count - 1].GetProp<StructProperty>("OutVal"), 0, 0, 0);
 
-    interpTrack.WriteProperty(posTrack);
+                interpTrack.WriteProperty(posTrack);
             }
         }
 
         private bool TargetPointIsSelected()
         {
-            return ActiveNodes_ListBox.SelectedItem is IExportEntry exp && exp.ClassName == "TargetPoint";
+            return ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.ClassName == "TargetPoint";
         }
 
         private void LoadOverlay()
@@ -382,7 +390,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
         }
 
-        public IExportEntry OverlayPersistentLevelExport { get; set; }
+        public ExportEntry OverlayPersistentLevelExport { get; set; }
 
         private void CheckNetIndexes()
         {
@@ -392,7 +400,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 int nindex = m.export.NetIndex;
                 if (indexes.Contains(nindex))
                 {
-                    Debug.WriteLine("Duplicate netindex " + nindex + ": Found a duplicate on " + m.export.GetIndexedFullPath);
+                    Debug.WriteLine("Duplicate netindex " + nindex + ": Found a duplicate on " + m.export.InstancedFullPath);
                 }
                 else
                 {
@@ -401,10 +409,11 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
         }
 
-        private static void OpenRefInSequenceEditor(object obj)
+        private void OpenRefInSequenceEditor(object obj)
         {
-            if (obj is IExportEntry exp)
+            if (obj is ExportEntry exp)
             {
+                AllowWindowRefocus = false;
                 SequenceEditorWPF seqed = new SequenceEditorWPF(exp);
                 seqed.Show();
                 seqed.Activate();
@@ -420,7 +429,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void ChangeNodeType()
         {
             Debug.WriteLine("Changing node type");
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry exp &&
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry exp &&
                 AvailableNodeTypes_ListBox.SelectedItem is NodeType type)
             {
                 changeNodeType(exp, type);
@@ -439,7 +448,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         /// </summary>
         /// <param name="nodeEntry"></param>
         /// <param name="newNodeType"></param>
-        private void changeNodeType(IExportEntry nodeEntry, NodeType newNodeType)
+        private void changeNodeType(ExportEntry nodeEntry, NodeType newNodeType)
         {
             var exportTypeInfo = newNodeType.TypeInfo;
             PropertyCollection nodeProperties = nodeEntry.GetProperties();
@@ -497,7 +506,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
                 //Change collision cylinder
                 ObjectProperty cylindercomponent = nodeProperties.GetProp<ObjectProperty>("CollisionComponent");
-                IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
+                ExportEntry cylindercomponentexp = Pcc.GetUExport(cylindercomponent.Value);
 
                 //Ensure all classes are imported.
                 IEntry newnodeclassimp = SharedPathfinding.GetEntryOrAddImport(Pcc, exportTypeInfo.fullclasspath);
@@ -505,10 +514,10 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
                 if (newnodeclassimp != null)
                 {
-                    nodeEntry.idxClass = newnodeclassimp.UIndex;
-                    nodeEntry.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                    nodeEntry.Class = newnodeclassimp;
+                    nodeEntry.ObjectName = exportTypeInfo.nodetypename;
                     SharedPathfinding.ReindexMatchingObjects(nodeEntry);
-                    cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
+                    cylindercomponentexp.Archetype = newcylindercomponentimp;
                 }
 
                 if (exportTypeInfo.upgradetomaxpathsize)
@@ -539,7 +548,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     {
                         foreach (ObjectProperty pathObj in pathList)
                         {
-                            IExportEntry spec = Pcc.getUExport(pathObj.Value);
+                            ExportEntry spec = Pcc.GetUExport(pathObj.Value);
                             EnsureLargeAndReturning(spec, exportTypeInfo);
                         }
                     }
@@ -555,7 +564,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     {
                         for (int on = 0; on < otherNodePathlist.Count; on++)
                         {
-                            IExportEntry inboundSpec = Pcc.getUExport(otherNodePathlist[on].Value);
+                            ExportEntry inboundSpec = Pcc.getUExport(otherNodePathlist[on].Value);
                             //Get end
                             if (inboundSpec.GetProperty<StructProperty>("End") is StructProperty prop)
                             {
@@ -687,7 +696,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         PropertyCollection props = nodeEntry.GetProperties();
 
         ObjectProperty cylindercomponent = props.GetProp<ObjectProperty>("CollisionComponent");
-        IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
+        ExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
 
         //Ensure all classes are imported.
         ImportEntry newnodeclassimp = SharedPathfinding.GetOrAddImport(Pcc, newclass);
@@ -766,7 +775,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     {
                         for (int i = 0; i < pathList.Count; i++)
                         {
-                            IExportEntry spec = Pcc.getUExport(pathList[i].Value);
+                            ExportEntry spec = Pcc.getUExport(pathList[i].Value);
                             //Get ending
                             int othernodeidx = 0;
                             PropertyCollection specprops = spec.GetProperties();
@@ -794,7 +803,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                             if (othernodeidx != 0)
                             {
                                 bool keepParsing = true;
-                                IExportEntry specDest = Pcc.getUExport(othernodeidx);
+                                ExportEntry specDest = Pcc.getUExport(othernodeidx);
                                 if (specDest.ClassName == "SFXNav_LargeBoostNode" &&
                                     spec.ClassName != "SFXLargeBoostReachSpec")
                                 {
@@ -820,7 +829,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                     {
                                         for (int on = 0; on < otherNodePathlist.Count; on++)
                                         {
-                                            IExportEntry inboundSpec =
+                                            ExportEntry inboundSpec =
                                                 Pcc.getUExport(otherNodePathlist[on].Value);
                                             //Get ending
                                             //PropertyCollection inboundProps = inboundSpec.GetProperties();
@@ -874,7 +883,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     //        ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
                     //    }
 
-                    //    foreach (IExportEntry spec in ReachSpecs)
+                    //    foreach (ExportEntry spec in ReachSpecs)
                     //    {
 
                     //    }
@@ -896,7 +905,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         /// <param name="spec"></param>
         /// <param name="exportTypeInfo"></param>
         /// <param name="outbound">If this is the initial outbound connection. Prevents infinite loops.</param>
-        private void EnsureLargeAndReturning(IExportEntry spec, PathfindingDB_ExportType exportTypeInfo, bool outbound = true)
+        private void EnsureLargeAndReturning(ExportEntry spec, PathfindingDB_ExportType exportTypeInfo, bool outbound = true)
         {
             var reachspecendname = SharedPathfinding.GetReachSpecEndName(spec);
 
@@ -910,8 +919,8 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 {
                     int othernodeidx = otherNodeIdxProp.Value;
 
-                    if (!Pcc.isUExport(othernodeidx)) return; //skip as this is not proper data
-                    IExportEntry specDest = Pcc.getUExport(othernodeidx);
+                    if (!Pcc.IsUExport(othernodeidx)) return; //skip as this is not proper data
+                    ExportEntry specDest = Pcc.GetUExport(othernodeidx);
 
                     //Check for same as changing to type, ensure spec type is correct
                     if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
@@ -921,8 +930,8 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
                         if (newReachSpecClass != null)
                         {
-                            spec.idxClass = newReachSpecClass.UIndex;
-                            spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                            spec.Class = newReachSpecClass;
+                            spec.ObjectName = exportTypeInfo.nodetypename;
                             //set spec to banshee sized
                             SharedPathfinding.SetReachSpecSize(spec,
                                 ReachSpecSize.BANSHEE_RADIUS,
@@ -938,7 +947,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                 {
                                     if (pathObj.Value == start)
                                     {
-                                        spec = Pcc.getUExport(pathObj.Value);
+                                        spec = Pcc.GetUExport(pathObj.Value);
                                         EnsureLargeAndReturning(spec, exportTypeInfo, false);
                                         break; //this will only need to run once since there is only 1:1 reach specs
                                     }
@@ -954,22 +963,22 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void PopoutInterpreterWPF(object obj)
         {
-            IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+            ExportEntry export = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
             {
-                Title = $"Interpreter - {export.UIndex} {export.GetIndexedFullPath} - {Pcc.FileName}"
+                Title = $"Interpreter - {export.UIndex} {export.InstancedFullPath} - {Pcc.FilePath}"
             };
             elhw.Show();
         }
 
         private bool NodeIsSelected(object obj)
         {
-            return ActiveNodes_ListBox.SelectedItem is IExportEntry;
+            return ActiveNodes_ListBox.SelectedItem is ExportEntry;
         }
 
         private void AddExportToLevel()
         {
-            if (EntrySelector.GetEntry(this, Pcc, EntrySelector.SupportedTypes.Exports) is IExportEntry selectedEntry)
+            if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry selectedEntry)
             {
 
                 if (!AllLevelObjects.Contains(selectedEntry))
@@ -995,7 +1004,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 }
                 else
                 {
-                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetIndexedFullPath} is already in the level.");
+                    MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.InstancedFullPath} is already in the level.");
                 }
             }
         }
@@ -1033,13 +1042,13 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
                 }
                 var basePathNode = Pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
-                IExportEntry firstNode = null;
-                IExportEntry previousNode = null;
+                ExportEntry firstNode = null;
+                ExportEntry previousNode = null;
 
 
                 foreach (var point in points)
                 {
-                    IExportEntry newNode = cloneNode(basePathNode);
+                    ExportEntry newNode = cloneNode(basePathNode);
                     StructProperty prop = newNode.GetProperty<StructProperty>("location");
                     if (prop != null)
                     {
@@ -1085,9 +1094,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void FlipLevel()
         {
-            foreach (IExportEntry exp in Pcc.Exports)
+            foreach (ExportEntry exp in Pcc.Exports)
             {
-                switch (exp.ObjectName)
+                switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
                         {
@@ -1096,7 +1105,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                             byte[] data = exp.Data;
                             //get a list of staticmesh stuff from the props.
                             int listsize = BitConverter.ToInt32(data, 28);
-                            var smacitems = new List<IExportEntry>();
+                            var smacitems = new List<ExportEntry>();
                             for (int i = 0; i < listsize; i++)
                             {
                                 int offset = 32 + i * 4;
@@ -1104,7 +1113,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                 int entryval = BitConverter.ToInt32(data, offset);
                                 if (entryval > 0 && entryval < Pcc.ExportCount)
                                 {
-                                    IExportEntry export = (IExportEntry)Pcc.getEntry(entryval);
+                                    ExportEntry export = (ExportEntry)Pcc.GetEntry(entryval);
                                     smacitems.Add(export);
                                 }
                                 else if (entryval == 0)
@@ -1153,7 +1162,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                 FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
                                 FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
                                 FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.Index} {exp.ObjectName}Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                                Debug.WriteLine($"{exp.Index} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
                                 xProp.Value *= -1;
                                 yProp.Value *= -1;
@@ -1169,7 +1178,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             MessageBox.Show("Items flipped.", "Flipping complete");
         }
 
-        private static void InvertScalingOnExport(IExportEntry exp, string propname)
+        private static void InvertScalingOnExport(ExportEntry exp, string propname)
         {
             var drawScale3D = exp.GetProperty<StructProperty>(propname);
             bool hasDrawScale = drawScale3D != null;
@@ -1291,16 +1300,16 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void SavePackageAs()
         {
-            string extension = Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FilePath);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
-                Pcc.save(d.FileName);
+                Pcc.Save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
 
-        public void FocusNode(IExportEntry node, bool select, long duration = 1000)
+        public void FocusNode(ExportEntry node, bool select, long duration = 1000)
         {
             PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex);
             if (s != null)
@@ -1321,7 +1330,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
         }
 
-        private void SavePackage() => Pcc.save();
+        private void SavePackage() => Pcc.Save();
 
         private void OpenPackage()
         {
@@ -1414,7 +1423,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         {
             get
             {
-                if (ActiveNodes_ListBox?.SelectedItem is IExportEntry CurrentLoadedExport)
+                if (ActiveNodes_ListBox?.SelectedItem is ExportEntry CurrentLoadedExport)
                 {
                     if (SharedPathfinding.ExportClassDB.FirstOrDefault(x => x.nodetypename == CurrentLoadedExport.ClassName) is PathfindingDB_ExportType classinfo)
                     {
@@ -1436,7 +1445,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         public void OpenContextMenu()
         {
             ContextMenu contextMenu = (ContextMenu)FindResource("nodeContextMenu");
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var debug = s.Tag;
@@ -1518,7 +1527,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         /// </summary>
         /// <param name="isOverlay"></param>
         /// <returns></returns>
-        private bool LoadPathingNodesFromLevel(IExportEntry overlayPersistentLevel = null)
+        private bool LoadPathingNodesFromLevel(ExportEntry overlayPersistentLevel = null)
         {
             if (Pcc == null || PersistentLevelExport == null)
             {
@@ -1526,7 +1535,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
 
             bool isOverlay = overlayPersistentLevel != null;
-            IExportEntry levelToRead = overlayPersistentLevel ?? PersistentLevelExport;
+            ExportEntry levelToRead = overlayPersistentLevel ?? PersistentLevelExport;
 
             IsReadingLevel = true;
             graphEditor.UseWaitCursor = true;
@@ -1551,7 +1560,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             start += 4;
             int bioworldinfoexportid = BitConverter.ToInt32(data, start);
 
-            IExportEntry bioworldinfo = levelToRead.FileRef.getUExport(bioworldinfoexportid);
+            ExportEntry bioworldinfo = levelToRead.FileRef.GetUExport(bioworldinfoexportid);
             if (bioworldinfo.ObjectName != "BioWorldInfo")
             {
                 //INVALID!!
@@ -1572,7 +1581,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 start += 4;
                 itemcount = 2;
             }
-            List<IExportEntry> bulkActiveNodes = new List<IExportEntry>();
+            List<ExportEntry> bulkActiveNodes = new List<ExportEntry>();
             //bool hasPathNode = false;
             //bool hasActorNode = false;
             //bool hasSplineNode = false;
@@ -1585,12 +1594,12 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             {
                 //get header.
                 int itemexportid = BitConverter.ToInt32(data, start);
-                if (levelToRead.FileRef.isUExport(itemexportid))
+                if (levelToRead.FileRef.IsUExport(itemexportid))
                 {
-                    IExportEntry exportEntry = levelToRead.FileRef.getUExport(itemexportid);
+                    ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
                     AllObjectsList.Add(exportEntry);
 
-                    if (ignoredobjectnames.Contains(exportEntry.ObjectName))
+                    if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
                     {
                         start += 4;
                         itemcount++;
@@ -1630,7 +1639,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                 foreach (StructProperty connectionProp in connectionsProp)
                                 {
                                     ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                    bulkActiveNodes.Add(levelToRead.FileRef.getUExport(splinecomponentprop.Value));
+                                    bulkActiveNodes.Add(levelToRead.FileRef.GetUExport(splinecomponentprop.Value));
                                 }
                             }
                         }
@@ -1639,7 +1648,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     //Don't parse SMCA or combat zones from overlays.
                     if (overlayPersistentLevel == null)
                     {
-                        if (exportEntry.ClassName == "StaticMeshCollectionActor")
+                        if (exportEntry.ClassName == "StaticMeshCollectionActor" || exportEntry.ClassName == "StaticLightCollectionActor")
                         {
                             StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
                         }
@@ -1695,7 +1704,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             return true;
         }
 
-        private bool isAllowedVisibleByZFiltering(IExportEntry exportEntry)
+        private bool isAllowedVisibleByZFiltering(ExportEntry exportEntry)
         {
             if (ZFilteringMode == EZFilterIncludeDirection.None) { return true; }
             Point3D position = SharedPathfinding.GetLocation(exportEntry);
@@ -1746,10 +1755,11 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             if (ShowSequenceReferences)
             {
 
-                var referencemap = new Dictionary<int, List<IExportEntry>>(); //node index mapped to list of things referencing it
-                foreach (IExportEntry export in Pcc.Exports)
+                var referencemap = new Dictionary<int, List<ExportEntry>>(); //node index mapped to list of things referencing it
+                foreach (ExportEntry export in Pcc.Exports)
                 {
-                    if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
+
+                    if (export.ClassName == "SeqEvent_Touch"  ||export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                     {
                         var props = export.GetProperties();
 
@@ -1772,19 +1782,19 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 //Add references to nodes
                 foreach (PathfindingNodeMaster pnm in GraphNodes)
                 {
-                    if (referencemap.TryGetValue(pnm.UIndex, out List<IExportEntry> list))
+                    if (referencemap.TryGetValue(pnm.UIndex, out List<ExportEntry> list))
                     {
                         //node is referenced
                         pnm.SequenceReferences.AddRange(list);
                         pnm.comment.Text += $"\nReferenced in {list.Count} sequence object{(list.Count != 1 ? "s" : "")}:";
-                        foreach (IExportEntry x in list)
+                        foreach (ExportEntry x in list)
                         {
-                            string shortpath = x.GetFullPath;
+                            string shortpath = x.InstancedFullPath;
                             if (shortpath.StartsWith("TheWorld.PersistentLevel."))
                             {
                                 shortpath = shortpath.Substring("TheWorld.PersistentLevel.".Length);
                             }
-                            pnm.comment.Text += $"\n  {x.UIndex} {shortpath}_{x.indexValue}";
+                            pnm.comment.Text += $"\n  {x.UIndex} {shortpath}";
                         }
                     }
                 }
@@ -1840,9 +1850,8 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         }
 
-        public PointF LoadObject(IExportEntry exportToLoad, bool isFromOverlay = false)
+        public PointF LoadObject(ExportEntry exportToLoad, bool isFromOverlay = false)
         {
-            string s = exportToLoad.ObjectName;
             int uindex = exportToLoad.UIndex;
             int x = 0, y = 0, z = int.MinValue;
             var props = exportToLoad.GetProperties();
@@ -1977,6 +1986,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     case "SFXStuntActor":
                         actorNode = new SFXStuntActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
+                    case "BioPawn":
+                        actorNode = new BioPawn(uindex, x, y, exportToLoad.FileRef, graphEditor, showRotation: true);
+                        break;
                     case "SkeletalMeshActor":
                         actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
@@ -2006,9 +2018,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                         //Create annex node if required
                         if (props.GetProp<ObjectProperty>("AnnexZoneLocation") is ObjectProperty annexZoneLocProp)
                         {
-                            if (exportToLoad.FileRef.isUExport(annexZoneLocProp.Value))
+                            if (exportToLoad.FileRef.IsUExport(annexZoneLocProp.Value))
                             {
-                                IExportEntry targetPoint = exportToLoad.FileRef.getUExport(annexZoneLocProp.Value);
+                                ExportEntry targetPoint = exportToLoad.FileRef.GetUExport(annexZoneLocProp.Value);
                                 if (targetPoint.ClassName != "TargetPoint")
                                 {
                                     actorNode.comment.Text += "\nAnnex Zone Location not a target point!";
@@ -2023,9 +2035,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                         }
                         if (props.GetProp<ObjectProperty>("CombatZone") is ObjectProperty combatZoneProp)
                         {
-                            if (exportToLoad.FileRef.isUExport(combatZoneProp.Value))
+                            if (exportToLoad.FileRef.IsUExport(combatZoneProp.Value))
                             {
-                                IExportEntry combatZoneExp = exportToLoad.FileRef.getUExport(combatZoneProp.Value);
+                                ExportEntry combatZoneExp = exportToLoad.FileRef.GetUExport(combatZoneProp.Value);
                                 if (combatZoneExp.ClassName != "SFXCombatZone")
                                 {
                                     actorNode.comment.Text += "\nAnnex Zone combat zone not a combat zone!";
@@ -2063,14 +2075,12 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 {
                     case "SplineActor":
                         splineNode = new SplineActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
-
-                        var connectionsProp = exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
-                        if (connectionsProp != null)
+                        if (exportToLoad.GetProperty<ArrayProperty<StructProperty>>("Connections") is ArrayProperty<StructProperty> connectionsProp)
                         {
                             foreach (StructProperty connectionProp in connectionsProp)
                             {
                                 ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                IExportEntry splineComponentExport = Pcc.getUExport(splinecomponentprop.Value);
+                                ExportEntry splineComponentExport = Pcc.GetUExport(splinecomponentprop.Value);
                                 //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
                                 StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
                                 if (splineInfo != null)
@@ -2151,14 +2161,14 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
             bool exportsAdded = changes.Contains(PackageChange.ExportAdd);
 
-            var activeNode = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            var activeNode = ActiveNodes_ListBox.SelectedItem as ExportEntry;
             //we might need to identify parent depths and add those first
             List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
             List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x => x.index).OrderBy(x => x).ToList();
             if (exportsAdded || exportNonDataChanges) //may optimize by checking if chagnes include anything we care about
             {
                 //Do a full refresh
-                IExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+                ExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as ExportEntry;
                 RefreshGraph();
                 ActiveNodes_ListBox.SelectedItem = selectedExport;
                 return;
@@ -2400,13 +2410,17 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             foreach (PathfindingNodeMaster pfm in GraphNodes)
             {
                 pfm.Deselect();
+                if (pfm.export.ClassName == "CoverLink" || pfm.export.ClassName == "CoverSlotMarker")
+                {
+                    pfm.shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+                }
             }
 
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {
                 CombatZonesLoading = true;
 
-                NodeName = $"{export.ObjectName}_{export.indexValue}";
+                NodeName = $"{export.ObjectName.Instanced}";
                 NodeNameSubText = $"Export {export.UIndex}";
                 ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
@@ -2473,65 +2487,6 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
                 PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
 
-#if DEBUG
-                //Populate the export/import database
-
-                /*
-                if (!(SharedPathfinding.ExportClassDB.FirstOrDefault(x=>x.nodetypename == export.ClassName) is PathfindingDB_ExportType))
-                {
-                    Dictionary<string, string> data = new Dictionary<string, string>();
-                    data["class"] = export.FileRef.getEntry(export.idxClass).GetFullPath;
-                    data["name"] = export.ClassName;
-                    var collisioncomponent = export.GetProperty<ObjectProperty>("CollisionComponent");
-                    if (collisioncomponent != null)
-                    {
-                        IExportEntry collisionComp = export.FileRef.getUExport(collisioncomponent.Value);
-
-                        data["cylindercomponentarchetype"] = collisionComp.FileRef.getEntry(collisionComp.idxArchtype).GetFullPath;
-
-                        ////Add imports
-                        if (!SharedPathfinding.ImportClassDB.ContainsKey(data["cylindercomponentarchetype"]) && collisionComp.idxArchtype < 0)
-                        {
-                            //X.Default.CollisionCylinder
-                            Dictionary<string, string> cylindercompimp = new Dictionary<string, string>();
-                            ImportEntry collisionCylinderArchetype = collisionComp.FileRef.getEntry(collisionComp.idxArchtype) as ImportEntry;
-
-                            cylindercompimp["class"] = collisionCylinderArchetype.ClassName == "Class" ? "Class" : collisionCylinderArchetype.PackageFileNoExtension + "." + collisionCylinderArchetype.ClassName;
-                            cylindercompimp["packagefile"] = collisionCylinderArchetype.PackageFileNoExtension;
-                            SharedPathfinding.ImportClassDB[data["cylindercomponentarchetype"]] = cylindercompimp;
-
-                            //X.Default
-                            Dictionary<string, string> nodetypeimp = new Dictionary<string, string>();
-                            ImportEntry collisionCylinderArchetypeDefault = collisionCylinderArchetype.FileRef.getEntry(collisionCylinderArchetype.idxLink) as ImportEntry;
-                            nodetypeimp["class"] = collisionCylinderArchetypeDefault.ClassName == "Class" ? "Class" : collisionCylinderArchetypeDefault.PackageFileNoExtension + "." + collisionCylinderArchetypeDefault.ClassName;
-                            nodetypeimp["packagefile"] = collisionCylinderArchetypeDefault.PackageFileNoExtension;
-                            SharedPathfinding.ImportClassDB[collisionCylinderArchetypeDefault.GetFullPath] = nodetypeimp;
-                        }
-                    }
-                    data["description"] = "No data about this node type has been entered yet";
-                    SharedPathfinding.ExportClassDB[export.ClassName] = data;
-
-                    Dictionary<string, string> nodeclassimport = new Dictionary<string, string>();
-                    ImportEntry classImport = export.FileRef.getEntry(export.idxClass) as ImportEntry;
-
-                    if (classImport != null)
-                    {
-                        nodeclassimport["class"] = classImport.ClassName == "Class" ? "Class" : classImport.PackageFileNoExtension + "." + classImport.ClassName;
-                        nodeclassimport["packagefile"] = classImport.PackageFileNoExtension;
-
-                        SharedPathfinding.ImportClassDB[classImport.GetFullPath] = nodeclassimport;
-
-                        //Rename vars - debug only
-                        var exporttypes = SharedPathfinding.ExportClassDB;
-                        var importtypes = SharedPathfinding.ImportClassDB;
-
-                        Debug.WriteLine("Adding to pathfinding database file: " + export.ClassName);
-                        File.WriteAllText(SharedPathfinding.ClassesDatabasePath,
-                    JsonConvert.SerializeObject(new { exporttypes, importtypes }, Formatting.Indented));
-                    }
-                }*/
-
-#endif
                 //Clear coverlinknode highlighting.
                 /*foreach (PathfindingNodeMaster pnm in Objects)
                 {
@@ -2568,23 +2523,26 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                         NodePositionY_TextBox.Text = 0.ToString();
                         NodePositionZ_TextBox.Text = 0.ToString();
                     }
-                    //switch (s.export.ClassName)
-                    //{
-                    //    case "CoverLink":
-                    //        HighlightCoverlinkSlots(s.export);
-                    //        break;
-                    //    case "CoverSlotMarker":
-                    //        StructProperty sp = s.export.GetProperty<StructProperty>("OwningSlot");
-                    //        if (sp != null)
-                    //        {
-                    //            ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
-                    //            if (op != null && op.Value - 1 < pcc.ExportCount)
-                    //            {
-                    //                HighlightCoverlinkSlots(pcc.Exports[op.Value - 1]);
-                    //            }
-                    //        }
-                    //        break;
-                    //}
+                    switch (selectedNode.export.ClassName)
+                    {
+                        case "CoverLink":
+                            HighlightCoverlinkSlots(selectedNode.export);
+                            break;
+                        case "CoverSlotMarker":
+                            StructProperty sp = selectedNode.export.GetProperty<StructProperty>("OwningSlot");
+                            if (sp != null)
+                            {
+                                ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
+                                if (op != null && op.Value - 1 < Pcc.ExportCount)
+                                {
+                                    HighlightCoverlinkSlots(Pcc.GetUExport(op.Value));
+                                }
+                            }
+                            break;
+                        case "BioWaypointSet":
+                            HighlightBioWaypointSet(selectedNode.export);
+                            break;
+                    }
                 }
 
                 //GetProperties(pcc.getExport(CurrentObjects[n]));
@@ -2606,6 +2564,68 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             OnPropertyChanged(nameof(NodeTypeDescriptionText));
         }
 
+        private void HighlightBioWaypointSet(ExportEntry export)
+        {
+            var waypointReferences = export.GetProperty<ArrayProperty<StructProperty>>("WaypointReferences");
+            var waypointUIndexes = new List<int>();
+            if (waypointReferences != null)
+            {
+                foreach (var waypoint in waypointReferences)
+                {
+                    var nav = waypoint.GetProp<ObjectProperty>("Nav");
+                    if (nav != null && nav.Value > 0)
+                    {
+                        waypointUIndexes.Add(nav.Value);
+                    }
+                }
+            }
+            if (waypointUIndexes.Count > 0)
+            {
+                foreach (PathfindingNodeMaster pnm in GraphNodes)
+                {
+                    if (waypointUIndexes.Contains(pnm.export.UIndex))
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.highlightedCoverSlotBrush;
+                    }
+                }
+            }
+        }
+
+        private void HighlightCoverlinkSlots(ExportEntry coverlink)
+        {
+
+            ArrayProperty<StructProperty> props = coverlink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+            if (props != null)
+            {
+                CurrentlyHighlightedCoverlinkNodes = new List<int>();
+                CurrentlyHighlightedCoverlinkNodes.Add(coverlink.UIndex);
+
+                foreach (StructProperty slot in props)
+                {
+                    ObjectProperty coverslot = slot.GetProp<ObjectProperty>("SlotMarker");
+                    if (coverslot != null)
+                    {
+                        CurrentlyHighlightedCoverlinkNodes.Add(coverslot.Value);
+                    }
+                }
+                foreach (PathfindingNodeMaster pnm in GraphNodes)
+                {
+                    if (pnm.export == coverlink)
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                        continue;
+                    }
+                    if (CurrentlyHighlightedCoverlinkNodes.Contains(pnm.export.UIndex))
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.highlightedCoverSlotBrush;
+                    } else if (pnm.export.ClassName == "CoverLink" || pnm.export.ClassName == "CoverSlotMarker")
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.pathfindingNodeBrush;
+                    }
+                }
+            }
+        }
+
         private List<Zone> CloneCombatZonesForSelections()
         {
             var clones = new List<Zone>();
@@ -2620,15 +2640,22 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             graphEditor.AllowDragging();
-            Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            if (AllowWindowRefocus)
+            {
+                Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            }
+
+            AllowWindowRefocus = true;
         }
+
+        public bool AllowWindowRefocus = true;
 
         private void FindByTag_Click(object sender, RoutedEventArgs e) => FindByTag();
 
         private void FindByTag()
         {
             int currentIndex = ActiveNodes_ListBox.SelectedIndex;
-            var currnentSelectedItem = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            var currnentSelectedItem = ActiveNodes_ListBox.SelectedItem as ExportEntry;
             if (currentIndex < 0 || currentIndex >= ActiveNodes.Count - 1) currentIndex = -1; //nothing selected or the final item is selected
             currentIndex++; //search next item
 
@@ -2655,9 +2682,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void FindByNumber()
         {
-            if (int.TryParse(FindByNumber_TextBox.Text, out int result) && Pcc.isUExport(result))
+            if (int.TryParse(FindByNumber_TextBox.Text, out int result) && Pcc.IsUExport(result))
             {
-                var export = Pcc.getUExport(result);
+                var export = Pcc.GetUExport(result);
                 int index = ActiveNodes.IndexOf(export);
                 if (index >= 0)
                 {
@@ -2684,7 +2711,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void PositionBoxes_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is IExportEntry export &&
+            if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is ExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
                 SharedPathfinding.SetLocation(export, x, y, z);
@@ -2712,7 +2739,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         public void UpdateEdgesForCurrentNode(PathfindingNodeMaster node = null)
         {
             PathfindingNodeMaster nodeToUpdate = node;
-            if (nodeToUpdate == null && ActiveNodes_ListBox.SelectedItem is IExportEntry export)
+            if (nodeToUpdate == null && ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {
                 nodeToUpdate = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
             }
@@ -2782,7 +2809,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void SetGraphXY_Clicked(object sender, RoutedEventArgs e)
         {
             //Find node
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var currentlocation = SharedPathfinding.GetLocation(export);
@@ -2799,122 +2826,69 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
         {
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
             {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFile(export.FileRef.FileName);
-                p.GoToNumber(export.UIndex);
+                p.LoadFile(export.FileRef.FilePath, export.UIndex);
+                p.Activate(); //bring to front
             }
         }
 
         private void CloneNode_Clicked(object sender, RoutedEventArgs e)
         {
-            var newNode = cloneNode(ActiveNodes_ListBox.SelectedItem as IExportEntry);
+            var newNode = cloneNode(ActiveNodes_ListBox.SelectedItem as ExportEntry);
             if (newNode != null)
             {
                 ActiveNodes_ListBox.SelectedItem = newNode;
             }
         }
 
-        private IExportEntry cloneNode(IExportEntry nodeEntry)
+        private ExportEntry cloneNode(ExportEntry nodeEntry)
         {
             if (nodeEntry != null)
             {
-                IExportEntry subComponentEntry = null;
-                if (nodeEntry.GetProperty<ObjectProperty>("CollisionComponent") is ObjectProperty collisionComponentProperty)
+
+                ExportEntry newNodeEntry = (ExportEntry)EntryCloner.cloneTree(nodeEntry);
+
+                //empty the pathlist
+                PropertyCollection newExportProps = newNodeEntry.GetProperties();
+                var pathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                if (pathList != null && pathList.Count > 0)
                 {
-                    subComponentEntry = nodeEntry.FileRef.getUExport(collisionComponentProperty.Value);
-                }
-                else if (nodeEntry.GetProperty<ObjectProperty>("ParticleSystemComponent") is ObjectProperty psComponentProperty)
-                {
-                    subComponentEntry = nodeEntry.FileRef.getUExport(psComponentProperty.Value);
-                }
-
-                if (subComponentEntry != null)
-                {
-                    IExportEntry newNodeEntry = nodeEntry.Clone();
-                    nodeEntry.FileRef.addExport(newNodeEntry);
-                    IExportEntry newSubcomponent = subComponentEntry.Clone();
-                    nodeEntry.FileRef.addExport(newSubcomponent);
-                    newSubcomponent.idxLink = newNodeEntry.UIndex;
-
-                    //Update the cloned nodes to be new items
-                    bool changed = false;
-
-                    //empty the pathlist
-                    PropertyCollection newExportProps = newNodeEntry.GetProperties();
-
-                    var PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
-                    if (PathList != null && PathList.Count > 0)
-                    {
-                        changed = true;
-                        PathList.Clear();
-                    }
-
-                    foreach (UProperty prop in newExportProps)
-                    {
-                        if (prop is ObjectProperty objProp)
-                        {
-                            if (objProp.Value == subComponentEntry.UIndex)
-                            {
-                                objProp.Value = newSubcomponent.UIndex;
-                                changed = true;
-                            }
-                        }
-                    }
-
-                    if (changed)
-                    {
-                        newNodeEntry.WriteProperties(newExportProps);
-                    }
-
-                    var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
-
-                    SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
-                    //Add cloned node to persistentlevel
-                    //Read persistent level binary
-                    byte[] data = PersistentLevelExport.Data;
-
-                    //find start of class binary (end of props)
-                    int start = PersistentLevelExport.propsEnd();
-
-                    uint exportid = BitConverter.ToUInt32(data, start);
-                    start += 4;
-                    uint numberofitems = BitConverter.ToUInt32(data, start);
-                    numberofitems++;
-                    SharedPathfinding.WriteMem(data, start, BitConverter.GetBytes(numberofitems));
-                    int insertoffset = (int)(numberofitems * 4) + start;
-                    List<byte> memList = data.ToList();
-                    memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
-                    data = memList.ToArray();
-                    PersistentLevelExport.Data = data;
-
-                    SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
-                    SharedPathfinding.ReindexMatchingObjects(newSubcomponent);
-                    return newNodeEntry;
+                    pathList.Clear();
+                    newNodeEntry.WriteProperties(newExportProps);
                 }
 
-                MessageBox.Show("Can't clone this type type yet.");
+                var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
+                SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+
+                SharedPathfinding.GenerateNewNavGUID(newNodeEntry);
+                //Add cloned node to persistentlevel
+                var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
+                level.Actors.Add(newNodeEntry.UIndex);
+                PersistentLevelExport.setBinaryData(level);
+
+                return newNodeEntry;
             }
             return null;
         }
 
-        [DebuggerDisplay("{export.UIndex} Static Mesh Collection")]
+        [DebuggerDisplay("{export.UIndex} Static Mesh Collection Actor")]
         public class StaticMeshCollection : NotifyPropertyChangedBase
         {
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
 
-            public List<IExportEntry> CollectionItems = new List<IExportEntry>();
-            public IExportEntry export { get; }
+            public List<ExportEntry> CollectionItems = new List<ExportEntry>();
+            public ExportEntry export { get; }
             public string DisplayString => $"{export.UIndex}\t{CollectionItems.Count} items";
 
-            public StaticMeshCollection(IExportEntry smac)
+            public StaticMeshCollection(ExportEntry smac)
             {
                 export = smac;
-                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(export.ClassName == "StaticMeshCollectionActor" ? "StaticMeshComponents" : "LightComponents");
                 if (smacItems != null)
                 {
                     //Read exports...
@@ -2922,7 +2896,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                     {
                         if (obj.Value > 0)
                         {
-                            IExportEntry item = smac.FileRef.getUExport(obj.Value);
+                            ExportEntry item = smac.FileRef.GetUExport(obj.Value);
                             CollectionItems.Add(item);
                         }
                         else
@@ -2968,16 +2942,16 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         [DebuggerDisplay("{export.UIndex} Combat Zone (Active: {Active})")]
         public class Zone : NotifyPropertyChangedBase
         {
-            public IExportEntry export { get; }
+            public ExportEntry export { get; }
 
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
 
             private bool _displayactive;
             public bool DisplayActive { get => _displayactive; set => SetProperty(ref _displayactive, value); }
-            public string DisplayString => $"{export.UIndex} {export.ObjectName}_{export.indexValue}";
+            public string DisplayString => $"{export.UIndex} {export.ObjectName.Instanced}";
 
-            public Zone(IExportEntry combatZone)
+            public Zone(ExportEntry combatZone)
             {
                 this.export = combatZone;
             }
@@ -3123,7 +3097,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void SetFilteringMode(EZFilterIncludeDirection newfilter)
         {
             bool shouldRefresh = newfilter != ZFilteringMode;
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export && newfilter != EZFilterIncludeDirection.None)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export && newfilter != EZFilterIncludeDirection.None)
             {
                 PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
                 var currentlocation = SharedPathfinding.GetLocation(export);
@@ -3147,12 +3121,12 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
         {
             if (!CombatZonesLoading && e.Item is Zone itemChanging &&
-                ActiveNodes_ListBox.SelectedItem is IExportEntry nodeExport)
+                ActiveNodes_ListBox.SelectedItem is ExportEntry nodeExport)
             {
                 var volumesList = nodeExport.GetProperty<ArrayProperty<StructProperty>>("Volumes");
                 if (e.IsSelected && volumesList == null)
                 {
-                    volumesList = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
+                    volumesList = new ArrayProperty<StructProperty>("Volumes");
                 }
 
                 if (e.IsSelected)
@@ -3286,8 +3260,10 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
             }
         }
 
-        public ObservableCollectionExtended<IExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<ExportEntry>();
         public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
+        public List<int> CurrentlyHighlightedCoverlinkNodes { get; private set; }
+
         public class NodeType : NotifyPropertyChangedBase
         {
             private bool _active;
@@ -3422,7 +3398,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
         private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
         {
             AllowRefresh = false;
-            IExportEntry nodeEntry = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+            ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
 
             //Read persistent level binary
             byte[] data = PersistentLevelExport.Data;
@@ -3446,8 +3422,8 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                 uint itemexportid = BitConverter.ToUInt32(data, start);
                 if (itemexportid == nodeEntry.UIndex)
                 {
-                    SharedPathfinding.WriteMem(data, countoffset, BitConverter.GetBytes(numberofitems - 1));
-                    byte[] destarray = new byte[data.Length - 4];
+                    data.OverwriteRange(countoffset, BitConverter.GetBytes(numberofitems - 1));
+                    var destarray = new byte[data.Length - 4];
                     Buffer.BlockCopy(data, 0, destarray, 0, start);
                     Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
                     //Debug.WriteLine(data.Length);
@@ -3479,9 +3455,9 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
         private void RegenerateGUID_Clicked(object sender, RoutedEventArgs e)
         {
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry nodeEntry)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry nodeEntry)
             {
-                SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
+                SharedPathfinding.GenerateNewNavGUID(nodeEntry);
             }
         }
 
@@ -3516,7 +3492,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
 
                         start += 4;
                         int bioworldinfoexportid = BitConverter.ToInt32(data, start);
-                        IExportEntry bioworldinfo = package.getUExport(bioworldinfoexportid);
+                        ExportEntry bioworldinfo = package.GetUExport(bioworldinfoexportid);
                         if (bioworldinfo.ObjectName != "BioWorldInfo")
                         {
                             //INVALID!!
@@ -3529,7 +3505,7 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                         if (shouldbezero != 0 && package.Game != MEGame.ME1)
                         {
                             //INVALID!!!
-                            Debug.WriteLine("Error: should be zero, not zero in " + package.FileName);
+                            Debug.WriteLine("Error: should be zero, not zero in " + package.FilePath);
                             continue;
                         }
                         int itemcount = 1; //Skip bioworldinfo and Class
@@ -3542,12 +3518,12 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                         {
                             //get header.
                             int itemexportid = BitConverter.ToInt32(data, start);
-                            if (package.isUExport(itemexportid))
+                            if (package.IsUExport(itemexportid))
                             {
-                                IExportEntry exportEntry = package.getUExport(itemexportid);
+                                ExportEntry exportEntry = package.GetUExport(itemexportid);
                                 //AllLevelObjects.Add(exportEntry);
 
-                                if (ignoredobjectnames.Contains(exportEntry.ObjectName))
+                                if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
                                 {
                                     start += 4;
                                     itemcount++;
@@ -3560,8 +3536,8 @@ if (ActiveNodes_ListBox.SelectedItem is IExportEntry targetpointAnchorEnd && tar
                                     {
                                         if (!navsNotAccountedFor.TryGetValue(exportEntry.ClassName, out string _))
                                         {
-                                            Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FileName);
-                                            navsNotAccountedFor.Add(exportEntry.GetFullPath);
+                                            Debug.WriteLine("Found new nav type: " + exportEntry.ClassName + " in " + exportEntry.FileRef.FilePath);
+                                            navsNotAccountedFor.Add(exportEntry.FullPath);
                                         }
                                     }
                                 }

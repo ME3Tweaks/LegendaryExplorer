@@ -5,7 +5,6 @@
  */
 
 using Gammtek.Conduit.Extensions.IO;
-using KFreonLib.MEDirectories;
 using ME3Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
@@ -24,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.PackageDumper
 {
@@ -178,6 +178,10 @@ namespace ME3Explorer.PackageDumper
         public PackageDumper(Window owner = null)
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            {
+                { "Toolname", "Package Dumper" }
+            });
             Owner = owner;
             DataContext = this;
             LoadCommands();
@@ -538,34 +542,24 @@ namespace ME3Explorer.PackageDumper
                         for (int x = 0; x < pcc.Imports.Count; x++)
                         {
                             ImportEntry imp = pcc.Imports[x];
-                            if (imp.PackageFullName != "Class" && imp.PackageFullName != "Package")
-                            {
-                                stringoutput.WriteLine(
-                                    $"#{(x + 1) * -1}: {imp.PackageFullName}.{imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
-                            }
-                            else
-                            {
-                                stringoutput.WriteLine(
-                                    $"#{(x + 1) * -1}: {imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
-                            }
+                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
                         }
                         stringoutput.WriteLine("--End of Imports");
                         //}
 
                         string datasets = "Exports Coalesced ";
-                        if (GameBeingDumped != MEGame.ME2)
-                        {
+                        //if (GameBeingDumped != MEGame.ME2)
+                        //{
                             datasets += " Functions";
-                        }
+                        //}
 
                         stringoutput.WriteLine("--Start of " + datasets);
                         stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
 
                         int numDone = 1;
-                        int numTotal = pcc.Exports.Count;
                         //writeVerboseLine("Enumerating exports");
                         string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
-                        foreach (IExportEntry exp in pcc.Exports)
+                        foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
                             {
@@ -592,14 +586,8 @@ namespace ME3Explorer.PackageDumper
                                 stringoutput.Write("[C] ");
                             }
 
-                            stringoutput.Write($"{exp.GetFullPath}({exp.ClassName})");
-                            int ival = exp.indexValue;
-                            if (ival > 0)
-                            {
-                                stringoutput.Write($" (Index: {ival}) ");
-
-                            }
-                            stringoutput.WriteLine($"(Superclass: {exp.ClassParent}) (Data Offset: 0x {exp.DataOffset:X5})");
+                            stringoutput.Write($"{exp.InstancedFullPath}({exp.ClassName})");
+                            stringoutput.WriteLine($"(Superclass: {exp.SuperClassName}) (Data Offset: 0x {exp.DataOffset:X5})");
 
                             if (isScript)
                             {
@@ -607,6 +595,7 @@ namespace ME3Explorer.PackageDumper
                                 switch (GameBeingDumped)
                                 {
                                     case MEGame.ME1:
+                                    case MEGame.ME2:
                                         var func = UE3FunctionReader.ReadFunction(exp);
                                         func.Decompile(new TextBuilder(), false); //parse bytecode
                                         bool defined = func.HasFlag("Defined");
@@ -622,7 +611,7 @@ namespace ME3Explorer.PackageDumper
                                         for (int i = 0; i < func.Statements.statements.Count; i++)
                                         {
                                             Statement s = func.Statements.statements[i];
-                                            stringoutput.WriteLine(s.Token.ToString());
+                                            stringoutput.WriteLine(s.OffsetDisplayableString);
                                         }
                                         break;
                                 }

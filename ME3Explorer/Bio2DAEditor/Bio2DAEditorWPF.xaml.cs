@@ -1,5 +1,6 @@
 ﻿using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.TlkManagerNS;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using System;
@@ -30,10 +31,6 @@ namespace ME3Explorer
     {
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
-        //private Bio2DA CachedME12DA_TalentsGUI;
-        private Bio2DA CachedME12DA_ClassTalents_Talents;
-        private Bio2DA CachedME12DA_TalentEffectLevels;
-
         private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
@@ -41,25 +38,24 @@ namespace ME3Explorer
             private set => SetProperty(ref _table2da, value);
         }
 
+        public ICommand CommitCommand { get; set; }
+
         public Bio2DAEditorWPF()
         {
+            DataContext = this;
+            LoadCommands();
             InitializeComponent();
         }
 
-        private void StartBio2DAScan()
+        public override bool CanParse(ExportEntry exportEntry)
         {
-            Table2DA = new Bio2DA(CurrentLoadedExport);
+            return !exportEntry.IsDefaultObject && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
-        {
-            return !exportEntry.ObjectName.Contains("Default__") && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
-        }
-
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
-            StartBio2DAScan();
+            Table2DA = new Bio2DA(CurrentLoadedExport);
         }
 
         public override void UnloadExport()
@@ -73,21 +69,12 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
-            {
-                IExportEntry TalentEffectLevels = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ObjectName == "Talent_TalentEffectLevels" && x.ClassName == "Bio2DANumberedRows");
-                if (TalentEffectLevels != null)
-                {
-                    CachedME12DA_TalentEffectLevels = new Bio2DA(TalentEffectLevels);
-                }
-            }
-
             for (int counter = 0; counter < (Bio2DA_DataGrid.SelectedCells.Count); counter++)
             {
                 int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
@@ -98,31 +85,11 @@ namespace ME3Explorer
                 Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: ????";// + (rowIndex + 1) + "," + (columnIndex + 1);
                 if (item != null)
                 {
-                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.GetDisplayableValue();
+                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.DisplayableValue;
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: 0x" + item.Offset.ToString("X6");
                     if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
                     {
-                        if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-                        {
-                            if (columnName == "TalentID" && CachedME12DA_TalentEffectLevels != null)
-                            {
-                                //Get Talent ID name
-                                for (int i = 0; i < CachedME12DA_TalentEffectLevels.RowNames.Count; i++)
-                                {
-                                    if (CachedME12DA_TalentEffectLevels[i, 0].GetIntValue() == item.GetIntValue())
-                                    {
-                                        int labelColumn = CachedME12DA_TalentEffectLevels.GetColumnIndexByName("Talent_Label");
-                                        string label = CachedME12DA_TalentEffectLevels[i, labelColumn].GetDisplayableValue();
-                                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = label;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue());
-                            }
-                        }
+                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.GetIntValue(), CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                     }
                     else
                     {
@@ -151,11 +118,18 @@ namespace ME3Explorer
             e.Column.Header = header.Replace("_", "__");
         }
 
-        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        private void LoadCommands()
+        {
+            CommitCommand = new GenericCommand(Commit2DA, CanCommit2DA);
+        }
+
+        private void Commit2DA()
         {
             Table2DA.Write2DAToExport();
             Table2DA.MarkAsUnmodified();
         }
+
+        private bool CanCommit2DA() => Table2DA?.IsModified ?? false;
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
@@ -164,8 +138,7 @@ namespace ME3Explorer
                 Filter = "Excel spreadsheet|*.xlsx",
                 FileName = CurrentLoadedExport.ObjectName
             };
-            var result = d.ShowDialog();
-            if (result.HasValue && result.Value)
+            if (d.ShowDialog() == true)
             {
                 Table2DA.Write2DAToExcel(d.FileName);
                 MessageBox.Show("Done");
@@ -184,7 +157,7 @@ namespace ME3Explorer
 
         private void ImportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:");
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx"

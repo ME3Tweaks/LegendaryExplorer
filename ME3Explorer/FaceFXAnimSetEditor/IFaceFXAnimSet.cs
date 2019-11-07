@@ -9,7 +9,7 @@ namespace ME3Explorer.FaceFX
         ME3DataAnimSetStruct Data { get; }
         HeaderStruct Header { get; }
 
-        IExportEntry Export { get; }
+        ExportEntry Export { get; }
 
         void AddName(string s);
         void CloneEntry(int n);
@@ -88,16 +88,11 @@ namespace ME3Explorer.FaceFX
 
     public class ME2DataAnimSetStruct : ME3DataAnimSetStruct
     {
-        public int unk1;
-        public int unk2;
-        public int unk3;
-        public int unk4;
         public int unk5;
         public int unk6;
         public int unk7;
         public int unk8;
         public int unk9;
-        public new ME2FaceFXLine[] Data;
     }
 
     public class ME3FaceFXLine
@@ -116,10 +111,10 @@ namespace ME3Explorer.FaceFX
 
         public ME3FaceFXLine Clone()
         {
-            ME3FaceFXLine line = this.MemberwiseClone() as ME3FaceFXLine;
-            line.animations = line.animations.Clone() as ME3NameRef[];
-            line.points = line.points.Clone() as ControlPoint[];
-            line.numKeys = line.numKeys.Clone() as int[];
+            ME3FaceFXLine line = (ME3FaceFXLine)MemberwiseClone();
+            line.animations = line.animations.TypedClone();
+            line.points = line.points.TypedClone();
+            line.numKeys = line.numKeys.TypedClone();
             return line;
         }
     }

@@ -2,13 +2,14 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProjectGuid>{CCF590B8-E6BF-4D31-85BF-AFEA7D075EDF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Helpers</RootNamespace>
     <AssemblyName>HelpersLib</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -44,13 +45,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Codecs\CompressonatorCodecs.cs" />
     <Compile Include="DDSImage.cs" />
+    <Compile Include="Image.cs" />
+    <Compile Include="ImageBMP.cs" />
+    <Compile Include="ImageDDS.cs" />
+    <Compile Include="ImageTGA.cs" />
     <Compile Include="LZO2Helper.cs" />
     <Compile Include="SevenZipHelper.cs" />
     <Compile Include="StreamIO.cs" />
+    <Compile Include="ZlibBlock\ZlibBlock.cs" />
     <Compile Include="ZlibHelper.cs" />
   </ItemGroup>
   <ItemGroup>

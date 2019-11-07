@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.Xml;
 using ME3Explorer.Packages;
@@ -26,8 +25,9 @@ namespace ME3Explorer.ME1TlkEditor
     /// <summary>
     /// Interaction logic for ME1TlkEditorWPF.xaml
     /// </summary>
-    public partial class ME1TlkEditorWPF : ExportLoaderControl
+    public partial class ME1TlkEditorWPF : FileExportLoaderControl
     {
+        private TalkFile CurrentME2ME3TalkFile;
         public TLKStringRef[] StringRefs;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
@@ -56,7 +56,7 @@ namespace ME3Explorer.ME1TlkEditor
         public ICommand CommitCommand { get; set; }
         public ICommand SetIDCommand { get; set; }
         public ICommand DeleteStringCommand { get; set; }
-        public bool hasPendingChanges { get; private set; }
+
 
         private void LoadCommands()
         {
@@ -71,7 +71,7 @@ namespace ME3Explorer.ME1TlkEditor
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
-            hasPendingChanges = true;
+            FileModified = true;
         }
 
         private void SetStringID(object obj)
@@ -84,7 +84,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (CurrentLoadedExport != null)
             {
                 ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
                 elhw.Show();
             }
         }
@@ -96,7 +96,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private bool CanCommitTLK(object obj)
         {
-            return hasPendingChanges;
+            return FileModified;
         }
 
         private void CommitTLK(object obj)
@@ -104,7 +104,7 @@ namespace ME3Explorer.ME1TlkEditor
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
             huff.serializeTLKStrListToExport(CurrentLoadedExport);
-            hasPendingChanges = false;
+            FileModified = false;
         }
 
         private void SaveString(object obj)
@@ -113,7 +113,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (selectedItem != null)
             {
                 selectedItem.Data = editBox.Text.Trim();
-                hasPendingChanges = true;
+                FileModified = true;
             }
         }
 
@@ -125,7 +125,13 @@ namespace ME3Explorer.ME1TlkEditor
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
-        public override bool CanParse(IExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
+        public override bool CanParse(ExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
+        public override void PoppedOut(MenuItem recentsMenuItem)
+        {
+            Recents_MenuItem = recentsMenuItem;
+            LoadRecentList();
+            RefreshRecent(false, null);
+        }
 
         /// <summary>
         /// Memory cleanup when this control is unloaded
@@ -133,11 +139,12 @@ namespace ME3Explorer.ME1TlkEditor
         public override void Dispose()
         {
             CurrentLoadedExport = null;
+            CurrentME2ME3TalkFile = null;
             LoadedStrings?.Clear();
             CleanedStrings?.ClearEx();
         }
 
-        public override void LoadExport(IExportEntry exportEntry)
+        public override void LoadExport(ExportEntry exportEntry)
         {
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
@@ -145,13 +152,13 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
-            hasPendingChanges = false;
+            FileModified = false;
 
         }
 
         public override void UnloadExport()
         {
-            hasPendingChanges = false;
+            FileModified = false;
 
         }
 
@@ -218,7 +225,7 @@ namespace ME3Explorer.ME1TlkEditor
             DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
             DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
             SetNewID();
-            hasPendingChanges = true;
+            FileModified = true;
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
@@ -249,7 +256,7 @@ namespace ME3Explorer.ME1TlkEditor
                 ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
                 compressor.serializeTLKStrListToExport(CurrentLoadedExport);
-                hasPendingChanges = true; //this is not always technically true, but we'll assume it is
+                FileModified = true; //this is not always technically true, but we'll assume it is
             }
         }
 
@@ -267,7 +274,7 @@ namespace ME3Explorer.ME1TlkEditor
 
                         writer.WriteStartDocument();
                         writer.WriteStartElement("tlkFile");
-                        writer.WriteAttributeString("Name", CurrentLoadedExport.PackageFullName + "_" + CurrentLoadedExport.ObjectName);
+                        writer.WriteAttributeString("Name", CurrentLoadedExport.InstancedFullPath);
 
                         for (int i = 0; i < LoadedStrings.Count; i++)
                         {
@@ -315,7 +322,7 @@ namespace ME3Explorer.ME1TlkEditor
                 if (selectedItem.StringID != stringRefNewID)
                 {
                     selectedItem.StringID = stringRefNewID;
-                    hasPendingChanges = true;
+                    FileModified = true;
                 }
             }
         }
@@ -361,5 +368,125 @@ namespace ME3Explorer.ME1TlkEditor
             //Not found
             SystemSounds.Beep.Play();
         }
+
+        public override void LoadFile(string filepath)
+        {
+            //throw new NotImplementedException();
+            UnloadExport();
+
+            CurrentME2ME3TalkFile = new TalkFile();
+            CurrentME2ME3TalkFile.LoadTlkData(filepath);
+
+            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            FileModified = false;
+        }
+
+        public override bool CanLoadFile()
+        {
+            //this doesn't do any background threading so we can always load files
+            return true;
+        }
+
+        internal override void OpenFile()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "All TLK Editor supported files|*.sfm;*.u;*.upk;*.tlk|ME1 Package Files|*.sfm;*.u;*.upk|ME2/ME3 Talk Files|*.tlk" };
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+                Window.GetWindow(this).Title = "TLK Editor - " + d.FileName;
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
+        }
+
+        public override void Save()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                CurrentLoadedExport.FileRef.Save();
+            }
+            else if (CurrentME2ME3TalkFile != null)
+            {
+                // CurrentME2ME3TalkFile.
+                ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                huff.LoadInputData(LoadedStrings);
+                huff.SaveToTlkFile(CurrentME2ME3TalkFile.path);
+                FileModified = false; //you can only commit to file, not to export and then file in file mode.
+            }
+            //throw new NotImplementedException();
+
+        }
+
+        public override void SaveAs()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                SaveFileDialog d = new SaveFileDialog { Filter = $"*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}|*{Path.GetExtension(CurrentLoadedExport.FileRef.FilePath)}" };
+                if (d.ShowDialog() == true)
+                {
+                    CurrentLoadedExport.FileRef.Save(d.FileName);
+                }
+            }
+            else if (CurrentME2ME3TalkFile != null)
+            {
+                SaveFileDialog d = new SaveFileDialog { Filter = $"ME2/ME3 talk files|*.tlk" };
+                if (d.ShowDialog() == true)
+                {
+                    // CurrentME2ME3TalkFile.
+                    ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                    huff.LoadInputData(LoadedStrings);
+                    huff.SaveToTlkFile(d.FileName);
+                }
+
+            }
+        }
+
+        public override bool CanSave()
+        {
+            return true;
+        }
+
+        internal override void RecentFile_click(object sender, RoutedEventArgs e)
+        {
+            string s = ((FrameworkElement)sender).Tag.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        internal override bool CanLoadFileExtension(string extension)
+        {
+            switch (extension)
+            {
+                case ".sfm":
+                case ".u":
+                case ".upk":
+                case ".tlk":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        internal override string DataFolder { get; } = "TLKEditorWPF";
     }
 }
