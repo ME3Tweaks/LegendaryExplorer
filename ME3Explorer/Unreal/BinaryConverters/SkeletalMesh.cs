@@ -581,11 +581,26 @@ namespace ME3Explorer
 
             if (sc.Game >= MEGame.ME3)
             {
-                int vertexInfluencesCount = 0;
-                sc.Serialize(ref vertexInfluencesCount);
-                if (vertexInfluencesCount != 0)
+                if (sc.IsLoading)
                 {
-                    throw new Exception($"VertexInfluences exist on this SkeletalMesh! Mesh in: {sc.Pcc.FilePath}");
+                    int vertexInfluenceSize = 0;
+                    sc.Serialize(ref vertexInfluenceSize);
+                    if (vertexInfluenceSize > 0)
+                    {
+                        if (sc.Game == MEGame.UDK)
+                        {
+                            int[] vertexInfluences = null;
+                            sc.Serialize(ref vertexInfluences, Serialize);
+                        }
+                        else
+                        {
+                            throw new Exception($"VertexInfluences exist on this SkeletalMesh! Mesh in: {sc.Pcc.FilePath}");
+                        }
+                    }
+                }
+                else
+                {
+                    sc.ms.WriteInt32(0);
                 }
             }
 

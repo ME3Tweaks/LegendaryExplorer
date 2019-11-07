@@ -6154,7 +6154,12 @@ namespace ME3Explorer
                                                                                                                 () => MakeVector2DHalfNode(bin, "UV")))
                             }
                         }));
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, () => MakeInt32Node(bin, "VertexInfluences count")));
+                        int vertexInfluenceSize;
+                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
+                        {
+                            new BinInterpNode(bin.Position, $"VertexInfluence size: {vertexInfluenceSize = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 },
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(vertexInfluenceSize > 0, () => MakeArrayNode(bin, "VertexInfluences", i => MakeInt32Node(bin, $"{i}")))
+                        }));
                         node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
                         {
                             MakeBoolIntNode(bin, "NeedsCPUAccess"),
