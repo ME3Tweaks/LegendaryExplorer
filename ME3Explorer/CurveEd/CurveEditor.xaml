@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:local="clr-namespace:ME3Explorer.CurveEd"
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
              x:Class="ME3Explorer.CurveEd.CurveEditor"
              mc:Ignorable="d" 
@@ -14,71 +15,87 @@
     </Window.CommandBindings>-->
     <DockPanel>
         <Border  DockPanel.Dock="Top" BorderThickness="0,0,0,2" BorderBrush="#FF606060" >
-            <StackPanel Orientation="Horizontal" Background="#FF404040" >
-                <StackPanel.Resources>
-                    <SolidColorBrush x:Key="ToolBarButtonMouseOverColor" Color="#FFDC9700"/>
-                    <SolidColorBrush x:Key="ToolBarButtonPressedColor" Color="#FFD67703"/>
-                    <SolidColorBrush x:Key="ToolBarButtonCheckedColor" Color="#FFDA7502"/>
-                    <Style TargetType="{x:Type RadioButton}">
-                        <Setter Property="Background" Value="#FF323232"/>
-                        <Setter Property="BorderBrush" Value="Transparent"/>
-                        <Setter Property="Foreground" Value="#FFC9C9C9"/>
-                        <Setter Property="FontSize" Value="14"/>
-                        <Setter Property="GroupName" Value="InterpMode"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type RadioButton}">
-                                    <Grid Margin="1,1,1,1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition Height="3"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="3"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border x:Name="Bd" Grid.RowSpan="2"  Grid.ColumnSpan="3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True" CornerRadius="5">
-                                        </Border>
-                                        <ContentPresenter x:Name="cPresenter" Grid.Column="1" Margin="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RenderTransformOrigin="0.5,0.5">
-                                        </ContentPresenter>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
-                                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
-                                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
-                                            <Setter Property="RenderTransform" TargetName="cPresenter">
-                                                <Setter.Value>
-                                                    <TranslateTransform Y="1"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonCheckedColor}"/>
-                                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonCheckedColor}"/>
-                                            <Setter Property="Effect" TargetName="cPresenter">
-                                                <Setter.Value>
-                                                    <DropShadowEffect BlurRadius="0" ShadowDepth="1.5"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </StackPanel.Resources>
-                <RadioButton x:Name="btnConstant" Click="btnInterpMode_Click" Content="Constant"/>
-                <RadioButton x:Name="btnLinear" Click="btnInterpMode_Click" Content="Linear"/>
-                <RadioButton x:Name="btnAuto" Click="btnInterpMode_Click" Content="Auto"/>
-                <RadioButton x:Name="btnClamped" Click="btnInterpMode_Click" Content="Auto/Clamped"/>
-                <RadioButton x:Name="btnUser" Click="btnInterpMode_Click" Content="User"/>
-                <RadioButton x:Name="btnBreak" Click="btnInterpMode_Click" Content="Break"/>
-            </StackPanel>
+            <DockPanel LastChildFill="True" Background="#FF404040">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <StackPanel.Resources>
+                        <SolidColorBrush x:Key="ToolBarButtonMouseOverColor" Color="#FFDC9700"/>
+                        <SolidColorBrush x:Key="ToolBarButtonPressedColor" Color="#FFD67703"/>
+                        <SolidColorBrush x:Key="ToolBarButtonCheckedColor" Color="#FFDA7502"/>
+                        <Style TargetType="{x:Type RadioButton}">
+                            <Setter Property="Background" Value="#FF323232"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#FFC9C9C9"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="GroupName" Value="InterpMode"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                                        <Grid Margin="1,1,1,1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="3"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="3"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Bd" Grid.RowSpan="2"  Grid.ColumnSpan="3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True" CornerRadius="5">
+                                            </Border>
+                                            <ContentPresenter x:Name="cPresenter" Grid.Column="1" Margin="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RenderTransformOrigin="0.5,0.5">
+                                            </ContentPresenter>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonMouseOverColor}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonPressedColor}"/>
+                                                <Setter Property="RenderTransform" TargetName="cPresenter">
+                                                    <Setter.Value>
+                                                        <TranslateTransform Y="1"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ToolBarButtonCheckedColor}"/>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonCheckedColor}"/>
+                                                <Setter Property="Effect" TargetName="cPresenter">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect BlurRadius="0" ShadowDepth="1.5"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    <RadioButton x:Name="btnConstant" Click="btnInterpMode_Click" Content="Constant"/>
+                    <RadioButton x:Name="btnLinear" Click="btnInterpMode_Click" Content="Linear"/>
+                    <RadioButton x:Name="btnAuto" Click="btnInterpMode_Click" Content="Auto"/>
+                    <RadioButton x:Name="btnClamped" Click="btnInterpMode_Click" Content="Auto/Clamped"/>
+                    <RadioButton x:Name="btnUser" Click="btnInterpMode_Click" Content="User"/>
+                    <RadioButton x:Name="btnBreak" Click="btnInterpMode_Click" Content="Break"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Margin="5,0,0,0" Grid.Column="2" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportFromExcel_Click" ToolTip="Import curves from excel" Background="#FF323232" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                            <fa:ImageAwesome Icon="Solid_ArrowLeft" Width="16" Height="16" Foreground="DarkRed"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Padding="5,0" Grid.Column="3" Name="ExportToExcel_Button" Click="ExportToExcel_Click" HorizontalAlignment="Right" ToolTip="Export curves to excel" Background="#FF323232" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                            <fa:ImageAwesome Icon="Solid_ArrowRight" Width="16" Height="16" Foreground="DarkRed"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
         </Border>
         <TreeView x:Name="TrackList" DockPanel.Dock="Left" Width="200" SelectedItemChanged="TrackList_SelectedItemChanged" Background="#FF888888">
             <TreeView.Resources>

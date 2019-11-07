@@ -12,9 +12,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using ClosedXML.Excel;
+using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.CurveEd
 {
@@ -172,6 +176,209 @@ namespace ME3Explorer.CurveEd
             }
         }
 
+        public void ExportCurvesToXLS()
+        {
+            var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Curve");
+            var trackKeys = new SortedDictionary<float, List<float>>();  // time is key, then all the floats at that time
+            var curveList = new List<string>();  //List of column names
+            //write data to list
+            foreach (var track in InterpCurveTracks)
+            {
+                int n = 0;
+                foreach(var curve in track.Curves)
+                {
+                    n++;
+                    curveList.Add(curve.Name);
+                    foreach(var point in curve.CurvePoints)
+                    {
+                        float time = point.InVal;
+                        if (!trackKeys.ContainsKey(time))
+                        {
+                            trackKeys.Add(time, new List<float>());
+                        }
+                        else
+                        {
+                            while (trackKeys[time].Count < n - 1) //if previous curves didn't have this time add null [better way]?
+                            {
+                                trackKeys[time].Add((float)0.12345678);
+                            }
+                        }
+                        trackKeys[time].Add(point.OutVal);
+                    }
+                }
+            }
+            
+            //Write to XL
+            int xlrow = 1;
+            int xlcol = 1;
+            worksheet.Cell(xlrow, xlcol).Value = "Time";
+            foreach (var cn in curveList)
+            {
+                xlcol++;
+                worksheet.Cell(xlrow, xlcol).Value = cn;
+            }
+
+            foreach (var tk in trackKeys)
+            {
+                xlrow++;
+                xlcol = 1;
+                worksheet.Cell(xlrow, xlcol).Value = tk.Key.ToString();
+                foreach (var point in tk.Value)
+                {
+                    xlcol++;
+                    if(point != (float)0.12345678) //skip null values
+                        worksheet.Cell(xlrow, xlcol).Value = point.ToString();
+                }
+            }
+
+            CommonSaveFileDialog m = new CommonSaveFileDialog
+            {
+                Title = "Select excel output",
+                DefaultFileName = $"{CurrentLoadedExport.ObjectNameString}_{CurrentLoadedExport.UIndex}.xlsx",
+                DefaultExtension = "xlsx",
+            };
+            m.Filters.Add(new CommonFileDialogFilter("Excel Files", "*.xlsx"));
+            var owner = Window.GetWindow(this);
+            if (m.ShowDialog(owner) == CommonFileDialogResult.Ok)
+            {
+                owner.RestoreAndBringToFront();
+                try
+                {
+                    workbook.SaveAs(m.FileName);
+                    MessageBox.Show($"Curves exported to {System.IO.Path.GetFileName(m.FileName)}.");
+                }
+                catch
+                {
+                    MessageBox.Show($"Save to {System.IO.Path.GetFileName(m.FileName)} failed.\nCheck the excel file is not open.");
+                }
+            }
+        }
+
+        public void ImportCurvesFromXLS()
+        {
+            var wdlg = MessageBox.Show("Do you want to import a new curve from Excel and overwrite the existing curve values?\n \nThe sheet must be in the correct format:\n- Headers must match the overwritten curves\n- All cells must contain a value\n- Time values must be ordered.\n- Values only, no links or formulas", "Import Curves", MessageBoxButton.OKCancel);
+            if (wdlg == MessageBoxResult.Cancel)
+                return;
+
+            var curveList = new List<string>(); //List of headers
+            foreach (var otrack in InterpCurveTracks)
+            {
+                foreach (var ocurve in otrack.Curves)
+                {
+                    curveList.Add(ocurve.Name);
+                }
+            }
+
+            OpenFileDialog oDlg = new OpenFileDialog //Load Excel
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx"
+            };
+            oDlg.Title = "Import Excel table";
+            var result = oDlg.ShowDialog();
+
+            if (!result.HasValue || !result.Value)
+                return;
+
+            var Workbook = new XLWorkbook(oDlg.FileName);
+            IXLWorksheet iWorksheet;
+            if (Workbook.Worksheets.Count() > 1)
+            {
+                try
+                {
+                    iWorksheet = Workbook.Worksheet(1);
+                }
+                catch
+                {
+                    MessageBox.Show("Curve Sheet not found");
+                    return;
+                }
+            }
+            else
+            {
+                iWorksheet = Workbook.Worksheet(1);
+            }
+
+            try
+            {
+                var xlrowCount = iWorksheet.RowsUsed().Count();
+                //Check headers
+                for (int hdr = 0; hdr < curveList.Count; hdr++) //skip time (first) column
+                {
+                    var expected = curveList[hdr];
+                    var returned = (string)iWorksheet.Cell(1, hdr + 2).Value; //+2 as XL starts at 1, and skip time column
+                    if (expected != returned)
+                    {
+                        MessageBox.Show("The imported column headers do not match.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                }
+                //Check time is in order
+                float previoustime = -9999;
+                for (int row = 2; row <= xlrowCount; row++)
+                {
+                    var t = iWorksheet.Cell(row, 1).Value.ToString();
+                    if (!Single.TryParse(t, out float time) || time < previoustime)
+                    {
+                        MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    previoustime = time;
+                }
+                //CHECK Every cell has a numeric value
+                foreach (var cell in iWorksheet.RangeUsed().Cells())
+                {
+                    if (cell.IsNull() || cell.IsEmpty())
+                    {
+                        MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                    if(cell.Address.RowNumber > 1 && !Single.TryParse(cell.Value.ToString(), out float f))
+                    {
+                        MessageBox.Show("The values contain text.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
+                        return;
+                    }
+                }
+
+                //Import data to curves
+                foreach (var track in InterpCurveTracks)
+                {
+                    foreach (var curve in track.Curves)
+                    {
+                        curve.CurvePoints.Clear();
+                        string cname = curve.Name;
+                        int xlcolumn = curveList.IndexOf(cname) + 2;  //Find correct column offset as XL starts at 1, skip first column (time)
+
+                        for (int xlrow = 2; xlrow <= xlrowCount; xlrow++) //Get Excel points start at 2 because top contains headers
+                        {
+                            var time = iWorksheet.Cell(xlrow, 1).Value.ToString();
+                            var outval = iWorksheet.Cell(xlrow, xlcolumn).Value.ToString();
+                            if (outval != null && float.TryParse(time, out float t) && float.TryParse(outval, out float v))
+                            {
+                                CurvePoint point = new CurvePoint(t, v, 0, 0, CurveMode.CIM_CurveAuto);
+                                curve.CurvePoints.AddLast(point);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Data error. Aborted");
+                                return;
+                            }
+                        }
+                    }
+                    Commit();
+                }
+                MessageBox.Show("Import complete.", "Import Curves");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Import failed. Check Import data.\n", "Error");
+#if DEBUG
+                MessageBox.Show($"{ExceptionHandlerDialogWPF.FlattenException(e)}", "Error");
+#endif
+            }
+            
+        }
+
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = InterpCurveTracks.Count > 0;
@@ -218,6 +425,16 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
+        }
+
+        private void ImportFromExcel_Click(object sender, RoutedEventArgs e)
+        {
+            ImportCurvesFromXLS();
+        }
+
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCurvesToXLS();
         }
     }
 }

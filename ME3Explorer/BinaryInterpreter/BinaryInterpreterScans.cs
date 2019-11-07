@@ -6296,8 +6296,41 @@ namespace ME3Explorer
                         string label = i.ToString();
                         switch (i)
                         {
+                            case 0:
+                                label = "X1:";
+                                break;
                             case 1:
-                                label = "ScalingXorY1:";
+                                label = "X2: X-scaling-Axis: ";
+                                break;
+                            case 2:
+                                label = "X3:";
+                                break;
+                            case 3:
+                                label = "XT:";
+                                break;
+                            case 4:
+                                label = "Y1: Y-scaling axis";
+                                break;
+                            case 5:
+                                label = "Y2:";
+                                break;
+                            case 6:
+                                label = "Y3:";
+                                break;
+                            case 7:
+                                label = "YT:";
+                                break;
+                            case 8:
+                                label = "Z1:";
+                                break;
+                            case 9:
+                                label = "Z2:";
+                                break;
+                            case 10:
+                                label = "Z3: Z-scaling axis";
+                                break;
+                            case 11:
+                                label = "ZT:";
                                 break;
                             case 12:
                                 label = "LocX:";
@@ -6309,7 +6342,7 @@ namespace ME3Explorer
                                 label = "LocZ:";
                                 break;
                             case 15:
-                                label = "CameraLayerDistance?:";
+                                label = "CameraCollisionDistanceScalar:";
                                 break;
                         }
 
@@ -7039,10 +7072,22 @@ namespace ME3Explorer
         {
             /*
              *  
-             *  count +4
+             *      flag 1 = external cache / 0 = local storage +4   //ME3
              *      stream length in TFC +4
              *      stream length in TFC +4 (repeat)
              *      stream offset in TFC +4
+             *      
+             *      //ME1/2 THIS IS REPEATED
+             *      unknown 0  +4
+             *      unknown 0  +4
+             *      unknown 0  +4
+             *      offset (1st)
+             *      count +4  (0) 
+             *      stream length in TFC +4 (or locally)
+             *      stream length in TFC +4 (repeat)
+             *      stream 2nd offset in TFC +4
+             *      
+             *      
              *  
              */
             var subnodes = new List<ITreeItem>();
@@ -7052,29 +7097,54 @@ namespace ME3Explorer
                 int unk1 = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
-                    Header = $"{(pos - binarystart):X4} Unknown: {unk1}",
+                    Header = $"{(pos - binarystart):X4} Flag (0 = local, 1 = external): {unk1}",
                     Name = "_" + pos,
 
                 });
                 pos += 4;
-                int length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+                if(Pcc.Game == MEGame.ME3)
                 {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
+                    int length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
 
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinInterpNode
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+                else
                 {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
+                    int unkME2 = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Unknown: {unkME2} ",
+                        Name = "_" + pos,
 
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    unkME2 = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Unknown: {unkME2} ",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+
                 int offset = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinInterpNode
                 {
@@ -7084,6 +7154,47 @@ namespace ME3Explorer
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
+
+                if(Pcc.Game != MEGame.ME3)
+                {
+                    int unkT = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} Flag (0 = local, 1 = external): {unkT} ",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    int length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    length = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                    offset = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = $"{(pos - binarystart):X4} bik 2nd offset in file: {offset} (0x{offset:X})",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    pos += 4;
+                }
+
                 if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
                 {
                     subnodes.Add(new BinInterpNode

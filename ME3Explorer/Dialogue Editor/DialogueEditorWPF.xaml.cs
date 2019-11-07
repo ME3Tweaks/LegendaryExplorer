@@ -177,7 +177,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand RecenterCommand { get; set; }
         public ICommand UpdateLayoutDefaultsCommand { get; set; }
         public ICommand SearchCommand { get; set; }
-
+        public ICommand CopyToClipboardCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv?.WwiseBank != null;
@@ -410,6 +410,7 @@ namespace ME3Explorer.Dialogue_Editor
             RecenterCommand = new GenericCommand(graphEditor_PanTo);
             UpdateLayoutDefaultsCommand = new RelayCommand(UpdateLayoutDefaults);
             SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+            CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
 
         }
 
@@ -1040,7 +1041,7 @@ namespace ME3Explorer.Dialogue_Editor
                                             var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                             if (outLinksProp3 != null && outLinksProp3.Count > 0)
                                             {
-                                                var linksProp3 = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
                                                 if (linksProp3 != null)
                                                 {
                                                     var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
@@ -1822,10 +1823,8 @@ namespace ME3Explorer.Dialogue_Editor
                     prop.Properties.AddOrReplaceProp(nExportID);
                     node.Interpdata = ParseSingleNodeInterpData(SelectedConv, node);
                     var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
-                    if (lengthprop != null)
-                    {
-                        node.InterpLength = lengthprop.Value;
-                    }
+                    node.InterpLength = lengthprop?.Value ?? -1;
+                    needsRefresh = true;
                     break;
                 case "CameraIntimacy":
                     var CameraIntimacy = new IntProperty(node.CameraIntimacy, "nCameraIntimacy");
@@ -4282,6 +4281,42 @@ namespace ME3Explorer.Dialogue_Editor
             }
             RefreshView();
         }
+        private void CopyStringToClipboard_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender == Node_Text_LineString)
+            {
+                CopyStringToClipboard("Line");
+            }
+            else if (sender == Interpdata_TxtBx)
+            {
+                CopyStringToClipboard("ItpDta");
+            }
+        }
+        private async void CopyStringToClipboard(object obj)
+        {
+            if (!(obj is string cmd))
+                return;
+            Clipboard.Clear();
+            string copytext = null;
+            switch(cmd)
+            {
+                case "Line":
+                    copytext = SelectedDialogueNode.Line;
+                    break;
+                case "ItpDta":
+                    copytext = SelectedDialogueNode.Interpdata.UIndex.ToString();
+                    break;
+            }
+
+            if (copytext == null)
+                return;
+
+            Clipboard.SetText(copytext);
+            var otext = StatusBar_OtherText.Text;
+            StatusBar_OtherText.Text = "Copied to Clipboard.";
+            await Task.Delay(4000);
+            StatusBar_OtherText.Text = otext;
+        }
 
         #endregion
 
@@ -4329,8 +4364,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
 
+
         #endregion Helpers
-
-
     }
 }

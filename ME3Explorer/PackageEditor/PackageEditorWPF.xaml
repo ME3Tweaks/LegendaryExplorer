@@ -529,6 +529,12 @@
                         </TabItem.Header>
                         <materialViewer:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
                     </TabItem>
+                    <TabItem Name="RADLaunch_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Movie" ToolTip="Launch Movie in external tools"/>
+                        </TabItem.Header>
+                        <packageEditor:BIKExternalExportLoader x:Name="RADLauncherTab_BIKLauncher"/>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </DockPanel>
