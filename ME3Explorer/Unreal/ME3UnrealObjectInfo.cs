@@ -879,6 +879,20 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SFXSeqAct_SetPrePivot"] = new SequenceObjectInfo();
 
+            //Kinkojiro - New Class - SFXSeqAct_SetBodyMaterial
+            NewClasses["SFXSeqAct_SetBodyMaterial"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 49, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("MaterialIndex", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("NewMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface"))
+                }
+            };
+            newSequenceObjects["SFXSeqAct_SetBodyMaterial"] = new SequenceObjectInfo();
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
