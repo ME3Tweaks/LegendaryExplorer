@@ -594,7 +594,7 @@ namespace ME3Explorer.AssetDatabase
                 cancelloading?.Cancel();
                 cancelloading = new CancellationTokenSource();
                 var start = DateTime.UtcNow;
-                LoadDatabase(CurrentDBPath, currentGame, CurrentDataBase, cancelloading.Token).ContinueWith(prevTask =>
+                LoadDatabase(CurrentDBPath, currentGame, CurrentDataBase, cancelloading.Token).ContinueWithOnUIThread(prevTask =>
                 {
                     if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
                     {
@@ -603,30 +603,34 @@ namespace ME3Explorer.AssetDatabase
                         if (warn != MessageBoxResult.Cancel)
                         {
                             GenerateDatabase();
-                            return;
+                            return false;
                         }
                         ClearDataBase();
                         IsBusy = false;
-                        return;
+                        return false;
                     }
+                    return true;
                 }).ContinueWithOnUIThread(prevTask =>
                 {
-                    foreach (var f in CurrentDataBase.FileList)
+                    if (prevTask.Result)
                     {
-                        var cd = CurrentDataBase.ContentDir[f.Item2];
-                        FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
-                    }
+                        foreach (var f in CurrentDataBase.FileList)
+                        {
+                            var cd = CurrentDataBase.ContentDir[f.Item2];
+                            FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
+                        }
 
 
-                    IsBusy = false;
-                    CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
-                                                  $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
-                                                  $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}";
+                        IsBusy = false;
+                        CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
+                                                      $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
+                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}";
 #if DEBUG
-                    var end = DateTime.UtcNow;
-                    double length = (end - start).TotalMilliseconds;
-                    CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
+                        var end = DateTime.UtcNow;
+                        double length = (end - start).TotalMilliseconds;
+                        CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
+                    }
                 });
             }
             else
@@ -2395,6 +2399,22 @@ namespace ME3Explorer.AssetDatabase
                                 }
                                 var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
                                 dbScanner.GeneratedText.TryAdd(pExp, NewTex);
+                            }
+                        }
+
+                        if (exp.ClassName == "GFxMovieInfo" && !pIsdefault)
+                        {
+                            string dataPropName = exp.Game != MEGame.ME1 ? "RawData" : "Data";
+                            var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                            int datasize = rawData.Count;
+                            var NewGUI = new GUIElement(pExp, datasize, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
+                            if (!dbScanner.GeneratedGUI.TryAdd(pExp, NewGUI))
+                            {
+                                var eGUI = dbScanner.GeneratedGUI[pExp];
+                                lock (eGUI)
+                                {
+                                    eGUI.GUIUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                }
                             }
                         }
                     }

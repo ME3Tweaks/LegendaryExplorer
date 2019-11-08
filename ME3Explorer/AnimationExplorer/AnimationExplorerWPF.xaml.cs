@@ -307,7 +307,7 @@ namespace ME3Explorer.AnimationExplorer
             }
             else
             {
-                MessageBox.Show(this, "Generate an ME3 asset database in the Asset Database tool. This should take about 10 minutes");
+                MessageBox.Show(this, "Generate an ME3 asset database in the Asset Database tool. This could take about 10 minutes.");
             }
         }
 
@@ -317,14 +317,20 @@ namespace ME3Explorer.AnimationExplorer
             PropsDataBase db = new PropsDataBase();
             AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
             {
+                if (db.DataBaseversion != AssetDB.dbCurrentBuild)
+                {
+                    MessageBox.Show(this, "ME3 Asset Database is out of date! Please regenerate it in the Asset Database tool. This could take about 10 minutes.");
+                    EndBusy();
+                    return;
+                }
                 foreach ((string fileName, int dirIndex) in db.FileList)
                 {
                     FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
                 }
                 Animations.AddRange(db.Animations);
                 listBoxAnims.ItemsSource = Animations;
-                EndBusy();
                 CommandManager.InvalidateRequerySuggested();
+                EndBusy();
             });
         }
 
