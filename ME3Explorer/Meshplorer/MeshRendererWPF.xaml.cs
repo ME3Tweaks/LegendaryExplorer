@@ -66,8 +66,22 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
+        private int _currentLOD = 0;
+        public int CurrentLOD
+        {
+            get => _currentLOD;
+            set
+            {
+                if (SetProperty(ref _currentLOD, value))
+                {
+                    SceneViewer.Context.RenderScene();
+                }
+            }
+        }
+        public ObservableCollectionExtended<string> LODPicker = new ObservableCollectionExtended<string>();
+
         private ModelPreview Preview;
-        private int CurrentLOD = 0;
+
         private float PreviewRotation;
         private bool HasLoaded;
         private WorldMesh STMCollisionMesh;
@@ -77,6 +91,7 @@ namespace ME3Explorer.Meshplorer
             if (Preview != null && Preview.LODs.Count > 0)
             {
 
+                if (CurrentLOD < 0) { CurrentLOD = 0; }
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
@@ -96,6 +111,7 @@ namespace ME3Explorer.Meshplorer
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
+
             }
         }
 
@@ -199,6 +215,7 @@ namespace ME3Explorer.Meshplorer
             var color = (System.Windows.Media.Color?)ColorConverter.ConvertFromString(Properties.Settings.Default.MeshplorerBackgroundColor);
             Background_ColorPicker.SelectedColor = color;
             SceneViewer.Context.BackgroundColor = new SharpDX.Color(color.Value.R, color.Value.G, color.Value.B);
+            LODPicker_ComboBox.ItemsSource = LODPicker;
             startingUp = false;
         }
 
@@ -273,7 +290,7 @@ namespace ME3Explorer.Meshplorer
             //SceneViewer.Context.BackgroundColor = new SharpDX.Color(128, 128, 128);
 
             CurrentLoadedExport = exportEntry;
-
+            CurrentLOD = 0;
 
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
             if (CurrentLoadedExport.ClassName == "StaticMesh" || CurrentLoadedExport.ClassName == "FracturedStaticMesh")
@@ -418,6 +435,11 @@ namespace ME3Explorer.Meshplorer
                         }
 
                         CenterView();
+                        LODPicker.ClearEx();
+                        for (int l = 0; l < Preview.LODs.Count; l++)
+                        {
+                            LODPicker.Add($"LOD{l.ToString()}");
+                        }
                     }
                 });
             }
