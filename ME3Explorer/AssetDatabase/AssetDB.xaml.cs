@@ -1199,6 +1199,10 @@ namespace ME3Explorer.AssetDatabase
                 {
                     showthis = tr.CRC.ToLower().Contains(FilterBox.Text.ToLower());
                 }
+                if (!showthis)
+                {
+                    showthis = tr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
+                }
             }
             if (showthis && menu_TCube.IsChecked && tr.CFormat != "TextureCube")
             {
