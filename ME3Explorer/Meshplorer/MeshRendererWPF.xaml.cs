@@ -78,7 +78,7 @@ namespace ME3Explorer.Meshplorer
                 }
             }
         }
-        public ObservableCollectionExtended<string> LODPicker = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> LODPicker { get; } = new ObservableCollectionExtended<string>();
 
         private ModelPreview Preview;
 
@@ -215,7 +215,6 @@ namespace ME3Explorer.Meshplorer
             var color = (System.Windows.Media.Color?)ColorConverter.ConvertFromString(Properties.Settings.Default.MeshplorerBackgroundColor);
             Background_ColorPicker.SelectedColor = color;
             SceneViewer.Context.BackgroundColor = new SharpDX.Color(color.Value.R, color.Value.G, color.Value.B);
-            LODPicker_ComboBox.ItemsSource = LODPicker;
             startingUp = false;
         }
 
