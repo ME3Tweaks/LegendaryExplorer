@@ -33,7 +33,8 @@
                     <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
                     <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
                           Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
-
+                    <ComboBox Name="LODPicker_ComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Width="55" ItemsSource="{Binding LODPicker}" 
+                              SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
 
                     <TextBlock Text="Background color:" VerticalAlignment="Center" Margin="2,0"/>
@@ -42,6 +43,7 @@
                     <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0">
                         <Image Source="/Meshplorer/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Button>
+                    
                 </StackPanel>
             </StatusBar>
             <scene3D:SceneRenderControlWPF x:Name="SceneViewer" Render="SceneViewer_Render" />
