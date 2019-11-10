@@ -388,15 +388,14 @@ namespace ME3Explorer
                 //It's an export
                 //Attempt lookup
                 ExportEntry sourceExport = importingPCC.GetUExport(uIndex);
-                string fullPath = sourceExport.FullPath;
+                string fullPath = sourceExport.InstancedFullPath;
                 string sourceFilePath = sourceExport.FileRef.FilePath;
                 if (EntryImporter.IsSafeToImportFrom(sourceFilePath, destinationPcc.Game))
                 {
                     importingFromGlobalFile = true;
                     fullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{fullPath}";
                 }
-                int indexValue = sourceExport.indexValue;
-                IEntry existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.FullPath == fullPath && indexValue == x.indexValue);
+                IEntry existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.InstancedFullPath == fullPath);
                 existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.FullPath == fullPath);
                 if (existingEntry != null)
                 {
