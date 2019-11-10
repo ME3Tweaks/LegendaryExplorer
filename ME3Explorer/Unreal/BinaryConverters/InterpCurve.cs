@@ -73,9 +73,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return new StructProperty("InterpCurvePointVector", new PropertyCollection
                 {
                     new FloatProperty(icp.InVal, "InVal"),
-                    CommonStructs.Vector3(icp.OutVal, "OutVal"),
-                    CommonStructs.Vector3(icp.ArriveTangent, "ArriveTangent"),
-                    CommonStructs.Vector3(icp.LeaveTangent, "LeaveTangent"),
+                    CommonStructs.Vector3Prop(icp.OutVal, "OutVal"),
+                    CommonStructs.Vector3Prop(icp.ArriveTangent, "ArriveTangent"),
+                    CommonStructs.Vector3Prop(icp.LeaveTangent, "LeaveTangent"),
                     icp.GetEnumProp(game)
                 });
             }
@@ -95,9 +95,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return new StructProperty("InterpCurvePointVector2D", new PropertyCollection
                 {
                     new FloatProperty(icp.InVal, "InVal"),
-                    CommonStructs.Vector2(icp.OutVal, "OutVal"),
-                    CommonStructs.Vector2(icp.ArriveTangent, "ArriveTangent"),
-                    CommonStructs.Vector2(icp.LeaveTangent, "LeaveTangent"),
+                    CommonStructs.Vector2Prop(icp.OutVal, "OutVal"),
+                    CommonStructs.Vector2Prop(icp.ArriveTangent, "ArriveTangent"),
+                    CommonStructs.Vector2Prop(icp.LeaveTangent, "LeaveTangent"),
                     icp.GetEnumProp(game)
                 });
             }

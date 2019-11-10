@@ -485,6 +485,10 @@ namespace ME3Explorer.Packages
         const int queuingDelay = 50;
         protected void updateTools(PackageChange change, int index)
         {
+            if (Tools.Count == 0)
+            {
+                return;
+            }
             PackageUpdate update = new PackageUpdate { change = change, index = index };
             bool isNewUpdate;
             lock (_updatelock)

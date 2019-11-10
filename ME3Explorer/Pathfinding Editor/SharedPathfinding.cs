@@ -26,7 +26,7 @@ namespace ME3Explorer.Pathfinding_Editor
             StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
             if (guidProp != null)
             {
-                export.WriteProperty(CommonStructs.Guid(Guid.NewGuid(), "NavGuid"));
+                export.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), "NavGuid"));
             }
         }
 
@@ -461,7 +461,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            export.WriteProperty(CommonStructs.Vector3(x, y, z, "location"));
+            export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "location"));
         }
 
         public static void SetLocation(StructProperty prop, float x, float y, float z)

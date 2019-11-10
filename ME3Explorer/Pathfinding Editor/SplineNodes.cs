@@ -179,7 +179,7 @@ namespace ME3Explorer.SplineNodes
                 if (save)
                 {
                     //will cause a refresh,so no need to update UI
-                    export.WriteProperty(CommonStructs.Vector3(ActorUtils.GetWorldToLocal(export).TransformNormal(worldCoords), "SplineActorTangent"));
+                    export.WriteProperty(CommonStructs.Vector3Prop(ActorUtils.GetWorldToLocal(export).TransformNormal(worldCoords), "SplineActorTangent"));
                     return;
                 }
 

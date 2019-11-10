@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -32,6 +33,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
@@ -4573,7 +4575,7 @@ namespace ME3Explorer
 
                     playerStart = new ExportEntry(tempPcc, properties: new PropertyCollection
                     {
-                        CommonStructs.Vector3(x, y, z, "location")
+                        CommonStructs.Vector3Prop(x, y, z, "location")
                     })
                     {
                         Parent = levelExport,
@@ -4686,7 +4688,61 @@ namespace ME3Explorer
                     udkPath = udkDlg.SelectedPath;
                     Properties.Settings.Default.UDKCustomPath = udkPath;
                 }
-                StaticLightingGenerator.GenerateUDKFileForLevel(Pcc, udkPath);
+
+                string fileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+                bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes == MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
+
+                IsBusy = true;
+                BusyText = $"Converting {fileName}";
+                Task.Run(() =>
+                {
+                    string persistentPath = StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, Pcc);
+                    if (convertAll)
+                    {
+                        var levelFiles = new List<string>();
+                        string levelName = fileName.Split('_')[1];
+                        foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
+                        {
+                            if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 && parts[1] == levelName)
+                            {
+                                BusyText = $"Converting {fileName}";
+                                using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
+                                levelFiles.Add(StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, levPcc));
+                            }
+                        }
+
+                        using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
+                        IEntry levStreamingClass = persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
+                        int i = 1;
+                        int firstLevStream = persistentUDK.ExportCount;
+                        foreach (string levelFile in levelFiles)
+                        {
+                            string fileName = Path.GetFileNameWithoutExtension(levelFile);
+                            persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
+                                                    {
+                                                        new NameProperty(fileName, "PackageName"),
+                                                        CommonStructs.ColorProp(Color.FromRgb((byte)(i % 256), (byte)((255 - i) % 256), (byte)((i * 7) % 256)), "DrawColor")
+                                                    })
+                                                    {
+                                                        ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
+                                                        Class = levStreamingClass,
+                                                        Parent = theWorld
+                                                    });
+                            i++;
+                        }
+
+                        var streamingLevelsProp = new ArrayProperty<ObjectProperty>("StreamingLevels");
+                        for (int j = firstLevStream; j < persistentUDK.ExportCount; j++)
+                        {
+                            streamingLevelsProp.Add(new ObjectProperty(j));
+                        }
+                        persistentUDK.Exports.First(exp => exp.ClassName == "WorldInfo").WriteProperty(streamingLevelsProp);
+                        persistentUDK.Save();
+                    }
+
+                    IsBusy = false;
+                });
             }
         }
 

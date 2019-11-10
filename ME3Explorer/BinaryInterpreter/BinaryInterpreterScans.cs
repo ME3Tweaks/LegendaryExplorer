@@ -3644,7 +3644,7 @@ namespace ME3Explorer
                 //LIST A
                 var unkListA = new List<ITreeItem>();
                 var countA = bin.ReadInt32();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table A: {countA} items")
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Bone Nodes: {countA} items")
                 {
                     Items = unkListA
                 });
@@ -3652,33 +3652,31 @@ namespace ME3Explorer
                 for (int a = 0; a < countA; a++) //NOT EXACT??
                 {
                     var tableItems = new List<ITreeItem>();
-                    unkListA.Add(new BinInterpNode(bin.Position, $"Table Index: {bin.ReadInt32()}")
+                    unkListA.Add(new BinInterpNode(bin.Position, $"{nameTable[bin.ReadInt32()]}")
                     {
                         Items = tableItems
                     });
-                    bool iscontinuing = true;
-                    while (iscontinuing)
+                    tableItems.Add(MakeFloatNode(bin, "X"));
+                    tableItems.Add(MakeFloatNode(bin, "Y"));
+                    tableItems.Add(MakeFloatNode(bin, "Z"));
+                    while (true)
                     {
-                        var loc = bin.Position;
                         var item = bin.ReadInt32();
                         if (item == 2147483647)
                         {
                             tableItems.Add(new BinInterpNode(bin.Position - 4, $"End Marker: FF FF FF 7F") { Length = 4 });
                             tableItems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                            iscontinuing = false;
                             break;
                         }
-                        else
-                        {
-                            bin.Position = loc;
-                            tableItems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        }
+
+                        bin.Skip(-4);
+                        tableItems.Add(MakeFloatNode(bin, "Unknown float"));
 
                     }
                     //Name list to Bones and other facefx?
                     var unkNameList1 = new List<ITreeItem>();
                     var countUk1 = bin.ReadInt32();
-                    tableItems.Add(new BinInterpNode(bin.Position - 4, $"Unknown Name List: {countUk1} items")
+                    tableItems.Add(new BinInterpNode(bin.Position - 4, $"Functions?: {countUk1} items")
                     {
                         Items = unkNameList1
                     });
@@ -3690,7 +3688,7 @@ namespace ME3Explorer
                         {
                             Items = unkNameList1items
                         });
-                        unkNameList1items.Add(MakeInt32Node(bin, "Table index"));
+                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"{nameTable[bin.ReadInt32()]}"));
                         unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                         unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                         unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
@@ -3707,7 +3705,7 @@ namespace ME3Explorer
                 //LIST B
                 var unkListB = new List<ITreeItem>();
                 var countB = bin.ReadInt32();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table B: {countB} items")
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Combiner nodes: {countB} items")
                 {
                     Items = unkListB
                 });
@@ -3755,7 +3753,7 @@ namespace ME3Explorer
                             {
                                 var unkNameList2 = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
                                 var countUk2 = bin.ReadInt32();
-                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown Name List: {countUk2} items")
+                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Child links?: {countUk2} items")
                                 {
                                     Items = unkNameList2
                                 });

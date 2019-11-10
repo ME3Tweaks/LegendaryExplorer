@@ -8,14 +8,15 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX;
 using StreamHelpers;
+using Color = System.Windows.Media.Color;
 
 namespace ME3Explorer.Unreal
 {
     //Methods for working with common StructProperty types
     public static class CommonStructs
     {
-        public static StructProperty Vector3(Vector3 vec, NameReference? name = null) => Vector3(vec.X, vec.Y, vec.Z, name);
-        public static StructProperty Vector3(float x, float y, float z, NameReference? name = null)
+        public static StructProperty Vector3Prop(Vector3 vec, NameReference? name = null) => Vector3Prop(vec.X, vec.Y, vec.Z, name);
+        public static StructProperty Vector3Prop(float x, float y, float z, NameReference? name = null)
         {
             return new StructProperty("Vector", new PropertyCollection
             {
@@ -33,8 +34,8 @@ namespace ME3Explorer.Unreal
             return vecProp != null ? GetVector3(vecProp) : defaultValue;
         }
 
-        public static StructProperty Vector2(Vector2 vec, NameReference? name = null) => Vector2(vec.X, vec.Y, name);
-        public static StructProperty Vector2(float x, float y, NameReference? name = null)
+        public static StructProperty Vector2Prop(Vector2 vec, NameReference? name = null) => Vector2Prop(vec.X, vec.Y, name);
+        public static StructProperty Vector2Prop(float x, float y, NameReference? name = null)
         {
             return new StructProperty("Vector2D", new PropertyCollection
             {
@@ -45,8 +46,8 @@ namespace ME3Explorer.Unreal
         public static Vector2 GetVector2(StructProperty vecProp) =>
             new Vector2(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"));
 
-        public static StructProperty Rotator(Rotator rot, NameReference? name = null) => Rotator(rot.Pitch,rot.Yaw, rot.Roll, name);
-        public static StructProperty Rotator(int pitch, int yaw, int roll, NameReference? name = null)
+        public static StructProperty RotatorProp(Rotator rot, NameReference? name = null) => RotatorProp(rot.Pitch,rot.Yaw, rot.Roll, name);
+        public static StructProperty RotatorProp(int pitch, int yaw, int roll, NameReference? name = null)
         {
             return new StructProperty("Rotator", new PropertyCollection
             {
@@ -58,7 +59,7 @@ namespace ME3Explorer.Unreal
         public static Rotator GetRotator(StructProperty rotProp) =>
             new Rotator(rotProp.GetProp<IntProperty>("Pitch"), rotProp.GetProp<IntProperty>("Yaw"), rotProp.GetProp<IntProperty>("Roll"));
 
-        public static StructProperty Matrix(Matrix m, NameReference? name = null)
+        public static StructProperty MatrixProp(Matrix m, NameReference? name = null)
         {
             return new StructProperty("Matrix", new PropertyCollection
             {
@@ -93,7 +94,7 @@ namespace ME3Explorer.Unreal
             }, name, true);
         }
 
-        public static StructProperty Guid(Guid guid, NameReference? name = null)
+        public static StructProperty GuidProp(Guid guid, NameReference? name = null)
         {
             byte[] guidBytes = guid.ToByteArray();
             return new StructProperty("Guid", new PropertyCollection
@@ -118,5 +119,19 @@ namespace ME3Explorer.Unreal
             ms.WriteInt32(d);
             return new Guid(ms.ToArray());
         }
+
+        public static StructProperty ColorProp(Color color, NameReference? name = null)
+        {
+            return new StructProperty("Color", new PropertyCollection
+            {
+                new ByteProperty(color.B, "B"),
+                new ByteProperty(color.G, "G"),
+                new ByteProperty(color.R, "R"),
+                new ByteProperty(color.A, "A"),
+            }, name, true);
+        }
+
+        public static Color GetColor(StructProperty prop) => Color.FromArgb(prop.GetProp<ByteProperty>("A").Value, prop.GetProp<ByteProperty>("R").Value,
+                                                                            prop.GetProp<ByteProperty>("G").Value, prop.GetProp<ByteProperty>("B").Value);
     }
 }

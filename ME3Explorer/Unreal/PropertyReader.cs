@@ -297,6 +297,6 @@ namespace ME3Explorer.Unreal
             stream.WriteNameReference(value.FunctionName, pcc);
         }
 
-        public static StructProperty ToGuidStructProp(this Guid guid, NameReference propName) => CommonStructs.Guid(guid, propName);
+        public static StructProperty ToGuidStructProp(this Guid guid, NameReference propName) => CommonStructs.GuidProp(guid, propName);
     }
 }

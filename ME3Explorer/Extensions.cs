@@ -933,6 +933,35 @@ namespace ME3Explorer
                 return ((float)(d * (180.0 / Math.PI))).ToUnrealRotationUnits();
             }
         }
+
+        public static void UnrealDecompose(this Matrix m, out Vector3 translation, out Vector3 scale, out Rotator rotation)
+        {
+            translation = m.TranslationVector;
+            scale.X = (float)Math.Sqrt(m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13);
+            scale.Y = (float)Math.Sqrt(m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23);
+            scale.Z = (float)Math.Sqrt(m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33);
+
+            if (MathUtil.IsZero(scale.X) ||
+                MathUtil.IsZero(scale.Y) ||
+                MathUtil.IsZero(scale.Z))
+            {
+                rotation = new Rotator(0,0,0);
+                return;
+            }
+
+            m.M11 /= scale.X;
+            m.M12 /= scale.X;
+            m.M13 /= scale.X;
+
+            m.M21 /= scale.Y;
+            m.M22 /= scale.Y;
+            m.M23 /= scale.Y;
+
+            m.M31 /= scale.Z;
+            m.M32 /= scale.Z;
+            m.M33 /= scale.Z;
+            rotation = m.GetRotator();
+        }
     }
 
     public static class Enums
