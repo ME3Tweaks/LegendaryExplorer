@@ -263,6 +263,7 @@
 
                         <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Add missing properties" ToolTip="Add all properties that this struct can have" Command="{Binding AddPropertiesToStructCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Generate new GUID" ToolTip="Generate a new GUID" Command="{Binding GenerateGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <!--<MenuItem Header="Order array...">
                             <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 

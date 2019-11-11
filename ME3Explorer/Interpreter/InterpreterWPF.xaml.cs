@@ -182,6 +182,7 @@ namespace ME3Explorer
         public ICommand AddArrayElementCommand { get; set; }
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
+        public ICommand GenerateGUIDCommand { get; set; }
         private void LoadCommands()
         {
             AddPropertiesToStructCommand = new GenericCommand(AddPropertiesToStruct, CanAddPropertiesToStruct);
@@ -204,6 +205,7 @@ namespace ME3Explorer
             RemoveArrayElementCommand = new GenericCommand(RemoveArrayElement, ArrayElementIsSelected);
             MoveArrayElementUpCommand = new GenericCommand(MoveArrayElementUp, CanMoveArrayElementUp);
             MoveArrayElementDownCommand = new GenericCommand(MoveArrayElementDown, CanMoveArrayElementDown);
+            GenerateGUIDCommand = new GenericCommand(GenerateNewGUID, IsItemGUIDImmutable);
         }
 
         private bool CanAddArrayElement()
@@ -227,6 +229,19 @@ namespace ME3Explorer
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
         private bool IsExportLoaded() => CurrentLoadedExport != null;
+        private bool IsItemGUIDImmutable()
+        {
+            if(SelectedItem?.Property is StructProperty)
+            {
+                var prop = SelectedItem.Property as StructProperty;
+                return prop.IsImmutable && prop.StructType == "Guid";
+            }
+            return false;
+        }
+        private void GenerateNewGUID()
+        {
+            CurrentLoadedExport.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), SelectedItem.Property.Name));
+        }
 
         private bool ArrayElementIsSelected() => SelectedItem?.Parent?.Property is ArrayPropertyBase;
 
