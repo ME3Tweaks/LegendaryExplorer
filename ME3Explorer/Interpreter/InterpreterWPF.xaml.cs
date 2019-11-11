@@ -229,15 +229,7 @@ namespace ME3Explorer
         private bool ArrayPropertyIsSelected() => SelectedItem?.Property is ArrayPropertyBase;
 
         private bool IsExportLoaded() => CurrentLoadedExport != null;
-        private bool IsItemGUIDImmutable()
-        {
-            if(SelectedItem?.Property is StructProperty)
-            {
-                var prop = SelectedItem.Property as StructProperty;
-                return prop.IsImmutable && prop.StructType == "Guid";
-            }
-            return false;
-        }
+        private bool IsItemGUIDImmutable() => SelectedItem?.Property is StructProperty sp && sp.IsImmutable && sp.StructType == "Guid";
         private void GenerateNewGUID()
         {
             CurrentLoadedExport.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), SelectedItem.Property.Name));
