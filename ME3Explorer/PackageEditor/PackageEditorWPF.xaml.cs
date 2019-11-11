@@ -229,6 +229,7 @@ namespace ME3Explorer
         public ICommand OpenMapInGameCommand { get; set; }
         public ICommand OpenExportInCommand { get; set; }
         public ICommand CompactShaderCacheCommand { get; set; }
+        public ICommand GoToArchetypecommand { get; set; }
 
         private void LoadCommands()
         {
@@ -260,6 +261,7 @@ namespace ME3Explorer
             MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
+            GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
 
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
@@ -278,6 +280,19 @@ namespace ME3Explorer
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
 
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
+        }
+
+        private void GoToArchetype()
+        {
+            if (TryGetSelectedExport(out ExportEntry export) && export.HasArchetype)
+            {
+                GoToNumber(export.Archetype.UIndex);
+            }
+        }
+
+        private bool CanGoToArchetype()
+        {
+            return TryGetSelectedExport(out ExportEntry exp) && exp.HasArchetype;
         }
 
         private void OpenExportIn(object obj)
@@ -4813,6 +4828,24 @@ namespace ME3Explorer
                 ListDialog dlg = new ListDialog(files, "", "ME1 files with externall referenced textures", this);
                 dlg.Show();
             });
+        }
+
+        private void CondenseAllArchetypes(object sender, RoutedEventArgs e)
+        {
+            if (PackageIsLoaded() && Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry level)
+            {
+                IsBusy = true;
+                BusyText = "Condensing Archetypes";
+                Task.Run(() =>
+                {
+                    foreach (ExportEntry export in level.GetAllDescendants().OfType<ExportEntry>())
+                    {
+                        export.CondenseArchetypes(false);
+                    }
+
+                    IsBusy = false;
+                });
+            }
         }
     }
 }

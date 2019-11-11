@@ -507,20 +507,25 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static void CondenseArchetypes(this ExportEntry stmActor)
+        public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {
-            while (stmActor.Archetype is ExportEntry archetype)
+            IEntry archetypeEntry = export.Archetype;
+            if (removeArchetypeLink)
+            {
+                export.Archetype = null;
+            }
+            while (archetypeEntry is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
                 foreach (UProperty prop in archProps)
                 {
-                    if (!stmActor.GetProperties().ContainsNamedProp(prop.Name))
+                    if (!export.GetProperties().ContainsNamedProp(prop.Name))
                     {
-                        stmActor.WriteProperty(prop);
+                        export.WriteProperty(prop);
                     }
                 }
 
-                stmActor.Archetype = archetype.Archetype;
+                archetypeEntry = archetype.Archetype;
             }
         }
 
