@@ -22,18 +22,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
@@ -1408,12 +1403,14 @@ namespace ME3Explorer
             }
         }
 
-        private bool TryAddToPersistentLevel(IEntry newEntry)
+        private bool TryAddToPersistentLevel(params IEntry[] newEntries) => TryAddToPersistentLevel((IEnumerable<IEntry>)newEntries);
+        private bool TryAddToPersistentLevel(IEnumerable<IEntry> newEntries)
         {
-            if (newEntry is ExportEntry ent && ent.Parent?.ClassName == "Level" && ent.IsOrInheritsFrom("Actor")
-             && Pcc.AddToLevelActorsIfNotThere(ent))
+            ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>().Where(exp => exp.Parent?.ClassName == "Level" && exp.IsOrInheritsFrom("Actor")).ToArray();
+            int num = actorsToAdd.Length;
+            if (num > 0 && Pcc.AddToLevelActorsIfNotThere(actorsToAdd))
             {
-                MessageBox.Show(this, $"Added {ent.ObjectName.Instanced} to PersistentLevel's Actor list!");
+                MessageBox.Show(this, $"Added actor{(num > 1 ? "s" : "")} to PersistentLevel's Actor list:\n{actorsToAdd.Select(exp => exp.ObjectName.Instanced).StringJoin("\n")}");
                 return true;
             }
 
@@ -2686,10 +2683,11 @@ namespace ME3Explorer
                 IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
 
+                int numExports = Pcc.ExportCount;
                 //Import!
                 List<string> relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, shouldRelink, out IEntry newEntry, crossPCCObjectMap);
 
-                TryAddToPersistentLevel(newEntry);
+                TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
                 if (!MultiRelinkingModeActive)
                 {

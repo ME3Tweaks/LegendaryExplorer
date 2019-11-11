@@ -82,20 +82,24 @@ namespace ME3Explorer.Packages
             return import;
         }
 
-        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, ExportEntry actor)
+        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
         {
+            bool added = false;
             if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
-                if (level.Actors.Contains(actor.UIndex))
+                foreach (ExportEntry actor in actors)
                 {
-                    return false;
+                    if (!level.Actors.Contains(actor.UIndex))
+                    {
+                        added = true;
+                        level.Actors.Add(actor.UIndex);
+                    }
                 }
-                level.Actors.Add(actor.UIndex);
                 levelExport.setBinaryData(level.ToBytes(pcc));
-                return true;
             }
-            return false;
+
+            return added;
         }
 
         public static bool RemoveFromLevelActors(this IMEPackage pcc, ExportEntry actor)
