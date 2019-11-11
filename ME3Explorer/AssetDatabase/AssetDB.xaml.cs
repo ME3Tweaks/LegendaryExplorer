@@ -1102,6 +1102,10 @@ namespace ME3Explorer.AssetDatabase
                     showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
                 }
             }
+            if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.EndsWith("(Decal)"))
+            {
+                showthis = false;
+            }
             if (showthis && menu_fltrMatUnlit.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "LightingModel" && x.Item3 == "MLM_Unlit"))
             {
                 showthis = false;
@@ -1374,6 +1378,9 @@ namespace ME3Explorer.AssetDatabase
                     break;
                 case "TalkS":
                     menu_fltrMatTalk.IsChecked = !menu_fltrMatTalk.IsChecked;
+                    break;
+                case "Decal":
+                    menu_fltrMatDecal.IsChecked = !menu_fltrMatDecal.IsChecked;
                     break;
                 case "Skel":
                     if (!menu_fltrSkM.IsChecked)
@@ -2235,7 +2242,7 @@ namespace ME3Explorer.AssetDatabase
 
                         }
 
-                        if (exp.ClassName == "Material" && !pIsdefault)
+                        if ((exp.ClassName == "Material" || exp.ClassName == "DecalMaterial") && !pIsdefault)
                         {
                             string parent = null;
                             if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
@@ -2247,7 +2254,8 @@ namespace ME3Explorer.AssetDatabase
                                 parent = GetTopParentPackage(exp);
                             }
                             bool IsDLC = pcc.IsInOfficialDLC();
-
+                            string matname = pExp;
+                            if(exp.ClassName == "DecalMaterial") { matname = $"{pExp} (Decal)"; }
                             var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
                             if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
                             {
@@ -2262,8 +2270,7 @@ namespace ME3Explorer.AssetDatabase
                                 }
                             }
                         }
-
-                        if (exp.ClassName == "AnimSequence" && !pIsdefault)
+                        else if (exp.ClassName == "AnimSequence" && !pIsdefault)
                         {
                             string aSeq = null;
                             string aGrp = "None";
@@ -2296,8 +2303,7 @@ namespace ME3Explorer.AssetDatabase
                                 }
                             }
                         }
-
-                        if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
+                        else if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
                         {
                             bool IsSkel = exp.ClassName == "SkeletalMesh";
                             int bones = 0;
@@ -2317,8 +2323,7 @@ namespace ME3Explorer.AssetDatabase
 
                             }
                         }
-
-                        if (exp.ClassName == "ParticleSystem" && !pIsdefault)
+                        else if (exp.ClassName == "ParticleSystem" && !pIsdefault)
                         {
                             string parent = null;
                             if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
@@ -2347,8 +2352,7 @@ namespace ME3Explorer.AssetDatabase
                                 }
                             }
                         }
-
-                        if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube" || exp.ClassName == "TextureMovie") && !pIsdefault)
+                        else if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube" || exp.ClassName == "TextureMovie") && !pIsdefault)
                         {
                             bool IsDLC = pcc.IsInOfficialDLC();
                             if(exp.Parent?.ClassName == "TextureCube")
@@ -2405,8 +2409,7 @@ namespace ME3Explorer.AssetDatabase
                                 dbScanner.GeneratedText.TryAdd(pExp, NewTex);
                             }
                         }
-
-                        if (exp.ClassName == "GFxMovieInfo" && !pIsdefault)
+                        else if ((exp.ClassName == "GFxMovieInfo" || exp.ClassName == "BioSWF") && !pIsdefault)
                         {
                             string dataPropName = exp.Game != MEGame.ME1 ? "RawData" : "Data";
                             var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
