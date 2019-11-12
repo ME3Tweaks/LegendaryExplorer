@@ -1102,7 +1102,7 @@ namespace ME3Explorer.AssetDatabase
                     showthis = mr.ParentPackage.ToLower().Contains(FilterBox.Text.ToLower());
                 }
             }
-            if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.EndsWith("(Decal)"))
+            if (showthis && menu_fltrMatDecal.IsChecked && !mr.MaterialName.Contains("Decal"))
             {
                 showthis = false;
             }
@@ -2255,8 +2255,8 @@ namespace ME3Explorer.AssetDatabase
                             }
                             bool IsDLC = pcc.IsInOfficialDLC();
                             string matname = pExp;
-                            if(exp.ClassName == "DecalMaterial") { matname = $"{pExp} (Decal)"; }
-                            var NewMat = new Material(pExp, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
+                            if(exp.ClassName == "DecalMaterial" && !matname.Contains("Decal")) { matname = $"{pExp}_Decal"; }
+                            var NewMat = new Material(matname, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
                             if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
                             {
                                 var eMat = dbScanner.GeneratedMats[pExp];
