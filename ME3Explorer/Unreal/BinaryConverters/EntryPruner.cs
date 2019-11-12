@@ -42,7 +42,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         /// <param name="trashContainer">Container for trash. Pass null if you want to create the trash container from the passed in value.</param>
         /// <param name="packageClass">Package class. Prevents multiple calls to find it</param>
         /// <returns>New trash container, otherwise will be null</returns>
-        public static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, IEntry packageClass)
+        private static ExportEntry TrashEntry(IEntry entry, ExportEntry trashContainer, IEntry packageClass)
         {
             IMEPackage pcc = entry.FileRef;
             if (entry is ImportEntry imp)

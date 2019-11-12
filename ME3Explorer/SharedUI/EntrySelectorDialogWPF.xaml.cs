@@ -74,7 +74,7 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<IEntry> entryPredicate = null) where T : class, IEntry
+        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
         {
             SupportedTypes supportedInputTypes = SupportedTypes.ExportsAndImports;
             if (typeof(T) == typeof(ExportEntry))
@@ -85,7 +85,13 @@ namespace ME3Explorer.SharedUI
             {
                 supportedInputTypes = SupportedTypes.Imports;
             }
-            var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
+
+            Predicate<IEntry> entryPredicate = null;
+            if (predicate != null)
+            {
+                entryPredicate = entry => predicate((T)entry);
+            }
+            using var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
             if (dlg.ShowDialog() == true)
             {
                 return dlg.ChosenEntry as T;

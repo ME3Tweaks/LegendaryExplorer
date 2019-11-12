@@ -19,6 +19,7 @@
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:IsIntEqualConverter x:Key="IsIntEqualConverter"/>
         <Converters:IsIntNotEqualConverter x:Key="IsIntNotEqualConverter"/>
@@ -26,7 +27,12 @@
         <local:EZFilteringActiveConverter x:Key="EZFilteringActiveConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
+            <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" 
+                      ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph." Visibility="{Binding SplineNodeSelected, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+            <MenuItem Header="Create Connection" Click="CreateSplineConnection_Click" ToolTip="Creates a connection to another SplineActor" 
+                      Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <MenuItem Header="Break Connection" Click="BreakSplineConnectionClick" ToolTip="Breaks connection to another SplineActor" 
+                      Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
             <MenuItem Header="Remove from level" Click="RemoveFromLevel_Clicked" ToolTip="Removes this object from the level"/>
             <MenuItem Header="Generate new nav GUID" Click="RegenerateGUID_Clicked" ToolTip="Generates a new GUID for this navigation point. If there are external nodes referencing this node, they will no longer work"/>

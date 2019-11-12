@@ -335,6 +335,22 @@ namespace ME3Explorer
         {
             return src.All(compare.Contains);
         }
+
+        public static bool Remove<T>(this IList<T> list, Predicate<T> predicate)
+        {
+            bool removed = false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (predicate(list[i]))
+                {
+                    list.RemoveAt(i);
+                    i--;
+                    removed = true;
+                }
+            }
+
+            return removed;
+        }
     }
 
     public static class DictionaryExtensions

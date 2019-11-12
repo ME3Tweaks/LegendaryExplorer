@@ -21,11 +21,13 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
+using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using Point = System.Windows.Point;
 
@@ -1439,6 +1441,14 @@ namespace ME3Explorer.Pathfinding_Editor
 
         #endregion
 
+        private bool _splineNodeSelected;
+
+        public bool SplineNodeSelected
+        {
+            get => _splineNodeSelected;
+            set => SetProperty(ref _splineNodeSelected, value);
+        }
+
         /// <summary>
         /// Called from winforms graph
         /// </summary>
@@ -2149,7 +2159,9 @@ namespace ME3Explorer.Pathfinding_Editor
                             //Do a full refresh
                             ExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as ExportEntry;
                             RefreshGraph();
+                            ChangingSelectionByGraphClick = true;
                             ActiveNodes_ListBox.SelectedItem = selectedExport;
+                            ChangingSelectionByGraphClick = false;
                             return;
                         }
 
@@ -2376,6 +2388,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void ActiveNodesList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
+            SplineNodeSelected = false;
             foreach (PathfindingNodeMaster pfm in GraphNodes)
             {
                 pfm.Deselect();
@@ -2510,6 +2523,9 @@ namespace ME3Explorer.Pathfinding_Editor
                             break;
                         case "BioWaypointSet":
                             HighlightBioWaypointSet(selectedNode.export);
+                            break;
+                        case "SplineActor":
+                            SplineNodeSelected = true;
                             break;
                     }
                 }
@@ -3583,6 +3599,93 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     tb.SelectAll();
                 }
+            }
+        }
+
+        private void CreateSplineConnection_Click(object sender, RoutedEventArgs e)
+        {
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry sourceActor && sourceActor.ClassName == "SplineActor")
+            {
+                var sourceAndConnections = new List<int> { sourceActor.UIndex };
+                var connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
+                foreach (StructProperty connection in connections)
+                {
+                    if (connection.GetProp<ObjectProperty>("ConnectTo") is { } connectTo)
+                    {
+                        sourceAndConnections.Add(connectTo.Value);
+                    }
+                }
+                ExportEntry destActor = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select a SplineActor to connect to.", exp => exp.ClassName == "SplineActor" && !sourceAndConnections.Contains(exp.UIndex));
+                if (destActor == null)
+                {
+                    return;
+                }
+
+                var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent");
+                var splineComponent = new ExportEntry(Pcc, new byte[8])
+                {
+                    Class = splineComponentClass,
+                    Parent = sourceActor,
+                    ObjectName = new NameReference("SplineComponent", Pcc.GetNextIndexForName("SplineComponent"))
+                };
+                Pcc.AddExport(splineComponent);
+                connections.Add(new StructProperty("SplineConnection", new PropertyCollection
+                {
+                    new ObjectProperty(splineComponent, "SplineComponent"),
+                    new ObjectProperty(destActor, "ConnectTo")
+                }));
+                sourceActor.WriteProperty(connections);
+                var linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
+                linksFrom.Add(new ObjectProperty(sourceActor));
+                destActor.WriteProperty(linksFrom);
+                ValidationPanel.RecalculateSplineComponents(Pcc);
+            }
+        }
+
+        private void BreakSplineConnectionClick(object sender, RoutedEventArgs e)
+        {
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry sourceActor && sourceActor.ClassName == "SplineActor")
+            {
+                var connectionUIndexes = new List<int>();
+                var connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
+                foreach (StructProperty connection in connections)
+                {
+                    if (connection.GetProp<ObjectProperty>("ConnectTo") is { } connectTo)
+                    {
+                        connectionUIndexes.Add(connectTo.Value);
+                    }
+                }
+
+                if (connectionUIndexes.IsEmpty())
+                {
+                    MessageBox.Show(this, "This SplineActor is not connected to any others!");
+                    return;
+                }
+                ExportEntry destActor = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select a SplineActor to break connection to.", exp => exp.ClassName == "SplineActor" && connectionUIndexes.Contains(exp.UIndex));
+                if (destActor == null)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < connections.Count; i++)
+                {
+                    StructProperty connection = connections[i];
+                    if (connection.GetProp<ObjectProperty>("ConnectTo")?.Value == destActor.UIndex)
+                    {
+                        if (Pcc.TryGetUExport(connection.GetProp<ObjectProperty>("SplineComponent")?.Value ?? 0, out ExportEntry splineComponent))
+                        {
+                            EntryPruner.TrashEntryAndDescendants(splineComponent);
+                        }
+                        connections.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                sourceActor.WriteProperty(connections);
+                ArrayProperty<ObjectProperty> linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
+                linksFrom.Remove(objProp => objProp.Value == sourceActor.UIndex);
+                destActor.WriteProperty(linksFrom);
+                //ValidationPanel.RecalculateSplineComponents(Pcc);
             }
         }
     }
