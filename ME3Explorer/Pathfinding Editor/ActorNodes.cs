@@ -458,7 +458,7 @@ namespace ME3Explorer.ActorNodes
                 var meshObj = smce.GetProperty<ObjectProperty>("StaticMesh");
                 if (meshObj != null)
                 {
-                    ExportEntry sme = pcc.GetUExport(meshObj.Value);
+                    var sme = pcc.GetEntry(meshObj.Value);
                     comment.Text = sme.ObjectName.Instanced;
                 }
             }
