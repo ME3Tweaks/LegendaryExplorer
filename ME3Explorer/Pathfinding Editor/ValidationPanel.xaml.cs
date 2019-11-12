@@ -468,7 +468,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             var pathfindingChain = new List<ExportEntry>();
 
-            byte[] data = PersistentLevel.getBinaryData();
+            byte[] data = PersistentLevel.GetBinaryData();
             int start = 4;
             uint numberofitems = BitConverter.ToUInt32(data, start);
             int countoffset = start;

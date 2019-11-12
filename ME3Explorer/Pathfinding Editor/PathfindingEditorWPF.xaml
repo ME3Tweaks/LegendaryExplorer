@@ -8,9 +8,10 @@
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:fa="http://schemas.fontawesome.com/icons/"
-    xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
-    mc:Ignorable="d"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        mc:Ignorable="d"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -34,7 +35,8 @@
             <MenuItem Header="Break Connection" Click="BreakSplineConnectionClick" ToolTip="Breaks connection to another SplineActor" 
                       Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
-            <MenuItem Header="Remove from level" Click="RemoveFromLevel_Clicked" ToolTip="Removes this object from the level"/>
+            <MenuItem Header="Remove from level" Command="{Binding RemoveFromLevelCommand}" ToolTip="Removes this object from the level"/>
+            <MenuItem Header="Trash and Remove from level" Command="{Binding TrashAndRemoveFromLevelCommand}" ToolTip="Removes this object from the level and Trashes it"/>
             <MenuItem Header="Generate new nav GUID" Click="RegenerateGUID_Clicked" ToolTip="Generates a new GUID for this navigation point. If there are external nodes referencing this node, they will no longer work"/>
 
             <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">

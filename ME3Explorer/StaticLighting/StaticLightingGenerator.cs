@@ -49,7 +49,7 @@ namespace ME3Explorer.StaticLighting
                 {
                     rbBodySetup.RemoveProperty("PhysMaterial");
                 }
-                mesh.setBinaryData(stm.ToBytes(pcc));
+                mesh.SetBinaryData(stm.ToBytes(pcc));
                 IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, out IEntry ent, relinkMap);
                 ExportEntry portedMesh = (ExportEntry)ent;
@@ -61,7 +61,7 @@ namespace ME3Explorer.StaticLighting
                         meshElement.Material = mats.Dequeue();
                     }
                 }
-                portedMesh.setBinaryData(stm.ToBytes(meshPackage));
+                portedMesh.SetBinaryData(stm.ToBytes(meshPackage));
             }
 
             #endregion
@@ -117,7 +117,7 @@ namespace ME3Explorer.StaticLighting
                         newMat.ObjectName = matExp.ObjectName;
                         Material matBin = ObjectBinary.From<Material>(newMat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[]{ norm?.UIndex ?? 0, diff.UIndex };
-                        newMat.setBinaryData(matBin);
+                        newMat.SetBinaryData(matBin);
                         relinkMap[matExp] = newMat;
                         if (newMat.GetProperty<ArrayProperty<ObjectProperty>>("Expressions") is {} expressionsProp && expressionsProp.Count >= 2)
                         {
@@ -209,7 +209,7 @@ namespace ME3Explorer.StaticLighting
                     int smcIndex = 2;
                     foreach (ExportEntry smc in pcc.Exports.Where(exp => exp.ClassName == "StaticMeshComponent"))
                     {
-                        if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex) && parent.IsOrInheritsFrom("StaticMeshActorBase"))
+                        if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex) && parent.IsA("StaticMeshActorBase"))
                         {
                             StructProperty locationProp;
                             StructProperty rotationProp;
@@ -220,7 +220,7 @@ namespace ME3Explorer.StaticLighting
                                 continue;
                             }
 
-                            smc.setBinaryData(emptySMCBin);
+                            smc.SetBinaryData(emptySMCBin);
                             smc.RemoveProperty("bBioIsReceivingDecals");
                             smc.RemoveProperty("bBioForcePrecomputedShadows");
                             //smc.RemoveProperty("bUsePreComputedShadows");
@@ -512,8 +512,8 @@ namespace ME3Explorer.StaticLighting
                 #endregion
 
                 Level level = ObjectBinary.From<Level>(levelExport);
-                level.Actors = levelExport.GetChildren().Where(ent => ent.IsOrInheritsFrom("Actor")).Select(ent => new UIndex(ent.UIndex)).ToList();
-                levelExport.setBinaryData(level);
+                level.Actors = levelExport.GetChildren().Where(ent => ent.IsA("Actor")).Select(ent => new UIndex(ent.UIndex)).ToList();
+                levelExport.SetBinaryData(level);
 
                 udkPackage.Save();
             }
@@ -533,7 +533,7 @@ namespace ME3Explorer.StaticLighting
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor, udkPackage2, levelExport, true, out IEntry result);
                     levelBin.Actors.Add(result.UIndex);
                 }
-                levelExport.setBinaryData(levelBin);
+                levelExport.SetBinaryData(levelBin);
                 udkPackage2.Save(resultFilePath);
             }
             File.Delete(tempPackagePath);

@@ -16,7 +16,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
     {
         public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame)
         {
-            if (export.getBinaryData().Length == 0)
+            if (export.GetBinaryData().Length == 0)
             {
                 return Array.Empty<byte>();
             }
@@ -53,7 +53,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             //no conversion neccesary
-            return export.getBinaryData();
+            return export.GetBinaryData();
         }
 
         public static byte[] ConvertPrePropBinary(ExportEntry export, MEGame newGame)
@@ -119,7 +119,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
         {
-            MemoryStream bin = new MemoryStream(export.getBinaryData());
+            MemoryStream bin = new MemoryStream(export.GetBinaryData());
             if (bin.Length == 0)
             {
                 return bin.ToArray();

@@ -326,7 +326,7 @@ namespace ME3Explorer
                         }
                         break;
                     case "SequenceEditor":
-                        if (exp.IsOrInheritsFrom("SequenceObject"))
+                        if (exp.IsA("SequenceObject"))
                         {
                             new Sequence_Editor.SequenceEditorWPF(exp).Show();
                         }
@@ -361,7 +361,7 @@ namespace ME3Explorer
                     case "Soundplorer":
                         return Soundpanel.CanParseStatic(exp);
                     case "SequenceEditor":
-                        return exp.IsOrInheritsFrom("SequenceObject");
+                        return exp.IsA("SequenceObject");
                     case "InterpViewer":
                         return Pcc.Game == MEGame.ME3 && exp.ClassName == "InterpData";
                 }
@@ -885,7 +885,7 @@ namespace ME3Explorer
                     return;
                 }
 
-                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" && exp.IsOrInheritsFrom("Actor") && Pcc.RemoveFromLevelActors(exp);
+                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" && exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
 
@@ -1421,7 +1421,7 @@ namespace ME3Explorer
         private bool TryAddToPersistentLevel(params IEntry[] newEntries) => TryAddToPersistentLevel((IEnumerable<IEntry>)newEntries);
         private bool TryAddToPersistentLevel(IEnumerable<IEntry> newEntries)
         {
-            ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>().Where(exp => exp.Parent?.ClassName == "Level" && exp.IsOrInheritsFrom("Actor")).ToArray();
+            ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>().Where(exp => exp.Parent?.ClassName == "Level" && exp.IsA("Actor")).ToArray();
             int num = actorsToAdd.Length;
             if (num > 0 && Pcc.AddToLevelActorsIfNotThere(actorsToAdd))
             {
@@ -1453,7 +1453,7 @@ namespace ME3Explorer
                 byte[] data = File.ReadAllBytes(d.FileName);
                 if (binaryOnly)
                 {
-                    export.setBinaryData(data);
+                    export.SetBinaryData(data);
                 }
                 else
                 {
@@ -1482,7 +1482,7 @@ namespace ME3Explorer
             };
             if (d.ShowDialog() == true)
             {
-                File.WriteAllBytes(d.FileName, binaryOnly ? export.getBinaryData() : export.Data);
+                File.WriteAllBytes(d.FileName, binaryOnly ? export.GetBinaryData() : export.Data);
                 MessageBox.Show("Done.");
             }
         }
@@ -3308,7 +3308,7 @@ namespace ME3Explorer
                 {
                     level.Actors.Add(actorExport.UIndex);
                 }
-                targetPersistentLevel.setBinaryData(level.ToBytes(targetPersistentLevel.FileRef));
+                targetPersistentLevel.SetBinaryData(level.ToBytes(targetPersistentLevel.FileRef));
             }
 
 
@@ -4086,11 +4086,11 @@ namespace ME3Explorer
                             obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.ToArray();
 
-                            if (!buff.SequenceEqual(exp.getBinaryData()))
+                            if (!buff.SequenceEqual(exp.GetBinaryData()))
                             {
                                 string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
                                 File.WriteAllBytes(Path.Combine(userFolder, $"converted{className}"), buff);
-                                File.WriteAllBytes(Path.Combine(userFolder, $"original{className}"), exp.getBinaryData());
+                                File.WriteAllBytes(Path.Combine(userFolder, $"original{className}"), exp.GetBinaryData());
                                 interestingExports.Add($"{exp.UIndex}: {filePath}");
                                 return true;
                             }
@@ -4143,7 +4143,7 @@ namespace ME3Explorer
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
-                    var exports = pcc.Exports.Where(exp => exp.IsOrInheritsFrom("DominantSpotLightComponent"));
+                    var exports = pcc.Exports.Where(exp => exp.IsA("DominantSpotLightComponent"));
                     foreach (ExportEntry exp in exports)
                     {
                         try
@@ -4341,7 +4341,7 @@ namespace ME3Explorer
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
         {
             if (Pcc == null) return;
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsOrInheritsFrom("MeshComponent") || exp.IsOrInheritsFrom("BrushComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 && (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false))
@@ -4371,7 +4371,7 @@ namespace ME3Explorer
                 exp.WriteProperties(props);
             }
 
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsOrInheritsFrom("LightComponent")))
+            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("LightComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
                 //props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
@@ -4398,7 +4398,7 @@ namespace ME3Explorer
             ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
             if (terrain != null)
             {
-                byte[] binarydata = terrain.getBinaryData();
+                byte[] binarydata = terrain.GetBinaryData();
                 uint numheights = BitConverter.ToUInt32(binarydata, 0);
                 Random r = new Random();
                 for (uint i = 0; i < numheights; i++)
@@ -4406,7 +4406,7 @@ namespace ME3Explorer
                     binarydata.OverwriteRange((int)(4 + i * 2), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
                 }
 
-                terrain.setBinaryData(binarydata);
+                terrain.SetBinaryData(binarydata);
             }
         }
 
@@ -4521,7 +4521,7 @@ namespace ME3Explorer
 
         private void DumpMaterialShaders()
         {
-            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.IsOrInheritsFrom("MaterialInterface"))
+            if (TryGetSelectedExport(out ExportEntry matExport) && matExport.IsA("MaterialInterface"))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
                 {
@@ -4597,7 +4597,7 @@ namespace ME3Explorer
                     };
                     tempPcc.AddExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
-                    levelExport.setBinaryData(level.ToBytes(tempPcc));
+                    levelExport.SetBinaryData(level.ToBytes(tempPcc));
                 }
 
                 tempPcc.Save();
@@ -4612,11 +4612,11 @@ namespace ME3Explorer
             if (TryGetSelectedExport(out ExportEntry export))
             {
                 PropertyCollection props = export.GetProperties();
-                ObjectBinary bin = ObjectBinary.From(export) ?? export.getBinaryData();
+                ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
                 byte[] original = export.Data;
 
                 export.WriteProperties(props);
-                export.setBinaryData(bin);
+                export.SetBinaryData(bin);
                 byte[] changed = export.Data;
                 if (original.SequenceEqual(changed))
                 {

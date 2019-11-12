@@ -222,7 +222,7 @@ namespace ME3Explorer.Unreal.Classes
             MemoryStream m = new MemoryStream();
             m.WriteInt32(CompressedBlob.Length);
             m.WriteFromBuffer(CompressedBlob);
-            Export.setBinaryData(m.ToArray());
+            Export.SetBinaryData(m.ToArray());
         }
 
     }

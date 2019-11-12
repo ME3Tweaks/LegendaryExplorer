@@ -1338,7 +1338,7 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
                     {
-                        byte[] data = Pcc.GetUExport(wwevents[0].Value).getBinaryData();
+                        byte[] data = Pcc.GetUExport(wwevents[0].Value).GetBinaryData();
                         int binarypos = 4;
                         int count = BitConverter.ToInt32(data, binarypos);
                         if (count > 0)

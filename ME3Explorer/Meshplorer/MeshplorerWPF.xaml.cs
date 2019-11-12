@@ -116,7 +116,7 @@ namespace ME3Explorer
                         {
                             uIndex.value = 0;
                         }
-                        CurrentExport.setBinaryData(objBin.ToBytes(CurrentExport.FileRef));
+                        CurrentExport.SetBinaryData(objBin.ToBytes(CurrentExport.FileRef));
                         CurrentExport.WriteProperties(new PropertyCollection());
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
@@ -158,7 +158,7 @@ namespace ME3Explorer
                                 }
 
                                 newMesh.Materials = originalMesh.Materials.TypedClone();
-                                CurrentExport.setBinaryData(newMesh.ToBytes(Pcc));
+                                CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
                             }
                             else
                             {
@@ -192,7 +192,7 @@ namespace ME3Explorer
                                         }
                                     }
                                 }
-                                CurrentExport.setBinaryData(newMesh.ToBytes(Pcc));
+                                CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
                             }
                             MessageBox.Show(this, "Done!");
                         }
@@ -222,7 +222,7 @@ namespace ME3Explorer
                             {
                                 uIndex.value = 0;
                             }
-                            meshExport.setBinaryData(objBin.ToBytes(udk));
+                            meshExport.SetBinaryData(objBin.ToBytes(udk));
                             meshExport.WriteProperties(new PropertyCollection());
                             var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
                                                                                null, true, out _);
@@ -261,7 +261,7 @@ namespace ME3Explorer
                     new BoolProperty(true, "UseSimpleBoxCollision"),
                     new NoneProperty()
                 });
-                CurrentExport.setBinaryData(stm.ToBytes(Pcc));
+                CurrentExport.SetBinaryData(stm.ToBytes(Pcc));
                 CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
             }
         }

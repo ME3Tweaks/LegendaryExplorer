@@ -21,7 +21,7 @@ namespace ME3Explorer.MaterialViewer
                 {
                     staticParamSetsInFile.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
                 }
-                else if (export.IsOrInheritsFrom("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
+                else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
                 {
                     staticParamSetsInFile.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
@@ -89,7 +89,7 @@ namespace ME3Explorer.MaterialViewer
                 }
             }
 
-            firstShaderCache.setBinaryData(compactedShaderCache);
+            firstShaderCache.SetBinaryData(compactedShaderCache);
         }
     }
 }

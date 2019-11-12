@@ -128,11 +128,11 @@ namespace ME3Explorer
                         }
                     }
 
-                    relinkingExport.setBinaryData(objBin.ToBytes(relinkingExport.FileRef, relinkingExport.DataOffset + relinkingExport.propsEnd()));
+                    relinkingExport.SetBinaryData(objBin.ToBytes(relinkingExport.FileRef, relinkingExport.DataOffset + relinkingExport.propsEnd()));
                     return relinkFailedReport;
                 }
 
-                byte[] binarydata = relinkingExport.getBinaryData();
+                byte[] binarydata = relinkingExport.GetBinaryData();
 
                 if (binarydata.Length > 0)
                 {
@@ -164,7 +164,7 @@ namespace ME3Explorer
                                     relinkAtPosition(4 + (j * 4), $"(Binary Property: WwiseStreams[{j}])");
                                 }
 
-                                relinkingExport.setBinaryData(binarydata);
+                                relinkingExport.SetBinaryData(binarydata);
                             }
                             else if (relinkingExport.FileRef.Game == MEGame.ME2)
                             {
@@ -192,7 +192,7 @@ namespace ME3Explorer
                                     }
                                 }
 
-                                relinkingExport.setBinaryData(binarydata);
+                                relinkingExport.SetBinaryData(binarydata);
                             }
                         }
                             break;

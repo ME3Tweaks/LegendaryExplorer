@@ -589,7 +589,7 @@ namespace ME3Explorer.Packages
             }
 
 
-            if (!IsDefaultObject && this.IsOrInheritsFrom("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
+            if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
             {
                 start += 4; //TemplateOwnerClass
                 if (ParentFullPath.Contains("Default__"))
@@ -638,12 +638,12 @@ namespace ME3Explorer.Packages
             return propsEndOffset.Value;
         }
 
-        public byte[] getBinaryData()
+        public byte[] GetBinaryData()
         {
             return _data.Skip(propsEnd()).ToArray();
         }
 
-        public void setBinaryData(byte[] binaryData)
+        public void SetBinaryData(byte[] binaryData)
         {
             Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
         }

@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
         {
             var t = new T {Export = export};
-            t.Serialize(new SerializingContainer2(new MemoryStream(export.getBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
+            t.Serialize(new SerializingContainer2(new MemoryStream(export.GetBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }
 
@@ -25,7 +25,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return null;
             }
             string className = export.ClassName;
-            if (export.IsOrInheritsFrom("BioPawn"))
+            if (export.IsA("BioPawn"))
             {
                 //way, waaay too many subclasses of BioPawn to put in the switch statement, so we take care of it here
                 className = "BioPawn";

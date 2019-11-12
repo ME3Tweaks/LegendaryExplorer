@@ -125,12 +125,12 @@ namespace ME3Explorer
                                 if (nameSections.Length == 4 && convNames.Contains(fileName + nameSections[2]) && infoDict.TryGetValue(nameSections[3], out wwisestreaminfo info))
                                 {
                                     wwisestream.WriteProperty(new NameProperty(info.FileName, "Filename"));
-                                    byte[] binData = wwisestream.getBinaryData();
+                                    byte[] binData = wwisestream.GetBinaryData();
                                     int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
                                     binData.OverwriteRange(pos, BitConverter.GetBytes(info.Size1));
                                     binData.OverwriteRange(pos + 4, BitConverter.GetBytes(info.Size2));
                                     binData.OverwriteRange(pos + 8, BitConverter.GetBytes(info.Offset));
-                                    wwisestream.setBinaryData(binData);
+                                    wwisestream.SetBinaryData(binData);
                                 }
                             }
                             pcc.Save(Path.Combine(resultsdir, localizedFileName));
@@ -191,7 +191,7 @@ namespace ME3Explorer
                             string[] nameSections = wwisestream.ObjectName.Name.Split(',');
                             if (nameSections.Length == 4 && wwisestream.GetProperty<NameProperty>("Filename")?.Value is NameReference fileName)
                             {
-                                byte[] binData = wwisestream.getBinaryData();
+                                byte[] binData = wwisestream.GetBinaryData();
                                 int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
                                 infoDict[nameSections[3]] = new wwisestreaminfo
                                 {

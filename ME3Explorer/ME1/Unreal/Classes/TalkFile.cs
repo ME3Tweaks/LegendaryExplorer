@@ -206,7 +206,7 @@ namespace ME1Explorer.Unreal.Classes
         {
             if (r == null)
             {
-                r = new BinaryReader(new MemoryStream(pcc.GetUExport(uindex).getBinaryData()), Encoding.Unicode);
+                r = new BinaryReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode);
             }
             //hashtable
             int entryCount = r.ReadInt32();

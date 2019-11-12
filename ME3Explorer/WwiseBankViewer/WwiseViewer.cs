@@ -124,7 +124,7 @@ namespace ME3Explorer.WwiseBankEditor
                 return;
             int index = objects[n];
             bank = new WwiseBank(Pcc.Exports[index]);
-            hb1.ByteProvider = new DynamicByteProvider(bank.export.getBinaryData());
+            hb1.ByteProvider = new DynamicByteProvider(bank.export.GetBinaryData());
             rtb1.Text = bank.GetQuickScan();
             ListRefresh2();
         }

@@ -27,7 +27,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				throw new ArgumentNullException(nameof(export));
 			}
 
-            using (var stream = new MemoryStream(export.getBinaryData()))
+            using (var stream = new MemoryStream(export.GetBinaryData()))
             {
                 return Load(stream);
             }

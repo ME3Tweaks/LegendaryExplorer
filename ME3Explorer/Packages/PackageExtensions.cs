@@ -96,7 +96,7 @@ namespace ME3Explorer.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.setBinaryData(level.ToBytes(pcc));
+                levelExport.SetBinaryData(level.ToBytes(pcc));
             }
 
             return added;
@@ -109,7 +109,7 @@ namespace ME3Explorer.Packages
                 Level level = ObjectBinary.From<Level>(levelExport);
                 if (level.Actors.Remove(actor.UIndex))
                 {
-                    levelExport.setBinaryData(level.ToBytes(pcc));
+                    levelExport.SetBinaryData(level.ToBytes(pcc));
                     return true;
                 }
             }
@@ -133,7 +133,7 @@ namespace ME3Explorer.Packages
                         result.AddToListAt(exp, "Header: ComponentMap");
                     }
 
-                    if ((!exp.IsDefaultObject && exp.IsOrInheritsFrom("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
+                    if ((!exp.IsDefaultObject && exp.IsA("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
                         exp.ParentFullPath.Contains("Default__") && 
                         exp.DataSize >= 12 && BitConverter.ToInt32(exp.Data, 4) is int nameIdx && pcc.IsName(nameIdx) &&
                         pcc.GetNameEntry(nameIdx) == name)
@@ -529,6 +529,8 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static void setBinaryData(this ExportEntry export, ObjectBinary bin) => export.setBinaryData(bin.ToBytes(export.FileRef, export.DataOffset + export.propsEnd()));
+        public static void SetBinaryData(this ExportEntry export, ObjectBinary bin) => export.SetBinaryData(bin.ToBytes(export.FileRef, export.DataOffset + export.propsEnd()));
+
+        public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);
     }
 }

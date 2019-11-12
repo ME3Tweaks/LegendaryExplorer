@@ -160,7 +160,7 @@ namespace ME1Explorer
             }
 
             byte[] buff = m.ToArray();
-            export.setBinaryData(buff);
+            export.SetBinaryData(buff);
             if (savePackage)
             {
                 export.FileRef.Save(export.FileRef.FilePath);

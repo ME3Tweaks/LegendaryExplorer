@@ -513,7 +513,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    fs.WriteFromBuffer(export.getBinaryData());
+                    fs.WriteFromBuffer(export.GetBinaryData());
                     fs.Close();
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
@@ -527,7 +527,7 @@ namespace ME3Explorer.Meshplorer
                 {
                     using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))
                     {
-                        var data = export.getBinaryData();
+                        var data = export.GetBinaryData();
                         fs.Write(data, 0, data.Length);
                     }
 
@@ -570,7 +570,7 @@ namespace ME3Explorer.Meshplorer
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
-                skm.Export.setBinaryData(con.Memory.ToArray());
+                skm.Export.SetBinaryData(con.Memory.ToArray());
 
                 //Old binary setting code
                 //int end = skm.GetPropertyEnd();
@@ -594,7 +594,7 @@ namespace ME3Explorer.Meshplorer
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
                 skm.Serialize(con);
-                skm.Export.setBinaryData(con.Memory.ToArray());
+                skm.Export.SetBinaryData(con.Memory.ToArray());
 
                 //Old binary setting code
                 //int end = skm.GetPropertyEnd();

@@ -18,7 +18,7 @@ namespace ME3Explorer.Unreal
         internal const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
 
         public static List<ClassInfo> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
-            GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsOrInheritsFrom(info.ClassName, baseClassName, game)).ToList();
+            GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsA(info.ClassName, baseClassName, game)).ToList();
 
         public static bool IsImmutable(string structType, MEGame game) =>
             game switch 
@@ -30,10 +30,10 @@ namespace ME3Explorer.Unreal
                 _ => false,
             };
 
-        public static bool IsOrInheritsFrom(this ClassInfo info, string baseClass, MEGame game) => IsOrInheritsFrom(info.ClassName, baseClass, game);
-        public static bool IsOrInheritsFrom(this IEntry entry, string baseClass) => IsOrInheritsFrom(entry.ClassName, baseClass, entry.FileRef.Game);
-        public static bool IsOrInheritsFrom(string className, string baseClass, MEGame game) =>
-            game switch
+        public static bool IsA(this ClassInfo info, string baseClass, MEGame game) => IsA(info.ClassName, baseClass, game);
+        public static bool IsA(this IEntry entry, string baseClass) => IsA(entry.ClassName, baseClass, entry.FileRef.Game);
+        public static bool IsA(string className, string baseClass, MEGame game) =>
+            className == baseClass || game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
                 MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
@@ -785,7 +785,7 @@ namespace ME3Explorer.Unreal
                             {
                                 NewClasses.Add(objectName, generateClassInfo(exportEntry));
                             }
-                            if (UnrealObjectInfo.IsOrInheritsFrom(objectName, "SequenceObject", MEGame.ME3))
+                            if (UnrealObjectInfo.IsA(objectName, "SequenceObject", MEGame.ME3))
                             {
                                 List<string> inputLinks = generateSequenceObjectInfo(i, pcc);
                                 if (!newSequenceObjects.TryGetValue(objectName, out SequenceObjectInfo seqObjInfo))
@@ -803,7 +803,7 @@ namespace ME3Explorer.Unreal
                                 NewStructs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
-                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        else if (exportEntry.IsA("SequenceObject"))
                         {
                             if (!newSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                             {

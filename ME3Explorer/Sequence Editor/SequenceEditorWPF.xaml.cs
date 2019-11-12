@@ -600,11 +600,11 @@ namespace ME3Explorer.Sequence_Editor
                 }
             }
 
-            if (export.IsOrInheritsFrom("SequenceEvent"))
+            if (export.IsA("SequenceEvent"))
             {
                 return new SEvent(export, x, y, graphEditor);
             }
-            else if (export.IsOrInheritsFrom("SequenceVariable"))
+            else if (export.IsA("SequenceVariable"))
             {
                 return new SVar(export, x, y, graphEditor);
             }
@@ -1876,7 +1876,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry exportToAdd)
             {
-                if (!exportToAdd.IsOrInheritsFrom("SequenceObject"))
+                if (!exportToAdd.IsA("SequenceObject"))
                 {
                     MessageBox.Show(this, $"#{exportToAdd.UIndex}: {exportToAdd.ObjectName.Instanced} is not a sequence object.");
                     return;
@@ -1914,7 +1914,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 int uIndex;
                 ExportEntry exportEntry = obj.Export;
-                if (exportEntry.IsOrInheritsFrom("InterpData"))
+                if (exportEntry.IsA("InterpData"))
                 {
                     uIndex = exportEntry.UIndex;
                 }
@@ -2177,6 +2177,6 @@ namespace ME3Explorer.Sequence_Editor
     }
     static class SequenceEditorExtensions
     {
-        public static bool IsSequence(this IEntry entry) => entry.IsOrInheritsFrom("Sequence");
+        public static bool IsSequence(this IEntry entry) => entry.IsA("Sequence");
     }
 }

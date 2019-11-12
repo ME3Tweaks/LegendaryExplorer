@@ -437,7 +437,7 @@ namespace ME2Explorer.Unreal
 
                             }
                         }
-                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        else if (exportEntry.IsA("SequenceObject"))
                         {
                             if (!NewSequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                             {

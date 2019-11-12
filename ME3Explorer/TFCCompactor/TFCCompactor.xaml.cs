@@ -418,7 +418,7 @@ namespace ME3Explorer.TFCCompactor
                                 {
                                     if (TFCsToPullFrom.Contains<string>(tfcNameProperty.Value))
                                     {
-                                        var binary = movietexture.getBinaryData();
+                                        var binary = movietexture.GetBinaryData();
                                         int offset = BitConverter.ToInt32(binary, 12);
                                         string bikfile = $"{tfcNameProperty.Value}_{offset}";
                                         ExportsToBeReplaced.Add((file, movietexture.UIndex, bikfile));
@@ -464,12 +464,12 @@ namespace ME3Explorer.TFCCompactor
                             var expTexMov = package.GetUExport(expRef.Item2);
                             var moviedata = MoviesWrittenToNewTFC[expRef.Item3];
 
-                            var binData = expTexMov.getBinaryData();
+                            var binData = expTexMov.GetBinaryData();
                             binData.OverwriteRange(0, BitConverter.GetBytes(1));
                             binData.OverwriteRange(4, BitConverter.GetBytes(moviedata.Item1)); //Length
                             binData.OverwriteRange(8, BitConverter.GetBytes(moviedata.Item1)); //Length
                             binData.OverwriteRange(12, BitConverter.GetBytes(moviedata.Item2)); //offset
-                            expTexMov.setBinaryData(binData);
+                            expTexMov.SetBinaryData(binData);
 
                             var props = expTexMov.GetProperties();
                             props.AddOrReplaceProp(new NameProperty(tfcName, "TextureFileCacheName"));
@@ -964,7 +964,7 @@ namespace ME3Explorer.TFCCompactor
         private void ExtractBikToFile(ExportEntry export, string destination)
         {
             MemoryStream bikMovie = new MemoryStream();
-            var binary = export.getBinaryData();
+            var binary = export.GetBinaryData();
             int length = BitConverter.ToInt32(binary, 4);
             int offset = BitConverter.ToInt32(binary, 12);
             var tfcprop = export.GetProperty<NameProperty>("TextureFileCacheName");

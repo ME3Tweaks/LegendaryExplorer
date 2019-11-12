@@ -801,7 +801,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             Loaded = true;
             Flags = (int)((ulong)export.ObjectFlags >> 32);
-            MemoryStream m = new MemoryStream(export.getBinaryData());
+            MemoryStream m = new MemoryStream(export.GetBinaryData());
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
             Serialize(Container);

@@ -275,6 +275,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand CheckNetIndexesCommand { get; set; }
         public ICommand LoadOverlayFileCommand { get; set; }
         public ICommand CalculateInterpAgainstTargetPointCommand { get; set; }
+        public ICommand TrashAndRemoveFromLevelCommand { get; set; }
+        public ICommand RemoveFromLevelCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -309,6 +311,69 @@ namespace ME3Explorer.Pathfinding_Editor
             CheckNetIndexesCommand = new GenericCommand(CheckNetIndexes, PackageIsLoaded);
             LoadOverlayFileCommand = new GenericCommand(LoadOverlay, PackageIsLoaded);
             CalculateInterpAgainstTargetPointCommand = new GenericCommand(CalculateInterpStartEndTargetpoint, TargetPointIsSelected);
+            TrashAndRemoveFromLevelCommand = new GenericCommand(TrashAndRemoveFromLevel);
+            RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, CanRemoveFromLevel);
+        }
+
+        private bool CanRemoveFromLevel() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("Actor");
+
+        private void RemoveFromLevel()
+        {
+            ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
+
+            Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
+
+            if (levelBin.Actors.Contains(nodeEntry))
+            {
+                AllowRefresh = false;
+                levelBin.Actors.Remove(nodeEntry);
+                PersistentLevelExport.SetBinaryData(levelBin);
+                AllowRefresh = true;
+                RefreshGraph();
+                MessageBox.Show("Removed item from level.");
+            }
+        }
+
+        private void TrashAndRemoveFromLevel()
+        {
+            ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
+            if (nodeEntry.Parent is ExportEntry parent && (parent.IsA("StaticMeshCollectionActor") || parent.IsA("StaticLightCollectionActor")))
+            {
+                AllowRefresh = false;
+                StaticCollectionActor sca;
+                if (parent.IsA("StaticMeshCollectionActor"))
+                {
+                    sca = parent.GetBinaryData<StaticMeshCollectionActor>();
+                }
+                else
+                {
+                    sca = parent.GetBinaryData<StaticLightCollectionActor>();
+                }
+
+                var components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                int i = components.IndexOf(new ObjectProperty(nodeEntry));
+                components.RemoveAt(i);
+                sca.LocalToWorldTransforms.RemoveAt(i);
+                parent.WriteProperty(components);
+                parent.SetBinaryData(sca);
+                EntryPruner.TrashEntryAndDescendants(nodeEntry);
+                AllowRefresh = true;
+                RefreshGraph();
+            }
+            else
+            {
+                Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
+                if (levelBin.Actors.Contains(nodeEntry))
+                {
+                    AllowRefresh = false;
+                    levelBin.Actors.Remove(nodeEntry);
+                    PersistentLevelExport.SetBinaryData(levelBin);
+                    EntryPruner.TrashEntryAndDescendants(nodeEntry);
+                    AllowRefresh = true;
+                    RefreshGraph();
+                    MessageBox.Show("Removed item from level.");
+                }
+            }
         }
 
         private void CalculateInterpStartEndTargetpoint()
@@ -318,13 +383,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 var movingObject = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select a level object that will be moved along the curve. This will be the starting point.");
                 if (movingObject == null) return;
 
-                ActiveNodes_ListBox.SelectedItem = movingObject as ExportEntry;
+                ActiveNodes_ListBox.SelectedItem = movingObject;
 
-                var interpTrack = (ExportEntry)EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select the interptrackmove data that we will modify for these points.");
+                var interpTrack = EntrySelector.GetEntry<ExportEntry>(this, Pcc, "Select the interptrackmove data that we will modify for these points.");
                 if (interpTrack == null) return;
 
                 var locationTarget = SharedPathfinding.GetLocation(targetpointAnchorEnd);
-                var locationStart = SharedPathfinding.GetLocation(movingObject as ExportEntry);
+                var locationStart = SharedPathfinding.GetLocation(movingObject);
 
                 if (locationStart == null)
                 {
@@ -1399,27 +1464,16 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
 
-        public string CurrentFilteringText
-        {
-            get
+        public string CurrentFilteringText =>
+            ZFilteringMode switch
             {
-                switch (ZFilteringMode)
-                {
-                    case EZFilterIncludeDirection.None:
-                        return "Showing all nodes";
-                    case EZFilterIncludeDirection.Above:
-                        return $"Showing all nodes above Z={ZFilteringValue}";
-                    case EZFilterIncludeDirection.AboveEquals:
-                        return $"Showing all nodes at or above Z={ZFilteringValue}";
-                    case EZFilterIncludeDirection.Below:
-                        return $"Showing all nodes below Z={ZFilteringValue}";
-                    case EZFilterIncludeDirection.BelowEquals:
-                        return $"Showing all nodes at or below Z={ZFilteringValue}";
-                    default:
-                        return "Unknown";
-                }
-            }
-        }
+                EZFilterIncludeDirection.None => "Showing all nodes",
+                EZFilterIncludeDirection.Above => $"Showing all nodes above Z={ZFilteringValue}",
+                EZFilterIncludeDirection.AboveEquals => $"Showing all nodes at or above Z={ZFilteringValue}",
+                EZFilterIncludeDirection.Below => $"Showing all nodes below Z={ZFilteringValue}",
+                EZFilterIncludeDirection.BelowEquals => $"Showing all nodes at or below Z={ZFilteringValue}",
+                _ => "Unknown"
+            };
 
         public string NodeTypeDescriptionText
         {
@@ -2800,10 +2854,10 @@ namespace ME3Explorer.Pathfinding_Editor
         private void SetGraphXY_Clicked(object sender, RoutedEventArgs e)
         {
             //Find node
-            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export && export.IsA("Actor"))
             {
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
-                var currentlocation = SharedPathfinding.GetLocation(export);
+                var currentlocation = SharedPathfinding.GetLocation(export) ?? new Point3D(0,0,0);
                 SharedPathfinding.SetLocation(export, s.GlobalBounds.X, s.GlobalBounds.Y, (float)currentlocation.Z);
                 MessageBox.Show($"Location set to {s.GlobalBounds.X}, { s.GlobalBounds.Y}");
             }
@@ -2859,7 +2913,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 //Add cloned node to persistentlevel
                 var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
                 level.Actors.Add(newNodeEntry.UIndex);
-                PersistentLevelExport.setBinaryData(level);
+                PersistentLevelExport.SetBinaryData(level);
 
                 return newNodeEntry;
             }
@@ -3388,45 +3442,19 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
         {
-            AllowRefresh = false;
             ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
 
-            //Read persistent level binary
-            byte[] data = PersistentLevelExport.Data;
+            Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
 
-            //find start of class binary (end of props)
-            int start = PersistentLevelExport.propsEnd();
-
-            start += 4; //skip export id
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
-
-            start += 12; //skip bioworldinfo, 0;
-
-            int itemcount = 2; //Skip bioworldinfo and class (0) objects
-
-            //if the node we are removing is a pathfinding node, I am not sure if we are supposed to remove inbound reachspecs to it.
-            //This may be something to test to see how game handles reachspecs to nodes not in the level
-            while (itemcount < numberofitems)
+            if (levelBin.Actors.Contains(nodeEntry))
             {
-                //get header.
-                uint itemexportid = BitConverter.ToUInt32(data, start);
-                if (itemexportid == nodeEntry.UIndex)
-                {
-                    data.OverwriteRange(countoffset, BitConverter.GetBytes(numberofitems - 1));
-                    var destarray = new byte[data.Length - 4];
-                    Buffer.BlockCopy(data, 0, destarray, 0, start);
-                    Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
-                    //Debug.WriteLine(data.Length);
-                    //Debug.WriteLine("DA " + destarray.Length);
-                    PersistentLevelExport.Data = destarray;
-                    AllowRefresh = true;
-                    RefreshGraph();
-                    MessageBox.Show("Removed item from level.");
-                    return;
-                }
-                itemcount++;
-                start += 4;
+                AllowRefresh = false;
+                levelBin.Actors.Remove(nodeEntry);
+                PersistentLevelExport.SetBinaryData(levelBin);
+                EntryPruner.TrashEntryAndDescendants(nodeEntry);
+                AllowRefresh = true;
+                RefreshGraph();
+                MessageBox.Show("Removed item from level.");
             }
         }
 

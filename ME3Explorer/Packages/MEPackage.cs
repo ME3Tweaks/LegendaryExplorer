@@ -579,7 +579,7 @@ namespace ME3Explorer.Packages
             if (export.IsTexture())
             {
                 int baseOffset = newDataOffset + export.propsEnd();
-                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                MemoryStream binData = new MemoryStream(export.GetBinaryData());
                 binData.Skip(12);
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
                 for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
@@ -597,7 +597,7 @@ namespace ME3Explorer.Packages
                         binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
                     }
                 }
-                export.setBinaryData(binData.ToArray());
+                export.SetBinaryData(binData.ToArray());
             }
             else if (export.ClassName == "StaticMeshComponent")
             {
@@ -645,20 +645,20 @@ namespace ME3Explorer.Packages
             //update offsets for pcc-stored audio in wwisestreams
             if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
             {
-                byte[] binData = export.getBinaryData();
+                byte[] binData = export.GetBinaryData();
                 if (binData.Length < 44)
                 {
                     return; //¯\_(ツ)_ /¯
                 }
                 binData.OverwriteRange(44, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 48));
-                export.setBinaryData(binData);
+                export.SetBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
             else if (export.ClassName == "WwiseBank")
             {
-                byte[] binData = export.getBinaryData();
+                byte[] binData = export.GetBinaryData();
                 binData.OverwriteRange(20, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 24));
-                export.setBinaryData(binData);
+                export.SetBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
             //else if (export.IsTexture())
@@ -772,21 +772,21 @@ namespace ME3Explorer.Packages
             //update offsets for pcc-stored audio in wwisestreams
             if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
             {
-                byte[] binData = export.getBinaryData();
+                byte[] binData = export.GetBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
-                export.setBinaryData(binData);
+                export.SetBinaryData(binData);
             }
             //update offsets for pcc-stored movies in texturemovies
             else if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
             {
-                byte[] binData = export.getBinaryData();
+                byte[] binData = export.GetBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
                 if (export.Game != MEGame.ME3)
                 {
                     binData.OverwriteRange(24, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
                 }
                 
-                export.setBinaryData(binData);
+                export.SetBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
             //Keeping around just in case I somehow forgot something. -Mgamerz
@@ -1083,7 +1083,7 @@ namespace ME3Explorer.Packages
 
                     var matBin = ObjectBinary.From<Material>(mat);
                     matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
-                    mat.setBinaryData(matBin.ToBytes(this));
+                    mat.SetBinaryData(matBin.ToBytes(this));
                     mat.Class = imports.First(imp => imp.ObjectName == "Material");
                 }
             }
@@ -1127,7 +1127,7 @@ namespace ME3Explorer.Packages
                         }
                     }
                     offsets.Add((int)tfc.Position);
-                    texport.setBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
+                    texport.SetBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
                     texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
                     texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                 }

@@ -443,7 +443,7 @@ namespace ME1Explorer.Unreal
                                 Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                             }
                         }
-                        else if (exportEntry.IsOrInheritsFrom("SequenceObject"))
+                        else if (exportEntry.IsA("SequenceObject"))
                         {
                             if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                             {

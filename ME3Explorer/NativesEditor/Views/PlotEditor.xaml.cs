@@ -99,7 +99,7 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryCodexMap.Save(stream);
 
-                        export.setBinaryData(stream.ToArray());
+                        export.SetBinaryData(stream.ToArray());
                     }
                 }
             }
@@ -116,7 +116,7 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryQuestMap.Save(stream);
 
-                        export.setBinaryData(stream.ToArray());
+                        export.SetBinaryData(stream.ToArray());
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace MassEffect.NativesEditor.Views
 
                         binaryStateEventMap.Save(stream);
 
-                        export.setBinaryData(stream.ToArray());
+                        export.SetBinaryData(stream.ToArray());
                     }
                 }
             }

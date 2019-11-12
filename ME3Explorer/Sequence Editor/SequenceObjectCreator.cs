@@ -95,7 +95,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 defaults.Add(new ArrayProperty<ObjectProperty>("SequenceObjects"));
             }
-            else if (!info.IsOrInheritsFrom(SequenceVariableName, game))
+            else if (!info.IsA(SequenceVariableName, game))
             {
                 ArrayProperty<StructProperty> varLinksProp = null;
                 ArrayProperty<StructProperty> outLinksProp = null;

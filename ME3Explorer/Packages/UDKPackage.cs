@@ -373,7 +373,7 @@ namespace ME3Explorer.Packages
             if (export.IsTexture())
             {
                 int baseOffset = newDataOffset + export.propsEnd();
-                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                MemoryStream binData = new MemoryStream(export.GetBinaryData());
                 binData.Skip(12);
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
                 for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
@@ -394,7 +394,7 @@ namespace ME3Explorer.Packages
 
                 binData.Skip(40);
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
-                export.setBinaryData(binData.ToArray());
+                export.SetBinaryData(binData.ToArray());
             }
         }
     }

@@ -5,12 +5,15 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    public class StaticMeshCollectionActor : ObjectBinary
+    public abstract class StaticCollectionActor : ObjectBinary
     {
         public List<Matrix> LocalToWorldTransforms;
+
+        public abstract string ComponentPropName { get; }
+
         protected override void Serialize(SerializingContainer2 sc)
         {
-            var components = Export.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+            var components = Export.GetProperty<ArrayProperty<ObjectProperty>>(ComponentPropName);
             if (components == null || components.Count == 0)
             {
                 return;
@@ -32,32 +35,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
     }
-    public class StaticLightCollectionActor : ObjectBinary
+
+    public class StaticMeshCollectionActor : StaticCollectionActor
     {
-        public List<Matrix> LocalToWorldTransforms;
-        protected override void Serialize(SerializingContainer2 sc)
-        {
-            var components = Export.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
-            if (components == null || components.Count == 0)
-            {
-                return;
-            }
-
-            if (sc.IsLoading)
-            {
-                LocalToWorldTransforms = new List<Matrix>(components.Count);
-            }
-
-            for (int i = 0; i < components.Count; i++)
-            {
-                Matrix m = i < LocalToWorldTransforms.Count ? LocalToWorldTransforms[i] : Matrix.Identity;
-                sc.Serialize(ref m);
-                if (sc.IsLoading)
-                {
-                    LocalToWorldTransforms.Add(m);
-                }
-            }
-        }
+        public override string ComponentPropName { get; } = "StaticMeshComponents";
+    }
+    public class StaticLightCollectionActor : StaticCollectionActor
+    {
+        public override string ComponentPropName { get; } = "LightComponents";
     }
 }
 namespace ME3Explorer

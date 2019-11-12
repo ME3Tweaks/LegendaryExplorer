@@ -436,7 +436,7 @@ namespace ME3Explorer.PackageEditor
                 }
                 else
                 {
-                    var binary = CurrentLoadedExport.getBinaryData();
+                    var binary = CurrentLoadedExport.GetBinaryData();
                     int length = BitConverter.ToInt32(binary, 4);
                     int offset = BitConverter.ToInt32(binary, 12);
                     if(CurrentLoadedExport.Game != MEGame.ME3)
@@ -624,7 +624,7 @@ namespace ME3Explorer.PackageEditor
                     binData.OverwriteRange(32, bikMovie.ToArray());
                 }
 
-                CurrentLoadedExport.setBinaryData(binData);
+                CurrentLoadedExport.SetBinaryData(binData);
                 var props = CurrentLoadedExport.GetProperties();
                 props.AddOrReplaceProp(new IntProperty(SizeX, "SizeX"));
                 props.AddOrReplaceProp(new IntProperty(SizeY, "SizeY"));
@@ -693,12 +693,12 @@ namespace ME3Explorer.PackageEditor
                     fs.Write(bikarray, 0, biklength);
                 }
 
-                var binData = CurrentLoadedExport.getBinaryData();
+                var binData = CurrentLoadedExport.GetBinaryData();
                 binData.OverwriteRange(0, BitConverter.GetBytes(1));
                 binData.OverwriteRange(4, BitConverter.GetBytes(biklength));
                 binData.OverwriteRange(8, BitConverter.GetBytes(biklength));
                 binData.OverwriteRange(12, BitConverter.GetBytes(bikoffset));
-                CurrentLoadedExport.setBinaryData(binData);
+                CurrentLoadedExport.SetBinaryData(binData);
 
                 var props = CurrentLoadedExport.GetProperties();
                 props.AddOrReplaceProp(new IntProperty(SizeX, "SizeX"));
@@ -879,7 +879,7 @@ namespace ME3Explorer.PackageEditor
                         IsLocallyCached = false;
                         IsExternallyCached = true;
                         byte[] binary = new byte[16];
-                        CurrentLoadedExport.setBinaryData(binary);
+                        CurrentLoadedExport.SetBinaryData(binary);
                     }
                     else //is in existing tfc
                     {
@@ -986,7 +986,7 @@ namespace ME3Explorer.PackageEditor
             IsExternallyCached = true;
 
             byte[] binary = new byte[16]; 
-            CurrentLoadedExport.setBinaryData(binary);
+            CurrentLoadedExport.SetBinaryData(binary);
 
             finished = ImportBiktoCache(tempfilepath, tfcPath);
 
