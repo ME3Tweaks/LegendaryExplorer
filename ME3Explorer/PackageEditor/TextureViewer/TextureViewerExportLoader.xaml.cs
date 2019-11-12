@@ -516,7 +516,7 @@ namespace ME3Explorer
                     //Leave here for future. WE might need this after dealing with double compression
                     //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME3 Uncomp -> ZLib
                     //    mipmap.storageType = StorageTypes.pccZlib;
-                    if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32 && textureCache != null) //Moving texture to store externally.
+                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally.
                         mipmap.storageType = StorageTypes.extZlib;
                 }
                 else if (texture.Export.Game == MEGame.ME2)
@@ -530,7 +530,7 @@ namespace ME3Explorer
                     //Leave here for future. We might neable this after dealing with double compression
                     //if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32) //ME2 Uncomp -> LZO
                     //    mipmap.storageType = StorageTypes.pccLZO;
-                    if (mipmap.storageType == StorageTypes.pccUnc && mipmap.width > 32 && textureCache != null) //Moving texture to store externally.
+                    if (mipmap.storageType == StorageTypes.pccUnc && m < image.mipMaps.Count() - 6 && textureCache != null) //Moving texture to store externally. make sure bottom 6 are pcc stored
                         mipmap.storageType = StorageTypes.extLZO;
                 }
 
@@ -805,54 +805,6 @@ namespace ME3Explorer
                             }
                             continue;
                         }
-                        //{
-                        //    triggerCacheArc = true;
-
-                        //    if (!newTfcFile && oldSpace)
-                        //    {
-                        //        try
-                        //        {
-                        //            using (FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.Write))
-                        //            {
-                        //                Texture.MipMap oldMipmap = texture.getMipmap(mipmap.width, mipmap.height);
-                        //                fs.JumpTo(oldMipmap.dataOffset);
-                        //                mipmap.dataOffset = oldMipmap.dataOffset;
-                        //                fs.WriteFromBuffer(mipmap.newData);
-                        //            }
-                        //        }
-                        //        catch
-                        //        {
-                        //            throw new Exception("Problem with access to TFC file: " + archiveFile);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        try
-                        //        {
-                        //            using (FileStream fs = new FileStream(archiveFile, FileMode.Open, FileAccess.Write))
-                        //            {
-                        //                fs.SeekEnd();
-                        //                mipmap.dataOffset = (uint)fs.Position;
-                        //                fs.WriteFromBuffer(mipmap.newData);
-                        //            }
-                        //        }
-                        //        catch
-                        //        {
-                        //            throw new Exception("Problem with access to TFC file: " + archiveFile);
-                        //        }
-                        //    }
-                        //}
-                        //else
-
-                        //UNSURE WHAT THIS DOES - MIGHT BE IMPORTANT.
-                        //{
-                        //    if ((mipmap.width >= 4 && mod.arcTexture[m].width != mipmap.width) ||
-                        //        (mipmap.height >= 4 && mod.arcTexture[m].height != mipmap.height))
-                        //    {
-                        //        throw new Exception("Dimensions mismatch!");
-                        //    }
-                        //    mipmap.dataOffset = mod.arcTexture[m].dataOffset;
-                        //}
                     }
                 }
                 mipmaps[m] = mipmap;
