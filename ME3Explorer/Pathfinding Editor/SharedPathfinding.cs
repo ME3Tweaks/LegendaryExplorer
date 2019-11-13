@@ -440,12 +440,17 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 var actorCollection = export.Parent as ExportEntry;
                 var collection = GetCollectionItems(actorCollection);
-                var positions = GetCollectionLocationData(actorCollection);
-                var idx = collection.FindIndex(o => o.UIndex == export.UIndex);
-                if(idx >= 0)
+
+                if(!(collection?.IsEmpty() ?? true))
                 {
-                    return new Point3D((double)positions[idx].X, (double)positions[idx].Y, (double)positions[idx].Z);
+                    var positions = GetCollectionLocationData(actorCollection);
+                    var idx = collection.FindIndex(o => o != null && o.UIndex == export.UIndex);
+                    if (idx >= 0)
+                    {
+                        return new Point3D((double)positions[idx].X, (double)positions[idx].Y, (double)positions[idx].Z);
+                    }
                 }
+
             }
             else
             {
