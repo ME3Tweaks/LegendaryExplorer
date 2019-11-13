@@ -456,7 +456,7 @@ namespace ME3Explorer.Packages
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception e) when(!App.IsDebug)
                 {
                     result.AddToListAt(exp, "Exception occured while reading this export!");
                 }

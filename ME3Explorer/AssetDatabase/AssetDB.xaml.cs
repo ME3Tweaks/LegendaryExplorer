@@ -2411,10 +2411,10 @@ namespace ME3Explorer.AssetDatabase
                         }
                         else if ((exp.ClassName == "GFxMovieInfo" || exp.ClassName == "BioSWF") && !pIsdefault)
                         {
-                            string dataPropName = exp.Game != MEGame.ME1 ? "RawData" : "Data";
+                            string dataPropName = exp.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                             var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-                            int datasize = rawData.Count;
-                            var NewGUI = new GUIElement(pExp, datasize, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
+                            int datasize = rawData?.Count ?? 0;
+                            var NewGUI = new GUIElement(pExp, datasize, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
                             if (!dbScanner.GeneratedGUI.TryAdd(pExp, NewGUI))
                             {
                                 var eGUI = dbScanner.GeneratedGUI[pExp];
@@ -2439,7 +2439,7 @@ namespace ME3Explorer.AssetDatabase
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception e) when(!App.IsDebug)
                 {
                     MessageBox.Show($"Exception Bug detected in single file: {exp.FileRef.FilePath} Export:{exp.UIndex}");
                 }

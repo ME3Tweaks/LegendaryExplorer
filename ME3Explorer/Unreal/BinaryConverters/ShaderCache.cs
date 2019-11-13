@@ -65,8 +65,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
             }
             sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
-            int dummy = 0;
-            sc.Serialize(ref dummy);
+            if (sc.Game != MEGame.ME2)
+            {
+                int dummy = 0;
+                sc.Serialize(ref dummy);
+            }
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)
@@ -278,6 +281,9 @@ namespace ME3Explorer
                 sc.Serialize(ref msm.UniformCubeTextureExpressions, Serialize);
                 sc.Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
                 sc.Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
+            }
+            if (sc.Game == MEGame.ME2 || sc.Game == MEGame.ME3)
+            {
                 int platform = 0;
                 sc.Serialize(ref platform);
             }
