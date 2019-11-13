@@ -30,8 +30,8 @@
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" 
                       ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph." Visibility="{Binding SplineNodeSelected, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-            <MenuItem Header="Create Connection" Click="CreateSplineConnection_Click" ToolTip="Creates a connection to another SplineActor" 
-                      Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <MenuItem Header="Create Connection to new SplineActor" Command="{Binding AddNewSplineActorToChainCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Create Connection to existing SplineActor" Click="CreateSplineConnection_Click" Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Break Connection" Click="BreakSplineConnectionClick" ToolTip="Breaks connection to another SplineActor" 
                       Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />

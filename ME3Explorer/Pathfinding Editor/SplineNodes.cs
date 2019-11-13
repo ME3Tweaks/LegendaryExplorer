@@ -246,6 +246,13 @@ namespace ME3Explorer.SplineNodes
                     spline.nodes[i].SetOffset(x, y);
                 }
 
+                if (spline.nodes.Count > 7)
+                {
+                    var directionVector = new Vector2(spline.nodes[7].OffsetX, spline.nodes[7].OffsetY) - new Vector2(spline.nodes[5].OffsetX, spline.nodes[5].OffsetY);
+                    directionVector.Normalize();
+                    spline.nodes[6].Rotation = (float)(Math.Atan2(directionVector.X, -directionVector.Y) * 180 / Math.PI);
+                }
+
                 foreach (PathfindingEditorEdge edge in spline.edges)
                 {
                     PathingGraphEditor.UpdateEdgeStraight(edge);
@@ -300,10 +307,19 @@ namespace ME3Explorer.SplineNodes
 
         public void Draw(PathingGraphEditor g)
         {
-            foreach (InterpCurvePoint<float> reparamTablePoint in ReparamTable.Points)
+            for (int i = 0; i < ReparamTable.Points.Count; i++)
             {
+                InterpCurvePoint<float> reparamTablePoint = ReparamTable.Points[i];
                 (float x, float y, _) = SplineInfo.Eval(reparamTablePoint.OutVal, Vector3.Zero);
-                nodes.Add(new SplineParambleNode(x, y));
+                var node = new SplineParambleNode(x, y, i == 6);
+                nodes.Add(node);
+            }
+
+            if (nodes.Count > 7)
+            {
+                var directionVector = new Vector2(nodes[7].OffsetX, nodes[7].OffsetY) - new Vector2(nodes[5].OffsetX, nodes[5].OffsetY);
+                directionVector.Normalize();
+                nodes[6].RotateBy((float)(Math.Atan2(directionVector.X, -directionVector.Y) * 180 / Math.PI));
             }
 
             AddChildren(nodes);
@@ -348,16 +364,14 @@ namespace ME3Explorer.SplineNodes
         private static readonly Color color = Color.Purple;
 
 
-        public SplineParambleNode(float x, float y)
+        public SplineParambleNode(float x, float y, bool arrow = false)
         {
             const float w = 5;
-            const float h = 5;
-            PPath shape = PPath.CreateRectangle(0, 0, w, h);
+            PPath shape = arrow ? PPath.CreatePolygon(0,0, 3*w,3*w, 0, w, -3*w,3*w) : PPath.CreateRectangle(0, 0, w, w);
             shape.Pen = new Pen(color);
             shape.Brush = new SolidBrush(color);
             shape.Pickable = false;
             AddChild(shape);
-            Bounds = new RectangleF(0, 0, w, h);
             TranslateBy(x, y);
             Pickable = false;
         }

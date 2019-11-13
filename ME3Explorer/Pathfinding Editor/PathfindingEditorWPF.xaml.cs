@@ -277,6 +277,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand CalculateInterpAgainstTargetPointCommand { get; set; }
         public ICommand TrashAndRemoveFromLevelCommand { get; set; }
         public ICommand RemoveFromLevelCommand { get; set; }
+        public ICommand AddNewSplineActorToChainCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -312,10 +313,22 @@ namespace ME3Explorer.Pathfinding_Editor
             LoadOverlayFileCommand = new GenericCommand(LoadOverlay, PackageIsLoaded);
             CalculateInterpAgainstTargetPointCommand = new GenericCommand(CalculateInterpStartEndTargetpoint, TargetPointIsSelected);
             TrashAndRemoveFromLevelCommand = new GenericCommand(TrashAndRemoveFromLevel);
-            RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, CanRemoveFromLevel);
+            RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, IsActorSelected);
+            AddNewSplineActorToChainCommand = new GenericCommand(AddSplineActorToChain, IsSplineActorSelected);
         }
 
-        private bool CanRemoveFromLevel() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("Actor");
+        private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
+
+        private void AddSplineActorToChain()
+        {
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export)
+            {
+                ExportEntry newNode = cloneNode(export);
+                CreateSplineConnection(export, newNode);
+            }
+        }
+
+        private bool IsActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("Actor");
 
         private void RemoveFromLevel()
         {
@@ -2894,26 +2907,38 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (nodeEntry != null)
             {
-
-                ExportEntry newNodeEntry = (ExportEntry)EntryCloner.cloneTree(nodeEntry);
-
-                //empty the pathlist
-                PropertyCollection newExportProps = newNodeEntry.GetProperties();
-                var pathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
-                if (pathList != null && pathList.Count > 0)
+                ExportEntry newNodeEntry;
+                if (nodeEntry.IsA("SplineActor"))
                 {
-                    pathList.Clear();
-                    newNodeEntry.WriteProperties(newExportProps);
+                    newNodeEntry = (ExportEntry)EntryCloner.cloneEntry(nodeEntry);
+                    newNodeEntry.RemoveProperty("Connections");
+                    newNodeEntry.RemoveProperty("LinksFrom");
+                }
+                else
+                {
+                    newNodeEntry = (ExportEntry)EntryCloner.cloneTree(nodeEntry);
                 }
 
-                var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+                if (newNodeEntry.IsA("Actor"))
+                {
+                    //empty the pathlist
+                    PropertyCollection newExportProps = newNodeEntry.GetProperties();
+                    var pathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                    if (pathList != null && pathList.Count > 0)
+                    {
+                        pathList.Clear();
+                        newNodeEntry.WriteProperties(newExportProps);
+                    }
 
-                SharedPathfinding.GenerateNewNavGUID(newNodeEntry);
-                //Add cloned node to persistentlevel
-                var level = Unreal.BinaryConverters.ObjectBinary.From<Unreal.BinaryConverters.Level>(PersistentLevelExport);
-                level.Actors.Add(newNodeEntry.UIndex);
-                PersistentLevelExport.SetBinaryData(level);
+                    var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
+                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+
+                    SharedPathfinding.GenerateNewNavGUID(newNodeEntry);
+                    //Add cloned node to persistentlevel
+                    var level = ObjectBinary.From<Level>(PersistentLevelExport);
+                    level.Actors.Add(newNodeEntry.UIndex);
+                    PersistentLevelExport.SetBinaryData(level);
+                }
 
                 return newNodeEntry;
             }
@@ -3649,25 +3674,31 @@ namespace ME3Explorer.Pathfinding_Editor
                     return;
                 }
 
-                var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent");
-                var splineComponent = new ExportEntry(Pcc, new byte[8])
-                {
-                    Class = splineComponentClass,
-                    Parent = sourceActor,
-                    ObjectName = new NameReference("SplineComponent", Pcc.GetNextIndexForName("SplineComponent"))
-                };
-                Pcc.AddExport(splineComponent);
-                connections.Add(new StructProperty("SplineConnection", new PropertyCollection
-                {
-                    new ObjectProperty(splineComponent, "SplineComponent"),
-                    new ObjectProperty(destActor, "ConnectTo")
-                }));
-                sourceActor.WriteProperty(connections);
-                var linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
-                linksFrom.Add(new ObjectProperty(sourceActor));
-                destActor.WriteProperty(linksFrom);
-                ValidationPanel.RecalculateSplineComponents(Pcc);
+                CreateSplineConnection(sourceActor, destActor);
             }
+        }
+
+        private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
+        {
+            ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
+            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent");
+            var splineComponent = new ExportEntry(Pcc, new byte[8])
+            {
+                Class = splineComponentClass,
+                Parent = sourceActor,
+                ObjectName = new NameReference("SplineComponent", Pcc.GetNextIndexForName("SplineComponent"))
+            };
+            Pcc.AddExport(splineComponent);
+            connections.Add(new StructProperty("SplineConnection", new PropertyCollection
+            {
+                new ObjectProperty(splineComponent, "SplineComponent"),
+                new ObjectProperty(destActor, "ConnectTo")
+            }));
+            sourceActor.WriteProperty(connections);
+            var linksFrom = destActor.GetProperty<ArrayProperty<ObjectProperty>>("LinksFrom") ?? new ArrayProperty<ObjectProperty>("LinksFrom");
+            linksFrom.Add(new ObjectProperty(sourceActor));
+            destActor.WriteProperty(linksFrom);
+            ValidationPanel.RecalculateSplineComponents(Pcc);
         }
 
         private void BreakSplineConnectionClick(object sender, RoutedEventArgs e)
