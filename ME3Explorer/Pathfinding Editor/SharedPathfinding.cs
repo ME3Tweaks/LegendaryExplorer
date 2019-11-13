@@ -436,25 +436,99 @@ namespace ME3Explorer.Pathfinding_Editor
         public static Point3D GetLocation(ExportEntry export)
         {
             float x = 0, y = 0, z = int.MinValue;
-            var prop = export.GetProperty<StructProperty>("location");
-            if (prop != null)
+            if(export.ClassName.Contains("Component") && export.HasParent && export.Parent.ClassName.Contains("CollectionActor"))  //Collection component
             {
-                foreach (var locprop in prop.Properties)
+                var actorCollection = export.Parent as ExportEntry;
+                var collection = GetCollectionItems(actorCollection);
+                var positions = GetCollectionLocationData(actorCollection);
+                var idx = collection.FindIndex(o => o.UIndex == export.UIndex);
+                if(idx >= 0)
                 {
-                    switch (locprop)
+                    return new Point3D((double)positions[idx].X, (double)positions[idx].Y, (double)positions[idx].Z);
+                }
+            }
+            else
+            {
+                var prop = export.GetProperty<StructProperty>("location");
+                if (prop != null)
+                {
+                    foreach (var locprop in prop.Properties)
                     {
-                        case FloatProperty fltProp when fltProp.Name == "X":
-                            x = fltProp;
-                            break;
-                        case FloatProperty fltProp when fltProp.Name == "Y":
-                            y = fltProp;
-                            break;
-                        case FloatProperty fltProp when fltProp.Name == "Z":
-                            z = fltProp;
-                            break;
+                        switch (locprop)
+                        {
+                            case FloatProperty fltProp when fltProp.Name == "X":
+                                x = fltProp;
+                                break;
+                            case FloatProperty fltProp when fltProp.Name == "Y":
+                                y = fltProp;
+                                break;
+                            case FloatProperty fltProp when fltProp.Name == "Z":
+                                z = fltProp;
+                                break;
+                        }
+                    }
+                    return new Point3D(x, y, z);
+                }
+            }
+            return null;
+        }
+
+        public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor, List<ExportEntry> CollectionItems = null)
+        {
+            if (!collectionactor.ClassName.Contains("CollectionActor"))
+                return null;
+
+            if(CollectionItems == null)
+            {
+                CollectionItems = new List<ExportEntry>();
+                CollectionItems.AddRange(GetCollectionItems(collectionactor));
+            }
+
+            byte[] smacData = collectionactor.Data;
+            int binarypos = collectionactor.propsEnd();
+            var positions = new List<Point3D>();
+            foreach (var item in CollectionItems)
+            {
+                if (item != null)
+                {
+                    //Read location and put in position map
+                    int offset = binarypos + 12 * 4;
+                    float x = BitConverter.ToSingle(smacData, offset);
+                    float y = BitConverter.ToSingle(smacData, offset + 4);
+                    float z = BitConverter.ToSingle(smacData, offset + 8);
+                    //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
+                    positions.Add(new Point3D(x, y, z));
+                }
+                else
+                {
+                    positions.Add(new Point3D(float.MinValue, float.MinValue, float.MinValue));
+                }
+                binarypos += 64;
+            }
+            return positions;
+        }
+
+        public static List<ExportEntry> GetCollectionItems(ExportEntry smac)
+        {
+            var collectionItems = new List<ExportEntry>();
+            var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(smac.ClassName == "StaticMeshCollectionActor" ? "StaticMeshComponents" : "LightComponents");
+            if (smacItems != null)
+            {
+                //Read exports...
+                foreach (ObjectProperty obj in smacItems)
+                {
+                    if (obj.Value > 0)
+                    {
+                        ExportEntry item = smac.FileRef.GetUExport(obj.Value);
+                        collectionItems.Add(item);
+                    }
+                    else
+                    {
+                        //this is a blank entry, or an import, somehow.
+                        collectionItems.Add(null);
                     }
                 }
-                return new Point3D(x, y, z);
+                return collectionItems;
             }
             return null;
         }
