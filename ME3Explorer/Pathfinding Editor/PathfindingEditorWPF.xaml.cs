@@ -2565,9 +2565,14 @@ namespace ME3Explorer.Pathfinding_Editor
                         NodePositionY_TextBox.Text = position.Y.ToString();
                         NodePositionZ_TextBox.Text = position.Z.ToString();
                     }
+                    else if (selectedNode is SMAC_ActorNode smc)
+                    {
+                        NodePositionX_TextBox.Text = smc.X.ToString();
+                        NodePositionY_TextBox.Text = smc.Y.ToString();
+                        NodePositionZ_TextBox.Text = smc.Z.ToString();
+                    }
                     else
                     {
-                        //Todo: Looking via SMAC
                         NodePositionX_TextBox.Text = 0.ToString();
                         NodePositionY_TextBox.Text = 0.ToString();
                         NodePositionZ_TextBox.Text = 0.ToString();
@@ -2766,6 +2771,13 @@ namespace ME3Explorer.Pathfinding_Editor
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is ExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
+                //TODO: SetLocation of SMAC/LAC collections via box
+                if(export.ClassName.Contains("Component"))
+                {
+                    MessageBox.Show("Currently you cannot edit collections via this box. Ask on Discord to fix it.");
+                    return;
+                }
+                            
                 SharedPathfinding.SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 s.SetOffset(x, y);
@@ -2982,11 +2994,11 @@ namespace ME3Explorer.Pathfinding_Editor
             /// Retreives a list of position data, in order, of all items. Null items return a point at double.min, double.min
             /// </summary>
             /// <returns></returns>
-            public List<Point> GetLocationData()
+            public List<SharpDX.Vector3> GetLocationData()
             {
                 byte[] smacData = export.Data;
                 int binarypos = export.propsEnd();
-                var positions = new List<Point>();
+                var positions = new List<SharpDX.Vector3>();
                 foreach (var item in CollectionItems)
                 {
                     if (item != null)
@@ -2995,12 +3007,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         int offset = binarypos + 12 * 4;
                         float x = BitConverter.ToSingle(smacData, offset);
                         float y = BitConverter.ToSingle(smacData, offset + 4);
+                        float z = BitConverter.ToSingle(smacData, offset + 8);
                         //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                        positions.Add(new Point(x, y));
+                        positions.Add(new SharpDX.Vector3(x, y, z));
                     }
                     else
                     {
-                        positions.Add(new Point(double.MinValue, double.MinValue));
+                        positions.Add(new SharpDX.Vector3(float.MinValue, float.MinValue, float.MinValue));
                     }
                     binarypos += 64;
                 }
@@ -3101,7 +3114,7 @@ namespace ME3Explorer.Pathfinding_Editor
             StaticMeshCollection smc = (StaticMeshCollection)e.Item;
             if (e.IsSelected)
             {
-                List<Point> locations = smc.GetLocationData();
+                List<SharpDX.Vector3> locations = smc.GetLocationData();
                 for (int i = 0; i < smc.CollectionItems.Count; i++)
                 {
                     var item = smc.CollectionItems[i];
@@ -3109,7 +3122,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (item != null)
                     {
-                        SMAC_ActorNode smac = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor);
+                        SMAC_ActorNode smac = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
                         ActiveNodes.Add(item);
                         GraphNodes.Add(smac);
                         smac.MouseDown += node_MouseDown;

@@ -628,12 +628,16 @@ namespace ME3Explorer.ActorNodes
     //This is technically not a BlockingVolumeNode...
     public class SMAC_ActorNode : ActorNode
     {
+        public float Z;
         private static readonly Color outlinePenColor = Color.FromArgb(0, 255, 0);
         private static readonly PointF[] outlineShape = { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
 
-        public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, float z)
             : base(idx, x, y, p, grapheditor)
         {
+            X = x;
+            Y = y;
+            Z = z;
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
             {
