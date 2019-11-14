@@ -216,6 +216,7 @@ namespace ME3Explorer
                         case "TextureMovie":
                         case "AnimSequence":
                         case "RB_BodySetup":
+                        case "TextureCube":
                         case "FaceFXAsset":
                         case "MorphTarget":
                         case "ShadowMap1D":
