@@ -96,7 +96,6 @@ namespace ME3Explorer.Pathfinding_Editor
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
         public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
-
         public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
         public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
@@ -350,7 +349,8 @@ namespace ME3Explorer.Pathfinding_Editor
         private void TrashAndRemoveFromLevel()
         {
             ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
-            if (nodeEntry.Parent is ExportEntry parent && (parent.IsA("StaticMeshCollectionActor") || parent.IsA("StaticLightCollectionActor")))
+
+            if (nodeEntry?.Parent is ExportEntry parent && (parent.IsA("StaticMeshCollectionActor") || parent.IsA("StaticLightCollectionActor")))
             {
                 AllowRefresh = false;
                 StaticCollectionActor sca;
@@ -371,7 +371,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 parent.SetBinaryData(sca);
                 EntryPruner.TrashEntryAndDescendants(nodeEntry);
                 AllowRefresh = true;
-                RefreshGraph();
+                ActiveNodes_ListBox.SelectedIndex = -1; //Reset selection and will force refresh
             }
             else
             {
@@ -383,7 +383,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     PersistentLevelExport.SetBinaryData(levelBin);
                     EntryPruner.TrashEntryAndDescendants(nodeEntry);
                     AllowRefresh = true;
-                    RefreshGraph();
+                    ActiveNodes_ListBox.SelectedIndex = -1;
                     MessageBox.Show("Removed item from level.");
                 }
             }
@@ -1438,6 +1438,11 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (AllowRefresh)
             {
+                var oldselections = new List<int>();
+                foreach(StaticMeshCollection c in Collections_chkbx.SelectedItems)
+                {
+                    oldselections.Add(c.export.UIndex);
+                }
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 ActiveNodes.ClearEx();
@@ -1448,6 +1453,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 LoadPathingNodesFromLevel();
                 GenerateGraph();
                 graphEditor.Refresh();
+                foreach (var ac in oldselections)
+                {
+                    var smac = StaticMeshCollections.FirstOrDefault(ca => ca.export.UIndex == ac);
+                    if(smac != null)
+                        Collections_chkbx.SelectedItems.Add(smac);
+                }
             }
         }
 
@@ -2565,9 +2576,14 @@ namespace ME3Explorer.Pathfinding_Editor
                         NodePositionY_TextBox.Text = position.Y.ToString();
                         NodePositionZ_TextBox.Text = position.Z.ToString();
                     }
+                    else if (selectedNode is SMAC_ActorNode smc)
+                    {
+                        NodePositionX_TextBox.Text = smc.X.ToString();
+                        NodePositionY_TextBox.Text = smc.Y.ToString();
+                        NodePositionZ_TextBox.Text = smc.Z.ToString();
+                    }
                     else
                     {
-                        //Todo: Looking via SMAC
                         NodePositionX_TextBox.Text = 0.ToString();
                         NodePositionY_TextBox.Text = 0.ToString();
                         NodePositionZ_TextBox.Text = 0.ToString();
@@ -2766,6 +2782,13 @@ namespace ME3Explorer.Pathfinding_Editor
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is ExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
+                //TODO: SetLocation of SMAC/LAC collections via box
+                if(export.ClassName.Contains("Component"))
+                {
+                    MessageBox.Show("Currently you cannot edit collections via this box.");
+                    return;
+                }
+                            
                 SharedPathfinding.SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 s.SetOffset(x, y);
@@ -2958,53 +2981,16 @@ namespace ME3Explorer.Pathfinding_Editor
             public StaticMeshCollection(ExportEntry smac)
             {
                 export = smac;
-                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(export.ClassName == "StaticMeshCollectionActor" ? "StaticMeshComponents" : "LightComponents");
-                if (smacItems != null)
-                {
-                    //Read exports...
-                    foreach (ObjectProperty obj in smacItems)
-                    {
-                        if (obj.Value > 0)
-                        {
-                            ExportEntry item = smac.FileRef.GetUExport(obj.Value);
-                            CollectionItems.Add(item);
-                        }
-                        else
-                        {
-                            //this is a blank entry, or an import, somehow.
-                            CollectionItems.Add(null);
-                        }
-                    }
-                }
+                CollectionItems.AddRange(SharedPathfinding.GetCollectionItems(smac));
             }
 
             /// <summary>
             /// Retreives a list of position data, in order, of all items. Null items return a point at double.min, double.min
             /// </summary>
             /// <returns></returns>
-            public List<Point> GetLocationData()
+            public List<Point3D> GetLocationData()
             {
-                byte[] smacData = export.Data;
-                int binarypos = export.propsEnd();
-                var positions = new List<Point>();
-                foreach (var item in CollectionItems)
-                {
-                    if (item != null)
-                    {
-                        //Read location and put in position map
-                        int offset = binarypos + 12 * 4;
-                        float x = BitConverter.ToSingle(smacData, offset);
-                        float y = BitConverter.ToSingle(smacData, offset + 4);
-                        //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                        positions.Add(new Point(x, y));
-                    }
-                    else
-                    {
-                        positions.Add(new Point(double.MinValue, double.MinValue));
-                    }
-                    binarypos += 64;
-                }
-                return positions;
+                return SharedPathfinding.GetCollectionLocationData(export, CollectionItems);
             }
         }
 
@@ -3101,7 +3087,7 @@ namespace ME3Explorer.Pathfinding_Editor
             StaticMeshCollection smc = (StaticMeshCollection)e.Item;
             if (e.IsSelected)
             {
-                List<Point> locations = smc.GetLocationData();
+                List<Point3D> locations = smc.GetLocationData();
                 for (int i = 0; i < smc.CollectionItems.Count; i++)
                 {
                     var item = smc.CollectionItems[i];
@@ -3109,7 +3095,28 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (item != null)
                     {
-                        SMAC_ActorNode smac = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor);
+                        switch(ZFilteringMode)
+                        {
+                            case EZFilterIncludeDirection.Above:
+                                if (location.Z <= ZFilteringValue)
+                                    continue;
+                                break;
+                            case EZFilterIncludeDirection.AboveEquals:
+                                if (location.Z < ZFilteringValue)
+                                    continue;
+                                break;
+                            case EZFilterIncludeDirection.BelowEquals:
+                                if (location.Z > ZFilteringValue)
+                                    continue;
+                                break;
+                            case EZFilterIncludeDirection.Below:
+                                if (location.Z >= ZFilteringValue)
+                                    continue;
+                                break;
+                            default:
+                                break;
+                        }
+                        SMAC_ActorNode smac = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
                         ActiveNodes.Add(item);
                         GraphNodes.Add(smac);
                         smac.MouseDown += node_MouseDown;
@@ -3126,6 +3133,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphNodes = GraphNodes.Except(graphNodesToRemove).ToList();
                 graphEditor.nodeLayer.RemoveChildren(graphNodesToRemove);
             }
+            
             graphEditor.Refresh();
         }
 
@@ -3170,7 +3178,15 @@ namespace ME3Explorer.Pathfinding_Editor
             if (ActiveNodes_ListBox.SelectedItem is ExportEntry export && newfilter != EZFilterIncludeDirection.None)
             {
                 PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                var currentlocation = SharedPathfinding.GetLocation(export);
+                Point3D currentlocation = new Point3D();
+                if(s is SMAC_ActorNode smc)
+                {
+                    currentlocation = new Point3D(smc.X, smc.Y, smc.Z);
+                }
+                else
+                {
+                    currentlocation = SharedPathfinding.GetLocation(export);
+                }
                 shouldRefresh |= currentlocation.Z == ZFilteringValue;
                 ZFilteringValue = currentlocation.Z;
             }
