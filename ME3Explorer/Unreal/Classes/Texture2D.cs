@@ -52,7 +52,7 @@ namespace ME3Explorer.Unreal.Classes
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
             var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache!= null ? cache.Value : null);
+            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache != null ? cache.Value : null);
             var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
             return Texture2D.GetMipCRC(topmip, format.Value);
         }
@@ -356,11 +356,10 @@ namespace ME3Explorer.Unreal.Classes
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
             {
                 string filename = null;
-                List<string> loadedFiles = MEDirectories.EnumerateGameFiles(mipToLoad.Export.Game, MEDirectories.GamePath(mipToLoad.Export.Game));
+                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game, true, false);
                 if (mipToLoad.Export.Game == MEGame.ME1)
                 {
-                    var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
-                    if (fullPath != null)
+                    if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out var fullPath))
                     {
                         filename = fullPath;
                     }
@@ -379,16 +378,15 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        var tfcs = loadedFiles.Where(x => x.EndsWith(".tfc")).ToList();
-
-                        var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
-                        if (fullPath != null)
                         {
-                            filename = fullPath;
-                        }
-                        else
-                        {
-                            throw new FileNotFoundException($"Externally referenced texture cache not found: {archive}.");
+                            if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out var fullPath))
+                            {
+                                filename = fullPath;
+                            }
+                            else
+                            {
+                                throw new FileNotFoundException($"Externally referenced texture cache not found: {archive}.");
+                            }
                         }
                     }
                 }
@@ -455,7 +453,7 @@ namespace ME3Explorer.Unreal.Classes
             if (textureFormat == "PF_NormalMap_HQ")
             {
                 // only ME1 and ME2
-                return (uint) ~ParallelCRC.Compute(data, 0, data.Length / 2);
+                return (uint)~ParallelCRC.Compute(data, 0, data.Length / 2);
             }
             return (uint)~ParallelCRC.Compute(data);
         }
