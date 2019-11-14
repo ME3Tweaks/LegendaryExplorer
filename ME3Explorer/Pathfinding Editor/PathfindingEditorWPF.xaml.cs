@@ -95,7 +95,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
-        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
+        public ObservableCollectionExtended<CollectionActor> CollectionActors { get; set; } = new ObservableCollectionExtended<CollectionActor>();
         public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
         public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
@@ -1439,7 +1439,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (AllowRefresh)
             {
                 var oldselections = new List<int>();
-                foreach(StaticMeshCollection c in Collections_chkbx.SelectedItems)
+                foreach(CollectionActor c in Collections_chkbx.SelectedItems)
                 {
                     oldselections.Add(c.export.UIndex);
                 }
@@ -1448,14 +1448,14 @@ namespace ME3Explorer.Pathfinding_Editor
                 ActiveNodes.ClearEx();
                 ActiveOverlayNodes.ClearEx();
                 GraphNodes.Clear();
-                StaticMeshCollections.ClearEx();
+                CollectionActors.ClearEx();
                 CombatZones.ClearEx();
                 LoadPathingNodesFromLevel();
                 GenerateGraph();
                 graphEditor.Refresh();
                 foreach (var ac in oldselections)
                 {
-                    var smac = StaticMeshCollections.FirstOrDefault(ca => ca.export.UIndex == ac);
+                    var smac = CollectionActors.FirstOrDefault(ca => ca.export.UIndex == ac);
                     if(smac != null)
                         Collections_chkbx.SelectedItems.Add(smac);
                 }
@@ -1549,7 +1549,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             CurrentFile = null;
             ActiveNodes.ClearEx();
-            StaticMeshCollections.ClearEx();
+            CollectionActors.ClearEx();
             CombatZones.ClearEx();
             StatusText = $"Loading {Path.GetFileName(fileName)}";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -1738,7 +1738,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         if (exportEntry.ClassName == "StaticMeshCollectionActor" || exportEntry.ClassName == "StaticLightCollectionActor")
                         {
-                            StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
+                            CollectionActors.Add(new CollectionActor(exportEntry));
                         }
                         else if (exportEntry.ClassName == "SFXCombatZone" || exportEntry.ClassName == "BioPlaypenVolumeAdditive")
                         {
@@ -2442,7 +2442,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphHost.Dispose();
                 ActiveNodes.ClearEx();
                 CurrentNodeSequenceReferences.ClearEx();
-                StaticMeshCollections.ClearEx();
+                CollectionActors.ClearEx();
                 CombatZones.ClearEx();
                 if (GraphNodes != null)
                 {
@@ -2782,12 +2782,6 @@ namespace ME3Explorer.Pathfinding_Editor
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is ExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
-                //TODO: SetLocation of SMAC/LAC collections via box
-                if(export.ClassName.Contains("Component"))
-                {
-                    MessageBox.Show("Currently you cannot edit collections via this box.");
-                    return;
-                }
                             
                 SharedPathfinding.SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
@@ -2968,20 +2962,28 @@ namespace ME3Explorer.Pathfinding_Editor
             return null;
         }
 
-        [DebuggerDisplay("{export.UIndex} Static Mesh Collection Actor")]
-        public class StaticMeshCollection : NotifyPropertyChangedBase
+        [DebuggerDisplay("{export.UIndex} Collection Actor")]
+        public class CollectionActor : NotifyPropertyChangedBase
         {
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
 
             public List<ExportEntry> CollectionItems = new List<ExportEntry>();
             public ExportEntry export { get; }
-            public string DisplayString => $"{export.UIndex}\t{CollectionItems.Count} items";
+            private string _dtype = "items";
+            public string DisplayString => $"{export.UIndex}\t{CollectionItems.Count} {_dtype}";
 
-            public StaticMeshCollection(ExportEntry smac)
+            public CollectionActorType CollectionType = CollectionActorType.Collection_StaticMeshes;
+
+            public CollectionActor(ExportEntry ac)
             {
-                export = smac;
-                CollectionItems.AddRange(SharedPathfinding.GetCollectionItems(smac));
+                export = ac;
+                if (ac.ClassName == "StaticLightCollectionActor")
+                {
+                    CollectionType = CollectionActorType.Collection_Lights;
+                    _dtype = $"lights";
+                }
+                CollectionItems.AddRange(SharedPathfinding.GetCollectionItems(ac));
             }
 
             /// <summary>
@@ -2991,6 +2993,22 @@ namespace ME3Explorer.Pathfinding_Editor
             public List<Point3D> GetLocationData()
             {
                 return SharedPathfinding.GetCollectionLocationData(export, CollectionItems);
+            }
+
+            /// <summary>
+            /// Sets a component location. Requires component of this collection and new location.
+            /// </summary>
+            /// <returns></returns>
+            public void SetComponentLocation(ExportEntry component, float x, float y, float z)
+            {
+                SharedPathfinding.SetCollectionActorLocation(component, x, y, z, CollectionItems, export);
+            }
+
+            public enum CollectionActorType
+            {
+                Collection_Unknown,
+                Collection_StaticMeshes,
+                Collection_Lights
             }
         }
 
@@ -3081,10 +3099,10 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void StaticMeshCollectionActors_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
+        private void CollectionActors_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
         {
             if (IsReadingLevel) return;
-            StaticMeshCollection smc = (StaticMeshCollection)e.Item;
+            CollectionActor smc = (CollectionActor)e.Item;
             if (e.IsSelected)
             {
                 List<Point3D> locations = smc.GetLocationData();
@@ -3116,11 +3134,21 @@ namespace ME3Explorer.Pathfinding_Editor
                             default:
                                 break;
                         }
-                        SMAC_ActorNode smac = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
+                        ActorNode actorNode = null;
+                        switch(smc.CollectionType)
+                        {
+                            case CollectionActor.CollectionActorType.Collection_Lights:
+                                actorNode = new LAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
+                                break;
+                            default:
+                                actorNode = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
+                                break;
+                        }
+  
                         ActiveNodes.Add(item);
-                        GraphNodes.Add(smac);
-                        smac.MouseDown += node_MouseDown;
-                        graphEditor.addNode(smac);
+                        GraphNodes.Add(actorNode);
+                        actorNode.MouseDown += node_MouseDown;
+                        graphEditor.addNode(actorNode);
                     }
                 }
             }

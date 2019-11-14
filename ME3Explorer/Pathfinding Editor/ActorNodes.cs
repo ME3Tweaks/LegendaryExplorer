@@ -649,7 +649,39 @@ namespace ME3Explorer.ActorNodes
                 }
                 comment.Text = text + meshexp.ObjectName.Instanced;
             }
+            else
+            {
+                string text = comment.Text;
+                if (text != "")
+                {
+                    text += "\n";
+                }
+                comment.Text = text + export.ObjectName.Instanced;
+            }
         }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class LAC_ActorNode : SMAC_ActorNode
+    {
+        public float Z;
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static readonly PointF[] outlineShape = { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
+
+        public LAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, float z)
+            : base(idx, x, y, p, grapheditor, z)
+        {
+            string text = comment.Text;
+            if (text != "")
+            {
+                text += "\n";
+            }
+            comment.Text = text + export.ObjectName.Instanced;
+        }
+
         public override Color GetDefaultShapeColor() => outlinePenColor;
 
         public override PointF[] GetDefaultShapePoints() => outlineShape;

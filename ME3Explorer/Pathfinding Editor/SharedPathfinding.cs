@@ -475,7 +475,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     return new Point3D(x, y, z);
                 }
             }
-            return null;
+            return new Point3D(double.MinValue, double.MinValue, double.MinValue);
         }
 
         public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor, List<ExportEntry> CollectionItems = null)
@@ -540,7 +540,14 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "location"));
+            if(export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorLocation(export, x, y, z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "location"));
+            }
         }
 
         public static void SetLocation(StructProperty prop, float x, float y, float z)
@@ -549,6 +556,37 @@ namespace ME3Explorer.Pathfinding_Editor
             prop.GetProp<FloatProperty>("Y").Value = y;
             prop.GetProp<FloatProperty>("Z").Value = z;
         }
+
+        public static void SetCollectionActorLocation(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if(collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
+
+            if(collectionitems == null)
+            {
+                collectionitems = GetCollectionItems(collectionactor);
+            }
+
+            if (!(collectionitems?.IsEmpty() ?? true))
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    byte[] colldata = collectionactor.GetBinaryData();
+                    int offset = idx * 64 + 12 * 4;
+
+                    colldata.OverwriteRange(offset, BitConverter.GetBytes(x));
+                    colldata.OverwriteRange(offset + 4, BitConverter.GetBytes(y));
+                    colldata.OverwriteRange(offset + 8, BitConverter.GetBytes(z));
+                    collectionactor.SetBinaryData(colldata);
+                }
+            }
+        }
+
     }
 
     public class UnrealGUID
