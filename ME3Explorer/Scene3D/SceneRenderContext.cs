@@ -120,14 +120,18 @@ namespace ME3Explorer.Scene3D
         public void RenderScene()
         {
             // Clear the color and depth buffers
-            ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
-            ImmediateContext.ClearRenderTargetView(BackBufferView, BackgroundColor);
+            if (DepthBufferView != null && BackBufferView != null)
+            {
+                ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
+                ImmediateContext.ClearRenderTargetView(BackBufferView, BackgroundColor);
 
-            // Do whatever a derived class wants
-            OnRender();
 
-            // Do whatever event handlers want
-            Render?.Invoke(null, null);
+                // Do whatever a derived class wants
+                OnRender();
+
+                // Do whatever event handlers want
+                Render?.Invoke(null, null);
+            }
         }
 
         protected virtual void OnRender()
