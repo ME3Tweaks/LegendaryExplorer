@@ -122,6 +122,7 @@
                     <MenuItem Header="SFXBlockingVolume_Ledge" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXBlockingVolume_Ledges}" StaysOpenOnClick="True" ToolTip="Shows ledge SFXBlockingVolumes as top down polygons of their brush"/>
                     <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Shows SFXCombatZones as top down polygons of their brush"/>
                     <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Shows WwiseAudioVolumes as top down polygons of their brush"/>
+                    <MenuItem Header="Other Volumes" Command="{Binding ShowGenericVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_GenericVolumes}" StaysOpenOnClick="True" ToolTip="Shows other generic volumes as top down polygons of their brush"/>
                 </MenuItem>
                 <MenuItem Header="Show node sizes" Name="ShowNodeSizes_MenuItem"  Command="{Binding ShowNodeSizesCommand}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PathfindingEditorShowNodeSizes, Mode=TwoWay}" StaysOpenOnClick="True" ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks."/>
             </MenuItem>
@@ -133,6 +134,7 @@
                 <MenuItem Header="Check all NetIndexes" Command="{Binding CheckNetIndexesCommand}"/>
                 <MenuItem Header="Load overlay file" Command="{Binding LoadOverlayFileCommand}"/>
                 <MenuItem Header="Calculate Interp Start and End against anchored Targetpoint" Command="{Binding CalculateInterpAgainstTargetPointCommand}"/>
+                <MenuItem Header="Show Experimental Level Tools" Command="{Binding ToggleArtToolsCommand}" IsCheckable="True" IsChecked="{Binding ShowArtTools}"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -174,6 +176,7 @@
 
                 </StackPanel>
 
+                <!-- Pathfinding Tools-->
                 <TabControl Name="PathfindingNodeTabControl">
                     <TabItem Name="ReachSpecs_TabItem" Header="ReachSpecs">
                         <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
@@ -240,6 +243,44 @@
                     </TabItem>
                     <TabItem Name="ValidationPanel_Tab" Header="Validation">
                         <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
+                    </TabItem>
+                    <!-- Art Tools-->
+                    <TabItem Name="LevelTools_Tab" Header="Level Tools" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel Margin="3">
+                            <TextBlock Text="Experimental Tools for editing levels" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Warning use at own risk. Make Backups." Foreground="Red" HorizontalAlignment="Center"/>
+                            <Separator/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Name="LightingToolsControl">
+                                    <TextBlock Text="Lighting Tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
+                                    <TextBlock Text="Change every light in the level (static and dynamic)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
+                                    <DockPanel Margin="3,5" ToolTip="Overwrite the Red channel of all lights with another channel.">
+                                        <CheckBox Content="Ignore switch if light is already Red" IsChecked="{Binding SwitchIgnoreRed}" DockPanel.Dock="Bottom"/>
+                                        <TextBlock Text="Switch Red Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchRedTo}" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+                                    <DockPanel Margin="3,5" ToolTip="Overwrite the Green channel of all lights with another channel.">
+                                        <CheckBox Content="Ignore switch if light is already Green" IsChecked="{Binding SwitchIgnoreGreen}" DockPanel.Dock="Bottom"/>
+                                        <TextBlock Text="Switch Green Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchGreenTo}" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+                                    <DockPanel Margin="3,5" ToolTip="Overwrite the Blue channel of all lights with another channel.">
+                                        <CheckBox Content="Ignore switch if light is already Blue" IsChecked="{Binding SwitchIgnoreBlue}" DockPanel.Dock="Bottom"/>
+                                        <TextBlock Text="Switch Blue Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchBlueTo}" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+                                    <DockPanel ToolTip="Adjust the brightness of all lights. Use a percentage difference to existing brightness">
+                                        <TextBlock Text="Adjust lighting brightness (%+/-)"/>
+                                        <!--<xctk:DecimalUpDown Value="{Binding BrightnessAdjustment}" Minimum="-100" Maximum="100"/>-->
+                                    </DockPanel>
+                                </StackPanel>
+                            </Grid>
+                            <Button Content="Execute Lighting Changes" Command="{Binding EditLevelLightingCommand}" Margin="5"/>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
             </DockPanel>

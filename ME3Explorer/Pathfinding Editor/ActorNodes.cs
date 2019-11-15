@@ -635,8 +635,6 @@ namespace ME3Explorer.ActorNodes
         public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, float z)
             : base(idx, x, y, p, grapheditor)
         {
-            X = x;
-            Y = y;
             Z = z;
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
@@ -862,7 +860,7 @@ namespace ME3Explorer.ActorNodes
     {
         private static readonly Color outlinePenColor = Color.FromArgb(156, 0, 156);
         private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(0, 128, 0));
-        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 30), new PointF(35, 50), new PointF(0, 50) };
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 35), new PointF(35, 50), new PointF(0, 50) };
 
         public DecalActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor, drawRotationLine: false)

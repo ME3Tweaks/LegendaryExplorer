@@ -63,14 +63,14 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static string[] actorNodeClasses =
         {
-            "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "PhysicsVolume",
+            "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "PhysicsVolume", "SFXKillRagdollVolume",
             "SFXMedkit", "SFXMedStation", "SFXArmorNode", "SFXTreasureNode", "SFXPointOfInterest", "SFXWeaponFactory",
             "InterpActor", "KActor", "SFXKActor", "SFXDoor", 
             "TargetPoint", "Note", "BioMapNote", "BioStartLocation", "BioStartLocationMP",
             "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXPlaceable_RachniEgg", "SFXPlaceable_RottenRachniEgg", "SFXPlaceable_GethTripMine", "SFXPlaceable_Generic", "SFXPlaceable_CerberusShield", "SFXPlaceable_IndoctrinationDevice",
             "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer",
             "SFXStuntActor", "BioPawn",
-            "PointLightToggleable", "SpotLightToggleable", "DirectionalLightToggleable", "SkyLightToggleable",
+            "PointLightToggleable", "PointLightMovable", "SpotLightToggleable", "DirectionalLightToggleable", "SkyLightToggleable",
             "SkeletalMeshActor",  "SkeletalMeshCinematicActor", "SkeletalMeshActorMAT", "SFXSkeletalMeshActor",  "SFXSkeletalMeshCinematicActor", "SFXSkeletalMeshActorMAT",
             "SFXOperation_ObjectiveSpawnPoint"
         };
@@ -80,7 +80,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public static string[] artNodeClasses =
         {
             "StaticMeshActor", "StaticMeshCollectionActor","StaticLightCollectionActor",
-            "PointLight", "SpotLight", "LightVolume", "LensFlareSource", "LightMassImportanceVolume", "DirectionalLight", "SkyLight",
+            "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource",
+            "PostProcessVolume", "LightVolume", "LightMassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
             "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnviromentVolume", "WwiseMusicVolume"
@@ -141,6 +142,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool _showVolumes_SFXBlockingVolume_Ledges;
         private bool _showVolumes_SFXCombatZones;
         private bool _showVolumes_WwiseAudioVolumes;
+        private bool _showVolumes_GenericVolumes;
         private bool _showSeqeunceReferences;
 
         public bool ShowSequenceReferences
@@ -190,7 +192,11 @@ namespace ME3Explorer.Pathfinding_Editor
             get => _showVolumes_WwiseAudioVolumes;
             set => SetProperty(ref _showVolumes_WwiseAudioVolumes, value);
         }
-
+        public bool ShowVolumes_GenericVolumes
+        {
+            get => _showVolumes_GenericVolumes;
+            set => SetProperty(ref _showVolumes_GenericVolumes, value);
+        }
         private bool _showActorsLayer;
         private bool _showSplinesLayer;
         private bool _showPathfindingNodesLayer = true;
@@ -245,7 +251,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ShowBioTriggerStreamsCommand { get; set; }
         public ICommand ShowBlockingVolumesCommand { get; set; }
         public ICommand ShowDynamicBlockingVolumesCommand { get; set; }
-
+        public ICommand ShowGenericVolumesCommand { get; set; }
         public ICommand ShowSFXBlockingVolumeLedgesCommand { get; set; }
         public ICommand ShowSFXCombatZonesCommand { get; set; }
         public ICommand ShowWwiseAudioVolumesCommand { get; set; }
@@ -262,6 +268,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand TrashAndRemoveFromLevelCommand { get; set; }
         public ICommand RemoveFromLevelCommand { get; set; }
         public ICommand AddNewSplineActorToChainCommand { get; set; }
+        public ICommand EditLevelLightingCommand { get; set; }
+
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -285,7 +293,8 @@ namespace ME3Explorer.Pathfinding_Editor
             ShowSFXBlockingVolumeLedgesCommand = new GenericCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
             ShowSFXCombatZonesCommand = new GenericCommand(ShowSFXCombatZones, PackageIsLoaded);
             ShowWwiseAudioVolumesCommand = new GenericCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
-
+            ShowGenericVolumesCommand = new GenericCommand(ShowGenericVolumes, PackageIsLoaded);
+            
             FlipLevelCommand = new GenericCommand(FlipLevel, PackageIsLoaded);
             BuildPathfindingChainCommand = new GenericCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
 
@@ -301,8 +310,9 @@ namespace ME3Explorer.Pathfinding_Editor
             TrashAndRemoveFromLevelCommand = new GenericCommand(TrashAndRemoveFromLevel);
             RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, IsActorSelected);
             AddNewSplineActorToChainCommand = new GenericCommand(AddSplineActorToChain, IsSplineActorSelected);
+            EditLevelLightingCommand = new GenericCommand(EditLevelLighting, PackageIsLoaded);
         }
-        
+
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
 
         private bool IsActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("Actor");
@@ -318,6 +328,15 @@ namespace ME3Explorer.Pathfinding_Editor
             Properties.Settings.Default.PathfindingEditorShowNodeSizes = ShowNodeSizes_MenuItem.IsChecked;
             Properties.Settings.Default.Save();
             RefreshGraph();
+        }
+
+        private void ShowGenericVolumes()
+        {
+            foreach (var node in GraphNodes.OfType<GenericVolumeNode>())
+            {
+                node.SetShape(ShowVolumes_GenericVolumes);
+            }
+            graphEditor.Refresh();
         }
         private void ShowWwiseAudioVolumes()
         {
@@ -1306,10 +1325,12 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "SpotLightToggleable":
                     case "PointLightToggleable":
+                    case "PointLightMovable":
                     case "DirectionalLightToggleable":
                     case "SkyLightToggleable":
                         actorNode = new LightActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
+                    case "SFXKillRagdollVolume":
                     case "PhysicsVolume":
                     case "DynamicPhysicsVolume":
                         actorNode = new GenericVolumeNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
@@ -1400,8 +1421,11 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "DecalActor":
                         artNode = new DecalActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
+                    case "PostProcessVolume":
                     case "LightVolume":
                     case "LightMassImportanceVolume":
+                    case "FogVolumeHalfspaceDensityInfo":
+                    case "FogVolumeSphericalDensityInfo":
                         artNode = new GenericVolumeNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAmbientSound":
@@ -1425,7 +1449,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphNodes.Add(artNode);
                 return new PointF(x, y);
             }
-
 
             if (splineNodeClasses.Contains(exportToLoad.ClassName))
             {
@@ -3940,6 +3963,121 @@ namespace ME3Explorer.Pathfinding_Editor
             return ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.ClassName == "TargetPoint";
         }
 
+        #endregion
+
+        #region ArtLevelTools
+        private bool _showArtTools;
+        public bool ShowArtTools { get => _showArtTools; set => SetProperty(ref _showArtTools, value); }
+        public ObservableCollectionExtended<LightChannel> rgbChannels { get; } = new ObservableCollectionExtended<LightChannel>() { LightChannel.Red, LightChannel.Green, LightChannel.Blue };
+        public enum LightChannel
+        {
+            Red,
+            Green,
+            Blue
+        }
+        private LightChannel _switchRedTo = LightChannel.Red;
+        public LightChannel SwitchRedTo { get => _switchRedTo; set => SetProperty(ref _switchRedTo, value); }
+        private bool _switchIgnoreRed;
+        public bool SwitchIgnoreRed { get => _switchIgnoreRed; set => SetProperty(ref _switchIgnoreRed, value); }
+
+        private LightChannel _switchGreenTo = LightChannel.Green;
+        public LightChannel SwitchGreenTo { get => _switchGreenTo; set => SetProperty(ref _switchGreenTo, value); }
+        private bool _switchIgnoreGreen;
+        public bool SwitchIgnoreGreen { get => _switchIgnoreGreen; set => SetProperty(ref _switchIgnoreGreen, value); }
+
+        private LightChannel _switchBlueTo = LightChannel.Blue;
+        public LightChannel SwitchBlueTo { get => _switchBlueTo; set => SetProperty(ref _switchBlueTo, value); }
+        private bool _switchIgnoreBlue;
+        public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
+
+        private void EditLevelLighting()
+        {
+            var dlg = MessageBox.Show("Warning: Please confirm you wish to change the lighting for all the lights in the level.\nMake sure you have backups.", "Experimental Tools", MessageBoxButton.OKCancel);
+            if (dlg == MessageBoxResult.Cancel)
+                return;
+            List<string> LightComponentClasses = new List<string>() { "PointLightComponent", "SpotLightComponent", "SkyLightComponent", "DirectionalLightComponent" };
+            int n = 0;
+            List<ExportEntry> AllLightComponents = Pcc.Exports.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
+            foreach(var exp in AllLightComponents)
+            {
+                float oldred = 0;
+                float oldgreen = 0;
+                float oldblue = 0;
+                float newred = oldred;
+                float newgreen = oldgreen;
+                float newblue = oldblue;
+                var colorprop = exp.GetProperty<StructProperty>("LightColor");
+                if (colorprop != null && colorprop.IsImmutable)
+                {
+                    foreach (var clrs in colorprop.Properties)
+                    {
+                        switch (clrs)
+                        {
+                            case ByteProperty fltProp when clrs.Name == "R":
+                                oldred = float.Parse(fltProp.Value.ToString());
+                                break;
+                            case ByteProperty fltProp when clrs.Name == "G":
+                                oldgreen = float.Parse(fltProp.Value.ToString()); 
+                                break;
+                            case ByteProperty fltProp when clrs.Name == "B":
+                                oldblue = float.Parse(fltProp.Value.ToString()); 
+                                break;
+                        }
+                    }
+                }
+
+                if ((SwitchIgnoreRed && oldred > oldgreen && oldred > oldblue) ||
+                    (SwitchIgnoreGreen && oldgreen > oldred && oldgreen > oldblue) ||
+                    (SwitchIgnoreBlue && oldblue < oldred && oldblue < oldgreen))
+                {
+                    continue;
+                }
+
+                switch (SwitchRedTo)
+                {
+                    case LightChannel.Red:
+                        break;
+                    case LightChannel.Green:
+                        newred = oldgreen;
+                        break;
+                    case LightChannel.Blue:
+                        newred = oldblue;
+                        break;
+                }
+                switch (SwitchBlueTo)
+                {
+                    case LightChannel.Red:
+                        newblue = oldred;
+                        break;
+                    case LightChannel.Green:
+                        newblue = oldgreen;
+                        break;
+                    case LightChannel.Blue:
+                        break;
+                }
+                switch (SwitchGreenTo)
+                {
+                    case LightChannel.Red:
+                        newgreen = oldred;
+                        break;
+                    case LightChannel.Green:
+                        break;
+                    case LightChannel.Blue:
+                        newgreen = oldblue;
+                        break;
+                }
+                if (!(oldblue == newblue && oldgreen == newgreen && oldred == newred))
+                {
+                    n++;
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newblue.ToString()), "B"));
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newgreen.ToString()), "G"));
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newred.ToString()), "R"));
+                    exp.WriteProperty(colorprop);
+                }
+            }
+
+            MessageBox.Show($"{n} LightComponents adjusted.");
+        }
         #endregion
     }
 }
