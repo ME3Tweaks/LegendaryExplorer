@@ -862,8 +862,7 @@ namespace ME3Explorer.ActorNodes
     {
         private static readonly Color outlinePenColor = Color.FromArgb(156, 0, 156);
         private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(0, 128, 0));
-        private static readonly PointF[] outlineShape = { new PointF(15, 0), new PointF(35, 0), new PointF(50, 25), new PointF(35, 50), new PointF(15, 50), new PointF(0, 25) };
-
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 30), new PointF(35, 50), new PointF(0, 50) };
 
         public DecalActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor, drawRotationLine: false)
@@ -920,7 +919,7 @@ namespace ME3Explorer.ActorNodes
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(25, 50) };
 
         public GenericVolumeNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: false)
         {
             string text = comment.Text;
             if (text != "")

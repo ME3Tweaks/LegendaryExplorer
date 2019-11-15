@@ -301,14 +301,16 @@
                                 </TextBlock.LayoutTransform>
                             </TextBlock>
                         </Expander.Header>
-                        <StackPanel Background="White"  Margin="0,3,4,3">
-                            <TextBlock Text="Actor Collections" Margin="5,5,5,0" FontWeight="Bold" TextAlignment="Center"/>
-                            <TextBlock Text="Select items to show items in that collection" Foreground="Gray" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
-                            <xctk:CheckListBox x:Name="Collections_chkbx" MinHeight="70" ItemsSource="{Binding CollectionActors}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CollectionActors_ItemSelectionChanged"/>
-                            <TextBlock Text="Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
-                            <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
-                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="DisplayActive" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
-                        </StackPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,3,4,3">
+                            <StackPanel Background="White">
+                                <TextBlock Text="Actor Collections" Margin="5,5,5,0" FontWeight="Bold" TextAlignment="Center"/>
+                                <TextBlock Text="Select items to show actors in that collection" Foreground="Gray" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
+                                <xctk:CheckListBox x:Name="Collections_chkbx" MinHeight="70" ItemsSource="{Binding CollectionActors}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CollectionActors_ItemSelectionChanged"/>
+                                <TextBlock Text="Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
+                                <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
+                                <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="DisplayActive" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Expander>
                     <!--<DockPanel>-->
                     <!-- Control to use if there are items.-->
