@@ -445,10 +445,10 @@ namespace ME3Explorer.ActorNodes
     public class StaticMeshActorNode : ActorNode
     {
         private static readonly Color outlinePenColor = Color.FromArgb(34, 218, 218);
-        private static readonly PointF[] outlineShape = { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50), new PointF(25, 30) };
+        private static readonly PointF[] outlineShape = { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
 
         public StaticMeshActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             ObjectProperty smc = export.GetProperty<ObjectProperty>("StaticMeshComponent");
             if (smc != null)
@@ -610,7 +610,7 @@ namespace ME3Explorer.ActorNodes
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
 
-    public class InterpActorNode : ActorNode
+    public class InterpActorNode : StaticMeshActorNode
     {
         private static readonly Color outlinePenColor = Color.FromArgb(0, 130, 255);
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(35, 10), new PointF(35, 40), new PointF(50, 40), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(10, 40), new PointF(10, 10), new PointF(0, 10) };
@@ -674,12 +674,6 @@ namespace ME3Explorer.ActorNodes
         public LAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, float z)
             : base(idx, x, y, p, grapheditor, z)
         {
-            string text = comment.Text;
-            if (text != "")
-            {
-                text += "\n";
-            }
-            comment.Text = text + export.ObjectName.Instanced;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -799,6 +793,141 @@ namespace ME3Explorer.ActorNodes
         public SFXMedStation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, x, y, p, grapheditor)
         {
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class LightActorNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(128, 0, 0));
+        private static readonly PointF[] outlineShape = { new PointF(17, 0), new PointF(33, 0), new PointF(41, 9), new PointF(41, 20), 
+            new PointF(35, 30), new PointF(35, 36), new PointF(34, 36), new PointF(32, 37), new PointF(32, 47), new PointF(30, 50), 
+            new PointF(20, 50), new PointF(18, 47), new PointF(18, 37), new PointF(16, 36), new PointF(15, 36), new PointF(15, 30),
+            new PointF(9, 20), new PointF(9, 9)
+
+            };
+
+        public LightActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+        {
+            string text = comment.Text;
+            if (text != "")
+            {
+                text += "\n";
+            }
+            comment.Text = text + export.ObjectName.Instanced;
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class EmitterNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(100, 255, 100);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(0, 255, 0));
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), //top side
+            new PointF(50, 6),new PointF(6, 6),new PointF(6, 22), new PointF(50, 22),//right side E first bend
+            new PointF(50, 28),new PointF(6, 28), new PointF(6, 44), new PointF(50, 44),  //right side E second bend
+            new PointF(50, 50),new PointF(0, 50)
+            };
+
+        public EmitterNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: false)
+        {
+            ObjectProperty psc = export.GetProperty<ObjectProperty>("ParticleSystemComponent");
+            if (psc != null)
+            {
+                ExportEntry psce = pcc.GetUExport(psc.Value);
+                var psObj = psce.GetProperty<ObjectProperty>("Template");
+                if (psObj != null)
+                {
+                    var ps = pcc.GetEntry(psObj.Value);
+                    comment.Text = ps.ObjectName.Name;
+                }
+            }
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class DecalActorNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(156, 0, 156);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(0, 128, 0));
+        private static readonly PointF[] outlineShape = { new PointF(15, 0), new PointF(35, 0), new PointF(50, 25), new PointF(35, 50), new PointF(15, 50), new PointF(0, 25) };
+
+
+        public DecalActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: false)
+        {
+            ObjectProperty dcl = export.GetProperty<ObjectProperty>("Decal");
+            if (dcl != null)
+            {
+                ExportEntry dcle = pcc.GetUExport(dcl.Value);
+                var dclObj = dcle.GetProperty<ObjectProperty>("DecalMaterial");
+                if (dclObj != null)
+                {
+                    var dclMat = pcc.GetEntry(dclObj.Value);
+                    comment.Text = dclMat.ObjectName.Name;
+                }
+            }
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class LensFlareNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 126, 135);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(200, 200, 200));
+        private static readonly PointF[] outlineShape = { new PointF(15, 10), new PointF(35, 10), new PointF(50, 25), new PointF(35, 40), new PointF(15, 40), new PointF(0, 25) };
+
+        public LensFlareNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+        {
+            ObjectProperty lf = export.GetProperty<ObjectProperty>("LensFlareComp");
+            if (lf != null)
+            {
+                ExportEntry lfe = pcc.GetUExport(lf.Value);
+                var lfObj = lfe.GetProperty<ObjectProperty>("Template");
+                if (lfObj != null)
+                {
+                    var lfMat = pcc.GetEntry(lfObj.Value);
+                    comment.Text = lfMat.ObjectName.Name;
+                }
+            }
+        }
+
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class GenericVolumeNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 126, 135);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(235, 160, 90));
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(25, 50) };
+
+        public GenericVolumeNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
+        {
+            string text = comment.Text;
+            if (text != "")
+            {
+                text += "\n";
+            }
+            comment.Text = text + export.ObjectName.Instanced;
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;

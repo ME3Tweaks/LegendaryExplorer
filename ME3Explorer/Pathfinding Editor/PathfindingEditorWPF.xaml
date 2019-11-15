@@ -63,10 +63,12 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="F1" Command="{Binding TogglePathfindingCommand}"/>
-        <KeyBinding Key="F2" Command="{Binding ToggleActorsCommand}"/>
-        <KeyBinding Key="F3" Command="{Binding ToggleSplinesCommand}"/>
-        <KeyBinding Key="F4" Command="{Binding ToggleEverythingElseCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding ToggleSplinesCommand}"/>
+        <KeyBinding Key="F3" Command="{Binding ToggleActorsCommand}"/>
+        <KeyBinding Key="F4" Command="{Binding ToggleArtCommand}"/>
         <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+        <KeyBinding Key="F6" Command="{Binding ToggleEverythingElseCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding ToggleAllCollectionsCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusFindCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding FocusGotoCommand}"/>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
@@ -104,10 +106,13 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Shows the pathing network that AI uses to traverse a 3D space"/>
-                <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Shows non-pathing nodes that serve as actors in the level"/>
-                <MenuItem Header="Splines" Command="{Binding ToggleSplinesCommand}" IsChecked="{Binding ShowSplinesLayer}" StaysOpenOnClick="True" InputGestureText="F3" ToolTip="Shows splines and their layout"/>
-                <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Shows everything else that is not parsed by the other layers"/>
+                <MenuItem Header="Splines" Command="{Binding ToggleSplinesCommand}" IsChecked="{Binding ShowSplinesLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Shows splines and their layout"/>
+                <MenuItem Header="Design (Dynamic Actors)" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F3" ToolTip="Shows actors used in designed gameplay (NPCs, Trigger Volumes, Interpactors)"/>
+                <MenuItem Header="Art (Static Actors + Collections)" Command="{Binding ToggleArtCommand}" IsChecked="{Binding ShowArtLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Shows static actors used for art (StaticMeshes, Lights, Audio, Blocking Volumes)"/>
+                <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F6" ToolTip="Shows everything else that is not parsed by the other layers"/>
+                <Separator/>
                 <MenuItem Header="Sequence References" Command="{Binding ToggleSequenceReferencesCommand}" IsChecked="{Binding ShowSequenceReferences}" StaysOpenOnClick="True"  ToolTip="Adds comments and right click options for sequences that reference this node"/>
+                <MenuItem Header="Toggle All Collections" Command="{Binding ToggleAllCollectionsCommand}" InputGestureText="F10"  ToolTip="Show or Hide all the collection actors."/>
                 <Separator/>
                 <MenuItem Header="Show volumes instead of nodes for...">
                     <MenuItem Header="BioTriggerVolumes" Command="{Binding ShowBioTriggerVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerVolumes}" StaysOpenOnClick="True" ToolTip="Shows BioTriggerVolumes as top down polygons of their brush"/>

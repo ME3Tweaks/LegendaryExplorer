@@ -475,7 +475,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     return new Point3D(x, y, z);
                 }
             }
-            return new Point3D(double.MinValue, double.MinValue, double.MinValue);
+            return new Point3D(0, 0, 0);
         }
 
         public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor, List<ExportEntry> CollectionItems = null)
