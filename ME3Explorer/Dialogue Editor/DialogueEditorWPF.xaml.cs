@@ -178,6 +178,7 @@ namespace ME3Explorer.Dialogue_Editor
         public ICommand UpdateLayoutDefaultsCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
+        public ICommand ForceRefreshCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv?.WwiseBank != null;
@@ -411,8 +412,9 @@ namespace ME3Explorer.Dialogue_Editor
             UpdateLayoutDefaultsCommand = new RelayCommand(UpdateLayoutDefaults);
             SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
-
+            ForceRefreshCommand = new RelayCommand(ForceRefresh);
         }
+
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
@@ -4316,6 +4318,30 @@ namespace ME3Explorer.Dialogue_Editor
             StatusBar_OtherText.Text = "Copied to Clipboard.";
             await Task.Delay(4000);
             StatusBar_OtherText.Text = otext;
+        }
+
+        private void ForceRefresh(object obj)
+        {
+            SelectedSpeakerList.ClearEx();
+            SelectedObjects.ClearEx();
+            var reselectedNodeID = SelectedDialogueNode?.NodeCount ?? -1;
+            var reselectedNodeReply = SelectedDialogueNode?.IsReply ?? false;
+            SelectedDialogueNode = null;
+            SelectedConv.IsFirstParsed = false;
+            SelectedConv.IsParsed = false;
+            FirstParse();
+            FFXAnimsets.ClearEx();
+            foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
+            {
+                FFXAnimsets.Add(exp);
+            }
+
+            RefreshView();
+
+            if(reselectedNodeID >= 0)
+            {
+                DialogueNode_SelectByIndex(reselectedNodeID, reselectedNodeReply);
+            }
         }
 
         #endregion
