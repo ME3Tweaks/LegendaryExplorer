@@ -47,7 +47,8 @@ namespace ME3Explorer.Matinee
         }
 
         public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<ExportEntry>();
-
+        public ObservableCollectionExtended<string> Animations { get; } = new ObservableCollectionExtended<string>();
+        
         #region Properties and Bindings
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -261,9 +262,11 @@ namespace ME3Explorer.Matinee
         public void LoadFile(string fileName)
         {
             InterpDataExports.ClearEx();
+            Animations.ClearEx();
             LoadMEPackage(fileName);
             AddRecent(fileName);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
+            Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
             Title = $"Interp Viewer - {Pcc.FilePath}";
         }
 

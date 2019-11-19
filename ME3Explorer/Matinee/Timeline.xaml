@@ -236,7 +236,7 @@
             </Canvas.Resources>
         </Canvas>
         <Canvas Grid.Column="0" Grid.Row="1" Background="Black"/>
-        <TreeView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" ItemsSource="{Binding InterpGroups}" Background="{x:Null}" SelectedItemChanged="TreeView_SelectedItemChanged">
+        <TreeView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" ItemsSource="{Binding InterpGroups}" Background="{x:Null}" SelectedItemChanged="TreeView_SelectedItemChanged" Name="MatineeTree">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:InterpGroup}" ItemsSource="{Binding Tracks}">
                     <Border BorderBrush="Black" BorderThickness="0 1 0 0" HorizontalAlignment="Stretch">

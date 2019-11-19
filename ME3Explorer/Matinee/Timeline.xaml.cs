@@ -78,6 +78,7 @@ namespace ME3Explorer.Matinee
 
         public void RefreshInterpData(ExportEntry changedExport)
         {
+            var selection = MatineeTree.SelectedItem;
             if (changedExport.ClassName == "InterpGroup")
             {
                 if (InterpGroups.FirstOrDefault(g => g.Export == changedExport) is InterpGroup group)
@@ -98,6 +99,21 @@ namespace ME3Explorer.Matinee
                     if (changedExport.Parent == interpGroup.Export)
                     {
                         interpGroup.RefreshTracks();
+                    }
+                }
+            }
+
+            if (selection != null && selection is InterpTrack strk) //Reselect item post edit
+            {
+                foreach (var grp in InterpGroups)
+                {
+                    foreach (var trk in grp.Tracks)
+                    {
+                        if (trk.Export.UIndex == strk.Export.UIndex)
+                        {
+                            MatineeTree.SelectItem(trk);
+                            return;
+                        }
                     }
                 }
             }
