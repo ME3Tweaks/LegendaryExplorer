@@ -348,9 +348,9 @@ namespace ME3Explorer.Dialogue_Editor
                     WaterfallSpace = ws;
                 }
                 if (options.ContainsKey("LinesAtTop"))
-                    HideEntryOutput_MenuItem.IsChecked = (bool)options["LinesAtTop"];
+                    ShowLinesOnTop_MenuItem.IsChecked = (bool)options["LinesAtTop"];
                 if (options.ContainsKey("OutputNumbers"))
-                    ShowLinesOnTop_MenuItem.IsChecked = (bool)options["OutputNumbers"];
+                    HideEntryOutput_MenuItem.IsChecked = (bool)options["OutputNumbers"];
             }
             else
             {

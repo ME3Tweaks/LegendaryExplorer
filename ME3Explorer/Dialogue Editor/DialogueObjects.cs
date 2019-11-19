@@ -1005,7 +1005,7 @@ namespace ME3Explorer.Dialogue_Editor
             newReplyListProp.Add(new StructProperty("BioDialogReplyListDetails", new PropertyCollection
             {
                 new IntProperty(endNode - 1000, "nIndex"),
-                new StringRefProperty(0, "srParaphrase"),
+                new StringRefProperty(663399, "srParaphrase"),
                 new StrProperty("", "sParaphrase"),
                 new EnumProperty("REPLY_CATEGORY_DEFAULT", "EReplyCategory", Editor.Pcc.Game, "Category"),
                 new NoneProperty()
