@@ -27,38 +27,48 @@ namespace ME3Explorer.GameInterop
             using IMEPackage pcc = MEPackageHandler.OpenMEPackage(animViewerAnimStreamFilePath);
             if (animSourceFilePath != null)
             {
-                const int InterpDataUIndex = 8;
-                const int InterpTrackAnimControlUIndex = 10;
-                const int KIS_DYN_AnimsetUIndex = 6;
-                using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
+                try
+                {
+                    const int InterpDataUIndex = 8;
+                    const int InterpTrackAnimControlUIndex = 10;
+                    const int KIS_DYN_AnimsetUIndex = 6;
+#if DEBUG
+                    Debug.WriteLine($"AnimViewer Loading: {animSourceFilePath} #{animSequenceUIndex}");
+#endif
+                    using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
 
-                ExportEntry sourceAnimSeq = animSourceFile.GetUExport(animSequenceUIndex);
+                    ExportEntry sourceAnimSeq = animSourceFile.GetUExport(animSequenceUIndex);
 
-                IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc);
+                    IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc);
 
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAnimSeq, pcc, parent, true, out IEntry ent);
-                ExportEntry importedAnimSeq = (ExportEntry)ent;
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceAnimSeq, pcc, parent, true, out IEntry ent);
+                    ExportEntry importedAnimSeq = (ExportEntry)ent;
 
-                NameReference seqName = importedAnimSeq.GetProperty<NameProperty>("SequenceName").Value;
-                float seqLength = importedAnimSeq.GetProperty<FloatProperty>("SequenceLength");
-                IEntry bioAnimSet = pcc.GetUExport(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
-                string setName = importedAnimSeq.ObjectName.Name.RemoveRight(seqName.Name.Length + 1);
+                    NameReference seqName = importedAnimSeq.GetProperty<NameProperty>("SequenceName").Value;
+                    float seqLength = importedAnimSeq.GetProperty<FloatProperty>("SequenceLength");
+                    IEntry bioAnimSet = pcc.GetUExport(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
+                    string setName = importedAnimSeq.ObjectName.Name.RemoveRight(seqName.Name.Length + 1);
 
-                ExportEntry animInterpData = pcc.GetUExport(InterpDataUIndex);
-                animInterpData.WriteProperty(new FloatProperty(seqLength, "InterpLength"));
+                    ExportEntry animInterpData = pcc.GetUExport(InterpDataUIndex);
+                    animInterpData.WriteProperty(new FloatProperty(seqLength, "InterpLength"));
 
-                ExportEntry animTrack = pcc.GetUExport(InterpTrackAnimControlUIndex);
-                var animSeqKeys = animTrack.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
-                animSeqKeys[0].Properties.AddOrReplaceProp(new NameProperty(seqName, "AnimSeqName"));
-                animTrack.WriteProperty(animSeqKeys);
+                    ExportEntry animTrack = pcc.GetUExport(InterpTrackAnimControlUIndex);
+                    var animSeqKeys = animTrack.GetProperty<ArrayProperty<StructProperty>>("AnimSeqs");
+                    animSeqKeys[0].Properties.AddOrReplaceProp(new NameProperty(seqName, "AnimSeqName"));
+                    animTrack.WriteProperty(animSeqKeys);
 
-                ExportEntry dynamicAnimSet = pcc.GetUExport(KIS_DYN_AnimsetUIndex);
-                dynamicAnimSet.WriteProperty(new ObjectProperty(bioAnimSet.UIndex, "m_pBioAnimSetData"));
-                dynamicAnimSet.WriteProperty(new NameProperty(setName, "m_nmOrigSetName"));
-                dynamicAnimSet.WriteProperty(new ArrayProperty<ObjectProperty>("Sequences")
+                    ExportEntry dynamicAnimSet = pcc.GetUExport(KIS_DYN_AnimsetUIndex);
+                    dynamicAnimSet.WriteProperty(new ObjectProperty(bioAnimSet.UIndex, "m_pBioAnimSetData"));
+                    dynamicAnimSet.WriteProperty(new NameProperty(setName, "m_nmOrigSetName"));
+                    dynamicAnimSet.WriteProperty(new ArrayProperty<ObjectProperty>("Sequences")
                 {
                     new ObjectProperty(importedAnimSeq.UIndex)
                 });
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Error Loading {animSourceFilePath} #{animSequenceUIndex}");
+                }
 
             }
 

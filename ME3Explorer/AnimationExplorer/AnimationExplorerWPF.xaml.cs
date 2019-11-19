@@ -199,7 +199,7 @@ namespace ME3Explorer.AnimationExplorer
             get => _selectedAnimation;
             set
             {
-                if (SetProperty(ref _selectedAnimation, value) && value != null)
+                if (value != _selectedAnimation && SetProperty(ref _selectedAnimation, value) && value != null && !IsBusy)
                 {
                     LoadAnimation(value);
                 }
@@ -712,7 +712,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void SearchBox_OnTextChanged(SearchBox sender, string newtext)
         {
-            listBoxAnims.ItemsSource = Animations.Where(anim => anim.SeqName.Contains(newtext, StringComparison.OrdinalIgnoreCase));
+            listBoxAnims.ItemsSource = Animations.Where(anim => anim.AnimSequence.Contains(newtext, StringComparison.OrdinalIgnoreCase));
         }
 
         #region Camera
