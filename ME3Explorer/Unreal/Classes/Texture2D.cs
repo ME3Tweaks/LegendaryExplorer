@@ -356,7 +356,7 @@ namespace ME3Explorer.Unreal.Classes
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
             {
                 string filename = null;
-                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game, true, false);
+                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game, true, true);
                 if (mipToLoad.Export.Game == MEGame.ME1)
                 {
                     if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out var fullPath))
@@ -379,7 +379,7 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         {
-                            if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out var fullPath))
+                            if (loadedFiles.TryGetValue(archive, out var fullPath))
                             {
                                 filename = fullPath;
                             }

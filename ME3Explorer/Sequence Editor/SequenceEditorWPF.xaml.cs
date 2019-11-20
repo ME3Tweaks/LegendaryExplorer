@@ -32,6 +32,7 @@ using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
 using ME3Explorer.Unreal.BinaryConverters;
+using Image = System.Drawing.Image;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -90,7 +91,7 @@ namespace ME3Explorer.Sequence_Editor
             LoadRecentList();
 
             graphEditor = (GraphEditor)GraphHost.Child;
-            graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            graphEditor.BackColor = GraphEditorBackColor;
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
 
@@ -144,15 +145,27 @@ namespace ME3Explorer.Sequence_Editor
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
         }
 
-        private void CreateNewObject(ClassInfo info)
+        private async void CreateNewObject(ClassInfo info)
         {
             if (SelectedSequence == null)
             {
                 return;
             }
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+
+            IEntry classEntry;
+            if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) || 
+                UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
+            {
+                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+            }
+            else
+            {
+                SetBusy($"Adding {info.ClassName}");
+                classEntry = await Task.Run(() => EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
+            }
             if (classEntry is null)
             {
+                EndBusy();
                 MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may defined in a DLC you don't have.");
                 return;
             }
@@ -165,6 +178,7 @@ namespace ME3Explorer.Sequence_Editor
             newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);
             addObject(newSeqObj);
+            EndBusy();
         }
 
         private bool CanOpenKismetLog(object o)
@@ -216,6 +230,45 @@ namespace ME3Explorer.Sequence_Editor
                 GoToExport(export);
             }
         }
+
+        #region Busy
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        private string _busyText;
+        public string BusyText
+        {
+            get => _busyText;
+            set => SetProperty(ref _busyText, value);
+        }
+
+        void SetBusy(string text)
+        {
+            Image graphImage = graphEditor.Camera.ToImage((int)graphEditor.Camera.GlobalFullWidth, (int)graphEditor.Camera.GlobalFullHeight, new SolidBrush(GraphEditorBackColor));
+            graphImageSub.Source = graphImage.ToBitmapImage();
+            graphImageSub.Width = graphGrid.ActualWidth;
+            graphImageSub.Height = graphGrid.ActualHeight;
+            expanderImageSub.Source = toolBoxExpander.DrawToBitmapSource();
+            expanderImageSub.Width = toolBoxExpander.ActualWidth;
+            expanderImageSub.Height = toolBoxExpander.ActualHeight;
+            expanderImageSub.Visibility = Visibility.Visible;
+            graphImageSub.Visibility = Visibility.Visible;
+            BusyText = text;
+            IsBusy = true;
+        }
+
+        void EndBusy()
+        {
+            IsBusy = false;
+            graphImageSub.Visibility = expanderImageSub.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
 
         private string _statusText;
 
@@ -1054,6 +1107,7 @@ namespace ME3Explorer.Sequence_Editor
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
         private bool AllowWindowRefocus = true;
+        private static readonly Color GraphEditorBackColor = Color.FromArgb(167, 167, 167);
 
         private void saveView(bool toFile = true)
         {

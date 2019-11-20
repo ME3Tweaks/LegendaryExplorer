@@ -504,7 +504,7 @@ namespace ME3Explorer
             box.ScrollToEnd();
         }
 
-        public static BitmapImage ToBitmapImage(this System.Drawing.Bitmap bitmap)
+        public static BitmapImage ToBitmapImage(this System.Drawing.Image bitmap)
         {
             MemoryStream memory = new MemoryStream();
             bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);

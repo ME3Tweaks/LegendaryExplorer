@@ -609,7 +609,7 @@ namespace ME3Explorer
                 }
                 EntryPruner.TrashEntries(pcc, entriesToRemove);
                 pcc.setNames(nameListBackup);
-                new ExceptionHandlerDialogWPF(e).ShowDialog();
+                Application.Current.Dispatcher?.Invoke(() => { new ExceptionHandlerDialogWPF(e).ShowDialog(); });
                 return null;
             }
         }
