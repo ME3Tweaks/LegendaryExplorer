@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX;
@@ -358,11 +359,20 @@ namespace ME3Explorer
         /// <summary>
         /// Adds <paramref name="value"/> to List&lt;<typeparamref name="TValue"/>&gt; associated with <paramref name="key"/>. Creates List&lt;<typeparamref name="TValue"/>&gt; if neccesary.
         /// </summary>
-        public static void AddToListAt<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value)
+        public static void AddToListAt<TKey, TValue>(this IDictionary<TKey, List<TValue>> dict, TKey key, TValue value)
         {
             if (!dict.TryGetValue(key, out List<TValue> list))
             {
                 list = new List<TValue>();
+                dict[key] = list;
+            }
+            list.Add(value);
+        }
+        public static void AddToListAt<TKey, TValue>(this IDictionary<TKey, ObservableCollectionExtended<TValue>> dict, TKey key, TValue value)
+        {
+            if (!dict.TryGetValue(key, out ObservableCollectionExtended<TValue> list))
+            {
+                list = new ObservableCollectionExtended<TValue>();
                 dict[key] = list;
             }
             list.Add(value);

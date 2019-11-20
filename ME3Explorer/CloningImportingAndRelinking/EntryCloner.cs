@@ -10,13 +10,12 @@ namespace ME3Explorer
 {
     public static class EntryCloner
     {
-        public static IEntry cloneTree(IEntry entry)
+        public static T CloneTree<T>(T entry) where T : IEntry
         {
             var objectMap = new Dictionary<IEntry, IEntry>();
-            IEntry newRoot = cloneEntry(entry, objectMap);
+            T newRoot = CloneEntry(entry, objectMap);
             EntryTree tree = new EntryTree(entry.FileRef);
             cloneTreeRecursive(entry, newRoot);
-            IMEPackage pcc = entry.FileRef;
             Relinker.RelinkAll(objectMap);
             return newRoot;
 
@@ -24,35 +23,34 @@ namespace ME3Explorer
             {
                 foreach (IEntry node in tree.GetDirectChildrenOf(originalRootNode.UIndex))
                 {
-                    IEntry newEntry = cloneEntry(node, objectMap);
+                    IEntry newEntry = CloneEntry(node, objectMap);
                     newEntry.Parent = newRootNode;
                     cloneTreeRecursive(node, newEntry);
                 }
             }
         }
 
-        public static IEntry cloneEntry(IEntry entry, Dictionary<IEntry, IEntry> objectMap = null)
+        public static T CloneEntry<T>(T entry, Dictionary<IEntry, IEntry> objectMap = null) where T : IEntry
         {
-            IEntry newEntry;
-            if (entry is ExportEntry export)
+            IEntry newEntry = entry.Clone();
+            switch (newEntry)
             {
-                ExportEntry ent = export.Clone();
-                entry.FileRef.AddExport(ent);
-                newEntry = ent;
-                if (objectMap != null)
-                {
-                    objectMap[export] = ent;
-                }
-            }
-            else
-            {
-                ImportEntry imp = ((ImportEntry)entry).Clone();
-                entry.FileRef.AddImport(imp);
-                newEntry = imp;
-                //Imports are not relinked when cloning
+                case ExportEntry export:
+                    entry.FileRef.AddExport(export);
+                    if (objectMap != null)
+                    {
+                        objectMap[export] = export;
+                    }
+                    break;
+                case ImportEntry import:
+                    entry.FileRef.AddImport(import);
+                    //Imports are not relinked when cloning
+                    break;
+                default:
+                    throw new Exception();//will never happen, but stops compiler complaining
             }
 
-            return newEntry;
+            return (T)newEntry;
         }
     }
 }

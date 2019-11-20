@@ -1402,7 +1402,7 @@ namespace ME3Explorer
         {
             if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
-                IEntry newTreeRoot = EntryCloner.cloneTree(entry);
+                IEntry newTreeRoot = EntryCloner.CloneTree(entry);
                 TryAddToPersistentLevel(newTreeRoot);
                 GoToNumber(newTreeRoot.UIndex);
             }
@@ -1412,7 +1412,7 @@ namespace ME3Explorer
         {
             if (TryGetSelectedEntry(out IEntry entry))
             {
-                IEntry newEntry = EntryCloner.cloneEntry(entry);
+                IEntry newEntry = EntryCloner.CloneEntry(entry);
                 TryAddToPersistentLevel(newEntry);
                 GoToNumber(newEntry.UIndex);
             }

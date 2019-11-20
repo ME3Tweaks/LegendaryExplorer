@@ -130,6 +130,8 @@ namespace ME3Explorer.Packages
             return index + 1;
         }
 
+        public NameReference GetNextIndexedName(string name) => new NameReference(name, GetNextIndexForName(name));
+
         #endregion
 
         #region Exports

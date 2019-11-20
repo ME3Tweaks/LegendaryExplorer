@@ -136,6 +136,26 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Live Level Editor",
+                type = typeof(GameInterop.LiveLevelEditor),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    if (GameInterop.LiveLevelEditor.Instance == null)
+                    {
+                        (new GameInterop.LiveLevelEditor()).Show();
+                    }
+                    else
+                    {
+                        GameInterop.LiveLevelEditor.Instance.RestoreAndBringToFront();
+                    }
+                },
+                tags = new List<string> { "utility" },
+                subCategory = "Utilities",
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times."
+            });
+            set.Add(new Tool
+            {
                 name = "ASI Manager",
                 type = typeof(ASI.ASIManager),
                 icon = Application.Current.FindResource("iconASIManager") as ImageSource,

@@ -15,6 +15,7 @@ namespace ME3Explorer.GameInterop
 {
     public static class GameController
     {
+        public const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
         public const string TempMapName = "AAAME3EXPDEBUGLOAD";
         public static bool TryGetME3Process(out Process me3Process)
         {
@@ -51,7 +52,7 @@ namespace ME3Explorer.GameInterop
         {
             const string execFileName = "me3expinterop";
             string execFilePath = Path.Combine(MEDirectories.GamePath(game), "Binaries", execFileName);
-            File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
+            File.WriteAllText(execFilePath, String.Join(Environment.NewLine, commands));
             DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
         }
 
@@ -75,8 +76,8 @@ namespace ME3Explorer.GameInterop
                 if (cds.dwData == SENT_FROM_ME3)
                 {
                     string value = Marshal.PtrToStringUni(cds.lpData);
-                    RecieveME3Message?.Invoke(value);
                     handled = true;
+                    RecieveME3Message?.Invoke(value);
                     return (IntPtr)1;
                 }
             }

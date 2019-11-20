@@ -659,5 +659,7 @@ namespace ME3Explorer.Packages
                 DataOffset = 0
             };
         }
+
+        IEntry IEntry.Clone() => Clone();
     }
 }

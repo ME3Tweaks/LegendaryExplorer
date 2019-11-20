@@ -160,7 +160,7 @@ namespace ME3Explorer.Sequence_Editor
             ExportEntry newSeqObj = new ExportEntry(Pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info))
             {
                 Class = classEntry,
-                ObjectName = new NameReference(info.ClassName, Pcc.GetNextIndexForName(info.ClassName))
+                ObjectName = Pcc.GetNextIndexedName(info.ClassName)
             };
             newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);
@@ -1279,7 +1279,7 @@ namespace ME3Explorer.Sequence_Editor
         private void removeAllLinks(object sender, RoutedEventArgs args)
         {
             ExportEntry export = (ExportEntry)((MenuItem)sender).Tag;
-            removeAllLinks(export);
+            KismetHelper.RemoveAllLinks(export);
         }
 
         private void removeAllOutputLinks(object sender, RoutedEventArgs args)
@@ -1324,39 +1324,6 @@ namespace ME3Explorer.Sequence_Editor
             export.WriteProperty(eventLinksProp);
         }
 
-        private static void removeAllLinks(ExportEntry export)
-        {
-            var props = export.GetProperties();
-            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
-                }
-            }
-
-            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
-            {
-                foreach (var prop in varLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
-                }
-            }
-
-            var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
-            {
-                foreach (var prop in eventLinksProp)
-                {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
-                }
-            }
-
-            export.WriteProperties(props);
-        }
-
         private void TrashAndRemoveFromSequence_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentObjects_ListBox.SelectedItem is SObj sObj)
@@ -1388,7 +1355,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
 
                 //remove outgoing links
-                removeAllLinks(sObj.Export);
+                KismetHelper.RemoveAllLinks(sObj.Export);
 
                 //remove from sequence
                 var seqObjs = SelectedSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
@@ -1532,7 +1499,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (SelectedObjects.HasExactly(1) && SelectedObjects[0] is SVar sVar && sVar.Export.ClassName == "InterpData")
             {
-                addObject((ExportEntry)EntryCloner.cloneTree(sVar.Export));
+                addObject(EntryCloner.CloneTree(sVar.Export));
             }
         }
 
@@ -1561,25 +1528,9 @@ namespace ME3Explorer.Sequence_Editor
             }
 
             pcc.AddExport(exp);
-            addObjectToSequence(exp, topLevel, sequence);
+            KismetHelper.AddObjectToSequence(exp, sequence, topLevel);
             cloneSequence(exp, sequence);
             return exp;
-        }
-
-        static void addObjectToSequence(ExportEntry newObject, bool removeLinks, ExportEntry sequenceExport)
-        {
-            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects") ?? new ArrayProperty<ObjectProperty>("SequenceObjects");
-            seqObjs.Add(new ObjectProperty(newObject));
-            sequenceExport.WriteProperty(seqObjs);
-
-            PropertyCollection newObjectProps = newObject.GetProperties();
-            newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
-            newObject.WriteProperties(newObjectProps);
-            if (removeLinks)
-            {
-                removeAllLinks(newObject);
-            }
-            newObject.Parent = sequenceExport;
         }
 
         static void cloneSequence(ExportEntry exp, ExportEntry parentSequence)
@@ -1869,7 +1820,7 @@ namespace ME3Explorer.Sequence_Editor
                 X = graphEditor.Camera.ViewCenterX,
                 Y = graphEditor.Camera.ViewCenterY
             });
-            addObjectToSequence(exportToAdd, removeLinks, SelectedSequence);
+            KismetHelper.AddObjectToSequence(exportToAdd, SelectedSequence, removeLinks);
         }
 
         private void AddObject_Clicked(object sender, RoutedEventArgs e)

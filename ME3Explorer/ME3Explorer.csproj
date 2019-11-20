@@ -346,6 +346,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GameInterop\LiveLevelEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MaterialViewer\MaterialExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -413,6 +417,11 @@
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="GameInterop\AnimViewer.cs" />
     <Compile Include="GameInterop\GameController.cs" />
+    <Compile Include="GameInterop\InteropHelper.cs" />
+    <Compile Include="GameInterop\LiveEditHelper.cs" />
+    <Compile Include="GameInterop\LiveLevelEditor.xaml.cs">
+      <DependentUpon>LiveLevelEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MassEffectModder\MassEffectModderIPCWrapper.cs" />
     <Compile Include="MaterialViewer\MaterialExportLoader.xaml.cs">
       <DependentUpon>MaterialExportLoader.xaml</DependentUpon>
@@ -438,6 +447,7 @@
     </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
+    <Compile Include="Sequence Editor\KismetHelper.cs" />
     <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\BindingProxy.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />

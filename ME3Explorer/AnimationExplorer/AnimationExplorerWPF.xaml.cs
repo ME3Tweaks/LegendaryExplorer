@@ -38,8 +38,6 @@ namespace ME3Explorer.AnimationExplorer
     {
         public static AnimationExplorerWPF Instance;
 
-        private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
-
         private enum FloatVarIndexes
         {
             XPos = 1,
@@ -52,7 +50,6 @@ namespace ME3Explorer.AnimationExplorer
             CamXRotComponent = 8,
             CamYRotComponent = 9,
             CamZRotComponent = 10,
-
         }
 
         private enum BoolVarIndexes
@@ -93,14 +90,14 @@ namespace ME3Explorer.AnimationExplorer
 
         private void AnimationExplorerWPF_OnClosing(object sender, CancelEventArgs e)
         {
-            if (!GameController.TryGetME3Process(out _))
-            {
-                string asiPath = GetInteropAsiWritePath();
-                if (File.Exists(asiPath))
-                {
-                    File.Delete(asiPath);
-                }
-            }
+            //if (!GameController.TryGetME3Process(out _))
+            //{
+            //    string asiPath = InteropHelper.GetInteropAsiWritePath();
+            //    if (File.Exists(asiPath))
+            //    {
+            //        File.Delete(asiPath);
+            //    }
+            //}
             ME3OpenTimer.Stop();
             ME3OpenTimer.Tick -= CheckIfME3Open;
             GameController.RecieveME3Message -= GameController_RecieveME3Message;
@@ -146,7 +143,8 @@ namespace ME3Explorer.AnimationExplorer
                         }
                         else
                         {
-                            return;
+                            floats = defaultPosition.ToArray();
+                            break;
                         }
                     }
                     pos = new Vector3(floats);
@@ -289,9 +287,9 @@ namespace ME3Explorer.AnimationExplorer
         public ICommand StartME3Command { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new RequirementCommand(IsME3Installed, SelectME3Path);
-            ASILoaderInstalledRequirementCommand = new RequirementCommand(IsASILoaderInstalled, OpenASILoaderDownload);
-            ME3ClosedRequirementCommand = new RequirementCommand(IsME3Closed, KillME3);
+            ME3InstalledRequirementCommand = new RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
+            ASILoaderInstalledRequirementCommand = new RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
+            ME3ClosedRequirementCommand = new RequirementCommand(InteropHelper.IsME3Closed, InteropHelper.KillME3);
             DatabaseLoadedRequirementCommand = new RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
         }
@@ -345,8 +343,8 @@ namespace ME3Explorer.AnimationExplorer
             });
             Task.Run(() =>
             {
-                InstallInteropASI();
-                
+                InteropHelper.InstallInteropASI();
+
 
                 string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
 
@@ -355,83 +353,6 @@ namespace ME3Explorer.AnimationExplorer
                 AnimViewer.OpenFileInME3(animViewerBase, true, false);
                 BusyText = "Launching Mass Effect 3...";
             });
-        }
-
-        private void InstallInteropASI()
-        {
-            string interopASIWritePath = GetInteropAsiWritePath();
-            if (File.Exists(interopASIWritePath))
-            {
-                File.Delete(interopASIWritePath);
-            }
-            File.Copy(Path.Combine(App.ExecFolder, Me3ExplorerinteropAsiName), interopASIWritePath);
-        }
-
-        private static string GetInteropAsiWritePath()
-        {
-            string binariesWin32Dir = Path.GetDirectoryName(ME3Directory.ExecutablePath);
-            string asiDir = Path.Combine(binariesWin32Dir, "ASI");
-            Directory.CreateDirectory(asiDir);
-            string interopASIWritePath = Path.Combine(asiDir, Me3ExplorerinteropAsiName);
-            return interopASIWritePath;
-        }
-
-        private bool IsME3Closed() => !GameController.TryGetME3Process(out Process me3Process);
-
-        private void KillME3()
-        {
-            if (GameController.TryGetME3Process(out Process me3Process))
-            {
-                me3Process.Kill();
-            }
-            CommandManager.InvalidateRequerySuggested();
-        }
-
-        private bool IsASILoaderInstalled()
-        {
-            if (!IsME3Installed())
-            {
-                return false;
-            }
-            string binariesWin32Dir = Path.GetDirectoryName(ME3Directory.ExecutablePath);
-            string binkw23Path = Path.Combine(binariesWin32Dir, "binkw23.dll");
-            string binkw32Path = Path.Combine(binariesWin32Dir, "binkw32.dll");
-            const string binkw23MD5 = "128b560ef70e8085c507368da6f26fe6";
-            const string binkw32MD5 = "1acccbdae34e29ca7a50951999ed80d5";
-
-            return File.Exists(binkw23Path) && File.Exists(binkw32Path) && binkw23MD5 == CalculateMD5(binkw23Path) && binkw32MD5 == CalculateMD5(binkw32Path);
-
-            //https://stackoverflow.com/a/10520086
-            static string CalculateMD5(string filename)
-            {
-                using var stream = File.OpenRead(filename);
-                using var md5 = MD5.Create();
-                byte[] hash = md5.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-            }
-        }
-
-        private void OpenASILoaderDownload()
-        {
-            Process.Start("https://github.com/Erik-JS/masseffect-binkw32");
-        }
-
-        private static bool IsME3Installed() => ME3Directory.ExecutablePath is string exePath && File.Exists(exePath);
-        private static void SelectME3Path()
-        {
-            OpenFileDialog ofd = new OpenFileDialog
-            {
-                Title = "Select Mass Effect 3 executable.",
-                Filter = "MassEffect3.exe|MassEffect3.exe"
-            };
-            if (ofd.ShowDialog() == true)
-            {
-                string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName)));
-
-                Properties.Settings.Default.ME3Directory = ME3Directory.gamePath = gamePath;
-                Properties.Settings.Default.Save();
-                CommandManager.InvalidateRequerySuggested();
-            }
         }
 
 
@@ -646,7 +567,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void QuitME3_Click(object sender, RoutedEventArgs e)
         {
-            KillME3();
+            InteropHelper.KillME3();
         }
 
         #region Playback

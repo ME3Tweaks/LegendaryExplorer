@@ -16,6 +16,7 @@ using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using Gammtek.Conduit.Extensions;
 using ME1Explorer;
+using ME3Explorer.Sequence_Editor;
 
 namespace ME3Explorer.SequenceObjects
 {
@@ -1021,7 +1022,6 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
@@ -1045,28 +1045,13 @@ namespace ME3Explorer.SequenceObjects
             }
             if (inputIndex == -1)
                 return;
-            var outLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
-                        linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
-                            new ObjectProperty(end.export, "LinkedOp"),
-                            new IntProperty(inputIndex, "InputLinkIdx")));
-                        startExport.WriteProperty(outLinksProp);
-                        return;
-                    }
-                }
-            }
+            KismetHelper.CreateOutputLink(start.export, linkDesc, end.export, inputIndex);
         }
+
 
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
@@ -1080,24 +1065,12 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            var varLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
-            {
-                foreach (var prop in varLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Export));
-                        startExport.WriteProperty(varLinksProp);
-                    }
-                }
-            }
+            KismetHelper.CreateVariableLink(start.export, linkDesc, end.Export);
         }
 
         public void CreateEventlink(PNode p1, SEvent end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (EventLink l in start.EventLinks)
             {
@@ -1111,18 +1084,7 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            var eventLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
-            {
-                foreach (var prop in eventLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Add(new ObjectProperty(end.Export));
-                        startExport.WriteProperty(eventLinksProp);
-                    }
-                }
-            }
+            KismetHelper.CreateEventLink(start.export, linkDesc, end.export);
         }
         public void RemoveOutlink(ActionEdge edge)
         {
