@@ -46,7 +46,7 @@ namespace ME3Explorer.GameInterop
 
                     NameReference seqName = importedAnimSeq.GetProperty<NameProperty>("SequenceName").Value;
                     float seqLength = importedAnimSeq.GetProperty<FloatProperty>("SequenceLength");
-                    IEntry bioAnimSet = pcc.GetUExport(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
+                    IEntry bioAnimSet = pcc.GetEntry(importedAnimSeq.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
                     string setName = importedAnimSeq.ObjectName.Name.RemoveRight(seqName.Name.Length + 1);
 
                     ExportEntry animInterpData = pcc.GetUExport(InterpDataUIndex);
