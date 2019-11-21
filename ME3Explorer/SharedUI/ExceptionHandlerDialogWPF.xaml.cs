@@ -22,14 +22,12 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class ExceptionHandlerDialogWPF : Window
     {
-        Exception exception;
-        public bool Handled = false;
+        public bool Handled;
 
         public ExceptionHandlerDialogWPF(Exception exception)
         {
             InitializeComponent();
-            this.exception = exception;
-            string flattened = FlattenException(exception);
+            string flattened = exception.FlattenException();
             ExceptionStackTrace_TextBox.Text = flattened;
             ExceptionMessage_TextBlock.Text = exception.Message;
             var errorSize = MeasureString(flattened);
@@ -74,26 +72,6 @@ namespace ME3Explorer.SharedUI
             {
                 //what are we going to do. Crash on the error dialog?
             }
-        }
-
-        /// <summary>
-        /// Flattens an exception into a printable string
-        /// </summary>
-        /// <param name="exception">Exception to flatten</param>
-        /// <returns>Printable string</returns>
-        public static string FlattenException(Exception exception)
-        {
-            var stringBuilder = new StringBuilder();
-
-            while (exception != null)
-            {
-                stringBuilder.AppendLine(exception.GetType().Name + ": " + exception.Message);
-                stringBuilder.AppendLine(exception.StackTrace);
-
-                exception = exception.InnerException;
-            }
-
-            return stringBuilder.ToString();
         }
     }
 }

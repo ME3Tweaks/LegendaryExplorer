@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -21,7 +20,7 @@ namespace ME3Explorer
             ReplaceSingular,
             MergeTreeChildren,
             Cancel,
-            CloneAllDependencies //not available for user selection, for use by programmers in specialized situations
+            CloneAllDependencies
         }
 
         private static readonly byte[] me1Me2StackDummy =
@@ -609,7 +608,6 @@ namespace ME3Explorer
                 }
                 EntryPruner.TrashEntries(pcc, entriesToRemove);
                 pcc.setNames(nameListBackup);
-                Application.Current.Dispatcher?.Invoke(() => { new ExceptionHandlerDialogWPF(e).ShowDialog(); });
                 return null;
             }
         }

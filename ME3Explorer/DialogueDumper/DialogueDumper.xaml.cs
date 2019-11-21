@@ -482,7 +482,7 @@ namespace ME3Explorer.DialogueDumper
             }
             catch (Exception ex)
             {
-                var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
+                var exceptionMessage = ex.FlattenException();
                 Debug.WriteLine(exceptionMessage);
             }
         }
@@ -625,288 +625,279 @@ namespace ME3Explorer.DialogueDumper
             string className = null;
             try
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
+                if (GameBeingDumped == MEGame.Unknown) //Correct mapping
                 {
-                    if (GameBeingDumped == MEGame.Unknown) //Correct mapping
-                    {
-                        GameBeingDumped = pcc.Game;
-                    }
+                    GameBeingDumped = pcc.Game;
+                }
 
-                    CurrentFileProgressMaximum = pcc.ExportCount;
+                CurrentFileProgressMaximum = pcc.ExportCount;
                     
-                    //CHECK FOR CONVERSATIONS TO DUMP
-                    if (CheckConv)
+                //CHECK FOR CONVERSATIONS TO DUMP
+                if (CheckConv)
+                {
+
+                    foreach (ExportEntry exp in pcc.Exports)
                     {
-
-                        foreach (ExportEntry exp in pcc.Exports)
+                        if (DumpCanceled)
                         {
-                            if (DumpCanceled)
+                            return;
+                        }
+                        CurrentFileProgressValue = exp.UIndex;
+
+                        className = exp.ClassName;
+                        if (className == "BioConversation")
+                        {
+                            string convName = exp.ObjectName.Instanced;
+                            int convIdx = exp.UIndex;
+
+
+                            var convo = exp.GetProperties();
+                            if (convo.Count > 0)
                             {
-                                return;
-                            }
-                            CurrentFileProgressValue = exp.UIndex;
-
-                            className = exp.ClassName;
-                            if (className == "BioConversation")
-                            {
-                                string convName = exp.ObjectName.Instanced;
-                                int convIdx = exp.UIndex;
-
-
-                                var convo = exp.GetProperties();
-                                if (convo.Count > 0)
+                                //1.  Define speaker list "m_aSpeakerList"
+                                var speakers = new List<string>();
+                                if (GameBeingDumped != MEGame.ME3)
                                 {
-                                    //1.  Define speaker list "m_aSpeakerList"
-                                    List<string> speakers = new List<string>();
-                                    if (GameBeingDumped != MEGame.ME3)
+                                    var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
+                                    if (s_speakers != null)
                                     {
-                                        var s_speakers = exp.GetProperty<ArrayProperty<StructProperty>>("m_SpeakerList");
-                                        if (s_speakers != null)
-                                        {
-                                            foreach (StructProperty s in s_speakers)
-                                            {
-                                                var n = s.GetProp<NameProperty>("sSpeakerTag");
-                                                speakers.Add(n.ToString());
-                                            }
-                                        }
+                                        speakers.AddRange(s_speakers.Select(s => s.GetProp<NameProperty>("sSpeakerTag").Value.Instanced));
+                                    }
 
+                                }
+                                else
+                                {
+                                    var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                                    if (a_speakers != null)
+                                    {
+                                        speakers.AddRange(a_speakers.Select(n => n.Value.Instanced));
+                                    }
+                                }
+
+                                //2. Go through Entry list "m_EntryList"
+                                // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
+
+                                var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
+                                foreach (StructProperty entry in entryList)
+                                {
+                                    //Get and set speaker name
+                                    var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
+                                    string lineSpeaker;
+                                    if (speakeridx >= 0)
+                                    {
+                                        lineSpeaker = speakers[speakeridx];
+                                    }
+                                    else if (speakeridx == -2)
+                                    {
+                                        lineSpeaker = "Shepard";
                                     }
                                     else
                                     {
-                                        var a_speakers = exp.GetProperty<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                                        if (a_speakers != null)
-                                        {
-                                            foreach (NameProperty n in a_speakers)
-                                            {
-                                                speakers.Add(n.ToString());
-                                            }
-                                        }
+                                        lineSpeaker = "Owner";
                                     }
 
-                                    //2. Go through Entry list "m_EntryList"
-                                    // Parse line TLK StrRef, TLK Line, Speaker -1 = Owner, -2 = Shepard, or from m_aSpeakerList
+                                    //Get StringRef
+                                    int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
+                                    if (lineStrRef > 0)
+                                    {
+                                        //Get StringRef Text
+                                        string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
 
-                                    var entryList = exp.GetProperty<ArrayProperty<StructProperty>>("m_EntryList");
-                                    foreach (StructProperty entry in entryList)
+                                        if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
+                                        {
+                                            //Write to Background thread
+                                            var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
+                                            dumper._xlqueue.Add(excelout);
+                                        }
+                                    }
+                                }
+
+                                //3. Go through Reply list "m_ReplyList"
+                                // Parse line TLK StrRef, TLK Line, Speaker always Shepard
+                                var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
+                                if (replyList != null)
+                                {
+                                    foreach (StructProperty reply in replyList)
                                     {
                                         //Get and set speaker name
-                                        var speakeridx = entry.GetProp<IntProperty>("nSpeakerIndex");
-                                        string lineSpeaker;
-                                        if (speakeridx >= 0)
-                                        {
-                                            lineSpeaker = speakers[speakeridx];
-                                        }
-                                        else if (speakeridx == -2)
-                                        {
-                                            lineSpeaker = "Shepard";
-                                        }
-                                        else
-                                        {
-                                            lineSpeaker = "Owner";
-                                        }
+                                        const string lineSpeaker = "Shepard";
 
                                         //Get StringRef
-                                        int lineStrRef = entry.GetProp<StringRefProperty>("srText").Value;
+                                        var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
                                         if (lineStrRef > 0)
                                         {
+
                                             //Get StringRef Text
                                             string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
-
                                             if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
                                             {
-                                                //Write to Background thread
+                                                //Write to Background thread (must be 8 strings)
                                                 var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
                                                 dumper._xlqueue.Add(excelout);
                                             }
                                         }
                                     }
-
-                                    //3. Go through Reply list "m_ReplyList"
-                                    // Parse line TLK StrRef, TLK Line, Speaker always Shepard
-                                    var replyList = exp.GetProperty<ArrayProperty<StructProperty>>("m_ReplyList");
-                                    if (replyList != null)
-                                    {
-                                        foreach (StructProperty reply in replyList)
-                                        {
-                                            //Get and set speaker name
-                                            const string lineSpeaker = "Shepard";
-
-                                            //Get StringRef
-                                            var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
-                                            if (lineStrRef > 0)
-                                            {
-
-                                                //Get StringRef Text
-                                                string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped, exp.FileRef);
-                                                if (lineTLKstring != "No Data" && lineTLKstring != "\"\"" && lineTLKstring != "\" \"")
-                                                {
-                                                    //Write to Background thread (must be 8 strings)
-                                                    var excelout = new List<string> { "TLKStrings", lineSpeaker, lineStrRef.ToString(), lineTLKstring, convName, GameBeingDumped.ToString(), fileName, convIdx.ToString() };
-                                                    dumper._xlqueue.Add(excelout);
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
-
                             }
+
                         }
                     }
-                    //Build Table of conversation owner tags
-                    if (CheckActor)
+                }
+                //Build Table of conversation owner tags
+                if (CheckActor)
+                {
+                    foreach (ExportEntry exp in pcc.Exports)
                     {
-                        foreach (ExportEntry exp in pcc.Exports)
+                        if (DumpCanceled)
                         {
-                            if (DumpCanceled)
+                            return;
+                        }
+
+                        CurrentFileProgressValue = exp.UIndex;
+
+                        string ownertag = "Not found";
+                        className = exp.ClassName;
+                        if (className == "BioSeqAct_StartConversation" || className == "SFXSeqAct_StartConversation" || className == "SFXSeqAct_StartAmbientConv")
+                        {
+
+                            string convo = "not found";  //Find Conversation 
+                            var oconv = exp.GetProperty<ObjectProperty>("Conv");
+                            if (oconv != null)
                             {
-                                return;
+                                int iconv = oconv.Value;
+                                if (iconv < 0)
+                                {
+                                    convo = pcc.GetImport(iconv).ObjectName.Instanced;
+                                }
+                                else
+                                {
+                                    convo = pcc.GetUExport(iconv).ObjectName.Instanced;
+                                }
                             }
 
-                            CurrentFileProgressValue = exp.UIndex;
-
-                            string ownertag = "Not found";
-                            className = exp.ClassName;
-                            if (className == "BioSeqAct_StartConversation" || className == "SFXSeqAct_StartConversation" || className == "SFXSeqAct_StartAmbientConv")
+                            int iownerObj = 0; //Find owner tag in linked actor or variable
+                            var links = exp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                            if (links != null)
                             {
-
-                                string convo = "not found";  //Find Conversation 
-                                var oconv = exp.GetProperty<ObjectProperty>("Conv");
-                                if (oconv != null)
+                                foreach (StructProperty l in links)
                                 {
-                                    int iconv = oconv.Value;
-                                    if (iconv < 0)
+                                    if (l.GetProp<StrProperty>("LinkDesc") == "Owner")
                                     {
-                                        convo = pcc.GetImport(iconv).ObjectName.Instanced;
-                                    }
-                                    else
-                                    {
-                                        convo = pcc.GetUExport(iconv).ObjectName.Instanced;
-                                    }
-                                }
-
-                                int iownerObj = 0; //Find owner tag in linked actor or variable
-                                var links = exp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                                if (links != null)
-                                {
-                                    foreach (StructProperty l in links)
-                                    {
-                                        if (l.GetProp<StrProperty>("LinkDesc") == "Owner")
+                                        var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                        if (ownerLink.Any())
                                         {
-                                            var ownerLink = l.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                            if (ownerLink.Any())
-                                            {
-                                                iownerObj = ownerLink[0].Value;
-                                                break;
-                                            }
+                                            iownerObj = ownerLink[0].Value;
+                                            break;
                                         }
                                     }
                                 }
-                                if (iownerObj > 0)
+                            }
+                            if (iownerObj > 0)
+                            {
+                                var svlink = pcc.GetUExport(iownerObj);
+                                switch (svlink.ClassName)
                                 {
-                                    var svlink = pcc.GetUExport(iownerObj);
-                                    switch (svlink.ClassName)
+                                    case "SeqVar_Object":
                                     {
-                                        case "SeqVar_Object":
+                                        ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
+                                        if (oactorlink != null)
                                         {
-                                            ObjectProperty oactorlink = svlink.GetProperty<ObjectProperty>("ObjValue");
-                                            if (oactorlink != null)
+                                            var actor = pcc.GetUExport(oactorlink.Value);
+                                            var actortag = actor.GetProperty<NameProperty>("Tag");
+                                            if (actortag != null)
                                             {
-                                                var actor = pcc.GetUExport(oactorlink.Value);
-                                                var actortag = actor.GetProperty<NameProperty>("Tag");
-                                                if (actortag != null)
+                                                ownertag = actortag.ToString();
+                                            }
+                                            else if (actor.HasArchetype && actor.Archetype is ExportEntry archetype)
+                                            {
+                                                var archtag = archetype.GetProperty<NameProperty>("Tag");
+                                                if (archtag != null)
                                                 {
-                                                    ownertag = actortag.ToString();
-                                                }
-                                                else if (actor.HasArchetype && actor.Archetype is ExportEntry archetype)
-                                                {
-                                                    var archtag = archetype.GetProperty<NameProperty>("Tag");
-                                                    if (archtag != null)
-                                                    {
-                                                        ownertag = archtag.ToString();
-                                                    }
+                                                    ownertag = archtag.ToString();
                                                 }
                                             }
-                                            break;
                                         }
-                                        case "BioSeqVar_ObjectFindByTag" when GameBeingDumped == MEGame.ME3:
-                                            ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
-                                            break;
-                                        case "BioSeqVar_ObjectFindByTag":
-                                            ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
-                                            break;
+                                        break;
                                     }
+                                    case "BioSeqVar_ObjectFindByTag" when GameBeingDumped == MEGame.ME3:
+                                        ownertag = svlink.GetProperty<NameProperty>("m_sObjectTagToFind").ToString();
+                                        break;
+                                    case "BioSeqVar_ObjectFindByTag":
+                                        ownertag = svlink.GetProperty<StrProperty>("m_sObjectTagToFind").ToString();
+                                        break;
                                 }
-
-                                //Write to Background thread 
-                                var excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
-                                dumper._xlqueue.Add(excelout);
-
                             }
 
-                            if (dumper.shouldDoDebugOutput)
-                            {
-                                string tag = null;
-                                int strref = -1;
-                                if (GameBeingDumped == MEGame.ME1 && className == "BioPawn")
-                                {
-                                    var tagprop = exp.GetProperty<NameProperty>("Tag");
-                                    tag = tagprop.ToString();
-                                    var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
-                                    var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
-                                    var strrefprop = pcc.GetUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                                    if (strrefprop != null)
-                                    {
-                                        strref = strrefprop.Value;
-                                    }
-                                }
-                                else if (GameBeingDumped == MEGame.ME2 && className == "BioPawn")
-                                {
-                                    var tagprop = exp.GetProperty<NameProperty>("Tag");
-                                    tag = tagprop.ToString();
-                                    var type = exp.GetProperty<ObjectProperty>("ActorType");
-                                    var strrefprop = pcc.GetUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
-                                    if (strrefprop != null)
-                                    {
-                                        strref = strrefprop.Value;
-                                    }
-                                }
-                                else if (className == "SFXStuntActor" || className == "SFXPointOfInterest")
-                                {
+                            //Write to Background thread 
+                            var excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
+                            dumper._xlqueue.Add(excelout);
 
+                        }
+
+                        if (dumper.shouldDoDebugOutput)
+                        {
+                            string tag = null;
+                            int strref = -1;
+                            if (GameBeingDumped == MEGame.ME1 && className == "BioPawn")
+                            {
+                                var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                tag = tagprop.ToString();
+                                var behav = exp.GetProperty<ObjectProperty>("m_oBehavior");
+                                var set = pcc.GetUExport(behav.Value).GetProperty<ObjectProperty>("m_oActorType");
+                                var strrefprop = pcc.GetUExport(set.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                if (strrefprop != null)
+                                {
+                                    strref = strrefprop.Value;
+                                }
+                            }
+                            else if (GameBeingDumped == MEGame.ME2 && className == "BioPawn")
+                            {
+                                var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                tag = tagprop.ToString();
+                                var type = exp.GetProperty<ObjectProperty>("ActorType");
+                                var strrefprop = pcc.GetUExport(type.Value).GetProperty<StringRefProperty>("ActorGameNameStrRef");
+                                if (strrefprop != null)
+                                {
+                                    strref = strrefprop.Value;
+                                }
+                            }
+                            else if (className == "SFXStuntActor" || className == "SFXPointOfInterest")
+                            {
+
+                                var tagprop = exp.GetProperty<NameProperty>("Tag");
+                                tag = tagprop.Value;
+                                var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();
+                                var simplemod = modules.FirstOrDefault(m => exp.FileRef.GetUExport(m.Value).ClassName == "SFXSimpleUseModule");
+                                strref = exp.FileRef.GetUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
+                            }
+                            else if (className.StartsWith("SFXPawn_"))
+                            {
+                                try
+                                {
                                     var tagprop = exp.GetProperty<NameProperty>("Tag");
                                     tag = tagprop.Value;
-                                    var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();
-                                    var simplemod = modules.FirstOrDefault(m => exp.FileRef.GetUExport(m.Value).ClassName == "SFXSimpleUseModule");
-                                    strref = exp.FileRef.GetUExport(simplemod.Value).GetProperty<StringRefProperty>("m_srGameName").Value;
+                                    strref = exp.GetProperty<StringRefProperty>("PrettyName").Value;
                                 }
-                                else if (className.StartsWith("SFXPawn_"))
+                                catch
                                 {
-                                    try
-                                    {
-                                        var tagprop = exp.GetProperty<NameProperty>("Tag");
-                                        tag = tagprop.Value;
-                                        strref = exp.GetProperty<StringRefProperty>("PrettyName").Value;
-                                    }
-                                    catch
-                                    {
-                                        //ignore SFXPawns without prettyname don't add to Debug list
-                                    }
+                                    //ignore SFXPawns without prettyname don't add to Debug list
                                 }
+                            }
 
-                                if (tag != null && strref >= 0)
-                                {
-                                    string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef);
-                                    dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
-                                }
+                            if (tag != null && strref >= 0)
+                            {
+                                string actorname = GlobalFindStrRefbyID(strref, GameBeingDumped, exp.FileRef);
+                                dumper._xlqueue.Add(new List<string> { "Tags", tag, strref.ToString(), actorname });
+                            }
 
-                                if (className == "AnimSequence")
-                                {
-                                    string animname = exp.ObjectName.Instanced;
-                                    string animpackage = exp.Parent.ObjectName.Instanced;
-                                    var seqName = exp.GetProperty<NameProperty>("SequenceName");
-                                    float length = exp.GetProperty<FloatProperty>("SequenceLength");
-                                    dumper._xlqueue.Add(new List<string> { "Animations", animname, animpackage, seqName.ToString(), length.ToString(), fileName, GameBeingDumped.ToString() });
-                                }
+                            if (className == "AnimSequence")
+                            {
+                                string animname = exp.ObjectName.Instanced;
+                                string animpackage = exp.Parent.ObjectName.Instanced;
+                                var seqName = exp.GetProperty<NameProperty>("SequenceName");
+                                float length = exp.GetProperty<FloatProperty>("SequenceLength");
+                                dumper._xlqueue.Add(new List<string> { "Animations", animname, animpackage, seqName.ToString(), length.ToString(), fileName, GameBeingDumped.ToString() });
                             }
                         }
                     }

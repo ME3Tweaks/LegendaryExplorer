@@ -242,7 +242,7 @@ namespace ME3Explorer.PackageDumper
             }
             catch (Exception ex)
             {
-                var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
+                var exceptionMessage = ex.FlattenException();
                 Debug.WriteLine(exceptionMessage);
             }
 

@@ -10,10 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
-using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
-using System.Globalization;
-using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
 using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
@@ -193,7 +190,7 @@ namespace ME3Explorer.Meshplorer
             }
             catch (Exception e)
             {
-                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(e));
+                MessageBox.Show(e.FlattenException());
             }
         }
 
@@ -233,7 +230,7 @@ namespace ME3Explorer.Meshplorer
             }
             catch (Exception e)
             {
-                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(e));
+                MessageBox.Show(e.FlattenException());
             }
         }
 

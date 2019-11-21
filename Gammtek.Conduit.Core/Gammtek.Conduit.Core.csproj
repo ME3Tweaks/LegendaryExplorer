@@ -220,28 +220,12 @@
     <Compile Include="Windows\ShMisc.cs" />
     <Compile Include="Windows\ShPath.cs" />
     <Compile Include="Windows\WindowsApi.cs" />
-    <Compile Include="Xml\Dynamic\DynamicXml.cs" />
-    <Compile Include="Xml\Dynamic\XElementExtension.cs" />
-    <Compile Include="Xml\Dynamic\XmlNamespaceRemover.cs" />
-    <Compile Include="Xml\IXmlIncludeElement.cs" />
-    <Compile Include="Xml\Linq\XIncludeElement.cs" />
-    <Compile Include="Xml\Linq\XmlBaseUriAnnotation.cs" />
-    <Compile Include="Xml\Linq\IXObjectExtension.cs" />
-    <Compile Include="Xml\Linq\XBaseUriAnnotation.cs" />
-    <Compile Include="Xml\Linq\XElementExtension.cs" />
-    <Compile Include="Extensions\Xml\Linq\XElementExtensions.cs" />
-    <Compile Include="Xml\Linq\XNodeExtension.cs" />
-    <Compile Include="Extensions\Xml\Linq\XNodeExtensions.cs" />
-    <Compile Include="Extensions\Xml\Linq\XObjectExtensions.cs" />
-    <Compile Include="Xml\XmlIncludeElement.cs" />
-    <Compile Include="Xml\XmlIncludeParseType.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Xml\Dynamic\StripNamespace.xslt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

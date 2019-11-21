@@ -7,14 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -60,22 +53,17 @@ namespace ME3Explorer.PackageEditor
             if (JPEXIsInstalled) return;
             try
             {
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{E618D276-6596-41F4-8A98-447D442A77DB}_is1"))
+                using RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{E618D276-6596-41F4-8A98-447D442A77DB}_is1");
+                if (key?.GetValue("InstallLocation") is string InstallDir)
                 {
-                    if (key != null)
-                    {
-                        if (key.GetValue("InstallLocation") is string InstallDir)
-                        {
-                            JPEXExecutableLocation = Path.Combine(InstallDir, "ffdec.exe");
-                            JPEXIsInstalled = true;
-                            return;
-                        }
-                    }
+                    JPEXExecutableLocation = Path.Combine(InstallDir, "ffdec.exe");
+                    JPEXIsInstalled = true;
+                    return;
                 }
             }
-            catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
+            catch
             {
-                //react appropriately
+                //ignore
             }
             JPEXIsInstalled = false;
             JPEXExecutableLocation = null;
@@ -95,24 +83,28 @@ namespace ME3Explorer.PackageEditor
             try
             {
                 var props = CurrentLoadedExport.GetProperties();
-                string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
 
                 byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).bytes;
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
 
                 File.WriteAllBytes(writeoutPath, data);
 
-                Process process = new Process();
-                // Configure the process using the StartInfo properties.
-                process.StartInfo.FileName = JPEXExecutableLocation;
-                process.StartInfo.Arguments = writeoutPath;
+                Process process = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = JPEXExecutableLocation,
+                        Arguments = writeoutPath
+                    }
+                };
                 process.Start();
                 CurrentJPEXExportedFilepath = writeoutPath;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error launching JPEX: " + ExceptionHandlerDialogWPF.FlattenException(ex));
-                MessageBox.Show("Error launching JPEX:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                Debug.WriteLine("Error launching JPEX: " + ex.FlattenException());
+                MessageBox.Show("Error launching JPEX:\n\n" + ex.FlattenException());
             }
         }
 
@@ -120,10 +112,10 @@ namespace ME3Explorer.PackageEditor
         {
             if (CurrentJPEXExportedFilepath != null)
             {
-                var bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
+                byte[] bytes = File.ReadAllBytes(CurrentJPEXExportedFilepath);
                 var props = CurrentLoadedExport.GetProperties();
 
-                string dataPropName = CurrentLoadedExport.FileRef.Game != MEGame.ME3 ? "RawData" : "Data";
+                string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                 //Write SWF data
                 rawData.bytes = bytes;

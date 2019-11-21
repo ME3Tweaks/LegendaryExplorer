@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using ClosedXML.Excel;
 using Gammtek.Conduit.Extensions;
@@ -133,27 +125,16 @@ namespace ME3Explorer.CurveEd
         private void btnInterpMode_Click(object sender, RoutedEventArgs e)
         {
             CurvePoint selectedPoint = graph.SelectedPoint;
-            switch ((sender as RadioButton)?.Name)
+            selectedPoint.InterpMode = (sender as RadioButton)?.Name switch
             {
-                case "btnLinear":
-                    selectedPoint.InterpMode = CurveMode.CIM_Linear;
-                    break;
-                case "btnAuto":
-                    selectedPoint.InterpMode = CurveMode.CIM_CurveAuto;
-                    break;
-                case "btnConstant":
-                    selectedPoint.InterpMode = CurveMode.CIM_Constant;
-                    break;
-                case "btnUser":
-                    selectedPoint.InterpMode = CurveMode.CIM_CurveUser;
-                    break;
-                case "btnBreak":
-                    selectedPoint.InterpMode = CurveMode.CIM_CurveBreak;
-                    break;
-                case "btnClamped":
-                    selectedPoint.InterpMode = CurveMode.CIM_CurveAutoClamped;
-                    break;
-            }
+                "btnLinear" => CurveMode.CIM_Linear,
+                "btnAuto" => CurveMode.CIM_CurveAuto,
+                "btnConstant" => CurveMode.CIM_Constant,
+                "btnUser" => CurveMode.CIM_CurveUser,
+                "btnBreak" => CurveMode.CIM_CurveBreak,
+                "btnClamped" => CurveMode.CIM_CurveAutoClamped,
+                _ => selectedPoint.InterpMode
+            };
             graph.Paint();
             graph.SelectedPoint = selectedPoint;
         }
@@ -272,12 +253,11 @@ namespace ME3Explorer.CurveEd
 
             OpenFileDialog oDlg = new OpenFileDialog //Load Excel
             {
-                Filter = "Excel Files (*.xlsx)|*.xlsx"
+                Filter = "Excel Files (*.xlsx)|*.xlsx",
+                Title = "Import Excel table"
             };
-            oDlg.Title = "Import Excel table";
-            var result = oDlg.ShowDialog();
 
-            if (!result.HasValue || !result.Value)
+            if (oDlg.ShowDialog() != true)
                 return;
 
             var Workbook = new XLWorkbook(oDlg.FileName);
@@ -318,7 +298,7 @@ namespace ME3Explorer.CurveEd
                 for (int row = 2; row <= xlrowCount; row++)
                 {
                     var t = iWorksheet.Cell(row, 1).Value.ToString();
-                    if (!Single.TryParse(t, out float time) || time < previoustime)
+                    if (!float.TryParse(t, out float time) || time < previoustime)
                     {
                         MessageBox.Show("The imported timings are not in order.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
                         return;
@@ -333,7 +313,7 @@ namespace ME3Explorer.CurveEd
                         MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
                         return;
                     }
-                    if(cell.Address.RowNumber > 1 && !Single.TryParse(cell.Value.ToString(), out float f))
+                    if(cell.Address.RowNumber > 1 && !float.TryParse(cell.Value.ToString(), out float f))
                     {
                         MessageBox.Show("The values contain text.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
                         return;
@@ -371,9 +351,9 @@ namespace ME3Explorer.CurveEd
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Import failed. Check Import data.\n", "Error");
+                MessageBox.Show("Import failed. Check Import data.\n", "Error");
 #if DEBUG
-                MessageBox.Show($"{ExceptionHandlerDialogWPF.FlattenException(e)}", "Error");
+                MessageBox.Show($"{e.FlattenException()}", "Error");
 #endif
             }
             

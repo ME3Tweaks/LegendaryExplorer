@@ -1068,7 +1068,7 @@ namespace ME3Explorer
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("Error reading/saving SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                                MessageBox.Show("Error reading/saving SWF data:\n\n" + ex.FlattenException());
                             }
                         }
                         break;
@@ -1147,7 +1147,7 @@ namespace ME3Explorer
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("Error reading/setting SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                                MessageBox.Show("Error reading/setting SWF data:\n\n" + ex.FlattenException());
                             }
                         }
                         break;
@@ -1194,12 +1194,7 @@ namespace ME3Explorer
                 levelStreamingKismets = levelStreamingKismets.OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
                 if (bioworldinfo != null)
                 {
-                    var streamingLevelsProp = bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels");
-                    if (streamingLevelsProp == null)
-                    {
-                        //couldn't find...
-                        streamingLevelsProp = new ArrayProperty<ObjectProperty>("StreamingLevels");
-                    }
+                    var streamingLevelsProp = bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels") ?? new ArrayProperty<ObjectProperty>("StreamingLevels");
 
                     streamingLevelsProp.Clear();
                     foreach (ExportEntry exp in levelStreamingKismets)
@@ -1558,138 +1553,136 @@ namespace ME3Explorer
 
         private void ComparePackage(string packagePath)
         {
-            using (IMEPackage compareFile = MEPackageHandler.OpenMEPackage(packagePath))
+            using IMEPackage compareFile = MEPackageHandler.OpenMEPackage(packagePath);
+            if (Pcc.Game != compareFile.Game)
             {
-                if (Pcc.Game != compareFile.Game)
-                {
-                    MessageBox.Show("Files are for different games.");
-                    return;
-                }
-                var changedImports = new List<string>();
-                var changedNames = new List<string>();
-                var changedExports = new List<string>();
-                {
-                    #region Exports Comparison
-                    int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
-
-                    for (int i = 0; i < numExportsToEnumerate; i++)
-                    {
-                        ExportEntry exp1 = Pcc.Exports[i];
-                        ExportEntry exp2 = compareFile.Exports[i];
-
-                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
-                        //The datasize being different is a data difference not a true header difference so we won't list it here.
-                        byte[] header1 = exp1.Header.TypedClone();
-                        byte[] header2 = exp2.Header.TypedClone();
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
-
-                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                        if (!header1.SequenceEqual(header2))
-
-                        {
-                            //foreach (byte b in header1)
-                            //{
-                            //    Debug.Write(" " + b.ToString("X2"));
-                            //}
-                            //Debug.WriteLine("");
-                            //foreach (byte b in header2)
-                            //{
-                            //    //Debug.Write(" " + b.ToString("X2"));
-                            //}
-                            //Debug.WriteLine("");
-                            changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
-                        }
-
-                        if (!exp1.Data.SequenceEqual(exp2.Data))
-                        {
-                            changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
-                        }
-                    }
-
-                    IMEPackage enumerateExtras = Pcc;
-                    string file = "this file";
-                    if (compareFile.ExportCount > numExportsToEnumerate)
-                    {
-                        file = "other file";
-                        enumerateExtras = compareFile;
-                    }
-
-                    for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
-                    {
-                        Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
-                        changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
-                    }
-                    #endregion
-                }
-                #region Imports
-                {
-                    int numImportsToEnumerate = Math.Min(Pcc.ImportCount, compareFile.ImportCount);
-
-                    for (int i = 0; i < numImportsToEnumerate; i++)
-                    {
-                        ImportEntry imp1 = Pcc.Imports[i];
-                        ImportEntry imp2 = compareFile.Imports[i];
-                        if (!imp1.Header.SequenceEqual(imp2.Header))
-                        {
-                            changedImports.Add($"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}");
-                        }
-                    }
-
-                    IMEPackage enumerateExtras = Pcc;
-                    string file = "this file";
-                    if (compareFile.ExportCount > numImportsToEnumerate)
-                    {
-                        file = "other file";
-                        enumerateExtras = compareFile;
-                    }
-
-                    for (int i = numImportsToEnumerate; i < enumerateExtras.ImportCount; i++)
-                    {
-                        Debug.WriteLine($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
-                        changedImports.Add($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
-                    }
-                }
-                #endregion
-
-                #region Names
-                {
-                    int numNamesToEnumerate = Math.Min(Pcc.NameCount, compareFile.NameCount);
-                    for (int i = 0; i < numNamesToEnumerate; i++)
-                    {
-                        var name1 = Pcc.Names[i];
-                        var name2 = compareFile.Names[i];
-
-                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                        if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
-
-                        {
-                            changedNames.Add($"Name { i } is different: {name1} |vs| {name2}");
-                        }
-                    }
-
-                    IMEPackage enumerateExtras = Pcc;
-                    string file = "this file";
-                    if (compareFile.NameCount > numNamesToEnumerate)
-                    {
-                        file = "other file";
-                        enumerateExtras = compareFile;
-                    }
-
-                    for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
-                    {
-                        Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                        changedNames.Add($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                    }
-                }
-                #endregion
-                var fullList = new List<string>();
-                fullList.AddRange(changedExports);
-                fullList.AddRange(changedImports);
-                fullList.AddRange(changedNames);
-                ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files", "The following exports, imports and names are different between the files.", this);
-                ld.Show();
+                MessageBox.Show("Files are for different games.");
+                return;
             }
+            var changedImports = new List<string>();
+            var changedNames = new List<string>();
+            var changedExports = new List<string>();
+            {
+                #region Exports Comparison
+                int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
+
+                for (int i = 0; i < numExportsToEnumerate; i++)
+                {
+                    ExportEntry exp1 = Pcc.Exports[i];
+                    ExportEntry exp2 = compareFile.Exports[i];
+
+                    //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                    //The datasize being different is a data difference not a true header difference so we won't list it here.
+                    byte[] header1 = exp1.Header.TypedClone();
+                    byte[] header2 = exp2.Header.TypedClone();
+                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
+                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+
+                    //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                    if (!header1.SequenceEqual(header2))
+
+                    {
+                        //foreach (byte b in header1)
+                        //{
+                        //    Debug.Write(" " + b.ToString("X2"));
+                        //}
+                        //Debug.WriteLine("");
+                        //foreach (byte b in header2)
+                        //{
+                        //    //Debug.Write(" " + b.ToString("X2"));
+                        //}
+                        //Debug.WriteLine("");
+                        changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
+                    }
+
+                    if (!exp1.Data.SequenceEqual(exp2.Data))
+                    {
+                        changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
+                    }
+                }
+
+                IMEPackage enumerateExtras = Pcc;
+                string file = "this file";
+                if (compareFile.ExportCount > numExportsToEnumerate)
+                {
+                    file = "other file";
+                    enumerateExtras = compareFile;
+                }
+
+                for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
+                {
+                    Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
+                    changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
+                }
+                #endregion
+            }
+            #region Imports
+            {
+                int numImportsToEnumerate = Math.Min(Pcc.ImportCount, compareFile.ImportCount);
+
+                for (int i = 0; i < numImportsToEnumerate; i++)
+                {
+                    ImportEntry imp1 = Pcc.Imports[i];
+                    ImportEntry imp2 = compareFile.Imports[i];
+                    if (!imp1.Header.SequenceEqual(imp2.Header))
+                    {
+                        changedImports.Add($"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}");
+                    }
+                }
+
+                IMEPackage enumerateExtras = Pcc;
+                string file = "this file";
+                if (compareFile.ExportCount > numImportsToEnumerate)
+                {
+                    file = "other file";
+                    enumerateExtras = compareFile;
+                }
+
+                for (int i = numImportsToEnumerate; i < enumerateExtras.ImportCount; i++)
+                {
+                    Debug.WriteLine($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
+                    changedImports.Add($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
+                }
+            }
+            #endregion
+
+            #region Names
+            {
+                int numNamesToEnumerate = Math.Min(Pcc.NameCount, compareFile.NameCount);
+                for (int i = 0; i < numNamesToEnumerate; i++)
+                {
+                    var name1 = Pcc.Names[i];
+                    var name2 = compareFile.Names[i];
+
+                    //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                    if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
+
+                    {
+                        changedNames.Add($"Name { i } is different: {name1} |vs| {name2}");
+                    }
+                }
+
+                IMEPackage enumerateExtras = Pcc;
+                string file = "this file";
+                if (compareFile.NameCount > numNamesToEnumerate)
+                {
+                    file = "other file";
+                    enumerateExtras = compareFile;
+                }
+
+                for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
+                {
+                    Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
+                    changedNames.Add($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
+                }
+            }
+            #endregion
+            var fullList = new List<string>();
+            fullList.AddRange(changedExports);
+            fullList.AddRange(changedImports);
+            fullList.AddRange(changedNames);
+            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files", "The following exports, imports and names are different between the files.", this);
+            ld.Show();
         }
 
         #endregion
@@ -3440,11 +3433,10 @@ namespace ME3Explorer
             };
             if (d.ShowDialog() == true)
             {
-                Guid newGuid;
                 using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
                 {
                     string fname = Path.GetFileNameWithoutExtension(d.FileName);
-                    newGuid = Guid.NewGuid();
+                    Guid newGuid = Guid.NewGuid();
                     ExportEntry selfNamingExport = null;
                     foreach (ExportEntry exp in sourceFile.Exports)
                     {
@@ -3653,21 +3645,19 @@ namespace ME3Explorer
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
-                    using (var package = MEPackageHandler.OpenMEPackage(fi.FullName))
+                    using var package = MEPackageHandler.OpenMEPackage(fi.FullName);
+                    foreach (ExportEntry export in package.Exports)
                     {
-                        foreach (ExportEntry export in package.Exports)
+                        if (export.SuperClassName == "SFXPower")
                         {
-                            if (export.SuperClassName == "SFXPower")
+                            Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
                             {
-                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
-                                if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
-                                {
-                                    instances.Add($"{fi.Name} at export {export.UIndex}");
-                                }
-                                else
-                                {
-                                    newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
-                                }
+                                instances.Add($"{fi.Name} at export {export.UIndex}");
+                            }
+                            else
+                            {
+                                newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
                             }
                         }
                     }
@@ -4424,35 +4414,33 @@ namespace ME3Explorer
                 {
                     foreach (string file in MELoadedFiles.GetAllFiles(game))
                     {
-                        using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
+                        bool hasConv = false;
+                        foreach (ExportEntry conv in pcc.Exports.Where(exp => exp.ClassName == "BioConversation"))
                         {
-                            bool hasConv = false;
-                            foreach (ExportEntry conv in pcc.Exports.Where(exp => exp.ClassName == "BioConversation"))
+                            hasConv = true;
+                            PropertyCollection props = conv.GetProperties();
+                            if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is ArrayProperty<StructProperty> entryList)
                             {
-                                hasConv = true;
-                                PropertyCollection props = conv.GetProperties();
-                                if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is ArrayProperty<StructProperty> entryList)
+                                foreach (StructProperty entryNode in entryList)
                                 {
-                                    foreach (StructProperty entryNode in entryList)
-                                    {
-                                        entryNode.Properties.AddOrReplaceProp(new BoolProperty(true, "bSkippable"));
-                                    }
+                                    entryNode.Properties.AddOrReplaceProp(new BoolProperty(true, "bSkippable"));
                                 }
-
-                                if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is ArrayProperty<StructProperty> replyList)
-                                {
-                                    foreach (StructProperty entryNode in replyList)
-                                    {
-                                        entryNode.Properties.AddOrReplaceProp(new BoolProperty(false, "bUnskippable"));
-                                    }
-                                }
-
-                                conv.WriteProperties(props);
                             }
 
-                            if (hasConv)
-                                pcc.Save();
+                            if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is ArrayProperty<StructProperty> replyList)
+                            {
+                                foreach (StructProperty entryNode in replyList)
+                                {
+                                    entryNode.Properties.AddOrReplaceProp(new BoolProperty(false, "bUnskippable"));
+                                }
+                            }
+
+                            conv.WriteProperties(props);
                         }
+
+                        if (hasConv)
+                            pcc.Save();
                     }
                 }).ContinueWithOnUIThread(prevTask =>
                 {

@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
@@ -38,7 +29,7 @@ namespace ME3Explorer
             set => SetValue(HideHexBoxProperty, value);
         }
         public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
-            "HideHexBox", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
+            nameof(HideHexBox), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
 
         public bool AlwaysLoadRegardlessOfSize
         {
@@ -46,7 +37,7 @@ namespace ME3Explorer
             set => SetValue(AlwaysLoadRegardlessOfSizeProperty, value);
         }
         public static readonly DependencyProperty AlwaysLoadRegardlessOfSizeProperty = DependencyProperty.Register(
-            "AlwaysLoadRegardlessOfSize", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
+            nameof(AlwaysLoadRegardlessOfSize), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
 
         private HexBox BinaryInterpreter_Hexbox;
 
@@ -613,7 +604,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(new BinInterpNode(ExceptionHandlerDialogWPF.FlattenException(ex)));
+                topLevelTree.Items.Add(new BinInterpNode(ex.FlattenException()));
             }
             return topLevelTree;
         }

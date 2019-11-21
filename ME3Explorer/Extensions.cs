@@ -1014,6 +1014,29 @@ namespace ME3Explorer
         }
     }
 
+    public static class ExceptionExtensions
+    {
+        /// <summary>
+        /// Flattens an exception into a printable string
+        /// </summary>
+        /// <param name="exception">Exception to flatten</param>
+        /// <returns>Printable string</returns>
+        public static string FlattenException(this Exception exception)
+        {
+            var stringBuilder = new StringBuilder();
+
+            while (exception != null)
+            {
+                stringBuilder.AppendLine(exception.GetType().Name + ": " + exception.Message);
+                stringBuilder.AppendLine(exception.StackTrace);
+
+                exception = exception.InnerException;
+            }
+
+            return stringBuilder.ToString();
+        }
+    }
+
     /// <summary>
     /// For use with List initializers
     /// </summary>

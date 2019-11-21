@@ -15,7 +15,6 @@ using FontAwesome5;
 using ME3Explorer.SharedUI;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using StreamHelpers;
 
 namespace ME3Explorer.AutoTOC
@@ -104,7 +103,7 @@ namespace ME3Explorer.AutoTOC
             }
             catch (IOException e)
             {
-                MessageBox.Show($"BioEngine not found. Run config or game to set it up. {ExceptionHandlerDialogWPF.FlattenException(e)}");
+                MessageBox.Show($"BioEngine not found. Run config or game to set it up. {e.FlattenException()}");
                 return;
             }
             
@@ -156,7 +155,7 @@ namespace ME3Explorer.AutoTOC
                 }
                 catch (IOException e)
                 {
-                    MessageBox.Show($"Error backup up FileIndex.txt:\n{ExceptionHandlerDialogWPF.FlattenException((e))}");
+                    MessageBox.Show($"Error backup up FileIndex.txt:\n{e.FlattenException()}");
                     return;
                 }
             }

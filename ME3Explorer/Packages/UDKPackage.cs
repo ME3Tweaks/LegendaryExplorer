@@ -83,97 +83,96 @@ namespace ME3Explorer.Packages
                 return;
             }
 
-            using (var fs = File.OpenRead(FilePath))
+            using var fs = File.OpenRead(FilePath);
+
+            #region Header
+
+            uint magic = fs.ReadUInt32();
+            if (magic != packageTag)
             {
-                #region Header
+                throw new FormatException("Not an Unreal package!");
+            }
+            ushort unrealVersion = fs.ReadUInt16();
+            ushort licenseeVersion = fs.ReadUInt16();
+            FullHeaderSize = fs.ReadInt32();
+            int foldernameStrLen = fs.ReadInt32();
+            //always "None", so don't bother saving result
+            if (foldernameStrLen > 0)
+                folderName = fs.ReadStringASCIINull(foldernameStrLen);
+            else
+                folderName = fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
-                uint magic = fs.ReadUInt32();
-                if (magic != packageTag)
-                {
-                    throw new FormatException("Not an Unreal package!");
-                }
-                ushort unrealVersion = fs.ReadUInt16();
-                ushort licenseeVersion = fs.ReadUInt16();
-                FullHeaderSize = fs.ReadInt32();
-                int foldernameStrLen = fs.ReadInt32();
-                //always "None", so don't bother saving result
-                if (foldernameStrLen > 0)
-                    folderName = fs.ReadStringASCIINull(foldernameStrLen);
-                else
-                    folderName = fs.ReadStringUnicodeNull(foldernameStrLen * -2);
+            Flags = (EPackageFlags)fs.ReadUInt32();
 
-                Flags = (EPackageFlags)fs.ReadUInt32();
+            //if (Flags.HasFlag(EPackageFlags.Compressed))
+            //{
+            //    throw new FormatException("Cannot read compressed UDK packages!");
+            //}
 
-                //if (Flags.HasFlag(EPackageFlags.Compressed))
-                //{
-                //    throw new FormatException("Cannot read compressed UDK packages!");
-                //}
+            NameCount = fs.ReadInt32();
+            NameOffset = fs.ReadInt32();
+            ExportCount = fs.ReadInt32();
+            ExportOffset = fs.ReadInt32();
+            ImportCount = fs.ReadInt32();
+            ImportOffset = fs.ReadInt32();
+            DependencyTableOffset = fs.ReadInt32();
+            importExportGuidsOffset = fs.ReadInt32();
+            importGuidsCount = fs.ReadInt32();
+            exportGuidsCount = fs.ReadInt32();
+            thumbnailTableOffset = fs.ReadInt32();
+            PackageGuid = fs.ReadGuid();
 
-                NameCount = fs.ReadInt32();
-                NameOffset = fs.ReadInt32();
-                ExportCount = fs.ReadInt32();
-                ExportOffset = fs.ReadInt32();
-                ImportCount = fs.ReadInt32();
-                ImportOffset = fs.ReadInt32();
-                DependencyTableOffset = fs.ReadInt32();
-                importExportGuidsOffset = fs.ReadInt32();
-                importGuidsCount = fs.ReadInt32();
-                exportGuidsCount = fs.ReadInt32();
-                thumbnailTableOffset = fs.ReadInt32();
-                PackageGuid = fs.ReadGuid();
+            uint generationsTableCount = fs.ReadUInt32();
+            if (generationsTableCount > 0)
+            {
+                generationsTableCount--;
+                Gen0ExportCount = fs.ReadInt32();
+                Gen0NameCount = fs.ReadInt32();
+                Gen0NetworkedObjectCount = fs.ReadInt32();
+            }
+            //don't care about other gens, so skip them
+            fs.Skip(generationsTableCount * 12);
+            engineVersion = fs.ReadInt32();
+            cookedContentVersion = fs.ReadInt32();
 
-                uint generationsTableCount = fs.ReadUInt32();
-                if (generationsTableCount > 0)
-                {
-                    generationsTableCount--;
-                    Gen0ExportCount = fs.ReadInt32();
-                    Gen0NameCount = fs.ReadInt32();
-                    Gen0NetworkedObjectCount = fs.ReadInt32();
-                }
-                //don't care about other gens, so skip them
-                fs.Skip(generationsTableCount * 12);
-                engineVersion = fs.ReadInt32();
-                cookedContentVersion = fs.ReadInt32();
+            //skip compression type chunks. Decompressor will handle that
+            long compressionInfoOffset = fs.Position;
+            fs.SkipInt32();
+            int numChunks = fs.ReadInt32();
+            fs.Skip(numChunks * 16);
 
-                //skip compression type chunks. Decompressor will handle that
-                long compressionInfoOffset = fs.Position;
-                fs.SkipInt32();
-                int numChunks = fs.ReadInt32();
-                fs.Skip(numChunks * 16);
+            packageSource = fs.ReadUInt32();
+            //additional packages to cook, and texture allocation, but we don't care about those, so we won't read them in.
 
-                packageSource = fs.ReadUInt32();
-                //additional packages to cook, and texture allocation, but we don't care about those, so we won't read them in.
+            #endregion
+            Stream inStream = fs;
+            if (IsCompressed && numChunks > 0)
+            {
+                inStream = CompressionHelper.DecompressUDK(fs, compressionInfoOffset);
+            }
 
-                #endregion
-                Stream inStream = fs;
-                if (IsCompressed && numChunks > 0)
-                {
-                    inStream = CompressionHelper.DecompressUDK(fs, compressionInfoOffset);
-                }
+            inStream.JumpTo(NameOffset);
+            for (int i = 0; i < NameCount; i++)
+            {
+                names.Add(inStream.ReadUnrealString());
+                inStream.Skip(8);
+            }
 
-                inStream.JumpTo(NameOffset);
-                for (int i = 0; i < NameCount; i++)
-                {
-                    names.Add(inStream.ReadUnrealString());
-                    inStream.Skip(8);
-                }
+            inStream.JumpTo(ImportOffset);
+            for (int i = 0; i < ImportCount; i++)
+            {
+                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
+                imp.PropertyChanged += importChanged;
+                imports.Add(imp);
+            }
 
-                inStream.JumpTo(ImportOffset);
-                for (int i = 0; i < ImportCount; i++)
-                {
-                    ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
-                    imp.PropertyChanged += importChanged;
-                    imports.Add(imp);
-                }
-
-                //read exportTable (ExportEntry constructor reads export data)
-                inStream.JumpTo(ExportOffset);
-                for (int i = 0; i < ExportCount; i++)
-                {
-                    ExportEntry e = new ExportEntry(this, inStream) { Index = i };
-                    e.PropertyChanged += exportChanged;
-                    exports.Add(e);
-                }
+            //read exportTable (ExportEntry constructor reads export data)
+            inStream.JumpTo(ExportOffset);
+            for (int i = 0; i < ExportCount; i++)
+            {
+                ExportEntry e = new ExportEntry(this, inStream) { Index = i };
+                e.PropertyChanged += exportChanged;
+                exports.Add(e);
             }
         }
 
@@ -316,7 +315,7 @@ namespace ME3Explorer.Packages
             }
             catch (Exception ex) when (!App.IsDebug)
             {
-                MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
+                MessageBox.Show($"Error saving {FilePath}:\n{ex.FlattenException()}");
             }
         }
 

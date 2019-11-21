@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -111,108 +106,108 @@ namespace ME3Explorer.Packages
                 return;
             }
 
-            using (var fs = File.OpenRead(filePath))
+            using var fs = File.OpenRead(filePath);
+
+            #region Header
+
+            uint magic = fs.ReadUInt32();
+            if (magic != packageTag)
             {
-                #region Header
+                throw new FormatException("Not an Unreal package!");
+            }
+            ushort unrealVersion = fs.ReadUInt16();
+            ushort licenseeVersion = fs.ReadUInt16();
+            switch (unrealVersion)
+            {
+                case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
+                    Game = MEGame.ME1;
+                    break;
+                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
+                    Game = MEGame.ME2;
+                    break;
+                case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
+                    Game = MEGame.ME3;
+                    break;
+                default:
+                    throw new FormatException("Not a Mass Effect Package!");
+            }
+            FullHeaderSize = fs.ReadInt32();
+            int foldernameStrLen = fs.ReadInt32();
+            //always "None", so don't bother saving result
+            if (foldernameStrLen > 0)
+                fs.ReadStringASCIINull(foldernameStrLen);
+            else
+                fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
-                uint magic = fs.ReadUInt32();
-                if (magic != packageTag)
-                {
-                    throw new FormatException("Not an Unreal package!");
-                }
-                ushort unrealVersion = fs.ReadUInt16();
-                ushort licenseeVersion = fs.ReadUInt16();
-                switch (unrealVersion)
-                {
-                    case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
-                        Game = MEGame.ME1;
-                        break;
-                    case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
-                        Game = MEGame.ME2;
-                        break;
-                    case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
-                        Game = MEGame.ME3;
-                        break;
-                    default:
-                        throw new FormatException("Not a Mass Effect Package!");
-                }
-                FullHeaderSize = fs.ReadInt32();
-                int foldernameStrLen = fs.ReadInt32();
-                //always "None", so don't bother saving result
-                if (foldernameStrLen > 0)
-                    fs.ReadStringASCIINull(foldernameStrLen);
-                else
-                    fs.ReadStringUnicodeNull(foldernameStrLen * -2);
+            Flags = (EPackageFlags)fs.ReadUInt32();
 
-                Flags = (EPackageFlags)fs.ReadUInt32();
+            if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
+            {
+                fs.SkipInt32(); //always 0
+            }
 
-                if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
-                {
-                    fs.SkipInt32(); //always 0
-                }
+            NameCount = fs.ReadInt32();
+            NameOffset = fs.ReadInt32();
+            ExportCount = fs.ReadInt32();
+            ExportOffset = fs.ReadInt32();
+            ImportCount = fs.ReadInt32();
+            ImportOffset = fs.ReadInt32();
+            DependencyTableOffset = fs.ReadInt32();
 
-                NameCount = fs.ReadInt32();
-                NameOffset = fs.ReadInt32();
-                ExportCount = fs.ReadInt32();
-                ExportOffset = fs.ReadInt32();
-                ImportCount = fs.ReadInt32();
-                ImportOffset = fs.ReadInt32();
-                DependencyTableOffset = fs.ReadInt32();
+            if (Game == MEGame.ME3)
+            {
+                ImportExportGuidsOffset = fs.ReadInt32();
+                fs.SkipInt32(); //ImportGuidsCount always 0
+                fs.SkipInt32(); //ExportGuidsCount always 0
+                fs.SkipInt32(); //ThumbnailTableOffset always 0
+            }
 
-                if (Game == MEGame.ME3)
-                {
-                    ImportExportGuidsOffset = fs.ReadInt32();
-                    fs.SkipInt32(); //ImportGuidsCount always 0
-                    fs.SkipInt32(); //ExportGuidsCount always 0
-                    fs.SkipInt32(); //ThumbnailTableOffset always 0
-                }
+            PackageGuid = fs.ReadGuid();
+            uint generationsTableCount = fs.ReadUInt32();
+            if (generationsTableCount > 0)
+            {
+                generationsTableCount--;
+                Gen0ExportCount = fs.ReadInt32();
+                Gen0NameCount = fs.ReadInt32();
+                Gen0NetworkedObjectCount = fs.ReadInt32();
+            }
+            //should never be more than 1 generation, but just in case
+            fs.Skip(generationsTableCount * 12);
 
-                PackageGuid = fs.ReadGuid();
-                uint generationsTableCount = fs.ReadUInt32();
-                if (generationsTableCount > 0)
-                {
-                    generationsTableCount--;
-                    Gen0ExportCount = fs.ReadInt32();
-                    Gen0NameCount = fs.ReadInt32();
-                    Gen0NetworkedObjectCount = fs.ReadInt32();
-                }
-                //should never be more than 1 generation, but just in case
-                fs.Skip(generationsTableCount * 12);
+            fs.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+            fs.SkipInt32();//cookedContentVersion   so we don't have to read them in
 
-                fs.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
-                fs.SkipInt32();//cookedContentVersion   so we don't have to read them in
+            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            {
+                fs.SkipInt32(); //always 0
+                fs.SkipInt32(); //always 47699
+                unknown4 = fs.ReadInt32();
+                fs.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
+            }
 
-                if (Game == MEGame.ME2 || Game == MEGame.ME1)
-                {
-                    fs.SkipInt32(); //always 0
-                    fs.SkipInt32(); //always 47699
-                    unknown4 = fs.ReadInt32();
-                    fs.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
-                }
+            unknown6 = fs.ReadInt32();
+            fs.SkipInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
 
-                unknown6 = fs.ReadInt32();
-                fs.SkipInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
+            if (Game == MEGame.ME1)
+            {
+                fs.SkipInt32(); //always -1
+            }
 
-                if (Game == MEGame.ME1)
-                {
-                    fs.SkipInt32(); //always -1
-                }
+            //skip compression type chunks. Decompressor will handle that
+            fs.SkipInt32();
+            int numChunks = fs.ReadInt32();
+            fs.Skip(numChunks * 16);
 
-                //skip compression type chunks. Decompressor will handle that
-                fs.SkipInt32();
-                int numChunks = fs.ReadInt32();
-                fs.Skip(numChunks * 16);
+            packageSource = fs.ReadUInt32();
 
-                packageSource = fs.ReadUInt32();
+            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            {
+                fs.SkipInt32(); //always 0
+            }
 
-                if (Game == MEGame.ME2 || Game == MEGame.ME1)
-                {
-                    fs.SkipInt32(); //always 0
-                }
-
-                //Doesn't need to be written out, so it doesn't need to be read in
-                //keep this here in case one day we learn that this has a purpose
-                /*if (Game == MEGame.ME2 || Game == MEGame.ME3)
+            //Doesn't need to be written out, so it doesn't need to be read in
+            //keep this here in case one day we learn that this has a purpose
+            /*if (Game == MEGame.ME2 || Game == MEGame.ME3)
                 {
                     int additionalPackagesToCookCount = fs.ReadInt32();
                     var additionalPackagesToCook = new string[additionalPackagesToCookCount];
@@ -229,47 +224,46 @@ namespace ME3Explorer.Packages
                         }
                     }
                 }*/
-                #endregion
+            #endregion
 
-                Stream inStream = fs;
-                if (IsCompressed && numChunks > 0)
-                {
-                    inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(fs) : CompressionHelper.DecompressME1orME2(fs);
-                }
+            Stream inStream = fs;
+            if (IsCompressed && numChunks > 0)
+            {
+                inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(fs) : CompressionHelper.DecompressME1orME2(fs);
+            }
 
-                //read namelist
-                inStream.JumpTo(NameOffset);
-                for (int i = 0; i < NameCount; i++)
-                {
-                    names.Add(inStream.ReadUnrealString());
-                    if (Game == MEGame.ME1)
-                        inStream.Skip(8);
-                    else if (Game == MEGame.ME2)
-                        inStream.Skip(4);
-                }
-
-                //read importTable
-                inStream.JumpTo(ImportOffset);
-                for (int i = 0; i < ImportCount; i++)
-                {
-                    ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
-                    imp.PropertyChanged += importChanged;
-                    imports.Add(imp);
-                }
-
-                //read exportTable (ExportEntry constructor reads export data)
-                inStream.JumpTo(ExportOffset);
-                for (int i = 0; i < ExportCount; i++)
-                {
-                    ExportEntry e = new ExportEntry(this, inStream) { Index = i };
-                    e.PropertyChanged += exportChanged;
-                    exports.Add(e);
-                }
-
+            //read namelist
+            inStream.JumpTo(NameOffset);
+            for (int i = 0; i < NameCount; i++)
+            {
+                names.Add(inStream.ReadUnrealString());
                 if (Game == MEGame.ME1)
-                {
-                    ReadLocalTLKs();
-                }
+                    inStream.Skip(8);
+                else if (Game == MEGame.ME2)
+                    inStream.Skip(4);
+            }
+
+            //read importTable
+            inStream.JumpTo(ImportOffset);
+            for (int i = 0; i < ImportCount; i++)
+            {
+                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
+                imp.PropertyChanged += importChanged;
+                imports.Add(imp);
+            }
+
+            //read exportTable (ExportEntry constructor reads export data)
+            inStream.JumpTo(ExportOffset);
+            for (int i = 0; i < ExportCount; i++)
+            {
+                ExportEntry e = new ExportEntry(this, inStream) { Index = i };
+                e.PropertyChanged += exportChanged;
+                exports.Add(e);
+            }
+
+            if (Game == MEGame.ME1)
+            {
+                ReadLocalTLKs();
             }
         }
 
@@ -292,7 +286,7 @@ namespace ME3Explorer.Packages
                 else
                 {
                     MessageBox.Show($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {App.BugReportURL}", "Can't Save!",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             finally
@@ -398,7 +392,7 @@ namespace ME3Explorer.Packages
             }
             catch (Exception ex) when(!App.IsDebug)
             {
-                MessageBox.Show($"Error saving {FilePath}:\n{ExceptionHandlerDialogWPF.FlattenException(ex)}");
+                MessageBox.Show($"Error saving {FilePath}:\n{ex.FlattenException()}");
             }
         }
 
@@ -539,8 +533,10 @@ namespace ME3Explorer.Packages
             var exportsToLoad = new List<ExportEntry>();
             foreach (var tlkFileSet in tlkFileSets)
             {
-                MemoryStream r = new MemoryStream(tlkFileSet.Data);
-                r.Position = tlkFileSet.propsEnd();
+                MemoryStream r = new MemoryStream(tlkFileSet.Data)
+                {
+                    Position = tlkFileSet.propsEnd()
+                };
                 int count = r.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
@@ -944,40 +940,44 @@ namespace ME3Explorer.Packages
             //fix up Default_ imports
             if (newGame == MEGame.ME3)
             {
-                using (IMEPackage core = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc")))
-                using (IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc")))
-                using (IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc")))
+                using IMEPackage core = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc"));
+                using IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc"));
+                using IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"));
+                foreach (ImportEntry defImp in imports.Where(imp => imp.ObjectName.Name.StartsWith("Default_")).ToList())
                 {
-                    foreach (ImportEntry defImp in imports.Where(imp => imp.ObjectName.Name.StartsWith("Default_")).ToList())
+                    string packageName = defImp.FullPath.Split('.')[0];
+                    IMEPackage pck = packageName switch
                     {
-                        string packageName = defImp.FullPath.Split('.')[0];
-                        IMEPackage pck = packageName == "Core" ? core : packageName == "Engine" ? engine : packageName == "SFXGame" ? sfxGame : null;
-                        if (pck != null && pck.Exports.FirstOrDefault(exp => exp.ObjectName == defImp.ObjectName) is ExportEntry defExp)
+                        "Core" => core,
+                        "Engine" => engine,
+                        "SFXGame" => sfxGame,
+                        _ => null
+                    };
+                    if (pck != null && pck.Exports.FirstOrDefault(exp => exp.ObjectName == defImp.ObjectName) is ExportEntry defExp)
+                    {
+                        List<IEntry> impChildren = defImp.GetChildren();
+                        List<IEntry> expChildren = defExp.GetChildren();
+                        foreach (IEntry expChild in expChildren)
                         {
-                            var impChildren = defImp.GetChildren();
-                            var expChildren = defExp.GetChildren();
-                            foreach (IEntry expChild in expChildren)
+                            if (impChildren.FirstOrDefault(imp => imp.ObjectName == expChild.ObjectName) is ImportEntry matchingImp)
                             {
-                                if (impChildren.FirstOrDefault(imp => imp.ObjectName == expChild.ObjectName) is ImportEntry matchingImp)
-                                {
-                                    impChildren.Remove(matchingImp);
-                                }
-                                else
-                                {
-                                    AddImport(new ImportEntry(this)
-                                    {
-                                        idxLink = defImp.UIndex,
-                                        ClassName = expChild.ClassName,
-                                        ObjectName = expChild.ObjectName,
-                                        PackageFile = defImp.PackageFile
-                                    });
-                                }
+                                impChildren.Remove(matchingImp);
                             }
+                            else
+                            {
+                                AddImport(new ImportEntry(this)
+                                {
+                                    idxLink = defImp.UIndex,
+                                    ClassName = expChild.ClassName,
+                                    ObjectName = expChild.ObjectName,
+                                    PackageFile = defImp.PackageFile
+                                });
+                            }
+                        }
 
-                            foreach (IEntry impChild in impChildren)
-                            {
-                                EntryPruner.TrashEntries(this, impChild.GetAllDescendants().Prepend(impChild));
-                            }
+                        foreach (IEntry impChild in impChildren)
+                        {
+                            EntryPruner.TrashEntries(this, impChild.GetAllDescendants().Prepend(impChild));
                         }
                     }
                 }
@@ -1001,15 +1001,7 @@ namespace ME3Explorer.Packages
                 //convert stack, or just get the pre-prop binary if no stack
                 prePropBinary.Add(ExportBinaryConverter.ConvertPrePropBinary(export, newGame));
 
-                if (export.ClassName == "Class")
-                {
-                    propCollections.Add(null);
-                }
-                else
-                {
-                    //read in all properties in the old format, and remove ones that are incompatible with newGame
-                    propCollections.Add(EntryPruner.RemoveIncompatibleProperties(this, export.GetProperties(), export.ClassName, newGame));
-                }
+                propCollections.Add(export.ClassName == "Class" ? null : EntryPruner.RemoveIncompatibleProperties(this, export.GetProperties(), export.ClassName, newGame));
 
                 //convert binary data
                 postPropBinary.Add(ExportBinaryConverter.ConvertPostPropBinary(export, newGame));
@@ -1114,15 +1106,9 @@ namespace ME3Explorer.Packages
                         if (mipInfo.storageType == StorageTypes.pccLZO || mipInfo.storageType == StorageTypes.pccZlib)
                         {
                             offsets.Add((int)tfc.Position);
-                            byte[] mip;
-                            if (mipInfo.storageType == StorageTypes.pccLZO)
-                            {
-                                mip = TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib);
-                            }
-                            else
-                            {
-                                mip = Texture2D.GetTextureData(mipInfo, false);
-                            }
+                            byte[] mip = mipInfo.storageType == StorageTypes.pccLZO
+                                ? TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib)
+                                : Texture2D.GetTextureData(mipInfo, false);
                             tfc.WriteFromBuffer(mip);
                         }
                     }

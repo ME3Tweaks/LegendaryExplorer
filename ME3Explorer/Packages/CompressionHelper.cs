@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-//using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading.Tasks;
 using LZO2Helper;
 using StreamHelpers;

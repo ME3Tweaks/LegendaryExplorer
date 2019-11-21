@@ -4,10 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Debugging;
 using ME3Explorer.Packages;
-using ME3Explorer.Pathfinding_Editor;
-using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 
@@ -350,10 +347,6 @@ namespace ME3Explorer
                     catch (Exception e)
                     {
                         //Error during relink
-                        DebugOutput.StartDebugger("PCC Relinker");
-                        DebugOutput.PrintLn("Exception occured during relink: ");
-                        DebugOutput.PrintLn(ExceptionHandlerDialogWPF.FlattenException(e));
-                        DebugOutput.PrintLn("You may want to consider discarding this sessions' changes as relinking was not able to properly finish.");
                         linkFailedDueToError = e.Message;
                     }
 
