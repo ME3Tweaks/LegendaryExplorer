@@ -23,6 +23,14 @@ namespace ME3Explorer
     /// </summary>
     public partial class BinaryInterpreterWPF : ExportLoaderControl
     {
+        public bool SubstituteImageForHexBox
+        {
+            get => (bool)GetValue(SubstituteImageForHexBoxProperty);
+            set => SetValue(SubstituteImageForHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
+            nameof(SubstituteImageForHexBox), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
+
         public bool HideHexBox
         {
             get => (bool)GetValue(HideHexBoxProperty);
@@ -1177,7 +1185,7 @@ namespace ME3Explorer
             BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -1185,11 +1193,29 @@ namespace ME3Explorer
             }
             else
             {
-                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
                 i.HexboxColumnDefinition.Width = new GridLength(285);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.MinWidth = 220;
                 i.HexboxColumnDefinition.MaxWidth = 718;
+            }
+        }
+
+        private static void SubstituteImageForHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
+            if (e.NewValue is true && i.BinaryInterpreter_Hexbox_Host.Child.Height > 0 && i.BinaryInterpreter_Hexbox_Host.Child.Width > 0)
+            {
+                i.hexboxImageSub.Source = i.BinaryInterpreter_Hexbox_Host.Child.DrawToBitmapSource();
+                i.hexboxImageSub.Width = i.BinaryInterpreter_Hexbox_Host.ActualWidth;
+                i.hexboxImageSub.Height = i.BinaryInterpreter_Hexbox_Host.ActualHeight;
+                i.hexboxImageSub.Visibility = Visibility.Visible;
+                i.BinaryInterpreter_Hexbox_Host.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                i.BinaryInterpreter_Hexbox_Host.Visibility = Visibility.Visible;
+                i.hexboxImageSub.Visibility = Visibility.Collapsed;
             }
         }
 
