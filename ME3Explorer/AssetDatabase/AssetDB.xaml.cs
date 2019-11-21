@@ -36,10 +36,21 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : WPFBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "2.2"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "3.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
+        public enum dbTableType
+        {
+            Master = 0,
+            Class,
+            Materials,
+            Meshes,
+            Textures,
+            Particles,
+            Animations,
+            GUIElements
+        }
         private bool _isBusy;
         public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
         private string _busyText;
@@ -250,14 +261,24 @@ namespace ME3Explorer.AssetDatabase
         #endregion
 
         #region Database I/O        
-        public static async Task LoadDatabase(string currentDbPath, MEGame game, PropsDataBase database, CancellationToken cancelloadingToken)
+        /// <summary>
+        /// Table parameter returns a database with only that table in it. Master = all.
+        /// </summary>
+        /// <param name="currentDbPath"></param>
+        /// <param name="game"></param>
+        /// <param name="database"></param>
+        /// <param name="cancelloadingToken"></param>
+        /// <param name="Table"></param>
+        /// <returns></returns>
+        public static async Task LoadDatabase(string currentDbPath, MEGame game, PropsDataBase database, CancellationToken cancelloadingToken, dbTableType dbTable = dbTableType.Master)
         {
             var build = dbCurrentBuild.Trim(' ', '*', '.');
             ////Async load
-            PropsDataBase pdb = await ParseDBAsync(game, currentDbPath, build, cancelloadingToken);
+            PropsDataBase pdb = await ParseDBAsync(game, currentDbPath, build, cancelloadingToken, dbTable);
             database.meGame = pdb.meGame;
             database.GenerationDate = pdb.GenerationDate;
             database.DataBaseversion = pdb.DataBaseversion;
+            database.dbTable = pdb.dbTable;
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
             database.ClassRecords.AddRange(pdb.ClassRecords);
@@ -268,10 +289,12 @@ namespace ME3Explorer.AssetDatabase
             database.Textures.AddRange(pdb.Textures);
             database.GUIElements.AddRange(pdb.GUIElements);
         }
-        public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel)
+        public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel, dbTableType dbTable)
         {
             var deserializingQueue = new BlockingCollection<PropsDataBase>();
-            
+            int tblcnt = Enum.GetNames(typeof(dbTableType)).Length;
+            if (dbTable != dbTableType.Master)
+                tblcnt = 2;
             try
             {
                 await Task.Run(() =>
@@ -282,9 +305,14 @@ namespace ME3Explorer.AssetDatabase
                     {
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            string dbType = entry.Name.Substring(0, entry.Name.Length - 10);
-                            if (entry.Name.StartsWith("Master"))
-                                dbType = "Master";
+                            dbTableType dbType = dbTableType.Master;
+                            if (!entry.Name.StartsWith("Master"))
+                            {
+                                bool typecast = Enum.TryParse(entry.Name.Substring(0, entry.Name.Length - 10), out dbType);
+                                if (!typecast || dbType == dbTableType.Master)
+                                    continue;
+                            }
+
                             var ms = new MemoryStream();
                             using (Stream estream = entry.Open())
                             {
@@ -331,43 +359,43 @@ namespace ME3Explorer.AssetDatabase
                 return await Task.Run(() =>
                 {
                     var readData = new PropsDataBase();
-
                     int n = 0;
                     foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
                     {
                         n++;
-                        switch (pdb.DataBaseversion)
+                        switch (pdb.dbTable)
                         {
-                            case "Class":
+                            case dbTableType.Class:
                                 readData.ClassRecords.AddRange(pdb.ClassRecords);
                                 break;
-                            case "Mat":
+                            case dbTableType.Materials:
                                 readData.Materials.AddRange(pdb.Materials);
                                 break;
-                            case "Anim":
+                            case dbTableType.Animations:
                                 readData.Animations.AddRange(pdb.Animations);
                                 break;
-                            case "Mesh":
+                            case dbTableType.Meshes:
                                 readData.Meshes.AddRange(pdb.Meshes);
                                 break;
-                            case "Ps":
+                            case dbTableType.Particles:
                                 readData.Particles.AddRange(pdb.Particles);
                                 break;
-                            case "Txt":
+                            case dbTableType.Textures:
                                 readData.Textures.AddRange(pdb.Textures);
                                 break;
-                            case "Gui":
+                            case dbTableType.GUIElements:
                                 readData.GUIElements.AddRange(pdb.GUIElements);
                                 break;
                             default:
                                 readData.meGame = pdb.meGame;
                                 readData.GenerationDate = pdb.GenerationDate;
                                 readData.DataBaseversion = pdb.DataBaseversion;
+                                readData.dbTable = pdb.dbTable;
                                 readData.FileList.AddRange(pdb.FileList);
                                 readData.ContentDir.AddRange(pdb.ContentDir);
                                 break;
                         }
-                        if (n == 8) { deserializingQueue.CompleteAdding(); }
+                        if (n == tblcnt) { deserializingQueue.CompleteAdding(); }
                     }
 
                     return readData;
@@ -379,10 +407,11 @@ namespace ME3Explorer.AssetDatabase
             }
             return null;
         }
-        private static void JsonFileParse(MemoryStream ms, string dbType, BlockingCollection<PropsDataBase> propsDataBases, CancellationToken ct)
+        private static void JsonFileParse(MemoryStream ms, dbTableType dbType, BlockingCollection<PropsDataBase> propsDataBases, CancellationToken ct)
         {
 
-            PropsDataBase readData = new PropsDataBase {DataBaseversion = dbType};
+            PropsDataBase readData = new PropsDataBase {DataBaseversion = dbType.ToString()};
+            readData.dbTable = dbType;
             try
             {
                 using StreamReader sr = new StreamReader(ms);
@@ -390,7 +419,7 @@ namespace ME3Explorer.AssetDatabase
                 var Serializer = new JsonSerializer();
                 switch (dbType)
                 {
-                    case "Master":
+                    case dbTableType.Master:
                         var mst = Serializer.Deserialize<PropsDataBase>(reader);
                         readData.meGame = mst.meGame;
                         readData.GenerationDate = mst.GenerationDate;
@@ -398,31 +427,31 @@ namespace ME3Explorer.AssetDatabase
                         readData.FileList.AddRange(mst.FileList);
                         readData.ContentDir.AddRange(mst.ContentDir);
                         break;
-                    case "Class":
+                    case dbTableType.Class:
                         var cls = Serializer.Deserialize<ObservableCollectionExtended<ClassRecord>>(reader);
                         readData.ClassRecords.AddRange(cls);
                         break;
-                    case "Mat":
+                    case dbTableType.Materials:
                         var mats = Serializer.Deserialize<ObservableCollectionExtended<Material>>(reader);
                         readData.Materials.AddRange(mats);
                         break;
-                    case "Anim":
+                    case dbTableType.Animations:
                         var an = Serializer.Deserialize<ObservableCollectionExtended<Animation>>(reader);
                         readData.Animations.AddRange(an);
                         break;
-                    case "Mesh":
+                    case dbTableType.Meshes:
                         var msh = Serializer.Deserialize<ObservableCollectionExtended<MeshRecord>>(reader);
                         readData.Meshes.AddRange(msh);
                         break;
-                    case "Ps":
+                    case dbTableType.Particles:
                         var ps = Serializer.Deserialize<ObservableCollectionExtended<ParticleSys>>(reader);
                         readData.Particles.AddRange(ps);
                         break;
-                    case "Txt":
+                    case dbTableType.Textures:
                         var txt = Serializer.Deserialize<ObservableCollectionExtended<TextureRecord>>(reader);
                         readData.Textures.AddRange(txt);
                         break;
-                    case "Gui":
+                    case dbTableType.GUIElements:
                         var gui = Serializer.Deserialize<ObservableCollectionExtended<GUIElement>>(reader);
                         readData.GUIElements.AddRange(gui);
                         break;
@@ -1760,6 +1789,7 @@ namespace ME3Explorer.AssetDatabase
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
         public string DataBaseversion { get; set; }
+        public AssetDB.dbTableType dbTable { get; set; }
         public ObservableCollectionExtended<Tuple<string, int>> FileList { get; } = new ObservableCollectionExtended<Tuple<string, int>>(); //filename and key to contentdir
         public List<string> ContentDir { get; } = new List<string>();
         public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
@@ -1795,6 +1825,8 @@ namespace ME3Explorer.AssetDatabase
         public string Definition_package { get; set; }
         public int Definition_UID { get; set; }
         public string SuperClass { get; set; }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
         public ObservableCollectionExtended<PropertyRecord> PropertyRecords { get; } = new ObservableCollectionExtended<PropertyRecord>();
         public ObservableCollectionExtended<ClassUsage> ClassUsages { get; } = new ObservableCollectionExtended<ClassUsage>();
 
@@ -1822,7 +1854,6 @@ namespace ME3Explorer.AssetDatabase
         {
             this.Property = Property;
             this.Type = Type;
-
         }
         public PropertyRecord()
         { }
@@ -1832,11 +1863,14 @@ namespace ME3Explorer.AssetDatabase
         public int FileKey { get; set; }
         public int ExportUID { get; set; }
         public bool IsDefault { get; set; }
-        public ClassUsage(int FileKey, int ExportUID, bool IsDefault)
+        private bool _IsMod;
+        public bool IsMod { get => _IsMod; set => SetProperty(ref _IsMod, value); }
+        public ClassUsage(int FileKey, int ExportUID, bool IsDefault, bool IsMod)
         {
             this.FileKey = FileKey;
             this.ExportUID = ExportUID;
             this.IsDefault = IsDefault;
+            this.IsMod = IsMod;
         }
         public ClassUsage()
         { }
@@ -1881,10 +1915,13 @@ namespace ME3Explorer.AssetDatabase
         public string Compression { get => _Compression; set => SetProperty(ref _Compression, value); }
         private string _KeyFormat;
         public string KeyFormat { get => _KeyFormat; set => SetProperty(ref _KeyFormat, value); }
+        private bool _IsAmbPerf;
+        public bool IsAmbPerf { get => _IsAmbPerf; set => SetProperty(ref _IsAmbPerf, value); }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
+        public ObservableCollectionExtended<Tuple<int, int, bool>> AnimUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
 
-        public ObservableCollectionExtended<Tuple<int, int>> AnimUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
-
-        public Animation(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, ObservableCollectionExtended<Tuple<int, int>> AnimUsages)
+        public Animation(string AnimSequence, string SeqName, string AnimData, float Length, int Frames, string Compression, string KeyFormat, bool IsAmbPerf, bool IsModOnly, ObservableCollectionExtended<Tuple<int, int, bool>> AnimUsages)
         {
             this.AnimSequence = AnimSequence;
             this.SeqName = SeqName;
@@ -1893,6 +1930,8 @@ namespace ME3Explorer.AssetDatabase
             this.Frames = Frames;
             this.Compression = Compression;
             this.KeyFormat = KeyFormat;
+            this.IsAmbPerf = IsAmbPerf;
+            this.IsModOnly = IsModOnly;
             this.AnimUsages.AddRange(AnimUsages);
         }
 
@@ -1907,14 +1946,16 @@ namespace ME3Explorer.AssetDatabase
         public bool IsSkeleton { get => _IsSkeleton; set => SetProperty(ref _IsSkeleton, value); }
         private int _BoneCount;
         public int BoneCount { get => _BoneCount; set => SetProperty(ref _BoneCount, value); }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
+        public ObservableCollectionExtended<Tuple<int, int, bool>> MeshUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
 
-        public ObservableCollectionExtended<Tuple<int, int>> MeshUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
-
-        public MeshRecord(string MeshName, bool IsSkeleton, int BoneCount, ObservableCollectionExtended<Tuple<int, int>> MeshUsages)
+        public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount, ObservableCollectionExtended<Tuple<int, int, bool>> MeshUsages)
         {
             this.MeshName = MeshName;
             this.IsSkeleton = IsSkeleton;
             this.BoneCount = BoneCount;
+            this.IsModOnly = IsModOnly;
             this.MeshUsages.AddRange(MeshUsages);
         }
 
@@ -1929,15 +1970,18 @@ namespace ME3Explorer.AssetDatabase
         public string ParentPackage { get => _ParentPackagee; set => SetProperty(ref _ParentPackagee, value); }
         private bool _IsDLCOnly;
         public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
         private int _EmitterCount;
         public int EmitterCount { get => _EmitterCount; set => SetProperty(ref _EmitterCount, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> PSUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference, export, isDLC file
+        public ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, export, isDLC file
 
-        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, int EmitterCount, ObservableCollectionExtended<Tuple<int, int, bool>> PSUsages)
+        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EmitterCount, ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages)
         {
             this.PSName = PSName;
             this.ParentPackage = ParentPackage;
             this.IsDLCOnly = IsDLCOnly;
+            this.IsModOnly = IsModOnly;
             this.EmitterCount = EmitterCount;
             this.PSUsages.AddRange(PSUsages);
         }
@@ -1953,6 +1997,8 @@ namespace ME3Explorer.AssetDatabase
         public string ParentPackage { get => _ParentPackage; set => SetProperty(ref _ParentPackage, value); }
         private bool _IsDLCOnly;
         public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
         private string _CFormat;
         public string CFormat { get => _CFormat; set => SetProperty(ref _CFormat, value); }
         private int _SizeX;
@@ -1961,13 +2007,14 @@ namespace ME3Explorer.AssetDatabase
         public int SizeY { get => _SizeY; set => SetProperty(ref _SizeY, value); }
         private string _CRC;
         public string CRC { get => _CRC; set => SetProperty(ref _CRC, value); }
-        public ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference, then export, isDLC file
+        public ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, then export, isDLC file, isMod file
 
-        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, string CFormat, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool>> TextureUsages)
+        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages)
         {
             this.TextureName = TextureName;
             this.ParentPackage = ParentPackage;
             this.IsDLCOnly = IsDLCOnly;
+            this.IsModOnly = IsModOnly;
             this.CFormat = CFormat;
             this.SizeX = SizeX;
             this.SizeY = SizeY;
@@ -1984,13 +2031,15 @@ namespace ME3Explorer.AssetDatabase
         public string GUIName { get => _GUIName; set => SetProperty(ref _GUIName, value); }
         private int _DataSize;
         public int DataSize { get => _DataSize; set => SetProperty(ref _DataSize, value); }
+        private bool _IsModOnly;
+        public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
+        public ObservableCollectionExtended<Tuple<int, int, bool>> GUIUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool>>(); //File reference then export
 
-        public ObservableCollectionExtended<Tuple<int, int>> GUIUsages { get; } = new ObservableCollectionExtended<Tuple<int, int>>(); //File reference then export
-
-        public GUIElement(string GUIName, int DataSize, ObservableCollectionExtended<Tuple<int, int>> GUIUsages)
+        public GUIElement(string GUIName, int DataSize, bool IsModOnly, ObservableCollectionExtended<Tuple<int, int, bool>> GUIUsages)
         {
             this.GUIName = GUIName;
             this.DataSize = DataSize;
+            this.IsModOnly = IsModOnly;
             this.GUIUsages.AddRange(GUIUsages);
         }
 
@@ -2050,6 +2099,8 @@ namespace ME3Explorer.AssetDatabase
         public void dumpPackageFile(MEGame GameBeingDumped, AssetDB dbScanner)
         {
             using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
+            bool IsDLC = pcc.IsInOfficialDLC();
+            bool IsMod = !pcc.IsInBasegame() && !IsDLC;
             foreach (ExportEntry exp in pcc.Exports)
             {
                 if (DumpCanceled)
@@ -2060,6 +2111,7 @@ namespace ME3Explorer.AssetDatabase
                 {
                     string pClass = exp.ClassName;  //Handle basic class record
                     string pExp = exp.ObjectName;
+                    string pKey = exp.InstancedFullPath;
                     if (exp.indexValue > 0)
                     {
                         pExp = $"{pExp}_{exp.indexValue - 1}";
@@ -2233,7 +2285,7 @@ namespace ME3Explorer.AssetDatabase
                             }
                         }
 
-                        var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault);
+                        var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault, IsMod);
                         var NewClassRecord = new ClassRecord(pClass, pDefinitionPackage, pDefUID, pSuperClass, pList, new ObservableCollectionExtended<ClassUsage>() { NewUsageRecord });
                         string valueKey = string.Concat(pClass, ShortFileName, pIsdefault.ToString());
                         if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord) && dbScanner.GeneratedValueChecker.TryAdd(valueKey, true))
@@ -2244,22 +2296,9 @@ namespace ME3Explorer.AssetDatabase
 
                         if ((exp.ClassName == "Material" || exp.ClassName == "DecalMaterial") && !pIsdefault)
                         {
-                            string parent = null;
-                            if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                            if (dbScanner.GeneratedMats.ContainsKey(pKey))
                             {
-                                parent = ShortFileName;
-                            }
-                            else
-                            {
-                                parent = GetTopParentPackage(exp);
-                            }
-                            bool IsDLC = pcc.IsInOfficialDLC();
-                            string matname = pExp;
-                            if(exp.ClassName == "DecalMaterial" && !matname.Contains("Decal")) { matname = $"{pExp}_Decal"; }
-                            var NewMat = new Material(matname, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
-                            if (!dbScanner.GeneratedMats.TryAdd(pExp, NewMat))
-                            {
-                                var eMat = dbScanner.GeneratedMats[pExp];
+                                var eMat = dbScanner.GeneratedMats[pKey];
                                 lock (eMat)
                                 {
                                     eMat.MaterialUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
@@ -2269,62 +2308,10 @@ namespace ME3Explorer.AssetDatabase
                                     }
                                 }
                             }
-                        }
-                        else if (exp.ClassName == "AnimSequence" && !pIsdefault)
-                        {
-                            string aSeq = null;
-                            string aGrp = "None";
-                            var pSeq = exp.GetProperty<NameProperty>("SequenceName");
-                            if (pSeq != null)
+                            else
                             {
-                                aSeq = pSeq.Value;
-                                aGrp = pExp.Replace($"{aSeq}_", null);
-                            }
-                                
-                            var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
-                            float aLength = pLength?.Value ?? 0;
-
-                            var pFrames = exp.GetProperty<IntProperty>("NumFrames");
-                            int aFrames = pFrames?.Value ?? 0;
-
-                            var pComp = exp.GetProperty<EnumProperty>("RotationCompressionFormat");
-                            string aComp = pComp?.Value.ToString() ?? "None";
-
-                            var pKeyF = exp.GetProperty<EnumProperty>("KeyEncodingFormat");
-                            string aKeyF = pKeyF?.Value.ToString() ?? "None";
-
-                            var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, new ObservableCollectionExtended<Tuple<int, int>>() { new Tuple<int, int>(FileKey, pExportUID) });
-                            if (!dbScanner.GeneratedAnims.TryAdd(pExp, NewAnim))
-                            {
-                                var anim = dbScanner.GeneratedAnims[pExp];
-                                lock (anim)
-                                {
-                                    anim.AnimUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
-                                }
-                            }
-                        }
-                        else if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
-                        {
-                            bool IsSkel = exp.ClassName == "SkeletalMesh";
-                            int bones = 0;
-                            if (IsSkel)
-                            {
-                                var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
-                                bones = bin?.RefSkeleton.Length ?? 0;
-                            }
-                            var NewMeshRec = new MeshRecord(pExp, IsSkel, bones, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
-                            if (!dbScanner.GeneratedMeshes.TryAdd(pExp, NewMeshRec))
-                            {
-                                var mr = dbScanner.GeneratedMeshes[pExp];
-                                lock (mr)
-                                {
-                                    mr.MeshUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
-                                }
 
                             }
-                        }
-                        else if (exp.ClassName == "ParticleSystem" && !pIsdefault)
-                        {
                             string parent = null;
                             if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
                             {
@@ -2334,27 +2321,133 @@ namespace ME3Explorer.AssetDatabase
                             {
                                 parent = GetTopParentPackage(exp);
                             }
-
-                            bool IsDLC = pcc.IsInOfficialDLC();
-                            var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
-                            int EmCnt = EmtProp?.Count ?? 0;
-                            var NewPS = new ParticleSys(pExp, parent, IsDLC, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
-                            if (!dbScanner.GeneratedPS.TryAdd(pExp, NewPS))
+                            string matname = pExp;
+                            if(exp.ClassName == "DecalMaterial" && !matname.Contains("Decal")) { matname = $"{pExp}_Decal"; }
+                            var NewMat = new Material(matname, parent, IsDLC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) }, mSets);
+                            dbScanner.GeneratedMats.TryAdd(pKey, NewMat);
+                        }
+                        else if ((exp.ClassName == "AnimSequence" || exp.ClassName == "SFXAmbPerfGameData") && !pIsdefault)
+                        {
+                            if (dbScanner.GeneratedAnims.ContainsKey(pKey))
                             {
-                                var ePS = dbScanner.GeneratedPS[pExp];
+                                var anim = dbScanner.GeneratedAnims[pKey];
+                                lock (anim)
+                                {
+                                    anim.AnimUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
+                                    if (anim.IsModOnly)
+                                    {
+                                        anim.IsModOnly = IsMod;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                string aSeq = null;
+                                string aGrp = "None";
+                                float aLength = 0;
+                                int aFrames = 0;
+                                string aComp = "None";
+                                string aKeyF = "None";
+                                bool IsAmbPerf = false;
+                                if (exp.ClassName == "AnimSequence")
+                                {
+                                    var pSeq = exp.GetProperty<NameProperty>("SequenceName");
+                                    if (pSeq != null)
+                                    {
+                                        aSeq = pSeq.Value;
+                                        aGrp = pExp.Replace($"{aSeq}_", null);
+                                    }
+
+                                    var pLength = exp.GetProperty<FloatProperty>("SequenceLength");
+                                    aLength = pLength?.Value ?? 0;
+
+                                    var pFrames = exp.GetProperty<IntProperty>("NumFrames");
+                                    aFrames = pFrames?.Value ?? 0;
+
+                                    var pComp = exp.GetProperty<EnumProperty>("RotationCompressionFormat");
+                                    aComp = pComp?.Value.ToString() ?? "None";
+
+                                    var pKeyF = exp.GetProperty<EnumProperty>("KeyEncodingFormat");
+                                    aKeyF = pKeyF?.Value.ToString() ?? "None";
+                                }
+                                else //is ambient performance
+                                {
+                                    IsAmbPerf = true;
+                                    aSeq = "Multiple";
+                                    var pPoses = exp.GetProperty<ArrayProperty<StructProperty>>("m_aPoses");
+                                    aFrames = pPoses?.Count ?? 0;
+                                }
+
+                                var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, IsAmbPerf, IsMod, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });
+                                dbScanner.GeneratedAnims.TryAdd(pKey, NewAnim);
+                            }
+                        }
+                        else if ((exp.ClassName == "SkeletalMesh" || exp.ClassName == "StaticMesh") && !pIsdefault)
+                        {
+                            if (dbScanner.GeneratedMeshes.ContainsKey(pKey))
+                            {
+                                var mr = dbScanner.GeneratedMeshes[pKey];
+                                lock (mr)
+                                {
+                                    mr.MeshUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
+                                    if(mr.IsModOnly)
+                                    {
+                                        mr.IsModOnly = IsMod;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                bool IsSkel = exp.ClassName == "SkeletalMesh";
+                                int bones = 0;
+                                if (IsSkel)
+                                {
+                                    var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
+                                    bones = bin?.RefSkeleton.Length ?? 0;
+                                }
+                                var NewMeshRec = new MeshRecord(pExp, IsSkel, IsMod, bones, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });
+                                dbScanner.GeneratedMeshes.TryAdd(pKey, NewMeshRec);
+                            }
+                        }
+                        else if (exp.ClassName == "ParticleSystem" && !pIsdefault)
+                        {
+                            if (dbScanner.GeneratedPS.ContainsKey(pKey))
+                            {
+                                var ePS = dbScanner.GeneratedPS[pKey];
                                 lock (ePS)
                                 {
-                                    ePS.PSUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                    ePS.PSUsages.Add(new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod));
                                     if (ePS.IsDLCOnly)
                                     {
                                         ePS.IsDLCOnly = IsDLC;
                                     }
+                                    if (ePS.IsModOnly)
+                                    {
+                                        ePS.IsModOnly = IsMod;
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                string parent = null;
+                                if (GameBeingDumped == MEGame.ME1 && File.EndsWith(".upk"))
+                                {
+                                    parent = ShortFileName;
+                                }
+                                else
+                                {
+                                    parent = GetTopParentPackage(exp);
+                                }
+
+
+                                var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
+                                int EmCnt = EmtProp?.Count ?? 0;
+                                var NewPS = new ParticleSys(pExp, parent, IsDLC, IsMod, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool, bool>> { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
+                                dbScanner.GeneratedPS.TryAdd(pKey, NewPS);
                             }
                         }
                         else if ((exp.ClassName == "Texture2D" || exp.ClassName == "TextureCube" || exp.ClassName == "TextureMovie") && !pIsdefault)
                         {
-                            bool IsDLC = pcc.IsInOfficialDLC();
                             if(exp.Parent?.ClassName == "TextureCube")
                             {
                                 pExp = $"{exp.Parent.ObjectName}_{pExp}";
@@ -2362,13 +2455,17 @@ namespace ME3Explorer.AssetDatabase
 
                             if (dbScanner.GeneratedText.ContainsKey(pExp))
                             {
-                                var t = dbScanner.GeneratedText[pExp];
+                                var t = dbScanner.GeneratedText[pKey];
                                 lock (t)
                                 {
-                                    t.TextureUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC));
+                                    t.TextureUsages.Add(new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod));
                                     if (t.IsDLCOnly)
                                     {
                                         t.IsDLCOnly = IsDLC;
+                                    }
+                                    if (t.IsModOnly)
+                                    {
+                                        t.IsModOnly = IsMod;
                                     }
                                 }
                             }
@@ -2405,23 +2502,27 @@ namespace ME3Explorer.AssetDatabase
                                     var propY = exp.GetProperty<IntProperty>("SizeY");
                                     psizeY = propY?.Value ?? 0;
                                 }
-                                var NewTex = new TextureRecord(pExp, parent, IsDLC, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsDLC) });
-                                dbScanner.GeneratedText.TryAdd(pExp, NewTex);
+                                var NewTex = new TextureRecord(pExp, parent, IsDLC, IsMod, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool, bool>>() { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
+                                dbScanner.GeneratedText.TryAdd(pKey, NewTex);
                             }
                         }
                         else if ((exp.ClassName == "GFxMovieInfo" || exp.ClassName == "BioSWF") && !pIsdefault)
                         {
-                            string dataPropName = exp.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
-                            var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-                            int datasize = rawData?.Count ?? 0;
-                            var NewGUI = new GUIElement(pExp, datasize, new ObservableCollectionExtended<Tuple<int, int>> { new Tuple<int, int>(FileKey, pExportUID) });
-                            if (!dbScanner.GeneratedGUI.TryAdd(pExp, NewGUI))
+                            if (dbScanner.GeneratedGUI.ContainsKey(pKey))
                             {
-                                var eGUI = dbScanner.GeneratedGUI[pExp];
+                                var eGUI = dbScanner.GeneratedGUI[pKey];
                                 lock (eGUI)
                                 {
-                                    eGUI.GUIUsages.Add(new Tuple<int, int>(FileKey, pExportUID));
+                                    eGUI.GUIUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
                                 }
+                            }
+                            else
+                            {
+                                string dataPropName = exp.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
+                                var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                                int datasize = rawData?.Count ?? 0;
+                                var NewGUI = new GUIElement(pKey, datasize, IsMod, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });
+                                dbScanner.GeneratedGUI.TryAdd(pKey, NewGUI);
                             }
                         }
                     }
@@ -2430,10 +2531,10 @@ namespace ME3Explorer.AssetDatabase
                         pClass = exp.ObjectName;
                         pSuperClass = exp.SuperClassName;
                         pDefUID = exp.UIndex;
-                        var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault);
+                        var NewUsageRecord = new ClassUsage(FileKey, pExportUID, pIsdefault, IsMod);
                         var NewPropertyRecord = new PropertyRecord("None", "NoneProperty");
                         var NewClassRecord = new ClassRecord(pClass, ShortFileName, pDefUID, pSuperClass, new ObservableCollectionExtended<PropertyRecord> { NewPropertyRecord }, new ObservableCollectionExtended<ClassUsage> { NewUsageRecord });
-                        if (!dbScanner.GeneratedClasses.TryAdd(pClass, NewClassRecord))
+                        if (!dbScanner.GeneratedClasses.TryAdd(pExp, NewClassRecord))
                         {
                             dbScanner._dbqueue.Add(NewClassRecord);
                         }

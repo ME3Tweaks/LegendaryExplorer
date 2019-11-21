@@ -449,7 +449,8 @@ namespace ME3Explorer.AnimationExplorer
                 {
                     //CameraState = ECameraState.Fixed;
                     int fileListIndex;
-                    (fileListIndex, animUIndex) = anim.AnimUsages[0];
+                    bool isMod;
+                    (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
                     string rootPath = ME3Directory.gamePath;
 

@@ -414,8 +414,6 @@ namespace ME3Explorer.Dialogue_Editor
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
             ForceRefreshCommand = new RelayCommand(ForceRefresh);
         }
-
-
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
             if (FileQueuedForLoad != null)
@@ -3903,7 +3901,6 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-
 
         private void OpenInAction(object obj)
         {
