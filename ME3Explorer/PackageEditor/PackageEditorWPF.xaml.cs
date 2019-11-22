@@ -1715,6 +1715,7 @@ namespace ME3Explorer
             ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
+            ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set

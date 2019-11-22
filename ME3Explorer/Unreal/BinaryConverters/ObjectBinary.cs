@@ -113,6 +113,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<UTwoReferenceProperty>(export);
                 case "ShaderCache":
                     return From<ShaderCache>(export);
+                case "StaticMeshCollectionActor":
+                    return From<StaticMeshCollectionActor>(export);
+                case "StaticLightCollectionActor":
+                    return From<StaticLightCollectionActor>(export);
                 default:
                     return null;
             }

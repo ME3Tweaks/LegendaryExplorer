@@ -234,7 +234,7 @@ namespace ME3Explorer.StaticLighting
                                 {
                                     continue;
                                 }
-                                m.UnrealDecompose(out Vector3 posVec, out Vector3 scaleVec, out Rotator rotator);
+                                (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
                                 locationProp = CommonStructs.Vector3Prop(posVec, "Location");
                                 rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
                                 scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
@@ -331,7 +331,7 @@ namespace ME3Explorer.StaticLighting
                                     {
                                         continue;
                                     }
-                                    m.UnrealDecompose(out Vector3 posVec, out Vector3 scaleVec, out Rotator rotator);
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
                                     locationProp = CommonStructs.Vector3Prop(posVec, "Location");
                                     rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
                                     scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
@@ -392,7 +392,7 @@ namespace ME3Explorer.StaticLighting
                                     {
                                         continue;
                                     }
-                                    m.UnrealDecompose(out Vector3 posVec, out Vector3 scaleVec, out Rotator rotator);
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
                                     locationProp = CommonStructs.Vector3Prop(posVec, "Location");
                                     rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
                                     scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
@@ -453,7 +453,7 @@ namespace ME3Explorer.StaticLighting
                                     {
                                         continue;
                                     }
-                                    m.UnrealDecompose(out Vector3 posVec, out Vector3 scaleVec, out Rotator rotator);
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
                                     locationProp = CommonStructs.Vector3Prop(posVec, "Location");
                                     rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
                                     scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");

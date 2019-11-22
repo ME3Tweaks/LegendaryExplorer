@@ -429,6 +429,9 @@
     <Compile Include="PackageEditor\BIKExternalExportLoader.xaml.cs">
       <DependentUpon>BIKExternalExportLoader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageEditor\CollectionActorEditor.xaml.cs">
+      <DependentUpon>CollectionActorEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageEditor\TextureViewer\ParallelCRC.cs" />
     <Compile Include="Packages\EntryTree.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
@@ -681,6 +684,7 @@
     <Compile Include="SharedUI\Converters\EnumComparisonConverter.cs" />
     <Compile Include="SharedUI\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\InverseVisibilityConverter.cs" />
+    <Compile Include="SharedUI\Converters\UnrealRotationUnitsToDegreesConverter.cs" />
     <Compile Include="SharedUI\CopyDir.cs" />
     <Compile Include="SharedUI\ExportScanner.xaml.cs">
       <DependentUpon>ExportScanner.xaml</DependentUpon>
@@ -1108,6 +1112,10 @@
     <Page Include="PackageEditor\BIKExternalExportLoader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PackageEditor\CollectionActorEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageEditor\TextureViewer\TextureViewerExportLoader.xaml">
       <SubType>Designer</SubType>

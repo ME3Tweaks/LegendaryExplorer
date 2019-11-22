@@ -18,13 +18,18 @@ namespace ME3Explorer.Unreal
 
             float drawScale = props.GetProp<FloatProperty>("DrawScale")?.Value ?? 1;
 
-            (float x, float y, float z) = locationsProp != null ? CommonStructs.GetVector3(locationsProp) : Vector3.Zero;
-            (float scaleX, float scaleY, float scaleZ) = drawScale * (drawScale3DProp != null ? CommonStructs.GetVector3(drawScale3DProp) : Vector3.One);
-            (float pivotX, float pivotY, float pivotZ) = prePivotProp != null ? CommonStructs.GetVector3(prePivotProp) : Vector3.Zero;
-            (int uuPitch, int uuYaw, int uuRoll) = rotationProp != null ? CommonStructs.GetRotator(rotationProp) : new Rotator(0, 0, 0);
-            double pitch = uuPitch.ToRadians();
-            double yaw = uuYaw.ToRadians();
-            double roll = uuRoll.ToRadians();
+            Vector3 location = locationsProp != null ? CommonStructs.GetVector3(locationsProp) : Vector3.Zero;
+            Vector3 scale = drawScale * (drawScale3DProp != null ? CommonStructs.GetVector3(drawScale3DProp) : Vector3.One);
+            Vector3 pivot = prePivotProp != null ? CommonStructs.GetVector3(prePivotProp) : Vector3.Zero;
+            Rotator rotator = rotationProp != null ? CommonStructs.GetRotator(rotationProp) : new Rotator(0, 0, 0);
+            return ComposeLocalToWorld(location, rotator, scale, pivot);
+        }
+
+        public static Matrix ComposeLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 pivot = default)
+        {
+            double pitch = rotation.Pitch.ToRadians();
+            double yaw = rotation.Yaw.ToRadians();
+            double roll = rotation.Roll.ToRadians();
 
             float sp = (float)Math.Sin(pitch);
             float sy = (float)Math.Sin(yaw);
@@ -33,24 +38,24 @@ namespace ME3Explorer.Unreal
             float cy = (float)Math.Cos(yaw);
             float cr = (float)Math.Cos(roll);
 
-            return new Matrix(M11: cp * cy * scaleX, 
-                              M12: cp * scaleX * sy, 
-                              M13: scaleX * sp,
+            (float x, float y, float z) = location;
+            (float sX, float sY, float sZ) = scale;
+            (float pX, float pY, float pZ) = pivot;
+            return new Matrix(M11: cp * cy * sX,
+                              M12: cp * sX * sy,
+                              M13: sX * sp,
                               M14: 0f,
-                
-                              M21: scaleY * (cy * sp * sr - cr * sy),
-                              M22: scaleY * (cr * cy + sp * sr * sy),
-                              M23: -cp * scaleY * sr,
+                              M21: sY * (cy * sp * sr - cr * sy),
+                              M22: sY * (cr * cy + sp * sr * sy),
+                              M23: -cp * sY * sr,
                               M24: 0f,
-
-                              M31: -scaleZ * (cr * cy * sp + sr * sy),
-                              M32: scaleZ * (cy * sr - cr * sp * sy),
-                              M33: cp * cr * scaleZ,
+                              M31: -sZ * (cr * cy * sp + sr * sy),
+                              M32: sZ * (cy * sr - cr * sp * sy),
+                              M33: cp * cr * sZ,
                               M34: 0f,
-
-                              M41: x - cp * cy * scaleX * pivotX + cr * cy * scaleZ * pivotZ * sp - cy * scaleY * pivotY * sp * sr + cr * scaleY * pivotY * sy + scaleZ * pivotZ * sr * sy,
-                              M42: y - (cr * cy * scaleY * pivotY + cy * scaleZ * pivotZ * sr + cp * scaleX * pivotX * sy - cr * scaleZ * pivotZ * sp * sy + scaleY * pivotY * sp * sr * sy),
-                              M43: z - (cp * cr * scaleZ * pivotZ + scaleX * pivotX * sp - cp * scaleY * pivotY * sr),
+                              M41: x - cp * cy * sX * pX + cr * cy * sZ * pZ * sp - cy * sY * pY * sp * sr + cr * sY * pY * sy + sZ * pZ * sr * sy,
+                              M42: y - (cr * cy * sY * pY + cy * sZ * pZ * sr + cp * sX * pX * sy - cr * sZ * pZ * sp * sy + sY * pY * sp * sr * sy),
+                              M43: z - (cp * cr * sZ * pZ + sX * pX * sp - cp * sY * pY * sr),
                               M44: 1f);
         }
 
@@ -82,9 +87,6 @@ namespace ME3Explorer.Unreal
                                x * m.M12 + y * m.M22 + z * m.M32,
                                x * m.M13 + y * m.M23 + z * m.M33);
         }
-
-        //todo: switch to using one in Extesnsions.cs after merge with AnimViewer branch
-        private static double ToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
 
         public static Matrix InverseRotation(Rotator rot)
         {
