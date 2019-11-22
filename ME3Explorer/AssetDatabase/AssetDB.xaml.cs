@@ -154,6 +154,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
         public ICommand FilterTexCommand { get; set; }
+        public ICommand FilterAnimsCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
@@ -183,6 +184,10 @@ namespace ME3Explorer.AssetDatabase
         private bool IsViewingTextures(object obj)
         {
             return currentView == 4;
+        }
+        private bool IsViewingAnimations(object obj)
+        {
+            return currentView == 5;
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -218,6 +223,7 @@ namespace ME3Explorer.AssetDatabase
             FilterMatCommand = new RelayCommand(SetFilters, IsViewingMaterials);
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
             FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
+            FilterAnimsCommand = new RelayCommand(SetFilters, IsViewingAnimations);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -501,43 +507,43 @@ namespace ME3Explorer.AssetDatabase
                     {
                         await Task.Run(() => streamWriter.Write(masterSrl.Result));
                     }
-                    var classjson = archive.CreateEntry($"ClassDB{currentGame}.json");
+                    var classjson = archive.CreateEntry($"{dbTableType.Class.ToString()}DB{currentGame}.json");
                     using (var entryStream = classjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(clsSrl.Result));
                     }
-                    var matjson = archive.CreateEntry($"MatDB{currentGame}.json");
+                    var matjson = archive.CreateEntry($"{dbTableType.Materials.ToString()}DB{currentGame}.json");
                     using (var entryStream = matjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(mtlSrl.Result));
                     }
-                    var animJson = archive.CreateEntry($"AnimDB{currentGame}.json");
+                    var animJson = archive.CreateEntry($"{dbTableType.Animations.ToString()}DB{currentGame}.json");
                     using (var entryStream = animJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(animSrl.Result));
                     }
-                    var mshJson = archive.CreateEntry($"MeshDB{currentGame}.json");
+                    var mshJson = archive.CreateEntry($"{dbTableType.Meshes.ToString()}DB{currentGame}.json");
                     using (var entryStream = mshJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(mshSrl.Result));
                     }
-                    var psJson = archive.CreateEntry($"PsDB{currentGame}.json");
+                    var psJson = archive.CreateEntry($"{dbTableType.Particles.ToString()}DB{currentGame}.json");
                     using (var entryStream = psJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(psSrl.Result));
                     }
-                    var txtJson = archive.CreateEntry($"TxtDB{currentGame}.json");
+                    var txtJson = archive.CreateEntry($"{dbTableType.Textures.ToString()}DB{currentGame}.json");
                     using (var entryStream = txtJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(txtSrl.Result));
                     }
-                    var guiJson = archive.CreateEntry($"GuiDB{currentGame}.json");
+                    var guiJson = archive.CreateEntry($"{dbTableType.GUIElements.ToString()}DB{currentGame}.json");
                     using (var entryStream = guiJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
@@ -590,6 +596,7 @@ namespace ME3Explorer.AssetDatabase
             textPcc?.Dispose();
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            menu_fltrPerf.IsEnabled = false;
             switch (p)
             {
                 case "ME1":
@@ -609,6 +616,7 @@ namespace ME3Explorer.AssetDatabase
                     StatusBar_GameID_Text.Text = "ME3";
                     StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
                     switchME3_menu.IsChecked = true;
+                    menu_fltrPerf.IsEnabled = true;
                     break;
             }
             CurrentDBPath = GetDBPath(currentGame);
@@ -668,12 +676,10 @@ namespace ME3Explorer.AssetDatabase
                 CurrentOverallOperationText = "No database found.";
             }
         }
-
         public static string GetDBPath(MEGame game)
         {
             return Path.Combine(App.AppDataFolder, $"AssetDB{game}.zip");
         }
-
         private void GoToSuperClass(object obj)
         {
             var cr = lstbx_Classes.SelectedItem as ClassRecord;
@@ -1207,7 +1213,14 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
             }
-
+            if (showthis && menu_fltrAnim.IsChecked && ar.IsAmbPerf)
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrPerf.IsChecked && !ar.IsAmbPerf)
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool PSFilter(object d)
@@ -1326,6 +1339,28 @@ namespace ME3Explorer.AssetDatabase
             var param = obj as string;
             switch (param)
             {
+                case "Anim":
+                    if (!menu_fltrAnim.IsChecked)
+                    {
+                        menu_fltrAnim.IsChecked = true;
+                        menu_fltrPerf.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrAnim.IsChecked = false;
+                    }
+                    break;
+                case "Perf":
+                    if (!menu_fltrPerf.IsChecked)
+                    {
+                        menu_fltrPerf.IsChecked = true;
+                        menu_fltrAnim.IsChecked = false;
+                    }
+                    else
+                    {
+                        menu_fltrPerf.IsChecked = false;
+                    }
+                    break;
                 case "Seq":
                     menu_fltrSeq.IsChecked = !menu_fltrSeq.IsChecked;
                     break;
@@ -2240,7 +2275,7 @@ namespace ME3Explorer.AssetDatabase
                                             {
                                                 paramName = paramNameProp.Value;
                                             }
-                                            string exprsnName = exprsn.ClassName.Remove(0, 18);
+                                            string exprsnName = exprsn.ClassName.Replace("MaterialExpression", string.Empty);
                                             switch (exprsn.ClassName)
                                             {
                                                 case "MaterialExpressionScalarParameter":
