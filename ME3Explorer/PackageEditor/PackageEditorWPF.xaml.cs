@@ -343,6 +343,14 @@ namespace ME3Explorer
                             }
                         }
                         break;
+                    case "PathfindingEditor":
+                        if (PathfindingEditorWPF.CanParseStatic(exp))
+                        {
+                            var pf = new PathfindingEditorWPF(exp);
+                            pf.Show();
+
+                        }
+                        break;
                 }
             }
         }
@@ -358,6 +366,8 @@ namespace ME3Explorer
                         return exp.ClassName == "FaceFXAnimSet";
                     case "Meshplorer":
                         return MeshRendererWPF.CanParseStatic(exp);
+                    case "PathfindingEditor":
+                        return PathfindingEditorWPF.CanParseStatic(exp);
                     case "Soundplorer":
                         return Soundpanel.CanParseStatic(exp);
                     case "SequenceEditor":

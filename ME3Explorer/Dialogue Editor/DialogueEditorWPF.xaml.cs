@@ -1776,7 +1776,7 @@ namespace ME3Explorer.Dialogue_Editor
             var diagnode = (DialogueNodeExtended)sender;  //THIS IS A GATE TO CHECK IF VALUES HAVE CHANGED
             var newvalue = diagnode.GetType().GetProperty(e.PropertyName).GetValue(diagnode, null);
             var oldvalue = MirrorDialogueNode.GetType().GetProperty(e.PropertyName).GetValue(MirrorDialogueNode, null);
-            if (newvalue.ToString() == oldvalue.ToString())
+            if (oldvalue == null || newvalue == null || newvalue.ToString() == oldvalue.ToString())
             {
                 return;
             }

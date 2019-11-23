@@ -104,7 +104,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public PathingZoomController zoomController;
 
         private string FileQueuedForLoad;
-
+        private ExportEntry ExportQueuedForFocus;
         public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
         public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
 
@@ -119,9 +119,13 @@ namespace ME3Explorer.Pathfinding_Editor
         private readonly List<ExportEntry> AllOverlayObjects = new List<ExportEntry>();
         public string CurrentFile;
         private readonly PathfindingMouseListener pathfindingMouseListener;
-
+        public static bool CanParseStatic(ExportEntry exportEntry)
+        {
+            return !exportEntry.IsDefaultObject && (pathfindingNodeClasses.Contains(exportEntry.ClassName)
+                   || actorNodeClasses.Contains(exportEntry.ClassName) || splineNodeClasses.Contains(exportEntry.ClassName) 
+                   || artNodeClasses.Contains(exportEntry.ClassName) || exportEntry.ClassName == "Level");
+        }
         private string _currentNodeXY = "Undefined";
-
         public string CurrentNodeXY
         {
             get => _currentNodeXY;
@@ -575,6 +579,13 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             FileQueuedForLoad = fileName;
         }
+
+        public PathfindingEditorWPF(ExportEntry export) : this()
+        {
+            FileQueuedForLoad = export.FileRef.FilePath;
+            ExportQueuedForFocus = export;
+        }
+
         private void PathfindingEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
             if (FileQueuedForLoad != null)
@@ -584,6 +595,15 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Wait for all children to finish loading
                     LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
+                    if (ExportQueuedForFocus != null && ExportQueuedForFocus.ClassName != "Level")
+                    {
+                        if (pathfindingNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowPathfindingNodesLayer = true; }
+                        else if (actorNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowActorsLayer = true; }
+                        else if (artNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowArtLayer = true; }
+                        else if (splineNodeClasses.Contains(ExportQueuedForFocus.ClassName)) { ShowSplinesLayer = true; }
+                        FocusNode(ExportQueuedForFocus, true, 0);
+                    }
+                    ExportQueuedForFocus = null;
                     Activate();
                 }));
             }
