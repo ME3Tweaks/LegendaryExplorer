@@ -315,7 +315,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             SetBusy("Loading Database...");
             PropsDataBase db = new PropsDataBase();
-            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None).ContinueWithOnUIThread(prevTask =>
+            AssetDB.LoadDatabase(dbPath, MEGame.ME3, db, CancellationToken.None, AssetDB.dbTableType.Animations).ContinueWithOnUIThread(prevTask =>
             {
                 if (db.DataBaseversion != AssetDB.dbCurrentBuild)
                 {
@@ -327,7 +327,7 @@ namespace ME3Explorer.AnimationExplorer
                 {
                     FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
                 }
-                Animations.AddRange(db.Animations);
+                Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
                 listBoxAnims.ItemsSource = Animations;
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();

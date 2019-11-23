@@ -314,11 +314,11 @@ namespace ME3Explorer.AssetDatabase
                     {
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            dbTableType dbType = dbTableType.Master;
+                            dbTableType entryType = dbTableType.Master;
                             if (!entry.Name.StartsWith("Master"))
                             {
-                                bool typecast = Enum.TryParse(entry.Name.Substring(0, entry.Name.Length - 10), out dbType);
-                                if (!typecast || dbType == dbTableType.Master)
+                                bool typecast = Enum.TryParse(entry.Name.Substring(0, entry.Name.Length - 10), out entryType);
+                                if (!typecast || dbTable == dbTableType.Master || dbTable != entryType)
                                     continue;
                             }
 
@@ -328,7 +328,7 @@ namespace ME3Explorer.AssetDatabase
                                 estream.CopyTo(ms);
                             }
                             ms.Position = 0;
-                            var unitTask = Task.Run(() => JsonFileParse(ms, dbType, deserializingQueue, cancel));
+                            var unitTask = Task.Run(() => JsonFileParse(ms, entryType, deserializingQueue, cancel));
                         }
 
                     }
