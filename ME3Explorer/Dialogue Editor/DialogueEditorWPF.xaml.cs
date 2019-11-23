@@ -415,7 +415,6 @@ namespace ME3Explorer.Dialogue_Editor
             ForceRefreshCommand = new RelayCommand(ForceRefresh);
         }
 
-
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
             if (FileQueuedForLoad != null)
@@ -451,7 +450,7 @@ namespace ME3Explorer.Dialogue_Editor
         {
             Pcc.Save();
         }
-        private void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
+        private async void DialogueEditorWPF_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
                 return;
@@ -481,10 +480,13 @@ namespace ME3Explorer.Dialogue_Editor
                 {"ColumnSpace", ColumnSpace},
                 {"WaterfallSpace", WaterfallSpace},
             };
-            string outputFile = JsonConvert.SerializeObject(options);
-            if (!Directory.Exists(DialogueEditorDataFolder))
-                Directory.CreateDirectory(DialogueEditorDataFolder);
-            File.WriteAllText(OptionsPath, outputFile);
+            await Task.Run(() =>
+            {
+                if (!Directory.Exists(DialogueEditorDataFolder))
+                    Directory.CreateDirectory(DialogueEditorDataFolder);
+                File.WriteAllText(OptionsPath, JsonConvert.SerializeObject(options));
+            }                      
+            );
 
             //Code here remove these objects from leaking the window memory
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
