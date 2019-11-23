@@ -150,6 +150,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand OpenSourcePkgCommand { get; set; }
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
+        public ICommand OpenInAnimViewerCommand { get; set; }
         public ICommand FilterClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
@@ -230,7 +231,9 @@ namespace ME3Explorer.AssetDatabase
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
+            OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, IsViewingAnimations);
         }
+
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
         {
             CurrentOverallOperationText = "Starting Up";
@@ -728,35 +731,35 @@ namespace ME3Explorer.AssetDatabase
             }
             else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
             {
-                var s = lstbx_MeshUsages.SelectedItem as Tuple<int, int>;
+                var s = lstbx_MeshUsages.SelectedItem as Tuple<int, int, bool>;
                 usagepkg = FileListExtended[s.Item1].Item1;
                 contentdir = FileListExtended[s.Item1].Item2;
                 usageexp = s.Item2;
             }
             else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
             {
-                var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool>;
+                var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool, bool>;
                 usagepkg = FileListExtended[t.Item1].Item1;
                 contentdir = FileListExtended[t.Item1].Item2;
                 usageexp = t.Item2;
             }
             else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
             {
-                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int>;
+                var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int, bool>;
                 usagepkg = FileListExtended[a.Item1].Item1;
                 contentdir = FileListExtended[a.Item1].Item2;
                 usageexp = a.Item2;
             }
             else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
             {
-                var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool>;
+                var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool, bool>;
                 usagepkg = FileListExtended[ps.Item1].Item1;
                 contentdir = FileListExtended[ps.Item1].Item2;
                 usageexp = ps.Item2;
             }
             else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
             {
-                var sf = (Tuple<int, int>)lstbx_GUIUsages.SelectedItem;
+                var sf = (Tuple<int, int, bool>)lstbx_GUIUsages.SelectedItem;
                 usagepkg = FileListExtended[sf.Item1].Item1;
                 contentdir = FileListExtended[sf.Item1].Item2;
                 usageexp = sf.Item2;
@@ -1104,6 +1107,11 @@ namespace ME3Explorer.AssetDatabase
             }
 
         }
+        private void OpenInAnimViewer(object obj)
+        {
+            //Not implemented yet
+        }
+
         #endregion
 
         #region Filters
@@ -2146,7 +2154,7 @@ namespace ME3Explorer.AssetDatabase
                 {
                     string pClass = exp.ClassName;  //Handle basic class record
                     string pExp = exp.ObjectName;
-                    string pKey = exp.InstancedFullPath;
+                    string pKey = exp.InstancedFullPath.ToLower();
                     if (exp.indexValue > 0)
                     {
                         pExp = $"{pExp}_{exp.indexValue - 1}";
@@ -2488,7 +2496,7 @@ namespace ME3Explorer.AssetDatabase
                                 pExp = $"{exp.Parent.ObjectName}_{pExp}";
                             }
 
-                            if (dbScanner.GeneratedText.ContainsKey(pExp))
+                            if (dbScanner.GeneratedText.ContainsKey(pKey))
                             {
                                 var t = dbScanner.GeneratedText[pKey];
                                 lock (t)
@@ -2549,6 +2557,10 @@ namespace ME3Explorer.AssetDatabase
                                 lock (eGUI)
                                 {
                                     eGUI.GUIUsages.Add(new Tuple<int, int, bool>(FileKey, pExportUID, IsMod));
+                                    if (eGUI.IsModOnly)
+                                    {
+                                        eGUI.IsModOnly = IsMod;
+                                    }
                                 }
                             }
                             else

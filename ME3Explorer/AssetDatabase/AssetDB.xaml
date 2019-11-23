@@ -187,7 +187,7 @@
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                    <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                    <Setter Property="Foreground" Value="IndianRed"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Mod - this class is only used by Mods"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -243,6 +243,10 @@
                                                     <Setter Property="TextElement.FontWeight" Value="Bold"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Default value"/>
                                                 </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=IsMod}" Value="True">
+                                                    <Setter Property="TextElement.Foreground" Value="IndianRed"/>
+                                                    <Setter Property="TextElement.ToolTip" Value="Is Mod File"/>
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </SharedUI:ListBoxScroll.ItemContainerStyle>
@@ -259,11 +263,11 @@
                     </TabItem>
                     <!-- Materials -->
                     <TabItem Header="Materials" TabIndex="2">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="400" Width="*"/>
                                 <ColumnDefinition Width="*"/>
@@ -271,19 +275,19 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Material Records" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Material Records (Grey shows DLC only materials that require a shadercache)" Grid.Row="0" Grid.Column="0"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_Materials" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Materials}" Grid.Row="1" Grid.Column="0" >
-                                    <SharedUI:ListBoxScroll.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding MaterialName}" />
-                                                <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </SharedUI:ListBoxScroll.ItemTemplate>
-                                    <SharedUI:ListBoxScroll.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Style.Triggers>
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding MaterialName}" />
+                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text="{Binding ParentPackage}" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text=")" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
                                                 <Setter Property="Background" Value="LightGray"/>
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
@@ -293,26 +297,26 @@
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - only found in a DLC mod"/>
                                             </DataTrigger>
                                         </Style.Triggers>
-                                        </Style>
-                                    </SharedUI:ListBoxScroll.ItemContainerStyle>
-                                </SharedUI:ListBoxScroll>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                            </SharedUI:ListBoxScroll>
                             <TextBlock Text="Properties" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="The default properties of the material" Grid.Row="0"  Grid.Column="1"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_MatProps" MinWidth="200" ItemsSource="{Binding SelectedItem.MatSettings, ElementName=lstbx_Materials }" Grid.Row="1" Grid.Column="1">
-                                    <SharedUI:ListBoxScroll.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Item1}" />
-                                                <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" Text="{Binding Item2}" VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Item3}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </SharedUI:ListBoxScroll.ItemTemplate>
-                                </SharedUI:ListBoxScroll>
+                                <SharedUI:ListBoxScroll.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Item1}" />
+                                            <TextBlock FontSize="10" Text=" (" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text="{Binding Item2}" VerticalAlignment="Center"/>
+                                            <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding Item3}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </SharedUI:ListBoxScroll.ItemTemplate>
+                            </SharedUI:ListBoxScroll>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC w shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <SharedUI:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.MaterialUsages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="2">
-                                    <SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock>
                                             <TextBlock.Text>
@@ -325,27 +329,27 @@
                                         </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
-                                    <SharedUI:ListBoxScroll.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Item3}" Value="True">
-                                                    <Setter Property="Background" Value="LightGray"/>
-                                                    <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                                </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=Item4}" Value="True">
-                                                <Setter Property="Foreground" Value="DarkRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - DLC file from a Mod"/>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
+                                            <!--<DataTrigger Binding="{Binding Path=Item4}" Value="True">
+                                                <Setter Property="Foreground" Value="IndianRed"/>
+                                                <Setter Property="TextElement.ToolTip" Value="Mod - DLC file from a Mod"/>
+                                            </DataTrigger>-->
                                         </Style.Triggers>
-                                        </Style>
-                                    </SharedUI:ListBoxScroll.ItemContainerStyle>
-                                    <SharedUI:ListBoxScroll.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        </ContextMenu>
-                                    </SharedUI:ListBoxScroll.ContextMenu>
-                                </SharedUI:ListBoxScroll>
-                            </Grid>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
+                            </SharedUI:ListBoxScroll>
+                        </Grid>
                     </TabItem>
                     <!-- Meshes -->
                     <TabItem Header="Meshes" TabIndex="3">
@@ -378,7 +382,7 @@
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - Mesh comes from a mod"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -411,7 +415,7 @@
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Item3}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - DLC file from a Mod"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -466,7 +470,7 @@
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - Texture comes from a DLC mod"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -504,7 +508,7 @@
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=Item4}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -544,12 +548,17 @@
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - Mesh comes from a mod"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
+                                <SharedUI:ListBoxScroll.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="View in Animviewer" Command="{Binding OpenInAnimViewerCommand}" ToolTip="Open in Animviewer." />
+                                    </ContextMenu>
+                                </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
@@ -563,8 +572,8 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Ambient Performance: " Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <TextBlock Text="Ambient Performance" FontWeight="DemiBold" Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
                                     <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=lstbx_Anims}" />
                                     <TextBlock Text="Animation Group: " Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                     <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=lstbx_Anims}" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
@@ -594,6 +603,16 @@
                                         </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
+                                <SharedUI:ListBoxScroll.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Item3}" Value="True">
+                                                <Setter Property="Foreground" Value="IndianRed"/>
+                                                <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </SharedUI:ListBoxScroll.ItemContainerStyle>
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
@@ -631,7 +650,7 @@
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - Particle system created by a modder"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -681,7 +700,7 @@
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=Item4}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -711,7 +730,7 @@
                             <SharedUI:ListBoxScroll x:Name="lstbx_Scaleform" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.GUIElements}" Grid.Row="1" Grid.Column="0">
                                 <SharedUI:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding GUIName}" />
                                             <TextBlock Text="  size: " FontSize="10"/>
                                             <TextBlock Text="{Binding DataSize}" FontSize="10" />
@@ -726,7 +745,7 @@
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="MediumVioletRed"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - created by a modder"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -758,7 +777,7 @@
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Item3}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
+                                                <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
                                             </DataTrigger>
                                         </Style.Triggers>
