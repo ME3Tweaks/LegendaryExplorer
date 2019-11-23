@@ -271,13 +271,13 @@ namespace ME3Explorer.AssetDatabase
 
         #region Database I/O        
         /// <summary>
-        /// Table parameter returns a database with only that table in it. Master = all.
+        /// Load the database or a particular database table.
         /// </summary>
         /// <param name="currentDbPath"></param>
         /// <param name="game"></param>
         /// <param name="database"></param>
         /// <param name="cancelloadingToken"></param>
-        /// <param name="Table"></param>
+        /// <param name="dbTable">Table parameter returns a database with only that table in it. Master = all.</param>
         /// <returns></returns>
         public static async Task LoadDatabase(string currentDbPath, MEGame game, PropsDataBase database, CancellationToken cancelloadingToken, dbTableType dbTable = dbTableType.Master)
         {
@@ -318,7 +318,7 @@ namespace ME3Explorer.AssetDatabase
                             if (!entry.Name.StartsWith("Master"))
                             {
                                 bool typecast = Enum.TryParse(entry.Name.Substring(0, entry.Name.Length - 10), out entryType);
-                                if (!typecast || dbTable == dbTableType.Master || dbTable != entryType)
+                                if (!typecast || (dbTable != dbTableType.Master && dbTable != entryType))
                                     continue;
                             }
 
