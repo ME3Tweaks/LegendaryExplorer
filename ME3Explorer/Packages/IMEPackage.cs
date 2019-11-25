@@ -167,6 +167,7 @@ namespace ME3Explorer.Packages
 
         int GetNextIndexForName(string name);
 
+        NameReference GetNextIndexedName(string name);
         //editing
         void addName(string name);
         int FindNameOrAdd(string name);

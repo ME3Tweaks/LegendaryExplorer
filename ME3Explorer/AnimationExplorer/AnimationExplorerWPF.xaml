@@ -15,7 +15,6 @@
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
-        <converters:EnumComparisonConverter x:Key="EnumComparisonConverter"/>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
         <Grid>

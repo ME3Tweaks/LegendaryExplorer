@@ -159,7 +159,7 @@ namespace ME3Explorer.StaticLighting
                 var topLevelMeshPackages = new List<IEntry>();
                 foreach (ExportEntry exportEntry in staticMeshes)
                 {
-                    IEntry imp = udkPackage.getEntryOrAddImport($"{exportEntry.FullPath}", "StaticMesh", "Engine");
+                    IEntry imp = udkPackage.getEntryOrAddImport($"{exportEntry.FullPath}", "StaticMesh", "Engine", exportEntry.ObjectName.Number);
                     while (imp.Parent != null)
                     {
                         imp = imp.Parent;

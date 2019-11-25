@@ -87,6 +87,8 @@ namespace ME3Explorer.Sequence_Editor
             return classes;
         }
 
+        public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, string className, MEGame game) => GetSequenceObjectDefaults(pcc, UnrealObjectInfo.GetClassOrStructInfo(game, className));
+
         public static PropertyCollection GetSequenceObjectDefaults(IMEPackage pcc, ClassInfo info)
         {
             MEGame game = pcc.Game;
@@ -202,6 +204,18 @@ namespace ME3Explorer.Sequence_Editor
             defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;
+        }
+
+        public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, MEGame game)
+        {
+            var seqObj = new ExportEntry(pcc, properties: GetSequenceObjectDefaults(pcc, className, game))
+            {
+                ObjectName = pcc.GetNextIndexedName(className),
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className)
+            };
+            seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+            pcc.AddExport(seqObj);
+            return seqObj;
         }
     }
 }

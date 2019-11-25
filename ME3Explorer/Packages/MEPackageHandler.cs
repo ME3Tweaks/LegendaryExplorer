@@ -180,5 +180,26 @@ namespace ME3Explorer.Packages
                 Debug.WriteLine(package.Key);
             }
         }
+
+        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
+        {
+            foreach (IMEPackage pcc in packagesInTools)
+            {
+                if (pcc.FilePath == filePath)
+                {
+                    foreach (GenericWindow window in pcc.Tools)
+                    {
+                        if (window.tool.type == typeof(T))
+                        {
+                            tool = (T)window.WPF;
+                            tool.RestoreAndBringToFront();
+                            return true;
+                        }
+                    }
+                }
+            }
+            tool = null;
+            return false;
+        }
     }
 }

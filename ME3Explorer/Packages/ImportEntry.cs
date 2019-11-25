@@ -157,5 +157,7 @@ namespace ME3Explorer.Packages
             newImport.Header = Header.TypedClone();
             return newImport;
         }
+
+        IEntry IEntry.Clone() => Clone();
     }
 }

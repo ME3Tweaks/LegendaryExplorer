@@ -14,9 +14,9 @@ namespace ME3Explorer
 {
     public class GenericWindow : IDisposable
     {
-        WPFBase wpf;
-        WinFormsBase winform;
-        public Tool tool { get; private set; }
+        public WPFBase WPF { get; private set; }
+        public WinFormsBase WinForm { get; private set; }
+        public Tool tool { get; }
         public string fileName { get; private set; }
 
         EventHandler wpfClosed;
@@ -24,124 +24,124 @@ namespace ME3Explorer
 
         public event EventHandler Disposing;
 
-        public GenericWindow(WPFBase w, string file)
+        public GenericWindow(WPFBase wpf, string file)
         {
-            wpf = w;
-            tool = Tools.Items.FirstOrDefault(x => x.type == w.GetType());
-            winform = null;
+            WPF = wpf;
+            tool = Tools.Items.FirstOrDefault(x => x.type == wpf.GetType());
+            WinForm = null;
             fileName = file;
         }
 
-        public GenericWindow(WinFormsBase f, string file)
+        public GenericWindow(WinFormsBase winform, string file)
         {
-            wpf = null;
-            winform = f;
-            tool = Tools.Items.FirstOrDefault(x => x.type == f.GetType());
+            WPF = null;
+            WinForm = winform;
+            tool = Tools.Items.FirstOrDefault(x => x.type == winform.GetType());
             fileName = file;
         }
 
         public void handleUpdate(List<PackageUpdate> updates)
         {
-            if (wpf != null)
+            if (WPF != null)
             {
-                wpf.handleUpdate(updates);
+                WPF.handleUpdate(updates);
             }
             else
             {
-                winform?.handleUpdate(updates);
+                WinForm?.handleUpdate(updates);
             }
         }
 
         public void RegisterClosed(Action handler)
         {
-            if (wpf != null)
+            if (WPF != null)
             {
                 wpfClosed = (obj, args) =>
                 {
                     handler();
                     Dispose();
                 };
-                wpf.Closed += wpfClosed;
+                WPF.Closed += wpfClosed;
             }
-            else if (winform != null)
+            else if (WinForm != null)
             {
                 winformClosed = (obj, args) =>
                 {
                     handler();
                     Dispose();
                 };
-                winform.FormClosed += winformClosed;
+                WinForm.FormClosed += winformClosed;
             }
         }
 
         public void Close()
         {
-            if (wpf != null)
+            if (WPF != null)
             {
-                wpf.Close();
+                WPF.Close();
             }
             else
             {
-                winform?.Close();
+                WinForm?.Close();
             }
         }
 
         public void BringToFront()
         {
-            if (wpf != null)
+            if (WPF != null)
             {
-                wpf.RestoreAndBringToFront();
+                WPF.RestoreAndBringToFront();
             }
             else
             {
-                winform?.RestoreAndBringToFront();
+                WinForm?.RestoreAndBringToFront();
             }
         }
 
         public void Dispose()
         {
-            if (wpf != null)
+            if (WPF != null)
             {
-                wpf.Closed -= wpfClosed;
-                wpf = null;
+                WPF.Closed -= wpfClosed;
+                WPF = null;
             }
-            else if (winform != null)
+            else if (WinForm != null)
             {
-                winform.FormClosed -= winformClosed;
-                winform = null;
+                WinForm.FormClosed -= winformClosed;
+                WinForm = null;
             }
             Disposing?.Invoke(this, EventArgs.Empty);
         }
 
         public static bool operator ==(GenericWindow gen, Window window)
         {
-            return window == gen.wpf;
+            return window == gen.WPF;
         }
 
         public static bool operator !=(GenericWindow gen, Window window)
         {
-            return window != gen.wpf;
+            return window != gen.WPF;
         }
 
         public static bool operator ==(GenericWindow gen, Form form)
         {
-            return form == gen.winform;
+            return form == gen.WinForm;
         }
 
         public static bool operator !=(GenericWindow gen, Form form)
         {
-            return form != gen.winform;
+            return form != gen.WinForm;
         }
 
         public BitmapSource GetImage()
         {
-            if (wpf != null)
+            if (WPF != null)
             {
-                return wpf.DrawToBitmapSource();
+                return WPF.DrawToBitmapSource();
             }
-            else if (winform != null)
+            else if (WinForm != null)
             {
-                return winform.DrawToBitmapSource();
+                return WinForm.DrawToBitmapSource();
             }
             return null;
         }

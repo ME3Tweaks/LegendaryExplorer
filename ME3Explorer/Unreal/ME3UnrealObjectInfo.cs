@@ -893,6 +893,15 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SFXSeqAct_SetBodyMaterial"] = new SequenceObjectInfo();
 
+            //SirCxyrtyx - New Class - SeqAct_ME3ExpDumpActors
+            NewClasses["SeqAct_ME3ExpDumpActors"] = new ClassInfo
+            {
+                baseClass = "SeqAct_Log",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 57, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",

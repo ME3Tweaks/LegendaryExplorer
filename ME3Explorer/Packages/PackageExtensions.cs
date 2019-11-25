@@ -42,7 +42,7 @@ namespace ME3Explorer.Packages
         }
 
         //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
-        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string fullPath, string className = "Class", string packageFile = "Core")
+        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string fullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
         {
             if (string.IsNullOrEmpty(fullPath))
             {
@@ -52,7 +52,7 @@ namespace ME3Explorer.Packages
             //see if this import exists locally
             foreach (ImportEntry imp in pcc.Imports)
             {
-                if (imp.FullPath == fullPath)
+                if (imp.FullPath == fullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
                 {
                     return imp;
                 }
@@ -61,7 +61,7 @@ namespace ME3Explorer.Packages
             //see if this is an export and exists locally
             foreach (ExportEntry exp in pcc.Exports)
             {
-                if (exp.FullPath == fullPath)
+                if (exp.FullPath == fullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
                 {
                     return exp;
                 }
@@ -75,7 +75,7 @@ namespace ME3Explorer.Packages
             {
                 idxLink = parent?.UIndex ?? 0,
                 ClassName = className,
-                ObjectName = pathParts.Last(),
+                ObjectName = new NameReference(pathParts.Last(), objIdx ?? 0),
                 PackageFile = packageFile
             };
             pcc.AddImport(import);
