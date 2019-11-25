@@ -10,7 +10,7 @@ namespace ME3Explorer.Sequence_Editor
 {
     public static class KismetHelper
     {
-        public static void CreateOutputLink(ExportEntry source, string outLinkDescription, ExportEntry destExport, int inputIndex)
+        public static void CreateOutputLink(ExportEntry source, string outLinkDescription, ExportEntry destExport, int inputIndex = 0)
         {
             if (source.GetProperty<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinksProp)
             {

@@ -16,6 +16,12 @@
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <ContextMenu x:Key="packagesContextMenu">
+            <MenuItem Header="Open In Package Editor" sharedUi:Bindings.VisibilityToEnabled="True"/>
+        </ContextMenu>
+        <ContextMenu x:Key="actorsContextMenu">
+            <MenuItem Header="Open In Package Editor" Command="{Binding OpenActorInPackEdCommand}"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+        </ContextMenu>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}">
         <Grid>
@@ -40,7 +46,7 @@
                                                        RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                     <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and an asi, ME3ExplorerInterop.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc, and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
-                                    <animationExplorer:Requirement x:Name="dlcInteropInstalledReq"
+                                    <animationExplorer:Requirement x:Name="supportFilesInstalledReq"
                                                                    FullfilledText="Support files are installed"
                                                                    Margin="0,5,0,5"
                                                                    UnFullfilledText="Support files are not installed or are out of date!"
@@ -52,22 +58,28 @@
                                 <Button Name="startME3Button" Content="Initialize Editor"
                                         Margin="20,10,20,0"
                                         Command="{Binding LoadLiveEditorCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
+                                <TextBlock Text="When you load into a new level, you will have to initialize the editor again"
+                                           Margin="15,5,15,5" TextWrapping="Wrap" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </TabItem>
-                <TabItem Name="animTab" Header="Actors" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TabItem Name="actorTab" Header="Actors" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                     <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="You should regenerate the actor list whenever you move to a new area of the level, as what is loaded may have changed"
+                                   Margin="15,5,15,5" TextWrapping="Wrap" MaxWidth="330"/>
+                        <Button Margin="15,0,15,6" DockPanel.Dock="Top" Content="Regenerate Actor List" Command="{Binding RegenActorListCommand}"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300" />
-                                <ColumnDefinition Width="5" />
                                 <ColumnDefinition />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <sharedUi:ListBoxScroll x:Name="listBoxAnims" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                            <sharedUi:ListBoxScroll x:Name="listBoxPackages" ItemsSource="{Binding ActorDict}" DisplayMemberPath="Key" SelectedValuePath="Value" ContextMenu="{StaticResource packagesContextMenu}"/>
                             <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
-                                <sharedUi:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxAnims}" DisplayMemberPath="ActorName" SelectedItem="{Binding SelectedActor}"/>
+                                <sharedUi:ListBoxScroll ItemsSource="{Binding SelectedValue, ElementName=listBoxPackages}" DisplayMemberPath="ActorName" SelectedItem="{Binding SelectedActor}"
+                                                        ContextMenu="{StaticResource actorsContextMenu}"/>
                             </Border>
                         </Grid>
                     </DockPanel>
@@ -79,23 +91,39 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
                                     <!--<Button Content=" Reset Position " Margin="5" Click="SetDefaultPosition_Click" />-->
-                                    <TextBlock Text=" X:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="10"/>
-                                    <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="10"/>
-                                    <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
-                                    <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="10"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text=" X:  " VerticalAlignment="Center" />
+                                        <xctk:IntegerUpDown Name="xPosUpDown" Value="{Binding XPos}" Increment="{Binding PosIncrement}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text=" Y:  " VerticalAlignment="Center"/>
+                                        <xctk:IntegerUpDown Name="yPosUpDown" Value="{Binding YPos}" Increment="{Binding PosIncrement}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text=" Z:  " VerticalAlignment="Center"/>
+                                        <xctk:IntegerUpDown Name="zPosUpDown" Value="{Binding ZPos}" Increment="{Binding PosIncrement}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Value="{Binding PosIncrement}" Minimum="0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                         <Label Content="Actor Rotation" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
-                            <StackPanel Orientation="Horizontal">
-                                <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
-                                <TextBlock Text=" Yaw:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="5"/>
-                                <TextBlock Text=" Pitch:  " VerticalAlignment="Center"/>
-                                <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="5"/>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <!--<Button Content=" Reset Rotation " Margin="5" Click="ResetRotation_Click" />-->
+                                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="{Binding RotIncrement}"/>
+                                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0" />
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                         <!--<Label Content="Camera" Margin="10,0,0,0"/>

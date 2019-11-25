@@ -415,6 +415,7 @@
     <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
+    <Compile Include="FileSystemHelper.cs" />
     <Compile Include="GameInterop\AnimViewer.cs" />
     <Compile Include="GameInterop\GameController.cs" />
     <Compile Include="GameInterop\InteropHelper.cs" />

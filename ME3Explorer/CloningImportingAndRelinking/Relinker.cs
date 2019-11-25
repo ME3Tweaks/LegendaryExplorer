@@ -397,7 +397,7 @@ namespace ME3Explorer
                     fullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{fullPath}";
                 }
                 IEntry existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.InstancedFullPath == fullPath);
-                existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.FullPath == fullPath);
+                existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.InstancedFullPath == fullPath);
                 if (existingEntry != null)
                 {
                     //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");

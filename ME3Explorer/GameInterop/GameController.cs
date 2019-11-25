@@ -52,7 +52,7 @@ namespace ME3Explorer.GameInterop
         {
             const string execFileName = "me3expinterop";
             string execFilePath = Path.Combine(MEDirectories.GamePath(game), "Binaries", execFileName);
-            File.WriteAllText(execFilePath, String.Join(Environment.NewLine, commands));
+            File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
             DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
         }
 

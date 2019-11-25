@@ -6,12 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Gammtek.Conduit.Collections.ObjectModel;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -54,6 +50,12 @@ namespace ME3Explorer.GameInterop
             set => SetProperty(ref _readyToView, value);
         }
 
+        private bool _readyToInitialize;
+        public bool ReadyToInitialize
+        {
+            get => _readyToInitialize;
+            set => SetProperty(ref _readyToInitialize, value);
+        }
 
         public LiveLevelEditor()
         {
@@ -68,6 +70,8 @@ namespace ME3Explorer.GameInterop
             InitializeComponent();
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Live Level Editor", new WeakReference(this));
             GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
+            ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            ME3OpenTimer.Tick += CheckIfME3Open;
         }
 
         private void LiveLevelEditor_OnClosing(object sender, CancelEventArgs e)
@@ -81,15 +85,69 @@ namespace ME3Explorer.GameInterop
         public RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
         public RequirementCommand SupportFilesInstalledRequirementCommand { get; set; }
         public ICommand LoadLiveEditorCommand { get; set; }
+        public ICommand OpenPackageCommand { get; set; }
+        public ICommand OpenActorInPackEdCommand { get; set; }
+        public ICommand RegenActorListCommand { get; set; }
         void LoadCommands()
         {
             ME3InstalledRequirementCommand = new RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
             ASILoaderInstalledRequirementCommand = new RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
             SupportFilesInstalledRequirementCommand = new RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
+            OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
+            OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
+            RegenActorListCommand = new GenericCommand(RegenActorList);
         }
 
-        private bool CanLoadLiveEditor() => GameController.TryGetME3Process(out _);
+        private void RegenActorList()
+        {
+            SetBusy("Building Actor List");
+            GameController.ExecuteME3ConsoleCommands("ce DumpActors");
+        }
+
+        private bool CanOpenInPackEd() => SelectedActor != null;
+
+        private void OpenActorInPackEd()
+        {
+            if (SelectedActor != null)
+            {
+                OpenInPackEd(SelectedActor.FileName, SelectedActor.UIndex);
+            }
+        }
+
+        private bool CanOpenPackage() => listBoxPackages.SelectedItem != null;
+
+        private void OpenPackage()
+        {
+            if (listBoxPackages.SelectedItem is KeyValuePair<string, List<ActorEntry>> kvp)
+            {
+                OpenInPackEd(kvp.Key);
+            }
+        }
+
+        private void OpenInPackEd(string fileName, int uIndex = 0)
+        {
+            if (MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue(fileName, out string filePath))
+            {
+                if (MEPackageHandler.TryOpenInExisting(filePath, out PackageEditorWPF packEd))
+                {
+                    packEd.GoToNumber(uIndex);
+                }
+                else
+                {
+                    PackageEditorWPF p = new PackageEditorWPF();
+                    p.Show();
+                    p.LoadFile(filePath, uIndex);
+                }
+            }
+            else
+            {
+                MessageBox.Show(this, $"Cannot Find pcc named {fileName}!");
+            }
+        }
+
+        private bool CanLoadLiveEditor() => ReadyToInitialize && me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled && 
+                                            GameController.TryGetME3Process(out _);
 
         private void LoadLiveEditor()
         {
@@ -97,7 +155,7 @@ namespace ME3Explorer.GameInterop
             GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
         }
 
-        private bool AreSupportFilesInstalled()
+        private static bool AreSupportFilesInstalled()
         {
             if (!InteropHelper.IsME3Installed())
             {
@@ -130,21 +188,30 @@ namespace ME3Explorer.GameInterop
 
         private void GameControllerOnRecieveMe3Message(string msg)
         {
-            if (msg == "LiveEditor string Loaded")
+            if (msg == LiveEditHelper.LoaderLoadedMessage)
             {
+                ReadyToView = false;
+                ReadyToInitialize = true;
+                instructionsTab.IsSelected = true;
+                if (!ME3OpenTimer.IsEnabled)
+                {
+                    ME3OpenTimer.Start();
+                }
+            }
+            else if (msg == "LiveEditor string Loaded")
+            {
+                BusyText = "Building Actor list";
                 GameController.ExecuteME3ConsoleCommands("ce DumpActors");
             }
             else if (msg == "LiveEditor string ActorsDumped")
             {
-                BusyText = "Building Actor list";
                 BuildActorDict();
                 ReadyToView = true;
-                animTab.IsSelected = true;
+                actorTab.IsSelected = true;
                 EndBusy();
             }
             else if (msg.StartsWith("LiveEditor string ActorSelected"))
             {
-                optionsTab.IsSelected = true;
                 Vector3 pos = defaultPosition;
                 if (msg.IndexOf("vector") is int idx && idx > 0 &&
                     msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
@@ -175,6 +242,20 @@ namespace ME3Explorer.GameInterop
             }
         }
 
+        private readonly DispatcherTimer ME3OpenTimer;
+        private void CheckIfME3Open(object sender, EventArgs e)
+        {
+            if (!GameController.TryGetME3Process(out _))
+            {
+                ReadyToInitialize = false;
+                EndBusy();
+                ReadyToView = false;
+                SelectedActor = null;
+                instructionsTab.IsSelected = true;
+                ME3OpenTimer.Stop();
+            }
+        }
+
         public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry>> ActorDict { get; } = new ObservableDictionary<string, ObservableCollectionExtended<ActorEntry>>();
 
         private void BuildActorDict()
@@ -198,7 +279,7 @@ namespace ME3Explorer.GameInterop
                     {
                         ActorName = parts[1],
                         FileName = $"{parts[0]}.pcc",
-                        Index = i
+                        ActorListIndex = i
                     });
                 }
             }
@@ -209,12 +290,13 @@ namespace ME3Explorer.GameInterop
                 if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is { } levelExport)
                 {
                     Level levelBin = levelExport.GetBinaryData<Level>();
-                    var actorExports = levelBin.Actors.Where(uIndex => pcc.IsUExport(uIndex)).Select(uIndex => pcc.GetUExport(uIndex));
-                    List<string> instancedNames = actorExports.Select(exp => exp.ObjectName.Instanced).ToList();
+                    var uIndices = levelBin.Actors.Where(uIndex => pcc.IsUExport(uIndex)).ToList();
+                    List<string> instancedNames = uIndices.Select(uIndex => pcc.GetUExport(uIndex).ObjectName.Instanced).ToList();
                     foreach (ActorEntry actorEntry in actorEntries)
                     {
-                        if (instancedNames.Contains(actorEntry.ActorName))
+                        if (instancedNames.IndexOf(actorEntry.ActorName) is int idx && idx >= 0)
                         {
+                            actorEntry.UIndex = uIndices[idx];
                             ActorDict.AddToListAt(fileName, actorEntry);
                         }
                     }
@@ -284,7 +366,7 @@ namespace ME3Explorer.GameInterop
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => {});
-                    GameController.ExecuteME3ConsoleCommands(VarCmd(value.Index, IntVarIndexes.ActorArrayIndex), "ce SelectActor");
+                    GameController.ExecuteME3ConsoleCommands(VarCmd(value.ActorListIndex, IntVarIndexes.ActorArrayIndex), "ce SelectActor");
                 }
             }
         }
@@ -331,6 +413,13 @@ namespace ME3Explorer.GameInterop
             }
         }
 
+        private int _posIncrement = 10;
+        public int PosIncrement
+        {
+            get => _posIncrement;
+            set => SetProperty(ref _posIncrement, value);
+        }
+
         private int _yaw;
         public int Yaw
         {
@@ -355,6 +444,13 @@ namespace ME3Explorer.GameInterop
                     UpdateRotation();
                 }
             }
+        }
+
+        private int _rotIncrement = 5;
+        public int RotIncrement
+        {
+            get => _rotIncrement;
+            set => SetProperty(ref _rotIncrement, value);
         }
 
         private bool noUpdate;
@@ -397,9 +493,10 @@ namespace ME3Explorer.GameInterop
     }
     public class ActorEntry
     {
-        public int Index;
+        public int ActorListIndex;
         public string FileName;
-        public string ActorName;
+        public string ActorName { get; set; }
+        public int UIndex;
         public bool Moveable;
     }
 }

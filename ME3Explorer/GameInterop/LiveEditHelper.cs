@@ -16,9 +16,11 @@ namespace ME3Explorer.GameInterop
     public static class LiveEditHelper
     {
         //INCREMENT THIS WHEN CHANGES ARE MADE THAT WOULD REQUIRE REGENERATION OF DLC_MOD_Interop
-        public const int CURRENT_VERSION = 1;
+        public const int CURRENT_VERSION = 2;
 
         const string liveEditorFileName = "ME3LiveEditor";
+
+        public const string LoaderLoadedMessage = "BioP_Global";
 
         //me3 pcc must be a map, and must have at least one BioTriggerStream and LevelStreamingKismet
         static void AugmentMapToLoadLiveEditor(IMEPackage pcc)
@@ -30,28 +32,24 @@ namespace ME3Explorer.GameInterop
 
             #region Sequencing
 
-            var consoleEvent = new ExportEntry(pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(pcc, UnrealObjectInfo.GetClassOrStructInfo(MEGame.ME3, "SeqEvent_Console")))
-            {
-                ObjectName = pcc.GetNextIndexedName("SeqEvent_Console"),
-                Class = EntryImporter.EnsureClassIsInFile(pcc, "SeqEvent_Console"),
-                Parent = mainSequence
-            };
-            pcc.AddExport(consoleEvent);
+            var consoleEvent = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console", MEGame.ME3);
             consoleEvent.WriteProperty(new NameProperty("LoadLiveEditor", "ConsoleEventName"));
-
-            var setStreamingState = new ExportEntry(pcc, properties: SequenceObjectCreator.GetSequenceObjectDefaults(pcc, UnrealObjectInfo.GetClassOrStructInfo(MEGame.ME3, "BioSeqAct_SetStreamingState")))
-            {
-                ObjectName = pcc.GetNextIndexedName("BioSeqAct_SetStreamingState"),
-                Class = EntryImporter.EnsureClassIsInFile(pcc, "BioSeqAct_SetStreamingState"),
-                Parent = mainSequence
-            };
-            pcc.AddExport(setStreamingState);
+            KismetHelper.AddObjectToSequence(consoleEvent, mainSequence);
+            var setStreamingState = SequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState", MEGame.ME3);
             setStreamingState.WriteProperty(new NameProperty(stateName, "StateName"));
             setStreamingState.WriteProperty(new BoolProperty(true, "NewValue"));
-
-            KismetHelper.AddObjectToSequence(consoleEvent, mainSequence);
             KismetHelper.AddObjectToSequence(setStreamingState, mainSequence);
-            KismetHelper.CreateOutputLink(consoleEvent, "Out", setStreamingState, 0);
+            KismetHelper.CreateOutputLink(consoleEvent, "Out", setStreamingState);
+
+            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded", MEGame.ME3);
+            KismetHelper.AddObjectToSequence(levelLoaded, mainSequence);
+            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqAct_SendMessageToME3Explorer", MEGame.ME3);
+            KismetHelper.AddObjectToSequence(sendMessageToME3Exp, mainSequence);
+            KismetHelper.CreateOutputLink(levelLoaded, "Loaded and Visible", sendMessageToME3Exp);
+            var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String", MEGame.ME3);
+            stringVar.WriteProperty(new StrProperty(LoaderLoadedMessage, "StrValue"));
+            KismetHelper.AddObjectToSequence(stringVar, mainSequence);
+            KismetHelper.CreateVariableLink(sendMessageToME3Exp, "MessageName", stringVar);
 
             #endregion
 
@@ -89,7 +87,7 @@ namespace ME3Explorer.GameInterop
         {
             if (Directory.Exists(ModInstallPath))
             {
-                Directory.Delete(ModInstallPath, true);
+                FileSystemHelper.DeleteFilesAndFoldersRecursively(ModInstallPath);
             }
             Dictionary<string, string> fileMap = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3, true);
 
