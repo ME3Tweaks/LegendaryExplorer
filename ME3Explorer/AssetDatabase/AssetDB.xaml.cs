@@ -49,7 +49,9 @@ namespace ME3Explorer.AssetDatabase
             Textures,
             Particles,
             Animations,
-            GUIElements
+            GUIElements,
+            Convos,
+            Lines
         }
         private bool _isBusy;
         public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
@@ -62,7 +64,7 @@ namespace ME3Explorer.AssetDatabase
         public MEGame currentGame;
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new ObservableCollectionExtended<Tuple<string, int>>(), new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>());
+            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>());
         public ObservableCollectionExtended<Tuple<string, string>> FileListExtended { get; } = new ObservableCollectionExtended<Tuple<string, string>>();
         /// <summary>
         /// Dictionary that stores generated classes
@@ -92,6 +94,14 @@ namespace ME3Explorer.AssetDatabase
         /// Dictionary that stores generated GFXMovies
         /// </summary>
         public ConcurrentDictionary<String, GUIElement> GeneratedGUI = new ConcurrentDictionary<String, GUIElement>();
+        /// <summary>
+        /// Dictionary that stores generated convos
+        /// </summary>
+        public ConcurrentDictionary<String, Conversation> GeneratedConvo = new ConcurrentDictionary<String, Conversation>();
+        /// <summary>
+        /// Dictionary that stores generated lines
+        /// </summary>
+        public ConcurrentDictionary<String, ConvoLine> GeneratedLines = new ConcurrentDictionary<String, ConvoLine>();
         /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
@@ -141,8 +151,15 @@ namespace ME3Explorer.AssetDatabase
         }
         private IMEPackage meshPcc;
         private IMEPackage textPcc;
+        private IMEPackage audioPcc;
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
+        private bool _parseConvos;
+        public bool ParseConvos { get => _parseConvos; set => SetProperty(ref _parseConvos, value); }
+        private BlockingCollection<ConvoLine> _linequeue = new BlockingCollection<ConvoLine>();
+        private Tuple<string, string, int, string, bool> _currentConvo = new Tuple<string, string, int, string, bool>(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
+        public Tuple<string, string, int, string, bool> CurrentConvo { get => _currentConvo; set => SetProperty(ref _currentConvo, value); }
+        public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -167,8 +184,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5) || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
-                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4) || currentView == 0;
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5) 
+                || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
+                || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || currentView == 0;
         }
         private bool IsViewingClass(object obj)
         {
@@ -263,6 +281,8 @@ namespace ME3Explorer.AssetDatabase
             EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
             BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
+            SoundpanelWPF_ADB.UnloadExport();
+            audioPcc.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
         }
@@ -287,7 +307,6 @@ namespace ME3Explorer.AssetDatabase
             database.meGame = pdb.meGame;
             database.GenerationDate = pdb.GenerationDate;
             database.DataBaseversion = pdb.DataBaseversion;
-            database.dbTable = pdb.dbTable;
             database.FileList.AddRange(pdb.FileList);
             database.ContentDir.AddRange(pdb.ContentDir);
             database.ClassRecords.AddRange(pdb.ClassRecords);
@@ -297,13 +316,26 @@ namespace ME3Explorer.AssetDatabase
             database.Particles.AddRange(pdb.Particles);
             database.Textures.AddRange(pdb.Textures);
             database.GUIElements.AddRange(pdb.GUIElements);
+            database.Conversations.AddRange(pdb.Conversations);
+            database.Lines.AddRange(pdb.Lines);
+            foreach (var table in pdb.dbTable)
+            {
+                database.dbTable[table.Key] = table.Value;
+            }
         }
         public static async Task<PropsDataBase> ParseDBAsync(MEGame dbgame, string dbpath, string build, CancellationToken cancel, dbTableType dbTable)
         {
             var deserializingQueue = new BlockingCollection<PropsDataBase>();
-            int tblcnt = Enum.GetNames(typeof(dbTableType)).Length;
-            if (dbTable != dbTableType.Master)
-                tblcnt = 2;
+            var expectedtables = new ConcurrentDictionary<dbTableType, bool>();  //Stores which tables are expected to load
+            var typology = Enum.GetValues(typeof(dbTableType)).Cast<dbTableType>().ToList();
+            foreach(dbTableType type in typology)
+            {
+                bool expectedToLoad = true;
+                if (dbTable != dbTableType.Master && dbTable != type)
+                    expectedToLoad = false;
+                expectedtables.TryAdd(type, expectedToLoad);
+            }
+
             try
             {
                 await Task.Run(() =>
@@ -368,11 +400,11 @@ namespace ME3Explorer.AssetDatabase
                 return await Task.Run(() =>
                 {
                     var readData = new PropsDataBase();
-                    int n = 0;
                     foreach (PropsDataBase pdb in deserializingQueue.GetConsumingEnumerable())
                     {
-                        n++;
-                        switch (pdb.dbTable)
+                        var readtable = pdb.dbTable.FirstOrDefault(t => t.Value == true);
+                        readData.dbTable[readtable.Key] = true;
+                        switch (readtable.Key)
                         {
                             case dbTableType.Class:
                                 readData.ClassRecords.AddRange(pdb.ClassRecords);
@@ -395,16 +427,27 @@ namespace ME3Explorer.AssetDatabase
                             case dbTableType.GUIElements:
                                 readData.GUIElements.AddRange(pdb.GUIElements);
                                 break;
+                            case dbTableType.Convos:
+                                readData.Conversations.AddRange(pdb.Conversations);
+                                break;
+                            case dbTableType.Lines:
+                                readData.Lines.AddRange(pdb.Lines);
+                                break;
                             default:
                                 readData.meGame = pdb.meGame;
                                 readData.GenerationDate = pdb.GenerationDate;
                                 readData.DataBaseversion = pdb.DataBaseversion;
-                                readData.dbTable = pdb.dbTable;
                                 readData.FileList.AddRange(pdb.FileList);
                                 readData.ContentDir.AddRange(pdb.ContentDir);
                                 break;
                         }
-                        if (n == tblcnt) { deserializingQueue.CompleteAdding(); }
+                        bool alldone = true;
+                        foreach(var tbl in expectedtables) //Check if loading is done
+                        {
+                            alldone = readData.dbTable[tbl.Key] == tbl.Value;
+                            if (!alldone) { break; }
+                        }
+                        if (alldone) { deserializingQueue.CompleteAdding(); }
                     }
 
                     return readData;
@@ -420,7 +463,7 @@ namespace ME3Explorer.AssetDatabase
         {
 
             PropsDataBase readData = new PropsDataBase {DataBaseversion = dbType.ToString()};
-            readData.dbTable = dbType;
+            readData.dbTable[dbType] = true;
             try
             {
                 using StreamReader sr = new StreamReader(ms);
@@ -464,6 +507,14 @@ namespace ME3Explorer.AssetDatabase
                         var gui = Serializer.Deserialize<ObservableCollectionExtended<GUIElement>>(reader);
                         readData.GUIElements.AddRange(gui);
                         break;
+                    case dbTableType.Convos:
+                        var cnv = Serializer.Deserialize<ObservableCollectionExtended<Conversation>>(reader);
+                        readData.Conversations.AddRange(cnv);
+                        break;
+                    case dbTableType.Lines:
+                        var line = Serializer.Deserialize<ObservableCollectionExtended<ConvoLine>>(reader);
+                        readData.Lines.AddRange(line);
+                        break;
                 }
                 if (ct.IsCancellationRequested)
                 {
@@ -486,9 +537,8 @@ namespace ME3Explorer.AssetDatabase
             IsBusy = true;
             CurrentOverallOperationText = $"Database saving...";
 
-            //V2.1+ split files
             var masterDB = new PropsDataBase(CurrentDataBase.meGame, CurrentDataBase.GenerationDate, CurrentDataBase.DataBaseversion, CurrentDataBase.FileList, CurrentDataBase.ContentDir, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>());
+            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>());
             var masterSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(masterDB));
             var clsSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.ClassRecords));
             var mtlSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Materials));
@@ -497,12 +547,22 @@ namespace ME3Explorer.AssetDatabase
             var psSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Particles));
             var txtSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Textures));
             var guiSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.GUIElements));
+            var convSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Conversations));
+            var linesExLine = new ObservableCollectionExtended<ConvoLine>();
+            if (ParseConvos)
+            {
+                foreach(var line in CurrentDataBase.Lines)
+                {
+                    linesExLine.Add(new ConvoLine(line.StrRef, line.Speaker, line.Convo));
+                }
+            }
+            var lineSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(linesExLine));
 
             using (var fileStream = new FileStream(CurrentDBPath, FileMode.Create))
             {
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
-                    await Task.WhenAll(masterSrl,clsSrl, mtlSrl, animSrl, mshSrl, psSrl, txtSrl);
+                    await Task.WhenAll(masterSrl,clsSrl, mtlSrl, animSrl, mshSrl, psSrl, txtSrl, guiSrl, convSrl, lineSrl);
                     var build = dbCurrentBuild.Trim(new Char[] { ' ', '*', '.' });
                     var masterjson = archive.CreateEntry($"MasterDB{currentGame}_{build}.json");
                     using (var entryStream = masterjson.Open())
@@ -552,8 +612,21 @@ namespace ME3Explorer.AssetDatabase
                     {
                         await Task.Run(() => streamWriter.Write(guiSrl.Result));
                     }
+                    var convJson = archive.CreateEntry($"{dbTableType.Convos.ToString()}DB{currentGame}.json");
+                    using (var entryStream = convJson.Open())
+                    using (var streamWriter = new StreamWriter(entryStream))
+                    {
+                        await Task.Run(() => streamWriter.Write(convSrl.Result));
+                    }
+                    var lineJson = archive.CreateEntry($"{dbTableType.Lines.ToString()}DB{currentGame}.json");
+                    using (var entryStream = lineJson.Open())
+                    using (var streamWriter = new StreamWriter(entryStream))
+                    {
+                        await Task.Run(() => streamWriter.Write(lineSrl.Result));
+                    }
                 }
             }
+            menu_SaveXEmptyLines.IsEnabled = false;
             CurrentOverallOperationText = $"Database saved.";
             IsBusy = false;
             await Task.Delay(5000);
@@ -572,10 +645,76 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Particles.ClearEx();
             CurrentDataBase.Textures.ClearEx();
             CurrentDataBase.GUIElements.ClearEx();
+            CurrentDataBase.Conversations.ClearEx();
+            CurrentDataBase.Lines.ClearEx();
             FileListExtended.ClearEx();
             FilterBox.Clear();
             Filter();
         }
+        private void GetConvoLinesBackground()
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine("Line worker getting Strings from TLK");
+#endif
+            GeneratedLines.Clear();
+            _linequeue = new BlockingCollection<ConvoLine>();
+            dbworker = new BackgroundWorker();
+            dbworker.WorkerSupportsCancellation = true;
+            dbworker.DoWork += GetLineStrings;
+            dbworker.RunWorkerCompleted += dbworker_LineWorkCompleted;
+            dbworker.RunWorkerAsync();
+
+            foreach (var line in CurrentDataBase.Lines)
+            {
+                _linequeue.Add(line);
+            }
+            _linequeue.CompleteAdding();
+        }
+        private void dbworker_LineWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            dbworker.CancelAsync();
+            CommandManager.InvalidateRequerySuggested();
+            var spkrs = new List<string>();
+            foreach (var line in CurrentDataBase.Lines)
+            {
+                line.Line = GeneratedLines[line.StrRef.ToString()].Line;
+                if (!spkrs.Any(s => s == line.Speaker))
+                    spkrs.Add(line.Speaker);
+            }
+            var emptylines = CurrentDataBase.Lines.Where(l => l.Line == "No Data").ToList();
+            CurrentDataBase.Lines.RemoveRange(emptylines);
+            GeneratedLines.Clear();
+            spkrs.Sort();
+            SpeakerList.AddRange(spkrs);
+            cmbbx_filterSpkrs.IsEnabled = true;
+            if (!emptylines.IsEmpty())
+            {
+                menu_SaveXEmptyLines.IsEnabled = true;
+            }
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine("Line worker done");
+#endif
+        }
+        private void GetLineStrings(object sender, DoWorkEventArgs e)
+        {
+            foreach (var ol in _linequeue.GetConsumingEnumerable(CancellationToken.None))
+            {
+                switch (currentGame)
+                {
+                    case MEGame.ME1:
+                        //Shouldn't be called in ME1
+                        break;
+                    case MEGame.ME2:
+                        ol.Line = ME2Explorer.ME2TalkFiles.findDataById(ol.StrRef);
+                        break;
+                    case MEGame.ME3:
+                        ol.Line = ME3TalkFiles.findDataById(ol.StrRef);
+                        break;
+                }
+                GeneratedLines.TryAdd(ol.StrRef.ToString(), ol); 
+            }
+        }
+
         #endregion
 
         #region UserCommands
@@ -600,6 +739,7 @@ namespace ME3Explorer.AssetDatabase
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
             menu_fltrPerf.IsEnabled = false;
+            cmbbx_filterSpkrs.IsEnabled = false;
             switch (p)
             {
                 case "ME1":
@@ -660,18 +800,28 @@ namespace ME3Explorer.AssetDatabase
                             FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
                         }
 
-
+                        ParseConvos = !CurrentDataBase.Lines.IsEmpty();
                         IsBusy = false;
                         CurrentOverallOperationText = $"Database generated {CurrentDataBase.GenerationDate} Classes: {CurrentDataBase.ClassRecords.Count} " +
                                                       $"Animations: {CurrentDataBase.Animations.Count} Materials: {CurrentDataBase.Materials.Count} Meshes: {CurrentDataBase.Meshes.Count} " +
-                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: {CurrentDataBase.GUIElements.Count}";
+                                                      $"Particles: { CurrentDataBase.Particles.Count} Textures: { CurrentDataBase.Textures.Count} Elements: { CurrentDataBase.GUIElements.Count}";
+                        if (ParseConvos)
+                        {
+                            CurrentOverallOperationText = CurrentOverallOperationText + $" Lines: { CurrentDataBase.Lines.Count}";
+                        }
 #if DEBUG
                         var end = DateTime.UtcNow;
                         double length = (end - start).TotalMilliseconds;
                         CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
+
+                        if (ParseConvos && currentGame != MEGame.ME1)
+                        {
+                            GetConvoLinesBackground();
+                        }
                     }
                 });
+
             }
             else
             {
@@ -763,6 +913,12 @@ namespace ME3Explorer.AssetDatabase
                 usagepkg = FileListExtended[sf.Item1].Item1;
                 contentdir = FileListExtended[sf.Item1].Item2;
                 usageexp = sf.Item2;
+            }
+            else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
+            {
+                usagepkg = CurrentConvo.Item2;
+                contentdir = CurrentConvo.Item4;
+                usageexp = CurrentConvo.Item3;
             }
             else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
             {
@@ -923,6 +1079,24 @@ namespace ME3Explorer.AssetDatabase
                 ToggleRenderTexture();
             }
         }
+        private void lstbx_Lines_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            e.Handled = true;
+            if (currentView == 8 && lstbx_Lines.SelectedIndex >= 0)
+            {
+                var newline = (ConvoLine)lstbx_Lines.SelectedItem;
+                var convo = CurrentDataBase.Conversations.FirstOrDefault(x => x.ConvName == newline.Convo);
+                if (convo != null)
+                {
+                    var file = CurrentDataBase.FileList[convo.ConvFile.Item1];
+                    CurrentConvo = new Tuple<string, string, int, string, bool>(convo.ConvName, file.Item1, convo.ConvFile.Item2, CurrentDataBase.ContentDir[file.Item2], convo.IsAmbient);
+                    ToggleLinePlayback();
+                    return;
+                }
+            }
+            CurrentConvo = new Tuple<string, string, int, string, bool>(null, null, 0, null, false);
+
+        }
         private void btn_TextRenderToggle_Click(object sender, RoutedEventArgs e)
         {
             ToggleRenderTexture();
@@ -945,6 +1119,18 @@ namespace ME3Explorer.AssetDatabase
             else
             {
                 btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+            }
+        }
+        private void btn_LinePlaybackToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleLinePlayback();
+            if (btn_LinePlaybackToggle.IsChecked == true)
+            {
+                btn_LinePlaybackToggle.Content = "Untoggle Line Playback";
+            }
+            else
+            {
+                btn_LinePlaybackToggle.Content = "Toggle Line Playback";
             }
         }
         private void ToggleRenderMesh()
@@ -1089,6 +1275,66 @@ namespace ME3Explorer.AssetDatabase
                     }
                 }
                 textPcc.Dispose();
+            }
+        }
+        private void ToggleLinePlayback()
+        {
+            bool showAudio = false;
+            if (btn_LinePlaybackToggle.IsChecked == true && (lstbx_Lines.SelectedIndex >= 0) && CurrentConvo.Item1 != null && currentGame != MEGame.ME1 && currentView == 8)
+            {
+                showAudio = true;
+            }
+
+            if (!showAudio)
+            {
+                SoundpanelWPF_ADB.UnloadExport();
+                audioPcc?.Dispose();
+                return;
+            }
+
+            var selecteditem = lstbx_Lines.SelectedItem as ConvoLine;
+            var filename = CurrentConvo.Item2;
+            var cdir = CurrentConvo.Item4;
+            string rootPath = MEDirectories.GamePath(currentGame);
+            if (rootPath == null)
+            {
+                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                return;
+            }
+
+            filename = $"{filename}.*";
+            var files = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).ToList();
+            if (files.IsEmpty())
+            {
+                MessageBox.Show($"File {filename} not found.");
+                return;
+            }
+
+            if (audioPcc != null)
+            {
+                SoundpanelWPF_ADB.UnloadExport();
+                audioPcc.Dispose();
+            }
+
+            foreach (var filePath in files)  //handle cases of mods/dlc having same file.
+            {
+                bool isBaseFile = cdir.ToLower() == "biogame";
+                bool isDLCFile = filePath.ToLower().Contains("dlc");
+                if (isBaseFile == isDLCFile)
+                {
+                    continue;
+                }
+                audioPcc = MEPackageHandler.OpenMEPackage(filePath);
+                string searchWav = $"{selecteditem.StrRef.ToString()}_m";
+                if(genderTabs.SelectedIndex == 1)
+                    searchWav = $"{selecteditem.StrRef.ToString()}_f";
+                var stream = audioPcc.Exports.FirstOrDefault(x => x.ClassName == "WwiseStream" && x.ObjectNameString.ToLower().Contains(searchWav));
+                if(stream != null)
+                {
+                    SoundpanelWPF_ADB.LoadExport(stream);
+                    break;
+                }
+                audioPcc.Dispose();
             }
         }
         private void SetCRCScan(object obj)
@@ -1283,6 +1529,29 @@ namespace ME3Explorer.AssetDatabase
 
             return showthis;
         }
+        bool LineFilter(object d)
+        {
+            var line = d as ConvoLine;
+            bool showthis = true;
+            if (showthis && cmbbx_filterSpkrs.SelectedIndex >= 0)
+            {
+                showthis = line.Speaker.ToLower() == cmbbx_filterSpkrs.SelectedItem.ToString().ToLower();
+            }
+            if (showthis && !String.IsNullOrEmpty(FilterBox.Text) && line != null)
+            {
+                showthis = line.StrRef.ToString().Contains(FilterBox.Text.ToLower());
+                if(!showthis)
+                {
+                    showthis = line.Convo.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+                if (!showthis)
+                {
+                    showthis = line.Line.ToLower().Contains(FilterBox.Text.ToLower());
+                }
+            }
+
+            return showthis;
+        }
         private bool FileFilter(object d)
         {
             bool showthis = true;
@@ -1336,6 +1605,11 @@ namespace ME3Explorer.AssetDatabase
                     ICollectionView viewG = CollectionViewSource.GetDefaultView(CurrentDataBase.GUIElements);
                     viewG.Filter = SFFilter;
                     lstbx_Scaleform.ItemsSource = viewG;
+                    break;
+                case 8: //Lines
+                    ICollectionView viewL = CollectionViewSource.GetDefaultView(CurrentDataBase.Lines);
+                    viewL.Filter = LineFilter;
+                    lstbx_Lines.ItemsSource = viewL;
                     break;
                 default: //Files
                     lstbx_Files.Items.Filter = FileFilter;
@@ -1494,7 +1768,7 @@ namespace ME3Explorer.AssetDatabase
         {
             Filter();
         }
-        private void files_ColumnHeader_Click(object sender, RoutedEventArgs e)
+        private void views_ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             ListSortDirection direction;
@@ -1519,18 +1793,34 @@ namespace ME3Explorer.AssetDatabase
                         }
                     }
 
-                    ICollectionView dataView = CollectionViewSource.GetDefaultView(lstbx_Files.ItemsSource);
-
-                    string sortBy = "Item2";
-                    if(headerClicked.Column.Header.ToString().StartsWith("File"))
+                    string sortBy;
+                    switch(currentView)
                     {
-                        sortBy = "Item1";
+                        case 0:
+                            ICollectionView dataView = CollectionViewSource.GetDefaultView(lstbx_Files.ItemsSource);
+                            sortBy = "Item2";
+                            if (headerClicked.Column.Header.ToString().StartsWith("File"))
+                            {
+                                sortBy = "Item1";
+                            }
+
+                            dataView.SortDescriptions.Clear();
+                            dataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
+                            dataView.Refresh();
+                            lstbx_Files.ItemsSource = dataView;
+                            break;
+                        case 8:
+                            ICollectionView linedataView = CollectionViewSource.GetDefaultView(lstbx_Lines.ItemsSource);
+                            sortBy = headerClicked.Column.Header.ToString();
+                            linedataView.SortDescriptions.Clear();
+                            linedataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
+                            linedataView.Refresh();
+                            lstbx_Lines.ItemsSource = linedataView;
+                            break;
+                        default:
+                            return;
                     }
 
-                    dataView.SortDescriptions.Clear();
-                    dataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
-                    dataView.Refresh();
-                    lstbx_Files.ItemsSource = dataView;
                     if (direction == ListSortDirection.Ascending)
                     {
                         headerClicked.Column.HeaderTemplate =
@@ -1552,6 +1842,11 @@ namespace ME3Explorer.AssetDatabase
                     _lastDirection = direction;
                 }
             }
+        }
+        private void cmbbx_filterSpkrs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            e.Handled = true;
+            Filter();
         }
         #endregion
 
@@ -1592,16 +1887,9 @@ namespace ME3Explorer.AssetDatabase
             ClearDataBase();
             CurrentDataBase.GenerationDate = DateTime.Now.ToString();
             CurrentDataBase.DataBaseversion = dbCurrentBuild;
-            GeneratedClasses.Clear();
-            GeneratedAnims.Clear();
-            GeneratedMats.Clear();
-            GeneratedMeshes.Clear();
-            GeneratedPS.Clear();
-            GeneratedText.Clear();
-            GeneratedGUI.Clear();
-            GeneratedValueChecker.Clear();
+            ClearGenerationDictionaries();
 
-            _dbqueue = new BlockingCollection<ClassRecord>(); //Reset queue for multiple operations
+            _dbqueue = new BlockingCollection<ClassRecord>(); 
 
             //Background Consumer to compile Class records for subsequent class readings
             dbworker = new BackgroundWorker();
@@ -1657,7 +1945,8 @@ namespace ME3Explorer.AssetDatabase
                 x.dumpPackageFile(game, this); // What to do on each item
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\nParticles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}\nGUI Elements: { GeneratedGUI.Count}";
+                    BusyText = $"Scanned {OverallProgressValue}/{OverallProgressMaximum} files\n\nClasses: { GeneratedClasses.Count}\nAnimations: { GeneratedAnims.Count}\nMaterials: { GeneratedMats.Count}\nMeshes: { GeneratedMeshes.Count}\n" +
+                    $"Particles: { GeneratedPS.Count}\nTextures: { GeneratedText.Count}\nGUI Elements: { GeneratedGUI.Count}\nLines: {GeneratedLines.Count}";
                     OverallProgressValue++; //Concurrency 
                     CurrentDumpingItems.Remove(x);
                 });
@@ -1667,7 +1956,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentDumpingItems.ClearEx();
             foreach (var fkey in fileKeys)
             {
-                var threadtask = new ClassScanSingleFileTask(fkey.Item2, fkey.Item1, scanCRC);
+                var threadtask = new ClassScanSingleFileTask(fkey.Item2, fkey.Item1, scanCRC, ParseConvos);
                 AllDumpingItems.Add(threadtask); //For setting cancelation value
                 ProcessingQueue.Post(threadtask); // Post all items to the block
 
@@ -1729,27 +2018,30 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.GUIElements.AddRange(GeneratedGUI.Values);
             CurrentDataBase.GUIElements.Sort(x => x.GUIName);
 
+            //Add Convos
+            CurrentDataBase.Conversations.AddRange(GeneratedConvo.Values);
+            //CurrentDataBase.Conversations.Sort(x => x.ConvName);
+            CurrentDataBase.Lines.AddRange(GeneratedLines.Values);
+            CurrentDataBase.Lines.Sort(x => x.StrRef);
+
             foreach (var f in CurrentDataBase.FileList)
             {
                 var cd = CurrentDataBase.ContentDir[f.Item2];
                 FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
             }
 
-            GeneratedClasses.Clear();
-            GeneratedAnims.Clear();
-            GeneratedMats.Clear();
-            GeneratedMeshes.Clear();
-            GeneratedPS.Clear();
-            GeneratedText.Clear();
-            GeneratedValueChecker.Clear();
+            ClearGenerationDictionaries();
             isProcessing = false;
             SaveDatabase();
             IsBusy = false;
             TopDock.IsEnabled = true;
             MidDock.IsEnabled = true;
-
             MessageBox.Show("Done");
 
+            if (currentGame != MEGame.ME1 && ParseConvos)
+            {
+                GetConvoLinesBackground();
+            }
         }
         private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
         {
@@ -1820,7 +2112,22 @@ namespace ME3Explorer.AssetDatabase
             }
 
         }
+        private void ClearGenerationDictionaries()
+        {
+            GeneratedClasses.Clear();
+            GeneratedAnims.Clear();
+            GeneratedMats.Clear();
+            GeneratedMeshes.Clear();
+            GeneratedPS.Clear();
+            GeneratedText.Clear();
+            GeneratedGUI.Clear();
+            GeneratedConvo.Clear();
+            GeneratedLines.Clear();
+            GeneratedValueChecker.Clear();
+        }
         #endregion
+
+
     }
     #region Database
     /// <summary>
@@ -1832,7 +2139,19 @@ namespace ME3Explorer.AssetDatabase
         public MEGame meGame { get; set; }
         public string GenerationDate { get; set; }
         public string DataBaseversion { get; set; }
-        public AssetDB.dbTableType dbTable { get; set; }
+        public Dictionary<AssetDB.dbTableType, bool> dbTable { get; } = new Dictionary<AssetDB.dbTableType, bool>() 
+        {
+            { AssetDB.dbTableType.Master, false },
+            { AssetDB.dbTableType.Class, false },
+            { AssetDB.dbTableType.Materials, false },
+            { AssetDB.dbTableType.Meshes, false },
+            { AssetDB.dbTableType.Textures, false },
+            { AssetDB.dbTableType.Animations, false },
+            { AssetDB.dbTableType.Particles, false },
+            { AssetDB.dbTableType.GUIElements, false },
+            { AssetDB.dbTableType.Convos, false },
+            { AssetDB.dbTableType.Lines, false }
+        };
         public ObservableCollectionExtended<Tuple<string, int>> FileList { get; } = new ObservableCollectionExtended<Tuple<string, int>>(); //filename and key to contentdir
         public List<string> ContentDir { get; } = new List<string>();
         public ObservableCollectionExtended<ClassRecord> ClassRecords { get; } = new ObservableCollectionExtended<ClassRecord>();
@@ -1842,8 +2161,11 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<ParticleSys> Particles { get; } = new ObservableCollectionExtended<ParticleSys>();
         public ObservableCollectionExtended<TextureRecord> Textures { get; } = new ObservableCollectionExtended<TextureRecord>();
         public ObservableCollectionExtended<GUIElement> GUIElements { get; } = new ObservableCollectionExtended<GUIElement>();
+        public ObservableCollectionExtended<Conversation> Conversations { get; } = new ObservableCollectionExtended<Conversation>();
+        public ObservableCollectionExtended<ConvoLine> Lines { get; } = new ObservableCollectionExtended<ConvoLine>();
         public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, ObservableCollectionExtended<Tuple<string, int>> FileList, List<string> ContentDir, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials,
-            ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes, ObservableCollectionExtended<ParticleSys> Particles, ObservableCollectionExtended<TextureRecord> Textures)
+            ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes, ObservableCollectionExtended<ParticleSys> Particles, ObservableCollectionExtended<TextureRecord> Textures, ObservableCollectionExtended<GUIElement> GUIElements,
+            ObservableCollectionExtended<Conversation> Conversations)
         {
             this.meGame = meGame;
             this.GenerationDate = GenerationDate;
@@ -1856,10 +2178,13 @@ namespace ME3Explorer.AssetDatabase
             this.Meshes.AddRange(Meshes);
             this.Particles.AddRange(Particles);
             this.Textures.AddRange(Textures);
+            this.GUIElements.AddRange(GUIElements);
+            this.Conversations.AddRange(Conversations);
         }
 
         public PropsDataBase()
         { }
+
     }
     public class ClassRecord : NotifyPropertyChangedBase
     {
@@ -2089,6 +2414,46 @@ namespace ME3Explorer.AssetDatabase
         public GUIElement()
         { }
     }
+    public class Conversation : NotifyPropertyChangedBase
+    {
+        private string _ConvName;
+        public string ConvName { get => _ConvName; set => SetProperty(ref _ConvName, value); }
+        private bool _IsAmbient;
+        public bool IsAmbient { get => _IsAmbient; set => SetProperty(ref _IsAmbient, value); }
+        private Tuple<int, int> _convFile; //file, export
+        public Tuple<int, int> ConvFile { get => _convFile; set => SetProperty(ref _convFile, value);}
+        public Conversation(string ConvName, bool IsAmbient, Tuple<int, int> ConvFile)
+        {
+            this.ConvName = ConvName;
+            this.IsAmbient = IsAmbient;
+            this.ConvFile = ConvFile;
+        }
+
+        public Conversation()
+        { }
+    }
+    public class ConvoLine : NotifyPropertyChangedBase
+    {
+        private int _strRef;
+        public int StrRef { get => _strRef; set => SetProperty(ref _strRef, value); }
+        private string _speaker;
+        public string Speaker { get => _speaker; set => SetProperty(ref _speaker, value); }
+        private string _line;
+        public string Line { get => _line; set => SetProperty(ref _line, value); }
+        private string _convo;
+        public string Convo { get => _convo; set => SetProperty(ref _convo, value); }
+
+        public ConvoLine(int StrRef, string Speaker, string Convo)
+        {
+            this.StrRef = StrRef;
+            this.Speaker = Speaker;
+            this.Convo = Convo;
+        }
+
+        public ConvoLine()
+        { }
+    }
+
     public class FileIndexToNameConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -2123,18 +2488,20 @@ namespace ME3Explorer.AssetDatabase
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public ClassScanSingleFileTask(string file, int filekey, bool scanCRC)
+        public ClassScanSingleFileTask(string file, int filekey, bool scanCRC, bool scanLines)
         {
             File = file;
             ShortFileName = Path.GetFileNameWithoutExtension(file);
             FileKey = filekey;
             ScanCRC = scanCRC;
+            ScanLines = scanLines;
         }
 
         public bool DumpCanceled;
         private readonly int FileKey;
         private readonly string File;
         private readonly bool ScanCRC;
+        private readonly bool ScanLines;
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary
@@ -2568,8 +2935,78 @@ namespace ME3Explorer.AssetDatabase
                                 string dataPropName = exp.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
                                 var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
                                 int datasize = rawData?.Count ?? 0;
-                                var NewGUI = new GUIElement(pKey, datasize, IsMod, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });
+                                var NewGUI = new GUIElement(pExp, datasize, IsMod, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });
                                 dbScanner.GeneratedGUI.TryAdd(pKey, NewGUI);
+                            }
+                        }
+                        else if (ScanLines && exp.ClassName == "BioConversation" && !pIsdefault)
+                        {
+                            if (!dbScanner.GeneratedConvo.ContainsKey(pExp))
+                            {
+                                bool IsAmbient = true;
+                                var speakers = new List<string>() { "Shepard", "Owner" };
+                                if (exp.Game != MEGame.ME3)
+                                {
+                                    var s_speakers = props.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
+                                    if (s_speakers != null)
+                                    {
+                                        for (int id = 0; id < s_speakers.Count; id++)
+                                        {
+                                            var sspkr = s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString();
+                                            speakers.Add(sspkr);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    var a_speakers = props.GetProp<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                                    if (a_speakers != null)
+                                    {
+                                        foreach (NameProperty n in a_speakers)
+                                        {
+                                            speakers.Add(n.ToString());
+                                        }
+                                    }
+                                }
+                                var entryprop = props.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+                                foreach (StructProperty Node in entryprop)
+                                {
+                                    int speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
+                                    speakerindex = speakerindex + 2;
+                                    if(speakerindex < 0 || speakerindex >= speakers.Count)
+                                        continue;
+                                    int linestrref = 0;
+                                    var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
+                                    if (linestrrefprop != null)
+                                    {
+                                        linestrref = linestrrefprop.Value;
+                                    }
+                                    var ambientLine = Node.GetProp<BoolProperty>("IsAmbient");
+                                    if (IsAmbient)
+                                        IsAmbient = ambientLine;
+
+                                    ConvoLine newLine = new ConvoLine(linestrref, speakers[speakerindex], pExp);
+                                    dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
+                                }
+                                var replyprop = props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+                                foreach (StructProperty Node in replyprop)
+                                {
+                                    int linestrref = 0;
+                                    var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
+                                    if (linestrrefprop != null)
+                                    {
+                                        linestrref = linestrrefprop.Value;
+                                    }
+                                    var ambientLine = Node.GetProp<BoolProperty>("IsAmbient");
+                                    if (IsAmbient)
+                                        IsAmbient = ambientLine;
+
+                                    ConvoLine newLine = new ConvoLine(linestrref, "Shepard", pExp);
+                                    dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
+                                }
+
+                                var NewConv = new Conversation(pExp, IsAmbient, new Tuple<int, int>(FileKey, pExportUID));
+                                dbScanner.GeneratedConvo.TryAdd(pKey, NewConv);
                             }
                         }
                     }
