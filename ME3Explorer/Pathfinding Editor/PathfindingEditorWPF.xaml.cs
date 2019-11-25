@@ -3439,13 +3439,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 ExportEntry newNodeEntry;
                 if (nodeEntry.IsA("SplineActor"))
                 {
-                    newNodeEntry = (ExportEntry)EntryCloner.cloneEntry(nodeEntry);
+                    newNodeEntry = EntryCloner.CloneEntry(nodeEntry);
                     newNodeEntry.RemoveProperty("Connections");
                     newNodeEntry.RemoveProperty("LinksFrom");
                 }
                 else
                 {
-                    newNodeEntry = (ExportEntry)EntryCloner.cloneTree(nodeEntry);
+                    newNodeEntry = EntryCloner.CloneTree(nodeEntry);
                 }
 
                 if (newNodeEntry.IsA("Actor"))
