@@ -64,7 +64,8 @@ namespace ME3Explorer.AssetDatabase
         public MEGame currentGame;
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new ObservableCollectionExtended<Tuple<string, int>>(), new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>());
+            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), 
+            new ObservableCollectionExtended<Conversation>(), new ObservableCollectionExtended<ConvoLine>());
         public ObservableCollectionExtended<Tuple<string, string>> FileListExtended { get; } = new ObservableCollectionExtended<Tuple<string, string>>();
         /// <summary>
         /// Dictionary that stores generated classes
@@ -538,7 +539,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentOverallOperationText = $"Database saving...";
 
             var masterDB = new PropsDataBase(CurrentDataBase.meGame, CurrentDataBase.GenerationDate, CurrentDataBase.DataBaseversion, CurrentDataBase.FileList, CurrentDataBase.ContentDir, new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
-            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>());
+            new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), new ObservableCollectionExtended<Conversation>(), new ObservableCollectionExtended<ConvoLine>());
             var masterSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(masterDB));
             var clsSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.ClassRecords));
             var mtlSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Materials));
@@ -2165,7 +2166,7 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<ConvoLine> Lines { get; } = new ObservableCollectionExtended<ConvoLine>();
         public PropsDataBase(MEGame meGame, string GenerationDate, string DataBaseversion, ObservableCollectionExtended<Tuple<string, int>> FileList, List<string> ContentDir, ObservableCollectionExtended<ClassRecord> ClassRecords, ObservableCollectionExtended<Material> Materials,
             ObservableCollectionExtended<Animation> Animations, ObservableCollectionExtended<MeshRecord> Meshes, ObservableCollectionExtended<ParticleSys> Particles, ObservableCollectionExtended<TextureRecord> Textures, ObservableCollectionExtended<GUIElement> GUIElements,
-            ObservableCollectionExtended<Conversation> Conversations)
+            ObservableCollectionExtended<Conversation> Conversations, ObservableCollectionExtended<ConvoLine> Lines)
         {
             this.meGame = meGame;
             this.GenerationDate = GenerationDate;
@@ -2180,6 +2181,7 @@ namespace ME3Explorer.AssetDatabase
             this.Textures.AddRange(Textures);
             this.GUIElements.AddRange(GUIElements);
             this.Conversations.AddRange(Conversations);
+            this.Lines.AddRange(Lines);
         }
 
         public PropsDataBase()
@@ -2513,7 +2515,7 @@ namespace ME3Explorer.AssetDatabase
             bool IsMod = !pcc.IsInBasegame() && !IsDLC;
             foreach (ExportEntry exp in pcc.Exports)
             {
-                if (DumpCanceled)
+                if (DumpCanceled || (pcc.FilePath.Contains("_LOC_") && !pcc.FilePath.Contains("INT"))) //TEMP NEED BETTER WAY TO HANDLE LANGUAGES
                 {
                     return;
                 }

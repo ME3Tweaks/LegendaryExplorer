@@ -861,15 +861,17 @@
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
-                            <StackPanel Grid.Row="2" Grid.Column="1" >
-                                <TextBlock Text="Playback" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Playback of selected line." />
-                                <TabControl x:Name="genderTabs">
-                                    <TabItem Header="Male"/>
-                                    <TabItem Header="Female"/>
-                                </TabControl>
+                            <DockPanel Grid.Row="2" Grid.Column="1" >
+                                <StackPanel DockPanel.Dock="Top">
+                                    <TextBlock Text="Playback" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Playback of selected line." />
+                                    <TabControl x:Name="genderTabs">
+                                        <TabItem Header="Male"/>
+                                        <TabItem Header="Female"/>
+                                    </TabControl>
+                                </StackPanel>
+                                <ToggleButton x:Name="btn_LinePlaybackToggle" Content="Toggle Line Playback" Margin="5" Click="btn_LinePlaybackToggle_Click" IsChecked="False" MaxHeight="30" ClickMode="Release" DockPanel.Dock="Bottom"/>
                                 <global:Soundpanel x:Name="SoundpanelWPF_ADB" Visibility="{Binding CurrentConvo.Item1, Converter={StaticResource NullVisibilityConverter}}" PlayBackOnlyMode="True" />
-                                <ToggleButton x:Name="btn_LinePlaybackToggle" Content="Toggle Line Playback" Margin="5" Click="btn_LinePlaybackToggle_Click" IsChecked="False" MaxHeight="30" ClickMode="Release"/>
-                            </StackPanel>
+                                </DockPanel>
                         </Grid>
                     </TabItem>
                 </TabControl>
