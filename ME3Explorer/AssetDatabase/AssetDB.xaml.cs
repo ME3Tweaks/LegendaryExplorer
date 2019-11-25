@@ -550,12 +550,16 @@ namespace ME3Explorer.AssetDatabase
             var guiSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.GUIElements));
             var convSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Conversations));
             var linesExLine = new ObservableCollectionExtended<ConvoLine>();
-            if (ParseConvos)
+            if (ParseConvos && currentGame != MEGame.ME1)
             {
                 foreach(var line in CurrentDataBase.Lines)
                 {
                     linesExLine.Add(new ConvoLine(line.StrRef, line.Speaker, line.Convo));
                 }
+            }
+            else if (currentGame == MEGame.ME1)
+            {
+                linesExLine.AddRange(CurrentDataBase.Lines);
             }
             var lineSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(linesExLine));
 
@@ -654,6 +658,19 @@ namespace ME3Explorer.AssetDatabase
         }
         private void GetConvoLinesBackground()
         {
+            if(currentGame == MEGame.ME1)
+            {
+                var spkrs = new List<string>();
+                foreach (var line in CurrentDataBase.Lines)
+                {
+                    if (!spkrs.Any(s => s == line.Speaker))
+                        spkrs.Add(line.Speaker);
+                }
+                spkrs.Sort();
+                SpeakerList.AddRange(spkrs);
+                cmbbx_filterSpkrs.IsEnabled = true;
+                return;
+            }
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("Line worker getting Strings from TLK");
 #endif
@@ -744,6 +761,7 @@ namespace ME3Explorer.AssetDatabase
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
             menu_fltrPerf.IsEnabled = false;
             cmbbx_filterSpkrs.IsEnabled = false;
+            btn_LinePlaybackToggle.IsEnabled = true;
             switch (p)
             {
                 case "ME1":
@@ -751,6 +769,7 @@ namespace ME3Explorer.AssetDatabase
                     StatusBar_GameID_Text.Text = "ME1";
                     StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
                     switchME1_menu.IsChecked = true;
+                    btn_LinePlaybackToggle.IsEnabled = false;
                     break;
                 case "ME2":
                     currentGame = MEGame.ME2;
@@ -819,7 +838,7 @@ namespace ME3Explorer.AssetDatabase
                         CurrentOverallOperationText = $"{CurrentOverallOperationText} LoadTime: {length}ms";
 #endif
 
-                        if (ParseConvos && currentGame != MEGame.ME1)
+                        if (ParseConvos)
                         {
                             GetConvoLinesBackground();
                         }
@@ -3015,6 +3034,8 @@ namespace ME3Explorer.AssetDatabase
                                     if(GameBeingDumped == MEGame.ME1)
                                     {
                                         newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                        if (newLine.Line == "No Data" || newLine.Line == "\"\"")
+                                            continue;
                                     }
                                     dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                 }
@@ -3037,6 +3058,8 @@ namespace ME3Explorer.AssetDatabase
                                         if (GameBeingDumped == MEGame.ME1)
                                         {
                                             newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                            if (newLine.Line == "No Data" || newLine.Line == "\"\"")
+                                                continue;
                                         }
                                         dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                     }
