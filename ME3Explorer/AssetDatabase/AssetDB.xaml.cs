@@ -209,6 +209,10 @@ namespace ME3Explorer.AssetDatabase
         {
             return currentView == 5;
         }
+        private bool CanUseAnimViewer(object obj)
+        {
+            return currentView == 5 && currentGame == MEGame.ME3;
+        }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             //Not applicable
@@ -250,7 +254,7 @@ namespace ME3Explorer.AssetDatabase
             GoToSuperclassCommand = new RelayCommand(GoToSuperClass, IsClassSelected);
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
-            OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, IsViewingAnimations);
+            OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, CanUseAnimViewer);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
