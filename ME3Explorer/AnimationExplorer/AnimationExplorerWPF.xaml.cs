@@ -39,7 +39,7 @@ namespace ME3Explorer.AnimationExplorer
         public static AnimationExplorerWPF Instance;
 
         private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
-
+        public Animation AnimQueuedForFocus;
         private enum FloatVarIndexes
         {
             XPos = 1,
@@ -78,16 +78,34 @@ namespace ME3Explorer.AnimationExplorer
             InitializeComponent();
             LoadCommands();
             GameController.RecieveME3Message += GameController_RecieveME3Message;
-            ME3OpenTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
+            ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             ME3OpenTimer.Tick += CheckIfME3Open;
+        }
+
+        public AnimationExplorerWPF(PropsDataBase db, Animation AnimToFocus) : this()
+        {
+            AnimQueuedForFocus = AnimToFocus;
+            foreach ((string fileName, int dirIndex) in db.FileList)
+            {
+                FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
+            }
+            Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
+            
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            string dbPath = AssetDB.GetDBPath(MEGame.ME3);
-            if (File.Exists(dbPath))
+            if (Animations.IsEmpty())
             {
-                LoadDatabase(dbPath);
+                string dbPath = AssetDB.GetDBPath(MEGame.ME3);
+                if (File.Exists(dbPath))
+                {
+                    LoadDatabase(dbPath);
+                }
+            }
+            else
+            {
+                listBoxAnims.ItemsSource = Animations;
             }
         }
 
@@ -130,6 +148,11 @@ namespace ME3Explorer.AnimationExplorer
                 noUpdate = false;
 
                 EndBusy();
+                if (AnimQueuedForFocus != null)
+                {
+                    SelectedAnimation = Animations.FirstOrDefault(a => a.AnimSequence == AnimQueuedForFocus.AnimSequence);
+                    AnimQueuedForFocus = null;
+                }
             }
             else if (msg.StartsWith("AnimViewer string AnimLoaded"))
             {
@@ -332,6 +355,7 @@ namespace ME3Explorer.AnimationExplorer
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();
             });
+
         }
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled;
@@ -437,7 +461,7 @@ namespace ME3Explorer.AnimationExplorer
 
         #endregion
 
-        private void LoadAnimation(Animation anim)
+        public void LoadAnimation(Animation anim)
         {
             if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
             {

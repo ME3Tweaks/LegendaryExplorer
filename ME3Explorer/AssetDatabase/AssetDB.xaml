@@ -795,7 +795,7 @@
                             </SharedUI:ListBoxScroll>
                         </Grid>
                     </TabItem>
-                    <!-- Convo -->
+                    <!-- Lines -->
                     <TabItem Header="Lines" TabIndex="8" Visibility="{Binding Path=ParseConvos, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -809,7 +809,7 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="AliceBlue">
                                 <TextBlock Text="Lines" HorizontalAlignment="Stretch" Padding="3" ToolTip="Conversation Lines"  />
-                                <xctk:WatermarkComboBox Name="cmbbx_filterSpkrs" Watermark="Filter by Speaker" ItemsSource="{Binding SpeakerList}" SelectionChanged="cmbbx_filterSpkrs_SelectionChanged" Margin="10, 3" MinWidth="120" IsEditable="True" IsTextSearchEnabled="True" IsEnabled="False"/>
+                                <xctk:WatermarkComboBox Name="cmbbx_filterSpkrs" Watermark="Filter by Speaker" ItemsSource="{Binding SpeakerList}" SelectionChanged="cmbbx_filterSpkrs_SelectionChanged" Margin="10, 3" Padding="2" MinWidth="120" IsEditable="True" IsTextSearchEnabled="True" IsEnabled="False"/>
                             </StackPanel>
                             <ListView x:Name="lstbx_Lines" MinWidth="300" ItemsSource="{Binding CurrentDataBase.Lines}" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" GridViewColumnHeader.Click="views_ColumnHeader_Click" SelectionChanged="lstbx_Lines_SelectionChanged" >
                                 <ListView.View>

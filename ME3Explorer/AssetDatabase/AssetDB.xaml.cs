@@ -283,7 +283,7 @@ namespace ME3Explorer.AssetDatabase
             BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
             SoundpanelWPF_ADB.UnloadExport();
-            audioPcc.Dispose();
+            audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
         }
@@ -332,7 +332,7 @@ namespace ME3Explorer.AssetDatabase
             foreach(dbTableType type in typology)
             {
                 bool expectedToLoad = true;
-                if (dbTable != dbTableType.Master && dbTable != type)
+                if (type != dbTableType.Master && dbTable != dbTableType.Master && dbTable != type)
                     expectedToLoad = false;
                 expectedtables.TryAdd(type, expectedToLoad);
             }
@@ -678,7 +678,10 @@ namespace ME3Explorer.AssetDatabase
             var spkrs = new List<string>();
             foreach (var line in CurrentDataBase.Lines)
             {
-                line.Line = GeneratedLines[line.StrRef.ToString()].Line;
+                if(GeneratedLines.ContainsKey(line.StrRef.ToString()))
+                {
+                    line.Line = GeneratedLines[line.StrRef.ToString()].Line;
+                }
                 if (!spkrs.Any(s => s == line.Speaker))
                     spkrs.Add(line.Speaker);
             }
@@ -1356,7 +1359,28 @@ namespace ME3Explorer.AssetDatabase
         }
         private void OpenInAnimViewer(object obj)
         {
-            //Not implemented yet
+            var anim = lstbx_Anims.SelectedItem as Animation;
+            if(anim != null)
+            {
+                if (!Application.Current.Windows.OfType<AnimationExplorer.AnimationExplorerWPF>().Any())
+                {
+                    AnimationExplorer.AnimationExplorerWPF av = new AnimationExplorer.AnimationExplorerWPF(CurrentDataBase, anim);
+                    av.Show();
+                }
+                else
+                {
+                    var aexp = Application.Current.Windows.OfType<AnimationExplorer.AnimationExplorerWPF>().First();
+                    if(aexp.ReadyToView)
+                    {
+                        aexp.LoadAnimation(anim);
+                    }
+                    else
+                    {
+                        aexp.AnimQueuedForFocus = anim;
+                    }
+                    aexp.Focus();
+                }
+            }
         }
 
         #endregion
@@ -2988,25 +3012,35 @@ namespace ME3Explorer.AssetDatabase
                                         IsAmbient = ambientLine;
 
                                     ConvoLine newLine = new ConvoLine(linestrref, speakers[speakerindex], pExp);
+                                    if(GameBeingDumped == MEGame.ME1)
+                                    {
+                                        newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                    }
                                     dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                 }
                                 var replyprop = props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
-                                foreach (StructProperty Node in replyprop)
+                                if(replyprop != null)
                                 {
-                                    int linestrref = 0;
-                                    var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
-                                    if (linestrrefprop != null)
+                                    foreach (StructProperty Node in replyprop)
                                     {
-                                        linestrref = linestrrefprop.Value;
+                                        int linestrref = 0;
+                                        var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
+                                        if (linestrrefprop != null)
+                                        {
+                                            linestrref = linestrrefprop.Value;
+                                        }
+                                        var ambientLine = Node.GetProp<BoolProperty>("IsAmbient");
+                                        if (IsAmbient)
+                                            IsAmbient = ambientLine;
+
+                                        ConvoLine newLine = new ConvoLine(linestrref, "Shepard", pExp);
+                                        if (GameBeingDumped == MEGame.ME1)
+                                        {
+                                            newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                        }
+                                        dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                     }
-                                    var ambientLine = Node.GetProp<BoolProperty>("IsAmbient");
-                                    if (IsAmbient)
-                                        IsAmbient = ambientLine;
-
-                                    ConvoLine newLine = new ConvoLine(linestrref, "Shepard", pExp);
-                                    dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                                 }
-
                                 var NewConv = new Conversation(pExp, IsAmbient, new Tuple<int, int>(FileKey, pExportUID));
                                 dbScanner.GeneratedConvo.TryAdd(pKey, NewConv);
                             }
