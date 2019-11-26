@@ -211,7 +211,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool CanUseAnimViewer(object obj)
         {
-            return currentView == 5 && currentGame == MEGame.ME3;
+            return currentView == 5 && currentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
         }
         public override void handleUpdate(List<PackageUpdate> updates)
         {
