@@ -166,7 +166,7 @@ namespace ME3Explorer.Sequence_Editor
             if (classEntry is null)
             {
                 EndBusy();
-                MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may defined in a DLC you don't have.");
+                MessageBox.Show(this, $"Could not import {info.ClassName}'s class definition! It may be defined in a DLC you don't have.");
                 return;
             }
 
