@@ -657,6 +657,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Conversations.ClearEx();
             CurrentDataBase.Lines.ClearEx();
             FileListExtended.ClearEx();
+            SpeakerList.ClearEx();
             FilterBox.Clear();
             Filter();
         }
@@ -2028,49 +2029,25 @@ namespace ME3Explorer.AssetDatabase
             }
             _dbqueue.CompleteAdding();
         }
-        private void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            BusyHeader = "Collating and sorting the database";
+            BusyText = "Please wait...";
+            BusyBarInd = true;
             dbworker.CancelAsync();
             CommandManager.InvalidateRequerySuggested();
 
+            PropsDataBase pdb = await CollateDataBase();
             //Add and sort Classes
-            CurrentDataBase.ClassRecords.AddRange(GeneratedClasses.Values);
-            CurrentDataBase.ClassRecords.Sort(x => x.Class);
-            foreach (var c in CurrentDataBase.ClassRecords)
-            {
-                c.PropertyRecords.Sort(x => x.Property);
-            }
-
-            //Add animations
-            CurrentDataBase.Animations.AddRange(GeneratedAnims.Values);
-            CurrentDataBase.Animations.Sort(x => x.AnimSequence);
-
-            //Add Materials
-            CurrentDataBase.Materials.AddRange(GeneratedMats.Values);
-            CurrentDataBase.Materials.Sort(x => x.MaterialName);
-
-            //Add Meshes
-            CurrentDataBase.Meshes.AddRange(GeneratedMeshes.Values);
-            CurrentDataBase.Meshes.Sort(x => x.MeshName);
-
-            //Add Particles
-            CurrentDataBase.Particles.AddRange(GeneratedPS.Values);
-            CurrentDataBase.Particles.Sort(x => x.PSName);
-
-            //Add Textures
-            CurrentDataBase.Textures.AddRange(GeneratedText.Values);
-            CurrentDataBase.Textures.Sort(x => x.TextureName);
-
-            //Add GUI
-            CurrentDataBase.GUIElements.AddRange(GeneratedGUI.Values);
-            CurrentDataBase.GUIElements.Sort(x => x.GUIName);
-
-            //Add Convos
-            CurrentDataBase.Conversations.AddRange(GeneratedConvo.Values);
-            //CurrentDataBase.Conversations.Sort(x => x.ConvName);
-            CurrentDataBase.Lines.AddRange(GeneratedLines.Values);
-            CurrentDataBase.Lines.Sort(x => x.StrRef);
+            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+            CurrentDataBase.Animations.AddRange(pdb.Animations);
+            CurrentDataBase.Materials.AddRange(pdb.Materials);
+            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+            CurrentDataBase.Particles.AddRange(pdb.Particles);
+            CurrentDataBase.Textures.AddRange(pdb.Textures);
+            CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
+            CurrentDataBase.Conversations.AddRange(pdb.Conversations);
+            CurrentDataBase.Lines.AddRange(pdb.Lines);
 
             foreach (var f in CurrentDataBase.FileList)
             {
@@ -2172,6 +2149,103 @@ namespace ME3Explorer.AssetDatabase
             GeneratedConvo.Clear();
             GeneratedLines.Clear();
             GeneratedValueChecker.Clear();
+        }
+        private async Task<PropsDataBase> CollateDataBase()
+        {
+
+
+            //Add Lines / Convos don't need sorting
+            var linessorted = Task<ObservableCollectionExtended<ConvoLine>>.Factory.StartNew(() =>
+            {
+                var l = new ObservableCollectionExtended<ConvoLine>();
+                l.AddRange(GeneratedLines.Values);
+                l.Sort(x => x.StrRef);
+                return l;
+            });
+
+            //Add and sort Classes
+            var classSorted = Task<ObservableCollectionExtended<ClassRecord>>.Factory
+                .StartNew(() =>
+                {
+                    var classes = new ObservableCollectionExtended<ClassRecord>();
+                    classes.AddRange(GeneratedClasses.Values);
+                    classes.Sort(x => x.Class);
+                    foreach (var c in classes)
+                    {
+                        c.PropertyRecords.Sort(x => x.Property);
+                    }
+                    return classes;
+                });
+
+            //Add animations
+            var animsorted = Task<ObservableCollectionExtended<Animation>>.Factory
+                .StartNew(() =>
+                {
+                    var anims = new ObservableCollectionExtended<Animation>();
+                    anims.AddRange(GeneratedAnims.Values);
+                    anims.Sort(x => x.AnimSequence);
+                    return anims;
+                });
+
+            //Add Materials
+            var matsorted = Task<ObservableCollectionExtended<Material>>.Factory.StartNew(() =>
+            {
+                var mats = new ObservableCollectionExtended<Material>();
+                mats.AddRange(GeneratedMats.Values);
+                mats.Sort(x => x.MaterialName);
+                return mats;
+            });
+
+            //Add Meshes
+            var mshsorted = Task<ObservableCollectionExtended<MeshRecord>>.Factory.StartNew(() =>
+            {
+                var m = new ObservableCollectionExtended<MeshRecord>();
+                m.AddRange(GeneratedMeshes.Values);
+                m.Sort(x => x.MeshName);
+                return m;
+            });
+
+            //Add Particles
+            var pssorted = Task<ObservableCollectionExtended<ParticleSys>>.Factory.StartNew(() =>
+            {
+                var p = new ObservableCollectionExtended<ParticleSys>();
+                p.AddRange(GeneratedPS.Values);
+                p.Sort(x => x.PSName);
+                return p;
+            });
+
+            //Add Textures
+            var txtsorted = Task<ObservableCollectionExtended<TextureRecord>>.Factory.StartNew(() =>
+            {
+                var t = new ObservableCollectionExtended<TextureRecord>();
+                t.AddRange(GeneratedText.Values);
+                t.Sort(x => x.TextureName);
+                return t;
+            });
+
+
+            //Add GUI
+            var guisorted = Task<ObservableCollectionExtended<GUIElement>>.Factory.StartNew(() =>
+            {
+                var g = new ObservableCollectionExtended<GUIElement>();
+                g.AddRange(GeneratedGUI.Values);
+                g.Sort(x => x.GUIName);
+                return g;
+            });
+
+            var pdb = new PropsDataBase();
+            pdb.Conversations.AddRange(GeneratedConvo.Values);
+            await Task.WhenAll(classSorted, animsorted, matsorted, mshsorted, pssorted, txtsorted, guisorted, linessorted);
+
+            pdb.ClassRecords.AddRange(classSorted.Result);
+            pdb.Animations.AddRange(animsorted.Result);
+            pdb.Materials.AddRange(matsorted.Result);
+            pdb.Meshes.AddRange(mshsorted.Result);
+            pdb.Particles.AddRange(pssorted.Result);
+            pdb.Textures.AddRange(txtsorted.Result);
+            pdb.GUIElements.AddRange(guisorted.Result);
+            pdb.Lines.AddRange(linessorted.Result);
+            return pdb;
         }
         #endregion
 

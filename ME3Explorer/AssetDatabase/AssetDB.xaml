@@ -296,10 +296,6 @@
                                                 <Setter Property="Background" Value="LightGray"/>
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="DarkRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - only found in a DLC mod"/>
-                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
@@ -340,10 +336,6 @@
                                                 <Setter Property="Background" Value="LightGray"/>
                                                 <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
                                             </DataTrigger>
-                                            <!--<DataTrigger Binding="{Binding Path=Item4}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - DLC file from a Mod"/>
-                                            </DataTrigger>-->
                                         </Style.Triggers>
                                     </Style>
                                 </SharedUI:ListBoxScroll.ItemContainerStyle>
@@ -744,10 +736,6 @@
                                 <SharedUI:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
                                                 <Setter Property="Foreground" Value="IndianRed"/>
                                                 <Setter Property="TextElement.ToolTip" Value="Mod - created by a modder"/>
@@ -870,7 +858,7 @@
                                     </TabControl>
                                 </StackPanel>
                                 <ToggleButton x:Name="btn_LinePlaybackToggle" Content="Toggle Line Playback" Margin="5" Click="btn_LinePlaybackToggle_Click" IsChecked="False" MaxHeight="30" ClickMode="Release" DockPanel.Dock="Bottom"/>
-                                <global:Soundpanel x:Name="SoundpanelWPF_ADB" Visibility="{Binding CurrentConvo.Item1, Converter={StaticResource NullVisibilityConverter}}" PlayBackOnlyMode="True" />
+                                <global:Soundpanel x:Name="SoundpanelWPF_ADB" PlayBackOnlyMode="True" />
                                 </DockPanel>
                         </Grid>
                     </TabItem>
