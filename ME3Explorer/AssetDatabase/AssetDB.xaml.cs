@@ -161,6 +161,8 @@ namespace ME3Explorer.AssetDatabase
         private Tuple<string, string, int, string, bool> _currentConvo = new Tuple<string, string, int, string, bool>(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
         public Tuple<string, string, int, string, bool> CurrentConvo { get => _currentConvo; set => SetProperty(ref _currentConvo, value); }
         public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
+        private bool _isGettingTLKs;
+        public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -673,12 +675,12 @@ namespace ME3Explorer.AssetDatabase
                 }
                 spkrs.Sort();
                 SpeakerList.AddRange(spkrs);
-                cmbbx_filterSpkrs.IsEnabled = true;
                 return;
             }
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("Line worker getting Strings from TLK");
 #endif
+            IsGettingTLKs = true;
             GeneratedLines.Clear();
             _linequeue = new BlockingCollection<ConvoLine>();
             dbworker = new BackgroundWorker();
@@ -712,11 +714,11 @@ namespace ME3Explorer.AssetDatabase
             GeneratedLines.Clear();
             spkrs.Sort();
             SpeakerList.AddRange(spkrs);
-            cmbbx_filterSpkrs.IsEnabled = true;
             if (!emptylines.IsEmpty())
             {
                 menu_SaveXEmptyLines.IsEnabled = true;
             }
+            IsGettingTLKs = false;
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("Line worker done");
 #endif
@@ -765,7 +767,6 @@ namespace ME3Explorer.AssetDatabase
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
             menu_fltrPerf.IsEnabled = false;
-            cmbbx_filterSpkrs.IsEnabled = false;
             btn_LinePlaybackToggle.IsEnabled = true;
             switch (p)
             {
@@ -1815,6 +1816,11 @@ namespace ME3Explorer.AssetDatabase
         }
         private void FilterBox_KeyUp(object sender, KeyEventArgs e)
         {
+            if(IsGettingTLKs && currentView == 8)
+            {
+                MessageBox.Show("Currently parsing TLK line data. Please wait.", "Asset Database", MessageBoxButton.OK);
+                return;
+            }
             Filter();
         }
         private void views_ColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -3112,7 +3118,7 @@ namespace ME3Explorer.AssetDatabase
                                     if(GameBeingDumped == MEGame.ME1)
                                     {
                                         newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
-                                        if (newLine.Line == "No Data" || newLine.Line == "\"\"")
+                                        if (newLine.Line == "No Data" || newLine.Line == "\"\"" || newLine.Line == "\" \"" || newLine.Line == " ")
                                             continue;
                                     }
                                     dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
@@ -3136,7 +3142,7 @@ namespace ME3Explorer.AssetDatabase
                                         if (GameBeingDumped == MEGame.ME1)
                                         {
                                             newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
-                                            if (newLine.Line == "No Data" || newLine.Line == "\"\"")
+                                            if (newLine.Line == "No Data" || newLine.Line == "\"\"" || newLine.Line == "\" \"" || newLine.Line == " ")
                                                 continue;
                                         }
                                         dbScanner.GeneratedLines.TryAdd(linestrref.ToString(), newLine);

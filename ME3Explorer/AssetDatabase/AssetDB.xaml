@@ -21,6 +21,7 @@
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <DataTemplate x:Key="PropertyTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -44,7 +45,7 @@
     <xctk:BusyIndicator x:Name="dbBusyIndicator" IsBusy="{Binding IsBusy, FallbackValue=False}">
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
-                <xctk:WatermarkTextBox DockPanel.Dock="Right"  Watermark="Search" Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" IsEnabled="true" HorizontalAlignment="Right" HorizontalContentAlignment="Left">
+                <xctk:WatermarkTextBox DockPanel.Dock="Right" Watermark="Search" Name="FilterBox" Width="300" KeyUp="FilterBox_KeyUp" ToolTip="Filter and find classes" HorizontalAlignment="Right" HorizontalContentAlignment="Left" IsEnabled="True">
                 </xctk:WatermarkTextBox>
                 <Menu Name="TopDock">
                     <MenuItem Header="Database" Padding="4" >
@@ -797,7 +798,9 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="AliceBlue">
                                 <TextBlock Text="Lines" HorizontalAlignment="Stretch" Padding="3" ToolTip="Conversation Lines"  />
-                                <xctk:WatermarkComboBox Name="cmbbx_filterSpkrs" Watermark="Filter by Speaker" ItemsSource="{Binding SpeakerList}" SelectionChanged="cmbbx_filterSpkrs_SelectionChanged" Margin="10, 3" Padding="2" MinWidth="120" IsEditable="True" IsTextSearchEnabled="True" IsEnabled="False"/>
+                                <xctk:WatermarkComboBox Name="cmbbx_filterSpkrs" Watermark="Filter by Speaker" ItemsSource="{Binding SpeakerList}" SelectionChanged="cmbbx_filterSpkrs_SelectionChanged" Margin="10, 3" Padding="1" MinWidth="120" IsEditable="True" IsTextSearchEnabled="True" IsEnabled="{Binding IsGettingTLKs, Converter={StaticResource InverseBooleanConverter}}"/>
+                                <TextBlock Text="Parsing TLKs: " Visibility="{Binding IsGettingTLKs, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0" VerticalAlignment="Center"/>
+                                <ProgressBar IsIndeterminate="True" Visibility="{Binding IsGettingTLKs, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3,0" Width="170" Height="15"/>
                             </StackPanel>
                             <ListView x:Name="lstbx_Lines" MinWidth="300" ItemsSource="{Binding CurrentDataBase.Lines}" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" GridViewColumnHeader.Click="views_ColumnHeader_Click" SelectionChanged="lstbx_Lines_SelectionChanged" >
                                 <ListView.View>
@@ -859,7 +862,7 @@
                                 </StackPanel>
                                 <ToggleButton x:Name="btn_LinePlaybackToggle" Content="Toggle Line Playback" Margin="5" Click="btn_LinePlaybackToggle_Click" IsChecked="False" MaxHeight="30" ClickMode="Release" DockPanel.Dock="Bottom"/>
                                 <global:Soundpanel x:Name="SoundpanelWPF_ADB" PlayBackOnlyMode="True" />
-                                </DockPanel>
+                            </DockPanel>
                         </Grid>
                     </TabItem>
                 </TabControl>
