@@ -181,7 +181,7 @@ namespace ME3Explorer.Dialogue_Editor
                 nodeLayer.RemoveAllChildren();
                 edgeLayer.RemoveAllChildren();
                 backLayer.RemoveAllChildren();
-                zoomController.Dispose();
+                zoomController?.Dispose();
             }
             base.Dispose(disposing);
         }

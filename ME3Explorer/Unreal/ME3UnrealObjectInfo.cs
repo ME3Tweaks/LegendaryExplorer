@@ -902,6 +902,15 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
+            //SirCxyrtyx - New Class - SeqAct_ME3ExpGetPlayerCamPOV
+            NewClasses["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
+            {
+                baseClass = "SeqAct_Log",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 61, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
