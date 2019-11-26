@@ -1339,8 +1339,21 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
+            string searchWav = $"{selecteditem.StrRef.ToString()}_m";
+            if (genderTabs.SelectedIndex == 1)
+                searchWav = $"{selecteditem.StrRef.ToString()}_f";
+
             if (audioPcc != null)
             {
+                if(Path.GetFileNameWithoutExtension(audioPcc.FilePath) == CurrentConvo.Item2) //if switching gender file is already loaded
+                {
+                    var stream = audioPcc.Exports.FirstOrDefault(x => x.ClassName == "WwiseStream" && x.ObjectNameString.ToLower().Contains(searchWav));
+                    if (stream != null)
+                    {
+                        SoundpanelWPF_ADB.LoadExport(stream);
+                        return;
+                    }
+                }
                 SoundpanelWPF_ADB.UnloadExport();
                 audioPcc.Dispose();
             }
@@ -1354,9 +1367,6 @@ namespace ME3Explorer.AssetDatabase
                     continue;
                 }
                 audioPcc = MEPackageHandler.OpenMEPackage(filePath);
-                string searchWav = $"{selecteditem.StrRef.ToString()}_m";
-                if(genderTabs.SelectedIndex == 1)
-                    searchWav = $"{selecteditem.StrRef.ToString()}_f";
                 var stream = audioPcc.Exports.FirstOrDefault(x => x.ClassName == "WwiseStream" && x.ObjectNameString.ToLower().Contains(searchWav));
                 if(stream != null)
                 {
@@ -1407,7 +1417,13 @@ namespace ME3Explorer.AssetDatabase
                 }
             }
         }
-
+        private void genderTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(currentView == 8 && (btn_LinePlaybackToggle.IsChecked ?? false))
+            {
+                ToggleLinePlayback(); ;
+            }
+        }
         #endregion
 
         #region Filters
@@ -2253,8 +2269,8 @@ namespace ME3Explorer.AssetDatabase
             pdb.Lines.AddRange(linessorted.Result);
             return pdb;
         }
-        #endregion
 
+        #endregion
 
     }
     #region Database

@@ -855,7 +855,7 @@
                             <DockPanel Grid.Row="2" Grid.Column="1" >
                                 <StackPanel DockPanel.Dock="Top">
                                     <TextBlock Text="Playback" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Playback of selected line." />
-                                    <TabControl x:Name="genderTabs">
+                                    <TabControl x:Name="genderTabs" SelectionChanged="genderTabs_SelectionChanged">
                                         <TabItem Header="Male"/>
                                         <TabItem Header="Female"/>
                                     </TabControl>
