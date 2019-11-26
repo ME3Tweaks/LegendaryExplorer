@@ -4053,15 +4053,15 @@ namespace ME3Explorer
                         IsExpanded = true
                     };
                     propDataNode.Items.Add(node);
-                    node.Items.Add(MakeNameNode(bin, "Name1"));
-                    node.Items.Add(MakeNameNode(bin, "Name2"));
-                    node.Items.Add(MakeStringNode(bin, "Model Path?"));
-                    node.Items.Add(MakeNameNode(bin, "Name3"));
-                    node.Items.Add(MakeVectorNode(bin, "Position?"));
-                    node.Items.Add(MakeRotatorNode(bin, "Rotation?"));
-                    node.Items.Add(MakeVectorNode(bin, "Scale3D?"));
+                    node.Items.Add(MakeNameNode(bin, "PropName1"));
+                    node.Items.Add(MakeNameNode(bin, "PropName2"));
+                    node.Items.Add(MakeStringNode(bin, "PropMeshPath"));
+                    node.Items.Add(MakeNameNode(bin, "Bone"));
+                    node.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
+                    node.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
+                    node.Items.Add(MakeVectorNode(bin, "Scale3D"));
                     int count2;
-                    var propActionsNode = new BinInterpNode(bin.Position, $"prop actions? ({count2 = bin.ReadInt32()} items)");
+                    var propActionsNode = new BinInterpNode(bin.Position, $"Prop Actions ({count2 = bin.ReadInt32()} items)");
                     node.Items.Add(propActionsNode);
                     for (int j = 0; j < count2; j++)
                     {
@@ -4070,15 +4070,15 @@ namespace ME3Explorer
                             IsExpanded = true
                         };
                         propActionsNode.Items.Add(node2);
-                        node2.Items.Add(MakeNameNode(bin, "Name1"));
-                        node2.Items.Add(MakeNameNode(bin, "Name2"));
-                        node2.Items.Add(MakeInt32Node(bin, "unk"));
+                        node2.Items.Add(MakeNameNode(bin, "ActionName1"));
+                        node2.Items.Add(MakeNameNode(bin, "ActionName2"));
+                        node2.Items.Add(MakeInt32Node(bin, "Equip?"));
                         node2.Items.Add(MakeNameNode(bin, "Name3"));
-                        node2.Items.Add(MakeVectorNode(bin, "Position?"));
-                        node2.Items.Add(MakeRotatorNode(bin, "Rotation?"));
-                        node2.Items.Add(MakeVectorNode(bin, "Scale3D?"));
-                        node2.Items.Add(MakeStringNode(bin, "Model Path?"));
-                        node2.Items.Add(MakeInt32Node(bin, "unk"));
+                        node2.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
+                        node2.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
+                        node2.Items.Add(MakeVectorNode(bin, "Scale3D"));
+                        node2.Items.Add(MakeStringNode(bin, "ParticleSystem"));
+                        node2.Items.Add(MakeStringNode(bin, "ClientEffect"));
                         node2.Items.Add(MakeInt32Node(bin, "unk"));
                         node2.Items.Add(MakeVectorNode(bin, "unk?"));
                         node2.Items.Add(MakeVectorNode(bin, "unk?"));
