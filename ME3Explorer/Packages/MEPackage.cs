@@ -50,6 +50,7 @@ namespace ME3Explorer.Packages
         public const ushort ME1LicenseeVersion = 1008;
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a seperate class
 
+        public MELocalization Localization { get; private set;}
         public bool CanReconstruct => canReconstruct(FilePath);
 
         private bool canReconstruct(string path) =>
@@ -264,6 +265,40 @@ namespace ME3Explorer.Packages
             if (Game == MEGame.ME1)
             {
                 ReadLocalTLKs();
+            }
+
+            string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
+            if (localizationName.Length > 8)
+                localizationName = localizationName.Substring(localizationName.Length - 8, 8);
+            switch (localizationName)
+            {
+                case "_LOC_DEU":
+                    Localization = MELocalization.DEU;
+                    break;
+                case "_LOC_ESN":
+                    Localization = MELocalization.ESN;
+                    break;
+                case "_LOC_FRA":
+                    Localization = MELocalization.FRA;
+                    break;
+                case "_LOC_INT":
+                    Localization = MELocalization.INT;
+                    break;
+                case "_LOC_ITA":
+                    Localization = MELocalization.ITA;
+                    break;
+                case "_LOC_JPN":
+                    Localization = MELocalization.JPN;
+                    break;
+                case "_LOC_POL":
+                    Localization = MELocalization.POL;
+                    break;
+                case "_LOC_RUS":
+                    Localization = MELocalization.RUS;
+                    break;
+                default:
+                    Localization = MELocalization.None;
+                    break;
             }
         }
 

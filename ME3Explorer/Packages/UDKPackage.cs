@@ -17,7 +17,7 @@ namespace ME3Explorer.Packages
     public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
         public MEGame Game => MEGame.UDK;
-
+        public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()
         {
             var ms = new MemoryStream();

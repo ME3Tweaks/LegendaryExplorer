@@ -17,6 +17,19 @@ namespace ME3Explorer.Packages
         UDK
     }
 
+    public enum MELocalization
+    {
+        None = 0,
+        INT,
+        DEU,
+        ESN,
+        FRA,
+        ITA,
+        JPN,
+        POL,
+        RUS
+    }
+
     public enum ArrayType
     {
         Object,
@@ -120,6 +133,7 @@ namespace ME3Explorer.Packages
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
         MEGame Game { get; }
+        MELocalization Localization { get; }
         string FilePath { get; }
         DateTime LastSaved { get; }
         long FileSize { get; }
