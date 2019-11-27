@@ -3906,7 +3906,6 @@ namespace ME3Explorer.Dialogue_Editor
 
         }
 
-
         private void OpenInAction(object obj)
         {
 

@@ -287,7 +287,7 @@ namespace ME3Explorer.PackageEditor
         }
         public override void Dispose()
         {
-            //throw new NotImplementedException();
+            //Nothing to dispose
         }
         private void GetBikProps()
         {

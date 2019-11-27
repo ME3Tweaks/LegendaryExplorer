@@ -63,6 +63,21 @@ namespace ME3Explorer
 
         public ObservableCollectionExtended<HIRCObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCObject>();
 
+        public bool PlayBackOnlyMode
+        {
+            get => (bool)GetValue(PlayBackOnlyModeProperty);
+            set => SetValue(PlayBackOnlyModeProperty, value);
+        }
+        public static readonly DependencyProperty PlayBackOnlyModeProperty = DependencyProperty.Register(
+            nameof(PlayBackOnlyMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), PlayBackOnlyModeChanged));
+
+        private static void PlayBackOnlyModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel editor)
+            {
+                //do nothing?
+            }
+        }
 
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
         //private Dictionary<ExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<ExportEntry, List<Tuple<string, int, double>>>();
@@ -141,16 +156,19 @@ namespace ME3Explorer
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
                     WwiseStream w = new WwiseStream(exportEntry);
                     ExportInformationList.Add($"Filename : {w.FileName ?? "Stored in this PCC"}");
-                    ExportInformationList.Add($"Data size: {w.DataSize} bytes");
-                    ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
-                    string wemId = $"ID: 0x{w.Id:X8}";
-                    if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                    if(!PlayBackOnlyMode)
                     {
-                        wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
+                        ExportInformationList.Add($"Data size: {w.DataSize} bytes");
+                        ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
+                        string wemId = $"ID: 0x{w.Id:X8}";
+                        if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                        {
+                            wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
+                        }
+                        ExportInformationList.Add(wemId);
                     }
-                    ExportInformationList.Add(wemId);
 
-                    if (w.FileName != null)
+                    if (w.FileName != null && !PlayBackOnlyMode)
                     {
                         try
                         {

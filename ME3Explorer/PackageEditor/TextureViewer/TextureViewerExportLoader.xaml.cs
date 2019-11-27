@@ -91,7 +91,9 @@ namespace ME3Explorer
             MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
 
             DataContext = this;
-            CannotShowTextureText = "Select a mip to view";
+            
+            if (!ViewerModeOnly)
+                CannotShowTextureText = "Select a mip to view";
             CannotShowTextureTextVisibility = Visibility.Visible;
             LoadCommands();
             InitializeComponent();
@@ -309,7 +311,8 @@ namespace ME3Explorer
             if (mipToLoad == null)
             {
                 TextureImage.Source = null;
-                CannotShowTextureText = "Select a mip to view";
+                if (!ViewerModeOnly)
+                    CannotShowTextureText = "Select a mip to view";
                 CannotShowTextureTextVisibility = Visibility.Visible;
                 return;
             }
@@ -360,6 +363,7 @@ namespace ME3Explorer
             TextureImage.Source = null;
             CurrentLoadedFormat = null;
             MipList.ClearEx();
+            CurrentLoadedExport = null;
         }
 
         private void MipList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
