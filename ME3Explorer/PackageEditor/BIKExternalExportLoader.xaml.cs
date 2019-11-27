@@ -294,11 +294,11 @@ namespace ME3Explorer.PackageEditor
             {
                 MoviePlayer?.Dispose();
                 MoviePlayer = null;
+                vlcplayer_WinFormsHost.Child.Dispose();
+                vlcplayer_WinFormsHost.Child = null;
+                vlcplayer_WinFormsHost.Dispose();
+                vlcplayer_WinFormsHost = null;
             }
-            vlcplayer_WinFormsHost.Child.Dispose();
-            vlcplayer_WinFormsHost.Child = null;
-            vlcplayer_WinFormsHost.Dispose();
-            vlcplayer_WinFormsHost = null;
         }
 
         private void GetBikProps()

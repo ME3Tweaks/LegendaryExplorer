@@ -1487,7 +1487,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrMatSkM.IsChecked && !mr.MatSettings.Any(x => x.Item1 == "bUsedWithSkeletalMesh" && x.Item3 == "True"))
+            if (showthis && menu_fltrMatSkM.IsChecked && mr.MatSettings.Any(x => x.Item1 == "bUsedWithSkeletalMesh" && x.Item3 == "True"))
             {
                 showthis = false;
             }
