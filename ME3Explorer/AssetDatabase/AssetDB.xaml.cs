@@ -176,6 +176,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand FilterMeshCommand { get; set; }
         public ICommand FilterTexCommand { get; set; }
         public ICommand FilterAnimsCommand { get; set; }
+        public ICommand FilterVFXCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
@@ -210,6 +211,10 @@ namespace ME3Explorer.AssetDatabase
         private bool IsViewingAnimations(object obj)
         {
             return currentView == 5;
+        }
+        private bool IsViewingVFX(object obj)
+        {
+            return currentView == 6;
         }
         private bool CanUseAnimViewer(object obj)
         {
@@ -250,6 +255,7 @@ namespace ME3Explorer.AssetDatabase
             FilterMeshCommand = new RelayCommand(SetFilters, IsViewingMeshes);
             FilterTexCommand = new RelayCommand(SetFilters, IsViewingTextures);
             FilterAnimsCommand = new RelayCommand(SetFilters, IsViewingAnimations);
+            FilterVFXCommand = new RelayCommand(SetFilters, IsViewingVFX);
             SwitchMECommand = new RelayCommand(SwitchGame);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
             OpenSourcePkgCommand = new RelayCommand(OpenSourcePkg, IsClassSelected);
@@ -300,7 +306,7 @@ namespace ME3Explorer.AssetDatabase
 
             if(audioPcc != null || meshPcc != null || textPcc != null)
             {
-                MessageBox.Show("Still stuff in memory!");
+                MessageBox.Show("Still stuff in memory!", "Asset DB");
             }
 #endif
         }
@@ -1567,7 +1573,14 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
             }
-
+            if (showthis && menu_VFXPartSys.IsChecked && ps.VFXType != ParticleSys.VFXClass.ParticleSystem )
+            {
+                showthis = false;
+            }
+            if (showthis && menu_VFXRvrEff.IsChecked && ps.VFXType == ParticleSys.VFXClass.ParticleSystem)
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool TexFilter(object d)
@@ -1840,6 +1853,28 @@ namespace ME3Explorer.AssetDatabase
                     break;
                 case "1024":
                     menu_T1024.IsChecked = !menu_T1024.IsChecked;
+                    break;
+                case "PS":
+                    if (!menu_VFXPartSys.IsChecked)
+                    {
+                        menu_VFXRvrEff.IsChecked = false;
+                        menu_VFXPartSys.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_VFXPartSys.IsChecked = false;
+                    }
+                    break;
+                case "RvrEff":
+                    if (!menu_VFXRvrEff.IsChecked)
+                    {
+                        menu_VFXPartSys.IsChecked = false;
+                        menu_VFXRvrEff.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_VFXRvrEff.IsChecked = false;
+                    }
                     break;
                 default:
                     break;
@@ -2493,6 +2528,13 @@ namespace ME3Explorer.AssetDatabase
     }
     public class ParticleSys : NotifyPropertyChangedBase
     {
+        public enum VFXClass
+        {
+            ParticleSystem,
+            RvrClientEffect,
+            BioVFXTemplate
+        }
+
         private string _PSName;
         public string PSName { get => _PSName; set => SetProperty(ref _PSName, value); }
         private string _ParentPackagee;
@@ -2501,17 +2543,20 @@ namespace ME3Explorer.AssetDatabase
         public bool IsDLCOnly { get => _IsDLCOnly; set => SetProperty(ref _IsDLCOnly, value); }
         private bool _IsModOnly;
         public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
-        private int _EmitterCount;
-        public int EmitterCount { get => _EmitterCount; set => SetProperty(ref _EmitterCount, value); }
+        private int _EffectCount;
+        public int EffectCount { get => _EffectCount; set => SetProperty(ref _EffectCount, value); }
+        private VFXClass _vfxType;
+        public VFXClass VFXType { get => _vfxType; set => SetProperty(ref _vfxType, value); }
         public ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, export, isDLC file
 
-        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EmitterCount, ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages)
+        public ParticleSys(string PSName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, int EffectCount, VFXClass VFXType, ObservableCollectionExtended<Tuple<int, int, bool, bool>> PSUsages)
         {
             this.PSName = PSName;
             this.ParentPackage = ParentPackage;
             this.IsDLCOnly = IsDLCOnly;
             this.IsModOnly = IsModOnly;
-            this.EmitterCount = EmitterCount;
+            this.EffectCount = EffectCount;
+            this.VFXType = VFXType;
             this.PSUsages.AddRange(PSUsages);
         }
 
@@ -2980,7 +3025,7 @@ namespace ME3Explorer.AssetDatabase
                                 dbScanner.GeneratedMeshes.TryAdd(pKey, NewMeshRec);
                             }
                         }
-                        else if (exp.ClassName == "ParticleSystem" && !pIsdefault)
+                        else if ((exp.ClassName == "ParticleSystem" || exp.ClassName == "RvrClientEffect" || exp.ClassName == "BioVFXTemplate") && !pIsdefault)
                         {
                             if (dbScanner.GeneratedPS.ContainsKey(pKey))
                             {
@@ -3009,11 +3054,21 @@ namespace ME3Explorer.AssetDatabase
                                 {
                                     parent = GetTopParentPackage(exp);
                                 }
-
-
-                                var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
-                                int EmCnt = EmtProp?.Count ?? 0;
-                                var NewPS = new ParticleSys(pExp, parent, IsDLC, IsMod, EmCnt, new ObservableCollectionExtended<Tuple<int, int, bool, bool>> { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
+                                var vfxtype = ParticleSys.VFXClass.BioVFXTemplate;
+                                int EmCnt = 0;
+                                if (exp.ClassName == "ParticleSystem")
+                                {
+                                    var EmtProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("Emitters");
+                                    EmCnt = EmtProp?.Count ?? 0;
+                                    vfxtype = ParticleSys.VFXClass.ParticleSystem;
+                                }
+                                else if (exp.ClassName == "RvrClientEffect")
+                                {
+                                    var RvrProp = exp.GetProperty<ArrayProperty<ObjectProperty>>("m_lstModules");
+                                    EmCnt = RvrProp?.Count ?? 0;
+                                    vfxtype = ParticleSys.VFXClass.RvrClientEffect;
+                                }
+                                var NewPS = new ParticleSys(pExp, parent, IsDLC, IsMod, EmCnt, vfxtype, new ObservableCollectionExtended <Tuple<int, int, bool, bool>> { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
                                 dbScanner.GeneratedPS.TryAdd(pKey, NewPS);
                             }
                         }
