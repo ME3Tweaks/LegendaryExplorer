@@ -278,20 +278,31 @@ namespace ME3Explorer.AssetDatabase
             }
             Activate();
         }
-        private void AssetDB_Closing(object sender, CancelEventArgs e)
+        private async void AssetDB_Closing(object sender, CancelEventArgs e)
         {
             if (e.Cancel)
                 return;
 
             Properties.Settings.Default.AssetDBPath = CurrentDBPath;
             Properties.Settings.Default.AssetDBGame = currentGame.ToString();
-            EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+            EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
             BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
             SoundpanelWPF_ADB.UnloadExport();
+            SoundpanelWPF_ADB.FreeAudioResources();
+            MeshRendererTab_MeshRenderer.Dispose();
+            SoundpanelWPF_ADB.Dispose();
             audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
+#if DEBUG
+            await Task.Delay(6000);
+
+            if(audioPcc != null || meshPcc != null || textPcc != null)
+            {
+                MessageBox.Show("Still stuff in memory!");
+            }
+#endif
         }
 
         #endregion
@@ -762,10 +773,15 @@ namespace ME3Explorer.AssetDatabase
             meshPcc?.Dispose();
             btn_MeshRenderToggle.IsChecked = false;
             btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
-            EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+            EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
             textPcc?.Dispose();
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            SoundpanelWPF_ADB.UnloadExport();
+            audioPcc?.Dispose();
+            SoundpanelWPF_ADB.FreeAudioResources();
+            btn_LinePlaybackToggle.IsChecked = false;
+            btn_LinePlaybackToggle.Content = "Toggle Line Playback";
             menu_fltrPerf.IsEnabled = false;
             btn_LinePlaybackToggle.IsEnabled = true;
             switch (p)
@@ -1238,9 +1254,9 @@ namespace ME3Explorer.AssetDatabase
             var selecteditem = lstbx_Textures.SelectedItem as TextureRecord;
             if (!showText || selecteditem.CFormat == "TextureCube")
             {
-                EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
                 BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
-                EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Visible;
+                EmbeddedTextureViewerTab_EmbeddedTextureViewer.Visibility = Visibility.Visible;
                 BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Collapsed;
                 textPcc?.Dispose();
                 return;
@@ -1266,7 +1282,7 @@ namespace ME3Explorer.AssetDatabase
 
             if (textPcc != null)
             {
-                EmbeddedTextureViewerTab_EmbededTextureViewer.UnloadExport();
+                EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
                 BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
                 textPcc.Dispose();
             }
@@ -1292,12 +1308,12 @@ namespace ME3Explorer.AssetDatabase
                         {
                             BIKExternalExportLoaderTab_BIKExternalExportLoader.LoadExport(textExp);
                             BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Visible;
-                            EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Collapsed;
+                            EmbeddedTextureViewerTab_EmbeddedTextureViewer.Visibility = Visibility.Collapsed;
                         }
                         else
                         {
-                            EmbeddedTextureViewerTab_EmbededTextureViewer.LoadExport(textExp);
-                            EmbeddedTextureViewerTab_EmbededTextureViewer.Visibility = Visibility.Visible;
+                            EmbeddedTextureViewerTab_EmbeddedTextureViewer.LoadExport(textExp);
+                            EmbeddedTextureViewerTab_EmbeddedTextureViewer.Visibility = Visibility.Visible;
                             BIKExternalExportLoaderTab_BIKExternalExportLoader.Visibility = Visibility.Collapsed;
                         }
                         break;
