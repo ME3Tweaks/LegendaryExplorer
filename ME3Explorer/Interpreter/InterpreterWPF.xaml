@@ -95,8 +95,7 @@
                                   VerticalAlignment="Stretch">
                     <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
                                 LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
-                                StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged"
-                                SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True" />
+                                StringViewVisible="True" VScrollBarVisible="True" />
                 </WindowsFormsHost>
                 <Image Grid.Column="0" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
             </Grid>

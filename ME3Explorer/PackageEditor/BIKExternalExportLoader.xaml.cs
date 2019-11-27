@@ -134,7 +134,7 @@ namespace ME3Explorer.PackageEditor
             GetVLCInstallationStatus();
             LoadCommands();
             InitializeComponent();
-            
+
             TextureCacheComboBox.SelectionChanged += TextureCacheComboBox_SelectionChanged;
 
 
@@ -153,12 +153,12 @@ namespace ME3Explorer.PackageEditor
                     MoviePlayer.VlcMediaplayerOptions = new[] { "--video-title-show" };  //Can we find options to show frame counts/frame rates/time etc
                 }
                 MoviePlayer.EndInit();
-                MoviePlayer.Playing += (sender, e) => 
+                MoviePlayer.Playing += (sender, e) =>
                 {
                     IsVLCPlaying = true;
                     Debug.WriteLine("Started");
-                }; 
-                MoviePlayer.Stopped += (sender, e) => 
+                };
+                MoviePlayer.Stopped += (sender, e) =>
                 {
                     IsVLCPlaying = false;
                     Debug.WriteLine("Stopped");
@@ -244,7 +244,7 @@ namespace ME3Explorer.PackageEditor
             {
                 MoviePlayer.Stop();
                 var bik = MoviePlayer.GetCurrentMedia();
-                if(bik != null)
+                if (bik != null)
                 {
                     MoviePlayer.ResetMedia();
                     bik.Dispose();
@@ -285,10 +285,22 @@ namespace ME3Explorer.PackageEditor
         {
             //throw new NotImplementedException();
         }
+
         public override void Dispose()
         {
-            //Nothing to dispose
+            UnloadExport();
+
+            if (VLCIsInstalled)
+            {
+                MoviePlayer?.Dispose();
+                MoviePlayer = null;
+            }
+            vlcplayer_WinFormsHost.Child.Dispose();
+            vlcplayer_WinFormsHost.Child = null;
+            vlcplayer_WinFormsHost.Dispose();
+            vlcplayer_WinFormsHost = null;
         }
+
         private void GetBikProps()
         {
             IsExternallyCached = false;
@@ -297,7 +309,7 @@ namespace ME3Explorer.PackageEditor
             TfcName = "None";
             BikFileName = "No file";
             var props = CurrentLoadedExport.GetProperties();
-            if(CurrentLoadedExport.ClassName == "TextureMovie")
+            if (CurrentLoadedExport.ClassName == "TextureMovie")
             {
                 var Xprop = props.GetProp<IntProperty>("SizeX");
                 SizeX = Xprop?.Value ?? 0;
@@ -318,12 +330,12 @@ namespace ME3Explorer.PackageEditor
             else
             {
                 string propbikName = "m_sMovieName";
-                if(CurrentLoadedExport.ClassName == "BioLoadingMovie")
+                if (CurrentLoadedExport.ClassName == "BioLoadingMovie")
                 {
                     propbikName = "MovieName";
                 }
                 var bikprop = props.GetProp<StrProperty>(propbikName);
-                if(bikprop != null)
+                if (bikprop != null)
                 {
                     BikFileName = bikprop.ToString();
                     IsExternalFile = true;
@@ -387,7 +399,7 @@ namespace ME3Explorer.PackageEditor
         {
             MoviePlayer.Stop();
             var bik = MoviePlayer.GetCurrentMedia();
-            if(bik != null)
+            if (bik != null)
             {
                 MoviePlayer.ResetMedia();
                 bik.Dispose();
@@ -422,7 +434,7 @@ namespace ME3Explorer.PackageEditor
                     byte[] binary = CurrentLoadedExport.GetBinaryData();
                     int length = BitConverter.ToInt32(binary, 4);
                     int offset = BitConverter.ToInt32(binary, 12);
-                    if(CurrentLoadedExport.Game != MEGame.ME3)
+                    if (CurrentLoadedExport.Game != MEGame.ME3)
                     {
                         length = BitConverter.ToInt32(binary, 20);
                         offset = BitConverter.ToInt32(binary, 28);
@@ -485,12 +497,12 @@ namespace ME3Explorer.PackageEditor
             catch (Exception ex)
             {
                 Debug.WriteLine("Error loading movie: " + ex.FlattenException());
-                
+
                 Warning_text.Visibility = Visibility.Visible;
                 video_Panel.IsEnabled = false;
                 return null;
             }
-            
+
         }
         public async void MediaEndReached(object sender, EventArgs args)
         {
@@ -545,7 +557,7 @@ namespace ME3Explorer.PackageEditor
                 Title = "Import Bik movie file",
                 Filter = "Bik Movie Files (*.bik)|*.bik"
             };
-            
+
             if (dlg.ShowDialog() == true && File.Exists(dlg.FileName))
             {
                 success = ImportBiktoCache(dlg.FileName);
@@ -554,13 +566,13 @@ namespace ME3Explorer.PackageEditor
                     MessageBox.Show("Done");
                 }
             }
-            return success;    
+            return success;
         }
         private bool ImportBiktoCache(string bikfile, string tfcPath = null)
         {
             if (bikfile == null)
                 return false;
-            
+
             if (IsMoviePlaying())
             {
                 MoviePlayer.Stop();
@@ -577,11 +589,11 @@ namespace ME3Explorer.PackageEditor
             SizeX = bikMovie.ReadInt32();
             SizeY = bikMovie.ReadInt32();
             bikMovie.Seek(0, SeekOrigin.Begin);
-            if(IsLocallyCached) //Append to local object
+            if (IsLocallyCached) //Append to local object
             {
 
                 byte[] binData;
-                
+
                 if (!int.TryParse(bikMovie.Length.ToString(), out int biklength))
                 {
                     MessageBox.Show($"{Path.GetFileName(bikfile)} is too large to attach to an object. Aborting.", "Warning", MessageBoxButton.OK);
@@ -590,7 +602,7 @@ namespace ME3Explorer.PackageEditor
                 }
 
                 int fileBinaryOffset = CurrentLoadedExport.DataOffset + CurrentLoadedExport.propsEnd();
-                if(CurrentLoadedExport.Game == MEGame.ME3)
+                if (CurrentLoadedExport.Game == MEGame.ME3)
                 {
                     binData = new byte[16 + biklength];
                     binData.OverwriteRange(0, BitConverter.GetBytes(0));
@@ -624,7 +636,7 @@ namespace ME3Explorer.PackageEditor
             }
             else if (IsExternallyCached) //Append to tfc  NOT ME2/ME1
             {
-                if(Pcc.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Only ME3 can store movietextures in a cache file.");
                     bikcontrols_Panel.IsEnabled = true;
@@ -650,7 +662,7 @@ namespace ME3Explorer.PackageEditor
                     }
 
                     List<string> tfcPaths = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).ToList();
-                    switch(tfcPaths.Count)
+                    switch (tfcPaths.Count)
                     {
                         case 0:
                             tfcPath = CreateNewMovieTFC();
@@ -663,7 +675,7 @@ namespace ME3Explorer.PackageEditor
                         case 1:
                             tfcPath = tfcPaths[0];
                             break;
-                        default :
+                        default:
                             MessageBox.Show($"Error. More than one tfc with this name was found in the {Pcc.Game} folders. TFC names need to be unique.");
                             return false;
                     }
@@ -720,7 +732,7 @@ namespace ME3Explorer.PackageEditor
                     {
                         string newtfc = null;
                         var meChkdlg = MessageBox.Show($"Do you want to use an existing tfc?\n (Select No to create a new one.)", "Move to External", MessageBoxButton.YesNo);
-                        if(meChkdlg == MessageBoxResult.No)
+                        if (meChkdlg == MessageBoxResult.No)
                         {
                             newtfc = CreateNewMovieTFC();
                             if (newtfc == null)
@@ -824,8 +836,8 @@ namespace ME3Explorer.PackageEditor
                         Title = "Import TFC cache for movie files",
                         Filter = "TextureFileCache (*.tfc)|*.tfc"
                     };
-                    
-                    if(adddlg.ShowDialog() ?? false)
+
+                    if (adddlg.ShowDialog() ?? false)
                     {
                         string addedtfc = Path.GetFileNameWithoutExtension(adddlg.FileName);
                         if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(adddlg.FileName)))
@@ -856,7 +868,7 @@ namespace ME3Explorer.PackageEditor
                     TextureCacheComboBox.SelectedItem = oldselection;
                     break;
                 default: //This means a tfc name was selected
-                    if (IsLocallyCached) 
+                    if (IsLocallyCached)
                     {
                         var ddlg = MessageBox.Show($"Do you want to add a new bik file cached at {newSelection}.tfc?", "Warning", MessageBoxButton.OKCancel);
                         if (ddlg == MessageBoxResult.Cancel)
@@ -884,7 +896,7 @@ namespace ME3Explorer.PackageEditor
                     break;
             }
 
-            if(wasCancelled)
+            if (wasCancelled)
             {
                 IsLocallyCached = olocalcache;
                 IsExternallyCached = oextcache;
@@ -927,16 +939,16 @@ namespace ME3Explorer.PackageEditor
             {
                 return null;
             }
-            string outputTFC = Path.Combine(m.FileName, $"{nprompt}.tfc") ;
+            string outputTFC = Path.Combine(m.FileName, $"{nprompt}.tfc");
             bool createTFC = true;
 
-            if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains( Path.GetDirectoryName(outputTFC)))
+            if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(outputTFC)))
             {
                 MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
                 return null;
             }
 
-            if(File.Exists(outputTFC))
+            if (File.Exists(outputTFC))
             {
                 var fedlg = MessageBox.Show("This tfc already exists. Do you wish to use it?", "Create a new movie TFC", MessageBoxButton.OKCancel);
                 if (fedlg == MessageBoxResult.Cancel)
@@ -951,7 +963,7 @@ namespace ME3Explorer.PackageEditor
                 AvailableTFCNames.Add(nprompt);
             }
 
-            if(createTFC)
+            if (createTFC)
             {
                 Guid tfcGuid = Guid.NewGuid();
                 using FileStream fs = new FileStream(outputTFC, FileMode.OpenOrCreate, FileAccess.Write);
@@ -972,13 +984,13 @@ namespace ME3Explorer.PackageEditor
             IsLocallyCached = false;
             IsExternallyCached = true;
 
-            byte[] binary = new byte[16]; 
+            byte[] binary = new byte[16];
             CurrentLoadedExport.SetBinaryData(binary);
 
             finished = ImportBiktoCache(tempfilepath, tfcPath);
 
             File.Delete(tempfilepath);
-            if(finished)
+            if (finished)
             {
                 MessageBox.Show("Switch to Cache Completed");
             }

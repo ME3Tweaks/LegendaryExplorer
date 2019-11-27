@@ -1656,6 +1656,12 @@ namespace ME3Explorer
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
             Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
+
+            Interpreter_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+            Interpreter_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
+
+            Interpreter_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
+            Interpreter_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
         }
 
         private void Interpreter_Hexbox_BytesChanged(object sender, EventArgs e)
@@ -2004,9 +2010,16 @@ namespace ME3Explorer
         public override void Dispose()
         {
             Properties.Settings.Default.PropertyChanged -= SettingChanged;
+            if (Interpreter_Hexbox.ByteProvider != null)
+            {
+                Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
+            }
+
+            Interpreter_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
             Interpreter_Hexbox = null;
             Interpreter_Hexbox_Host.Child.Dispose();
             Interpreter_Hexbox_Host.Dispose();
+            Interpreter_Hexbox_Host = null;
         }
 
         public override void PopOut()

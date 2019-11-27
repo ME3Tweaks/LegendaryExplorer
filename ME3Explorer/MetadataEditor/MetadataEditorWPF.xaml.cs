@@ -84,7 +84,7 @@ namespace ME3Explorer.MetadataEditor
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, CanSaveHexChanges);
         }
 
-        private bool CanSaveHexChanges() => CurrentLoadedEntry!= null && HexChanged;
+        private bool CanSaveHexChanges() => CurrentLoadedEntry != null && HexChanged;
 
         private void SaveHexChanges()
         {
@@ -175,7 +175,7 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
                 InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
-                
+
                 if (exportEntry.HasComponentMap)
                 {
                     OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
@@ -591,13 +591,18 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!ControlLoaded)
             {
-                Debug.WriteLine("MDE HB LOADED");
                 Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
                 headerByteProvider = new DynamicByteProvider();
                 Header_Hexbox.ByteProvider = headerByteProvider;
                 if (CurrentLoadedEntry != null) headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
                 headerByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
                 ControlLoaded = true;
+
+                Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
+
+                Header_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
             }
         }
 
@@ -653,9 +658,12 @@ namespace ME3Explorer.MetadataEditor
 
         public override void Dispose()
         {
-            Header_Hexbox = null;
+            Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+            Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
             Header_Hexbox_Host.Child.Dispose();
+            Header_Hexbox = null;
             Header_Hexbox_Host.Dispose();
+            Header_Hexbox_Host = null;
         }
 
         /// <summary>
