@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
+        xmlns:packageeditor="clr-namespace:ME3Explorer.PackageEditor"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -244,7 +245,11 @@
                     <TabItem Name="ValidationPanel_Tab" Header="Validation">
                         <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
                     </TabItem>
-                    <!-- Art Tools-->
+                    <!-- Collection Actor Editor -->
+                    <TabItem Name="CollectionActor_Tab" Header="Collection" Visibility="Hidden">
+                        <packageeditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
+                    </TabItem>
+                    <!-- Level Tools-->
                     <TabItem Name="LevelTools_Tab" Header="Level Tools" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel Margin="3">
                             <TextBlock Text="Experimental Tools for editing levels" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -255,7 +260,26 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <StackPanel Name="LightingToolsControl">
+                                <StackPanel Name="LevelShiftToolsControl" Grid.Row="0">
+                                    <TextBlock Text="Level shift tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
+                                    <TextBlock Text="Move every actor simultaneously" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
+                                    <DockPanel Margin="3,5" ToolTip="Shift in X Axis">
+                                        <TextBlock Text="Move on X axis by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <xctk:IntegerUpDown x:Name="lvlShift_X" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
+                                    </DockPanel>
+                                    <DockPanel Margin="3,5" ToolTip="Shift in Y Axis">
+                                        <TextBlock Text="Move on Y axis by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <xctk:IntegerUpDown x:Name="lvlShift_Y" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
+                                    </DockPanel>
+                                    <DockPanel Margin="3,5" ToolTip="Shift in Z Axis">
+                                        <TextBlock Text="Move on Z axis by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                        <xctk:IntegerUpDown x:Name="lvlShift_Z" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
+                                    </DockPanel>
+                                    <Button Content="Commit Level Shifts" Command="{Binding CommitLevelShiftsCommand}" Margin="5"/>
+                                    <Separator/>
+                                </StackPanel>
+                                
+                                <StackPanel Name="LightingToolsControl" Grid.Row="1">
                                     <TextBlock Text="Lighting Tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
                                     <TextBlock Text="Change every light in the level (static and dynamic)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                     <DockPanel Margin="3,5" ToolTip="Overwrite the Red channel of all lights with another channel.">
@@ -277,9 +301,10 @@
                                         <TextBlock Text="Adjust lighting brightness (%+/-)"/>
                                         <!--<xctk:DecimalUpDown Value="{Binding BrightnessAdjustment}" Minimum="-100" Maximum="100"/>-->
                                     </DockPanel>
+                                    <Button Content="Execute Lighting Changes" Command="{Binding EditLevelLightingCommand}" Margin="5"/>
                                 </StackPanel>
                             </Grid>
-                            <Button Content="Execute Lighting Changes" Command="{Binding EditLevelLightingCommand}" Margin="5"/>
+
                         </StackPanel>
                     </TabItem>
                 </TabControl>

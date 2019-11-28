@@ -26,10 +26,12 @@ using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using Point = System.Windows.Point;
+
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -273,6 +275,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand RemoveFromLevelCommand { get; set; }
         public ICommand AddNewSplineActorToChainCommand { get; set; }
         public ICommand EditLevelLightingCommand { get; set; }
+        public ICommand CommitLevelShiftsCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -315,6 +318,7 @@ namespace ME3Explorer.Pathfinding_Editor
             RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, IsActorSelected);
             AddNewSplineActorToChainCommand = new GenericCommand(AddSplineActorToChain, IsSplineActorSelected);
             EditLevelLightingCommand = new GenericCommand(EditLevelLighting, PackageIsLoaded);
+            CommitLevelShiftsCommand = new GenericCommand(CommitLevelShifts, PackageIsLoaded);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -646,7 +650,8 @@ namespace ME3Explorer.Pathfinding_Editor
                         node.MouseDown -= node_MouseDown;
                     }
                 }
-
+                CollectionActorEditorTab_CollectionActorEditor.UnloadExport();
+                CollectionActorEditorTab_CollectionActorEditor.Dispose();
                 GraphNodes?.Clear();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 graphEditor.nodeLayer.RemoveAllChildren();
@@ -1817,6 +1822,17 @@ namespace ME3Explorer.Pathfinding_Editor
                             return;
                         }
 
+                        if (node.ClassName.Contains("CollectionActor"))
+                        {
+                            ExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as ExportEntry;
+                            //Do a full refresh
+                            RefreshGraph();
+                            ChangingSelectionByGraphClick = true;
+                            ActiveNodes_ListBox.SelectedItem = selectedExport;
+                            ChangingSelectionByGraphClick = false;
+                            return;
+                        }
+
                         //Reposition the node
                         var newlocation = SharedPathfinding.GetLocation(node);
                         s.SetOffset((float)newlocation.X, (float)newlocation.Y);
@@ -2977,6 +2993,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
                 CurrentNodeCombatZones.ClearEx();
+                CollectionActorEditorTab_CollectionActorEditor.UnloadExport();
+                CollectionActor_Tab.Visibility = Visibility.Hidden;
 
                 PathfindingNodeMaster selectedNode = GraphNodes.First(o => o.UIndex == export.UIndex);
                 CurrentNodeSequenceReferences.ReplaceAll(selectedNode.SequenceReferences);
@@ -3061,27 +3079,18 @@ namespace ME3Explorer.Pathfinding_Editor
                         graphEditor.Camera.AnimateViewToCenterBounds(selectedNode.GlobalFullBounds, false, 1000);
                     }
 
-                    if (selectedNode is SMAC_ActorNode smc)
+                    Point3D position = SharedPathfinding.GetLocation(export);
+                    if (position != null)
                     {
-                        NodePositionX_TextBox.Text = smc.X.ToString();
-                        NodePositionY_TextBox.Text = smc.Y.ToString();
-                        NodePositionZ_TextBox.Text = smc.Z.ToString();
+                        NodePositionX_TextBox.Text = position.X.ToString();
+                        NodePositionY_TextBox.Text = position.Y.ToString();
+                        NodePositionZ_TextBox.Text = position.Z.ToString();
                     }
                     else
                     {
-                        Point3D position = SharedPathfinding.GetLocation(export);
-                        if (position != null)
-                        {
-                            NodePositionX_TextBox.Text = position.X.ToString();
-                            NodePositionY_TextBox.Text = position.Y.ToString();
-                            NodePositionZ_TextBox.Text = position.Z.ToString();
-                        }
-                        else
-                        {
-                            NodePositionX_TextBox.Text = 0.ToString();
-                            NodePositionY_TextBox.Text = 0.ToString();
-                            NodePositionZ_TextBox.Text = 0.ToString();
-                        }
+                        NodePositionX_TextBox.Text = 0.ToString();
+                        NodePositionY_TextBox.Text = 0.ToString();
+                        NodePositionZ_TextBox.Text = 0.ToString();
                     }
 
                     switch (selectedNode.export.ClassName)
@@ -3106,7 +3115,16 @@ namespace ME3Explorer.Pathfinding_Editor
                         case "SplineActor":
                             SplineNodeSelected = true;
                             break;
+                        default:
+                            if (selectedNode.export.ClassName.EndsWith("Component"))
+                            {
+                                CollectionActor_Tab.Visibility = Visibility.Visible;
+                                CollectionActorEditorTab_CollectionActorEditor.LoadExport(selectedNode.export);
+                            }
+                            break;
                     }
+
+
                 }
 
                 //GetProperties(pcc.getExport(CurrentObjects[n]));
@@ -4097,6 +4115,78 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             MessageBox.Show($"{n} LightComponents adjusted.");
+        }
+
+        private void CommitLevelShifts()
+        {
+            var shiftx = (float)lvlShift_X.Value;
+            var shifty = (float)lvlShift_Y.Value;
+            var shiftz = (float)lvlShift_Z.Value;
+
+            if(lvlShift_X.Value == 0 && lvlShift_Y.Value == 0 && lvlShift_Z.Value == 0)
+            {
+                return;
+            }
+
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to shift every actor in the level?\n" +
+                $"\nX: {shiftx.ToString("+0;-0;0")}\nY: {shifty}\nZ: {shiftz}\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            if(chkdlg == MessageBoxResult.Cancel)
+                return;
+            var actorlist = new List<int>();
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
+            }
+            foreach (var actoridx in actorlist)
+            {
+                var actor = Pcc.GetUExport(actoridx);
+                if (actor == null)
+                    continue;
+
+                if(actor.ClassName.Contains("CollectionActor"))
+                {
+                    
+                    if (ObjectBinary.From(actor) is StaticCollectionActor sca && 
+                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+                    {
+
+                        for (int index = 0; index < components.Count; index++)
+                        {
+
+                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+
+                            SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3(posX + shiftx, posY + shifty, posZ + shiftz),
+                                      new Rotator(uuPitch, uuYaw, uuRoll),
+                                      new SharpDX.Vector3(scaleX, scaleY, scaleZ));
+                            sca.LocalToWorldTransforms[index] = newm;
+                        }
+                        actor.SetBinaryData(sca);
+                    }
+
+                }
+                else
+                {
+                    var locationprop = actor.GetProperty<StructProperty>("location");
+                    if(locationprop != null && locationprop.IsImmutable)
+                    {
+                        var oldx = locationprop.GetProp<FloatProperty>("X").Value;
+                        var oldy = locationprop.GetProp<FloatProperty>("Y").Value;
+                        var oldz = locationprop.GetProp<FloatProperty>("Z").Value;
+
+                        float newx = oldx + shiftx;
+                        float newy = oldy + shifty;
+                        float newz = oldz + shiftz;
+
+                        locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
+                        locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
+                        locationprop.Properties.AddOrReplaceProp(new FloatProperty(newz, "Z"));
+                        actor.WriteProperty(locationprop);
+                    }
+                }
+            }
+            MessageBox.Show("Done");
         }
         #endregion
     }
