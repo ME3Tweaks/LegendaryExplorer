@@ -2599,7 +2599,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
             soundPanelTabControl.SelectedIndex = faceFXEditorTabControl.SelectedIndex = SelectedDialogueNode.WwiseStream_Female == null ? 1 : 0;
-            if (SelectedDialogueNode.SpeakerTag.FaceFX_Female is ExportEntry faceFX_f)
+            if (SelectedDialogueNode.SpeakerTag?.FaceFX_Female is ExportEntry faceFX_f)
             {
                 FaceFXAnimSetEditorControl_F.LoadExport(faceFX_f);
                 FaceFXAnimSetEditorControl_F.SelectLineByName(SelectedDialogueNode.FaceFX_Female);
@@ -2609,7 +2609,7 @@ namespace ME3Explorer.Dialogue_Editor
                 FaceFXAnimSetEditorControl_F.UnloadExport();
             }
 
-            if (SelectedDialogueNode.SpeakerTag.FaceFX_Male is ExportEntry faceFX_m)
+            if (SelectedDialogueNode.SpeakerTag?.FaceFX_Male is ExportEntry faceFX_m)
             {
                 FaceFXAnimSetEditorControl_M.LoadExport(faceFX_m);
                 FaceFXAnimSetEditorControl_M.SelectLineByName(SelectedDialogueNode.FaceFX_Male);
