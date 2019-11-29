@@ -230,6 +230,7 @@ namespace ME3Explorer
         public ICommand OpenExportInCommand { get; set; }
         public ICommand CompactShaderCacheCommand { get; set; }
         public ICommand GoToArchetypecommand { get; set; }
+        public ICommand ReplaceNamesCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -262,6 +263,7 @@ namespace ME3Explorer
             PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
             GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
+            ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
 
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
@@ -1286,7 +1288,35 @@ namespace ME3Explorer
                 }
             }
         }
+        private void SearchReplaceNames()
+        {
 
+            string searchstr = PromptDialog.Prompt(this, "Input text to be replaced:", "Search and Replace Names", defaultValue: "search text", selectText: true, PromptDialog.InputType.Text);
+            if (string.IsNullOrEmpty(searchstr))
+                return;
+
+            string replacestr = PromptDialog.Prompt(this, "Input new text:", "Search and Replace Names", defaultValue: "replacement text", selectText: true, PromptDialog.InputType.Text);
+            if (string.IsNullOrEmpty(replacestr))
+                return;
+
+            var wdlg = MessageBox.Show($"This will replace every name containing the text \"{searchstr}\" with a new name containing \"{replacestr}\".\n" +
+                $"This may break any properties, or links containing this string. Please confirm.", "WARNING:", MessageBoxButton.OKCancel);
+            if (wdlg == MessageBoxResult.Cancel)
+                return;
+
+            for (int i = 0; i < Pcc.Names.Count; i++)
+            {
+                string name = Pcc.Names[i];
+                if (name.Contains(searchstr))
+                {
+                    var newName = name.Replace(searchstr, replacestr);
+                    Pcc.replaceName(i, newName);
+                }
+            }
+            RefreshNames();
+            RefreshView();
+            MessageBox.Show("Done", "Search and Replace Names", MessageBoxButton.OK);
+        }
         private void CheckForDuplicateIndexes()
         {
             if (Pcc == null)

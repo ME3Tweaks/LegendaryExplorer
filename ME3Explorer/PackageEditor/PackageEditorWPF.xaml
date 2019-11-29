@@ -156,6 +156,8 @@
                         </MenuItem>
                         <MenuItem Header="Compact SeekFreeShaderCache" ToolTip="Removes unused data from ShaderCaches in this file. Only neccesary if you've been porting shaders"
                                   Command="{Binding CompactShaderCacheCommand}"/>
+                        <MenuItem Header="Search and Replace Names" ToolTip="Replaces every instance or part of a Name selected with new text"
+                                  Command="{Binding ReplaceNamesCommand}"/>
                     </MenuItem>
 
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
