@@ -25,7 +25,7 @@ namespace ME3Explorer.Matinee
         public InterpGroup(ExportEntry export)
         {
             Export = export;
-            GroupName = export.GetProperty<NameProperty>("GroupName")?.Value ?? "Group";
+            GroupName = export.GetProperty<NameProperty>("GroupName")?.Value.Instanced ?? export.ObjectName.Instanced;
 
             if (export.GetProperty<StructProperty>("GroupColor") is StructProperty colorStruct)
             {
@@ -206,6 +206,18 @@ namespace ME3Explorer.Matinee
     {
         public InterpTrackMove(ExportEntry export) : base(export)
         {
+            var lookupstruct = export.GetProperty<StructProperty>("LookupTrack");
+            if(lookupstruct != null)
+            {
+                var trackKeys = lookupstruct.GetProp<ArrayProperty<StructProperty>>("Points");
+                if (trackKeys != null)
+                {
+                    foreach (var trackKey in trackKeys)
+                    {
+                        Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
+                    }
+                }
+            }
         }
     }
     public class InterpTrackVisibility : InterpTrack
