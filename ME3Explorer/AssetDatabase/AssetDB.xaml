@@ -641,7 +641,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding PSName}" />
                                             <TextBlock Text=" (" FontSize="10" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding VFXClass}" FontSize="10" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding VFXType}" FontSize="10" VerticalAlignment="Center"/>
                                             <TextBlock Text=")" FontSize="10" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </DataTemplate>
