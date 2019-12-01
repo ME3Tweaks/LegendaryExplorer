@@ -276,7 +276,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand AddNewSplineActorToChainCommand { get; set; }
         public ICommand EditLevelLightingCommand { get; set; }
         public ICommand CommitLevelShiftsCommand { get; set; }
-
+        public ICommand CommitLevelRotationCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -319,6 +319,7 @@ namespace ME3Explorer.Pathfinding_Editor
             AddNewSplineActorToChainCommand = new GenericCommand(AddSplineActorToChain, IsSplineActorSelected);
             EditLevelLightingCommand = new GenericCommand(EditLevelLighting, PackageIsLoaded);
             CommitLevelShiftsCommand = new GenericCommand(CommitLevelShifts, PackageIsLoaded);
+            CommitLevelRotationCommand = new GenericCommand(CommitLevelRotation, PackageIsLoaded);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -2994,7 +2995,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 Properties_InterpreterWPF.LoadExport(export);
                 CurrentNodeCombatZones.ClearEx();
                 CollectionActorEditorTab_CollectionActorEditor.UnloadExport();
-                CollectionActor_Tab.Visibility = Visibility.Hidden;
+                CollectionActor_Tab.IsEnabled = false;
 
                 PathfindingNodeMaster selectedNode = GraphNodes.First(o => o.UIndex == export.UIndex);
                 CurrentNodeSequenceReferences.ReplaceAll(selectedNode.SequenceReferences);
@@ -3118,7 +3119,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         default:
                             if (selectedNode.export.ClassName.EndsWith("Component"))
                             {
-                                CollectionActor_Tab.Visibility = Visibility.Visible;
+                                CollectionActor_Tab.IsEnabled = true;
                                 CollectionActorEditorTab_CollectionActorEditor.LoadExport(selectedNode.export);
                             }
                             break;
@@ -4184,6 +4185,112 @@ namespace ME3Explorer.Pathfinding_Editor
                         locationprop.Properties.AddOrReplaceProp(new FloatProperty(newz, "Z"));
                         actor.WriteProperty(locationprop);
                     }
+                }
+            }
+            MessageBox.Show("Done");
+        }
+
+        private void CommitLevelRotation()
+        {
+            var rotateyawdegrees = (float)lvlRotationYaw.Value;
+            var rotateyaw = Math.PI * (rotateyawdegrees / 180); //Convert to radians
+            double sinCalc = Math.Sin(rotateyaw);
+            double cosCalc = Math.Cos(rotateyaw);
+
+            if (lvlRotationYaw.Value == 0)
+            {
+                return;
+            }
+
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire level?\n" +
+                $"\nHorizontal Yaw: {rotateyawdegrees.ToString()} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            if (chkdlg == MessageBoxResult.Cancel)
+                return;
+            var actorlist = new List<int>();
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
+            }
+            foreach (var actoridx in actorlist)
+            {
+                var actor = Pcc.GetUExport(actoridx);
+                if (actor == null || actor.ClassName == "BioWorldInfo")
+                    continue;
+
+                if (actor.ClassName.Contains("CollectionActor"))
+                {
+                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
+                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+                    {
+
+                        for (int index = 0; index < components.Count; index++)
+                        {
+
+                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                            var calcX = (double)posX * cosCalc - (double)posY * sinCalc;
+                            var calcY = (double)posX * sinCalc + (double)posY * cosCalc;
+
+                            var newYaw = uuYaw + ((float)rotateyawdegrees).ToUnrealRotationUnits();
+
+                            SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3((float)calcX, (float)calcY, posZ),
+                                      new Rotator(uuPitch, newYaw, uuRoll),
+                                      new SharpDX.Vector3(scaleX, scaleY, scaleZ));
+                            sca.LocalToWorldTransforms[index] = newm;
+                        }
+                        actor.SetBinaryData(sca);
+                    }
+
+                }
+                else
+                {
+                    float oldx = 0;
+                    float oldy = 0;
+                    float oldz = 0;
+
+                    float oldYaw = 0;
+                    float oldPitch = 0;
+                    float oldRoll = 0;
+
+                    //Get existing props
+                    StructProperty locationprop = actor.GetProperty<StructProperty>("location");
+                    if (locationprop == null)
+                    {
+                        locationprop = new StructProperty("location", true);
+                    }
+
+                    oldx = locationprop.GetProp<FloatProperty>("X").Value;
+                    oldy = locationprop.GetProp<FloatProperty>("Y").Value;
+                    oldz = locationprop.GetProp<FloatProperty>("Z").Value;
+
+                    StructProperty rotationprop = actor.GetProperty<StructProperty>("Rotation");
+                    if (rotationprop == null)
+                    {
+                        rotationprop = CommonStructs.RotatorProp(new Rotator(0, 0, 0));
+                    }
+
+                    (oldPitch, oldYaw, oldRoll) = CommonStructs.GetRotator(rotationprop);
+
+                    //Get new rotation x' = x cos θ − y sin θ
+                    //y' = x sin θ + y cos θ
+
+                    var calcX = (double)oldx * cosCalc - (double)oldy * sinCalc;
+                    var calcY = (double)oldx * sinCalc + (double)oldy * cosCalc;
+
+                    //Write props
+                    var newx = (float)calcX;
+                    var newy = (float)calcY;
+                    var newYaw = (Int32)oldYaw + ((float)rotateyawdegrees).ToUnrealRotationUnits();
+
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
+                    locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldz, "Z")); //as purely 2d rotation
+                    actor.WriteProperty(locationprop);
+
+                    var newRot = new Rotator((Int32)oldPitch, newYaw, (Int32)oldRoll);
+                    rotationprop = CommonStructs.RotatorProp(newRot, "Rotation");
+                    actor.WriteProperty(rotationprop);
                 }
             }
             MessageBox.Show("Done");
