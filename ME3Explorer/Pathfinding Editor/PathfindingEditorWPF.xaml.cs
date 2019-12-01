@@ -1890,7 +1890,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void SetGraphXY_Clicked(object sender, RoutedEventArgs e)
         {
             //Find node
-            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export && export.IsA("Actor"))
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry export && (export.IsA("Actor") || export.ClassName.Contains("Component")))
             {
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var currentlocation = SharedPathfinding.GetLocation(export) ?? new Point3D(0, 0, 0);
@@ -1902,7 +1902,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 MessageBox.Show("No location property on this export.");
 
             }
-            //Need to update
         }
         private void CoordinateEditor_GotFocus(object sender, RoutedEventArgs e)
         {
