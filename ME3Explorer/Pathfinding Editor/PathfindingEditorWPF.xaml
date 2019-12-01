@@ -309,8 +309,8 @@
                                             <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchBlueTo}" DockPanel.Dock="Right"/>
                                         </DockPanel>
                                         <DockPanel ToolTip="Adjust the brightness of all lights. Use a percentage difference to existing brightness">
-                                            <TextBlock Text="Adjust lighting brightness (%+/-)"/>
-                                            <!--<xctk:DecimalUpDown Value="{Binding BrightnessAdjustment}" Minimum="-100" Maximum="100"/>-->
+                                            <TextBlock Text="Adjust lighting brightness (% +/-)"/>
+                                            <xctk:IntegerUpDown Value="{Binding BrightnessAdjustment}" Minimum="-100" Maximum="100"/>
                                         </DockPanel>
                                         <Button Content="Execute Lighting Changes" Command="{Binding EditLevelLightingCommand}" Margin="5"/>
                                     </StackPanel>

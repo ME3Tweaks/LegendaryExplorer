@@ -4027,12 +4027,19 @@ namespace ME3Explorer.Pathfinding_Editor
         public LightChannel SwitchBlueTo { get => _switchBlueTo; set => SetProperty(ref _switchBlueTo, value); }
         private bool _switchIgnoreBlue;
         public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
-
+        private int _brightnessAdjustment;
+        public int BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
         private void EditLevelLighting()
         {
-            var dlg = MessageBox.Show("Warning: Please confirm you wish to change the lighting for all the lights in the level.\nMake sure you have backups.", "Experimental Tools", MessageBoxButton.OKCancel);
+            var dlg = MessageBox.Show("Warning: Please confirm you wish to change the lighting across everything in the level.\n" +
+                "Note that you will need to manually remake all texture lightmaps.\n" +
+                "Make sure you have backups.", "Experimental Tools", MessageBoxButton.OKCancel);
             if (dlg == MessageBoxResult.Cancel)
                 return;
+
+            float brightscalar = ((float)BrightnessAdjustment / 100);
+
+            //Set all lights
             List<string> LightComponentClasses = new List<string>() { "PointLightComponent", "SpotLightComponent", "SkyLightComponent", "DirectionalLightComponent" };
             int n = 0;
             List<ExportEntry> AllLightComponents = Pcc.Exports.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
@@ -4064,14 +4071,122 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
 
-                if ((SwitchIgnoreRed && oldred > oldgreen && oldred > oldblue) ||
-                    (SwitchIgnoreGreen && oldgreen > oldred && oldgreen > oldblue) ||
-                    (SwitchIgnoreBlue && oldblue < oldred && oldblue < oldgreen))
-                {
-                    continue;
-                }
+                var newColor = AdjustColors(new SharpDX.Color(oldred, oldgreen, oldblue));
+                newred = newColor.R;
+                newgreen = newColor.G;
+                newblue = newColor.B;
 
-                switch (SwitchRedTo)
+                if (!(oldblue == newblue && oldgreen == newgreen && oldred == newred))
+                {
+                    n++;
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newblue.ToString()), "B"));
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newgreen.ToString()), "G"));
+                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newred.ToString()), "R"));
+                    exp.WriteProperty(colorprop);
+                }
+                //Adjust light brightness
+                FloatProperty brightness = exp.GetProperty<FloatProperty>("Brightness");
+                if(brightness == null)
+                {
+                    brightness = new FloatProperty(1, "Brightness");
+                }
+                float newbrightness = brightness.Value * (1 + brightscalar);
+                if(newbrightness != 1)
+                {
+                    exp.WriteProperty(new FloatProperty(newbrightness, "Brightness"));
+                }
+            }
+
+            MessageBox.Show($"{n} LightComponents adjusted.\n\nReclalculating static lightmaps.");
+
+            List<ExportEntry> AllStaticMeshComponents = Pcc.Exports.Where(x => x.ClassName == "StaticMeshComponent").ToList();
+            HashSet<int> TextureMaps = new HashSet<int>();
+            foreach(var comp in AllStaticMeshComponents)
+            {
+                var binary = ExportBinaryConverter.ConvertPostPropBinary(comp, Pcc.Game);
+                if(binary is StaticMeshComponent sc)
+                {
+                    foreach(var lod in sc.LODData)
+                    {
+                        if (lod.LightMap.LightMapType == ELightMapType.LMT_2D && lod.LightMap is LightMap_2D lm2)
+                        {
+                            TextureMaps.Add(lm2.Texture1);
+                            TextureMaps.Add(lm2.Texture2);
+                            TextureMaps.Add(lm2.Texture3);
+                            TextureMaps.Add(lm2.Texture4);
+                        }
+                        else if (lod.LightMap.LightMapType == ELightMapType.LMT_1D && lod.LightMap is LightMap_1D lm1)
+                        {
+                            foreach(var qds in lm1.DirectionalSamples)
+                            {
+                                if(qds.Coefficient1 != null)
+                                {
+                                    qds.Coefficient1 = AdjustColors(qds.Coefficient1, brightscalar);
+                                }
+                                if (qds.Coefficient2 != null)
+                                {
+                                    qds.Coefficient2 = AdjustColors(qds.Coefficient2, brightscalar);
+                                }
+                                if (qds.Coefficient3 != null)
+                                {
+                                    qds.Coefficient3 = AdjustColors(qds.Coefficient3, brightscalar);
+                                }
+                            }
+                        }
+                        else if (lod.LightMap.LightMapType == ELightMapType.LMT_3 && lod.LightMap is LightMap_3 lm3)
+                        {
+                            foreach (var qds in lm3.DirectionalSamples)
+                            {
+                                if (qds.Coefficient1 != null)
+                                {
+                                    qds.Coefficient1 = AdjustColors(qds.Coefficient1, brightscalar);
+                                }
+                                if (qds.Coefficient2 != null)
+                                {
+                                    qds.Coefficient2 = AdjustColors(qds.Coefficient2, brightscalar);
+                                }
+                                if (qds.Coefficient3 != null)
+                                {
+                                    qds.Coefficient3 = AdjustColors(qds.Coefficient3, brightscalar);
+                                }
+                            }
+                        }
+                    }
+                    comp.SetBinaryData(sc);
+                }
+            }
+
+            MessageBox.Show($"{AllStaticMeshComponents.Count} StaticMeshComponents adjusted.");
+
+            if (!TextureMaps.IsEmpty())
+            {
+                List<string> mapdata = new List<string>();
+                foreach(var e in TextureMaps.Where(e => e != 0))
+                {
+                    Pcc.TryGetEntry(e, out IEntry xp);
+                    string tm = $"#{e} : {xp?.ObjectName.Instanced}";
+                    mapdata.Add(tm);
+                }
+                var tdlg = new ListDialog(mapdata, "Manual changes required", "The following referenced texture maps need to be manually adjusted for lighting changes", this);
+                tdlg.Show();
+            }
+        }
+
+        private SharpDX.Color AdjustColors(SharpDX.Color oldcolor, float brightnesscorrectionfactor = 0)
+        {
+            float oldred = oldcolor.R;
+            float oldgreen = oldcolor.G;
+            float oldblue = oldcolor.B;
+            float oldalpha = oldcolor.A;
+            float newred = oldred;
+            float newgreen = oldgreen;
+            float newblue = oldblue;
+
+            if (!((SwitchIgnoreRed && oldred > oldgreen && oldred > oldblue) ||  //Do switch if not in favour
+                    (SwitchIgnoreGreen && oldgreen > oldred && oldgreen > oldblue) ||
+                    (SwitchIgnoreBlue && oldblue < oldred && oldblue < oldgreen)))
+            {
+                switch (SwitchRedTo)  
                 {
                     case LightChannel.Red:
                         break;
@@ -4104,17 +4219,25 @@ namespace ME3Explorer.Pathfinding_Editor
                         newgreen = oldblue;
                         break;
                 }
-                if (!(oldblue == newblue && oldgreen == newgreen && oldred == newred))
-                {
-                    n++;
-                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newblue.ToString()), "B"));
-                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newgreen.ToString()), "G"));
-                    colorprop.Properties.AddOrReplaceProp(new ByteProperty(byte.Parse(newred.ToString()), "R"));
-                    exp.WriteProperty(colorprop);
-                }
             }
 
-            MessageBox.Show($"{n} LightComponents adjusted.");
+            if (brightnesscorrectionfactor < 0)
+            {
+                brightnesscorrectionfactor = 1 + brightnesscorrectionfactor;
+                newred *= brightnesscorrectionfactor;
+                newgreen *= brightnesscorrectionfactor;
+                newblue *= brightnesscorrectionfactor;
+            }
+            else
+            {
+                newred = (255 - newred) * brightnesscorrectionfactor + newred;
+                newgreen = (255 - newgreen) * brightnesscorrectionfactor + newgreen;
+                newblue = (255 - newblue) * brightnesscorrectionfactor + newblue;
+            }
+            
+            var vector = new SharpDX.Vector4(newred/255, newgreen/255, newblue/255, oldalpha/255);
+            var newColor = new SharpDX.Color(vector);
+            return newColor;
         }
 
         private void CommitLevelShifts()
@@ -4293,6 +4416,29 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
             }
             MessageBox.Show("Done");
+        }
+
+        private void RecookPersistantLevel()
+        {
+            //Find all level references
+            var actorlist = new List<int>();
+            Level level = null;
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                level = ObjectBinary.From<Level>(levelExport);
+                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
+            }
+
+            //level.TextureToInstancesMap;
+            //level.CachedPhysBSPData;
+            //level.CachedPhysBSPDataVersion;
+            //etc.
+            //Find all actor references
+            
+            //LightMap_1D lightMap_1D
+
+
+            //Remove any not needed ones
         }
         #endregion
     }
