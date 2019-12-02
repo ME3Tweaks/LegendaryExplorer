@@ -39,7 +39,7 @@ namespace ME3Explorer
                     entry.FileRef.AddExport(export);
                     if (objectMap != null)
                     {
-                        objectMap[export] = export;
+                        objectMap[entry] = export;
                     }
                     break;
                 case ImportEntry import:
