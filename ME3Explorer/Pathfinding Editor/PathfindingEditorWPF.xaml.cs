@@ -3461,6 +3461,36 @@ namespace ME3Explorer.Pathfinding_Editor
                     newNodeEntry.RemoveProperty("Connections");
                     newNodeEntry.RemoveProperty("LinksFrom");
                 }
+                else if(nodeEntry.ClassName.Contains("Component"))
+                {
+
+                    var parent = nodeEntry.Parent as ExportEntry;
+                    StaticCollectionActor sca;
+                    if (parent.IsA("StaticMeshCollectionActor"))
+                    {
+                        sca = parent.GetBinaryData<StaticMeshCollectionActor>();
+                    }
+                    else
+                    {
+                        sca = parent.GetBinaryData<StaticLightCollectionActor>();
+                    }
+
+                    var components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                    if (components.Count >= 100)
+                    {
+                        MessageBox.Show("Collection is full. Aborting.", "Clone Node");
+                        return null;
+                    }
+                    AllowRefresh = false;
+                    newNodeEntry = EntryCloner.CloneTree(nodeEntry);
+                    int i = components.IndexOf(new ObjectProperty(nodeEntry));
+                    components.Add(new ObjectProperty(newNodeEntry));
+                    var clonedloc = sca.LocalToWorldTransforms[i];
+                    sca.LocalToWorldTransforms.Add(new SharpDX.Matrix(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
+                    parent.WriteProperty(components);
+                    parent.SetBinaryData(sca);
+                    AllowRefresh = true;
+                }
                 else
                 {
                     newNodeEntry = EntryCloner.CloneTree(nodeEntry);
@@ -4029,9 +4059,42 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
         private int _brightnessAdjustment;
         public int BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
+
+        public ObservableCollectionExtended<int> ActorGroup { get; } = new ObservableCollectionExtended<int>();
+
+        private void CreateActorGroup()
+        {
+            //Not yet implemented
+        }
+        private void SaveActorGroup()
+        {
+
+        }
+        private void LoadActorGroup()
+        {
+
+        }
+        private void AddAllActorsToGroup()
+        {
+            var actorlist = new List<int>();
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            {
+                Level level = ObjectBinary.From<Level>(levelExport);
+                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
+                ActorGroup.AddRange(actorlist);
+            }
+        }
         private void EditLevelLighting()
         {
-            var dlg = MessageBox.Show("Warning: Please confirm you wish to change the lighting across everything in the level.\n" +
+            if(ActorGroup.IsEmpty())
+            {
+                var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
+                if (agdlg == MessageBoxResult.Cancel)
+                    return;
+                AddAllActorsToGroup();
+            }
+
+            var dlg = MessageBox.Show("Warning: Please confirm you wish to change the lighting across everything in the actor group.\n" +
                 "Note that you will need to manually remake all texture lightmaps.\n" +
                 "Make sure you have backups.", "Experimental Tools", MessageBoxButton.OKCancel);
             if (dlg == MessageBoxResult.Cancel)
@@ -4042,7 +4105,18 @@ namespace ME3Explorer.Pathfinding_Editor
             //Set all lights
             List<string> LightComponentClasses = new List<string>() { "PointLightComponent", "SpotLightComponent", "SkyLightComponent", "DirectionalLightComponent" };
             int n = 0;
-            List<ExportEntry> AllLightComponents = Pcc.Exports.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
+
+            List<ExportEntry> AllComponents = new List<ExportEntry>();
+            foreach(var uidx in ActorGroup)
+            {
+                var actor = Pcc.GetUExport(uidx);
+                if(actor.ClassName.Contains("CollectionActor"))
+                {
+                    AllComponents.AddRange(SharedPathfinding.GetCollectionItems(actor));
+                }
+            }
+
+            List<ExportEntry> AllLightComponents = AllComponents.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
             foreach(var exp in AllLightComponents)
             {
                 float oldred = 0;
@@ -4099,7 +4173,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             MessageBox.Show($"{n} LightComponents adjusted.\n\nReclalculating static lightmaps.");
 
-            List<ExportEntry> AllStaticMeshComponents = Pcc.Exports.Where(x => x.ClassName == "StaticMeshComponent").ToList();
+            List<ExportEntry> AllStaticMeshComponents = AllComponents.Where(x => x.ClassName == "StaticMeshComponent").ToList();
             HashSet<int> TextureMaps = new HashSet<int>();
             foreach(var comp in AllStaticMeshComponents)
             {
@@ -4251,17 +4325,20 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
 
+            if (ActorGroup.IsEmpty())
+            {
+                var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
+                if (agdlg == MessageBoxResult.Cancel)
+                    return;
+                AddAllActorsToGroup();
+            }
+
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to shift every actor in the level?\n" +
                 $"\nX: {shiftx.ToString("+0;-0;0")}\nY: {shifty}\nZ: {shiftz}\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if(chkdlg == MessageBoxResult.Cancel)
                 return;
-            var actorlist = new List<int>();
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
-            {
-                Level level = ObjectBinary.From<Level>(levelExport);
-                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
-            }
-            foreach (var actoridx in actorlist)
+
+            foreach (var actoridx in ActorGroup)
             {
                 var actor = Pcc.GetUExport(actoridx);
                 if (actor == null)
@@ -4324,17 +4401,19 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
 
-            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire level?\n" +
+            if (ActorGroup.IsEmpty())
+            {
+                var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
+                if (agdlg == MessageBoxResult.Cancel)
+                    return;
+                AddAllActorsToGroup();
+            }
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to rotate the entire actor group?\n" +
                 $"\nHorizontal Yaw: {rotateyawdegrees.ToString()} degrees\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
-            var actorlist = new List<int>();
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
-            {
-                Level level = ObjectBinary.From<Level>(levelExport);
-                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
-            }
-            foreach (var actoridx in actorlist)
+
+            foreach (var actoridx in ActorGroup)
             {
                 var actor = Pcc.GetUExport(actoridx);
                 if (actor == null || actor.ClassName == "BioWorldInfo")
