@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Unreal;
+﻿using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ME3Explorer.Packages
 {
@@ -282,6 +281,200 @@ namespace ME3Explorer.Packages
                 }
             }
         }
+
+        public static HashSet<int> GetUnReferencedEntries(this IMEPackage pcc, bool getreferenced = false)
+        {
+            var result = new HashSet<int>();
+            Level level = null;
+            Stack<IEntry> entriesToEvaluate = new Stack<IEntry>();
+            HashSet<IEntry> entriesEvaluated = new HashSet<IEntry>();
+            HashSet<IEntry> entriesReferenced = new HashSet<IEntry>();
+            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport) //Evaluate level with only actors, model+components, sequences and level class being processed.
+            {
+                level = ObjectBinary.From<Level>(levelExport);
+                entriesEvaluated.Add(null); //null stops future evaluations
+                entriesEvaluated.Add(levelExport);  
+                entriesReferenced.Add(levelExport);
+                var levelclass = levelExport.Class;
+                entriesToEvaluate.Push(levelclass);
+                entriesReferenced.Add(levelclass);
+                foreach (int actoridx in level.Actors)
+                {
+                    var actor = pcc.GetEntry(actoridx);
+                    entriesToEvaluate.Push(actor);
+                    entriesReferenced.Add(actor);
+                }
+                var model = pcc.GetEntry(level.Model?.value ?? 0);
+                entriesToEvaluate.Push(model);
+                entriesReferenced.Add(model);
+                foreach (var comp in level.ModelComponents)
+                {
+                    var compxp = pcc.GetEntry(comp);
+                    entriesToEvaluate.Push(compxp);
+                    entriesReferenced.Add(compxp);
+                }
+                foreach (var seq in level.GameSequences)
+                {
+                    var seqxp = pcc.GetEntry(seq);
+                    entriesToEvaluate.Push(seqxp);
+                    entriesReferenced.Add(seqxp);
+                }
+                var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectName == Path.GetFileNameWithoutExtension(pcc.FilePath));  // Make sure world, localpackage are all marked as referenced.
+                entriesToEvaluate.Push(localpackage);
+                entriesReferenced.Add(localpackage);
+                var world = levelExport.Parent; 
+                entriesToEvaluate.Push(world);
+                entriesReferenced.Add(world);
+            }
+            else
+            {
+                return result;  //If this has no level it is a reference / seekfree package and shouldn't be compacted.
+            }
+ 
+            var theserefs = new HashSet<IEntry>();
+            while (!entriesToEvaluate.IsEmpty())
+            {
+                var ent = entriesToEvaluate.Pop();
+                try
+                {
+                    if (entriesEvaluated.Contains(ent) || (ent?.UIndex ?? 0) == 0)
+                    {
+                        continue;
+                    }
+                    entriesEvaluated.Add(ent);
+                    if (ent.idxLink != 0)
+                    {
+                        theserefs.Add(pcc.GetEntry(ent.idxLink));
+                    }
+                    if (ent.UIndex < 0)
+                    {
+                        continue;
+                    }
+                    var exp = pcc.GetUExport(ent.UIndex);
+
+                    //find header references
+                    if ((exp.Archetype?.UIndex ?? 0) != 0)
+                    {
+                        theserefs.Add(exp.Archetype);
+                    }
+
+                    if ((exp.Class?.UIndex ?? 0) != 0)
+                    {
+                        theserefs.Add(exp.Class);
+                    }
+                    if ((exp.SuperClass?.UIndex ?? 0) != 0)
+                    {
+                        theserefs.Add(exp.SuperClass);
+                    }
+                    if (exp.HasComponentMap)
+                    {
+                        foreach (var kvp in exp.ComponentMap)
+                        {
+                            theserefs.Add(pcc.GetEntry(kvp.Value));
+                        }
+                    }
+
+                    //find property references
+                    findPropertyReferences(exp.GetProperties(), exp);
+
+                    //find binary references
+                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    {
+                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach ((UIndex uIndex, string propName) in indices)
+                        {
+                            if (uIndex != exp.UIndex)
+                            {
+                                theserefs.Add(pcc.GetEntry(uIndex));
+                            }
+                        }
+                    }
+
+                    foreach (var reference in theserefs)
+                    {
+                        if (!entriesEvaluated.Contains(reference))
+                        {
+                            entriesToEvaluate.Push(reference);
+                            entriesReferenced.Add(reference);
+                        }
+                    }
+                    theserefs.Clear();
+                }
+                catch (Exception e) 
+                {
+                    Console.WriteLine($"Error getting references {ent.UIndex} {ent.ObjectName.Instanced}");
+                }
+            }
+            if(getreferenced)
+            {
+                foreach (var entry in entriesReferenced)
+                {
+                    result.Add(entry?.UIndex ?? 0);
+                }
+            }
+            else
+            {
+                foreach(var xp in pcc.Exports)
+                {
+                    if(!entriesReferenced.Contains(xp))
+                    {
+                        result.Add(xp?.UIndex ?? 0);
+                    }
+                }
+                foreach (var im in pcc.Imports)
+                {
+                    if (!entriesReferenced.Contains(im))
+                    {
+                        result.Add(im?.UIndex ?? 0);
+                    }
+                }
+            }
+
+            return result;
+
+            void findPropertyReferences(PropertyCollection props, ExportEntry exp)
+            {
+
+                foreach (UProperty prop in props)
+                {
+                    switch (prop)
+                    {
+                        case ObjectProperty objectProperty:
+                            if (objectProperty.Value != 0 && objectProperty.Value != exp.UIndex)
+                            {
+                                theserefs.Add(pcc.GetEntry(objectProperty.Value));
+                            }
+                            break;
+                        case DelegateProperty delegateProperty:
+                            if (delegateProperty.Value.Object != 0 && delegateProperty.Value.Object != exp.UIndex)
+                            {
+                                theserefs.Add(pcc.GetEntry(delegateProperty.Value.Object));
+                            }
+                            break;
+                        case StructProperty structProperty:
+                            findPropertyReferences(structProperty.Properties, exp);
+                            break;
+                        case ArrayProperty<ObjectProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                ObjectProperty objProp = arrayProperty[i];
+                                if (objProp.Value != 0 && objProp.Value != exp.UIndex)
+                                {
+                                    theserefs.Add(pcc.GetEntry(objProp.Value));
+                                }
+                            }
+                            break;
+                        case ArrayProperty<StructProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                StructProperty structProp = arrayProperty[i];
+                                findPropertyReferences(structProp.Properties, exp);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
     }
     public static class ExportEntryExtensions
     {
@@ -506,6 +699,8 @@ namespace ME3Explorer.Packages
                 }
             }
         }
+
+       
 
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {

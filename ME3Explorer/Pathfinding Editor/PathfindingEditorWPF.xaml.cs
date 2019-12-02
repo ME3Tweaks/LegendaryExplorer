@@ -277,6 +277,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand EditLevelLightingCommand { get; set; }
         public ICommand CommitLevelShiftsCommand { get; set; }
         public ICommand CommitLevelRotationCommand { get; set; }
+        public ICommand RecookLevelCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -320,6 +321,7 @@ namespace ME3Explorer.Pathfinding_Editor
             EditLevelLightingCommand = new GenericCommand(EditLevelLighting, PackageIsLoaded);
             CommitLevelShiftsCommand = new GenericCommand(CommitLevelShifts, PackageIsLoaded);
             CommitLevelRotationCommand = new GenericCommand(CommitLevelRotation, PackageIsLoaded);
+            RecookLevelCommand = new GenericCommand(RecookPersistantLevel, PackageIsLoaded);
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -4551,25 +4553,136 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void RecookPersistantLevel()
         {
-            //Find all level references
-            var actorlist = new List<int>();
-            Level level = null;
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
+                         $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +
+                         $"This is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            if (chkdlg == MessageBoxResult.Cancel)
+                return;
+
+            //Find all level reference
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
-                level = ObjectBinary.From<Level>(levelExport);
-                actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
+                Level level = ObjectBinary.From<Level>(levelExport);
+                HashSet<int> norefsList = Pcc.GetUnReferencedEntries();
+
+                //Get all items in the persistent level not actors
+                var references = new List<int>();
+                foreach (var t in level.TextureToInstancesMap)
+                {
+                    references.Add(t.Key);
+                }
+                foreach (var txtref in references)
+                {
+                    if (norefsList.Contains(txtref))
+                    {
+                        level.TextureToInstancesMap.Remove(txtref);
+                    }
+                }
+                references.Clear();
+                foreach (var r in level.CachedPhysSMDataMap)  //Need to delete unused store
+                {
+                    references.Add(r.Key);
+                }
+                for (int p = 0; p < references.Count; p++)
+                {
+                    if (norefsList.Contains(references[p]))
+                    {
+                        level.CachedPhysSMDataMap.Remove(references[p]);
+                    }
+                }
+                references.Clear();
+                foreach (var s in level.CachedPhysPerTriSMDataMap)   //Need to delete unused store
+                {
+                    references.Add(s.Key);
+                }
+                for (int p = 0; p < references.Count; p++)
+                {
+                    if (norefsList.Contains(references[p]))
+                    {
+                        level.CachedPhysPerTriSMDataMap.Remove(references[p]);
+                    }
+                }
+
+                //Clean up NAV data - how to clean up Nav table
+                if (norefsList.Contains(level.NavListStart ?? 0))
+                {
+                    level.NavListStart = 0;
+                }
+                if (norefsList.Contains(level.NavListEnd ?? 0))
+                {
+                    level.NavListEnd = 0;
+                }
+                foreach (var navref in level.NavPoints)
+                {
+                    if (norefsList.Contains(navref?.value ?? 0))
+                    {
+                        //var n = level.NavPoints.IndexOf(navref);
+                        level.NavPoints.Remove(p => p == navref);
+                        //level.numbers.Remove(n);
+                    }
+                }
+
+                //Clean up Coverlink Lists => pare down guid2byte? table
+                if (norefsList.Contains(level.CoverListStart ?? 0))
+                {
+                    level.CoverListStart = 0;
+                }
+                if (norefsList.Contains(level.CoverListEnd ?? 0))
+                {
+                    level.CoverListEnd = 0;
+                }
+                foreach (var link in level.CoverLinks)
+                {
+                    if (norefsList.Contains(link?.value ?? 0))
+                    {
+                        level.CoverLinks.Remove(p => p == link);
+                    }
+                }
+
+                //Clean up Pylon List
+                if (norefsList.Contains(level.PylonListStart ?? 0))
+                {
+                    level.PylonListStart = 0;
+                }
+                if (norefsList.Contains(level.PylonListEnd ?? 0))
+                {
+                    level.PylonListEnd = 0;
+                }
+
+                //Cross Level Actors
+                foreach (var cla in level.CrossLevelActors)
+                {
+                    if (norefsList.Contains(cla?.value ?? 0))
+                    {
+                        level.CoverLinks.Remove(p => p == cla);
+                    }
+                }
+                levelExport.SetBinaryData(level);
+
+                var tdlg = MessageBox.Show("The recooker will now trash any entries that are not being used.\n\nThis is experimental. Keep backups.", "WARNING", MessageBoxButton.OKCancel);
+                if (tdlg == MessageBoxResult.Cancel)
+                    return;
+
+                List<IEntry> itemsToTrash = new List<IEntry>();
+                foreach(var export in Pcc.Exports)
+                {
+                    if(norefsList.Contains(export.UIndex))
+                    {
+                        itemsToTrash.Add(export);
+                    }
+                }
+                foreach (var import in Pcc.Imports)
+                {
+                    if (norefsList.Contains(import.UIndex))
+                    {
+                        itemsToTrash.Add(import);
+                    }
+                }
+
+                EntryPruner.TrashEntries(Pcc, itemsToTrash);
             }
 
-            //level.TextureToInstancesMap;
-            //level.CachedPhysBSPData;
-            //level.CachedPhysBSPDataVersion;
-            //etc.
-            //Find all actor references
-            
-            //LightMap_1D lightMap_1D
-
-
-            //Remove any not needed ones
+            MessageBox.Show("Trash Compactor Done");
         }
         #endregion
     }
