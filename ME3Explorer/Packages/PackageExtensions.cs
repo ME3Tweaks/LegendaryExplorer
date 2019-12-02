@@ -319,7 +319,7 @@ namespace ME3Explorer.Packages
                     entriesToEvaluate.Push(seqxp);
                     entriesReferenced.Add(seqxp);
                 }
-                var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectName == Path.GetFileNameWithoutExtension(pcc.FilePath));  // Make sure world, localpackage are all marked as referenced.
+                var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectName.ToString().ToLower() == Path.GetFileNameWithoutExtension(pcc.FilePath).ToLower());  // Make sure world, localpackage are all marked as referenced.
                 entriesToEvaluate.Push(localpackage);
                 entriesReferenced.Add(localpackage);
                 var world = levelExport.Parent; 
