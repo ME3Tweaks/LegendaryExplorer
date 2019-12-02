@@ -3476,16 +3476,68 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
 
                     var components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                    int i = components.IndexOf(new ObjectProperty(nodeEntry));
+                    var clonedloc = sca.LocalToWorldTransforms[i];
+                    
                     if (components.Count >= 100)
                     {
-                        MessageBox.Show("Collection is full. Aborting.", "Clone Node");
-                        return null;
+                        MessageBox.Show("Collection is full. Finding alternative.", "Clone Node");
+                        var collectionactors = new List<ExportEntry>();
+                        if (parent.IsA("StaticMeshCollectionActor"))
+                        {
+                            collectionactors.AddRange(Pcc.Exports.Where(x => x.ClassName == "StaticMeshCollectionActor").ToList()) ;
+                        }
+                        else
+                        {
+                            collectionactors.AddRange(Pcc.Exports.Where(x => x.ClassName == "StaticLightCollectionActor").ToList());
+                        }
+                        bool foundnewca = false;
+                        foreach (var ca in collectionactors)
+                        {
+                            components = ca.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                            if(components.Count < 100)
+                            {
+                                parent = ca;
+                                foundnewca = true;
+                                break;
+                            }
+                        }
+                        if(foundnewca)
+                        {
+                            MessageBox.Show($"Adding cloned component to {parent.UIndex} {parent.ObjectName.Instanced}.", "Clone Node");
+                            if (parent.IsA("StaticMeshCollectionActor"))
+                            {
+                                sca = parent.GetBinaryData<StaticMeshCollectionActor>();
+                            }
+                            else
+                            {
+                                sca = parent.GetBinaryData<StaticLightCollectionActor>();
+                            }
+                        }
+                        else
+                        {
+                            var npdlg = MessageBox.Show("No alternative collections found. Creating new one.", "Clone Node", MessageBoxButton.OKCancel);
+                            if (npdlg == MessageBoxResult.Cancel)
+                                return null;
+                            parent = nodeEntry.Parent.Clone() as ExportEntry;
+                            components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                            components.Clear();
+                            if (parent.IsA("StaticMeshCollectionActor"))
+                            {
+                                sca = parent.GetBinaryData<StaticMeshCollectionActor>();
+                            }
+                            else
+                            {
+                                sca = parent.GetBinaryData<StaticLightCollectionActor>();
+                            }
+                            sca.LocalToWorldTransforms.Clear();
+                            Pcc.AddToLevelActorsIfNotThere(parent);
+                        }
                     }
                     AllowRefresh = false;
                     newNodeEntry = EntryCloner.CloneTree(nodeEntry);
-                    int i = components.IndexOf(new ObjectProperty(nodeEntry));
+                    newNodeEntry.idxLink = parent.UIndex;
                     components.Add(new ObjectProperty(newNodeEntry));
-                    var clonedloc = sca.LocalToWorldTransforms[i];
                     sca.LocalToWorldTransforms.Add(new SharpDX.Matrix(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
                     parent.WriteProperty(components);
                     parent.SetBinaryData(sca);
