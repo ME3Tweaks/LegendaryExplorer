@@ -4612,15 +4612,17 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     level.NavListEnd = 0;
                 }
-                foreach (var navref in level.NavPoints)
-                {
-                    if (norefsList.Contains(navref?.value ?? 0))
-                    {
-                        //var n = level.NavPoints.IndexOf(navref);
-                        level.NavPoints.Remove(p => p == navref);
-                        //level.numbers.Remove(n);
-                    }
-                }
+                //foreach (var navref in level.NavPoints)  //NEED TO FIX THIS
+                //{
+                //    var newNavArray = new UIndex[];
+                //    if (!norefsList.Contains(navref?.value ?? 0))
+                //    {
+                //        //var n = level.NavPoints.IndexOf(navref);
+                        
+                //        //level.numbers.Remove(n);
+                //    }
+                //    level.NavPoints;
+                //}
 
                 //Clean up Coverlink Lists => pare down guid2byte? table
                 if (norefsList.Contains(level.CoverListStart ?? 0))
@@ -4631,13 +4633,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     level.CoverListEnd = 0;
                 }
-                foreach (var link in level.CoverLinks)
-                {
-                    if (norefsList.Contains(link?.value ?? 0))
-                    {
-                        level.CoverLinks.Remove(p => p == link);
-                    }
-                }
+                //foreach (var link in level.CoverLinks)
+                //{
+                //    if (norefsList.Contains(link?.value ?? 0))
+                //    {
+                //        level.CoverLinks.Remove(p => p == link);
+                //    }
+                //}
 
                 //Clean up Pylon List
                 if (norefsList.Contains(level.PylonListStart ?? 0))
