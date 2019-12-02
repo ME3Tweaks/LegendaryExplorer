@@ -330,6 +330,8 @@ namespace ME3Explorer.Packages
                 {
                     entriesEvaluated.Add(shadercache);
                     entriesReferenced.Add(shadercache);
+                    entriesToEvaluate.Push(shadercache.Class);
+                    entriesReferenced.Add(shadercache.Class);
                 }
             }
             else
