@@ -278,6 +278,15 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand CommitLevelShiftsCommand { get; set; }
         public ICommand CommitLevelRotationCommand { get; set; }
         public ICommand RecookLevelCommand { get; set; }
+        public ICommand TrashGroupCommand { get; set; }
+        public ICommand AddAllToGroupCommand { get; set; }
+        public ICommand AddToGroupCommand { get; set; }
+        public ICommand RemoveFromGroupCommand { get; set; }
+        public ICommand RemoveFromGroupBoxCommand { get; set; }
+        public ICommand ClearGroupCommand { get; set; }
+        public ICommand LoadGroupCommand { get; set; }
+        public ICommand SaveGroupCommand { get; set; }
+
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -322,6 +331,14 @@ namespace ME3Explorer.Pathfinding_Editor
             CommitLevelShiftsCommand = new GenericCommand(CommitLevelShifts, PackageIsLoaded);
             CommitLevelRotationCommand = new GenericCommand(CommitLevelRotation, PackageIsLoaded);
             RecookLevelCommand = new GenericCommand(RecookPersistantLevel, PackageIsLoaded);
+            TrashGroupCommand = new GenericCommand(TrashActorGroup, PackageIsLoaded);
+            AddAllToGroupCommand = new GenericCommand(AddAllActorsToGroup, PackageIsLoaded);
+            ClearGroupCommand = new GenericCommand(() => ActorGroup.ClearEx(), () => !ActorGroup.IsEmpty());
+            AddToGroupCommand = new RelayCommand(AddToGroup, SelectedNodeIsNotInGroup);
+            RemoveFromGroupCommand = new RelayCommand(RemoveFromGroup, SelectedNodeIsInGroup);
+            RemoveFromGroupBoxCommand = new RelayCommand(RemoveFromGroup);
+            LoadGroupCommand = new GenericCommand(LoadActorGroup, PackageIsLoaded);
+            SaveGroupCommand = new GenericCommand(SaveActorGroup, () => !ActorGroup.IsEmpty());
         }
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
@@ -672,6 +689,8 @@ namespace ME3Explorer.Pathfinding_Editor
             ActiveNodes.ClearEx();
             CollectionActors.ClearEx();
             CombatZones.ClearEx();
+            ActorGroup.ClearEx();
+            GroupTag = "Tag";
             StatusText = $"Loading {Path.GetFileName(fileName)}";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
@@ -978,7 +997,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
                     AllObjectsList.Add(exportEntry);
 
-                    if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
+                    if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name) || (HideGroup && ActorGroup.Contains(exportEntry)) || (ShowOnlyGroup && !ActorGroup.Contains(exportEntry)))
                     {
                         start += 4;
                         itemcount++;
@@ -3000,6 +3019,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 PathfindingNodeMaster selectedNode = GraphNodes.First(o => o.UIndex == export.UIndex);
                 CurrentNodeSequenceReferences.ReplaceAll(selectedNode.SequenceReferences);
+                var currentTab = PathfindingNodeTabControl.SelectedIndex;
                 if (selectedNode is PathfindingNode)
                 {
                     ReachSpecs_TabItem.IsEnabled = true;
@@ -3052,7 +3072,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpecs_TabItem.IsEnabled = false;
                     CombatZones_TabItem.IsEnabled = false;
                     NodeType_TabItem.IsEnabled = false;
-                    PathfindingNodeTabControl.SelectedItem = ValidationPanel_Tab;
+                    PathfindingNodeTabControl.SelectedItem = Math.Max(3, currentTab);
                 }
 
                 CombatZonesLoading = false;
@@ -3612,10 +3632,18 @@ namespace ME3Explorer.Pathfinding_Editor
         private void TrashAndRemoveFromLevel()
         {
             ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
+            AllowRefresh = false;
+            TrashActor(nodeEntry);
+            AllowRefresh = true;
+            ActiveNodes_ListBox.SelectedIndex = -1; //Reset selection and will force refresh
+            MessageBox.Show("Removed item from level.");
+        }
 
+        private void TrashActor(ExportEntry nodeEntry)
+        {
             if (nodeEntry?.Parent is ExportEntry parent && (parent.IsA("StaticMeshCollectionActor") || parent.IsA("StaticLightCollectionActor")))
             {
-                AllowRefresh = false;
+
                 StaticCollectionActor sca;
                 if (parent.IsA("StaticMeshCollectionActor"))
                 {
@@ -3633,25 +3661,18 @@ namespace ME3Explorer.Pathfinding_Editor
                 parent.WriteProperty(components);
                 parent.SetBinaryData(sca);
                 EntryPruner.TrashEntryAndDescendants(nodeEntry);
-                AllowRefresh = true;
-                ActiveNodes_ListBox.SelectedIndex = -1; //Reset selection and will force refresh
             }
             else
             {
                 Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
                 if (levelBin.Actors.Contains(nodeEntry))
                 {
-                    AllowRefresh = false;
                     levelBin.Actors.Remove(nodeEntry);
                     PersistentLevelExport.SetBinaryData(levelBin);
                     EntryPruner.TrashEntryAndDescendants(nodeEntry);
-                    AllowRefresh = true;
-                    ActiveNodes_ListBox.SelectedIndex = -1;
-                    MessageBox.Show("Removed item from level.");
                 }
             }
         }
-
         #endregion
 
         #region Experiments
@@ -4113,29 +4134,173 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
         private int _brightnessAdjustment;
         public int BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
-
-        public ObservableCollectionExtended<int> ActorGroup { get; } = new ObservableCollectionExtended<int>();
-
-        private void CreateActorGroup()
+       
+        public ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new ObservableCollectionExtended<ExportEntry>();
+        private bool _showonlyGroup;
+        public bool ShowOnlyGroup 
+        { 
+            get => _showonlyGroup;
+            set
+            {
+                SetProperty(ref _showonlyGroup, value);
+                if(value && HideGroup)
+                {
+                    HideGroup = false;
+                }
+                RefreshGraph();
+            }
+        }
+        private bool _hideGroup;
+        public bool HideGroup
         {
-            //Not yet implemented
+            get => _hideGroup;
+            set
+            {
+                SetProperty(ref _hideGroup, value);
+                if (value && ShowOnlyGroup)
+                {
+                    ShowOnlyGroup = false;
+                }
+                RefreshGraph();
+            }
+        }
+        private string _groupTag = "Tag";
+        public string GroupTag { get => _groupTag; set => SetProperty(ref _groupTag, value); }
+        private void AddToGroup(object obj)
+        {
+            if(ActiveNodes_ListBox.SelectedItem is ExportEntry node)
+            {
+                ActorGroup.Add(node);
+            }
+        }
+        private void RemoveFromGroup(object obj)
+        {
+            var param = (string)obj;
+            switch(param)
+            {
+                case "grpbox":
+                    ActorGroup.RemoveRange(Group_ListBox.SelectedItems.Cast<ExportEntry>().ToList());
+                    break;
+                case "graph":
+                    if (ActiveNodes_ListBox.SelectedItem is ExportEntry node)
+                    {
+                        ActorGroup.Remove(node);
+                    }
+                    break;
+            }
+        }
+        private bool SelectedNodeIsNotInGroup(object obj)
+        {
+            return ShowArtTools && ActiveNodes_ListBox.SelectedItem is ExportEntry node && !ActorGroup.Contains(node);
+        }
+        private bool SelectedNodeIsInGroup(object obj)
+        {
+            return ShowArtTools && ActiveNodes_ListBox.SelectedItem is ExportEntry node && ActorGroup.Contains(node);
         }
         private void SaveActorGroup()
         {
+            string pccname = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            string tag = "";
+            if (GroupTag != "Tag")
+                tag = $"_{GroupTag}";
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = $"*.txt|*.txt",
+                InitialDirectory = PathfindingEditorDataFolder,
+                FileName = $"{Pcc.Game}_{pccname}{tag}_group",
+                AddExtension = true
+            };
+            if (d.ShowDialog() == true)
+            {
+                if(GroupTag == "Tag")
+                {
+                    var tagdlg = new PromptDialog("Do you want to give this group a memorable tag?", "Saving Group", $"{GroupTag}", true);
+                    tagdlg.ShowDialog();
+                    if (tagdlg.ResponseText != null)
+                        GroupTag = tagdlg.ResponseText;
+                }
+                TextWriter tw = new StreamWriter(d.FileName);
 
+                tw.WriteLine(Pcc.Game.ToString());
+                tw.WriteLine(pccname);
+                tw.WriteLine(GroupTag);
+                foreach (var actor in ActorGroup)
+                {
+                    tw.WriteLine(actor.UIndex);
+                }
+                tw.Close();
+                MessageBox.Show("Done.");
+            }
         }
         private void LoadActorGroup()
         {
+            string pccname = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            OpenFileDialog d = new OpenFileDialog {
+                Filter = $"*.txt|*.txt",
+                InitialDirectory = PathfindingEditorDataFolder,
+                FileName = $"{Pcc.Game}_{pccname}_group",
+                AddExtension = true
 
+            };
+            if (d.ShowDialog() == true)
+            {
+                TextReader tr = new StreamReader(d.FileName);
+
+                string game = tr.ReadLine();
+                string file = tr.ReadLine();
+                string grouptag = tr.ReadLine();
+                string uidx = "";
+                var xplist = new List<string>();
+                while( (uidx = tr.ReadLine()) != null)
+                {
+                    xplist.Add(uidx);
+                }
+
+                var cdlg = MessageBox.Show($"Group file read:\n\nGame: {game}\nFile: {file}\nGroupTag: {grouptag}\n\nAdd this group?", "Pathfinding Editor", MessageBoxButton.YesNo);
+                if (cdlg == MessageBoxResult.No)
+                    return;
+                ActorGroup.ClearEx();
+                GroupTag = grouptag;
+                var errorlist = new List<string>();
+                foreach(var i in xplist)
+                {
+                    if(Int32.TryParse(i, out int uid) && uid < Pcc.ExportCount && uid > 0)
+                    {
+                        var actor = Pcc.GetUExport(uid);
+                        if (actor != null && (actor.IsA("Actor") || actor.Parent.ClassName.Contains("CollectionActor")))
+                        {
+                            ActorGroup.Add(actor);
+                            continue;
+                        }
+                    }
+                    errorlist.Add(i);
+                }
+
+                if(!errorlist.IsEmpty())
+                {
+                    MessageBox.Show($"The following object indices were not found or are not actors: {string.Join(", ", errorlist)}");
+                }
+            }
         }
         private void AddAllActorsToGroup()
         {
             var actorlist = new List<int>();
+            ActorGroup.ClearEx();
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
                 actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
-                ActorGroup.AddRange(actorlist);
+                foreach(var actoridx in actorlist)
+                {
+                    var actor = Pcc.GetUExport(actoridx);
+                    if (actor.IsA("WorldInfo"))
+                        continue;
+                    ActorGroup.Add(actor);
+                    if(actor.ClassName.Contains("CollectionActor"))
+                    {
+                        ActorGroup.AddRange(SharedPathfinding.GetCollectionItems(actor));
+                    }
+                }
             }
         }
         private void EditLevelLighting()
@@ -4161,9 +4326,8 @@ namespace ME3Explorer.Pathfinding_Editor
             int n = 0;
 
             List<ExportEntry> AllComponents = new List<ExportEntry>();
-            foreach(var uidx in ActorGroup)
+            foreach(var actor in ActorGroup)
             {
-                var actor = Pcc.GetUExport(uidx);
                 if(actor.ClassName.Contains("CollectionActor"))
                 {
                     AllComponents.AddRange(SharedPathfinding.GetCollectionItems(actor));
@@ -4392,12 +4556,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if(chkdlg == MessageBoxResult.Cancel)
                 return;
 
-            foreach (var actoridx in ActorGroup)
+            foreach (var actor in ActorGroup)
             {
-                var actor = Pcc.GetUExport(actoridx);
-                if (actor == null)
-                    continue;
-
                 if(actor.ClassName.Contains("CollectionActor"))
                 {
                     
@@ -4467,9 +4627,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
 
-            foreach (var actoridx in ActorGroup)
+            foreach (var actor in ActorGroup)
             {
-                var actor = Pcc.GetUExport(actoridx);
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
 
@@ -4558,13 +4717,14 @@ namespace ME3Explorer.Pathfinding_Editor
                          $"This is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if (chkdlg == MessageBoxResult.Cancel)
                 return;
-
+            BusyText = "Finding unreferenced entries";
+            IsBusy = true;
             //Find all level reference
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
                 HashSet<int> norefsList = Pcc.GetUnReferencedEntries();
-
+                BusyText = "Recooking the Persistant Level";
                 //Get all items in the persistent level not actors
                 var references = new List<int>();
                 foreach (var t in level.TextureToInstancesMap)
@@ -4664,7 +4824,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 var tdlg = MessageBox.Show("The recooker will now trash any entries that are not being used.\n\nThis is experimental. Keep backups.", "WARNING", MessageBoxButton.OKCancel);
                 if (tdlg == MessageBoxResult.Cancel)
                     return;
-
+                BusyText = "Trashing unwanted items";
                 List<IEntry> itemsToTrash = new List<IEntry>();
                 foreach(var export in Pcc.Exports)
                 {
@@ -4673,19 +4833,69 @@ namespace ME3Explorer.Pathfinding_Editor
                         itemsToTrash.Add(export);
                     }
                 }
-                foreach (var import in Pcc.Imports)
-                {
-                    if (norefsList.Contains(import.UIndex))
-                    {
-                        itemsToTrash.Add(import);
-                    }
-                }
+                //foreach (var import in Pcc.Imports)  //Don't trash imports until UnrealScript functions can be fully parsed.
+                //{
+                //    if (norefsList.Contains(import.UIndex))
+                //    {
+                //        itemsToTrash.Add(import);
+                //    }
+                //}
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
             }
-
+            IsBusy = false;
             MessageBox.Show("Trash Compactor Done");
         }
+
+        private void TrashActorGroup()
+        {
+            if(ActorGroup.IsEmpty())
+            {
+                MessageBox.Show("No actors in the current group", "Pathfinding Editor", MessageBoxButton.OK);
+                return;
+            }
+
+            var chkdlg = MessageBox.Show($"WARNING: Do you want to trash all the actors in the group?\n" +
+             $"\nThis will remove every actor selected in the current group and trash them.\nThis will not remove assets they use - such as textures or meshes.\n\n" +
+             $"This is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
+            if (chkdlg == MessageBoxResult.Cancel)
+                return;
+            BusyText = "Trashing Actor Group and removing from level";
+            IsBusy = true;
+            AllowRefresh = false;
+            List<ExportEntry> trashcollections = new List<ExportEntry>();
+            foreach (var trashactor in ActorGroup)
+            {
+                if(trashactor.ClassName.Contains("CollectionActor"))
+                {
+                    trashcollections.Add(trashactor); //Only remove collections once components have been deleted.
+                }
+                else
+                {
+                    TrashActor(trashactor);
+                }
+            }
+
+            foreach (var trashcollection in trashcollections)
+            {
+                if (SharedPathfinding.GetCollectionItems(trashcollection).Count is int tcObjCnt && tcObjCnt > 0)
+                {
+                    var tcdlg = MessageBox.Show($"You are trashing #{trashcollection.UIndex} {trashcollection.ObjectName.Instanced} which has {tcObjCnt} components that have not been marked for trashing." +
+                        $"\n\nDo you want to trash the entire collection", "Pathfinding Editor", MessageBoxButton.YesNo);
+                    if (tcdlg == MessageBoxResult.No)
+                        continue;
+                }
+                TrashActor(trashcollection);
+            }
+
+            ActorGroup.ClearEx();
+            AllowRefresh = true;
+            ActiveNodes_ListBox.SelectedIndex = -1; //Reset selection and will force refresh
+            IsBusy = false;
+            MessageBox.Show("Trashed selected actors and removed them from level.");
+        }
         #endregion
+
+
     }
 }

@@ -39,7 +39,8 @@
             <MenuItem Header="Remove from level" Command="{Binding RemoveFromLevelCommand}" ToolTip="Removes this object from the level"/>
             <MenuItem Header="Trash and Remove from level" Command="{Binding TrashAndRemoveFromLevelCommand}" ToolTip="Removes this object from the level and Trashes it"/>
             <MenuItem Header="Generate new nav GUID" Click="RegenerateGUID_Clicked" ToolTip="Generates a new GUID for this navigation point. If there are external nodes referencing this node, they will no longer work"/>
-
+            <MenuItem Header="Add to group" Command="{Binding AddToGroupCommand}" ToolTip="Add this object to the actor group" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <MenuItem Header="Remove from group" Command="{Binding RemoveFromGroupCommand}" CommandParameter="graph" ToolTip="Removes this object from the group" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
                 <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
                 <Separator/>
@@ -249,7 +250,94 @@
                     <TabItem Name="CollectionActor_Tab" Header="Collection" IsEnabled="False">
                         <packageeditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
                     </TabItem>
-                    <!-- Level Tools-->
+                    <!-- Actor Group -->
+                    <TabItem Name="ActorGroup_Tab" Header="Groups" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Make Groups of actors for editing">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel Margin="3" DockPanel.Dock="Top">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Add All" Command="{Binding AddAllToGroupCommand}" Padding="5" Grid.Column="0" ToolTip="Add every actor in the level to this group"/>
+                                    <Button Content="Load" Command="{Binding LoadGroupCommand}" Padding="5" Grid.Column="1" ToolTip="Load a previously saved group"/>
+                                    <Button Content="Save" Command="{Binding SaveGroupCommand}" Padding="5" Grid.Column="2" ToolTip="Save this group for future reference"/>
+                                    <Button Content="Clear" Command="{Binding ClearGroupCommand}" Padding="5" Grid.Column="3" ToolTip="Clear the group"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox Content="Show only this group" FontSize="12" Margin="3,3" IsChecked="{Binding ShowOnlyGroup}" ToolTip="Show only these group members on graph"/>
+                                    <CheckBox Content="Hide this group" FontSize="12" Margin="3,3" IsChecked="{Binding HideGroup}" ToolTip="Hide these group members on graph"/>
+                                </StackPanel>
+                                <Separator/>
+                                <StackPanel Orientation="Horizontal" ToolTip="Add a memorable tag" HorizontalAlignment="Center">
+                                    <TextBlock Text="Group Tag: " FontSize="12" Margin="3,3" />
+                                    <SharedUI:EditableTextBlock FontSize="12" Margin="3,3" Text="{Binding GroupTag, Mode=TwoWay}" Foreground="DarkRed" FontWeight="SemiBold" IsEditable="True"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <ListBox Name="Group_ListBox" ItemsSource="{Binding ActorGroup}" HorizontalContentAlignment="Stretch" SelectionMode="Extended">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0">
+                                            <Grid.Style>
+                                                <Style TargetType="{x:Type Grid}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                            <Setter Property="Background" Value="Yellow"/>
+                                                            <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding UIndex}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="Selector.IsSelected" Value="True">
+                                                <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.Resources>
+                                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" Value="0">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <StackPanel VerticalAlignment="Center" Width="330">
+                                                                <StackPanel VerticalAlignment="Center" Width="220">
+
+                                                                    <TextBlock Text="No items in the group" FontSize="12" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+                                                                    <TextBlock Text="Add all actors or add via right click" FontSize="10" Foreground="Gray" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.Resources>
+                                <ListBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Remove from group" Command="{Binding RemoveFromGroupBoxCommand}" CommandParameter="grpbox"/>
+                                    </ContextMenu>
+                                </ListBox.ContextMenu>
+                            </ListBox>
+                        </DockPanel>
+                    </TabItem>
+                        <!-- Level Tools-->
                     <TabItem Name="LevelTools_Tab" Header="Level Tools" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}">
                         <DockPanel LastChildFill="True">
                             <StackPanel Margin="3" DockPanel.Dock="Top">
@@ -264,9 +352,10 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Name="LevelShiftToolsControl" Grid.Row="0">
-                                        <TextBlock Text="Level shift tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
+                                        <TextBlock Text="Group shift tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
                                         <TextBlock Text="Move every actor simultaneously" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                         <DockPanel Margin="3,5" ToolTip="Shift in X Axis">
                                             <TextBlock Text="Move on X axis by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
@@ -284,8 +373,8 @@
                                         <Separator/>
                                     </StackPanel>
                                     <StackPanel Name="LevelRotationToolsControl" Grid.Row="1">
-                                        <TextBlock Text="Level rotation tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
-                                        <TextBlock Text="Rotate the entire level around the origin (0,0,0)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
+                                        <TextBlock Text="Group rotation tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
+                                        <TextBlock Text="Rotate the entire group around the origin (0,0,0)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                         <DockPanel Margin="3,5" ToolTip="Rotation in degrees of yaw (horizontal rotation)">
                                             <TextBlock Text="Yaw level by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <xctk:IntegerUpDown x:Name="lvlRotationYaw" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
@@ -295,7 +384,7 @@
                                     </StackPanel>
                                     <StackPanel Name="LightingToolsControl" Grid.Row="2">
                                         <TextBlock Text="Lighting Tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
-                                        <TextBlock Text="Change every light in the level (static and dynamic)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
+                                        <TextBlock Text="Change every light in the group (static and dynamic)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                         <DockPanel Margin="3,5" ToolTip="Overwrite the Red channel of all lights with another channel.">
                                             <CheckBox Content="Ignore switch if light is already Red" IsChecked="{Binding SwitchIgnoreRed}" DockPanel.Dock="Bottom"/>
                                             <TextBlock Text="Switch Red Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
@@ -318,12 +407,20 @@
                                         <Button Content="Execute Lighting Changes" Command="{Binding EditLevelLightingCommand}" Margin="5"/>
                                         <Separator/>
                                     </StackPanel>
-                                        <StackPanel Name="LevelRecookTools" Grid.Row="3">
+                                    <StackPanel Name="TrashGroup" Grid.Row="3">
+                                        <TextBlock Text="Trash Group" FontWeight="Black" FontSize="13" HorizontalAlignment="Center" Margin="3"/>
+                                        <TextBlock Text="Trash all the actors in the group and remove from level" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
+                                        <Button Content="Trash Group" Command="{Binding TrashGroupCommand}" Margin="5" ToolTip="Trash the entire group (if you trash a collection actor this will trash the entire collection)"/>
+                                        <Separator/>
+                                    </StackPanel>
+                                    <StackPanel Name="LevelRecookTools" Grid.Row="4">
                                             <TextBlock Text="Trash Compactor" FontWeight="Black" FontSize="13" HorizontalAlignment="Center" Margin="3"/>
                                             <TextBlock Text="Remove all unneeded exports and references from this file." HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                             <Button Content="Recook Level" Command="{Binding RecookLevelCommand}" Margin="5" ToolTip="Run full file trash and compaction"/>
-                                        </StackPanel>
-                                    </Grid>
+                                        <Separator/>
+                                    </StackPanel>
+
+                                </Grid>
                                 </ScrollViewer>
 
                         </DockPanel>
