@@ -4551,7 +4551,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 AddAllActorsToGroup();
             }
 
-            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to shift every actor in the level?\n" +
+            var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to shift every actor in the group?\n" +
                 $"\nX: {shiftx.ToString("+0;-0;0")}\nY: {shifty}\nZ: {shiftz}\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
             if(chkdlg == MessageBoxResult.Cancel)
                 return;
@@ -4739,31 +4739,54 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
                 references.Clear();
-                foreach (var r in level.CachedPhysSMDataMap)  //Need to delete unused store
+
+                //Clean up Cached PhysSM Data && Rebuild Data Store
+                var newPhysSMmap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysSMstore = new List<KCachedConvexData>();
+                foreach (var r in level.CachedPhysSMDataMap)  
                 {
                     references.Add(r.Key);
                 }
                 for (int p = 0; p < references.Count; p++)
                 {
-                    if (norefsList.Contains(references[p]))
+                    if (!norefsList.Contains(references[p]))
                     {
-                        level.CachedPhysSMDataMap.Remove(references[p]);
+                        var map = level.CachedPhysSMDataMap[references[p]];
+                        var oldidx = map.CachedDataIndex;
+                        var kvp = level.CachedPhysSMDataStore[oldidx];
+                        map.CachedDataIndex = level.CachedPhysSMDataStore.Count;
+                        newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
+                        newPhysSMmap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(references[p], map));
                     }
                 }
+                level.CachedPhysSMDataMap = newPhysSMmap;
+                level.CachedPhysSMDataStore = newPhysSMstore;
                 references.Clear();
-                foreach (var s in level.CachedPhysPerTriSMDataMap)   //Need to delete unused store
+
+                //Clean up Cached PhysPerTri Data
+                var newPhysPerTrimap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
+                var newPhysPerTristore = new List<KCachedPerTriData>();
+                foreach (var s in level.CachedPhysPerTriSMDataMap)
                 {
                     references.Add(s.Key);
                 }
                 for (int p = 0; p < references.Count; p++)
                 {
-                    if (norefsList.Contains(references[p]))
+                    if (!norefsList.Contains(references[p]))
                     {
-                        level.CachedPhysPerTriSMDataMap.Remove(references[p]);
+                        var map = level.CachedPhysPerTriSMDataMap[references[p]];
+                        var oldidx = map.CachedDataIndex;
+                        var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
+                        map.CachedDataIndex = level.CachedPhysPerTriSMDataStore.Count;
+                        newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
+                        newPhysPerTrimap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(references[p], map));
                     }
                 }
+                level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
+                level.CachedPhysPerTriSMDataStore = newPhysPerTristore;
+                references.Clear();
 
-                //Clean up NAV data - how to clean up Nav table
+                //Clean up NAV data - how to clean up Nav ints?
                 if (norefsList.Contains(level.NavListStart ?? 0))
                 {
                     level.NavListStart = 0;
@@ -4772,17 +4795,16 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     level.NavListEnd = 0;
                 }
-                //foreach (var navref in level.NavPoints)  //NEED TO FIX THIS
-                //{
-                //    var newNavArray = new UIndex[];
-                //    if (!norefsList.Contains(navref?.value ?? 0))
-                //    {
-                //        //var n = level.NavPoints.IndexOf(navref);
-                        
-                //        //level.numbers.Remove(n);
-                //    }
-                //    level.NavPoints;
-                //}
+                var newNavArray = new List<UIndex>();
+                newNavArray.AddRange(level.NavPoints);
+                foreach (var navref in level.NavPoints) 
+                {
+                    if (!norefsList.Contains(navref?.value ?? 0))
+                    {
+                        newNavArray.Remove(navref);
+                    }
+                }
+                level.NavPoints = newNavArray;
 
                 //Clean up Coverlink Lists => pare down guid2byte? table
                 if (norefsList.Contains(level.CoverListStart ?? 0))
@@ -4793,32 +4815,44 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     level.CoverListEnd = 0;
                 }
-                //foreach (var link in level.CoverLinks)
-                //{
-                //    if (norefsList.Contains(link?.value ?? 0))
-                //    {
-                //        level.CoverLinks.Remove(p => p == link);
-                //    }
-                //}
-
-                //Clean up Pylon List
-                if (norefsList.Contains(level.PylonListStart ?? 0))
+                var newCLArray = new List<UIndex>();
+                newCLArray.AddRange(level.CoverLinks);
+                foreach (var clref in level.CoverLinks)
                 {
-                    level.PylonListStart = 0;
+                    if (!norefsList.Contains(clref?.value ?? 0))
+                    {
+                        newCLArray.Remove(clref);
+                    }
                 }
-                if (norefsList.Contains(level.PylonListEnd ?? 0))
+                level.CoverLinks = newCLArray;
+
+
+                if (Pcc.Game == MEGame.ME3)
                 {
-                    level.PylonListEnd = 0;
+                    //Clean up Pylon List
+                    if (norefsList.Contains(level.PylonListStart ?? 0))
+                    {
+                        level.PylonListStart = 0;
+                    }
+                    if (norefsList.Contains(level.PylonListEnd ?? 0))
+                    {
+                        level.PylonListEnd = 0;
+                    }
                 }
 
                 //Cross Level Actors
+                level.CoverLinks = newCLArray;
+                var newXLArray = new List<UIndex>();
+                newXLArray.AddRange(level.CrossLevelActors);
                 foreach (var cla in level.CrossLevelActors)
                 {
                     if (norefsList.Contains(cla?.value ?? 0))
                     {
-                        level.CoverLinks.Remove(p => p == cla);
+                        newXLArray.Remove(cla);
                     }
                 }
+                level.CrossLevelActors = newXLArray;
+
                 levelExport.SetBinaryData(level);
 
                 var tdlg = MessageBox.Show("The recooker will now trash any entries that are not being used.\n\nThis is experimental. Keep backups.", "WARNING", MessageBoxButton.OKCancel);

@@ -23,7 +23,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public byte[] ApexMesh;//ME3 only
         public byte[] CachedPhysBSPData; //BulkSerialized
         public OrderedMultiValueDictionary<UIndex, CachedPhysSMData> CachedPhysSMDataMap;
-        public KCachedConvexData[] CachedPhysSMDataStore;
+        public List<KCachedConvexData> CachedPhysSMDataStore;
         public OrderedMultiValueDictionary<UIndex, CachedPhysSMData> CachedPhysPerTriSMDataMap;
         public List<KCachedPerTriData> CachedPhysPerTriSMDataStore;
         public int CachedPhysBSPDataVersion;
@@ -37,13 +37,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public UIndex PylonListStart;
         public UIndex PylonListEnd;
         public OrderedMultiValueDictionary<Guid, int> guidToIntMap;
-        public UIndex[] CoverLinks;
+        public List<UIndex> CoverLinks;
         public OrderedMultiValueDictionary<int, byte> intToByteMap;
         public OrderedMultiValueDictionary<Guid, int> guidToIntMap2;
-        public UIndex[] NavPoints;
+        public List<UIndex> NavPoints;
         public int[] numbers;
         //endif
-        public UIndex[] CrossLevelActors;
+        public List<UIndex> CrossLevelActors;
         public UIndex ArtPlaceable1;//ME1
         public UIndex ArtPlaceable2;//ME1
 
@@ -114,10 +114,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 PylonListStart = new UIndex(0);
                 PylonListEnd = new UIndex(0);
                 guidToIntMap = new OrderedMultiValueDictionary<Guid, int>();
-                CoverLinks = new UIndex[0];
+                CoverLinks = new List<UIndex>();
                 intToByteMap = new OrderedMultiValueDictionary<int, byte>();
                 guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>();
-                NavPoints = new UIndex[0];
+                NavPoints = new List<UIndex>();
                 numbers = new int[0];
             }
             sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
