@@ -888,7 +888,7 @@ namespace ME3Explorer
             var mipTailIdx = props.GetProp<IntProperty>("MipTailBaseIdx");
             if (mipTailIdx != null)
             {
-                mipTailIdx.Value = texture.Mips.Count() - 1;
+                mipTailIdx.Value = texture.Mips.Count - 1;
             }
 
             MemoryStream mem = new MemoryStream();
@@ -899,7 +899,7 @@ namespace ME3Explorer
             byte[] propData = mem.ToArray();
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
-                CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).Concat(BitConverter.GetBytes(0)).ToArray();
+                CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();
             }
             else
             {

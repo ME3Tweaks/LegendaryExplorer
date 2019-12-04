@@ -43,7 +43,12 @@ namespace ME3Explorer.Unreal.Classes
             Mips = GetTexture2DMipInfos(export, cache?.Value);
             if (Export.Game != MEGame.ME1)
             {
-                TextureGuid = new Guid(Export.Data.Skip(Export.Data.Length - 16).Take(16).ToArray());
+                int guidOffsetFromEnd = export.Game == MEGame.ME3 ? 20 : 16;
+                if (export.ClassName == "LightMapTexture2D")
+                {
+                    guidOffsetFromEnd += 4;
+                }
+                TextureGuid = new Guid(Export.Data.Skip(Export.Data.Length - guidOffsetFromEnd).Take(16).ToArray());
             }
         }
 
@@ -52,7 +57,7 @@ namespace ME3Explorer.Unreal.Classes
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
             var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache != null ? cache.Value : null);
+            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
             var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
             return Texture2D.GetMipCRC(topmip, format.Value);
         }
@@ -310,10 +315,26 @@ namespace ME3Explorer.Unreal.Classes
                 ms.WriteInt32(mip.width);
                 ms.WriteInt32(mip.height);
             }
-            ms.WriteInt32(0);
+
+            if (Export.Game != MEGame.UDK)
+            {
+                ms.WriteInt32(0);
+            }
             if (Export.Game != MEGame.ME1)
             {
                 ms.WriteGuid(TextureGuid);
+            }
+            if (Export.Game == MEGame.UDK)
+            {
+                ms.WriteZeros(4 * 8);
+            }
+            if (Export.Game == MEGame.ME3)
+            {
+                ms.WriteInt32(0);
+                if (Export.ClassName == "LightMapTexture2D")
+                {
+                    ms.WriteInt32(0);
+                }
             }
             return ms.ToArray();
         }

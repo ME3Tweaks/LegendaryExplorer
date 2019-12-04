@@ -75,7 +75,7 @@ namespace ME3Explorer.SharedUI
                         {
                             virtualizingPanel.BringIndexIntoViewPublic(index);
                         }
-                        catch (InvalidOperationException)
+                        catch 
                         {
                             //This seems to be an internal exception
                         }
@@ -88,7 +88,7 @@ namespace ME3Explorer.SharedUI
                         {
                             virtualizingPanel.BringIndexIntoViewPublic(index);
                         }
-                        catch (InvalidOperationException)
+                        catch
                         {
                             //This seems to be an internal exception
                             return; //?
