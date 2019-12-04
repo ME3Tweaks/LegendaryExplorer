@@ -369,33 +369,45 @@
                                             <TextBlock Text="Move on Z axis by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <xctk:IntegerUpDown x:Name="lvlShift_Z" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
                                         </DockPanel>
-                                        <Button Content="Commit Level Shifts" Command="{Binding CommitLevelShiftsCommand}" Margin="5"/>
+                                        <Button Content="Commit Group Shifts" Command="{Binding CommitLevelShiftsCommand}" Margin="5"/>
                                         <Separator/>
                                     </StackPanel>
                                     <StackPanel Name="LevelRotationToolsControl" Grid.Row="1">
                                         <TextBlock Text="Group rotation tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
                                         <TextBlock Text="Rotate the entire group around the origin (0,0,0)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                         <DockPanel Margin="3,5" ToolTip="Rotation in degrees of yaw (horizontal rotation)">
-                                            <TextBlock Text="Yaw level by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="Yaw group by:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <xctk:IntegerUpDown x:Name="lvlRotationYaw" DockPanel.Dock="Right" Value="0" DefaultValue="0"/>
                                         </DockPanel>
-                                        <Button Content="Commit Level Rotation" Command="{Binding CommitLevelRotationCommand}" Margin="5"/>
+                                        <Button Content="Commit Group Rotation" Command="{Binding CommitLevelRotationCommand}" Margin="5"/>
                                         <Separator/>
                                     </StackPanel>
                                     <StackPanel Name="LightingToolsControl" Grid.Row="2">
                                         <TextBlock Text="Lighting Tools" FontWeight="Black"  FontSize="13" HorizontalAlignment="Center" Margin="3"/>
                                         <TextBlock Text="Change every light in the group (static and dynamic)" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="3"/>
                                         <DockPanel Margin="3,5" ToolTip="Overwrite the Red channel of all lights with another channel.">
+                                            <DockPanel DockPanel.Dock="Top" Margin="0,3">
+                                                <TextBlock Text="Adjust Green (+/-100%)" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                                <xctk:SingleUpDown Value="{Binding AdjustRed}" Minimum="-100" Maximum="100"/>
+                                            </DockPanel>
                                             <CheckBox Content="Ignore switch if light is already Red" IsChecked="{Binding SwitchIgnoreRed}" DockPanel.Dock="Bottom"/>
                                             <TextBlock Text="Switch Red Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchRedTo}" DockPanel.Dock="Right"/>
                                         </DockPanel>
-                                        <DockPanel Margin="3,5" ToolTip="Overwrite the Green channel of all lights with another channel.">
+                                        <DockPanel Margin="3,5" ToolTip="Adjust Green color channel.">
+                                            <DockPanel DockPanel.Dock="Top" Margin="0,3">
+                                                <TextBlock Text="Adjust Green (+/-100%)" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                                <xctk:SingleUpDown Value="{Binding AdjustGreen}" Minimum="-100" Maximum="100"/>
+                                            </DockPanel>
                                             <CheckBox Content="Ignore switch if light is already Green" IsChecked="{Binding SwitchIgnoreGreen}" DockPanel.Dock="Bottom"/>
                                             <TextBlock Text="Switch Green Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchGreenTo}" DockPanel.Dock="Right"/>
                                         </DockPanel>
                                         <DockPanel Margin="3,5" ToolTip="Overwrite the Blue channel of all lights with another channel.">
+                                            <DockPanel DockPanel.Dock="Top" Margin="0,3">
+                                                <TextBlock Text="Adjust Blue (+/-100%)" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                                                <xctk:SingleUpDown Value="{Binding AdjustBlue}" Minimum="-100" Maximum="100"/>
+                                            </DockPanel>
                                             <CheckBox Content="Ignore switch if light is already Blue" IsChecked="{Binding SwitchIgnoreBlue}" DockPanel.Dock="Bottom"/>
                                             <TextBlock Text="Switch Blue Channel to:" Margin="0,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                                             <ComboBox  ItemsSource="{Binding rgbChannels}" SelectedItem="{Binding SwitchBlueTo}" DockPanel.Dock="Right"/>

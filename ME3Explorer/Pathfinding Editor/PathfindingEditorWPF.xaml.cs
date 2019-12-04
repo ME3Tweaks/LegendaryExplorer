@@ -4118,16 +4118,20 @@ namespace ME3Explorer.Pathfinding_Editor
             Green,
             Blue
         }
+        private float _adjustRed;
+        public float AdjustRed { get => _adjustRed; set => SetProperty(ref _adjustRed, value); }
         private LightChannel _switchRedTo = LightChannel.Red;
         public LightChannel SwitchRedTo { get => _switchRedTo; set => SetProperty(ref _switchRedTo, value); }
         private bool _switchIgnoreRed;
         public bool SwitchIgnoreRed { get => _switchIgnoreRed; set => SetProperty(ref _switchIgnoreRed, value); }
-
+        private float _adjustGreen;
+        public float AdjustGreen { get => _adjustGreen; set => SetProperty(ref _adjustGreen, value); }
         private LightChannel _switchGreenTo = LightChannel.Green;
         public LightChannel SwitchGreenTo { get => _switchGreenTo; set => SetProperty(ref _switchGreenTo, value); }
         private bool _switchIgnoreGreen;
         public bool SwitchIgnoreGreen { get => _switchIgnoreGreen; set => SetProperty(ref _switchIgnoreGreen, value); }
-
+        private float _adjustBlue;
+        public float AdjustBlue { get => _adjustBlue; set => SetProperty(ref _adjustBlue, value); }
         private LightChannel _switchBlueTo = LightChannel.Blue;
         public LightChannel SwitchBlueTo { get => _switchBlueTo; set => SetProperty(ref _switchBlueTo, value); }
         private bool _switchIgnoreBlue;
@@ -4332,6 +4336,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     AllComponents.AddRange(SharedPathfinding.GetCollectionItems(actor));
                 }
+
+                if(actor.IsA("StaticMeshActorBase") || actor.IsA("DynamicSMActor"))
+                {
+                    var comp = actor.GetProperty<ObjectProperty>("StaticMeshComponent");
+                    if(comp != null)
+                    {
+                        AllComponents.Add(Pcc.GetUExport(comp.Value));
+                    }
+                }
             }
 
             List<ExportEntry> AllLightComponents = AllComponents.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
@@ -4463,7 +4476,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 tdlg.Show();
             }
         }
-
         private SharpDX.Color AdjustColors(SharpDX.Color oldcolor, float brightnesscorrectionfactor = 0)
         {
             float oldred = oldcolor.R;
@@ -4516,22 +4528,21 @@ namespace ME3Explorer.Pathfinding_Editor
             if (brightnesscorrectionfactor < 0)
             {
                 brightnesscorrectionfactor = 1 + brightnesscorrectionfactor;
-                newred *= brightnesscorrectionfactor;
-                newgreen *= brightnesscorrectionfactor;
-                newblue *= brightnesscorrectionfactor;
+                newred *= brightnesscorrectionfactor * (1 + (AdjustRed / 100));
+                newgreen *= brightnesscorrectionfactor * (1 + (AdjustGreen / 100));
+                newblue *= brightnesscorrectionfactor * (1 + (AdjustBlue / 100));
             }
             else
             {
-                newred = (255 - newred) * brightnesscorrectionfactor + newred;
-                newgreen = (255 - newgreen) * brightnesscorrectionfactor + newgreen;
-                newblue = (255 - newblue) * brightnesscorrectionfactor + newblue;
+                newred = (255 - newred) * brightnesscorrectionfactor * (1 + (AdjustRed / 100)) + newred;
+                newgreen = (255 - newgreen) * brightnesscorrectionfactor * (1 + (AdjustGreen / 100)) + newgreen;
+                newblue = (255 - newblue) * brightnesscorrectionfactor * (1 + (AdjustBlue / 100)) + newblue;
             }
             
             var vector = new SharpDX.Vector4(newred/255, newgreen/255, newblue/255, oldalpha/255);
             var newColor = new SharpDX.Color(vector);
             return newColor;
         }
-
         private void CommitLevelShifts()
         {
             var shiftx = (float)lvlShift_X.Value;
@@ -4602,7 +4613,6 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             MessageBox.Show("Done");
         }
-
         private void CommitLevelRotation()
         {
             var rotateyawdegrees = (float)lvlRotationYaw.Value;
@@ -4709,7 +4719,6 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             MessageBox.Show("Done");
         }
-
         private void RecookPersistantLevel()
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
@@ -4754,7 +4763,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         var map = level.CachedPhysSMDataMap[references[p]];
                         var oldidx = map.CachedDataIndex;
                         var kvp = level.CachedPhysSMDataStore[oldidx];
-                        map.CachedDataIndex = level.CachedPhysSMDataStore.Count;
+                        map.CachedDataIndex = newPhysSMstore.Count;
                         newPhysSMstore.Add(level.CachedPhysSMDataStore[oldidx]);
                         newPhysSMmap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(references[p], map));
                     }
@@ -4777,7 +4786,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         var map = level.CachedPhysPerTriSMDataMap[references[p]];
                         var oldidx = map.CachedDataIndex;
                         var kvp = level.CachedPhysPerTriSMDataStore[oldidx];
-                        map.CachedDataIndex = level.CachedPhysPerTriSMDataStore.Count;
+                        map.CachedDataIndex = newPhysPerTristore.Count;
                         newPhysPerTristore.Add(level.CachedPhysPerTriSMDataStore[oldidx]);
                         newPhysPerTrimap.Add(new KeyValuePair<UIndex, CachedPhysSMData>(references[p], map));
                     }
@@ -4880,7 +4889,6 @@ namespace ME3Explorer.Pathfinding_Editor
             IsBusy = false;
             MessageBox.Show("Trash Compactor Done");
         }
-
         private void TrashActorGroup()
         {
             if(ActorGroup.IsEmpty())
