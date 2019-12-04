@@ -31,7 +31,7 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using Point = System.Windows.Point;
-
+using System.Threading.Tasks;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -4136,8 +4136,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public LightChannel SwitchBlueTo { get => _switchBlueTo; set => SetProperty(ref _switchBlueTo, value); }
         private bool _switchIgnoreBlue;
         public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
-        private int _brightnessAdjustment;
-        public int BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
+        private float _brightnessAdjustment;
+        public float BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
        
         public ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new ObservableCollectionExtended<ExportEntry>();
         private bool _showonlyGroup;
@@ -4323,7 +4323,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (dlg == MessageBoxResult.Cancel)
                 return;
 
-            float brightscalar = ((float)BrightnessAdjustment / 100);
+            float brightscalar = BrightnessAdjustment;
 
             //Set all lights
             List<string> LightComponentClasses = new List<string>() { "PointLightComponent", "SpotLightComponent", "SkyLightComponent", "DirectionalLightComponent" };
@@ -4332,12 +4332,11 @@ namespace ME3Explorer.Pathfinding_Editor
             List<ExportEntry> AllComponents = new List<ExportEntry>();
             foreach(var actor in ActorGroup)
             {
-                if(actor.ClassName.Contains("CollectionActor"))
+                if (actor.IsA("PrimitiveComponent"))
                 {
-                    AllComponents.AddRange(SharedPathfinding.GetCollectionItems(actor));
+                    AllComponents.Add(actor);
                 }
-
-                if(actor.IsA("StaticMeshActorBase") || actor.IsA("DynamicSMActor"))
+                else if(actor.IsA("StaticMeshActor") || actor.IsA("DynamicSMActor"))
                 {
                     var comp = actor.GetProperty<ObjectProperty>("StaticMeshComponent");
                     if(comp != null)
@@ -4719,7 +4718,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             MessageBox.Show("Done");
         }
-        private void RecookPersistantLevel()
+        private async void RecookPersistantLevel()
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
                          $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +
@@ -4728,11 +4727,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             BusyText = "Finding unreferenced entries";
             IsBusy = true;
-            //Find all level reference
+            AllowRefresh = false;
+            //Find all level references
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
-                HashSet<int> norefsList = Pcc.GetUnReferencedEntries();
+                HashSet<int> norefsList = await Task.Run(() => Pcc.GetUnReferencedEntries());
                 BusyText = "Recooking the Persistant Level";
                 //Get all items in the persistent level not actors
                 var references = new List<int>();
@@ -4886,6 +4886,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
             }
+            AllowRefresh = true;
             IsBusy = false;
             MessageBox.Show("Trash Compactor Done");
         }
