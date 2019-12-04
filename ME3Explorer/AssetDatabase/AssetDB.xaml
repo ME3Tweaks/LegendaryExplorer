@@ -815,6 +815,7 @@
                                         <GridViewColumn DisplayMemberBinding="{Binding Speaker}" Width="100" Header="Speaker"/>
                                         <GridViewColumn DisplayMemberBinding="{Binding StrRef}" Width="60" Header="StrRef" />
                                         <GridViewColumn DisplayMemberBinding="{Binding Line}" Header="Line" />
+                                        <GridViewColumn DisplayMemberBinding="{Binding Convo}" Header="Line" />
                                     </GridView>
                                 </ListView.View>
                                 <ListView.ContextMenu>
