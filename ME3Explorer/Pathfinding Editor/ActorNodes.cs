@@ -698,8 +698,8 @@ namespace ME3Explorer.ActorNodes
         private static readonly Color outlinePenColor = Color.FromArgb(20, 255, 20);
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
 
-        public DynamicTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+        public DynamicTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon)
+            : base(idx, x, y, p, grapheditor, drawAsPolygon)
         {
             shape.Brush = dynamicPathfindingNodeBrush;
         }

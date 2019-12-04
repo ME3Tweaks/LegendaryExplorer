@@ -175,7 +175,7 @@ namespace ME3Explorer.Pathfinding_Editor
             set => SetProperty(ref _showVolumes_BlockingVolumes, value);
         }
 
-        public bool ShowVolumes_DynamicBlockingVolumes
+        public bool ShowVolumes_DynamicVolumes
         {
             get => _showVolumes_DynamicBlockingVolumes;
             set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value);
@@ -256,7 +256,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ShowBioTriggerVolumesCommand { get; set; }
         public ICommand ShowBioTriggerStreamsCommand { get; set; }
         public ICommand ShowBlockingVolumesCommand { get; set; }
-        public ICommand ShowDynamicBlockingVolumesCommand { get; set; }
+        public ICommand ShowDynamicVolumesCommand { get; set; }
         public ICommand ShowGenericVolumesCommand { get; set; }
         public ICommand ShowSFXBlockingVolumeLedgesCommand { get; set; }
         public ICommand ShowSFXCombatZonesCommand { get; set; }
@@ -306,7 +306,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ShowBioTriggerVolumesCommand = new GenericCommand(ShowBioTriggerVolumes, PackageIsLoaded);
             ShowBioTriggerStreamsCommand = new GenericCommand(ShowBioTriggerStreams, PackageIsLoaded);
             ShowBlockingVolumesCommand = new GenericCommand(ShowBlockingVolumes, PackageIsLoaded);
-            ShowDynamicBlockingVolumesCommand = new GenericCommand(ShowDynamicBlockingVolumes, PackageIsLoaded);
+            ShowDynamicVolumesCommand = new GenericCommand(ShowDynamicVolumes, PackageIsLoaded);
             ShowSFXBlockingVolumeLedgesCommand = new GenericCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
             ShowSFXCombatZonesCommand = new GenericCommand(ShowSFXCombatZones, PackageIsLoaded);
             ShowWwiseAudioVolumesCommand = new GenericCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
@@ -393,11 +393,15 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor.Refresh();
         }
 
-        private void ShowDynamicBlockingVolumes()
+        private void ShowDynamicVolumes()
         {
             foreach (var x in GraphNodes.OfType<DynamicBlockingVolume>())
             {
-                x.SetShape(ShowVolumes_DynamicBlockingVolumes);
+                x.SetShape(ShowVolumes_DynamicVolumes);
+            }
+            foreach (var x in GraphNodes.OfType<DynamicTriggerVolume>())
+            {
+                x.SetShape(ShowVolumes_DynamicVolumes);
             }
             graphEditor.Refresh();
         }
@@ -1300,10 +1304,10 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new BioPlaypenVolumeAdditive(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "DynamicBlockingVolume":
-                        actorNode = new DynamicBlockingVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_DynamicBlockingVolumes);
+                        actorNode = new DynamicBlockingVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_DynamicVolumes);
                         break;
                     case "DynamicTriggerVolume":
-                        actorNode = new DynamicTriggerVolume(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        actorNode = new DynamicTriggerVolume(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowVolumes_DynamicVolumes);
                         break;
                     case "InterpActor":
                     case "KActor":
