@@ -125,6 +125,7 @@
                     <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Shows SFXCombatZones as top down polygons of their brush"/>
                     <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Shows WwiseAudioVolumes as top down polygons of their brush"/>
                     <MenuItem Header="Other Volumes" Command="{Binding ShowGenericVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_GenericVolumes}" StaysOpenOnClick="True" ToolTip="Shows other generic volumes as top down polygons of their brush"/>
+                    <MenuItem Header="Cylinders on Triggers" Command="{Binding ShowTriggerCylindersCommand}" IsCheckable="True" IsChecked="{Binding ShowCylinders_Triggers}" StaysOpenOnClick="True" ToolTip="Shows other generic volumes as top down polygons of their brush"/>
                 </MenuItem>
                 <MenuItem Header="Show node sizes" Name="ShowNodeSizes_MenuItem"  Command="{Binding ShowNodeSizesCommand}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PathfindingEditorShowNodeSizes, Mode=TwoWay}" StaysOpenOnClick="True" ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks."/>
             </MenuItem>

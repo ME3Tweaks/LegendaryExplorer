@@ -14,13 +14,14 @@ namespace ME3Explorer.ActorNodes
     public abstract class ActorNode : PathfindingNodeMaster
     {
         internal bool ShowAsPolygon;
+        internal bool ShowAsCylinder;
         internal SText val;
 
         //Allows colors and points to be static yet accessible
         public abstract Color GetDefaultShapeColor();
         public abstract PointF[] GetDefaultShapePoints();
 
-        protected ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon = false, bool drawRotationLine = false)
+        protected ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon = false, bool drawRotationLine = false, bool drawAsCylinder = false)
         {
             pcc = p;
             g = grapheditor;
@@ -57,11 +58,11 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(comment);
             this.Pickable = true;
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(drawAsPolygon);
+            SetShape(drawAsPolygon, drawAsCylinder);
             TranslateBy(x, y);
         }
 
-        public void SetShape(bool polygon)
+        public void SetShape(bool polygon, bool cylinder = false)
         {
             if (shape != null)
             {
@@ -78,6 +79,7 @@ namespace ME3Explorer.ActorNodes
             }
 
             ShowAsPolygon = polygon;
+            ShowAsCylinder = cylinder;
             outlinePen = new Pen(GetDefaultShapeColor()); //Can't put this in a class variable becuase it doesn't seem to work for some reason.
             if (polygon)
             {
@@ -100,6 +102,34 @@ namespace ME3Explorer.ActorNodes
                     }
                     shape.Pen = Selected ? selectedPen : outlinePen;
                     shape.Brush = actorNodeBrush;
+                    shape.Pickable = false;
+                }
+                else
+                {
+                    SetDefaultShape();
+                }
+            }
+            else if(cylinder)
+            {
+                Tuple<float, float, float> dimensions = getCylinderDimensions();
+                if(dimensions != null)
+                {
+                    var cylinderX = this.X - dimensions.Item1;
+                    var cylinderY = this.Y - dimensions.Item2;
+                    shape = PPath.CreateEllipse(cylinderX, cylinderY, dimensions.Item1 * 2, dimensions.Item2 * 2);
+                    if (dimensions.Item3 >= 0)
+                    {
+                        SText heightText = new SText($"Cylinder total height: {dimensions.Item3}");
+                        var tw = heightText.Width / 2;
+                        var th = heightText.Height / 2;
+                        heightText.X = this.X - tw;
+                        heightText.Y = this.Y - th;
+                        heightText.Pickable = false;
+                        heightText.TextAlignment = StringAlignment.Center;
+                        shape.AddChild(heightText);
+                    }
+                    shape.Pen = Selected ? selectedPen : outlinePen;
+                    shape.Brush = new SolidBrush(Color.FromArgb(80, 80, 0, 0));
                     shape.Pickable = false;
                 }
                 else
@@ -927,6 +957,20 @@ namespace ME3Explorer.ActorNodes
             comment.Text = text + export.ObjectName.Instanced;
         }
 
+        public override Color GetDefaultShapeColor() => outlinePenColor;
+
+        public override PointF[] GetDefaultShapePoints() => outlineShape;
+    }
+
+    public class GenericTriggerNode : ActorNode
+    {
+        private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
+
+        public GenericTriggerNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsCylinder)
+            : base(idx, x, y, p, grapheditor, drawAsCylinder)
+        {
+        }
         public override Color GetDefaultShapeColor() => outlinePenColor;
 
         public override PointF[] GetDefaultShapePoints() => outlineShape;

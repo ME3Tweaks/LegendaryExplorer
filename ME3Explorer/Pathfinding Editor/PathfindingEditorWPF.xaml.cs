@@ -65,7 +65,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static string[] actorNodeClasses =
         {
-            "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "PhysicsVolume", "SFXKillRagdollVolume",
+            "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "DynamicTriggerVolume", "PhysicsVolume", "SFXKillRagdollVolume",
+            "BioTrigger", "Trigger", "Trigger_Dynamic", "Trigger_LOS",
             "SFXMedkit", "SFXMedStation", "SFXArmorNode", "SFXTreasureNode", "SFXPointOfInterest", "SFXWeaponFactory",
             "InterpActor", "KActor", "SFXKActor", "SFXDoor", 
             "TargetPoint", "Note", "BioMapNote", "BioStartLocation", "BioStartLocationMP",
@@ -149,50 +150,43 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool _showVolumes_SFXCombatZones;
         private bool _showVolumes_WwiseAudioVolumes;
         private bool _showVolumes_GenericVolumes;
+        private bool _showCylinders_Triggers;
         private bool _showSeqeunceReferences;
-
         public bool ShowSequenceReferences
         {
             get => _showSeqeunceReferences;
             set => SetProperty(ref _showSeqeunceReferences, value);
         }
-
         public bool ShowVolumes_BioTriggerVolumes
         {
             get => _showVolumes_BioTriggerVolumes;
             set => SetProperty(ref _showVolumes_BioTriggerVolumes, value);
         }
-
         public bool ShowVolumes_BioTriggerStreams
         {
             get => _showVolumes_BioTriggerStreams;
             set => SetProperty(ref _showVolumes_BioTriggerStreams, value);
         }
-
         public bool ShowVolumes_BlockingVolumes
         {
             get => _showVolumes_BlockingVolumes;
             set => SetProperty(ref _showVolumes_BlockingVolumes, value);
         }
-
         public bool ShowVolumes_DynamicVolumes
         {
             get => _showVolumes_DynamicBlockingVolumes;
             set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value);
         }
-
         public bool ShowVolumes_SFXBlockingVolume_Ledges
         {
             get => _showVolumes_SFXBlockingVolume_Ledges;
             set => SetProperty(ref _showVolumes_SFXBlockingVolume_Ledges, value);
         }
-
         public bool ShowVolumes_SFXCombatZones
         {
             get => _showVolumes_SFXCombatZones;
             set => SetProperty(ref _showVolumes_SFXCombatZones, value);
         }
-
         public bool ShowVolumes_WwiseAudioVolumes
         {
             get => _showVolumes_WwiseAudioVolumes;
@@ -203,6 +197,12 @@ namespace ME3Explorer.Pathfinding_Editor
             get => _showVolumes_GenericVolumes;
             set => SetProperty(ref _showVolumes_GenericVolumes, value);
         }
+        public bool ShowCylinders_Triggers
+        {
+            get => _showCylinders_Triggers;
+            set => SetProperty(ref _showCylinders_Triggers, value);
+        }
+
         private bool _showActorsLayer;
         private bool _showSplinesLayer;
         private bool _showPathfindingNodesLayer = true;
@@ -286,7 +286,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ClearGroupCommand { get; set; }
         public ICommand LoadGroupCommand { get; set; }
         public ICommand SaveGroupCommand { get; set; }
-
+        public ICommand ShowTriggerCylindersCommand { get; set; }
+        
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -311,7 +312,8 @@ namespace ME3Explorer.Pathfinding_Editor
             ShowSFXCombatZonesCommand = new GenericCommand(ShowSFXCombatZones, PackageIsLoaded);
             ShowWwiseAudioVolumesCommand = new GenericCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
             ShowGenericVolumesCommand = new GenericCommand(ShowGenericVolumes, PackageIsLoaded);
-            
+            ShowTriggerCylindersCommand = new GenericCommand(ShowTriggerCylinders, PackageIsLoaded);
+
             FlipLevelCommand = new GenericCommand(FlipLevel, PackageIsLoaded);
             BuildPathfindingChainCommand = new GenericCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
 
@@ -357,7 +359,14 @@ namespace ME3Explorer.Pathfinding_Editor
             Properties.Settings.Default.Save();
             RefreshGraph();
         }
-
+        private void ShowTriggerCylinders()
+        {
+            foreach (var node in GraphNodes.OfType<GenericTriggerNode>())
+            {
+                node.SetShape(false, ShowCylinders_Triggers);
+            }
+            graphEditor.Refresh();
+        }
         private void ShowGenericVolumes()
         {
             foreach (var node in GraphNodes.OfType<GenericVolumeNode>())
@@ -1427,6 +1436,12 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "SFXMedkit":
                         actorNode = new SFXMedKit(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
+                    case "Trigger":
+                    case "BioTrigger":
+                    case "Trigger_Dynamic":
+                    case "Trigger_LOS":
+                        actorNode = new GenericTriggerNode(uindex, x, y, exportToLoad.FileRef, graphEditor, ShowCylinders_Triggers);
                         break;
                     default:
                         actorNode = new PendingActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);

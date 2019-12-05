@@ -268,6 +268,66 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
+        protected Tuple<float, float, float> getCylinderDimensions()
+        {
+            try
+            {
+                PropertyCollection props = export.GetProperties();
+                float xScalar = 1;
+                float yScalar = 1;
+                float zScalar = 1;
+
+                var drawScale = props.GetProp<FloatProperty>("DrawScale");
+                var drawScale3d = props.GetProp<StructProperty>("DrawScale3D");
+                if (drawScale != null)
+                {
+                    xScalar = yScalar = zScalar = drawScale.Value;
+                }
+                if (drawScale3d != null)
+                {
+                    xScalar *= drawScale3d.GetProp<FloatProperty>("X").Value;
+                    yScalar *= drawScale3d.GetProp<FloatProperty>("Y").Value;
+                    zScalar *= drawScale3d.GetProp<FloatProperty>("Z").Value;
+                }
+                var cylinderComponent = props.GetProp<ObjectProperty>("CylinderComponent");
+                if (cylinderComponent == null)
+                {
+                    return null;
+                }
+                ExportEntry cylinder = export.FileRef.GetUExport(cylinderComponent.Value);
+                var graphVertices = new List<PointF>();
+                var brushVertices = new List<Vector3>();
+                PropertyCollection cylinderProps = cylinder.GetProperties();
+                float cylinderradius = 0;
+                float cylinderheight = 0;
+                if (export.IsA("Trigger")) //default Unreal values
+                {
+                    cylinderradius = 40;
+                    cylinderheight = 40;
+                }
+                var radiusprop = cylinderProps.GetProp<FloatProperty>("CollisionRadius");
+                if (radiusprop != null)
+                {
+                    cylinderradius = radiusprop.Value;
+                }
+                var heightprop = cylinderProps.GetProp<FloatProperty>("CollisionHeight");
+                if (heightprop != null)
+                {
+                    cylinderheight = heightprop.Value;
+                }
+
+                var xradius = cylinderradius * xScalar;
+                var yradius = cylinderradius * yScalar;
+                cylinderheight = cylinderheight * zScalar;
+
+                return new Tuple<float, float, float>(xradius, yradius, cylinderheight);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
         protected string GetComment()
         {
             NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
