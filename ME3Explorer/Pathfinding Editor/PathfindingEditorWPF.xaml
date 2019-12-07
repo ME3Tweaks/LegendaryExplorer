@@ -181,16 +181,16 @@
 
                 <!-- Pathfinding Tools-->
                 <TabControl Name="PathfindingNodeTabControl">
-                    <TabItem Name="ReachSpecs_TabItem" Header="ReachSpecs">
+                    <TabItem Name="ReachSpecs_TabItem" Header="ReachSpecs" TabIndex="0">
                         <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                     </TabItem>
-                    <TabItem Name="CombatZones_TabItem" Header="Zones">
+                    <TabItem Name="CombatZones_TabItem" Header="Zones" TabIndex="1">
                         <DockPanel Margin="3">
                             <TextBlock DockPanel.Dock="Top" Text="This node is part of the following combat zones and playpens:" TextWrapping="Wrap" FontWeight="Bold"/>
                             <xctk:CheckListBox ItemsSource="{Binding CurrentNodeCombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" MinHeight="150" ItemSelectionChanged="CurrentCombatZones_SelectionChanged"/>
                         </DockPanel>
                     </TabItem>
-                    <TabItem Name="NodeType_TabItem" Header="Type">
+                    <TabItem Name="NodeType_TabItem" Header="Type" TabIndex="2">
                         <DockPanel Margin="3">
                             <TextBlock DockPanel.Dock="Top" Text="Double click a type below to change this node to that type." TextWrapping="Wrap" FontWeight="Bold" Margin="3"/>
                             <ListBox Name="AvailableNodeTypes_ListBox" MinHeight="50" ItemsSource="{Binding AvailableNodeChangeableTypes}" HorizontalContentAlignment="Stretch">
@@ -244,15 +244,15 @@
                             </ListBox>
                         </DockPanel>
                     </TabItem>
-                    <TabItem Name="ValidationPanel_Tab" Header="Validation">
+                    <TabItem Name="ValidationPanel_Tab" Header="Validation" TabIndex="3">
                         <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
                     </TabItem>
                     <!-- Collection Actor Editor -->
-                    <TabItem Name="CollectionActor_Tab" Header="Collection" IsEnabled="False">
+                    <TabItem Name="CollectionActor_Tab" Header="Collection" IsEnabled="False" TabIndex="4">
                         <packageeditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
                     </TabItem>
                     <!-- Actor Group -->
-                    <TabItem Name="ActorGroup_Tab" Header="Groups" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Make Groups of actors for editing">
+                    <TabItem Name="ActorGroup_Tab" Header="Groups" TabIndex="5" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Make Groups of actors for editing">
                         <DockPanel LastChildFill="True">
                             <StackPanel Margin="3" DockPanel.Dock="Top">
                                 <Grid>
@@ -339,7 +339,7 @@
                         </DockPanel>
                     </TabItem>
                         <!-- Level Tools-->
-                    <TabItem Name="LevelTools_Tab" Header="Level Tools" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TabItem Name="LevelTools_Tab" Header="Level Tools" TabIndex="6" Visibility="{Binding ShowArtTools, Converter={StaticResource BoolToVisibilityConverter}}">
                         <DockPanel LastChildFill="True">
                             <StackPanel Margin="3" DockPanel.Dock="Top">
                                 <TextBlock Text="Experimental Tools for editing levels" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>

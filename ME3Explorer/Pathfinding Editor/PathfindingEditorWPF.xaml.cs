@@ -4194,12 +4194,14 @@ namespace ME3Explorer.Pathfinding_Editor
             if(ActiveNodes_ListBox.SelectedItem is ExportEntry node)
             {
                 ActorGroup.Add(node);
+                PathfindingNodeTabControl.SelectedIndex = 5;
             }
         }
         private void RemoveFromGroup(object obj)
         {
             var param = (string)obj;
-            switch(param)
+            PathfindingNodeTabControl.SelectedIndex = 5;
+            switch (param)
             {
                 case "grpbox":
                     ActorGroup.RemoveRange(Group_ListBox.SelectedItems.Cast<ExportEntry>().ToList());
