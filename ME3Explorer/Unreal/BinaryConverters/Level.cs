@@ -41,7 +41,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public OrderedMultiValueDictionary<int, byte> intToByteMap;
         public OrderedMultiValueDictionary<Guid, int> guidToIntMap2;
         public List<UIndex> NavPoints;
-        public int[] numbers;
+        public List<int> numbers;
         //endif
         public List<UIndex> CrossLevelActors;
         public UIndex ArtPlaceable1;//ME1
@@ -118,7 +118,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 intToByteMap = new OrderedMultiValueDictionary<int, byte>();
                 guidToIntMap2 = new OrderedMultiValueDictionary<Guid, int>();
                 NavPoints = new List<UIndex>();
-                numbers = new int[0];
+                numbers = new List<int>();
             }
             sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)

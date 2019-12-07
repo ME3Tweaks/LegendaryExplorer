@@ -4829,7 +4829,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 newNavArray.AddRange(level.NavPoints);
                 foreach (var navref in level.NavPoints) 
                 {
-                    if (!norefsList.Contains(navref?.value ?? 0))
+                    var navpoint = navref?.value ?? -1;
+                    if (norefsList.Contains(navpoint) || navpoint == 0)
                     {
                         newNavArray.Remove(navref);
                     }
@@ -4849,7 +4850,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 newCLArray.AddRange(level.CoverLinks);
                 foreach (var clref in level.CoverLinks)
                 {
-                    if (!norefsList.Contains(clref?.value ?? 0))
+                    var coverlink = clref?.value ?? -1;
+                    if (norefsList.Contains(coverlink) || coverlink == 0)
                     {
                         newCLArray.Remove(clref);
                     }
@@ -4876,12 +4878,22 @@ namespace ME3Explorer.Pathfinding_Editor
                 newXLArray.AddRange(level.CrossLevelActors);
                 foreach (var cla in level.CrossLevelActors)
                 {
-                    if (norefsList.Contains(cla?.value ?? 0))
+                    var xlvlactor = cla?.value ?? -1;
+                    if (norefsList.Contains(xlvlactor) || xlvlactor == 0)
                     {
                         newXLArray.Remove(cla);
                     }
                 }
                 level.CrossLevelActors = newXLArray;
+
+                //Clean up int lists if empty of NAV points
+                if(level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (Pcc.Game != MEGame.ME3 || level.PylonListStart == 0))
+                {
+                    level.guidToIntMap.Clear();
+                    level.guidToIntMap2.Clear();
+                    level.intToByteMap.Clear();
+                    level.numbers.Clear();
+                }
 
                 levelExport.SetBinaryData(level);
 
