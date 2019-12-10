@@ -71,6 +71,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 exp.indexValue = 0;
                 exp.Class = packageClass;
                 exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.HasStack;
+                exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ArchetypeObject;
+                exp.ObjectFlags &= ~UnrealFlags.EObjectFlags.ClassDefaultObject;
                 if (trashContainer == null)
                 {
                     exp.ObjectName = UnrealPackageFile.TrashPackageName;
