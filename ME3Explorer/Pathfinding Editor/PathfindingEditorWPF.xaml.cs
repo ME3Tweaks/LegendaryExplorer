@@ -4739,7 +4739,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             MessageBox.Show("Done");
         }
-        private async void RecookPersistantLevel()
+        private async void RecookPersistantLevel()  //TO DO MAKE THIS MULTI-THREADED
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
                          $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +

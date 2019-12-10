@@ -2990,8 +2990,8 @@ namespace ME3Explorer.AssetDatabase
                                 {
                                     IsAmbPerf = true;
                                     aSeq = "Multiple";
-                                    var pPoses = exp.GetProperty<ArrayProperty<StructProperty>>("m_aPoses");
-                                    aFrames = pPoses?.Count ?? 0;
+                                    var pAnimsets = exp.GetProperty<ArrayProperty<StructProperty>>("m_aAnimsets");
+                                    aFrames = pAnimsets?.Count ?? 0;
                                 }
 
                                 var NewAnim = new Animation(pExp, aSeq, aGrp, aLength, aFrames, aComp, aKeyF, IsAmbPerf, IsMod, new ObservableCollectionExtended<Tuple<int, int, bool>>() { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });

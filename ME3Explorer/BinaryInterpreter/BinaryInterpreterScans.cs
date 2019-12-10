@@ -7071,9 +7071,9 @@ namespace ME3Explorer
             /*
              *  
              *      flag 1 = external cache / 0 = local storage +4   //ME3
-             *      stream length in TFC +4
-             *      stream length in TFC +4 (repeat)
-             *      stream offset in TFC +4
+             *      stream length in local/TFC +4
+             *      stream length in local/TFC +4 (repeat)
+             *      stream offset in local/TFC +4
              *      
              *      //ME1/2 THIS IS REPEATED
              *      unknown 0  +4
@@ -7081,11 +7081,9 @@ namespace ME3Explorer
              *      unknown 0  +4
              *      offset (1st)
              *      count +4  (0) 
-             *      stream length in TFC +4 (or locally)
-             *      stream length in TFC +4 (repeat)
-             *      stream 2nd offset in TFC +4
-             *      
-             *      
+             *      stream length in local +4
+             *      stream length in local +4 (repeat)
+             *      stream 2nd offset in local +4
              *  
              */
             var subnodes = new List<ITreeItem>();
