@@ -730,7 +730,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         for (int id = 0; id < s_speakers.Count; id++)
                         {
-                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").ToString());
+                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").Value.Instanced);
                             conv.Speakers.Add(spkr);
                         }
                     }
@@ -743,7 +743,7 @@ namespace ME3Explorer.Dialogue_Editor
                         int id = 0;
                         foreach (NameProperty n in a_speakers)
                         {
-                            var spkr = new SpeakerExtended(id, n.ToString());
+                            var spkr = new SpeakerExtended(id, n.Value.Instanced);
                             conv.Speakers.Add(spkr);
                             id++;
                         }
