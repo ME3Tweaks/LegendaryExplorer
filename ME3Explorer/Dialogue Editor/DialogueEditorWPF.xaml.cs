@@ -765,44 +765,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (StructProperty Node in entryprop)
             {
-                int speakerindex = -1;
-                int linestrref = 0;
-                int cond = -1;
-                string line = "Unknown Reference";
-                int stevent = -1;
-                try
-                {
-
-                    speakerindex = Node.GetProp<IntProperty>("nSpeakerIndex");
-                    var linestrrefprop = Node.GetProp<StringRefProperty>("srText");
-                    if(linestrrefprop != null)
-                    {
-                        linestrref = linestrrefprop.Value;
-                        line = GlobalFindStrRefbyID(linestrref, Pcc);
-                    }
-                    
-                    var condprop = Node.GetProp<IntProperty>("nConditionalFunc");
-                    if (condprop != null)
-                    {
-                        cond = condprop.Value;
-                    }
-                    
-                    var steventprop = Node.GetProp<IntProperty>("nStateTransition");
-                    if (steventprop != null)
-                    {
-                        stevent = steventprop.Value;
-                    }
-                    bool bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                    conv.EntryList.Add(new DialogueNodeExtended(Node, false, cnt, speakerindex, linestrref, line, bcond, cond, stevent, EReplyTypes.REPLY_STANDARD));
-                    cnt++;
-
-                }
-                catch (Exception e)
-                {
-#if DEBUG
-                    throw new Exception($"Entry List Parse failed {conv.ConvName}:E{cnt} {speakerindex}, {linestrref}, {line}, {cond}, {stevent}", e);
-#endif
-                }
+                conv.EntryList.Add(ParseSingleLine(Node, cnt, false));
+                cnt++;
             }
         }
         private void ParseReplyList(ConversationExtended conv)
@@ -814,30 +778,44 @@ namespace ME3Explorer.Dialogue_Editor
                 int cnt = 0;
                 foreach (StructProperty Node in replyprop)
                 {
-                    int linestrref = 0;
-                    int cond = -1;
-                    string line = "Unknown Reference";
-                    int stevent = -1;
-                    bool bcond = false;
-                    EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
-                    try
-                    {
-                        linestrref = Node.GetProp<StringRefProperty>("srText").Value;
-                        line = GlobalFindStrRefbyID(linestrref, Pcc);
-                        cond = Node.GetProp<IntProperty>("nConditionalFunc").Value;
-                        stevent = Node.GetProp<IntProperty>("nStateTransition").Value;
-                        bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                        Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
-                        conv.ReplyList.Add(new DialogueNodeExtended(Node, true, cnt, -2, linestrref, line, bcond, cond, stevent, eReply));
-                        cnt++;
-                    }
-                    catch (Exception e)
-                    {
-#if DEBUG
-                        throw new Exception($"Reply List Parse failed {conv.ConvName}:R{cnt} Player, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
-#endif
-                    }
+                    conv.ReplyList.Add(ParseSingleLine(Node, cnt, true));
+                    cnt++;
                 }
+            }
+        }
+        private DialogueNodeExtended ParseSingleLine(StructProperty Node, int count, bool isReply)
+        {
+            int linestrref = 0;
+            int spkridx = -2;
+            int cond = -1;
+            string line = "Unknown Reference";
+            int stevent = -1;
+            bool bcond = false;
+            EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
+            try
+            {
+                linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
+                line = GlobalFindStrRefbyID(linestrref, Pcc);
+                cond = Node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
+                stevent = Node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
+                bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                if(isReply)
+                {
+                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
+                }
+                else
+                { 
+                    spkridx = Node.GetProp<IntProperty>("nSpeakerIndex");
+                }
+
+                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
+#endif
+                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply); 
             }
         }
         private void ParseScripts(ConversationExtended conv)
@@ -3202,7 +3180,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-        private async void DialogueNode_Add(object obj)
+        private void DialogueNode_Add(object obj)
         {
             string command = obj as string;
 
@@ -3248,52 +3226,89 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
+            float newX = SelectedObjects[0].OffsetX + 100;
+            float newY = SelectedObjects[0].OffsetY + 150;
+            int newIndex = 0;
+
+            DiagNode node = null;
+            bool isReply = false;
+            IsLocalUpdate = true;
+            panToSelection = false;
+            graphEditor.Enabled = false;
+            graphEditor.UseWaitCursor = true;
             if (command == "CloneReply")
             {
-                int newIndex = SelectedConv.ReplyList.Count;
-                SelectedConv.ReplyList.Add(new DialogueNodeExtended(SelectedDialogueNode) { NodeCount = newIndex });
-                NoUIRefresh = true;
-                RecreateNodesToProperties(SelectedConv);
-                bool p = true;
-                while (p)
+                isReply = true;
+                newIndex = SelectedConv.ReplyList.Count;
+                var replyprop = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+                string typeName = "BioDialogReplyNode";
+                PropertyCollection props = new PropertyCollection();
+                foreach (var op in SelectedDialogueNode.NodeProp.Properties)
                 {
-                    p = await CheckProcess(100, NoUIRefresh, false);
+                    if (op.Name.Name == "EntryList")
+                    {
+                        props.AddOrReplaceProp(new ArrayProperty<IntProperty>(op.Name));
+                        continue;
+                    }
+                    props.AddOrReplaceProp(op);
                 }
-                panToSelection = false;
-                graphEditor.Enabled = false;
-                graphEditor.UseWaitCursor = true;
-                GenerateGraph();
-                DiagNode node = DialogueNode_SelectByIndex(newIndex, true);
-                DialogueNode_DeleteLinks(node);
-                graphEditor.Enabled = true;
-                graphEditor.UseWaitCursor = false;
-                graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
-                graphEditor.Refresh();
-                return;
+                props.AddOrReplaceProp(new NoneProperty());
+                replyprop.Add(new StructProperty(typeName, props));
+                var nodeExtended = ParseSingleLine(replyprop[newIndex], newIndex, isReply);
+                nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
+                nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
+                nodeExtended.Line = SelectedDialogueNode.Line;
+                nodeExtended.SpeakerTag = SelectedDialogueNode.SpeakerTag;
+                nodeExtended.WwiseStream_Female = SelectedDialogueNode.WwiseStream_Female;
+                nodeExtended.WwiseStream_Male = SelectedDialogueNode.WwiseStream_Male;
+                nodeExtended.FaceFX_Female = SelectedDialogueNode.FaceFX_Female;
+                nodeExtended.FaceFX_Male = SelectedDialogueNode.FaceFX_Male;
+                SelectedConv.ReplyList.Add(nodeExtended);
+                RecreateNodesToProperties(SelectedConv);
+                node = new DiagNodeReply(this, nodeExtended, newX, newY, graphEditor);
             }
-
-            if (command == "CloneEntry")
+            else if (command == "CloneEntry")
             {
-                int newIndex = SelectedConv.EntryList.Count;
-                SelectedConv.EntryList.Add(new DialogueNodeExtended(SelectedDialogueNode) { NodeCount = newIndex });
-                NoUIRefresh = true;
-                RecreateNodesToProperties(SelectedConv);
-                bool p = true;
-                while (p)
+                newIndex = SelectedConv.EntryList.Count;
+                var entryprop = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+                string typeName = "BioDialogEntryNode";
+                PropertyCollection props = new PropertyCollection();
+                foreach (var op in SelectedDialogueNode.NodeProp.Properties)
                 {
-                    p = await CheckProcess(100, NoUIRefresh, false);
+                    if (op.Name.Name == "ReplyListNew")
+                    {
+                        props.AddOrReplaceProp(new ArrayProperty<StructProperty>(op.Name));
+                        continue;
+                    }
+                    props.AddOrReplaceProp(op);
                 }
-                panToSelection = false;
-                graphEditor.Enabled = false;
-                graphEditor.UseWaitCursor = true;
-                GenerateGraph();
-                DiagNode node = DialogueNode_SelectByIndex(newIndex, false);
-                DialogueNode_DeleteLinks(node);
-                graphEditor.Enabled = true;
-                graphEditor.UseWaitCursor = false;
-                graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 1000);
-                graphEditor.Refresh();
+                props.AddOrReplaceProp(new NoneProperty());
+                entryprop.Add(new StructProperty(typeName, props));
+                var nodeExtended = ParseSingleLine(entryprop[newIndex], newIndex, isReply);
+                nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
+                nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
+                nodeExtended.Line = SelectedDialogueNode.Line;
+                nodeExtended.SpeakerTag = SelectedDialogueNode.SpeakerTag;
+                nodeExtended.WwiseStream_Female = SelectedDialogueNode.WwiseStream_Female;
+                nodeExtended.WwiseStream_Male = SelectedDialogueNode.WwiseStream_Male;
+                nodeExtended.FaceFX_Female = SelectedDialogueNode.FaceFX_Female;
+                nodeExtended.FaceFX_Male = SelectedDialogueNode.FaceFX_Male;
+                SelectedConv.EntryList.Add(nodeExtended);
+                RecreateNodesToProperties(SelectedConv);
+                node = new DiagNodeEntry(this, SelectedConv.EntryList[newIndex], newX, newY, graphEditor);
             }
+            CurrentObjects.Add(node);
+            node.Layout(newX, newY);
+            graphEditor.addNode(node);
+            node.SetOffset(newX, newY);
+            node.MouseDown += node_MouseDown;
+            node.Click += node_Click;
+            DialogueNode_SelectByIndex(newIndex, isReply);
+            graphEditor.Enabled = true;
+            graphEditor.UseWaitCursor = false;
+            graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 500);
+            graphEditor.Refresh();
+            PushConvoToFile(SelectedConv);
         }
         private void DialogueNode_DeleteLinks(object obj)
         {
