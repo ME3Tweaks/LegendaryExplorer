@@ -133,6 +133,7 @@ namespace ME3Explorer
             "BioConsequenceMap",
             "BioDynamicAnimSet",
             "BioGestureRuntimeData",
+            "BioMorphFace",
             "BioOutcomeMap",
             "BioPawn",
             "BioQuestMap",
@@ -570,6 +571,9 @@ namespace ME3Explorer
                         break;
                     case "MorphTarget":
                         subNodes.AddRange(StartMorphTargetScan(data, ref binarystart));
+                        break;
+                    case "BioMorphFace":
+                        subNodes.AddRange(StartBioMorphFaceScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)

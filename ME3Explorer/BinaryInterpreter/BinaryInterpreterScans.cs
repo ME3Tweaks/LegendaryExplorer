@@ -7370,5 +7370,38 @@ namespace ME3Explorer
             }
             return subnodes;
         }
+
+        private List<ITreeItem> StartBioMorphFaceScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new MemoryStream(data);
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeArrayNode(bin, "LOD Count:", k => new BinInterpNode(bin.Position, $"{k}")
+                {
+                    Items =
+                    {
+                        MakeInt32Node(bin, "Unknown (version?)"),
+                        MakeArrayNode(bin, $"LOD {k} Vertex Positional Data", n => new BinInterpNode(bin.Position, $"{n}")
+                        {
+                            Items =
+                                    {
+                                        MakeVectorNode(bin, "Position"),
+                                    }
+                        }),
+                    }
+                }, true));
+
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+
     }
 }
