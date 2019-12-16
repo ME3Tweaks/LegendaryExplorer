@@ -4587,12 +4587,19 @@ namespace ME3Explorer.Pathfinding_Editor
             if(chkdlg == MessageBoxResult.Cancel)
                 return;
 
+            ShiftActorGroup(new SharpDX.Vector3(shiftx, shifty, shiftz));
+            
+            MessageBox.Show("Done");
+        }
+
+        private void ShiftActorGroup(SharpDX.Vector3 shifts)
+        {
             foreach (var actor in ActorGroup)
             {
-                if(actor.ClassName.Contains("CollectionActor"))
+                if (actor.ClassName.Contains("CollectionActor"))
                 {
-                    
-                    if (ObjectBinary.From(actor) is StaticCollectionActor sca && 
+
+                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
                         actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
                     {
 
@@ -4602,7 +4609,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
 
-                            SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3(posX + shiftx, posY + shifty, posZ + shiftz),
+                            SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z),
                                       new Rotator(uuPitch, uuYaw, uuRoll),
                                       new SharpDX.Vector3(scaleX, scaleY, scaleZ));
                             sca.LocalToWorldTransforms[index] = newm;
@@ -4614,15 +4621,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 else
                 {
                     var locationprop = actor.GetProperty<StructProperty>("location");
-                    if(locationprop != null && locationprop.IsImmutable)
+                    if (locationprop != null && locationprop.IsImmutable)
                     {
                         var oldx = locationprop.GetProp<FloatProperty>("X").Value;
                         var oldy = locationprop.GetProp<FloatProperty>("Y").Value;
                         var oldz = locationprop.GetProp<FloatProperty>("Z").Value;
 
-                        float newx = oldx + shiftx;
-                        float newy = oldy + shifty;
-                        float newz = oldz + shiftz;
+                        float newx = oldx + shifts.X;
+                        float newy = oldy + shifts.Y;
+                        float newz = oldz + shifts.Z;
 
                         locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
                         locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
@@ -4631,14 +4638,17 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
             }
-            MessageBox.Show("Done");
         }
+
         private void CommitLevelRotation()
         {
+            var centrePivot = GetGroupCenter();
             var rotateyawdegrees = (float)lvlRotationYaw.Value;
+            var rotatepitchdegrees = (float)lvlRotationPitch.Value;
             var rotateyaw = Math.PI * (rotateyawdegrees / 180); //Convert to radians
-            double sinCalc = Math.Sin(rotateyaw);
-            double cosCalc = Math.Cos(rotateyaw);
+            var rotatepitch = Math.PI * (rotatepitchdegrees / 180); //Convert to radians
+            double sinCalcYaw = Math.Sin(rotateyaw);
+            double cosCalcYaw = Math.Cos(rotateyaw);
 
             if (lvlRotationYaw.Value == 0)
             {
@@ -4673,8 +4683,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
-                            var calcX = (double)posX * cosCalc - (double)posY * sinCalc;
-                            var calcY = (double)posX * sinCalc + (double)posY * cosCalc;
+                            var calcX = (double)posX * cosCalcYaw - (double)posY * sinCalcYaw;
+                            var calcY = (double)posX * sinCalcYaw + (double)posY * cosCalcYaw;
 
                             var newYaw = uuYaw + ((float)rotateyawdegrees).ToUnrealRotationUnits();
 
@@ -4719,8 +4729,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Get new rotation x' = x cos θ − y sin θ
                     //y' = x sin θ + y cos θ
 
-                    var calcX = (double)oldx * cosCalc - (double)oldy * sinCalc;
-                    var calcY = (double)oldx * sinCalc + (double)oldy * cosCalc;
+                    var calcX = (double)oldx * cosCalcYaw - (double)oldy * sinCalcYaw;
+                    var calcY = (double)oldx * sinCalcYaw + (double)oldy * cosCalcYaw;
 
                     //Write props
                     var newx = (float)calcX;
@@ -4737,8 +4747,63 @@ namespace ME3Explorer.Pathfinding_Editor
                     actor.WriteProperty(rotationprop);
                 }
             }
+
+            var newCenterPivot = GetGroupCenter();
+            var shiftback = centrePivot - newCenterPivot;
+            ShiftActorGroup(shiftback);
             MessageBox.Show("Done");
         }
+        private SharpDX.Vector3 GetGroupCenter()
+        {
+            float groupX = 0;
+            float groupY = 0;
+            float groupZ = 0;
+            int actorcount = 0;
+            foreach(var actor in ActorGroup)
+            {
+                if (actor == null || actor.ClassName == "BioWorldInfo")
+                    continue;
+
+                if (actor.ClassName.Contains("CollectionActor"))
+                {
+
+                    if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
+                        actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
+                    {
+
+                        for (int index = 0; index < components.Count; index++)
+                        {
+
+                            ((float posX, float posY, float posZ), (float scaleX, float scaleY, float scaleZ), (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
+
+                            groupX += posX;
+                            groupY += posY;
+                            groupZ += posZ;
+                            actorcount++;
+                        }
+                    }
+
+                }
+                else
+                {
+                    var locationprop = actor.GetProperty<StructProperty>("location");
+                    if (locationprop != null && locationprop.IsImmutable)
+                    {
+                        var oldx = locationprop.GetProp<FloatProperty>("X").Value;
+                        var oldy = locationprop.GetProp<FloatProperty>("Y").Value;
+                        var oldz = locationprop.GetProp<FloatProperty>("Z").Value;
+
+                        groupX += oldx;
+                        groupY += oldy;
+                        groupZ += oldz;
+                        actorcount++;
+                    }
+                }
+            }
+
+            return new SharpDX.Vector3(groupX / actorcount, groupY / actorcount, groupZ / actorcount);
+        }
+
         private async void RecookPersistantLevel()  //TO DO MAKE THIS MULTI-THREADED
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
