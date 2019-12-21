@@ -54,14 +54,53 @@ namespace ME3Explorer.Matinee
             set => SetProperty(ref _offset, value);
         }
 
+        public ICommand OpenSelection { get; set; }
+        public ICommand OpenInterpData { get; set; }
         public event Action<ExportEntry> SelectionChanged;
-
+        public bool HasSelection(object obj) { return MatineeTree.SelectedItem != null; }
+        public bool HasData(object obj) { return InterpDataExport != null; }
         public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = new ObservableCollectionExtended<InterpGroup>();
 
         public Timeline()
         {
+            LoadCommands();
             InitializeComponent();
             ResetView();
+        }
+
+        private void LoadCommands()
+        {
+            OpenSelection = new RelayCommand(OpenInToolkit, HasSelection);
+            OpenInterpData = new RelayCommand(OpenInToolkit, HasData);
+        }
+
+        private void OpenInToolkit(object obj)
+        {
+            var command = obj as string;
+            if (InterpDataExport != null)
+            {
+                ExportEntry exportEntry = InterpDataExport;
+                switch (command)
+                {
+                    case "Track":
+                        switch (MatineeTree.SelectedItem)
+                        {
+                            case InterpGroup group:
+                                exportEntry = group.Export;
+                                break;
+                            case InterpTrack track:
+                                exportEntry = track.Export;
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                var packEd = new PackageEditorWPF();
+                packEd.Show();
+                packEd.LoadFile(Pcc.FilePath, exportEntry.UIndex);
+            }
         }
 
         private void LoadGroups()

@@ -209,6 +209,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </UserControl.Resources>
     <Grid Background="#FF5C5C5C">
         <Grid.ColumnDefinitions>
@@ -359,7 +360,14 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>-->
+
             </TreeView.Resources>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open Selection in Package Editor" Command="{Binding OpenSelection}" CommandParameter="Track"/>
+                    <MenuItem Header="Open InterpData in Package Editor" Command="{Binding OpenInterpData}" CommandParameter="Data"/>
+                </ContextMenu>
+            </TreeView.ContextMenu>
         </TreeView>
     </Grid>
 </me3explorer:NotifyPropertyChangedControlBase>
