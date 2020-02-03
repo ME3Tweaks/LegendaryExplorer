@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -32,6 +33,7 @@ using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
 using ME3Explorer.Unreal.BinaryConverters;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 
 namespace ME3Explorer.Sequence_Editor
@@ -130,6 +132,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
+        public ICommand ScanFolderForLoopsCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
 
@@ -143,6 +146,83 @@ namespace ME3Explorer.Sequence_Editor
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
+            ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
+        }
+
+        private void ScanFolderPackagesForTightLoops()
+        {
+            //This method ignores gates because they always link to themselves. Well, mostly.
+            var dlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder containing package files"
+            };
+            //SirC is going to love this level of indention
+            //lol just kidding
+            //sorry in advance
+            //-Mgamerz
+            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
+                var packageFolderPath = dlg.FileName;
+                var packageFiles = Directory.EnumerateFiles(packageFolderPath, "*.pcc", SearchOption.TopDirectoryOnly); //pcc only for now. not sure upk/u/sfm is worth it, maybe.
+                List<string> tightLoops = new List<string>();
+                foreach (var file in packageFiles)
+                {
+                    Debug.WriteLine("Opening package " + file);
+                    var p = MEPackageHandler.OpenMEPackage(file);
+                    //find sequence objects
+                    var sequences = p.Exports.Where(x => !x.IsDefaultObject && x.ClassName == "Sequence");
+                    foreach (var sequence in sequences)
+                    {
+                        //get list of items in the sequence
+                        var seqObjectsList = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                        if (seqObjectsList != null)
+                        {
+                            foreach (var seqObjectRef in seqObjectsList)
+                            {
+                                var seqObj = p.GetUExport(seqObjectRef.Value);
+                                if (seqObj.ClassName == "SeqAct_Gate") continue;; //skip gates
+                                var outputLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                if (outputLinks != null)
+                                {
+                                    foreach (var outlink in outputLinks)
+                                    {
+                                        var links = outlink.GetProp<ArrayProperty<StructProperty>>("Links");
+                                        if (links != null)
+                                        {
+                                            foreach (var link in links)
+                                            {
+                                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
+                                                if (linkedOp != null)
+                                                {
+                                                    //this is what we are looking for. See if reference to self
+                                                    if (linkedOp.Value == seqObj.UIndex)
+                                                    {
+                                                        //!! Self reference
+                                                        tightLoops.Add($"Tight loop in {Path.GetFileName(file)}, export {seqObjectRef.Value} {seqObj.InstancedFullPath}");
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (tightLoops.Any())
+                {
+                    ListDialog ld = new ListDialog(tightLoops, "Tight sequence loops found", "The following sequence objects link to themselves on an output and may cause significant harm to game performance.", this);
+                    ld.Show();
+                }
+                else
+                {
+                    MessageBox.Show("No tight loops found");
+                }
+            }
         }
 
         private async void CreateNewObject(ClassInfo info)
@@ -153,7 +233,7 @@ namespace ME3Explorer.Sequence_Editor
             }
 
             IEntry classEntry;
-            if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) || 
+            if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
                 UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
                 classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);

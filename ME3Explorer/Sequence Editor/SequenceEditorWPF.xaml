@@ -122,6 +122,10 @@
                                 InputGestureText="Ctrl+L"
                                 ToolTip="Attempt to layout sequence objects in a comprehensible fashion" />
                 </MenuItem>
+                <MenuItem Header="Experiments" Padding="4">
+                    <MenuItem Header="Scan folder for sequence object loops" Command="{Binding ScanFolderForLoopsCommand}"
+                              ToolTip="Scans a folder of package files for sequence objects that have an output that leads to itself&#10;These types of loops severely harm game performance" />
+                </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
                 <SharedUI:StatusBarGameIDIndicator
