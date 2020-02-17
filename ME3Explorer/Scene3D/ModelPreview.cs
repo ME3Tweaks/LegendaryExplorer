@@ -171,11 +171,15 @@ namespace ME3Explorer.Scene3D
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
-            var matPackage = mat.Export.Parent.FullPath.ToLower();
+            string matPackage = null;
+            if (mat.Export.Parent != null)
+            {
+                matPackage = mat.Export.Parent.FullPath.ToLower();
+            }
             foreach (var textureEntry in mat.Textures)
             {
                 var texObjectName = textureEntry.FullPath.ToLower();
-                if (texObjectName.StartsWith(matPackage) && texObjectName.Contains("diff"))
+                if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
                 {
                     // we have found the diffuse texture!
                     DiffuseTextureFullName = textureEntry.FullPath;
@@ -687,7 +691,7 @@ namespace ME3Explorer.Scene3D
                     }
                 }
                 // Triangles
-                List<Triangle> triangles = new List<Triangle>(lodmodel.IndexBuffer.Length/3);
+                List<Triangle> triangles = new List<Triangle>(lodmodel.IndexBuffer.Length / 3);
                 for (int i = 0; i < lodmodel.IndexBuffer.Length; i += 3)
                 {
                     triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
