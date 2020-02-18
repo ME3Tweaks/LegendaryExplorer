@@ -1014,8 +1014,8 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            filename = $"{filename}.*";
-            filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).Where(f => f.Contains(contentdir)).FirstOrDefault();
+            filename = $"{filename}.*"; //this is wrong. if same filename with different extension exists it will not work! @Kinkojiro
+            filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
             if (filePath == null)
             {
                 MessageBox.Show($"File {filename} not found in content directory {contentdir}.");

@@ -156,7 +156,7 @@ namespace ME3Explorer
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
                     WwiseStream w = new WwiseStream(exportEntry);
                     ExportInformationList.Add($"Filename : {w.FileName ?? "Stored in this PCC"}");
-                    if(!PlayBackOnlyMode)
+                    if (!PlayBackOnlyMode)
                     {
                         ExportInformationList.Add($"Data size: {w.DataSize} bytes");
                         ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
@@ -399,8 +399,8 @@ namespace ME3Explorer
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
-            return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
+            return ((exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            //return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
         public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);

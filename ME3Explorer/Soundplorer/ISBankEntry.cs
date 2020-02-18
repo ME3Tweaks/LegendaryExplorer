@@ -20,27 +20,21 @@ namespace ME3Explorer.Soundplorer
         public uint sampleRate = 0;
         public uint DataOffset;
         public uint HeaderOffset;
-        public int CodecID;
-        private byte[] dataAsStored;
-        internal int CodecID2;
-
-        public byte[] DataAsStored
-        {
-            get
-            {
-                return dataAsStored;
-            }
-            set
-            {
-                dataAsStored = value;
-            }
-        }
+        public int CodecID = -1;
+        internal int CodecID2 = -1;
+        public byte[] DataAsStored { get; set; }
 
         public string DisplayString
         {
             get
             {
-                return FileName + " - Data offset: 0x" + DataOffset.ToString("X8") + " - cmpi signature: 0x" + CodecID2.ToString("X8");
+                string retstr = FileName + " - Data offset: 0x" + DataOffset.ToString("X8");
+                var codec = getCodecStr();
+                if (codec != null)
+                {
+                    retstr += " - Codec: " + codec;
+                }
+                return retstr;
             }
         }
 
@@ -90,13 +84,13 @@ namespace ME3Explorer.Soundplorer
                         ms.WriteUInt32(0); //data len = this will have to be updated later, i think
                         ms.Write(DataAsStored, 0, DataAsStored.Length);
                         //XboxADPCMDecoder decoder = new XboxADPCMDecoder(numberOfChannels);
-/*                        MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
-                        MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
-                        decodedStream.Position = 0;
-                        decodedStream.CopyTo(ms);
+                        /*                        MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
+                                                MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
+                                                decodedStream.Position = 0;
+                                                decodedStream.CopyTo(ms);
 
-                        File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
-                        */
+                                                File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
+                                                */
                         //update sizes
                         ms.Seek(dataSizePosition, SeekOrigin.Begin);
                         ms.WriteUInt32((uint)DataAsStored.Length);
@@ -158,11 +152,27 @@ namespace ME3Explorer.Soundplorer
             str += FileName + "\n";
             str += "Sample Rate: " + sampleRate + "\n";
             str += "Channels: " + numberOfChannels + "\n";
-            str += "Is Ogg: " + isOgg + "\n";
-            str += "Is PCM: " + isPCM + "\n";
+            var codec = getCodecStr();
+            if (codec != null)
+            {
+                str += $"Codec: {codec}\n";
+            }
             str += "Has Data: " + (DataAsStored != null);
             return str;
 
+        }
+
+        private string getCodecStr()
+        {
+            switch (CodecID)
+            {
+                case -1: return null;
+                case 0: return "PCM";
+                case 1: return "Xbox IMA";
+                case 2: return "Vorbis";
+                case 5: return "Sony MSF container"; //only for PS3 files, but we'll just document it here anyways
+                default: return $"Unknown codec ID ({CodecID})";
+            }
         }
 
         public TimeSpan? GetLength()

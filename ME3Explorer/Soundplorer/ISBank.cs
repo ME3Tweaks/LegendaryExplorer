@@ -154,15 +154,11 @@ namespace ME3Explorer.Soundplorer
         IsPCM:=false;
       continue;
     end;*/
-                        ms.Seek(20, SeekOrigin.Current);
-                        int pcmSignature1 = ms.ReadInt32();
-                        int pcmSignature2 = ms.ReadInt32();
-
-                        isbEntry.CodecID = pcmSignature1;
-                        isbEntry.CodecID2 = pcmSignature2;
-
-                        isbEntry.isPCM = pcmSignature2 == 1053609165;
-
+                        var size = ms.ReadInt32();
+                        var pos = ms.Position;
+                        isbEntry.CodecID = ms.ReadInt32();
+                        isbEntry.CodecID2 = ms.ReadInt32();
+                        ms.Position = pos + size;
                         break;
                     case "data":
                         counter++;

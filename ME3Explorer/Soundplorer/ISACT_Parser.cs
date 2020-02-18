@@ -137,6 +137,7 @@ begin
         IsPCM:=false;
       continue;
     end;*/
+                        //This is wrong
                         ms.Seek(24, SeekOrigin.Current);
                         int pcmSignature = ms.ReadInt32();
                         isPCM = pcmSignature == 1053609165;
