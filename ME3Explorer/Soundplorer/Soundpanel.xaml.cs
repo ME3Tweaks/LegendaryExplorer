@@ -42,7 +42,7 @@ namespace ME3Explorer
         readonly DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
         private bool SeekUpdatingDueToTimer = false;
         private bool SeekDragging = false;
-        Stream vorbisStream;
+        Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
         private DynamicByteProvider hircHexProvider;
 
@@ -51,10 +51,12 @@ namespace ME3Explorer
             get { return (IBusyUIHost)this.GetValue(HostingControlProperty); }
             set { this.SetValue(HostingControlProperty, value); }
         }
+
         public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
             "HostingControl", typeof(IBusyUIHost), typeof(Soundpanel));
 
         private string _quickScanText;
+
         public string QuickScanText
         {
             get => _quickScanText;
@@ -68,6 +70,7 @@ namespace ME3Explorer
             get => (bool)GetValue(PlayBackOnlyModeProperty);
             set => SetValue(PlayBackOnlyModeProperty, value);
         }
+
         public static readonly DependencyProperty PlayBackOnlyModeProperty = DependencyProperty.Register(
             nameof(PlayBackOnlyMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), PlayBackOnlyModeChanged));
 
@@ -165,6 +168,7 @@ namespace ME3Explorer
                         {
                             wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
                         }
+
                         ExportInformationList.Add(wemId);
                     }
 
@@ -229,8 +233,10 @@ namespace ME3Explorer
 
                         }
                     }
+
                     CurrentLoadedExport = exportEntry;
                 }
+
                 if (exportEntry.ClassName == "WwiseBank")
                 {
                     WwiseBank wb = new WwiseBank(exportEntry);
@@ -247,6 +253,7 @@ namespace ME3Explorer
                     {
                         QuickScanText = "Cannot scan ME2 game files.";
                     }
+
                     List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
                     byte[] data = wb.GetChunk("DATA");
                     int i = 0;
@@ -265,7 +272,8 @@ namespace ME3Explorer
                             {
                                 wemId = $"{ReverseBytes(singleWemMetadata.wemID):X8} (Reversed)";
                             }
-                            string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
+
+                            string wemName = "Embedded WEM 0x" + wemId; // + "(" + singleWemMetadata.Item1 + ")";
 
                             /* //HIRC lookup, if I ever get around to supporting HIRC
                             List<Tuple<string, int, double>> wemInfo;
@@ -287,6 +295,7 @@ namespace ME3Explorer
                             {
                                 ExportInformationList.Add($"{i}: {wemName} - No RIFF header");
                             }
+
                             AllWems.Add(wem);
                             i++;
                         }
@@ -295,6 +304,7 @@ namespace ME3Explorer
                     {
                         ExportInformationList.Add("This soundbank has no embedded WEM files");
                     }
+
                     CurrentLoadedExport = exportEntry;
 
                     //This makes the hexbox widen by 1 and then shrink by 1
@@ -318,6 +328,7 @@ namespace ME3Explorer
                     SoundpanelHIRC_Hexbox.Select(0, 1);
                     SoundpanelHIRC_Hexbox.ScrollByteIntoView();
                 }
+
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
                     int dataSizeOffset = exportEntry.propsEnd() + 4;
@@ -343,12 +354,13 @@ namespace ME3Explorer
                     {
                         ExportInformationList.Add("This export contains no embedded audio");
                     }
+
                     CurrentLoadedExport = exportEntry;
                 }
             }
             catch (Exception e)
             {
-
+                Debug.WriteLine("Error: " + e.Message);
             }
         }
 
@@ -370,6 +382,7 @@ namespace ME3Explorer
             {
                 ret += bytes[startoffset + i].ToString("X2") + " ";
             }
+
             ret = ret.Trim();
             ret += ")";
             return ret;
@@ -378,7 +391,7 @@ namespace ME3Explorer
         public static UInt32 ReverseBytes(UInt32 value)
         {
             return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
-                (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+                   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
         }
 
         public override void UnloadExport()
@@ -417,6 +430,10 @@ namespace ME3Explorer
         /// <returns></returns>
         public Stream getPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
+            if (CurrentLoadedExport?.ClassName == "SoundNodeWave" && CurrentLoadedExport?.Game == MEGame.ME1 && ExportInfoListBox.SelectedItem is ISBankEntry be)
+            {
+                return be.GetWaveStream();
+            }
             if (CurrentLoadedISACTEntry != null)
             {
                 return CurrentLoadedISACTEntry.GetWaveStream();
@@ -442,11 +459,13 @@ namespace ME3Explorer
                         {
                             path = wwiseStream.GetPathToAFC(); // only to check if AFC exists.
                         }
+
                         if (path != "")
                         {
                             return wwiseStream.CreateWaveStream(path);
                         }
                     }
+
                     if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
                     {
                         object currentSelectedItem = ExportInfoListBox.SelectedItem;
@@ -454,9 +473,11 @@ namespace ME3Explorer
                         {
                             return null; //nothing selected, or current item is not playable
                         }
+
                         var bankEntry = (ISBankEntry)currentSelectedItem;
                         return bankEntry.GetWaveStream();
                     }
+
                     if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
                     {
                         object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
@@ -464,6 +485,7 @@ namespace ME3Explorer
                         {
                             return null; //nothing selected, or current wem is not playable
                         }
+
                         var wemObject = (EmbeddedWEMFile)currentWEMItem;
                         string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
                         File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
@@ -471,13 +493,16 @@ namespace ME3Explorer
                     }
                 }
             }
+
             return null;
         }
 
 
 
         #region MVVM stuff
+
         private bool _repeating;
+
         public bool Repeating
         {
             get => _repeating;
@@ -485,6 +510,7 @@ namespace ME3Explorer
         }
 
         private EFontAwesomeIcon _playPauseImageSource;
+
         public EFontAwesomeIcon PlayPauseIcon
         {
             get => _playPauseImageSource;
@@ -515,7 +541,7 @@ namespace ME3Explorer
             AllWems.Clear();
 
             ExportInformationList.Add($"Audio file in Audio File Cache");
-            ExportInformationList.Add($"Filename : { aEntry.AFCPath}");
+            ExportInformationList.Add($"Filename : {aEntry.AFCPath}");
             ExportInformationList.Add($"Data size: {aEntry.DataSize} bytes");
             ExportInformationList.Add($"Data offset: 0x{aEntry.Offset:X8}");
 
@@ -597,7 +623,7 @@ namespace ME3Explorer
             set
             {
                 if (value.Equals(_currentTrackPosition)) return;
-                Debug.WriteLine("trackpos: " + value);
+                //Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
                 OnPropertyChanged(nameof(CurrentTrackPosition));
@@ -623,10 +649,12 @@ namespace ME3Explorer
         /// when pressing play again after playback has been stopped.
         /// </summary>
         private object CachedStreamSource { get; set; }
+
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
         public WwiseBank CurrentLoadedWwisebank { get; private set; }
         private string _searchStatusText;
+
         public string SearchStatusText
         {
             get => _searchStatusText;
@@ -635,7 +663,9 @@ namespace ME3Explorer
 
         private enum PlaybackState
         {
-            Playing, Stopped, Paused
+            Playing,
+            Stopped,
+            Paused
         }
 
         private PlaybackState _playbackState;
@@ -683,10 +713,12 @@ namespace ME3Explorer
             {
                 return false;
             }
+
             if (hexString.Length % 2 != 0)
             {
                 return false;
             }
+
             return true;
         }
 
@@ -705,16 +737,19 @@ namespace ME3Explorer
                 SearchStatusText = "Illegal characters in Hex String";
                 return;
             }
+
             if (hexString.Length % 2 != 0)
             {
                 SearchStatusText = "Odd number of characters in Hex String";
                 return;
             }
+
             byte[] buff = new byte[hexString.Length / 2];
             for (int i = 0; i < hexString.Length / 2; i++)
             {
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
+
             byte[] hirc;
             int count = HIRCObjects.Count;
             int hexboxIndex = (int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
@@ -729,8 +764,10 @@ namespace ME3Explorer
                     //searchHexStatus.Text = "";
                     return;
                 }
+
                 hexboxIndex = 0;
             }
+
             SearchStatusText = "Hex not found";
         }
 
@@ -751,9 +788,11 @@ namespace ME3Explorer
                         f = j;
                         break;
                     }
+
                 if (f == -1)
                     return false;
             }
+
             return true;
         }
 
@@ -765,6 +804,7 @@ namespace ME3Explorer
         }
 
         private bool _hircHexChanged;
+
         public bool HIRCHexChanged
         {
             get => _hircHexChanged;
@@ -803,12 +843,14 @@ namespace ME3Explorer
             {
                 return CurrentLoadedExport.FileRef.Game == MEGame.ME3;
             }
+
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 object currentWEMItem = ExportInfoListBox.SelectedItem;
                 bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3;
                 return result;
             }
+
             return false;
         }
 
@@ -819,6 +861,7 @@ namespace ME3Explorer
             {
                 await ReplaceAudioFromWave();
             }
+
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 ReplaceWEMAudioFromWave();
@@ -942,6 +985,7 @@ namespace ME3Explorer
                 HostingControl.BusyText = "Converting and replacing audio";
                 HostingControl.IsBusy = true;
             }
+
             var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport);
@@ -1056,6 +1100,7 @@ namespace ME3Explorer
                 string basename = System.IO.Path.GetFileNameWithoutExtension(file);
                 File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
             }
+
             var deleteResult = await TryDeleteDirectory(templatefolder);
             Debug.WriteLine("Deleted templatedproject: " + deleteResult);
 
@@ -1166,6 +1211,7 @@ namespace ME3Explorer
                         {
                             File.Copy(wavPath, d.FileName, true);
                         }
+
                         MessageBox.Show("Done.");
                     }
                 }
@@ -1187,10 +1233,12 @@ namespace ME3Explorer
                             ms.CopyTo(fs);
                             fs.Flush();
                         }
+
                         MessageBox.Show("Done.");
                     }
                 }
             }
+
             if (CurrentLoadedISACTEntry != null)
             {
                 SaveFileDialog d = new SaveFileDialog
@@ -1207,9 +1255,11 @@ namespace ME3Explorer
                         waveStream.CopyTo(fs);
                         fs.Flush();
                     }
+
                     MessageBox.Show("Done.");
                 }
             }
+
             if (CurrentLoadedAFCFileEntry != null)
             {
                 string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
@@ -1226,6 +1276,7 @@ namespace ME3Explorer
                         s.Seek(0, SeekOrigin.Begin);
                         s.CopyTo(fileStream);
                     }
+
                     MessageBox.Show("Done.");
                 }
             }
@@ -1245,6 +1296,7 @@ namespace ME3Explorer
                     return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
                 }
             }
+
             return false;
         }
 
@@ -1258,9 +1310,9 @@ namespace ME3Explorer
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
-                if (vorbisStream == null)
+                if (audioStream == null)
                 {
-                    UpdateVorbisStream();
+                    UpdateAudioStream();
                 }
                 else
                 {
@@ -1270,36 +1322,38 @@ namespace ME3Explorer
                             (CurrentLoadedAFCFileEntry != null && CachedStreamSource != CurrentLoadedAFCFileEntry))
                         {
                             //invalidate the cache
-                            UpdateVorbisStream();
+                            UpdateAudioStream();
                         }
+
                         if (CurrentLoadedExport != null)
                         {
                             //check if cached is the same as what we want to play
                             if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
                             {
                                 //invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                             else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
                             {
                                 //Invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                             else if (CurrentLoadedExport.ClassName == "SoundNodeWave" && CachedStreamSource != ExportInfoListBox.SelectedItem)
                             {
                                 //Invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                         }
                     }
                 }
+
                 //check to make sure stream has loaded before we attempt to play it
-                if (vorbisStream != null)
+                if (audioStream != null)
                 {
                     try
                     {
-                        vorbisStream.Position = 0;
-                        _audioPlayer = new SoundpanelAudioPlayer(vorbisStream, CurrentVolume)
+                        audioStream.Position = 0;
+                        _audioPlayer = new SoundpanelAudioPlayer(audioStream, CurrentVolume)
                         {
                             PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile
                         };
@@ -1316,7 +1370,7 @@ namespace ME3Explorer
                     catch (Exception)
                     {
                         //error playing audio or initializing
-                        vorbisStream = null;
+                        audioStream = null;
                         playToggle = false;
                     }
 
@@ -1335,21 +1389,19 @@ namespace ME3Explorer
             }
         }
 
-        private void UpdateVorbisStream()
+        private void UpdateAudioStream()
         {
-            vorbisStream = getPCMStream();
-            //if (vorbisStream is MemoryStream ms)
-            //{
-            //    File.WriteAllBytes(@"C:\users\public\file.wav", ms.ToArray());
-            //}
+            audioStream = getPCMStream();
             if (CurrentLoadedISACTEntry != null)
             {
                 CachedStreamSource = CurrentLoadedISACTEntry;
             }
+
             if (CurrentLoadedAFCFileEntry != null)
             {
                 CachedStreamSource = CurrentLoadedAFCFileEntry;
             }
+
             if (CurrentLoadedExport != null)
             {
                 if (CurrentLoadedExport.ClassName == "WwiseStream")
@@ -1378,7 +1430,7 @@ namespace ME3Explorer
 
         public bool CanStartPlayback(object p)
         {
-            if (vorbisStream != null) return true; //looping
+            if (audioStream != null) return true; //looping
             if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
             if (CurrentLoadedISACTEntry != null) return true;
             if (CurrentLoadedAFCFileEntry != null) return true;
@@ -1391,8 +1443,10 @@ namespace ME3Explorer
                 {
                     return false; //nothing selected, or current wem is not playable
                 }
+
                 if (currentWEMItem is EmbeddedWEMFile) return true;
             }
+
             if (CurrentLoadedExport.ClassName == "SoundNodeWave")
             {
                 object currentNodeWaveItem = ExportInfoListBox.SelectedItem;
@@ -1401,6 +1455,7 @@ namespace ME3Explorer
                 {
                     return isbe.DataAsStored != null;
                 }
+
                 if (currentNodeWaveItem is EmbeddedWEMFile) return true;
             }
 
@@ -1421,16 +1476,17 @@ namespace ME3Explorer
                 _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }
-            if (vorbisStream != null)
+
+            if (audioStream != null)
             {
                 //vorbisStream.Dispose();
-                vorbisStream = null;
+                audioStream = null;
             }
         }
 
         private bool CanStopPlayback(object p)
         {
-            return _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || vorbisStream != null;
+            return _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
         }
 
         // Events
@@ -1523,6 +1579,7 @@ namespace ME3Explorer
                     _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
                 }
             }
+
             SeekDragging = false;
         }
 
@@ -1568,12 +1625,14 @@ namespace ME3Explorer
                         return;
                     }
                 }
+
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
                 CurrentLoadedExport.Data = w.memory.TypedClone();
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
                 }
+
                 MessageBox.Show("Done");
             }
         }
@@ -1610,8 +1669,10 @@ namespace ME3Explorer
                     {
                         StartOrPausePlaying();
                     }
+
                     ke.Handled = true;
                 }
+
                 if (ke.Key == Key.Escape)
                 {
                     StopPlaying();
@@ -1628,6 +1689,7 @@ namespace ME3Explorer
                 StopPlaying();
                 StartOrPausePlaying();
             }
+
             if (currentSelectedItem != null && currentSelectedItem is ISBankEntry && (currentSelectedItem as ISBankEntry).DataAsStored != null)
             {
                 StopPlaying();
@@ -1728,6 +1790,7 @@ namespace ME3Explorer
                             });
                             start += 4;
                         }
+
                         break;
                 }
             }
@@ -1745,6 +1808,7 @@ namespace ME3Explorer
         }
 
         private bool ControlLoaded;
+
         private void Soundpanel_Loaded(object sender, RoutedEventArgs e)
         {
             if (!ControlLoaded)
@@ -1798,6 +1862,7 @@ namespace ME3Explorer
                             {
                                 s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
                             }
+
                             //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
                             //{
                             //    s += $", Export: {exp.ObjectName}";
@@ -1807,12 +1872,14 @@ namespace ME3Explorer
                             //    s += $", Import: {imp.ObjectName}";
                             //}
                         }
+
                         s += $" | Start=0x{start:X8} ";
                         if (len > 0)
                         {
                             s += $"Length=0x{len:X8} ";
                             s += $"End=0x{(start + len - 1):X8}";
                         }
+
                         HIRCStatusBar_LeftMostText.Text = s;
                     }
                     else
@@ -1823,6 +1890,7 @@ namespace ME3Explorer
                 catch (Exception)
                 {
                 }
+
                 SoundpanelHIRC_Hexbox.Refresh();
             }
         }
@@ -1894,12 +1962,24 @@ namespace ME3Explorer
         private void ExtractISBERaw(object sender, RoutedEventArgs e)
         {
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (!(currentSelectedItem is ISBankEntry isbe) || isbe.DataAsStored == null)
+            if (!(currentSelectedItem is ISBankEntry isbe) || isbe.DataAsStored == null || isbe.FullData == null)
             {
                 return; //nothing selected, or current item is not playable
             }
+
             var bankEntry = (ISBankEntry)currentSelectedItem;
-            File.WriteAllBytes(@"C:\users\mgame\desktop\out.bin", bankEntry.FullData);
+            SaveFileDialog d = new SaveFileDialog
+            {
+                //ISBS is not a real extension, but I set it to prevent people from trying to load a single sample into
+                //soundplorer and breaking things as the headers are different for real banks.
+                Filter = "ISACT Single Sample|*.isbs",
+                FileName = Path.GetFileNameWithoutExtension(isbe.FileName) + ".isbs"
+            };
+            if (d.ShowDialog() == true)
+            {
+                File.WriteAllBytes(d.FileName, bankEntry.FullData);
+                MessageBox.Show("Done");
+            }
         }
     }
 
@@ -1908,6 +1988,7 @@ namespace ME3Explorer
         public uint Id;
         public bool HasBeenFixed;
         public MEGame Game;
+
         public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, uint Id = 0)
         {
             this.Id = Id;
@@ -1960,5 +2041,4 @@ namespace ME3Explorer
             return false; //don't need this
         }
     }
-
 }

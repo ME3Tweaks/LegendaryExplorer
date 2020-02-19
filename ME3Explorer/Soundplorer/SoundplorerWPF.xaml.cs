@@ -1324,7 +1324,33 @@ namespace ME3Explorer.Soundplorer
 
         private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
         {
-            if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
+            /* leave here until ISB work is completed - Mgamerz Feb 19 2020
+            var soundfiles = Directory.GetFiles(@"D:\Origin Games\Mass Effect\Biogame\CookedPC\Packages\Audio_Content", "*.upk", SearchOption.AllDirectories).ToList();
+            foreach (var sf in soundfiles)
+            {
+                var p = MEPackageHandler.OpenMEPackage(sf);
+                var snwexports = p.Exports.Where(x => x.ClassName == "SoundNodeWave").ToList();
+                foreach (var ex in snwexports)
+                {
+                    int dataSizeOffset = ex.propsEnd() + 4;
+                    int dataLength = BitConverter.ToInt32(ex.Data, dataSizeOffset);
+                    if (dataLength > 0)
+                    {
+                        byte[] binData = ex.Data.Skip(ex.propsEnd() + 20).ToArray();
+                        ISBank isb = new ISBank(binData, true);
+                        foreach (var isbe in isb.BankEntries)
+                        {
+                            if (isbe.CodecID != 0x2)
+                            {
+                                Debug.WriteLine($"Codec {isbe.CodecID} in {sf} {ex.UIndex} {ex.InstancedFullPath}");
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return;
+            */if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
@@ -1394,8 +1420,8 @@ namespace ME3Explorer.Soundplorer
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
-                        //Wait for all children to finish loading
-                        LoadFile(FileQueuedForLoad);
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
                     FileQueuedForLoad = null;
 
                     if (BindedItemsList.FirstOrDefault(obj => obj is SoundplorerExport sExport && sExport.Export == ExportQueuedForFocusing) is SoundplorerExport soundExport)
