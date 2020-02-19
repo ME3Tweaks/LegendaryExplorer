@@ -19,9 +19,10 @@ namespace ME3Explorer.Soundplorer
         public uint numberOfChannels = 0;
         public uint sampleRate = 0;
         public uint DataOffset;
-        public uint HeaderOffset;
         public int CodecID = -1;
         internal int CodecID2 = -1;
+        public int bps;
+        public uint pcmBytes;
         public byte[] DataAsStored { get; set; }
 
         public string DisplayString
@@ -37,6 +38,8 @@ namespace ME3Explorer.Soundplorer
                 return retstr;
             }
         }
+
+        public byte[] FullData { get; set; }
 
         internal MemoryStream GetWaveStream()
         {
@@ -162,7 +165,7 @@ namespace ME3Explorer.Soundplorer
 
         }
 
-        private string getCodecStr()
+        public string getCodecStr()
         {
             switch (CodecID)
             {
@@ -177,6 +180,16 @@ namespace ME3Explorer.Soundplorer
 
         public TimeSpan? GetLength()
         {
+            if (CodecID == 0x2)
+            {
+                //vorbis - based on VGMStream
+                var samplecount = pcmBytes / numberOfChannels / (bps / 8);
+                var seconds = (double) samplecount / sampleRate;
+                return TimeSpan.FromSeconds(seconds);
+            }
+            //other codecs are not supported right now
+
+            //todo: update this with algorithm that VGMStream uses so we don't have to even extract to determine it
             if (!isOgg && !isPCM)
             {
                 try

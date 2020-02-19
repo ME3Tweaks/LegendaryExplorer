@@ -779,16 +779,13 @@ namespace ME3Explorer
                 AllWems.Clear();
 
                 ExportInformationList.Add(entry.FileName);
-                ExportInformationList.Add($"Ogg encoded: {entry.isOgg}");
-                ExportInformationList.Add($"PCM encoded: {entry.isPCM}");
-                ExportInformationList.Add($"ADPCM encoded: {!entry.isOgg && !entry.isPCM}");
-                ExportInformationList.Add($"Header offset: 0x{entry.HeaderOffset:X8}");
+                ExportInformationList.Add($"Codec: {entry.getCodecStr()}");
                 ExportInformationList.Add($"Datastream size: {entry.DataAsStored.Length} bytes");
                 ExportInformationList.Add($"Datastream offset: 0x{entry.DataOffset:X8}");
 
                 CurrentLoadedISACTEntry = entry;
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -1886,6 +1883,23 @@ namespace ME3Explorer
                 SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
                 SoundpanelHIRC_Hexbox.SelectionLength = 1;
             }
+        }
+
+        private void ExtractISBEToWav(object sender, RoutedEventArgs e)
+        {
+            //todo: standard extraction
+
+        }
+
+        private void ExtractISBERaw(object sender, RoutedEventArgs e)
+        {
+            object currentSelectedItem = ExportInfoListBox.SelectedItem;
+            if (!(currentSelectedItem is ISBankEntry isbe) || isbe.DataAsStored == null)
+            {
+                return; //nothing selected, or current item is not playable
+            }
+            var bankEntry = (ISBankEntry)currentSelectedItem;
+            File.WriteAllBytes(@"C:\users\mgame\desktop\out.bin", bankEntry.FullData);
         }
     }
 

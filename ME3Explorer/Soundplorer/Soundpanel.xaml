@@ -16,6 +16,7 @@
              xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
                            xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                           xmlns:wordprocessing="clr-namespace:DocumentFormat.OpenXml.Wordprocessing;assembly=DocumentFormat.OpenXml"
                            mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -43,18 +44,42 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
-                <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick">
+                <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" 
+                         PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
-                        <DataTemplate DataType="{x:Type s:String}">
-                            <TextBlock Text="{Binding}" Foreground="Gray"/>
-                        </DataTemplate>
+                        <!--Defines a context menu-->
+                        <ContextMenu x:Key="MyElementMenu">
+                            <MenuItem Header="Export"/>
+                        </ContextMenu>
+
+                        <!--Sets a context menu for each ListBoxItem in the current ListBox-->
+                        
+                        
                         <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type soundplorer:ISBankEntry}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
-                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="ExtractISBEToWav" ToolTip="Extract audio to WAV file">
+                                            <MenuItem.Header>
+                                                <TextBlock Text="Extract as WAV" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                        <MenuItem Click="ExtractISBERaw" ToolTip="Extracts this sound from the embedded ISB and places it into a standalone ISB. This is mainly only for debugging.">
+                                            <MenuItem.Header>
+                                                <TextBlock Text="Extract single sound to 'ISB' raw file" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                                </TextBlock>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type s:String}">
+                            <TextBlock Text="{Binding}" Foreground="Gray"/>
                         </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>

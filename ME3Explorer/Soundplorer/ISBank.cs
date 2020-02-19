@@ -49,11 +49,18 @@ namespace ME3Explorer.Soundplorer
             }
             else
             {
+                //get full data
+                var pos = ms.Position;
+                ms.Position -= 8; //go back 8
+                var fulldata = new byte[riffSize + 8];
+                ms.Read(fulldata, 0, fulldata.Length);
+                ms.Position = pos; //reset
+                isbEntry = new ISBankEntry(); //start of a new file
+                isbEntry.FullData = fulldata;
 
                 blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
                 ms.Seek(blocksize, SeekOrigin.Current); //skip it
-                isbEntry = new ISBankEntry(); //start of a new file
-                isbEntry.HeaderOffset = (uint)ms.Position;
+                
             }
             //todo change to this
             //  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
@@ -75,7 +82,6 @@ namespace ME3Explorer.Soundplorer
                     //Debug.WriteLine(isbEntry.GetTextSummary());
                     //Debug.WriteLine("=======================");
                     isbEntry = new ISBankEntry();
-                    isbEntry.HeaderOffset = (uint)ms.Position;
                     currentCounter = counter;
                 }
 
@@ -84,21 +90,6 @@ namespace ME3Explorer.Soundplorer
                 switch (blockName)
                 {
                     case "LIST":
-                        /*
-                         *       AudioFile.Seek(4, sofromcurrent); //list block size
-      AudioFile.Seek(8, sofromcurrent); //Seek past ''isbftitl'' bytes
-      blocksize:=Audiofile.ReadDWord;
-
-      TempString:='';
-      //filename:='';
-      for I := 0 to blocksize - 1 do
-      begin
-        TempString:=chr(Audiofile.ReadByte);
-        if TempString=#0 then
-        else
-          //filename:=filename + TempString;
-      end;
-      continue;*/
                         ms.Seek(4, SeekOrigin.Current); //list block size
                         ms.Seek(8, SeekOrigin.Current); //Seek past ''isbftitl'' bytes
                         blocksize = ms.ReadUInt32(); //size of block
@@ -117,53 +108,31 @@ namespace ME3Explorer.Soundplorer
                                 endOfStr = true;
                             }
                         }
-                        //string str = ms.ReadString(blocksize);
                         isbEntry.FileName = tempStr;
                         break;
                     case "sinf":
-                        /*    if blockname='sinf' then
-    begin
-      AudioFile.Seek(12, sofromcurrent);
-      samplerate:=Audiofile.ReadDWord;
-      AudioFile.Seek(8, sofromcurrent);
-      continue;
-    end;*/
-                        ms.Seek(12, SeekOrigin.Current);
+                        var chunksize = ms.ReadInt32();
+                        var pos = ms.Position;
+                        ms.ReadInt64(); //skip 8
                         isbEntry.sampleRate = ms.ReadUInt32();
-                        ms.Seek(8, SeekOrigin.Current);
+                        isbEntry.pcmBytes = ms.ReadUInt32();
+                        isbEntry.bps = ms.ReadInt16();
+                        ms.Position = pos + chunksize; //skip to next chunk
                         break;
                     case "chnk":
-                        /*
-                         *     if blockname='chnk' then
-    begin
-      AudioFile.Seek(4, sofromcurrent);
-      PCchannels:=Audiofile.ReadDWord;
-      continue;
-    end;*/
                         ms.Seek(4, SeekOrigin.Current);
                         isbEntry.numberOfChannels = ms.ReadUInt32();
                         break;
                     case "cmpi":
-                        /*
-    if blockname='cmpi' then
-    begin
-      AudioFile.Seek(24, sofromcurrent);
-      if Audiofile.ReadDWord=1053609165 then
-        IsPCM:=true
-      else
-        IsPCM:=false;
-      continue;
-    end;*/
+                        //Codec/compression index
                         var size = ms.ReadInt32();
-                        var pos = ms.Position;
+                        pos = ms.Position;
                         isbEntry.CodecID = ms.ReadInt32();
                         isbEntry.CodecID2 = ms.ReadInt32();
                         ms.Position = pos + size;
                         break;
                     case "data":
                         counter++;
-
-                        //Debug.WriteLine(counter + " Data for " + isbEntry.FileName);
                         blocksize = ms.ReadUInt32(); //size of block
 
                         string encodedType = ms.ReadString(4, false);
@@ -176,36 +145,6 @@ namespace ME3Explorer.Soundplorer
                         data.Position = 0;
                         var str = data.ReadString(4, false);
                         isbEntry.DataAsStored = data.ToArray();
-                        //ms.Seek(blocksize, SeekOrigin.Current); //go to next block
-
-                        /*
-                         *     if blockname='data' then
-    begin
-      inc(Counter);
-      blocksize:=Audiofile.ReadDWord;
-      if blocksize mod 2 <> 0 then
-        blocksize:=blocksize+1;
-
-      if Audiofile.ReadBlockName='OggS' then
-        IsOgg:=true
-      else
-        IsOgg:=false;
-
-      AudioFile.Seek(-4, sofromcurrent);
-
-      if Counter=FileNo then
-      begin
-        SavePcFile(filename, destdir, blocksize, IsOgg, IsPcm, False, PcChannels, SampleRate);
-        application.processmessages;
-        continue;
-      end
-      else
-      begin
-        Audiofile.Seek(blocksize, sofromcurrent);
-        application.processmessages;
-        continue;
-      end;
-    end;*/
                         break;
                     case "RIFF":
                         //this is the start of a new file.
