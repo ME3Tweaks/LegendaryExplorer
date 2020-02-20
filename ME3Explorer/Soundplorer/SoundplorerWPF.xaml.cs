@@ -996,7 +996,7 @@ namespace ME3Explorer.Soundplorer
                         if (d.ShowDialog() == true)
                         {
                             WwiseStream w = new WwiseStream(spExport.Export);
-                            if (w.ExtractRawFromSource(d.FileName, w.GetPathToAFC()))
+                            if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1018,7 +1018,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            if (WwiseStream.ExtractRawFromSource(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
+                            if (WwiseStream.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1046,7 +1046,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = new WwiseStream(spExport.Export);
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (w.ExtractRawFromSource(riffOutputFile, w.GetPathToAFC()))
+                    if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
                         MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
@@ -1080,7 +1080,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (WwiseStream.ExtractRawFromSource(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
+                    if (WwiseStream.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
                         MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
                         //string outputOggPath = 
@@ -1350,7 +1350,8 @@ namespace ME3Explorer.Soundplorer
             }
             
             return;
-            */if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
+            */
+            if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
@@ -1508,6 +1509,49 @@ namespace ME3Explorer.Soundplorer
 
         public void LoadData()
         {
+            using FileStream rawRiff = new FileStream(AFCPath, FileMode.Open);
+            rawRiff.Position = Offset;
+            //Parse RIFF header a bit
+            rawRiff.ReadInt32(); //RIFF
+            rawRiff.ReadInt32();//size
+            var wavetype = rawRiff.ReadStringASCII(4);
+            rawRiff.ReadInt32();//'fmt '/
+            var fmtsize = rawRiff.ReadInt32();
+            var fmtPos = rawRiff.Position;
+            var riffFormat = rawRiff.ReadUInt16();
+            var channels = rawRiff.ReadInt16();
+            var sampleRate = rawRiff.ReadInt32();
+            var averageBPS = rawRiff.ReadInt32();
+            var blockAlign = rawRiff.ReadInt16();
+            var bitsPerSample = rawRiff.ReadInt16();
+            var extraSize = rawRiff.ReadInt16(); //gonna need some testing on this cause there's a lot of header formats for wwise
+            if (riffFormat == 0xFFFF)
+            {
+                //find 'vorb' chunk
+                rawRiff.Seek(extraSize, SeekOrigin.Current);
+                var vorbHeader = rawRiff.ReadStringASCII(4);
+                uint numSamples = 1; //to prevent division by 0
+                if (vorbHeader == "vorb")
+                {
+                    //ME2 Vorbis
+                    var vorbsize = rawRiff.ReadInt32();
+                    numSamples = rawRiff.ReadUInt32();
+                }
+                else
+                {
+                    //ME3 Vorbis
+                    rawRiff.Position = fmtPos + 0x18; //Might be diff for ME2, we'll have to see
+                    numSamples = rawRiff.ReadUInt32();
+                }
+
+                var seconds = (double)numSamples / sampleRate;
+                SubText = TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss\:fff");
+            }
+            else
+            {
+                SubText = new TimeSpan(132045).ToString(@"mm\:ss\:fff");
+            }
+            /*
             Stream waveStream = WwiseStream.CreateWaveStreamFromRaw(AFCPath, Offset, DataSize, ME2);
             if (waveStream != null)
             {
@@ -1525,7 +1569,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     SubText = "Error getting length, may be unsupported";
                 }
-            }
+            }*/
             NeedsLoading = false;
             Icon = EFontAwesomeIcon.Solid_VolumeUp;
         }

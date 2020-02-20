@@ -182,6 +182,20 @@ namespace StreamHelpers
             stream.Write(BitConverter.GetBytes(data), 0, sizeof(int));
         }
 
+        /// <summary>
+        /// Writes the remainder of the stream to file from the current position. This should only be used on streams that support seeking. The position is restored after the file has been written.
+        /// </summary>
+        /// <param name="stream">Stream to write from with set position</param>
+        /// <param name="outfile">File to write to</param>
+        public static void WriteToFile(this Stream stream, string outfile)
+        {
+            long oldPos = stream.Position;
+            stream.Position = 0;
+            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+                stream.CopyTo(file);
+            stream.Position = oldPos;
+        }
+
         public static ushort ReadUInt16(this Stream stream)
         {
             var buffer = new byte[sizeof(ushort)];
