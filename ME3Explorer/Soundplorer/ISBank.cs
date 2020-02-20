@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -16,16 +17,16 @@ namespace ME3Explorer.Soundplorer
         public ISBank(string isbPath)
         {
             Filepath = isbPath;
-            ParseBank(new MemoryStream(File.ReadAllBytes(isbPath)), false);
+            ParseBank(new EndianReader(new MemoryStream(File.ReadAllBytes(isbPath))), false);
         }
 
         public ISBank(byte[] binData, bool isEmbedded)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ParseBank(ms, isEmbedded);
+            ParseBank(new EndianReader(ms), isEmbedded);
         }
 
-        private void ParseBank(MemoryStream ms, bool isEmbedded)
+        private void ParseBank(EndianReader ms, bool isEmbedded)
         {
             int numEntriesWithData = 1;
             //long dataStartPosition = ms.Position;
@@ -64,18 +65,19 @@ namespace ME3Explorer.Soundplorer
             ////  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
             uint chunksize = 0;
             ISBankEntry isbEntry = null;
-            while (ms.Position < ms.Length)
+            while (ms.BaseStream.Position < ms.BaseStream.Length)
             {
                 chunksize = 0; //reset
-                var chunkStartPos = ms.Position;
-                string blockName = ms.ReadString(4);
+                var chunkStartPos = ms.BaseStream.Position;
+                string blockName = ms.ReadStringASCII(4);
                 //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
                 switch (blockName)
                 {
                     case "LIST":
                         chunksize = ms.ReadUInt32();
-                        var nextblockname = ms.ReadString(8);
-                        if (nextblockname == "samptitl")
+                        var nextblockname = ms.ReadStringASCII(4);
+                        var nextblockname2 = ms.ReadStringASCII(4);
+                        if (nextblockname == "samp" && nextblockname2 == "titl")
                         {
                             if (!isEmbedded)
                             {
@@ -92,7 +94,7 @@ namespace ME3Explorer.Soundplorer
                         else
                         {
                             //maybe isb container, ignore
-                            ms.Position = chunksize + 8 + chunkStartPos;
+                            ms.BaseStream.Position = chunksize + 8 + chunkStartPos;
                             //Debug.WriteLine($"Skipping non-sample LIST at 0x{chunkStartPos:X8}");
                             continue;
                         }
@@ -117,12 +119,12 @@ namespace ME3Explorer.Soundplorer
                         break;
                     case "sinf":
                         chunksize = ms.ReadUInt32();
-                        var pos = ms.Position;
+                        var pos = ms.BaseStream.Position;
                         ms.ReadInt64(); //skip 8
                         isbEntry.sampleRate = ms.ReadUInt32();
                         isbEntry.pcmBytes = ms.ReadUInt32();
                         isbEntry.bps = ms.ReadInt16();
-                        ms.Position = pos + chunksize; //skip to next chunk
+                        ms.BaseStream.Position = pos + chunksize; //skip to next chunk
                         break;
                     case "chnk":
                         ms.Seek(4, SeekOrigin.Current);
@@ -131,29 +133,35 @@ namespace ME3Explorer.Soundplorer
                     case "cmpi":
                         //Codec/compression index
                         var size = ms.ReadInt32();
-                        pos = ms.Position;
+                        pos = ms.BaseStream.Position;
                         isbEntry.CodecID = ms.ReadInt32();
                         isbEntry.CodecID2 = ms.ReadInt32();
-                        ms.Position = pos + size;
+                        ms.BaseStream.Position = pos + size;
                         break;
                     case "data":
                         numEntriesWithData++;
                         chunksize = ms.ReadUInt32(); //size of block
-                        isbEntry.DataOffset = (uint)ms.Position;
+                        isbEntry.DataOffset = (uint)ms.BaseStream.Position;
                         MemoryStream data = new MemoryStream();
-                        ms.CopyToEx(data, (int)chunksize);
+                        ms.BaseStream.CopyToEx(data, (int)chunksize);
                         data.Position = 0;
                         var str = data.ReadString(4, false);
                         isbEntry.DataAsStored = data.ToArray();
                         break;
+                    case "FFIR":
                     case "RIFF":
+                        if (blockName == "FFIR" && ms.BaseStream.Position == 0x4)
+                        {
+                            ms.Endian = Endian.Big;
+                        }
                         if (isEmbedded)
                         {
                             //EMBEDDED ISB
                             //this is the start of a new file.
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
-                            var riffType = ms.ReadString(8, false); //type of ISB riff
-                            if (riffType != "isbftitl")
+                            var riffType = ms.ReadStringASCII(4); //type of ISB riff
+                            var riffType2 = ms.ReadStringASCII(4); //type of ISB riff
+                            if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
                                 ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
@@ -167,11 +175,12 @@ namespace ME3Explorer.Soundplorer
                             }
 
                             isbEntry = new ISBankEntry();
+                            isbEntry.FileEndianness = ms.Endian;
                             isbEntry.FullData = new byte[riffSize + 8];
-                            pos = ms.Position;
-                            ms.Position = ms.Position - 16;
+                            pos = ms.BaseStream.Position;
+                            ms.BaseStream.Position = ms.BaseStream.Position - 16;
                             ms.Read(isbEntry.FullData, 0, (int)riffSize + 8);
-                            ms.Position = pos;
+                            ms.BaseStream.Position = pos;
                             chunksize = ms.ReadUInt32(); //size of isfbtitl chunk
                             ms.Seek(chunksize, SeekOrigin.Current); //skip it
                         }
@@ -179,10 +188,11 @@ namespace ME3Explorer.Soundplorer
                         {
                             //ISB file - has external RIFF header and samptitl's separating each data section
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
-                            var riffType = ms.ReadString(8, false); //type of ISB riff
-                            if (riffType != "isbftitl")
+                            var riffType = ms.ReadStringASCII(4); //type of ISB riff
+                            var riffType2 = ms.ReadStringASCII(4); //type of ISB riff
+                            if (riffType != "isbf" && riffType2 != "titl")
                             {
-                                //its an icbftitl, which never has data.
+                                //its an icbftitl, which never has data, or is not ISB
                                 ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
                                 continue; //skip
                             }

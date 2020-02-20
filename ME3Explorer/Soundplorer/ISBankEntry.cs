@@ -8,18 +8,21 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.Soundplorer
 {
     public class ISBankEntry
     {
         public string FileName { get; set; }
+        public Endian FileEndianness { get; set; }
         public uint numberOfChannels = 0;
         public uint sampleRate = 0;
         public uint DataOffset;
         public int CodecID = -1;
         internal int CodecID2 = -1;
         public int bps;
+        public int SmplTitlOffset;
         public uint pcmBytes;
         public byte[] DataAsStored { get; set; }
 
@@ -56,10 +59,14 @@ namespace ME3Explorer.Soundplorer
                 return waveStream;
             }
 
-            if (CodecID == 0x1 || CodecID == 0x4)
+            if (CodecID == 0x1 || CodecID == 0x4 || CodecID == 0x5)
             {
-                //Xbox IMA, XMA
+                //Xbox IMA, XMA, Sony MSF (PS3)
                 //Use VGM Stream
+                if (FullData == null)
+                {
+                    PopulateFakeFullData();
+                }
                 if (FullData != null)
                 {
                     var tempPath = GetTempSoundPath() + ".isb";
@@ -79,9 +86,55 @@ namespace ME3Explorer.Soundplorer
         }
 
         /// <summary>
-        /// Converts an ogg file to a wav file using oggdec
+        /// Converts this entry to a standalone RIFF and stores it in the FullData variable. Used for preparing data to feed to VGM stream when this is a subsong in an ISB file
+        /// The output of this is NOT a valid ISB file! Only enough to allow VGMStream to parse it.
         /// </summary>
-        /// <param name="oggPath">Path to ogg file</param>
+        private void PopulateFakeFullData()
+        {
+            MemoryStream outStream = new MemoryStream();
+            EndianWriter writer = new EndianWriter(outStream);
+            writer.Endian = FileEndianness;
+            writer.WriteStringASCII("RIFF");
+            writer.Write(0); //Placeholder for length
+            writer.WriteStringASCII("isbf"); //titl is actually a chunk
+            writer.WriteStringASCII("LIST");
+            var listsizepos = writer.BaseStream.Position;
+            writer.Write(0); //list size placeholder
+            writer.WriteStringASCII("samp"); //sample ahead
+
+            writer.WriteStringASCII("chnk");
+            writer.Write(4);
+            writer.Write(numberOfChannels);
+
+            writer.WriteStringASCII("chnk");
+            writer.Write(10);
+            writer.Write(sampleRate);
+            writer.Write(pcmBytes);
+            writer.Write(bps);
+
+            writer.WriteStringASCII("cpmi");
+            writer.Write(8);
+            writer.Write(CodecID);
+            writer.Write(CodecID2);
+
+            writer.WriteStringASCII("data");
+            writer.Write(DataAsStored.Length);
+            writer.Write(DataAsStored);
+
+            //Correct headers
+            writer.BaseStream.Position = listsizepos;
+            writer.Write((uint)writer.BaseStream.Length - (uint)listsizepos);
+
+            writer.BaseStream.Position = 0x4;
+            writer.Write((uint)writer.BaseStream.Length - 0x8);
+            FullData = outStream.ToArray();
+            File.WriteAllBytes(@"C:\users\mgame\desktop\fakedata.isb", FullData);
+        }
+
+        /// <summary>
+        /// Converts an Xbox IMA/ XMA Encoded RIFF (ISB file format) from ISACT to WAVE
+        /// </summary>
+        /// <param name="oggPath">Path to RIFF file</param>
         /// <returns></returns>
         private static MemoryStream ConvertXboxIMAXMAToWave(string inputfile)
         {
@@ -155,36 +208,29 @@ namespace ME3Explorer.Soundplorer
 
         public TimeSpan? GetLength()
         {
-            if (CodecID == 0x2)
+            if (CodecID == 0x0)
+            {
+                //PCM
+            }
+            else if (CodecID == 0x1)
+            {
+
+            }
+            else if (CodecID == 0x2)
             {
                 //vorbis - based on VGMStream
                 var samplecount = pcmBytes / numberOfChannels / (bps / 8);
                 var seconds = (double)samplecount / sampleRate;
                 return TimeSpan.FromSeconds(seconds);
             }
-            //other codecs are not supported right now
-
-            //todo: update this with algorithm that VGMStream uses so we don't have to even extract to determine it
-            //if (!isOgg && !isPCM)
-            //{
-            //    try
-            //    {
-            //        MemoryStream ms = GetWaveStream();
-            //        ms.Position = 0;
-            //        WaveFileReader wf = new WaveFileReader(ms);
-            //        return wf.TotalTime;
-            //    }
-            //    catch
-            //    {
-            //        return null;
-            //    }
-            //}
-            //if (isOgg)
-            //{
-
-            //    WaveFileReader wf = new WaveFileReader(GetWaveStream());
-            //    return wf.TotalTime;
-            //}
+            else if (CodecID == 0x4)
+            {
+                //XMA
+            }
+            else if (CodecID == 0x5)
+            {
+                //Sony MSF (PS3 ME1)
+            }
             return new TimeSpan(0);
         }
     }
