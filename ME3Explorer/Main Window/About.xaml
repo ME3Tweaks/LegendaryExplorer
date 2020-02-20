@@ -94,7 +94,7 @@
                         MrFob         <LineBreak/>
                         Heff          <LineBreak/>
                         Benji         <LineBreak/>
-                        Kinkojiro         <LineBreak/>
+                        Kinkojiro     <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -118,6 +118,7 @@
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         RS - Texmod                                     <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
+                        VGMStream - Audio decoding                      <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -125,7 +126,6 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <TextBlock>
                         GitHub - SirCxyrtyx                       <LineBreak/>
-                        Nexusmods - Giftfish and SirCxyrtyx       <LineBreak/>
                         Toolset GUI Text - Giftfish, SirCxyrtyx, Kinkojiro, Mgamerz<LineBreak/>
                         Web Portal - Giftfish and SirCxyrtyx      <LineBreak/>
                         Wikia - Giftfish and Wiki Contributors    <LineBreak/>

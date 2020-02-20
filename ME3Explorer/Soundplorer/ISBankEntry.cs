@@ -41,6 +41,8 @@ namespace ME3Explorer.Soundplorer
 
         public byte[] FullData { get; set; }
 
+        private static string GetTempSoundPath() => $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
+
         internal MemoryStream GetWaveStream()
         {
             //string outPath = Path.Combine(path, currentFileName);
@@ -48,14 +50,23 @@ namespace ME3Explorer.Soundplorer
             {
                 //PCM
                 var ms = new MemoryStream(DataAsStored);
-                var raw =  new RawSourceWaveStream(ms, new WaveFormat((int)sampleRate, bps, (int)numberOfChannels));
+                var raw = new RawSourceWaveStream(ms, new WaveFormat((int)sampleRate, bps, (int)numberOfChannels));
                 var waveStream = new MemoryStream();
-                WaveFileWriter.WriteWavFileToStream(waveStream,raw);
+                WaveFileWriter.WriteWavFileToStream(waveStream, raw);
                 return waveStream;
             }
-            // (CodecID == 0x1) {
-            // Xbox IMA
-            //}
+
+            if (CodecID == 0x1 || CodecID == 0x4)
+            {
+                //Xbox IMA, XMA
+                //Use VGM Stream
+                if (FullData != null)
+                {
+                    var tempPath = GetTempSoundPath() + ".isb";
+                    File.WriteAllBytes(tempPath, FullData);
+                    return ConvertXboxIMAXMAToWave(tempPath);
+                }
+            }
             if (CodecID == 0x2)
             {
                 string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
@@ -65,6 +76,50 @@ namespace ME3Explorer.Soundplorer
             }
             Debug.WriteLine("Unsupported codec for getting wave: " + CodecID);
             return null; //other codecs currently unsupported
+        }
+
+        /// <summary>
+        /// Converts an ogg file to a wav file using oggdec
+        /// </summary>
+        /// <param name="oggPath">Path to ogg file</param>
+        /// <returns></returns>
+        private static MemoryStream ConvertXboxIMAXMAToWave(string inputfile)
+        {
+            //convert ISB Codec 1/4 to WAV
+            MemoryStream outputData = new MemoryStream();
+
+            ProcessStartInfo procStartInfo = new ProcessStartInfo(Path.Combine(App.ExecFolder, "vgmstream", "vgmstream.exe"), $"-P \"{inputfile}\"")
+            {
+                WorkingDirectory = Path.Combine(App.ExecFolder, "vgmstream"),
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+            Process proc = new Process
+            {
+                StartInfo = procStartInfo
+            };
+
+            // Set our event handler to asynchronously read the sort output.
+            proc.Start();
+            //proc.BeginOutputReadLine();
+            var outputTask = Task.Run(() =>
+            {
+                proc.StandardOutput.BaseStream.CopyTo(outputData);
+            });
+            Task.WaitAll(outputTask);
+
+            proc.WaitForExit();
+            File.Delete(inputfile); //intermediate
+
+            //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
+            //outputData.Position = 0x4;
+            //outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
+            //outputData.Position = 0x28;
+            //outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
+            //outputData.Position = 0;
+            return outputData;
         }
 
         internal string GetTextSummary()
@@ -89,9 +144,10 @@ namespace ME3Explorer.Soundplorer
             switch (CodecID)
             {
                 case -1: return null;
-                case 0: return "PCM";
+                case 0: return $"{bps}-bit PCM";
                 case 1: return "Xbox IMA";
                 case 2: return "Vorbis";
+                case 4: return "XMA";
                 case 5: return "Sony MSF container"; //only for PS3 files, but we'll just document it here anyways
                 default: return $"Unknown codec ID ({CodecID})";
             }

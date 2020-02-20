@@ -349,6 +349,7 @@ namespace ME3Explorer
                                 ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
                             }
                         }
+                        ExportInfoListBox.SelectedItem = isb.BankEntries.FirstOrDefault();
                     }
                     else
                     {
@@ -469,12 +470,11 @@ namespace ME3Explorer
                     if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
                     {
                         object currentSelectedItem = ExportInfoListBox.SelectedItem;
-                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry))
+                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry bankEntry))
                         {
                             return null; //nothing selected, or current item is not playable
                         }
 
-                        var bankEntry = (ISBankEntry)currentSelectedItem;
                         return bankEntry.GetWaveStream();
                     }
 
