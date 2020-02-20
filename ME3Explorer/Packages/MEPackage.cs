@@ -45,6 +45,7 @@ namespace ME3Explorer.Packages
         public const ushort ME3UnrealVersion = 684;
         public const ushort ME3LicenseeVersion = 194;
         public const ushort ME2UnrealVersion = 512;
+        public const ushort ME2DemoUnrealVersion = 513;
         public const ushort ME2LicenseeVersion = 130;
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
@@ -124,6 +125,7 @@ namespace ME3Explorer.Packages
                     Game = MEGame.ME1;
                     break;
                 case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
+                case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
                     Game = MEGame.ME2;
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:

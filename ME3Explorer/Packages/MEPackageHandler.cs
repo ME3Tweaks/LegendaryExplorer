@@ -41,6 +41,7 @@ namespace ME3Explorer.Packages
 
                 if (version == MEPackage.ME3UnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
                     version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
+                    version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion)
                 {
                     package = MEConstructorDelegate(pathToFile, MEGame.Unknown);
