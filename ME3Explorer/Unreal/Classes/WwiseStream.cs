@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using NAudio.Wave;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using ME3Explorer.Soundplorer;
 using StreamHelpers;
 
 namespace ME3Explorer.Unreal.Classes
@@ -175,7 +176,7 @@ namespace ME3Explorer.Unreal.Classes
         public string CreateWave(string afcPath)
         {
             string basePath = GetTempSoundPath();
-            if (ExtractRawFromSourceToFile(basePath + ".dat", GetPathToAFC(), DataSize, DataOffset))
+            if (ExtractRawFromSourceToFile(basePath + ".wem", GetPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
@@ -214,9 +215,9 @@ namespace ME3Explorer.Unreal.Classes
         public static Stream CreateWaveStreamFromRaw(string afcPath, int offset, int datasize, bool ME2)
         {
             string basePath = GetTempSoundPath();
-            if (ExtractRawFromSourceToFile(basePath + ".dat", afcPath, datasize, offset))
+            if (ExtractRawFromSourceToFile(basePath + ".wem", afcPath, datasize, offset))
             {
-                return ConvertRiffToWav(basePath + ".dat", ME2);
+                return ISBankEntry.ConvertAudioToWave(basePath + ".wem");
             }
             return null;
         }

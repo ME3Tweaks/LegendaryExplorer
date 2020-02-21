@@ -71,7 +71,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     var tempPath = GetTempSoundPath() + ".isb";
                     File.WriteAllBytes(tempPath, FullData);
-                    return ConvertXboxIMAXMAToWave(tempPath);
+                    return ConvertAudioToWave(tempPath);
                 }
             }
             if (CodecID == 0x2)
@@ -132,11 +132,11 @@ namespace ME3Explorer.Soundplorer
         }
 
         /// <summary>
-        /// Converts an Xbox IMA/ XMA Encoded RIFF (ISB file format) from ISACT to WAVE
+        /// Converts a RAW RIFF/RIFX to WAVE using VGMStream and returns the data
         /// </summary>
-        /// <param name="oggPath">Path to RIFF file</param>
+        /// <param name="inputfilepath">Path to RIFF file</param>
         /// <returns></returns>
-        private static MemoryStream ConvertXboxIMAXMAToWave(string inputfile)
+        public static MemoryStream ConvertAudioToWave(string inputfile)
         {
             //convert ISB Codec 1/4 to WAV
             MemoryStream outputData = new MemoryStream();

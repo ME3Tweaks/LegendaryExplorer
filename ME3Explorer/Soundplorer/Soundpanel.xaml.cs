@@ -488,8 +488,9 @@ namespace ME3Explorer
 
                         var wemObject = (EmbeddedWEMFile)currentWEMItem;
                         string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
-                        File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
-                        return WwiseStream.ConvertRiffToWav(basePath + ".dat", wemObject.Game == MEGame.ME2);
+                        var outpath = basePath + ".wem";
+                        File.WriteAllBytes(outpath, wemObject.WemData);
+                        return WwiseStream.ConvertRiffToWav(outpath, wemObject.Game == MEGame.ME2);
                     }
                 }
             }

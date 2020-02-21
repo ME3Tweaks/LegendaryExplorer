@@ -34,6 +34,7 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using FontAwesome5.WPF;
 using FontAwesome5;
+using Gammtek.Conduit.IO;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.Soundplorer
@@ -252,7 +253,7 @@ namespace ME3Explorer.Soundplorer
 
                 UnLoadMEPackage();
                 LoadedISBFile = null;
-
+                LoadedAFCFile = null;
                 if (System.IO.Path.GetExtension(fileName).ToLower() == ".isb")
                 {
                     LoadedISBFile = fileName;
@@ -364,21 +365,24 @@ namespace ME3Explorer.Soundplorer
 
                     TaskbarText = $"Loading AFC: {System.IO.Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
                     string readStr = fileStream.ReadStringASCII(4);
-                    if (readStr != "RIFF")
+                    if (readStr != "RIFF" && readStr != "RIFX")
                     {
+                        //keep scanning
                         fileStream.Seek(-3, SeekOrigin.Current);
                         continue;
                     }
 
-                    //Found RIFF
-                    int size = fileStream.ReadInt32();
+                    EndianReader reader = new EndianReader(fileStream);
+                    if (readStr == "RIFX") reader.Endian = Endian.Big;
+                    //Found header
+                    int size = reader.ReadInt32();
                     fileStream.Seek(8, SeekOrigin.Current); //skip WAVE and fmt
 
                     short wwiseVersionMaybe = fileStream.ReadInt16();
 
                     fileStream.Seek(size - 10, SeekOrigin.Current);
 
-                    var entry = new AFCFileEntry(LoadedAFCFile, offset, size + 8, wwiseVersionMaybe == 0x28);
+                    var entry = new AFCFileEntry(LoadedAFCFile, offset, size + 8, wwiseVersionMaybe == 0x28, reader.Endian);
                     entries.Add(entry);
                 }
             }
@@ -1442,6 +1446,8 @@ namespace ME3Explorer.Soundplorer
         public bool ME2;
 
         private string _afcpath;
+        private readonly Endian Endian;
+
         public string AFCPath
         {
             get => _afcpath;
@@ -1490,8 +1496,9 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _displayString, value);
         }
 
-        public AFCFileEntry(string afcpath, int offset, int size, bool ME2)
+        public AFCFileEntry(string afcpath, int offset, int size, bool ME2, Endian endian)
         {
+            Endian = endian;
             AFCPath = afcpath;
             DataSize = size;
             this.ME2 = ME2;
@@ -1510,41 +1517,48 @@ namespace ME3Explorer.Soundplorer
         public void LoadData()
         {
             using FileStream rawRiff = new FileStream(AFCPath, FileMode.Open);
+            EndianReader reader = new EndianReader(rawRiff);
+            reader.Endian = Endian;
             rawRiff.Position = Offset;
             //Parse RIFF header a bit
-            rawRiff.ReadInt32(); //RIFF
-            rawRiff.ReadInt32();//size
+            var riffTag = rawRiff.ReadStringASCII(4); //RIFF
+            reader.ReadInt32();//size
             var wavetype = rawRiff.ReadStringASCII(4);
             rawRiff.ReadInt32();//'fmt '/
-            var fmtsize = rawRiff.ReadInt32();
+            var fmtsize = reader.ReadInt32(); //data should directly follow fmt
             var fmtPos = rawRiff.Position;
-            var riffFormat = rawRiff.ReadUInt16();
-            var channels = rawRiff.ReadInt16();
-            var sampleRate = rawRiff.ReadInt32();
-            var averageBPS = rawRiff.ReadInt32();
-            var blockAlign = rawRiff.ReadInt16();
-            var bitsPerSample = rawRiff.ReadInt16();
-            var extraSize = rawRiff.ReadInt16(); //gonna need some testing on this cause there's a lot of header formats for wwise
+            var riffFormat = reader.ReadUInt16();
+            var channels = reader.ReadInt16();
+            var sampleRate = reader.ReadInt32();
+            var averageBPS = reader.ReadInt32();
+            var blockAlign = reader.ReadInt16();
+            var bitsPerSample = reader.ReadInt16();
+            var extraSize = reader.ReadInt16(); //gonna need some testing on this cause there's a lot of header formats for wwise
             if (riffFormat == 0xFFFF)
             {
-                //find 'vorb' chunk
-                rawRiff.Seek(extraSize, SeekOrigin.Current);
-                var vorbHeader = rawRiff.ReadStringASCII(4);
-                uint numSamples = 1; //to prevent division by 0
-                if (vorbHeader == "vorb")
+                double seconds = 0;
+                if (extraSize == 0x30)
                 {
-                    //ME2 Vorbis
-                    var vorbsize = rawRiff.ReadInt32();
-                    numSamples = rawRiff.ReadUInt32();
-                }
-                else
-                {
-                    //ME3 Vorbis
-                    rawRiff.Position = fmtPos + 0x18; //Might be diff for ME2, we'll have to see
-                    numSamples = rawRiff.ReadUInt32();
+                    //find 'vorb' chunk (ME2)
+                    rawRiff.Seek(extraSize, SeekOrigin.Current);
+                    var chunkName = rawRiff.ReadStringASCII(4);
+                    uint numSamples = 1; //to prevent division by 0
+                    if (chunkName == "vorb")
+                    {
+                        //ME2 Vorbis
+                        var vorbsize = rawRiff.ReadInt32();
+                        numSamples = rawRiff.ReadUInt32();
+                    }
+                    else if (chunkName == "data")
+                    {
+                        //ME3 Vorbis
+                        var numSamplesOffset = rawRiff.Position = fmtPos + 0x18;
+                        numSamples = reader.ReadUInt32();
+                    }
+
+                    seconds = (double)numSamples / sampleRate;
                 }
 
-                var seconds = (double)numSamples / sampleRate;
                 SubText = TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss\:fff");
             }
             else
