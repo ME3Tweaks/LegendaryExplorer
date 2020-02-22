@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
 using StreamHelpers;
 
 namespace ME3Explorer.Packages
@@ -30,16 +31,21 @@ namespace ME3Explorer.Packages
             {
                 ushort version;
                 ushort licenseVersion;
-
+                uint versionLicenseePacked;
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
-                    fs.Seek(4, SeekOrigin.Begin);
-                    version = fs.ReadUInt16();
-                    licenseVersion = fs.ReadUInt16();
+                    EndianReader er = new EndianReader(fs);
+                    if (fs.ReadUInt32() == MEPackage.packageTagBigEndian) er.Endian = Endian.Big;
+
+                    // This is stored as integer by cooker as it is flipped by size word in big endian
+                    versionLicenseePacked = er.ReadUInt32();
+                    version = (ushort)(versionLicenseePacked & 0xFFFF);
+                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
                 }
 
 
                 if (version == MEPackage.ME3UnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
+                    version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
                     version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion)

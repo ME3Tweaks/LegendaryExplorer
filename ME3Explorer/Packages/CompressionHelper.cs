@@ -1,24 +1,24 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 using LZO2Helper;
+using SevenZipHelper;
 using StreamHelpers;
+using ZlibHelper;
 
 namespace ME3Explorer.Packages
 {
     public static class CompressionHelper
     {
-        public struct CompressedChunkBlock
-        {
-            public int cprSize;
-            public int uncSize;
-            public byte[] rawData;
-        }
-
+        /// <summary>
+        /// Represents an item in the Chunk table of a package
+        /// </summary>
         public struct Chunk
         {
             public int uncompressedOffset;
@@ -31,6 +31,10 @@ namespace ME3Explorer.Packages
             public List<Block> blocks;
         }
 
+        /// <summary>
+        /// Represents the header of chunk (that is pointed to by the chunk table)
+        /// </summary>
+
         public struct ChunkHeader
         {
             public int magic;
@@ -38,6 +42,7 @@ namespace ME3Explorer.Packages
             public int compressedsize;
             public int uncompressedsize;
         }
+
 
         public struct Block
         {
@@ -56,17 +61,20 @@ namespace ME3Explorer.Packages
         {
             using (FileStream input = File.OpenRead(pccFileName))
             {
-                input.Seek(4, SeekOrigin.Begin); //skip package tag
-                ushort versionLo = input.ReadUInt16();
-                ushort versionHi = input.ReadUInt16();
+                EndianReader packageReader = EndianReader.SetupForPackageReading(input);
+                packageReader.SkipInt32(); //skip package tag
+                var versionLicenseePacked = packageReader.ReadUInt32();
+                var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
+                var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
 
                 //ME3
-                if (versionLo == 684 && versionHi == 194)
+                if ((unrealVersion == MEPackage.ME3UnrealVersion || unrealVersion == MEPackage.ME3WiiUUnrealVersion) && licenseeVersion == MEPackage.ME3LicenseeVersion)
                 {
-                    return DecompressME3(input);
+                    return DecompressME3(packageReader);
                 }
+                //Support other platforms
                 //ME2 || ME1
-                else if (versionLo == 512 && versionHi == 130 || versionLo == 491 && versionHi == 1008)
+                else if (unrealVersion == 512 && licenseeVersion == 130 || unrealVersion == 491 && licenseeVersion == 1008)
                 {
                     return DecompressME1orME2(input);
                 }
@@ -172,18 +180,18 @@ namespace ME3Explorer.Packages
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
-                        {
-                            if (
-                                    LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
-                                throw new Exception("LZO decompression failed!");
-                            break;
-                        }
+                            {
+                                if (
+                                        LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                    throw new Exception("LZO decompression failed!");
+                                break;
+                            }
                         case UnrealPackageFile.CompressionType.Zlib:
-                        {
-                            if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
-                                throw new Exception("Zlib decompression failed!");
-                            break;
-                        }
+                            {
+                                if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                    throw new Exception("Zlib decompression failed!");
+                                break;
+                            }
                         default:
                             throw new Exception("Unknown compression type for this package.");
                     }
@@ -208,11 +216,104 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
+        /// Reads 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="compressionType"></param>
+        /// <returns></returns>
+        public static byte[] DecompressChunks(EndianReader input, List<Chunk> chunkTable, UnrealPackageFile.CompressionType compressionType)
+        {
+            var fullUncompressedSize = chunkTable.Sum(x => x.uncompressedSize);
+            byte[] decompressedBuffer = new byte[fullUncompressedSize];
+            foreach (var chunk in chunkTable)
+            {
+                //Header of individual chunk
+                input.Seek(chunk.compressedOffset, SeekOrigin.Begin);
+                var uncompressedOffset = input.ReadUInt32(); //where to write to into the decompressed buffer
+                var uncompressedSize = input.ReadUInt32(); //how much to write
+                var compressedOffset = input.ReadUInt32(); //where to read from
+                var compressedSize = input.ReadUInt32(); //how much to read
+                var firstBlockInfoOffset = (int)input.Position;
+
+                var buff = new byte[compressedSize];
+                input.Seek(compressedOffset, SeekOrigin.Begin);
+                input.Read(buff, 0, buff.Length);
+                if (compressionType == UnrealPackageFile.CompressionType.Zlib)
+                {
+
+                }
+                else if (compressionType == UnrealPackageFile.CompressionType.LZMA)
+                {
+
+                }
+                //AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(buff, i);
+                //tasks[i] = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(buff, i);
+            }
+
+            return decompressedBuffer;
+        }
+
+        #region Block decompression
+        public static readonly uint zlibmagic = 0x9E2A83C1;
+        public static readonly uint zlibmaxsegmentsize = 0x20000;
+
+
+        public static byte[] DecompressZLibBlock(byte[] buffer, int num = 0)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException();
+            using MemoryStream buffStream = new MemoryStream(buffer);
+            EndianReader reader = EndianReader.SetupForReading(buffStream, (int)zlibmagic, out int zlibBlockMagic);
+            if ((uint)zlibBlockMagic != zlibmagic)
+            {
+                throw new InvalidDataException("found an invalid zlib block, wrong magic");
+            }
+
+            uint buffMaxSegmentSize = reader.ReadUInt32();
+            if (buffMaxSegmentSize != zlibmaxsegmentsize)
+            {
+                throw new FormatException("Wrong segment size for ZLIB!");
+            }
+
+            uint totComprSize = reader.ReadUInt32();
+            uint totUncomprSize = reader.ReadUInt32();
+
+            byte[] outputBuffer = new byte[totUncomprSize];
+            int numOfSegm = (int)Math.Ceiling(totUncomprSize / (double)zlibmaxsegmentsize);
+            int headSegm = 16;
+            int dataSegm = headSegm + (numOfSegm * 8);
+            int buffOff = 0;
+
+            for (int i = 0; i < numOfSegm; i++)
+            {
+                reader.Seek(headSegm, SeekOrigin.Begin);
+                int comprSegm = reader.ReadInt32();
+                int uncomprSegm = reader.ReadInt32();
+                headSegm = (int)reader.Position;
+
+                reader.Seek(dataSegm, SeekOrigin.Begin);
+                //Console.WriteLine("compr size: {0}, uncompr size: {1}, data offset: 0x{2:X8}", comprSegm, uncomprSegm, dataSegm);
+                byte[] src = reader.ReadBytes(comprSegm);
+                byte[] dst = new byte[uncomprSegm];
+                if (Zlib.Decompress(src, (uint)src.Length, dst) != uncomprSegm)
+                    throw new Exception("Zlib decompression failed!");
+
+                Buffer.BlockCopy(dst, 0, outputBuffer, buffOff, uncomprSegm);
+
+                buffOff += uncomprSegm;
+                dataSegm += comprSegm;
+            }
+            reader.Close();
+            return outputBuffer;
+        }
+        #endregion
+
+        /// <summary>
         ///     decompress an entire ME3 pcc file into a new stream
         /// </summary>
-        /// <param name="input">pcc file passed in stream format</param>
+        /// <param name="input">pcc file passed in stream format (wrapped in endianreader)</param>
         /// <returns>a decompressed array of bytes</returns>
-        public static MemoryStream DecompressME3(Stream input)
+        public static MemoryStream DecompressME3(EndianReader input)
         {
             input.Seek(0, SeekOrigin.Begin);
             var magic = input.ReadUInt32();
@@ -224,11 +325,11 @@ namespace ME3Explorer.Packages
             var versionLo = input.ReadUInt16();
             var versionHi = input.ReadUInt16();
 
-            if (versionLo != 684 &&
-                versionHi != 194)
-            {
-                throw new FormatException("unsupported pcc version");
-            }
+            //if (versionLo != 684 &&
+            //    versionHi != 194)
+            //{
+            //    throw new FormatException("unsupported pcc version");
+            //}
 
             long headerSize = 8;
 
@@ -280,17 +381,17 @@ namespace ME3Explorer.Packages
             MemoryStream output = new MemoryStream();
             output.Seek(0, SeekOrigin.Begin);
 
-            output.WriteFromStream(input, headerSize);
+            output.WriteFromStream(input.BaseStream, headerSize);
             output.WriteUInt32(0);// block count
 
             input.Seek(afterBlockTableOffset, SeekOrigin.Begin);
-            output.WriteFromStream(input, 8);
+            output.WriteFromStream(input.BaseStream, 8);
 
             //check if has extra name list (don't know it's usage...)
             if ((packageFlags & 0x10000000) != 0)
             {
                 long curPos = output.Position;
-                output.WriteFromStream(input, nameOffset - curPos);
+                output.WriteFromStream(input.BaseStream, nameOffset - curPos);
             }
 
             //decompress blocks in parallel
@@ -308,8 +409,8 @@ namespace ME3Explorer.Packages
                 var buff = new byte[compressedSize];
                 input.Seek(compressedOffset, SeekOrigin.Begin);
                 input.Read(buff, 0, buff.Length);
-
-                tasks[i] = AmaroK86.MassEffect3.ZlibBlock.ZBlock.DecompressAsync(buff);
+                AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(buff, i);
+                //tasks[i] = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(buff, i);
             }
             Task.WaitAll(tasks);
             for (int i = 0; i < blockCount; i++)
@@ -323,9 +424,9 @@ namespace ME3Explorer.Packages
             //output.WriteUInt32(packageFlags & ~0x02000000u, ); //Mark file as decompressed.
             return output;
         }
-        public static MemoryStream DecompressUDK(Stream raw, long compressionInfoOffset)
+        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset)
         {
-            raw.JumpTo(compressionInfoOffset);
+            raw.BaseStream.JumpTo(compressionInfoOffset);
             UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
 
 
@@ -355,15 +456,16 @@ namespace ME3Explorer.Packages
             {
                 Chunk c = Chunks[i];
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
-                c.Compressed = raw.ReadToBuffer(c.compressedSize);
+                raw.Read(c.Compressed, 0, c.compressedSize);
 
                 ChunkHeader h = new ChunkHeader
                 {
-                    magic = BitConverter.ToInt32(c.Compressed, 0),
-                    blocksize = BitConverter.ToInt32(c.Compressed, 4),
-                    compressedsize = BitConverter.ToInt32(c.Compressed, 8),
-                    uncompressedsize = BitConverter.ToInt32(c.Compressed, 12)
+                    magic = EndianReader.ToInt32(c.Compressed, 0, raw.Endian),
+                    blocksize = EndianReader.ToInt32(c.Compressed, 4, raw.Endian),
+                    compressedsize = EndianReader.ToInt32(c.Compressed, 8, raw.Endian),
+                    uncompressedsize = EndianReader.ToInt32(c.Compressed, 12, raw.Endian)
                 };
+
                 if (h.magic != -1641380927)
                     throw new FormatException("Chunk magic number incorrect");
                 //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
@@ -379,17 +481,19 @@ namespace ME3Explorer.Packages
                 {
                     Block b = new Block
                     {
-                        compressedsize = BitConverter.ToInt32(c.Compressed, pos),
-                        uncompressedsize = BitConverter.ToInt32(c.Compressed, pos + 4)
+                        compressedsize = EndianReader.ToInt32(c.Compressed, pos, raw.Endian),
+                        uncompressedsize = EndianReader.ToInt32(c.Compressed, pos + 4, raw.Endian)
                     };
                     //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
                     pos += 8;
                     BlockList.Add(b);
                 }
                 int outpos = 0;
+                int blocknum = 0;
                 //DebugOutput.PrintLn("\t\t" + count + " Read and decompress Blocks...");
                 foreach (Block b in BlockList)
                 {
+                    //Debug.WriteLine("Decompressing block " + blocknum);
                     var datain = new byte[b.compressedsize];
                     var dataout = new byte[b.uncompressedsize];
                     for (int j = 0; j < b.compressedsize; j++)
@@ -411,12 +515,18 @@ namespace ME3Explorer.Packages
                                     throw new Exception("Zlib decompression failed!");
                                 break;
                             }
+                        case UnrealPackageFile.CompressionType.LZMA:
+                            dataout = LZMA.Decompress(datain, (uint)b.uncompressedsize);
+                            if (dataout.Length != b.uncompressedsize)
+                                throw new Exception("LZMA decompression failed!");
+                            break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
                     }
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
                     outpos += b.uncompressedsize;
+                    blocknum++;
                 }
                 c.header = h;
                 c.blocks = BlockList;

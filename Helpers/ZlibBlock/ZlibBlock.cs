@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 using StreamHelpers;
 using ZlibHelper;
 
@@ -9,6 +10,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
     public static class ZBlock
     {
         public static readonly uint magic = 0x9E2A83C1;
+        public static readonly uint magicBigEndian = 0xC1832A9E;
         public static readonly uint maxSegmentSize = 0x20000;
 
         /*
@@ -102,27 +104,28 @@ namespace AmaroK86.MassEffect3.ZlibBlock
             });
         }
 
-        public static byte[] Decompress(byte[] buffer)
+        public static byte[] Decompress(byte[] buffer, int num = 0)
         {
             if (buffer == null)
                 throw new ArgumentNullException();
-
+            File.WriteAllBytes(@"C:\users\public\decompressed\compblock" + num + ".zl", buffer);
+            return new byte[1];
             using (MemoryStream buffStream = new MemoryStream(buffer))
             {
-                uint magicStream = buffStream.ReadUInt32();
-                if (magicStream != magic)
+                EndianReader reader = EndianReader.SetupForReading(buffStream, (int)magic, out int zlibBlockMagic);
+                if ((uint)zlibBlockMagic != magic)
                 {
                     throw new InvalidDataException("found an invalid zlib block");
                 }
 
-                uint buffMaxSegmentSize = buffStream.ReadUInt32();
+                uint buffMaxSegmentSize = reader.ReadUInt32();
                 if (buffMaxSegmentSize != maxSegmentSize)
                 {
                     throw new FormatException();
                 }
 
-                uint totComprSize = buffStream.ReadUInt32();
-                uint totUncomprSize = buffStream.ReadUInt32();
+                uint totComprSize = reader.ReadUInt32();
+                uint totUncomprSize = reader.ReadUInt32();
 
                 byte[] outputBuffer = new byte[totUncomprSize];
                 int numOfSegm = (int)Math.Ceiling(totUncomprSize / (double)maxSegmentSize);
@@ -132,14 +135,14 @@ namespace AmaroK86.MassEffect3.ZlibBlock
 
                 for (int i = 0; i < numOfSegm; i++)
                 {
-                    buffStream.Seek(headSegm, SeekOrigin.Begin);
-                    int comprSegm = buffStream.ReadInt32();
-                    int uncomprSegm = buffStream.ReadInt32();
-                    headSegm = (int)buffStream.Position;
+                    reader.Seek(headSegm, SeekOrigin.Begin);
+                    int comprSegm = reader.ReadInt32();
+                    int uncomprSegm = reader.ReadInt32();
+                    headSegm = (int)reader.Position;
 
-                    buffStream.Seek(dataSegm, SeekOrigin.Begin);
+                    reader.Seek(dataSegm, SeekOrigin.Begin);
                     //Console.WriteLine("compr size: {0}, uncompr size: {1}, data offset: 0x{2:X8}", comprSegm, uncomprSegm, dataSegm);
-                    byte[] src = buffStream.ReadToBuffer(comprSegm);
+                    byte[] src = reader.ReadBytes(comprSegm);
                     byte[] dst = new byte[uncomprSegm];
                     if (Zlib.Decompress(src, (uint)src.Length, dst) != uncomprSegm)
                         throw new Exception("Zlib decompression failed!");
@@ -149,7 +152,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                     buffOff += uncomprSegm;
                     dataSegm += comprSegm;
                 }
-                buffStream.Close();
+                reader.Close();
                 return outputBuffer;
             }
         }

@@ -15,7 +15,8 @@ namespace ME3Explorer.Packages
 {
     public abstract class UnrealPackageFile : NotifyPropertyChangedBase
     {
-        protected const uint packageTag = 0x9E2A83C1;
+        public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
+        public const uint packageTagBigEndian = 0xC1832A9E;
         public string FilePath { get; }
 
         public bool IsModified
@@ -42,8 +43,10 @@ namespace ME3Explorer.Packages
         public enum CompressionType
         {
             None = 0,
-            Zlib,
-            LZO
+            Zlib = 0x1, // PC ME3
+            LZO = 0x2, //PS3, ME1 and ME2 PC
+            LZX = 0x4, //Xbox
+            LZMA = 0x8 //WiiU
         }
 
         public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using static ME3Explorer.Unreal.UnrealFlags;
@@ -133,6 +134,7 @@ namespace ME3Explorer.Packages
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
         MEGame Game { get; }
+        Endian Endian { get; }
         MELocalization Localization { get; }
         string FilePath { get; }
         DateTime LastSaved { get; }
