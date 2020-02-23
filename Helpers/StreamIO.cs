@@ -85,7 +85,7 @@ namespace StreamHelpers
         public static string ReadStringASCIINull(this Stream stream)
         {
             string str = "";
-            for (;;)
+            for (; ; )
             {
                 char c = (char)stream.ReadByte();
                 if (c == 0)

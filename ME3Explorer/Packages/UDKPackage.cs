@@ -18,6 +18,7 @@ namespace ME3Explorer.Packages
     public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
         public MEGame Game => MEGame.UDK;
+        public MEPackage.GamePlatform Platform => MEPackage.GamePlatform.PC;
         public Endian Endian => Endian.Native; //we do not support big endian UDK packages
         public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()

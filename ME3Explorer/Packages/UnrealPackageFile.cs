@@ -44,9 +44,9 @@ namespace ME3Explorer.Packages
         {
             None = 0,
             Zlib = 0x1, // PC ME3
-            LZO = 0x2, //PS3, ME1 and ME2 PC
+            LZO = 0x2, //ME1 and ME2 PC
             LZX = 0x4, //Xbox
-            LZMA = 0x8 //WiiU
+            LZMA = 0x8 //WiiU, PS3 
         }
 
         public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();

@@ -3252,6 +3252,29 @@ namespace ME3Explorer
         //todo: this should be possible to move now
         private void Port_SFXObjectives_Click(object sender, RoutedEventArgs e)
         {
+            //Extract Xbox SFAR
+
+
+            /* Platform comparison
+            var pcfolder = @"D:\Origin Games\Mass Effect 2\BioGame\CookedPC";
+            var platformfolder = @"X:\Mass Effect 2 Builds\PS3\PS3_GAME\USRDIR\BIOGAME\COOKEDPS3";
+
+            var pcfiles = Directory.GetFiles(pcfolder, "*.*", SearchOption.AllDirectories).Where(x => !x.Contains("_loc_")).ToList();
+            var platformfiles = Directory.GetFiles(platformfolder, "*.*", SearchOption.AllDirectories).Select(x=>x.ToLower()).Where(x => !x.Contains("_loc_") &&
+                                                                                                    !x.EndsWith("_deu.afc") && !x.EndsWith("_ita.afc") && !x.EndsWith("_fra.afc")).ToList();
+
+            var pcfilesbyname = pcfiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower());
+            var platformfilesbyname = platformfiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower());
+
+            var uniqueplatformfiles = platformfilesbyname.Except(pcfilesbyname).ToList();
+
+            foreach (var s in uniqueplatformfiles)
+            {
+                Debug.WriteLine(s);
+            }
+
+
+            return;*/
             if (Pcc == null)
             {
                 return;
@@ -4114,7 +4137,7 @@ namespace ME3Explorer
                         {
                             Debug.WriteLine($"{exp.UIndex}: {filePath}");
                             var obj = ObjectBinary.From(exp);
-                            var ms = new EndianReader(new MemoryStream()) {Endian = exp.FileRef.Endian};
+                            var ms = new EndianReader(new MemoryStream()) { Endian = exp.FileRef.Endian };
                             obj.WriteTo(ms.Writer, pcc, exp.DataOffset + exp.propsEnd());
                             byte[] buff = ms.BaseStream.ReadFully();
 
@@ -4767,11 +4790,11 @@ namespace ME3Explorer
                                                         new NameProperty(fileName, "PackageName"),
                                                         CommonStructs.ColorProp(Color.FromRgb((byte)(i % 256), (byte)((255 - i) % 256), (byte)((i * 7) % 256)), "DrawColor")
                                                     })
-                                                    {
-                                                        ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
-                                                        Class = levStreamingClass,
-                                                        Parent = theWorld
-                                                    });
+                            {
+                                ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
+                                Class = levStreamingClass,
+                                Parent = theWorld
+                            });
                             i++;
                         }
 
@@ -4805,7 +4828,7 @@ namespace ME3Explorer
         private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
         {
             var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME1).ToList();
-            
+
             IsBusy = true;
             BusyText = "Scanning";
             Task.Run(() =>
@@ -4814,7 +4837,7 @@ namespace ME3Explorer
                 foreach (string filePath in filePaths)
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                    
+
                     foreach (ExportEntry export in pcc.Exports)
                     {
                         try

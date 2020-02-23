@@ -431,7 +431,7 @@ namespace ME3Explorer.Packages
                 compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
 
             if (NumChunks == 0)
-                raw.ReadInt32();
+                NumChunks = raw.ReadInt32();
             var Chunks = new List<Chunk>();
             var chunkTableStart = raw.Position;
 

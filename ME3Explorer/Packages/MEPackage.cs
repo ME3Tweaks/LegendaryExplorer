@@ -50,8 +50,10 @@ namespace ME3Explorer.Packages
         public const ushort ME1PS3LicenseeVersion = 153;
 
         public const ushort ME2UnrealVersion = 512;
+        public const ushort ME2PS3UnrealVersion = 684; //Same as ME3 ;)
         public const ushort ME2DemoUnrealVersion = 513;
         public const ushort ME2LicenseeVersion = 130;
+        public const ushort ME2PS3LicenseeVersion = 150;
 
         public const ushort ME3UnrealVersion = 684;
         public const ushort ME3WiiUUnrealVersion = 845;
@@ -189,6 +191,10 @@ namespace ME3Explorer.Packages
                     Game = MEGame.ME2;
                     Platform = GamePlatform.PC;
                     break;
+                case ME2PS3UnrealVersion when licenseeVersion == ME2PS3LicenseeVersion:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.PS3;
+                    break;
                 case ME3WiiUUnrealVersion when licenseeVersion == ME3LicenseeVersion:
                     Game = MEGame.ME3;
                     Platform = GamePlatform.WiiU;
@@ -242,7 +248,7 @@ namespace ME3Explorer.Packages
 
             DependencyTableOffset = packageReader.ReadInt32();
 
-            if (Game == MEGame.ME3)
+            if (Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
                 packageReader.SkipInt32(); //ImportGuidsCount always 0
@@ -265,7 +271,7 @@ namespace ME3Explorer.Packages
             packageReader.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
             packageReader.SkipInt32();//cookedContentVersion   so we don't have to read them in
 
-            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3) //PS3 on ME3 engine
             {
                 packageReader.SkipInt32(); //always 0
                 packageReader.SkipInt32(); //always 47699
@@ -276,7 +282,7 @@ namespace ME3Explorer.Packages
             unknown6 = packageReader.ReadInt32();
             var constantVal = packageReader.ReadInt32();//always -1 in ME1 and ME2, always 145358848 in ME3
 
-            if (Game == MEGame.ME1)
+            if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
                 packageReader.SkipInt32(); //always -1
             }
@@ -289,7 +295,6 @@ namespace ME3Explorer.Packages
             //read package source
             var savedPos = packageReader.Position;
             packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
-            packageReader.Position = savedPos;
             packageReader.Position = savedPos; //is this not part of chunk table? have we had this mislabeled as 'magic' for chunk decompression?
 
             Stream inStream = fs;
@@ -380,9 +385,9 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < NameCount; i++)
             {
                 names.Add(packageReader.ReadUnrealString());
-                if (Game == MEGame.ME1)
+                if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
                     inStream.Skip(8);
-                else if (Game == MEGame.ME2)
+                else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
                     inStream.Skip(4);
             }
 

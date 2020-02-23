@@ -73,8 +73,8 @@ namespace ME3Explorer.Packages
             HeaderOffset = (uint)stream.Position;
             switch (file.Game)
             {
-                case MEGame.ME1:
-                case MEGame.ME2:
+                case MEGame.ME1 when file.Platform != MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when file.Platform != MEPackage.GamePlatform.PS3:
                     {
 
                         long start = stream.Position;
@@ -90,6 +90,8 @@ namespace ME3Explorer.Packages
                         _header = stream.ReadBytes((int)(end - start));
                         break;
                     }
+                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when file.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     {
@@ -314,7 +316,7 @@ namespace ME3Explorer.Packages
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
         }
 
-        public bool HasComponentMap => FileRef.Game == MEGame.ME1 || FileRef.Game == MEGame.ME2;
+        public bool HasComponentMap => (FileRef.Game == MEGame.ME1 && FileRef.Platform != MEPackage.GamePlatform.PS3) || FileRef.Game == MEGame.ME2;
 
         //me1 and me2 only
         public OrderedMultiValueDictionary<NameReference, int> ComponentMap

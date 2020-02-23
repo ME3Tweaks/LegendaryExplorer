@@ -134,6 +134,7 @@ namespace ME3Explorer.Packages
         IReadOnlyList<ImportEntry> Imports { get; }
         IReadOnlyList<string> Names { get; }
         MEGame Game { get; }
+        MEPackage.GamePlatform Platform { get; }
         Endian Endian { get; }
         MELocalization Localization { get; }
         string FilePath { get; }

@@ -214,7 +214,7 @@ namespace ME3Explorer.Unreal
                             prop = new NameProperty(stream, pcc, nameRef);
                             break;
                         case PropertyType.BoolProperty:
-                            prop = new BoolProperty(stream, pcc.Game, nameRef);
+                            prop = new BoolProperty(stream, pcc, nameRef);
                             break;
                         case PropertyType.BioMask4Property:
                             prop = new BioMask4Property(stream, nameRef);
@@ -224,7 +224,7 @@ namespace ME3Explorer.Unreal
                                 if (size != 1)
                                 {
                                     NameReference enumType;
-                                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
+                                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK || pcc.Platform == MEPackage.GamePlatform.PS3)
                                     {
                                         enumType = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
@@ -256,7 +256,7 @@ namespace ME3Explorer.Unreal
                                 }
                                 else
                                 {
-                                    if (pcc.Game >= MEGame.ME3)
+                                    if (pcc.Game >= MEGame.ME3 || pcc.Platform == MEPackage.GamePlatform.PS3)
                                     {
                                         stream.Seek(8, SeekOrigin.Current);
                                     }
@@ -436,7 +436,7 @@ namespace ME3Explorer.Unreal
                     return new NameProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.BoolProperty:
                     //always say it's ME3 so that bools get read as 1 byte
-                    return new BoolProperty(stream, pcc.Game, template.Name, true) { StartOffset = startPos };
+                    return new BoolProperty(stream, pcc, template.Name, true) { StartOffset = startPos };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
@@ -596,7 +596,7 @@ namespace ME3Explorer.Unreal
                         for (int i = 0; i < count; i++)
                         {
                             long startPos = stream.Position;
-                            props.Add(new BoolProperty(stream, pcc.Game, isArrayContained: true) { StartOffset = startPos });
+                            props.Add(new BoolProperty(stream, pcc, isArrayContained: true) { StartOffset = startPos });
                         }
                         return new ArrayProperty<BoolProperty>(arrayOffset, props, name);
                     }
@@ -1107,10 +1107,10 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public BoolProperty(EndianReader stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
+        public BoolProperty(EndianReader stream, IMEPackage pcc, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
-            if (game < MEGame.ME3 && isArrayContained)
+            if (pcc.Game < MEGame.ME3 && pcc.Platform != MEPackage.GamePlatform.PS3 && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
@@ -1118,7 +1118,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                Value = (game >= MEGame.ME3) ? stream.BaseStream.ReadBoolByte() : stream.ReadBoolInt();
+                Value = (pcc.Game >= MEGame.ME3 || pcc.Platform == MEPackage.GamePlatform.PS3) ? stream.BaseStream.ReadBoolByte() : stream.ReadBoolInt();
             }
         }
 
