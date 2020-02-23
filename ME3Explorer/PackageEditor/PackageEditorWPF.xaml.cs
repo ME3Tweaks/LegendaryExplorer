@@ -30,6 +30,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
@@ -3126,7 +3127,7 @@ namespace ME3Explorer
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
-                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm" && ext != ".udk")
+                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm" && ext != ".xxx" && ext != ".udk")
                 {
                     e.Effects = DragDropEffects.None;
                     e.Handled = true;
@@ -4113,9 +4114,9 @@ namespace ME3Explorer
                         {
                             Debug.WriteLine($"{exp.UIndex}: {filePath}");
                             var obj = ObjectBinary.From(exp);
-                            var ms = new MemoryStream();
-                            obj.WriteTo(ms, pcc, exp.DataOffset + exp.propsEnd());
-                            byte[] buff = ms.ToArray();
+                            var ms = new EndianReader(new MemoryStream()) {Endian = exp.FileRef.Endian};
+                            obj.WriteTo(ms.Writer, pcc, exp.DataOffset + exp.propsEnd());
+                            byte[] buff = ms.BaseStream.ReadFully();
 
                             if (!buff.SequenceEqual(exp.GetBinaryData()))
                             {

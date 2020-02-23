@@ -17,6 +17,7 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using static MassEffectModder.Images.Image;
 using System.Windows.Media.Imaging;
+using Gammtek.Conduit.IO;
 using MassEffectModder.Images;
 using ME3Explorer.PackageEditor.TextureViewer;
 using StreamHelpers;
@@ -211,7 +212,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public static List<Texture2DMipInfo> GetTexture2DMipInfos(ExportEntry exportEntry, string cacheName)
         {
-            MemoryStream ms = new MemoryStream(exportEntry.Data);
+            EndianReader ms = new EndianReader(new MemoryStream(exportEntry.Data)) {Endian = exportEntry.FileRef.Endian};
             ms.Seek(exportEntry.propsEnd(), SeekOrigin.Begin);
             if (exportEntry.FileRef.Game != MEGame.ME3)
             {
@@ -374,7 +375,7 @@ namespace ME3Explorer.Unreal.Classes
                     Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
-            else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
+            else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
             {
                 string filename = null;
                 var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game, true, true);

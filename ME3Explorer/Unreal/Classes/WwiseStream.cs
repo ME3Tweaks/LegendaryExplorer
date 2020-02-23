@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using NAudio.Wave;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Soundplorer;
 using StreamHelpers;
 
@@ -55,8 +56,8 @@ namespace ME3Explorer.Unreal.Classes
                     throw new Exception("Can oly read WwiseStreams for ME3 and ME2!");
             }
             ValueOffset = off;
-            DataSize = BitConverter.ToInt32(memory, off);
-            DataOffset = BitConverter.ToInt32(memory, off + 4);
+            DataSize = EndianReader.ToInt32(memory, off, pcc.Endian);
+            DataOffset = EndianReader.ToInt32(memory, off + 4, pcc.Endian);
             NameProperty nameProp = properties.GetProp<NameProperty>("Filename");
             FileName = nameProp?.Value;
             Id = properties.GetProp<IntProperty>("Id");
@@ -200,9 +201,10 @@ namespace ME3Explorer.Unreal.Classes
         public Stream CreateWaveStream(string afcPath)
         {
             string basePath = GetTempSoundPath();
-            if (ExtractRawFromSourceToFile(basePath + ".dat", afcPath, DataSize, DataOffset))
+            if (ExtractRawFromSourceToFile(basePath + ".wem", afcPath, DataSize, DataOffset))
             {
-                return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                return ISBankEntry.ConvertAudioToWave(basePath + ".wem");
+                //return ConvertRiffToWav(basePath + ".wem", export.FileRef.Game == MEGame.ME2);
             }
             return null;
         }

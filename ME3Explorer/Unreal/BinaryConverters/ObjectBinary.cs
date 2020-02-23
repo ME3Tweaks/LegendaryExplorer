@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using StreamHelpers;
 
@@ -12,7 +13,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public ExportEntry Export { get; set; }
         public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
         {
-            var t = new T {Export = export};
+            var t = new T { Export = export };
             t.Serialize(new SerializingContainer2(new MemoryStream(export.GetBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }
@@ -127,16 +128,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
         public virtual List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>();
 
-        public virtual void WriteTo(Stream ms, IMEPackage pcc, int fileOffset = 0)
+        public virtual void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {
-            Serialize(new SerializingContainer2(ms, pcc, false, fileOffset));
+            Serialize(new SerializingContainer2(ms.BaseStream, pcc, false, fileOffset));
         }
 
         public virtual byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
         {
-            var ms = new MemoryStream();
-            WriteTo(ms, pcc, fileOffset);
-            return ms.ToArray();
+            var ms = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+            WriteTo(ms.Writer, pcc, fileOffset);
+            return ms.BaseStream.ReadFully();
         }
 
         public static implicit operator ObjectBinary(byte[] buff)
@@ -157,10 +158,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         //should never be called
         protected override void Serialize(SerializingContainer2 sc)
         {
-            data = sc.ms.ReadFully();
+            data = sc.ms.BaseStream.ReadFully();
         }
 
-        public override void WriteTo(Stream ms, IMEPackage pcc, int fileOffset)
+        public override void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset)
         {
             ms.WriteFromBuffer(data);
         }

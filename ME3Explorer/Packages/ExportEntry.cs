@@ -40,22 +40,22 @@ namespace ME3Explorer.Packages
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
-            var ms = new MemoryStream();
+            var ms = new EndianReader(new MemoryStream()){Endian = Endian.Native};
             if (prePropBinary == null)
             {
                 prePropBinary = new byte[4];
             }
-            ms.WriteFromBuffer(prePropBinary);
+            ms.Writer.WriteFromBuffer(prePropBinary);
             if (!isClass)
             {
                 if (properties == null)
                 {
                     properties = new PropertyCollection();
                 }
-                properties.WriteTo(ms, file);
+                properties.WriteTo(ms.Writer, file);
             }
 
-            binary?.WriteTo(ms, file);
+            binary?.WriteTo(ms.Writer, file);
 
             _data = ms.ToArray();
             DataSize = _data.Length;
@@ -356,11 +356,11 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                int count = BitConverter.ToInt32(_header, ExportFlagsOffset + 4);
+                int count = EndianReader.ToInt32(_header, ExportFlagsOffset + 4, FileRef.Endian);
                 var result = new int[count];
                 for (int i = 0; i < count; i++)
                 {
-                    result[i] = BitConverter.ToInt32(_header, ExportFlagsOffset + 8 + i * 4);
+                    result[i] = EndianReader.ToInt32(_header, ExportFlagsOffset + 8 + i * 4, FileRef.Endian);
                 }
                 return result;
             }
@@ -578,8 +578,8 @@ namespace ME3Explorer.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            MemoryStream m = new MemoryStream();
-            props.WriteTo(m, FileRef);
+            EndianReader m = new EndianReader(new MemoryStream()) {Endian = FileRef.Endian};
+            props.WriteTo(m.Writer, FileRef);
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             byte[] propData = m.ToArray();
@@ -598,7 +598,7 @@ namespace ME3Explorer.Packages
             if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
                 //DominantLightShadowMap, which goes before everything for some reason
-                int count = BitConverter.ToInt32(_data, 0);
+                int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
                 start += count * 2 + 4;
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using Newtonsoft.Json;
 using StreamHelpers;
@@ -151,7 +152,7 @@ namespace ME3Explorer.Unreal
 
     public static class UPropertyExtensions
     {
-        public static void WritePropHeader(this Stream stream, IMEPackage pcc, NameReference propName, PropertyType type, int size, int staticArrayIndex)
+        public static void WritePropHeader(this EndianWriter stream, IMEPackage pcc, NameReference propName, PropertyType type, int size, int staticArrayIndex)
         {
             stream.WriteNameReference(propName, pcc);
             stream.WriteNameReference(type.ToString(), pcc);
@@ -159,27 +160,27 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(staticArrayIndex);
         }
 
-        public static void WriteNoneProperty(this Stream stream, IMEPackage pcc)
+        public static void WriteNoneProperty(this EndianWriter stream, IMEPackage pcc)
         {
             //Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
             stream.WriteNameReference("None", pcc);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Stream value, int staticArrayIndex)
+        public static void WriteStructProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, NameReference structName, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length, staticArrayIndex);
             stream.WriteNameReference(structName, pcc);
-            stream.WriteStream(value);
+            stream.BaseStream.WriteStream(value);
         }
 
-        public static void WriteStructProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference structName, Func<Stream> func, int staticArrayIndex)
+        public static void WriteStructProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, NameReference structName, Func<Stream> func, int staticArrayIndex)
         {
             stream.WriteStructProperty(pcc, propName, structName, func(), staticArrayIndex);
         }
 
-        public static void WriteIntProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
+        public static void WriteIntProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -187,7 +188,7 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(value);
         }
 
-        public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, NameReference propName, float value, int staticArrayIndex)
+        public static void WriteFloatProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, float value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -195,7 +196,7 @@ namespace ME3Explorer.Unreal
             stream.WriteFloat(value);
         }
 
-        public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
+        public static void WriteObjectProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -203,7 +204,7 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(value);
         }
 
-        public static void WriteNameProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference value, int staticArrayIndex)
+        public static void WriteNameProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, NameReference value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -211,7 +212,7 @@ namespace ME3Explorer.Unreal
             stream.WriteNameReference(value, pcc);
         }
 
-        public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, NameReference propName, bool value, int staticArrayIndex)
+        public static void WriteBoolProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, bool value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -226,7 +227,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void WriteByteProperty(this Stream stream, IMEPackage pcc, NameReference propName, byte value, int staticArrayIndex)
+        public static void WriteByteProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, byte value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1, staticArrayIndex);
@@ -237,7 +238,7 @@ namespace ME3Explorer.Unreal
             stream.WriteByte(value);
         }
 
-        public static void WriteEnumProperty(this Stream stream, IMEPackage pcc, NameReference propName, NameReference enumName, NameReference enumValue, int staticArrayIndex)
+        public static void WriteEnumProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, NameReference enumName, NameReference enumValue, int staticArrayIndex)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 8, staticArrayIndex);
             if (pcc.Game >= MEGame.ME3)
@@ -247,20 +248,20 @@ namespace ME3Explorer.Unreal
             stream.WriteNameReference(enumValue, pcc);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Stream value, int staticArrayIndex)
+        public static void WriteArrayProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int count, Stream value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
             stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length, staticArrayIndex);
             stream.WriteInt32(count);
-            stream.WriteStream(value);
+            stream.BaseStream.WriteStream(value);
         }
 
-        public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, NameReference propName, int count, Func<Stream> func, int staticArrayIndex)
+        public static void WriteArrayProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int count, Func<Stream> func, int staticArrayIndex)
         {
             stream.WriteArrayProperty(pcc, propName, count, func(), staticArrayIndex);
         }
 
-        public static void WriteStringProperty(this Stream stream, IMEPackage pcc, NameReference propName, string value, int staticArrayIndex)
+        public static void WriteStringProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, string value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
@@ -276,7 +277,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
+        public static void WriteStringRefProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
         {
             //Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
@@ -284,7 +285,7 @@ namespace ME3Explorer.Unreal
             stream.WriteInt32(value);
         }
 
-        public static void WriteDelegateProperty(this Stream stream, IMEPackage pcc, NameReference propName, ScriptDelegate value, int staticArrayIndex)
+        public static void WriteDelegateProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, ScriptDelegate value, int staticArrayIndex)
         {
             stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12, staticArrayIndex);
             stream.WriteInt32(value.Object);

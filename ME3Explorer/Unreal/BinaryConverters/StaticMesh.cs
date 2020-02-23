@@ -491,8 +491,8 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteInt32(fRange.BaseIndex);
-                sc.ms.WriteInt32(fRange.NumPrimitives);
+                sc.ms.Writer.WriteInt32(fRange.BaseIndex);
+                sc.ms.Writer.WriteInt32(fRange.NumPrimitives);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticMeshElement meshElement)
@@ -666,10 +666,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteUInt16(kTri.Vertex1);
-                sc.ms.WriteUInt16(kTri.Vertex2);
-                sc.ms.WriteUInt16(kTri.Vertex3);
-                sc.ms.WriteUInt16(kTri.MaterialIndex);
+                sc.ms.Writer.WriteUInt16(kTri.Vertex1);
+                sc.ms.Writer.WriteUInt16(kTri.Vertex2);
+                sc.ms.Writer.WriteUInt16(kTri.Vertex3);
+                sc.ms.Writer.WriteUInt16(kTri.MaterialIndex);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref kDOPCompact kDop)

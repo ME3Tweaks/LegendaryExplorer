@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -289,11 +290,11 @@ namespace ME3Explorer
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
         {
 
-            MemoryStream res = new MemoryStream();
+            EndianReader res = new EndianReader(new MemoryStream()) {Endian = targetExport.FileRef.Endian}; 
             if (incomingExport.HasStack)
             {
-                res.WriteFromBuffer(incomingExport.Data.Slice(0, 8));
-                res.WriteFromBuffer(targetExport.Game switch
+                res.Writer.WriteFromBuffer(incomingExport.Data.Slice(0, 8));
+                res.Writer.WriteFromBuffer(targetExport.Game switch
                 {
                     MEGame.UDK => UDKStackDummy,
                     MEGame.ME3 => me3StackDummy,
@@ -303,14 +304,14 @@ namespace ME3Explorer
             else
             {
                 int start = incomingExport.GetPropertyStart();
-                res.Write(new byte[start], 0, start);
+                res.Writer.Write(new byte[start], 0, start);
             }
 
             //store copy of names list in case something goes wrong
             List<string> names = targetExport.FileRef.Names.ToList();
             try
             {
-                incomingExport.GetProperties().WriteTo(res, targetExport.FileRef);
+                incomingExport.GetProperties().WriteTo(res.Writer, targetExport.FileRef);
             }
             catch (Exception exception)
             {
@@ -319,7 +320,7 @@ namespace ME3Explorer
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
                 return false;
             }
-            res.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
+            res.Writer.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }

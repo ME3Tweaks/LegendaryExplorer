@@ -25,10 +25,12 @@ namespace Gammtek.Conduit.IO
     ///     BinaryReader that supports reading and writing individual bits from
     ///     the stream and reordering values based on Endian settings between
     ///     the system and the stream.
+    /// You can write data through the Writer member.
     /// </summary>
     public class EndianReader : BinaryReader
     {
         private readonly BinaryReader _source;
+        public readonly EndianWriter Writer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EndianReader" /> class
@@ -38,7 +40,12 @@ namespace Gammtek.Conduit.IO
             : base(source.BaseStream, Encoding.UTF8)
         {
             _source = source;
+            if (source.BaseStream.CanWrite)
+            {
+                Writer = new EndianWriter(source.BaseStream);
+            }
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
+
         }
 
         /// <summary>
@@ -48,6 +55,10 @@ namespace Gammtek.Conduit.IO
             : base(input, encoding)
         {
             _source = new BinaryReader(input, encoding);
+            if (input.CanWrite)
+            {
+                Writer = new EndianWriter(input);
+            }
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
         }
 
@@ -56,12 +67,25 @@ namespace Gammtek.Conduit.IO
         ///     using stream <paramref name="input" />.
         /// </summary>
         public EndianReader(Stream input)
-            : this(input, Encoding.UTF8) { }
+            : this(input, Encoding.UTF8)
+        {
+        }
 
+        private Endian _endian;
         /// <summary>
         ///     The Endian setting of the stream.
         /// </summary>
-        public Endian Endian { get; set; }
+        public Endian Endian
+        {
+            get => _endian;
+            set
+            {
+                _endian = value;
+                if (Writer != null)
+                    Writer.Endian = Endian;
+            }
+
+        }
 
         /// <summary>
         ///     Returns the next available character and does not advance the byte or character position.
@@ -105,7 +129,7 @@ namespace Gammtek.Conduit.IO
         /// <summary>
         ///     Reads the specified number of ASCII characters from the stream.
         /// </summary>
-        public string ReadStringASCII(int count)
+        public string ReadEndianASCIIString(int count)
         {
             char[] characters = new char[count];
             char[] buffer = ReadChars(count);
@@ -272,6 +296,8 @@ namespace Gammtek.Conduit.IO
             return Endian.To(Endian.Native).Convert(_source.ReadSingle());
         }
 
+        public float ReadFloat() => ReadSingle();
+
         /// <summary>
         ///     Reads a string from the current stream. The string is prefixed with the length, encoded as an integer seven bits
         ///     at a time.
@@ -336,6 +362,8 @@ namespace Gammtek.Conduit.IO
             get => _source.BaseStream.Position;
             set => _source.BaseStream.Position = value;
         }
+
+        public long Length => BaseStream.Length;
 
         /// <summary>
         /// Generates an EndianReader object that takes a stream that uses the specified magic number to set the endianness. The stream is advanced by 4 and the out variable is set to what the value would be if itw as read in the correct endianness.
@@ -402,6 +430,21 @@ namespace Gammtek.Conduit.IO
         }
 
         /// <summary>
+        /// Reads an int16 from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static int ToInt16(byte[] buffer, int offset, Endian endianness)
+        {
+            var readMagic = BitConverter.ToInt16(buffer, offset);
+            if (IO.Endian.Native != endianness)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
         /// Reads an uint32 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
@@ -423,6 +466,107 @@ namespace Gammtek.Conduit.IO
         public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt64(buffer, offset);
+            if (IO.Endian.Native != endianness)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads boolean integer from the stream. 0 is false, > 0 is true
+        /// </summary>
+        /// <returns></returns>
+        public bool ReadBoolInt()
+        {
+            return ReadUInt32() > 0;
+        }
+
+        public float ReadFloat16()
+        {
+            var buffer = ReadBytes(sizeof(ushort));
+            if (buffer.Length != sizeof(ushort))
+                throw new Exception("Could not read float16");
+            ushort u = BitConverter.ToUInt16(buffer, 0);
+            if (IO.Endian.Native != Endian)
+            {
+                //swap
+                u = Endian.Native.To(Endian.NonNative).Convert(u);
+            }
+            int sign = (u >> 15) & 0x00000001;
+            int exp = (u >> 10) & 0x0000001F;
+            int mant = u & 0x000003FF;
+            switch (exp)
+            {
+                case 0:
+                    return 0f;
+                case 31:
+                    return 65504f;
+            }
+            exp += (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            return BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+        }
+
+        /// <summary>
+        /// Reads boolean byte from the stream. 0 is false, > 0 is true
+        /// </summary>
+        /// <returns></returns>
+        public bool ReadBoolByte()
+        {
+            return ReadByte() > 0;
+        }
+
+        public void JumpTo(int position)
+        {
+            Position = position;
+        }
+
+        public void JumpTo(long position)
+        {
+            Position = position;
+        }
+
+        public EndianReader Skip(int count)
+        {
+            Position += count;
+            return this;
+        }
+        public EndianReader Skip(long count)
+        {
+            Position += count;
+            return this;
+        }
+
+        public byte[] ReadToBuffer(int size)
+        {
+            return ReadBytes(size);
+        }
+
+        public byte[] ToArray()
+        {
+            var pos = Position;
+            Position = 0;
+            var data = _source.ReadBytes((int)Length);
+            Position = pos;
+            return data;
+        }
+
+        public static float ToSingle(byte[] buffer, int offset, Endian endianness)
+        {
+            var readMagic = BitConverter.ToSingle(buffer, offset);
+            if (IO.Endian.Native != endianness)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
+        public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
+        {
+            var readMagic = BitConverter.ToUInt16(buffer, offset);
             if (IO.Endian.Native != endianness)
             {
                 //swap

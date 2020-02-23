@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Gammtek.Conduit;
 using Gammtek.Conduit.Extensions.Collections.Generic;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -682,6 +683,18 @@ namespace ME3Explorer
             }
         }
 
+        public static void WriteUnrealString(this EndianWriter stream, string value, MEGame game)
+        {
+            if (game == MEGame.ME3)
+            {
+                stream.WriteUnrealStringUnicode(value);
+            }
+            else
+            {
+                stream.WriteUnrealStringASCII(value);
+            }
+        }
+
         public static void WriteUnrealStringASCII(this Stream stream, string value)
         {
             if (value?.Length > 0)
@@ -696,6 +709,32 @@ namespace ME3Explorer
         }
 
         public static void WriteUnrealStringUnicode(this Stream stream, string value)
+        {
+            if (value?.Length > 0)
+            {
+                stream.WriteInt32(-(value.Length + 1));
+                stream.WriteStringUnicodeNull(value);
+            }
+            else
+            {
+                stream.WriteInt32(0);
+            }
+        }
+
+        public static void WriteUnrealStringASCII(this EndianWriter stream, string value)
+        {
+            if (value?.Length > 0)
+            {
+                stream.WriteInt32(value.Length + 1);
+                stream.WriteStringASCIINull(value);
+            }
+            else
+            {
+                stream.WriteInt32(0);
+            }
+        }
+
+        public static void WriteUnrealStringUnicode(this EndianWriter stream, string value)
         {
             if (value?.Length > 0)
             {
@@ -737,7 +776,18 @@ namespace ME3Explorer
             return new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
         }
 
+        public static NameReference ReadNameReference(this EndianReader stream, IMEPackage pcc)
+        {
+            return new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
+        }
+
         public static void WriteNameReference(this Stream stream, NameReference name, IMEPackage pcc)
+        {
+            stream.WriteInt32(pcc.FindNameOrAdd(name.Name));
+            stream.WriteInt32(name.Number);
+        }
+
+        public static void WriteNameReference(this EndianWriter stream, NameReference name, IMEPackage pcc)
         {
             stream.WriteInt32(pcc.FindNameOrAdd(name.Name));
             stream.WriteInt32(name.Number);

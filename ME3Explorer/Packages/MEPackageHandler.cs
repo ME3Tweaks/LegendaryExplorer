@@ -29,9 +29,10 @@ namespace ME3Explorer.Packages
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
             if (forceLoadFromDisk || !openPackages.ContainsKey(pathToFile))
             {
-                ushort version;
-                ushort licenseVersion;
+                ushort version = 0;
+                ushort licenseVersion = 0;
                 uint versionLicenseePacked;
+                bool fullyCompressed = false;
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
                     EndianReader er = new EndianReader(fs);
@@ -39,16 +40,32 @@ namespace ME3Explorer.Packages
 
                     // This is stored as integer by cooker as it is flipped by size word in big endian
                     versionLicenseePacked = er.ReadUInt32();
-                    version = (ushort)(versionLicenseePacked & 0xFFFF);
-                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                    if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little)
+                    {
+                        //block size - this is a fully compressed file. we must decompress it
+                        //for some reason fully compressed files use a little endian package tag
+                        var usfile = pathToFile + ".us";
+                        if (File.Exists(usfile))
+                        {
+                            fullyCompressed = true;
+                        }
+                    }
+
+                    if (!fullyCompressed)
+                    {
+                        version = (ushort)(versionLicenseePacked & 0xFFFF);
+                        licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                    }
                 }
 
 
-                if (version == MEPackage.ME3UnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
+                if (fullyCompressed ||
+                    (version == MEPackage.ME3UnrealVersion && (licenseVersion == MEPackage.ME3LicenseeVersion || licenseVersion == MEPackage.ME3Xenon2011DemoLicenseeVersion)) ||
                     version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
                     version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
-                    version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion)
+                    version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
+                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
                 {
                     package = MEConstructorDelegate(pathToFile, MEGame.Unknown);
                 }

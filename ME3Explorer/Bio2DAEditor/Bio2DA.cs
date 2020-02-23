@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
@@ -117,7 +118,7 @@ namespace ME3Explorer
             int curroffset = binstartoffset;
 
             int cellcount = BitConverter.ToInt32(data, curroffset);
-            if ( cellcount > 0 ) 
+            if (cellcount > 0)
             {
                 curroffset += 4;
                 for (int rowindex = 0; rowindex < RowCount; rowindex++)
@@ -342,10 +343,10 @@ namespace ME3Explorer
                     props.Add(indices);
                 }
 
-                MemoryStream propsStream = new MemoryStream();
-                props.WriteTo(propsStream, export.FileRef);
+                EndianReader propsStream = new EndianReader(new MemoryStream()) { Endian = export.FileRef.Endian };
+                props.WriteTo(propsStream.Writer, export.FileRef);
                 MemoryStream currentDataStream = new MemoryStream(export.Data);
-                byte[] propertydata = propsStream.ToArray();
+                byte[] propertydata = propsStream.BaseStream.ReadFully();
                 int propertyStartOffset = export.GetPropertyStart();
                 var newExportData = new byte[propertyStartOffset + propertydata.Length + binarydata.Length];
                 Buffer.BlockCopy(export.Data, 0, newExportData, 0, propertyStartOffset);
@@ -368,7 +369,7 @@ namespace ME3Explorer
         {
             var Workbook = new XLWorkbook(Filename);
             IXLWorksheet iWorksheet;
-            if ( Workbook.Worksheets.Count() > 1)
+            if (Workbook.Worksheets.Count() > 1)
             {
                 try
                 {

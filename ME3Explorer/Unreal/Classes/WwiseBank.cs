@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -33,25 +35,28 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
+            EndianReader reader = new EndianReader(new MemoryStream(export.Data)) { Endian = export.FileRef.Endian };
             BinaryOffset = export.propsEnd() + (export.FileRef.Game == MEGame.ME2 ? 0x18 : 0x10);
-            ReadChunks();
+            ReadChunks(reader);
         }
 
-        public void ReadChunks()
+        public void ReadChunks(EndianReader reader)
         {
             int pos = BinaryOffset;
+            reader.Position = BinaryOffset;
             Chunks = new List<byte[]>();
-            while (pos < memory.Length)
+            while (reader.Position < reader.Length)
             {
                 int start = pos;
-                Debug.WriteLine("Reading chunk: " + GetID(memory, start));
-                int size = BitConverter.ToInt32(memory, start + 4) + 8; //size of chunk is at +4, we add 8 as it includes header and size
+                var chunkname = reader.BaseStream.ReadStringASCII(4);
+                Debug.WriteLine("Reading chunk: " + chunkname);
+                int size = reader.ReadInt32() + 8; //size of chunk is at +4, we add 8 as it includes header and size
                 byte[] buff = new byte[size];
                 Buffer.BlockCopy(memory, start, buff, 0, size);
                 //                for (int i = 0; i < size; i++)
                 //                  buff[i] = memory[start + i];
                 Chunks.Add(buff);
-                pos += size;
+                reader.Skip(size - 8);
             }
         }
 

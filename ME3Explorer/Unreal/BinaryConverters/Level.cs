@@ -142,9 +142,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.UDK && sc.IsSaving)
             {
-                sc.ms.WriteBoolInt(false); //PrecomputedLightVolume bIsInitialized
-                sc.ms.WriteZeros(28); //Zero-ed PrecomputedVisibilityHandler
-                sc.ms.WriteZeros(45); //unk data
+                sc.ms.Writer.WriteBoolInt(false); //PrecomputedLightVolume bIsInitialized
+                sc.ms.BaseStream.WriteZeros(28); //Zero-ed PrecomputedVisibilityHandler
+                sc.ms.BaseStream.WriteZeros(45); //unk data
             }
 
             if (sc.Game == MEGame.ME3)

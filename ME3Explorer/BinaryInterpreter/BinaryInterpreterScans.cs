@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Media;
 using DocumentFormat.OpenXml.Drawing;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -28,7 +29,7 @@ namespace ME3Explorer
             try
             {
                 int dataOffset = CurrentLoadedExport.DataOffset;
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
@@ -104,7 +105,7 @@ namespace ME3Explorer
                     {
                         NameReference shaderName = bin.ReadNameReference(Pcc);
                         int shaderCRC = bin.ReadInt32();
-                        factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") {Length = 12});
+                        factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
                 if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3)
@@ -207,7 +208,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private BinInterpNode MakeStringNode(MemoryStream bin, string nodeName)
+        private BinInterpNode MakeStringNode(EndianReader bin, string nodeName)
         {
             long pos = bin.Position;
             int strLen = bin.ReadInt32();
@@ -215,11 +216,11 @@ namespace ME3Explorer
             if (Pcc.Game == MEGame.ME3)
             {
                 strLen *= -2;
-                str = bin.ReadStringUnicodeNull(strLen);
+                str = bin.BaseStream.ReadStringUnicodeNull(strLen);
             }
             else
             {
-                str = bin.ReadStringASCIINull(strLen);
+                str = bin.BaseStream.ReadStringASCIINull(strLen);
             }
             return new BinInterpNode(pos, $"{nodeName}: {str}") { Length = strLen + 4 };
         }
@@ -237,7 +238,7 @@ namespace ME3Explorer
             PCDirect3D_ShaderModel4 = 3
         }
 
-        private BinInterpNode ReadMaterialUniformExpression(MemoryStream bin, string prefix = "")
+        private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")
         {
             NameReference expressionType = bin.ReadNameReference(Pcc);
             var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}");
@@ -344,7 +345,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 bool bLoadVertexColorData;
@@ -408,7 +409,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
 
@@ -432,7 +433,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 bool bIsLeaf;
                 subnodes.Add(MakeArrayNode(bin, "CollisionVertices", i => MakeVectorNode(bin, $"{i}")));
@@ -491,7 +492,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeArrayNode(bin, "Heights", i => MakeUInt16Node(bin, $"{i}")));
@@ -548,7 +549,7 @@ namespace ME3Explorer
             TID_Locked = 8,
         }
 
-        private BinInterpNode MakeLightMapNode(MemoryStream bin)
+        private BinInterpNode MakeLightMapNode(EndianReader bin)
         {
             ELightMapType lightMapType;
             int bulkSerializeElementCount;
@@ -663,12 +664,12 @@ namespace ME3Explorer
             };
         }
 
-        private static List<ITreeItem> StartBrushComponentScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartBrushComponentScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int cachedConvexElementsCount;
@@ -703,12 +704,12 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static List<ITreeItem> StartRB_BodySetupScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartRB_BodySetupScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int preCachedPhysDataCount;
@@ -746,7 +747,7 @@ namespace ME3Explorer
             try
             {
                 int count;
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeEntryNode(bin, "Model"));
@@ -800,7 +801,7 @@ namespace ME3Explorer
             }
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int count;
@@ -841,7 +842,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
 
 
                 if (Pcc.Game >= MEGame.ME3)
@@ -867,7 +868,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
 
@@ -887,12 +888,12 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static List<ITreeItem> StartPhysicsAssetInstanceScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartPhysicsAssetInstanceScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int count;
@@ -920,19 +921,19 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static List<ITreeItem> StartCookedBulkDataInfoContainerScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartCookedBulkDataInfoContainerScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int count;
                 subnodes.Add(new BinInterpNode(bin.Position, $"UnknownMap ({count = bin.ReadInt32()})")
                 {
                     IsExpanded = true,
-                    Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.ReadStringASCIINull(bin.ReadInt32())}")
+                    Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.BaseStream.ReadStringASCIINull(bin.ReadInt32())}")
                     {
                         Items =
                         {
@@ -954,12 +955,12 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static List<ITreeItem> StartMorphTargetScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartMorphTargetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeArrayNode(bin, "MorphLODModels", i => new BinInterpNode(bin.Position, $"{i}")
@@ -995,7 +996,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 if (Pcc.Game == MEGame.ME3)
                 {
@@ -1022,7 +1023,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int polysCount = bin.ReadInt32();
@@ -1083,14 +1084,14 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private string entryRefString(MemoryStream bin) { int n = bin.ReadInt32(); return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}"; }
+        private string entryRefString(EndianReader bin) { int n = bin.ReadInt32(); return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}"; }
 
         private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
@@ -1300,7 +1301,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 int numStaticRecievers;
@@ -1381,7 +1382,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeEntryNode(bin, "PersistentLevel"));
@@ -1429,7 +1430,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
 
                 string nodeString;
                 subnodes.Add(new BinInterpNode(bin.Position, "Stack")
@@ -3378,7 +3379,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(CurrentLoadedExport.Data);
+                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 bin.Skip(4);
                 subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
@@ -3392,12 +3393,12 @@ namespace ME3Explorer
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                 if (Pcc.Game == MEGame.ME2)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
                 if (Pcc.Game == MEGame.ME2)
                 {
@@ -3428,7 +3429,7 @@ namespace ME3Explorer
                         hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
                         for (int n = 0; n < nNameCount; n++)
                         {
-                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                             hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
@@ -3438,7 +3439,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Names: {nameCount} items")
                 {
                     //ME2 different to ME3/1
-                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.ReadStringASCII(bin.ReadInt32())}"))
+                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
@@ -3539,12 +3540,12 @@ namespace ME3Explorer
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
-                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     if (Pcc.Game == MEGame.ME2)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
-                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     nodes.Add(MakeInt32Node(bin, "index"));
                 }
             }
@@ -3559,7 +3560,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(CurrentLoadedExport.Data);
+                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 bin.Skip(4);
                 subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
@@ -3574,12 +3575,12 @@ namespace ME3Explorer
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                 if (versionID == 1610)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                 }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
                 if (versionID == 1610)
                 {
@@ -3610,7 +3611,7 @@ namespace ME3Explorer
                         hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
                         for (int n = 0; n < nNameCount; n++)
                         {
-                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                            hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                             hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
@@ -3624,7 +3625,7 @@ namespace ME3Explorer
                 for (int m = 0; m < nameCount; m++)
                 {
                     var pos = bin.Position;
-                    var mName = bin.ReadStringASCII(bin.ReadInt32());
+                    var mName = bin.BaseStream.ReadStringASCII(bin.ReadInt32());
                     nameTable.Add(mName);
                     nametabObj.Add(new BinInterpNode(pos, $"{m}: {mName}"));
                     bin.Skip(versionID != 1610 ? 0 : 4);
@@ -3746,7 +3747,7 @@ namespace ME3Explorer
                             else
                             {
                                 var unkStringLength = bin.ReadInt32();
-                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.ReadStringASCII(unkStringLength)}"));
+                                unkListBitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown String: {bin.BaseStream.ReadStringASCII(unkStringLength)}"));
                                 hasNameList = unkStringLength == 0;
                             }
                             if (hasNameList)
@@ -3805,12 +3806,12 @@ namespace ME3Explorer
                     unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {stringCount}") { Length = 4 });
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     for (int i = 1; i < stringCount; i++)
                     {
                         c++;
                         unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
-                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     }
 
                 }
@@ -3838,7 +3839,7 @@ namespace ME3Explorer
                     {
                         Items = nodes
                     });
-                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4});
+                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                     int animationCount = bin.ReadInt32();
                     var anims = new List<ITreeItem>();
                     nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
@@ -3852,11 +3853,11 @@ namespace ME3Explorer
                         {
                             Items = animNodes
                         });
-                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4});
+                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                         animNodes.Add(MakeInt32Node(bin, "Unknown"));
                         if (versionID == 1610)
                         {
-                            animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                            animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
                     }
 
@@ -3881,7 +3882,7 @@ namespace ME3Explorer
                         {
                             if (versionID == 1610)
                             {
-                                nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                                nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                             }
 
                             nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
@@ -3891,22 +3892,22 @@ namespace ME3Explorer
                         }
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") {Length = 4});
-                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") {Length = 4});
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
                     nodes.Add(MakeInt32Node(bin, "Unknown"));
                     if (versionID == 1610)
                     {
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     if (versionID == 1610)
                     {
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") {Length = 2});
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadStringASCII(bin.ReadInt32())}"));
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
                     nodes.Add(MakeInt32Node(bin, "index"));
                 }
 
@@ -4039,7 +4040,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 subnodes.Add(MakeArrayNode(bin, "AnimToPackageMap?", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")));
 
@@ -4113,7 +4114,7 @@ namespace ME3Explorer
             try
             {
 
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 int offset = 0; //this property starts at 0 for parsing
 
                 subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
@@ -4753,10 +4754,10 @@ namespace ME3Explorer
                     int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
                     //int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
                     string postCompName = CurrentLoadedExport.FileRef.GetNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
-                                                                                                                 /*if (postCompName != "None")
-                                                                                                                 {
-                                                                                                                     Debugger.Break();
-                                                                                                                 }*/
+                    /*if (postCompName != "None")
+                    {
+                        Debugger.Break();
+                    }*/
                     subnodes.Add(new BinInterpNode
                     {
                         Header = $"0x{offset:X5} Post-Components Blank ({postCompName})",
@@ -5194,7 +5195,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeEntryNode(bin, "Self"));
@@ -5266,7 +5267,7 @@ namespace ME3Explorer
                 });
                 if (Pcc.Game == MEGame.UDK)
                 {
-                    subnodes.Add(MakeArrayNode(bin, "MeshesComponentsWithDynamicLighting?", 
+                    subnodes.Add(MakeArrayNode(bin, "MeshesComponentsWithDynamicLighting?",
                                                i => new BinInterpNode(bin.Position, $"{i}: {entryRefString(bin)}, {bin.ReadInt32()}")));
                 }
 
@@ -5545,45 +5546,45 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
+        private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
 
-        private static BinInterpNode MakeBoolIntNode(MemoryStream bin, string name, out bool boolVal)
+        private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
         {
-            return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) {Length = 4};
+            return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
         }
 
-        private static BinInterpNode MakeBoolByteNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
+        private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
 
-        private static BinInterpNode MakeFloatNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
+        private static BinInterpNode MakeFloatNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
 
-        private static BinInterpNode MakeUInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
+        private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
-        private static BinInterpNode MakeInt32Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
+        private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
-        private static BinInterpNode MakeUInt16Node(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
+        private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
 
-        private static BinInterpNode MakeByteNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
+        private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
-        private BinInterpNode MakeNameNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
+        private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
 
-        private BinInterpNode MakeEntryNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
+        private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
 
-        private static BinInterpNode MakePackedNormalNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")
             {
                 Length = 4
             };
 
-        private static BinInterpNode MakeVectorNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakeVectorNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
 
-        private static BinInterpNode MakeQuatNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakeQuatNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
 
-        private static BinInterpNode MakeRotatorNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
 
-        private static BinInterpNode MakeBoxNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, name)
             {
                 IsExpanded = true,
@@ -5596,13 +5597,13 @@ namespace ME3Explorer
                 Length = 25
             };
 
-        private static BinInterpNode MakeVector2DNode(MemoryStream bin, string name) =>
+        private static BinInterpNode MakeVector2DNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
 
-        private static BinInterpNode MakeVector2DHalfNode(MemoryStream bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
+        private static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.BaseStream.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
 
-        private static BinInterpNode MakeColorNode(MemoryStream bin, string name)
+        private static BinInterpNode MakeColorNode(EndianReader bin, string name)
         {
             return new BinInterpNode(bin.Position, $"{name}")
             {
@@ -5617,7 +5618,7 @@ namespace ME3Explorer
             };
         }
 
-        private static BinInterpNode MakeBoxSphereBoundsNode(MemoryStream bin, string name)
+        private static BinInterpNode MakeBoxSphereBoundsNode(EndianReader bin, string name)
         {
             return new BinInterpNode(bin.Position, $"{name}")
             {
@@ -5630,9 +5631,9 @@ namespace ME3Explorer
             };
         }
 
-        private static BinInterpNode MakeGuidNode(MemoryStream bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") { Length = 16 };
+        private static BinInterpNode MakeGuidNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}") { Length = 16 };
 
-        private static BinInterpNode MakeArrayNode(MemoryStream bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
+        private static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
         {
             int count;
             return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
@@ -5642,7 +5643,7 @@ namespace ME3Explorer
             };
         }
 
-        private static BinInterpNode MakeByteArrayNode(MemoryStream bin, string name)
+        private static BinInterpNode MakeByteArrayNode(EndianReader bin, string name)
         {
             long pos = bin.Position;
             int count = bin.ReadInt32();
@@ -5650,7 +5651,7 @@ namespace ME3Explorer
             return new BinInterpNode(pos, $"{name} ({count} bytes)");
         }
 
-        private static BinInterpNode MakeArrayNode(int count, MemoryStream bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
+        private static BinInterpNode MakeArrayNode(int count, EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
         {
             return new BinInterpNode(bin.Position, $"{name} ({count})")
             {
@@ -5669,7 +5670,7 @@ namespace ME3Explorer
             }
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 nodes.Add(MakeMaterialResourceNode(bin, "ShaderMap 3 Material Resource"));
@@ -5696,7 +5697,7 @@ namespace ME3Explorer
             }
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
@@ -5710,7 +5711,7 @@ namespace ME3Explorer
             }
             return nodes;
         }
-        private BinInterpNode ReadFStaticParameterSet(MemoryStream bin)
+        private BinInterpNode ReadFStaticParameterSet(EndianReader bin)
         {
             var nodes = new List<ITreeItem>();
             var result = new BinInterpNode(bin.Position, "StaticParameterSet")
@@ -5727,8 +5728,8 @@ namespace ME3Explorer
             for (int j = 0; j < staticSwitchParameterCount; j++)
             {
                 var paramName = bin.ReadNameReference(Pcc);
-                var paramVal = bin.ReadBooleanInt();
-                var paramOverride = bin.ReadBooleanInt();
+                var paramVal = bin.ReadBoolInt();
+                var paramOverride = bin.ReadBoolInt();
                 Guid g = bin.ReadGuid();
                 staticSwitchParamsNode.Items.Add(new BinInterpNode(bin.Position - 32, $"{j}: Name: {paramName.Instanced}, Value: {paramVal}, Override: {paramOverride}\nGUID:{g}")
                 {
@@ -5751,11 +5752,11 @@ namespace ME3Explorer
                     Items = subnodes
                 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"R: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"G: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"A: {bin.ReadBooleanInt()}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"R: {bin.ReadBoolInt()}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"G: {bin.ReadBoolInt()}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"B: {bin.ReadBoolInt()}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"A: {bin.ReadBoolInt()}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
                 subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
             }
 
@@ -5777,7 +5778,7 @@ namespace ME3Explorer
                     });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"CompressionSettings: {(TextureCompressionSettings)bin.ReadByte()}") { Length = 1 });
-                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
                 }
             }
@@ -5799,7 +5800,7 @@ namespace ME3Explorer
                     });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
                     subnodes.Add(MakeInt32Node(bin, "WeightmapIndex"));
-                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBooleanInt()}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"bOverride: {bin.ReadBoolInt()}") { Length = 4 });
                     subnodes.Add(new BinInterpNode(bin.Position, $"ExpressionGUID: {bin.ReadGuid()}") { Length = 16 });
                 }
             }
@@ -5807,7 +5808,7 @@ namespace ME3Explorer
             return result;
         }
 
-        private BinInterpNode MakeMaterialResourceNode(MemoryStream bin, string name)
+        private BinInterpNode MakeMaterialResourceNode(EndianReader bin, string name)
         {
             BinInterpNode node = new BinInterpNode(bin.Position, name)
             {
@@ -5942,7 +5943,7 @@ namespace ME3Explorer
 
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
                 subnodes.Add(MakeArrayNode(bin, "ArchetypeToInstanceMap", i => new BinInterpNode(bin.Position, $"{i}")
                 {
@@ -5977,7 +5978,7 @@ namespace ME3Explorer
             try
             {
 
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
@@ -6030,8 +6031,8 @@ namespace ME3Explorer
                                 MakeUInt16Node(bin, "MaterialIndex"),
                                 MakeUInt16Node(bin, "ChunkIndex"),
                                 MakeUInt32Node(bin, "BaseIndex"),
-                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, 
-                                                                            () => MakeUInt32Node(bin, "NumTriangles"), 
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3,
+                                                                            () => MakeUInt32Node(bin, "NumTriangles"),
                                                                             () => MakeUInt16Node(bin, "NumTriangles")),
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeByteNode(bin, "TriangleSorting"))
                             }
@@ -6146,9 +6147,9 @@ namespace ME3Explorer
                                 new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceBones[{l}]"))),
                                 new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceWeights[{l}]"))),
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, () => MakeVectorNode(bin, "Position")),
-                                ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, 
+                                ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1,
                                                               () => ListInitHelper.ConditionalAddOne<ITreeItem>(useFullPrecisionUVs,
-                                                                                                                () => MakeVector2DNode(bin, "UV"), 
+                                                                                                                () => MakeVector2DNode(bin, "UV"),
                                                                                                                 () => MakeVector2DHalfNode(bin, "UV")))
                             }
                         }));
@@ -6494,7 +6495,7 @@ namespace ME3Explorer
             try
             {
                 var matOffsets = new List<long>();
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
@@ -6793,7 +6794,7 @@ namespace ME3Explorer
             try
             {
                 subnodes.AddRange(StartStaticMeshScan(data, ref binarystart));
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeEntryNode(bin, "SourceStaticMesh"));
@@ -6848,7 +6849,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private BinInterpNode MakekDOPTreeNode(MemoryStream bin)
+        private BinInterpNode MakekDOPTreeNode(EndianReader bin)
         {
             bool bIsLeaf;
             return new BinInterpNode(bin.Position, "kDOPTree")
@@ -6940,7 +6941,7 @@ namespace ME3Explorer
 
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
 
                 subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
 
@@ -7098,7 +7099,7 @@ namespace ME3Explorer
 
                 });
                 pos += 4;
-                if(Pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     int length = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
@@ -7151,7 +7152,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
 
-                if(Pcc.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3)
                 {
                     int unkT = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
@@ -7376,7 +7377,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new MemoryStream(data);
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeArrayNode(bin, "LOD Count:", k => new BinInterpNode(bin.Position, $"{k}")

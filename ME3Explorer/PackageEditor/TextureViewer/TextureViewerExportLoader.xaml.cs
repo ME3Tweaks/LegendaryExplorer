@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AmaroK86.ImageFormat;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using MassEffectModder.Images;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
@@ -891,12 +892,12 @@ namespace ME3Explorer
                 mipTailIdx.Value = texture.Mips.Count - 1;
             }
 
-            MemoryStream mem = new MemoryStream();
-            props.WriteTo(mem, texture.Export.FileRef);
+            EndianReader mem = new EndianReader(new MemoryStream()) { Endian = texture.Export.FileRef.Endian};
+            props.WriteTo(mem.Writer, texture.Export.FileRef);
             mem.Position = 0;
-            var test = PropertyCollection.ReadProps(texture.Export, mem, "Texture2D", true, true); //do not set properties as this may interfere with some other code. may change later.
+            var test = PropertyCollection.ReadProps(texture.Export, mem.BaseStream, "Texture2D", true, true); //do not set properties as this may interfere with some other code. may change later.
             int propStart = CurrentLoadedExport.GetPropertyStart();
-            byte[] propData = mem.ToArray();
+            byte[] propData = mem.BaseStream.ReadFully();
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();

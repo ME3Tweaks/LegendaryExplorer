@@ -243,10 +243,18 @@ namespace ME3Explorer
 
                     if (exportEntry.FileRef.Game == MEGame.ME3)
                     {
-                        QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
-                        List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
-                        HIRCObjects.Clear();
-                        HIRCObjects.AddRange(hircObjects);
+                        try
+                        {
+                            QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
+                            List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
+                            HIRCObjects.Clear();
+                            HIRCObjects.AddRange(hircObjects);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Coudln't parse HIRCs");
+                        }
+
                         CurrentLoadedWwisebank = wb;
                     }
                     else

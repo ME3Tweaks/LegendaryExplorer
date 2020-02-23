@@ -60,7 +60,7 @@ namespace ME3Explorer
         {
             //Cleanup orphaned temp sounds from soundplorer
             DirectoryInfo tempDirectoryInfo = new DirectoryInfo(System.IO.Path.GetTempPath());
-            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_SOUND_*");
+            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_*");
             foreach (FileInfo file in Files)
             {
                 try

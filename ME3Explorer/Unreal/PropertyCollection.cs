@@ -9,6 +9,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Reflection;
+using Gammtek.Conduit.IO;
 using ME3Explorer.SharedUI;
 using StreamHelpers;
 using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
@@ -103,7 +104,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public void WriteTo(Stream stream, IMEPackage pcc, bool requireNoneAtEnd = true)
+        public void WriteTo(EndianWriter stream, IMEPackage pcc, bool requireNoneAtEnd = true)
         {
             foreach (var prop in this)
             {
@@ -135,8 +136,9 @@ namespace ME3Explorer.Unreal
             info = UnrealObjectInfo.GetClassOrStructInfo(game, typeName);
         }
 
-        public static PropertyCollection ReadProps(ExportEntry export, Stream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
+        public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         {
+            EndianReader stream = new EndianReader(rawStream) { Endian = export.FileRef.Endian };
             PropertyCollection props = new PropertyCollection(export, typeName);
             long startPosition = stream.Position;
             IMEPackage pcc = export.FileRef;
@@ -194,7 +196,7 @@ namespace ME3Explorer.Unreal
                             }
                             else
                             {
-                                PropertyCollection structProps = ReadProps(export, stream, structType, includeNoneProperty, entry: entry);
+                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, structType, includeNoneProperty, entry: entry);
                                 prop = new StructProperty(structType, structProps, nameRef) { ValueOffset = valOffset };
                             }
                             break;
@@ -271,7 +273,8 @@ namespace ME3Explorer.Unreal
                                 //technically valid, so we should support reading them
                                 if (stream.Position < valStart + size)
                                 {
-                                    stream.JumpTo(valStart + size);
+                                    //Old code: JumpTo
+                                    stream.Seek(valStart + size, SeekOrigin.Begin);
                                 }
                             }
                             break;
@@ -337,7 +340,7 @@ namespace ME3Explorer.Unreal
             return props;
         }
 
-        public static PropertyCollection ReadImmutableStruct(ExportEntry export, Stream stream, string structType, int size, IEntry parsingEntry = null)
+        public static PropertyCollection ReadImmutableStruct(ExportEntry export, EndianReader stream, string structType, int size, IEntry parsingEntry = null)
         {
             IMEPackage pcc = export.FileRef;
             //strip transients unless this is a class definition
@@ -410,7 +413,7 @@ namespace ME3Explorer.Unreal
         }
 
         //Nested struct type is for structs in structs
-        static UProperty ReadImmutableStructProp(ExportEntry export, Stream stream, UProperty template, string structType, string nestedStructType = null)
+        static UProperty ReadImmutableStructProp(ExportEntry export, EndianReader stream, UProperty template, string structType, string nestedStructType = null)
         {
             IMEPackage pcc = export.FileRef;
             if (stream.Position + 1 >= stream.Length)
@@ -468,7 +471,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static UProperty ReadArrayProperty(Stream stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
+        public static UProperty ReadArrayProperty(EndianReader stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
@@ -566,7 +569,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
-                                PropertyCollection structProps = ReadProps(export, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry);
+                                PropertyCollection structProps = ReadProps(export, stream.BaseStream, arrayStructType, includeNoneProperty: IncludeNoneProperties, entry: parsingEntry);
 #if DEBUG
                                 try
                                 {
@@ -683,7 +686,8 @@ namespace ME3Explorer.Unreal
             _name = new NameReference();
         }
 
-        public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
+        //public abstract void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false);
+        public abstract void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false);
 
         /// <summary>
         /// Gets the length of this property in bytes. Do not use this if this is an ArrayProperty child object.
@@ -693,8 +697,8 @@ namespace ME3Explorer.Unreal
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
-            var stream = new MemoryStream();
-            WriteTo(stream, pcc, valueOnly);
+            var stream = new EndianReader(new MemoryStream());
+            WriteTo(stream.Writer, pcc, valueOnly);
             return stream.Length;
         }
     }
@@ -706,12 +710,12 @@ namespace ME3Explorer.Unreal
 
         public NoneProperty() : base("None") { }
 
-        public NoneProperty(Stream stream) : this()
+        public NoneProperty(EndianReader stream) : this()
         {
             ValueOffset = stream.Position;
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -774,7 +778,7 @@ namespace ME3Explorer.Unreal
             return Properties.GetPropOrDefault<T>(name);
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (valueOnly)
             {
@@ -784,9 +788,9 @@ namespace ME3Explorer.Unreal
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    Stream m = new MemoryStream();
-                    Properties.WriteTo(m, pcc);
-                    return m;
+                    EndianReader m = new EndianReader(new MemoryStream()){Endian = pcc.Endian};
+                    Properties.WriteTo(m.Writer, pcc);
+                    return m.BaseStream;
                 }, StaticArrayIndex);
             }
         }
@@ -804,7 +808,7 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public IntProperty(Stream stream, NameReference? name = null) : base(name)
+        public IntProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = stream.ReadInt32();
@@ -817,7 +821,7 @@ namespace ME3Explorer.Unreal
 
         public IntProperty() { }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -874,10 +878,10 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public FloatProperty(Stream stream, NameReference? name = null) : base(name)
+        public FloatProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadFloat();
+            Value = stream.ReadSingle();
         }
 
         public FloatProperty(float val, NameReference? name = null) : base(name)
@@ -887,7 +891,7 @@ namespace ME3Explorer.Unreal
 
         public FloatProperty() { }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -935,7 +939,7 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public ObjectProperty(Stream stream, NameReference? name = null) : base(name)
+        public ObjectProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = stream.ReadInt32();
@@ -953,7 +957,7 @@ namespace ME3Explorer.Unreal
 
         public ObjectProperty() { }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1030,7 +1034,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public NameProperty(Stream stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
+        public NameProperty(EndianReader stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
         {
             ValueOffset = stream.Position;
             Value = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
@@ -1041,7 +1045,7 @@ namespace ME3Explorer.Unreal
             Value = "None";
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1103,18 +1107,18 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public BoolProperty(Stream stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
+        public BoolProperty(EndianReader stream, MEGame game, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
             ValueOffset = stream.Position;
             if (game < MEGame.ME3 && isArrayContained)
             {
                 //ME2 seems to read 1 byte... sometimes...
                 //ME1 as well
-                Value = stream.ReadBoolByte();
+                Value = stream.BaseStream.ReadBoolByte();
             }
             else
             {
-                Value = (game >= MEGame.ME3) ? stream.ReadBoolByte() : stream.ReadBoolInt();
+                Value = (game >= MEGame.ME3) ? stream.BaseStream.ReadBoolByte() : stream.ReadBoolInt();
             }
         }
 
@@ -1125,7 +1129,7 @@ namespace ME3Explorer.Unreal
 
         public BoolProperty() { }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1174,13 +1178,13 @@ namespace ME3Explorer.Unreal
             Value = val;
         }
 
-        public ByteProperty(Stream stream, NameReference? name = null) : base(name)
+        public ByteProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = (byte)stream.ReadByte();
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1209,13 +1213,13 @@ namespace ME3Explorer.Unreal
             Value = val;
         }
 
-        public BioMask4Property(Stream stream, NameReference? name = null) : base(name)
+        public BioMask4Property(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = (byte)stream.ReadByte();
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1239,7 +1243,7 @@ namespace ME3Explorer.Unreal
         }
         public List<NameReference> EnumValues { get; }
 
-        public EnumProperty(Stream stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
+        public EnumProperty(EndianReader stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
@@ -1276,7 +1280,7 @@ namespace ME3Explorer.Unreal
             Value = EnumValues[0];
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1318,10 +1322,10 @@ namespace ME3Explorer.Unreal
     public class ImmutableByteArrayProperty : ArrayPropertyBase
     {
         public byte[] bytes;
-        public ImmutableByteArrayProperty(long startOffset, int count, Stream stream, NameReference? name) : base(name)
+        public ImmutableByteArrayProperty(long startOffset, int count, EndianReader stream, NameReference? name) : base(name)
         {
             ValueOffset = startOffset;
-            bytes = stream.ReadToBuffer(count);
+            bytes = stream.ReadBytes(count);
         }
 
         public ImmutableByteArrayProperty(byte[] array, NameReference? name) : base(name)
@@ -1333,7 +1337,7 @@ namespace ME3Explorer.Unreal
             bytes = Array.Empty<byte>();
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1391,18 +1395,18 @@ namespace ME3Explorer.Unreal
             Values = values;
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    Stream m = new MemoryStream();
+                    EndianReader m = new EndianReader(new MemoryStream()){Endian = pcc.Endian};
                     foreach (var prop in Values)
                     {
-                        prop.WriteTo(m, pcc, true);
+                        prop.WriteTo(m.Writer, pcc, true);
                     }
-                    return m;
+                    return m.BaseStream;
                 }, StaticArrayIndex);
             }
             else
@@ -1506,20 +1510,21 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public StrProperty(Stream stream, NameReference? name = null) : base(name)
+        public StrProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             int count = stream.ReadInt32();
             var streamPos = stream.Position;
 
+            //TODO: ENDIAN - Check if strings are stored in big endian or not (i don't think they are)
             if (count < -1) // originally 0
             {
                 count *= -2;
-                Value = stream.ReadStringUnicodeNull(count);
+                Value = stream.BaseStream.ReadStringUnicodeNull(count);
             }
             else if (count > 0)
             {
-                Value = stream.ReadStringASCIINull(count);
+                Value = stream.BaseStream.ReadStringASCIINull(count);
             }
             else
             {
@@ -1545,7 +1550,7 @@ namespace ME3Explorer.Unreal
             Value = val ?? string.Empty;
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1592,7 +1597,7 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public StringRefProperty(Stream stream, NameReference? name = null) : base(name)
+        public StringRefProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = stream.ReadInt32();
@@ -1609,7 +1614,7 @@ namespace ME3Explorer.Unreal
         /// <param name="name"></param>
         public StringRefProperty(NameReference? name = null) : base(name) { }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1634,7 +1639,7 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
-        public DelegateProperty(Stream stream, IMEPackage pcc, NameReference? name = null) : base(name)
+        public DelegateProperty(EndianReader stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             Value = new ScriptDelegate(stream.ReadInt32(), new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32()));
@@ -1645,7 +1650,7 @@ namespace ME3Explorer.Unreal
             Value = new ScriptDelegate(_object, functionName);
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {
@@ -1671,14 +1676,14 @@ namespace ME3Explorer.Unreal
             raw = new byte[0];
         }
 
-        public UnknownProperty(Stream stream, int size, string typeName = null, NameReference? name = null) : base(name)
+        public UnknownProperty(EndianReader stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
             TypeName = typeName ?? "Unknown";
-            raw = stream.ReadToBuffer(size);
+            raw = stream.ReadBytes(size);
         }
 
-        public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
+        public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
             {

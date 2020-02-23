@@ -46,6 +46,8 @@ namespace ME3Explorer.Packages
     {
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
+        public const ushort ME1PS3UnrealVersion = 684; //same as ME3 ;)
+        public const ushort ME1PS3LicenseeVersion = 153;
 
         public const ushort ME2UnrealVersion = 512;
         public const ushort ME2DemoUnrealVersion = 513;
@@ -53,6 +55,7 @@ namespace ME3Explorer.Packages
 
         public const ushort ME3UnrealVersion = 684;
         public const ushort ME3WiiUUnrealVersion = 845;
+        public const ushort ME3Xenon2011DemoLicenseeVersion = 185;
         public const ushort ME3LicenseeVersion = 194;
 
         public Endian Endian { get; private set; }
@@ -62,7 +65,7 @@ namespace ME3Explorer.Packages
         public enum GamePlatform
         {
             PC,
-            Xbox360,
+            Xenon,
             PS3,
             WiiU
         }
@@ -124,7 +127,7 @@ namespace ME3Explorer.Packages
                 return;
             }
 
-            using var fs = File.OpenRead(filePath);
+            MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
 
             #region Header
 
@@ -137,10 +140,38 @@ namespace ME3Explorer.Packages
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
             packageReader.SkipInt32(); //skip magic as we have already read it
             Endian = packageReader.Endian;
+
             //Big endian means it will be console version and package header is slightly tweaked as some flags are always set
 
             // This is stored as integer by cooker as it is flipped by size word in big endian
             var versionLicenseePacked = packageReader.ReadUInt32();
+
+            int uncompressedSizeForFullCompressedPackage = 0;
+            if (versionLicenseePacked == 0x00020000 && Endian == Endian.Little)
+            {
+                //block size - this is a fully compressed file. we must decompress it
+                // these files are little endian package tag for some reason
+                var usfile = filePath + ".us";
+                if (File.Exists(usfile))
+                {
+                    //packageReader.Position = 0xC;
+                    //var uncompSize = packageReader.ReadInt32();
+                    ////calculate number of chunks
+                    //int chunkCoumt = (uncompSize % 0x00020000 == 0)
+                    //    ?
+                    //    uncompSize / 0x00020000
+                    //    :
+                    //    uncompSize / 0x00020000 + 1; //round up
+
+                    //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
+                    fs = new MemoryStream(CompressionHelper.QuickBMSDecompress(filePath, "XboxLZX_le.bms", false));
+                    packageReader = EndianReader.SetupForPackageReading(fs);
+                    packageReader.SkipInt32(); //skip magic as we have already read it
+                    Endian = packageReader.Endian;
+                    versionLicenseePacked = packageReader.ReadUInt32();
+                }
+            }
+
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
             var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
             switch (unrealVersion)
@@ -148,6 +179,10 @@ namespace ME3Explorer.Packages
                 case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
                     Game = MEGame.ME1;
                     Platform = GamePlatform.PC;
+                    break;
+                case ME1PS3UnrealVersion when licenseeVersion == ME1PS3LicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.PS3;
                     break;
                 case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
                 case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
@@ -162,6 +197,10 @@ namespace ME3Explorer.Packages
                     Game = MEGame.ME3;
                     Platform = GamePlatform.PC;
                     break;
+                case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
+                    Game = MEGame.ME3;
+                    Platform = GamePlatform.Xenon;
+                    break;
                 default:
                     throw new FormatException("Not a Mass Effect Package!");
             }
@@ -175,10 +214,11 @@ namespace ME3Explorer.Packages
 
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
-            if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC))
+            //Xenon Demo ME3 doesn't read this
+            if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && Platform != GamePlatform.Xenon)
             {
                 //Consoles are always cooked so this integer is skipped
-                fs.SkipInt32(); //always 0
+                packageReader.SkipInt32(); //always 0
             }
 
             //if (Platform != GamePlatform.PC)
@@ -205,12 +245,12 @@ namespace ME3Explorer.Packages
             if (Game == MEGame.ME3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
-                fs.SkipInt32(); //ImportGuidsCount always 0
-                fs.SkipInt32(); //ExportGuidsCount always 0
-                fs.SkipInt32(); //ThumbnailTableOffset always 0
+                packageReader.SkipInt32(); //ImportGuidsCount always 0
+                packageReader.SkipInt32(); //ExportGuidsCount always 0
+                packageReader.SkipInt32(); //ThumbnailTableOffset always 0
             }
 
-            PackageGuid = fs.ReadGuid();
+            PackageGuid = packageReader.ReadGuid();
             uint generationsTableCount = packageReader.ReadUInt32();
             if (generationsTableCount > 0)
             {
@@ -220,17 +260,17 @@ namespace ME3Explorer.Packages
                 Gen0NetworkedObjectCount = packageReader.ReadInt32();
             }
             //should never be more than 1 generation, but just in case
-            fs.Skip(generationsTableCount * 12);
+            packageReader.Skip(generationsTableCount * 12);
 
-            fs.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
-            fs.SkipInt32();//cookedContentVersion   so we don't have to read them in
+            packageReader.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+            packageReader.SkipInt32();//cookedContentVersion   so we don't have to read them in
 
             if (Game == MEGame.ME2 || Game == MEGame.ME1)
             {
-                fs.SkipInt32(); //always 0
-                fs.SkipInt32(); //always 47699
+                packageReader.SkipInt32(); //always 0
+                packageReader.SkipInt32(); //always 47699
                 unknown4 = packageReader.ReadInt32();
-                fs.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
+                packageReader.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
             }
 
             unknown6 = packageReader.ReadInt32();
@@ -238,19 +278,19 @@ namespace ME3Explorer.Packages
 
             if (Game == MEGame.ME1)
             {
-                fs.SkipInt32(); //always -1
+                packageReader.SkipInt32(); //always -1
             }
 
             //COMPRESSION AND COMPRESSION CHUNKS
-            var compressionFlagPosition = fs.Position;
+            var compressionFlagPosition = packageReader.Position;
             var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
             int numChunks = packageReader.ReadInt32();
 
             //read package source
-            var savedPos = fs.Position;
-            fs.Skip(numChunks * 16); //skip chunk table so we can find package tag
+            var savedPos = packageReader.Position;
+            packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
             packageReader.Position = savedPos;
-            fs.Position = savedPos; //is this not part of chunk table? have we had this mislabeled as 'magic' for chunk decompression?
+            packageReader.Position = savedPos; //is this not part of chunk table? have we had this mislabeled as 'magic' for chunk decompression?
 
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
@@ -1151,15 +1191,15 @@ namespace ME3Explorer.Packages
 
             for (int i = 0; i < exports.Count; i++)
             {
-                var newData = new MemoryStream();
-                newData.WriteFromBuffer(prePropBinary[i]);
+                var newData = new EndianReader(new MemoryStream()) { Endian = Endian.Native }; //only can make new packages for x86
+                newData.Writer.Write(prePropBinary[i]);
                 //write back properties in new format
-                propCollections[i]?.WriteTo(newData, this);
+                propCollections[i]?.WriteTo(newData.Writer, this);
 
-                postPropBinary[i].WriteTo(newData, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
-                                                                                                         //might not matter though
+                postPropBinary[i].WriteTo(newData.Writer, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
+                                                                                                                //might not matter though
 
-                exports[i].Data = newData.ToArray();
+                exports[i].Data = newData.BaseStream.ReadFully();
             }
 
             if (newGame == MEGame.ME3)

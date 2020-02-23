@@ -32,14 +32,14 @@ namespace Gammtek.Conduit.IO
     /// </summary>
     public class EndianWriter : BinaryWriter
     {
-        private readonly BinaryWriter _target;
+        private readonly BinaryWriter _source;
 
         /// <summary>
-        ///     Creates an EndianWriter using the given <paramref name="target" /> BinaryWriter.
+        ///     Creates an EndianWriter using the given <paramref name="source" /> BinaryWriter.
         /// </summary>
-        public EndianWriter(BinaryWriter target)
+        public EndianWriter(BinaryWriter source)
         {
-            _target = target;
+            _source = source;
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
         }
 
@@ -73,7 +73,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Flush()
         {
-            _target.Flush();
+            _source.Flush();
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Gammtek.Conduit.IO
         /// </returns>
         public override long Seek(int offset, SeekOrigin origin)
         {
-            return _target.Seek(offset, origin);
+            return _source.Seek(offset, origin);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(bool value)
         {
-            _target.Write(value);
+            _source.Write(value);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(byte value)
         {
-            _target.Write(value);
+            _source.Write(value);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(byte[] buffer)
         {
-            _target.Write(buffer);
+            _source.Write(buffer);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(byte[] buffer, int index, int count)
         {
-            _target.Write(buffer, index, count);
+            _source.Write(buffer, index, count);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(char ch)
         {
-            _target.Write(ch);
+            _source.Write(ch);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(char[] chars)
         {
-            _target.Write(chars);
+            _source.Write(chars);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(char[] chars, int index, int count)
         {
-            _target.Write(chars, index, count);
+            _source.Write(chars, index, count);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(double value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(float value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(int value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(long value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(sbyte value)
         {
-            _target.Write((byte)value);
+            _source.Write((byte)value);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(short value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(string value)
         {
-            _target.Write(value);
+            _source.Write(value);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(uint value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(ulong value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public override void Write(ushort value)
         {
-            _target.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(Endian.Native.To(Endian).Convert(value));
         }
 
         /// <summary>
@@ -241,9 +241,71 @@ namespace Gammtek.Conduit.IO
             {
                 foreach (var c in charset)
                 {
-                    _target.BaseStream.WriteByte((byte)c);
+                    _source.BaseStream.WriteByte((byte)c);
                 }
             }
+        }
+
+        public void WriteFromBuffer(byte[] buffer)
+        {
+            Write(buffer);
+        }
+
+        public void WriteByte(byte b)
+        {
+            Write(b);
+        }
+
+        public void WriteFloat(float val)
+        {
+            Write(val);
+        }
+
+        public void WriteInt64(long val)
+        {
+            Write(val);
+        }
+
+        public void WriteUInt16(ushort val)
+        {
+            Write(val);
+        }
+
+        public void WriteInt16(short val)
+        {
+            Write(val);
+        }
+
+        public void WriteUInt64(ulong val)
+        {
+            Write(val);
+        }
+
+        public void WriteUInt32(uint val)
+        {
+            Write(val);
+        }
+
+        public void WriteInt32(int val)
+        {
+            Write(val);
+        }
+
+        public void WriteDouble(double val)
+        {
+            Write(val);
+        }
+
+        public void WriteBoolInt(bool val)
+        {
+            //this needs checked. i think its right
+            Write(val ? 1 : 0);
+        }
+
+        public void WriteBoolByte(bool val)
+        {
+            //this needs checked. i think its right
+            Write(val);
         }
     }
 }

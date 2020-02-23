@@ -424,14 +424,16 @@ namespace ME3Explorer.Packages
             //output.WriteUInt32(packageFlags & ~0x02000000u, ); //Mark file as decompressed.
             return output;
         }
-        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset)
+        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0)
         {
             raw.BaseStream.JumpTo(compressionInfoOffset);
-            UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
+            if (compressionType == UnrealPackageFile.CompressionType.None)
+                compressionType = (UnrealPackageFile.CompressionType)raw.ReadUInt32();
 
-
-            int NumChunks = raw.ReadInt32();
+            if (NumChunks == 0)
+                raw.ReadInt32();
             var Chunks = new List<Chunk>();
+            var chunkTableStart = raw.Position;
 
             //DebugOutput.PrintLn("Reading chunk headers...");
             for (int i = 0; i < NumChunks; i++)
@@ -450,6 +452,7 @@ namespace ME3Explorer.Packages
                 Chunks.Add(c);
             }
 
+
             //DebugOutput.PrintLn("\tRead Chunks...");
             int count = 0;
             for (int i = 0; i < Chunks.Count; i++)
@@ -465,6 +468,25 @@ namespace ME3Explorer.Packages
                     compressedsize = EndianReader.ToInt32(c.Compressed, 8, raw.Endian),
                     uncompressedsize = EndianReader.ToInt32(c.Compressed, 12, raw.Endian)
                 };
+
+                if (compressionType == UnrealPackageFile.CompressionType.LZX)
+                {
+                    //we use QuickBMS for this since we don't have a library for this right now
+                    //it uses xmemdecompress.lib. We could make a static wrapper for this
+                    //as the functions are exported
+                    var nextChunkPos = raw.Position;
+                    //Debug.WriteLine($"Extract 0x{datasize:X8} bytes starting from 0x{chunkTableStart:X8}");
+                    var bmsDatapath = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.bin";
+                    File.WriteAllBytes(bmsDatapath, c.Compressed);
+                    c.Uncompressed = QuickBMSDecompress(bmsDatapath, "XboxLZX", true);
+                    if (c.Uncompressed.Length != c.uncompressedSize)
+                        Debug.Write("WRONG LENGTH DECOMPRESSED");
+                    c.header = h;
+                    Chunks[i] = c;
+                    continue;
+                }
+
+
 
                 if (h.magic != -1641380927)
                     throw new FormatException("Chunk magic number incorrect");
@@ -543,6 +565,43 @@ namespace ME3Explorer.Packages
 
             return result;
         }
+
+        public static byte[] QuickBMSDecompress(string bmsDataPath, string scriptFilename, bool isTemp)
+        {
+            var bmsDir = Path.Combine(App.ExecFolder, "quickbms");
+            scriptFilename = Path.Combine(bmsDir, scriptFilename);
+            var bmsPath = Path.Combine(bmsDir, "quickbms.exe");
+            ProcessStartInfo procStartInfo = new ProcessStartInfo(bmsPath, $"-o \"{scriptFilename}\" \"{bmsDataPath}\" \"{Path.GetTempPath().TrimEnd('\\')}\"")
+            {
+                WorkingDirectory = Path.Combine(App.ExecFolder, "quickbms"),
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+            Process proc = new Process
+            {
+                StartInfo = procStartInfo
+            };
+
+            // Set our event handler to asynchronously read the sort output.
+            Debug.WriteLine($"\"{bmsPath}\" -o \"{scriptFilename}\" \"{bmsDataPath}\" \"{Path.GetTempPath().TrimEnd('\\')}\"");
+            proc.Start();
+            proc.WaitForExit();
+            var outputFilename = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(bmsDataPath) + ".decompressed");
+            if (isTemp)
+                File.Delete(bmsDataPath); //intermediate
+
+            if (File.Exists(outputFilename))
+            {
+                var decompressed = File.ReadAllBytes(outputFilename);
+                if (isTemp)
+                    File.Delete(outputFilename);
+                return decompressed;
+            }
+
+            return null;
+        }
+
         #endregion
 
         #region Compression

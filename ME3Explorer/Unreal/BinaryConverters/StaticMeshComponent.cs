@@ -223,7 +223,7 @@ namespace ME3Explorer
                 {
                     lmap = new LightMap();
                 }
-                sc.ms.WriteInt32((int)lmap.LightMapType);
+                sc.ms.Writer.WriteInt32((int)lmap.LightMapType);
             }
 
             switch (lmap.LightMapType)

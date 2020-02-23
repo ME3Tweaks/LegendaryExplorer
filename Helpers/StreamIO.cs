@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Gammtek.Conduit.IO;
 
 namespace StreamHelpers
 {
@@ -120,12 +121,32 @@ namespace StreamHelpers
             stream.WriteStringASCII(str + "\0");
         }
 
+        public static void WriteStringASCII(this EndianWriter stream, string str)
+        {
+            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+        }
+
+        public static void WriteStringASCIINull(this EndianWriter stream, string str)
+        {
+            stream.WriteStringASCII(str + "\0");
+        }
+
         public static void WriteStringUnicode(this Stream stream, string str)
         {
             stream.Write(Encoding.Unicode.GetBytes(str), 0, Encoding.Unicode.GetByteCount(str));
         }
 
         public static void WriteStringUnicodeNull(this Stream stream, string str)
+        {
+            stream.WriteStringUnicode(str + "\0");
+        }
+
+        public static void WriteStringUnicode(this EndianWriter stream, string str)
+        {
+            stream.Write(Encoding.Unicode.GetBytes(str), 0, Encoding.Unicode.GetByteCount(str));
+        }
+
+        public static void WriteStringUnicodeNull(this EndianWriter stream, string str)
         {
             stream.WriteStringUnicode(str + "\0");
         }
