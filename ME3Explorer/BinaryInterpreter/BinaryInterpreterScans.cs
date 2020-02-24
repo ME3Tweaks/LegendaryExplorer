@@ -741,15 +741,17 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<ITreeItem> StartModelComponentScan(byte[] data, ref int binarystart)
+        private List<ITreeItem> StartModelComponentScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, List<(string, int)> refPositions, out MemoryStream ms)
         {
             var subnodes = new List<ITreeItem>();
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.SetupEndianReverser();
             try
             {
                 int count;
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
+                refPositions?.Add(("MasterModel", (int)bin.Position));
                 subnodes.Add(MakeEntryNode(bin, "Model"));
                 subnodes.Add(MakeInt32Node(bin, "ZoneIndex"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Elements ({count = bin.ReadInt32()})")
@@ -759,8 +761,8 @@ namespace ME3Explorer
                         Items =
                         {
                             MakeLightMapNode(bin),
-                            MakeEntryNode(bin, "Component"),
-                            MakeEntryNode(bin, "Material"),
+                            MakeEntryNodeRewrite(bin, "Component", rewriteTarget, "Self", refPositions), //will need to somehow update to itself, like a relink
+                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget),
                             new BinInterpNode(bin.Position, $"Nodes ({count = bin.ReadInt32()})")
                             {
                                 Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadUInt16()}"))
@@ -789,6 +791,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
 
+            ms = bin.LittleEndianStream;
             return subnodes;
         }
 
@@ -1084,14 +1087,58 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private string entryRefString(EndianReader bin) { int n = bin.ReadInt32(); return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}"; }
+        private string entryRefString(EndianReader bin, IMEPackage rewriteTarget = null)
+        {
+            int n = bin.ReadInt32();
+            if (rewriteTarget != null && n != 0)
+            {
+                var entry = CurrentLoadedExport.FileRef.GetEntry(n);
+                int remapped = 0;
+                if (entry.UIndex < 0)
+                {
+                    remapped = rewriteTarget.Imports.First(x => x.ObjectName.Name == entry.ObjectName.Name).UIndex;
+                }
+                else
+                {
+                    remapped = rewriteTarget.Exports.First(x => x.ObjectName.Name == entry.ObjectName.Name).UIndex;
+                }
 
-        private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart)
+                bin.LittleEndianStream.Position -= 4;
+                bin.LittleEndianStream.WriteInt32(remapped);
+            }
+            return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}";
+        }
+
+        public static MemoryStream EndianReverseModelScan(ExportEntry export, IMEPackage rewriteTarget)
+        {
+            var bif = new BinaryInterpreterWPF();
+            bif.CurrentLoadedExport = export;
+            var binstart = export.propsEnd();
+            bif.StartModelScan(export.Data, ref binstart, rewriteTarget, out var ms);
+            ms.Position = 0;
+            return ms;
+        }
+
+        public static MemoryStream EndianReverseModelComponentScan(ExportEntry export, IMEPackage rewriteTarget, List<(string, int)> selfRefPositions)
+        {
+            var bif = new BinaryInterpreterWPF();
+            bif.CurrentLoadedExport = export;
+            var binstart = export.propsEnd();
+            bif.StartModelComponentScan(export.Data, ref binstart, rewriteTarget, selfRefPositions, out var ms);
+            ms.Position = 0;
+            return ms;
+        }
+
+        private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, out MemoryStream ms)
         {
             var subnodes = new List<ITreeItem>();
+            //data = data.Slice(binarystart, data.Length - binarystart);
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.SetupEndianReverser();
             try
             {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+
+                //uncomment when removing slice
                 bin.JumpTo(binarystart);
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
@@ -1147,14 +1194,14 @@ namespace ME3Explorer
                     {
                         Items = new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "Material"),
+                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget),
                             MakeInt32Node(bin, "PolyFlags"),
                             MakeInt32Node(bin, "pBase"),
                             MakeInt32Node(bin, "vNormal"),
                             MakeInt32Node(bin, "vTextureU"),
                             MakeInt32Node(bin, "vTextureV"),
                             MakeInt32Node(bin, "iBrushPoly"),
-                            MakeEntryNode(bin, "Actor"),
+                            MakeEntryNodeRewrite(bin, "Actor",rewriteTarget),
                             new BinInterpNode(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             MakeFloatNode(bin, "ShadowMapScale"),
                             MakeInt32Node(bin, "LightingChannels(Bitfield)"),
@@ -1188,7 +1235,7 @@ namespace ME3Explorer
                     {
                         Items = new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "ZoneActor"),
+                            MakeEntryNodeRewrite(bin, "ZoneActor",rewriteTarget),
                             MakeFloatNode(bin, "LastRenderTime"),
                             new BinInterpNode(bin.Position, $"Connectivity: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
                             new BinInterpNode(bin.Position, $"Visibility: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
@@ -1196,7 +1243,7 @@ namespace ME3Explorer
                     })
                 });
 
-                subnodes.Add(MakeEntryNode(bin, "Polys"));
+                subnodes.Add(MakeEntryNodeRewrite(bin, "Polys", rewriteTarget));
 
                 subnodes.Add(MakeInt32Node(bin, "integer Size"));
                 int leafHullsCount = bin.ReadInt32();
@@ -1287,12 +1334,14 @@ namespace ME3Explorer
                 }
 
                 binarystart = (int)bin.Position;
+
             }
             catch (Exception ex)
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
 
+            ms = bin.LittleEndianStream;
             return subnodes;
         }
 
@@ -5568,6 +5617,14 @@ namespace ME3Explorer
         private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
+        private BinInterpNode MakeEntryNodeRewrite(EndianReader bin, string name, IMEPackage rewriteTarget, string referenceName = null, List<(string, int)> referencesList = null)
+        {
+            if (referenceName != null && referencesList != null)
+            {
+                referencesList.Add((referenceName, (int)bin.Position));
+            }
+            return new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin, rewriteTarget)}", NodeType.StructLeafObject) { Length = 4 };
+        }
 
         private static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")

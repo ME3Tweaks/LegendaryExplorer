@@ -4900,5 +4900,135 @@ namespace ME3Explorer
                 });
             }
         }
+
+        private void PortWiiUBSP(object sender, RoutedEventArgs e)
+        {
+            //oh god
+            //why
+
+            //EndianReader er = new EndianReader(new MemoryStream());
+            //BinaryWriter bw = new BinaryWriter(new MemoryStream());
+            //er.Writer.WriteInt32(1);
+            //er.Writer.WriteInt32(2);
+
+            //bw.Write(1);
+            //bw.Write(2);
+            //var readerbytes = er.ToArray();
+            //var readerUnder = er.BaseStream.Length;
+            //var writerBytes = er.Writer.BaseStream.Length;
+            //var readerPos = er.Position;
+            //var writerPos = er.Writer.BaseStream.Position;
+
+            //var bwPos = bw.BaseStream.Position;
+            //var bwLength = bw.BaseStream.Length;
+            //return;
+
+
+            Debug.WriteLine("Opening packages");
+            var pcEntry = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\entry.pcc");
+            var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\BioA_Cat004_BSP.xxx");
+
+            //Locate PC level we will attach new exports to
+            var pcLevel = pcEntry.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
+
+            //Locate WiiU level we will find assets to port from
+            var wiiuLevel = packageToPort.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
+
+            //MODELS FIRST
+            Debug.WriteLine("Porting Model");
+            var wiiumodels = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "Model").ToList();
+            //take larger model
+            var wiiumodel = wiiumodels.MaxBy(x => x.DataSize);
+            var leBinary = BinaryInterpreterWPF.EndianReverseModelScan(wiiumodel, pcEntry);
+
+            //MemoryStream exportStream = new MemoryStream();
+            ////export header
+            //exportStream.WriteInt32(-1);
+            //exportStream.WriteNameReference("None", pcEntry);
+            //leBinary.CopyTo(exportStream);
+
+            //Debug.WriteLine("Big Endian size: " + wiiumodel.DataSize);
+            //Debug.WriteLine("LTL endian size: " + exportStream.Length);
+            var masterPCModel = pcEntry.GetUExport(8);
+            masterPCModel.SetBinaryData(leBinary.ToArray());
+
+            //Port model components
+            var modelComponents = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "ModelComponent").ToList();
+            var availableExistingModelComponents = pcEntry.Exports.Where(x => x.Parent == pcLevel && x.ClassName == "ModelComponent").ToList();
+            var modelComponentClass = pcEntry.Imports.First(x => x.ObjectName.Name == "ModelComponent");
+            byte[] existingData = null; //hack to just setup new exports
+            List<int> addedModelComponents = new List<int>();
+            foreach (var modelcomp in modelComponents)
+            {
+                var existingExport = availableExistingModelComponents.FirstOrDefault();
+                if (existingExport == null)
+                {
+                    //we have no more exports we can use
+                    //ExportEntry exp = new ExportEntry()
+                    existingExport = new ExportEntry(pcEntry)
+                    {
+                        Parent = pcLevel,
+                        indexValue = modelcomp.indexValue,
+                        Class = modelComponentClass,
+                        ObjectName = "ModelComponent",
+                        Data = existingData
+                    };
+
+                    pcEntry.AddExport(existingExport);
+                    addedModelComponents.Add(existingExport.UIndex);
+                }
+
+                if (existingExport == null) continue; //just skip
+                if (existingData == null) existingData = existingExport.Data;
+                availableExistingModelComponents.Remove(existingExport);
+                Debug.WriteLine("Porting model component " + modelcomp.InstancedFullPath);
+                var selfRefPositions = new List<(string, int)>();
+                leBinary = BinaryInterpreterWPF.EndianReverseModelComponentScan(modelcomp, pcEntry, selfRefPositions);
+                var binstart = existingExport.propsEnd();
+                foreach (var selfref in selfRefPositions)
+                {
+                    leBinary.Seek(selfref.Item2 - binstart, SeekOrigin.Begin);
+                    switch (selfref.Item1)
+                    {
+                        case "Self":
+                            leBinary.WriteInt32(existingExport.UIndex);
+                            break;
+                        case "MasterModel":
+                            leBinary.WriteInt32(masterPCModel.UIndex);
+                            break;
+                    }
+                }
+
+                existingExport.SetBinaryData(leBinary.ToArray());
+                existingExport.indexValue = modelcomp.indexValue;
+            }
+
+            //Update LEVEL list of ModelComponents
+            var modelCompontentsOffset = 0x6A; //# of model components - DATA not BINARY DATA
+            var levelBinary = pcLevel.Data;
+            var curCount = BitConverter.ToInt32(levelBinary, modelCompontentsOffset);
+            levelBinary.OverwriteRange(modelCompontentsOffset, BitConverter.GetBytes(curCount + addedModelComponents.Count)); //write new count
+
+            var splitPoint = modelCompontentsOffset + ((curCount + 1) * 4);
+            var preNewStuff = levelBinary.Slice(0, splitPoint);
+            var postNewStuff = levelBinary.Slice(splitPoint, levelBinary.Length - splitPoint);
+            MemoryStream nstuff = new MemoryStream();
+            foreach (var n in addedModelComponents)
+            {
+                nstuff.WriteInt32(n);
+            }
+
+            byte[] newLevelBinary = new byte[levelBinary.Length + nstuff.Length];
+            newLevelBinary.OverwriteRange(0, preNewStuff);
+            newLevelBinary.OverwriteRange(splitPoint, nstuff.ToArray());
+            newLevelBinary.OverwriteRange(splitPoint + (int)nstuff.Length, postNewStuff);
+
+            pcLevel.Data = newLevelBinary;
+
+            pcEntry.Save(@"D:\origin games\mass effect 3\biogame\cookedpcconsole\entrybsp.pcc");
+
+
+            Debug.WriteLine("Done porting");
+        }
     }
 }

@@ -18,6 +18,7 @@ using ME3Explorer.SharedUI;
 using System.Windows.Input;
 using static ME3Explorer.PackageEditorWPF;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
@@ -1159,9 +1160,9 @@ namespace ME3Explorer
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 4)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
+                        int val = EndianReader.ToInt32(currentData, start, Pcc.Endian);
                         s += $", Int: {val}";
-                        s += $", Float: {BitConverter.ToSingle(currentData, start)}";
+                        s += $", Float: {EndianReader.ToSingle(currentData, start, Pcc.Endian)}";
                         if (Pcc.IsName(val))
                         {
                             s += $", Name: {Pcc.GetNameEntry(val)}";

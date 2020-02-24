@@ -47,14 +47,14 @@ namespace ME3Explorer
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
 
-                var outf = @"X:\XenonMP5";
-                foreach (var f in DLC.Files.Where(x => x.isActualFile))
-                {
-                    var outpath = Path.Combine(outf, f.FileName.Replace("/", "\\").TrimStart('\\'));
-                    Directory.CreateDirectory(Path.GetDirectoryName(outpath));
-                    var decomp = DLC.DecompressEntry(f);
-                    decomp.WriteToFile(outpath);
-                }
+                //var outf = @"X:\quickbms";
+                //foreach (var f in DLC.Files.Where(x => x.isActualFile))
+                //{
+                //    var outpath = Path.Combine(outf, f.FileName.Replace("/", "\\").TrimStart('\\'));
+                //    Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+                //    var decomp = DLC.DecompressEntry(f);
+                //    decomp.WriteToFile(outpath);
+                //}
             }
             catch (Exception ex)
             {

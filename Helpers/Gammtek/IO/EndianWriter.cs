@@ -34,6 +34,7 @@ namespace Gammtek.Conduit.IO
     {
         private readonly BinaryWriter _source;
 
+        public new Stream BaseStream => _source.BaseStream;
         /// <summary>
         ///     Creates an EndianWriter using the given <paramref name="source" /> BinaryWriter.
         /// </summary>

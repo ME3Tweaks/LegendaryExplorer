@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
@@ -20,7 +21,7 @@ namespace ME3Explorer
             public int treeNodeCount;
             public int dataLen;
 
-            public TLKHeader(BinaryReader r)
+            public TLKHeader(EndianReader r)
                 : this()
             {
                 magic = r.ReadInt32();
@@ -92,7 +93,9 @@ namespace ME3Explorer
              */
             
             Stream fs = File.OpenRead(fileName);
-            BinaryReader r = new BinaryReader(fs);
+            //Magic: "Tlk " on Little Endian
+            EndianReader r = EndianReader.SetupForReading(fs,0x006B6C54, out var magic);
+            r.Position = 0;
             Header = new TLKHeader(r);
 
             //DebugTools.PrintHeader(Header);

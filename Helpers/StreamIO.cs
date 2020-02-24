@@ -204,9 +204,9 @@ namespace StreamHelpers
         }
 
         /// <summary>
-        /// Writes the remainder of the stream to file from the current position. This should only be used on streams that support seeking. The position is restored after the file has been written.
+        /// Writes the stream to file from the beginning. This should only be used on streams that support seeking. The position is restored after the file has been written.
         /// </summary>
-        /// <param name="stream">Stream to write from with set position</param>
+        /// <param name="stream">Stream to write from</param>
         /// <param name="outfile">File to write to</param>
         public static void WriteToFile(this Stream stream, string outfile)
         {

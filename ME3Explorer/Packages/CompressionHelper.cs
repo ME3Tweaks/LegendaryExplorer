@@ -589,7 +589,7 @@ namespace ME3Explorer.Packages
             proc.WaitForExit();
             var outputFilename = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(bmsDataPath) + ".decompressed");
             if (isTemp)
-                File.Delete(bmsDataPath); //intermediate
+                //File.Delete(bmsDataPath); //intermediate
 
             if (File.Exists(outputFilename))
             {

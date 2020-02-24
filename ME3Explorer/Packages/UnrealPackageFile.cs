@@ -178,7 +178,7 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports = new List<ImportEntry>();
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool IsImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
+        public bool IsImport(int uindex) => (uindex < 0 && uindex > (int)(1 << 31) && Math.Abs(uindex) <= ImportCount);
 
         public void AddImport(ImportEntry importEntry)
         {

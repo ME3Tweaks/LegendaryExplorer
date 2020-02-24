@@ -137,7 +137,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             var ms = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
             WriteTo(ms.Writer, pcc, fileOffset);
-            return ms.BaseStream.ReadFully();
+            return ms.ToArray();
         }
 
         public static implicit operator ObjectBinary(byte[] buff)

@@ -2,6 +2,7 @@
 using ME3Explorer.Unreal.BinaryConverters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -21,6 +22,10 @@ namespace ME3Explorer.Packages
             {
                 retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
                 retStr += coreRefEntry.InstancedFullPath;
+            }
+            else
+            {
+                Debug.WriteLine("ENTRY NOT FOUND: " + index);
             }
             return retStr;
         }
@@ -133,7 +138,7 @@ namespace ME3Explorer.Packages
                     }
 
                     if ((!exp.IsDefaultObject && exp.IsA("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
-                        exp.ParentFullPath.Contains("Default__") && 
+                        exp.ParentFullPath.Contains("Default__") &&
                         exp.DataSize >= 12 && BitConverter.ToInt32(exp.Data, 4) is int nameIdx && pcc.IsName(nameIdx) &&
                         pcc.GetNameEntry(nameIdx) == name)
                     {
@@ -293,7 +298,7 @@ namespace ME3Explorer.Packages
             {
                 level = ObjectBinary.From<Level>(levelExport);
                 entriesEvaluated.Add(null); //null stops future evaluations
-                entriesEvaluated.Add(levelExport);  
+                entriesEvaluated.Add(levelExport);
                 entriesReferenced.Add(levelExport);
                 var levelclass = levelExport.Class;
                 entriesToEvaluate.Push(levelclass);
@@ -322,11 +327,11 @@ namespace ME3Explorer.Packages
                 var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectName.ToString().ToLower() == Path.GetFileNameWithoutExtension(pcc.FilePath).ToLower());  // Make sure world, localpackage, shadercache are all marked as referenced.
                 entriesToEvaluate.Push(localpackage);
                 entriesReferenced.Add(localpackage);
-                var world = levelExport.Parent; 
+                var world = levelExport.Parent;
                 entriesToEvaluate.Push(world);
                 entriesReferenced.Add(world);
                 var shadercache = pcc.Exports.FirstOrDefault(x => x.ClassName == "ShaderCache");
-                if(shadercache != null)
+                if (shadercache != null)
                 {
                     entriesEvaluated.Add(shadercache);
                     entriesReferenced.Add(shadercache);
@@ -338,7 +343,7 @@ namespace ME3Explorer.Packages
             {
                 return result;  //If this has no level it is a reference / seekfree package and shouldn't be compacted.
             }
- 
+
             var theserefs = new HashSet<IEntry>();
             while (!entriesToEvaluate.IsEmpty())
             {
@@ -408,12 +413,12 @@ namespace ME3Explorer.Packages
                     }
                     theserefs.Clear();
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     Console.WriteLine($"Error getting references {ent.UIndex} {ent.ObjectName.Instanced}");
                 }
             }
-            if(getreferenced)
+            if (getreferenced)
             {
                 foreach (var entry in entriesReferenced)
                 {
@@ -422,9 +427,9 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                foreach(var xp in pcc.Exports)
+                foreach (var xp in pcc.Exports)
                 {
-                    if(!entriesReferenced.Contains(xp))
+                    if (!entriesReferenced.Contains(xp))
                     {
                         result.Add(xp?.UIndex ?? 0);
                     }
@@ -657,7 +662,7 @@ namespace ME3Explorer.Packages
                         }
                     }
                 }
-                catch (Exception e) when(!App.IsDebug)
+                catch (Exception e) when (!App.IsDebug)
                 {
                     result.AddToListAt(exp, "Exception occured while reading this export!");
                 }
@@ -708,7 +713,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-       
+
 
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {

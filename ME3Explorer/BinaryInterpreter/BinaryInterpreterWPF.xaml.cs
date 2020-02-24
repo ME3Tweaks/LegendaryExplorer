@@ -435,7 +435,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
                         break;
                     case "Model":
-                        subNodes.AddRange(StartModelScan(data, ref binarystart));
+                        subNodes.AddRange(StartModelScan(data, ref binarystart, null, out var _));
                         break;
                     case "Polys":
                         subNodes.AddRange(StartPolysScan(data, ref binarystart));
@@ -546,7 +546,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartBrushComponentScan(data, ref binarystart));
                         break;
                     case "ModelComponent":
-                        subNodes.AddRange(StartModelComponentScan(data, ref binarystart));
+                        subNodes.AddRange(StartModelComponentScan(data, ref binarystart, null, null, out var _));
                         break;
                     case "BioPawn":
                         subNodes.AddRange(StartBioPawnScan(data, ref binarystart));

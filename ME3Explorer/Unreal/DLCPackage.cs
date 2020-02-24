@@ -214,15 +214,15 @@ namespace ME3Explorer.Unreal
                 //Debug.WriteLine($"Serialize sfar file {i} at 0x{con.Memory.Position:X8}");
                 var pos = con.GetPos();
                 Files[i].Serialize(con, Header);
-                Debug.WriteLine($"Data offset for {i}: 0x{Files[i].DataOffset:X8} (0x{Files[i].RealDataOffset:X8}), header at 0x{pos:X8}");
+                //Debug.WriteLine($"Data offset for {i}: 0x{Files[i].DataOffset:X8} (0x{Files[i].RealDataOffset:X8}), header at 0x{pos:X8}");
             }
 
-            var ordered = Files.OrderBy(x => x.DataOffset).ToList();
-            foreach (var f in ordered)
-            {
-                Debug.WriteLine($"0x{f.DataOffset:X8} (0x{f.RealDataOffset:X8}), header at {f.MyOffset:X8}");
-            }
-            var firstfile = Files.MinBy(x => x.RealDataOffset);
+            //var ordered = Files.OrderBy(x => x.DataOffset).ToList();
+            //foreach (var f in ordered)
+            //{
+            //    Debug.WriteLine($"0x{f.DataOffset:X8} (0x{f.RealDataOffset:X8}), header at {f.MyOffset:X8}");
+            //}
+            //var firstfile = Files.MinBy(x => x.RealDataOffset);
 
             if (con.isLoading)
                 ReadFileNames();
@@ -324,6 +324,7 @@ namespace ME3Explorer.Unreal
 
         public MemoryStream DecompressEntry(FileEntryStruct e)
         {
+            Debug.WriteLine("Decompressing " + e.FileName);
             MemoryStream result = new MemoryStream();
             uint count = 0;
             byte[] inputBlock;
@@ -340,6 +341,8 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                List<(byte[], uint)> currentLZXblocks = new List<(byte[], uint)>();
+                uint currentLZXCompressedSize = 0; //for lzx
                 while (left > 0)
                 {
                     uint compressedBlockSize = e.BlockSizes[count];
@@ -347,8 +350,19 @@ namespace ME3Explorer.Unreal
                         compressedBlockSize = Header.MaxBlockSize;
                     if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
                     {
+                        //uncompressed?
                         buff = new byte[compressedBlockSize];
                         fs.Read(buff, 0, buff.Length);
+
+                        if (currentLZXblocks.Count > 0)
+                        {
+                            result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
+                            //Write out the current LZX to the result stream
+                            currentLZXblocks.Clear();
+                            currentLZXCompressedSize = 0;
+                        }
+
+
                         result.Write(buff, 0, buff.Length);
                         left -= compressedBlockSize;
                     }
@@ -359,37 +373,83 @@ namespace ME3Explorer.Unreal
                         {
                             throw new Exception("compressed block size smaller than 5");
                         }
+
+                        currentLZXCompressedSize += compressedBlockSize;
+
                         inputBlock = new byte[compressedBlockSize];
-                        Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
+                        //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
                         fs.Read(inputBlock, 0, (int)compressedBlockSize);
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
-                        uint actualCompressedBlockSize = compressedBlockSize;
                         if (Header.CompressionScheme == "amzl")
                         {
-
                             outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                             if (outputBlock.Length != actualUncompressedBlockSize)
                                 throw new Exception("Decompression Error");
+                            result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
+                            left -= uncompressedBlockSize;
+                            continue;
                         }
 
                         if (Header.CompressionScheme == "lzx")
                         {
                             //we put decomp into filename so bms script can read it
-                            var extracted = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}-{actualUncompressedBlockSize}.lzx";
-                            File.WriteAllBytes(extracted, inputBlock);
-                            outputBlock = CompressionHelper.QuickBMSDecompress(extracted, "rawlzx.bms", true);
-                            if (outputBlock == null || outputBlock.Length != actualUncompressedBlockSize)
-                                throw new Exception("LZX decompression error!");
-                        }
+                            currentLZXblocks.Add((inputBlock, uncompressedBlockSize));
+                            left -= uncompressedBlockSize;
 
-                        result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
-                        left -= uncompressedBlockSize;
+
+                            //var extracted = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}-{actualUncompressedBlockSize}.lzx";
+                            //File.WriteAllBytes(extracted, inputBlock);
+                            //outputBlock = CompressionHelper.QuickBMSDecompress(extracted, "rawlzx.bms", true);
+                            //if (outputBlock == null || outputBlock.Length != actualUncompressedBlockSize)
+                            //    throw new Exception("LZX decompression error!");
+                            //result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
+                            //left -= uncompressedBlockSize;
+                        }
                     }
                     count++;
+                }
+
+                if (currentLZXblocks.Count > 0)
+                {
+                    result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
                 }
             }
             fs.Close();
             return result;
+        }
+
+        private byte[] pumpLZXDecompressor(List<(byte[], uint)> lzxBlocks)
+        {
+            // build lzx file for faster decompression with QuickBMS - individual blocks are EXTREMELY slow
+            var uncompSize = (uint) lzxBlocks.Sum(x => x.Item2);
+            EndianReader ms = new EndianReader(new MemoryStream()) { Endian = Endian.Big };
+            ms.Writer.WriteUInt32(MEPackage.packageTagLittleEndian);
+            ms.Writer.WriteUInt32(Header.MaxBlockSize);
+            ms.Writer.WriteUInt32((uint)lzxBlocks.Sum(x => x.Item1.Length)); //Comp
+            ms.Writer.WriteUInt32(uncompSize); //Uncomp
+
+            //Write Table
+            foreach (var lzxBlock in lzxBlocks)
+            {
+                ms.Writer.WriteInt32(lzxBlock.Item1.Length); //comp
+                ms.Writer.WriteUInt32(lzxBlock.Item2); //uncomp
+            }
+
+            //Write data
+            foreach (var lzxBlock in lzxBlocks)
+            {
+                ms.Writer.Write(lzxBlock.Item1);
+            }
+            ms.BaseStream.Position = 0;
+            var toDecompress = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.lzx";
+            ms.BaseStream.WriteToFile(toDecompress);
+            var decompressed = CompressionHelper.QuickBMSDecompress(toDecompress, "xboxlzx.bms", true);
+            if (decompressed == null || decompressed.Length != uncompSize)
+            {
+                throw new Exception("LZX DECOMPRESSION ERROR!");
+            }
+
+            return decompressed;
         }
 
         internal class InputBlock
