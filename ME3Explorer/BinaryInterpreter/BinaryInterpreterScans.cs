@@ -549,119 +549,130 @@ namespace ME3Explorer
             TID_Locked = 8,
         }
 
-        private BinInterpNode MakeLightMapNode(EndianReader bin)
+        private BinInterpNode MakeLightMapNode(EndianReader bin, List<(int, int)> lightmapChunksToRemove = null)
         {
             ELightMapType lightMapType;
             int bulkSerializeElementCount;
             int bulkSerializeDataSize;
-            return new BinInterpNode(bin.Position, "LightMap ")
+
+            var retvalue = new BinInterpNode(bin.Position, "LightMap ")
             {
                 IsExpanded = true,
                 Items =
                 {
-                    new BinInterpNode(bin.Position, $"LightMapType: {lightMapType = (ELightMapType)bin.ReadInt32()}"),
-                    ListInitHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () => new List<ITreeItem>
+                    new BinInterpNode(bin.Position, $"LightMapType: {lightMapType = (ELightMapType) bin.ReadInt32()}"),
+                    ListInitHelper.ConditionalAdd(lightMapType != ELightMapType.LMT_None, () =>
                     {
-                        new BinInterpNode(bin.Position, $"LightGuids ({bin.ReadInt32()})")
+                        //chunk starts at 0 - postion of LM type
+                        var chunk = ((int)bin.Position - 4,0);
+                        var tree = new List<ITreeItem>
                         {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadGuid()}"))
-                        },
-                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
-                        {
-                            MakeEntryNode(bin, "Owner"),
-                            MakeUInt32Node(bin, "BulkDataFlags:"),
-                            new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                            new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                            MakeInt32Node(bin, "BulkDataOffsetInFile"),
-                            new BinInterpNode(bin.Position, $"DirectionalSamples: ({bulkSerializeElementCount})")
+                            new BinInterpNode(bin.Position, $"LightGuids ({bin.ReadInt32()})")
                             {
-                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
-                                {
-                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
-                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                })
+                                Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadGuid()}"))
                             },
-                            MakeVectorNode(bin, "ScaleVector 1"),
-                            MakeVectorNode(bin, "ScaleVector 2"),
-                            MakeVectorNode(bin, "ScaleVector 3"),
-                            Pcc.Game < MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
-                            MakeUInt32Node(bin, "BulkDataFlags:"),
-                            new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                            new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                            MakeInt32Node(bin, "BulkDataOffsetInFile"),
-                            new BinInterpNode(bin.Position, $"SimpleSamples: ({bulkSerializeElementCount})")
+                            ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
                             {
-                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                MakeEntryNode(bin, "Owner"),
+                                MakeUInt32Node(bin, "BulkDataFlags:"),
+                                new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                MakeInt32Node(bin, "BulkDataOffsetInFile"),
+                                new BinInterpNode(bin.Position, $"DirectionalSamples: ({bulkSerializeElementCount})")
                                 {
-                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
-                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                })
-                            },
-                        }.NonNull()),
-                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
-                        {
-                            MakeEntryNode(bin, "Texture 1"),
-                            MakeVectorNode(bin, "ScaleVector 1"),
-                            MakeEntryNode(bin, "Texture 2"),
-                            MakeVectorNode(bin, "ScaleVector 2"),
-                            MakeEntryNode(bin, "Texture 3"),
-                            MakeVectorNode(bin, "ScaleVector 3"),
-                            ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
+                                    Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                    {
+                                        Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
+                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                    })
+                                },
+                                MakeVectorNode(bin, "ScaleVector 1"),
+                                MakeVectorNode(bin, "ScaleVector 2"),
+                                MakeVectorNode(bin, "ScaleVector 3"),
+                                Pcc.Game < MEGame.ME3 ? MakeVectorNode(bin, "ScaleVector 4") : null,
+                                MakeUInt32Node(bin, "BulkDataFlags:"),
+                                new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                MakeInt32Node(bin, "BulkDataOffsetInFile"),
+                                new BinInterpNode(bin.Position, $"SimpleSamples: ({bulkSerializeElementCount})")
+                                {
+                                    Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                    {
+                                        Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
+                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                    })
+                                },
+                            }.NonNull()),
+                            ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
                             {
-                                MakeEntryNode(bin, "Texture 4"),
-                                MakeVectorNode(bin, "ScaleVector 4"),
+                                MakeEntryNode(bin, "Texture 1"),
+                                MakeVectorNode(bin, "ScaleVector 1"),
+                                MakeEntryNode(bin, "Texture 2"),
+                                MakeVectorNode(bin, "ScaleVector 2"),
+                                MakeEntryNode(bin, "Texture 3"),
+                                MakeVectorNode(bin, "ScaleVector 3"),
+                                ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
+                                {
+                                    MakeEntryNode(bin, "Texture 4"),
+                                    MakeVectorNode(bin, "ScaleVector 4"),
+                                }),
+                                MakeVector2DNode(bin, "CoordinateScale"),
+                                MakeVector2DNode(bin, "CoordinateBias")
                             }),
-                            MakeVector2DNode(bin, "CoordinateScale"),
-                            MakeVector2DNode(bin, "CoordinateBias")
-                        }),
-                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
-                        {
-                            MakeInt32Node(bin, "Unknown"),
-                            MakeUInt32Node(bin, "BulkDataFlags:"),
-                            new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                            new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                            MakeInt32Node(bin, "BulkDataOffsetInFile"),
-                            new BinInterpNode(bin.Position, $"DirectionalSamples?: ({bulkSerializeElementCount})")
+                            ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_3, () => new ITreeItem[]
                             {
-                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                MakeInt32Node(bin, "Unknown"),
+                                MakeUInt32Node(bin, "BulkDataFlags:"),
+                                new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                MakeInt32Node(bin, "BulkDataOffsetInFile"),
+                                new BinInterpNode(bin.Position, $"DirectionalSamples?: ({bulkSerializeElementCount})")
                                 {
-                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
-                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                })
-                            },
-                            MakeVectorNode(bin, "ScaleVector?"),
-                            MakeVectorNode(bin, "ScaleVector?")
-                        }),
-                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
-                        {
-                            MakeEntryNode(bin, "Texture 1"),
-                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            MakeEntryNode(bin, "Texture 2"),
-                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            MakeEntryNode(bin, "Texture 3"),
-                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, j => MakeFloatNode(bin, "Unknown float"))),
-                        }),
-                        ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
-                        {
-                            MakeInt32Node(bin, "Unknown"),
-                            MakeUInt32Node(bin, "BulkDataFlags:"),
-                            new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
-                            new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
-                            MakeInt32Node(bin, "BulkDataOffsetInFile"),
-                            new BinInterpNode(bin.Position, $"SimpleSamples?: ({bulkSerializeElementCount})")
+                                    Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                    {
+                                        Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
+                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                    })
+                                },
+                                MakeVectorNode(bin, "ScaleVector?"),
+                                MakeVectorNode(bin, "ScaleVector?")
+                            }),
+                            ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
                             {
-                                Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                MakeEntryNode(bin, "Texture 1"),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                                MakeEntryNode(bin, "Texture 2"),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                                MakeEntryNode(bin, "Texture 3"),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
+                                new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, j => MakeFloatNode(bin, "Unknown float"))),
+                            }),
+                            ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_5, () => new ITreeItem[]
+                            {
+                                MakeInt32Node(bin, "Unknown"),
+                                MakeUInt32Node(bin, "BulkDataFlags:"),
+                                new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
+                                new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
+                                MakeInt32Node(bin, "BulkDataOffsetInFile"),
+                                new BinInterpNode(bin.Position, $"SimpleSamples?: ({bulkSerializeElementCount})")
                                 {
-                                    Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
-                                                                                                                                       $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
-                                })
-                            },
-                            MakeVectorNode(bin, "ScaleVector?")
-                        }),
+                                    Items = ReadList(bulkSerializeElementCount, j => new BinInterpNode(bin.Position, $"{j}")
+                                    {
+                                        Items = ReadList(bulkSerializeDataSize / bulkSerializeElementCount / 4, k => new BinInterpNode(bin.Position,
+                                            $"(B: {bin.ReadByte()}, G: {bin.ReadByte()}, R: {bin.ReadByte()}, A: {bin.ReadByte()})"))
+                                    })
+                                },
+                                MakeVectorNode(bin, "ScaleVector?")
+                            }),
+                        };
+                        chunk.Item2 = (int)bin.Position;
+                        lightmapChunksToRemove?.Add(chunk);
+                        return tree;
                     })
                 }
             };
+
+            return retvalue;
         }
 
         private List<ITreeItem> StartBrushComponentScan(byte[] data, ref int binarystart)
@@ -741,16 +752,15 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<ITreeItem> StartModelComponentScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, List<(string, int)> refPositions, out MemoryStream ms)
+        private List<ITreeItem> StartModelComponentScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, List<(string, int)> refPositions, List<(int, int)> lightMapsToClip, out MemoryStream ms)
         {
             var subnodes = new List<ITreeItem>();
             var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-            bin.SetupEndianReverser();
             try
             {
                 int count;
                 bin.JumpTo(binarystart);
-
+                bin.SetupEndianReverser();
                 refPositions?.Add(("MasterModel", (int)bin.Position));
                 subnodes.Add(MakeEntryNode(bin, "Model"));
                 subnodes.Add(MakeInt32Node(bin, "ZoneIndex"));
@@ -760,14 +770,14 @@ namespace ME3Explorer
                     {
                         Items =
                         {
-                            MakeLightMapNode(bin),
+                            MakeLightMapNode(bin, lightMapsToClip),
                             MakeEntryNodeRewrite(bin, "Component", rewriteTarget, "Self", refPositions), //will need to somehow update to itself, like a relink
-                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget),
+                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget, "DefaultMaterial", refPositions),
                             new BinInterpNode(bin.Position, $"Nodes ({count = bin.ReadInt32()})")
                             {
                                 Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadUInt16()}"))
                             },
-                            new BinInterpNode(bin.Position, $"ShadowMaps ({count = bin.ReadInt32()})")
+                            new BinInterpNode(bin.Position, $"ShadowMaps ({count = bin.ReadInt32()})", bin: bin, itemsToClip: lightMapsToClip)
                             {
                                 Items = ReadList(count, j => MakeEntryNode(bin, $"{j}"))
                             },
@@ -1109,37 +1119,36 @@ namespace ME3Explorer
             return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}";
         }
 
-        public static MemoryStream EndianReverseModelScan(ExportEntry export, IMEPackage rewriteTarget)
+        public static MemoryStream EndianReverseModelScan(ExportEntry export, IMEPackage rewriteTarget, List<(string, int)> selfRefPositions)
         {
             var bif = new BinaryInterpreterWPF();
             bif.CurrentLoadedExport = export;
             var binstart = export.propsEnd();
-            bif.StartModelScan(export.Data, ref binstart, rewriteTarget, out var ms);
+            bif.StartModelScan(export.Data, ref binstart, rewriteTarget, selfRefPositions, out var ms);
             ms.Position = 0;
             return ms;
         }
 
-        public static MemoryStream EndianReverseModelComponentScan(ExportEntry export, IMEPackage rewriteTarget, List<(string, int)> selfRefPositions)
+        public static MemoryStream EndianReverseModelComponentScan(ExportEntry export, IMEPackage rewriteTarget, List<(string, int)> selfRefPositions, List<(int, int)> lightmapsToRemove)
         {
             var bif = new BinaryInterpreterWPF();
             bif.CurrentLoadedExport = export;
             var binstart = export.propsEnd();
-            bif.StartModelComponentScan(export.Data, ref binstart, rewriteTarget, selfRefPositions, out var ms);
+            bif.StartModelComponentScan(export.Data, ref binstart, rewriteTarget, selfRefPositions, lightmapsToRemove, out var ms);
             ms.Position = 0;
             return ms;
         }
 
-        private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, out MemoryStream ms)
+        private List<ITreeItem> StartModelScan(byte[] data, ref int binarystart, IMEPackage rewriteTarget, List<(string, int)> refPositions, out MemoryStream ms)
         {
             var subnodes = new List<ITreeItem>();
             //data = data.Slice(binarystart, data.Length - binarystart);
             var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-            bin.SetupEndianReverser();
             try
             {
-
                 //uncomment when removing slice
                 bin.JumpTo(binarystart);
+                bin.SetupEndianReverser();
 
                 subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
 
@@ -1186,6 +1195,7 @@ namespace ME3Explorer
                     })
                 });
 
+                if (refPositions != null) refPositions.Add(("Self", (int)bin.Position));
                 subnodes.Add(MakeEntryNode(bin, "Owner (self)"));
                 int surfsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Surfaces ({surfsCount})")
@@ -1194,7 +1204,7 @@ namespace ME3Explorer
                     {
                         Items = new List<ITreeItem>
                         {
-                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget),
+                            MakeEntryNodeRewrite(bin, "Material", rewriteTarget, "DefaultMaterial", refPositions),
                             MakeInt32Node(bin, "PolyFlags"),
                             MakeInt32Node(bin, "pBase"),
                             MakeInt32Node(bin, "vNormal"),
@@ -5621,6 +5631,27 @@ namespace ME3Explorer
         {
             if (referenceName != null && referencesList != null)
             {
+                //check this is actually DefaultMaterial, we don't want to remove actual materials to point to something else.
+                if (referenceName == "DefaultMaterial")
+                {
+                    var readahead = bin.ReadInt32();
+                    bin.Seek(-4, SeekOrigin.Current); //hope this is okay with rewriter...
+                    if (readahead != 0)
+                    {
+                        var currentEntry = CurrentLoadedExport.FileRef.GetEntry(readahead);
+                        if (currentEntry.ObjectName.Name != "DefaultMaterial")
+                        {
+                            //Debug.WriteLine($"NOT REWRITING TARGET at 0x{bin.Position:X8}: " + currentEntry.InstancedFullPath);
+                            //Do not rewrite this targete
+                            //null rewrite target to make it not have exceptions
+                            return new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin, rewriteTarget)}", NodeType.StructLeafObject) { Length = 4 };
+                        }
+                    }
+                    else
+                    {
+                        return new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin, rewriteTarget)}", NodeType.StructLeafObject) { Length = 4 };
+                    }
+                }
                 referencesList.Add((referenceName, (int)bin.Position));
             }
             return new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin, rewriteTarget)}", NodeType.StructLeafObject) { Length = 4 };
