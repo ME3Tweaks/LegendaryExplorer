@@ -4925,8 +4925,8 @@ namespace ME3Explorer
 
 
             Debug.WriteLine("Opening packages");
-            var pcEntry = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\entry.pcc");
-            var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\BioA_Cat004_BSP.xxx");
+            var pcEntry = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\entryMAT.pcc", forceLoadFromDisk: true);
+            var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\BioA_KroN7a_bsp.xxx", forceLoadFromDisk: true);
 
             //Locate PC level we will attach new exports to
             var pcLevel = pcEntry.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
@@ -4939,8 +4939,33 @@ namespace ME3Explorer
             var wiiumodels = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "Model").ToList();
             //take larger model
             var wiiumodel = wiiumodels.MaxBy(x => x.DataSize);
-            var leBinary = BinaryInterpreterWPF.EndianReverseModelScan(wiiumodel, pcEntry);
-
+            var selfRefPositions = new List<(string, int)>();
+            var leBinary = BinaryInterpreterWPF.EndianReverseModelScan(wiiumodel, pcEntry, selfRefPositions);
+            var availableMaterialsToUse = new[]
+            {
+                //102, //grass
+                //89, //rock
+                //142, //night sandy rock //just white
+                156 //tile
+            };
+            var random = new Random();
+            var overrideMaterial = pcEntry.GetUExport(availableMaterialsToUse[random.Next(availableMaterialsToUse.Length)]);
+            foreach (var selfref in selfRefPositions)
+            {
+                leBinary.Seek(selfref.Item2, SeekOrigin.Begin);
+                switch (selfref.Item1)
+                {
+                    //case "Self":
+                    //    leBinary.WriteInt32(existingExport.UIndex);
+                    //    break;
+                    //case "MasterModel":
+                    //    leBinary.WriteInt32(masterPCModel.UIndex);
+                    //    break;
+                    case "DefaultMaterial":
+                        leBinary.WriteInt32(overrideMaterial.UIndex);
+                        break;
+                }
+            }
             //MemoryStream exportStream = new MemoryStream();
             ////export header
             //exportStream.WriteInt32(-1);
@@ -4951,7 +4976,8 @@ namespace ME3Explorer
             //Debug.WriteLine("LTL endian size: " + exportStream.Length);
             var masterPCModel = pcEntry.GetUExport(8);
             masterPCModel.SetBinaryData(leBinary.ToArray());
-
+            if (masterPCModel.DataSize != wiiumodel.DataSize)
+                Debug.WriteLine("ERROR: BINARY NOT SAME LEGNTH!");
             //Port model components
             var modelComponents = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "ModelComponent").ToList();
             var availableExistingModelComponents = pcEntry.Exports.Where(x => x.Parent == pcLevel && x.ClassName == "ModelComponent").ToList();
@@ -4980,10 +5006,15 @@ namespace ME3Explorer
 
                 if (existingExport == null) continue; //just skip
                 if (existingData == null) existingData = existingExport.Data;
+                overrideMaterial = pcEntry.GetUExport(availableMaterialsToUse[random.Next(availableMaterialsToUse.Length)]);
+                //overrideMaterial = pcEntry.GetUExport(156);
                 availableExistingModelComponents.Remove(existingExport);
                 Debug.WriteLine("Porting model component " + modelcomp.InstancedFullPath);
-                var selfRefPositions = new List<(string, int)>();
-                leBinary = BinaryInterpreterWPF.EndianReverseModelComponentScan(modelcomp, pcEntry, selfRefPositions);
+                selfRefPositions = new List<(string, int)>();
+
+                var lightmapsToRemove = new List<(int, int)>();
+
+                leBinary = BinaryInterpreterWPF.EndianReverseModelComponentScan(modelcomp, pcEntry, selfRefPositions, lightmapsToRemove);
                 var binstart = existingExport.propsEnd();
                 foreach (var selfref in selfRefPositions)
                 {
@@ -4996,10 +5027,52 @@ namespace ME3Explorer
                         case "MasterModel":
                             leBinary.WriteInt32(masterPCModel.UIndex);
                             break;
+                        case "DefaultMaterial":
+                            leBinary.WriteInt32(overrideMaterial.UIndex);
+                            break;
                     }
                 }
 
+                MemoryStream strippedLightmapStream = new MemoryStream();
+                //strip out lightmaps. We must go in reverse order
                 existingExport.SetBinaryData(leBinary.ToArray());
+                leBinary.Position = 0;
+                leBinary = new MemoryStream(existingExport.Data);
+
+                foreach (var lightmapx in lightmapsToRemove)
+                {
+                    var datacountstart = lightmapx.Item1;
+                    var dataend = lightmapx.Item2;
+                    Debug.WriteLine($"Gutting lightmap DATA 0x{lightmapx.Item1:X4} to 0x{lightmapx.Item2:X4}");
+                    if (leBinary.Position == 0)
+                    {
+                        strippedLightmapStream.WriteBytes(leBinary.ReadBytes(datacountstart)); //write initial bytes up to first lightmap
+                    }
+                    else
+                    {
+                        var amountToRead = datacountstart - (int)leBinary.Position;
+                        Debug.WriteLine($"Reading {amountToRead:X5} bytes from source pos 0x{leBinary.Position:X5} to output at 0x{strippedLightmapStream.Position:X6}");
+                        strippedLightmapStream.WriteBytes(leBinary.ReadBytes(amountToRead)); //write bytes between
+                    }
+                    Debug.WriteLine($"Copied to 0x{leBinary.Position:X4}");
+
+                    strippedLightmapStream.WriteInt32(0); //LMT_NONE
+                    Debug.WriteLine($"Wrote LMNONE DATA at output bin 0x{(strippedLightmapStream.Position - 4):X4}");
+
+                    leBinary.Seek(dataend, SeekOrigin.Begin);
+                }
+
+                if (lightmapsToRemove.Count > 0)
+                {
+                    strippedLightmapStream.WriteBytes(leBinary.ReadFully()); //write the rest of the stream
+                }
+
+                existingExport.Data = strippedLightmapStream.ToArray();
+                //if (modelcomp.GetBinaryData().Length != leBinary.Length)
+                //{
+                //    Debug.WriteLine($"WRONG BINARY LENGTH FOR NEW DATA: OLD LEN: 0x{modelcomp.GetBinaryData().Length:X8} NEW LEN: 0x{leBinary.Length:X8}, Difference {(modelcomp.GetBinaryData().Length - leBinary.Length)}");
+                //}
+                //existingExport.SetBinaryData(leBinary.ToArray());
                 existingExport.indexValue = modelcomp.indexValue;
             }
 
