@@ -263,7 +263,7 @@ namespace ME3Explorer
                     }
 
                     List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                    byte[] data = wb.GetChunk("DATA");
+                    byte[] data = wb.GetChunk("DATA",true);
                     int i = 0;
                     if (embeddedWEMFiles.Count > 0)
                     {
@@ -498,7 +498,7 @@ namespace ME3Explorer
                         string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
                         var outpath = basePath + ".wem";
                         File.WriteAllBytes(outpath, wemObject.WemData);
-                        return WwiseStream.ConvertRiffToWav(outpath, wemObject.Game == MEGame.ME2);
+                        return ISBankEntry.ConvertAudioToWave(outpath); //use vgmstream
                     }
                 }
             }
