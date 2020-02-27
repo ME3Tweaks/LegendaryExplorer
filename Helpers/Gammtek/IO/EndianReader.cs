@@ -378,12 +378,18 @@ namespace Gammtek.Conduit.IO
         public void Seek(long offset, SeekOrigin origin)
         {
             _source.BaseStream.Seek(offset, origin);
+            if (LittleEndianStream != null) LittleEndianStream.Seek(offset, origin);
         }
 
         public long Position
         {
             get => _source.BaseStream.Position;
-            set => _source.BaseStream.Position = value;
+            set
+            {
+                _source.BaseStream.Position = value;
+                if (LittleEndianStream != null) 
+                    LittleEndianStream.Position = value;
+            }
         }
 
         public long Length => BaseStream.Length;
@@ -505,12 +511,15 @@ namespace Gammtek.Conduit.IO
 
         public EndianReader Skip(int count)
         {
-            Position += count;
+
+            Seek(count, SeekOrigin.Current);
             return this;
         }
         public EndianReader Skip(long count)
         {
-            Position += count;
+            //Must use seek or we will desync the little endian stream
+            //Seek will update the LE stream
+            Seek(count, SeekOrigin.Current);
             return this;
         }
 
