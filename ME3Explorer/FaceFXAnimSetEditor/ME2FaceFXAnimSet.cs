@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using StreamHelpers;
@@ -27,11 +29,11 @@ namespace ME3Explorer.FaceFX
 
         public ME2FaceFXAnimSet(IMEPackage Pcc, ExportEntry Entry)
         {
-            
+
             pcc = Pcc;
             Export = Entry;
             int start = Export.propsEnd() + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(Export.Data.Skip(start).ToArray()));
+            SerializingContainer Container = new SerializingContainer(new EndianReader(new MemoryStream(Export.Data.Skip(start).ToArray())));
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -231,7 +233,7 @@ namespace ME3Explorer.FaceFX
                 TreeNode t4 = new TreeNode("Animations");
                 count2 = 0;
                 foreach (ME2NameRef u in d.animations)
-                     t4.Nodes.Add((count2++) + " : " + u.index.ToString("X8") + " " + u.unk2.ToString("X8") + " \"" + header.Names[u.index].Trim() + "\"");
+                    t4.Nodes.Add((count2++) + " : " + u.index.ToString("X8") + " " + u.unk2.ToString("X8") + " \"" + header.Names[u.index].Trim() + "\"");
                 t3.Nodes.Add(t4);
                 TreeNode t5 = new TreeNode("Points");
                 count2 = 0;
@@ -271,28 +273,25 @@ namespace ME3Explorer.FaceFX
 
         public void DumpToFile(string path)
         {
-            
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
+            EndianReader e = new EndianReader(new MemoryStream());
+            SerializingContainer Container = new SerializingContainer(e);
             Container.isLoading = false;
             Serialize(Container);
-            m = Container.Memory;
-            File.WriteAllBytes(path, m.ToArray());
+            Container.Memory.BaseStream.WriteToFile(path);
         }
 
         public void Save()
         {
-            
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
+
+            EndianReader e = new EndianReader(new MemoryStream());
+            SerializingContainer Container = new SerializingContainer(e);
             Container.isLoading = false;
             Serialize(Container);
-            m = Container.Memory;
             MemoryStream res = new MemoryStream();
             int start = Export.propsEnd();
             res.Write(Export.Data, 0, start);
-            res.WriteInt32((int)m.Length);
-            res.WriteStream(m);
+            res.WriteInt32((int)Container.Memory.Length);
+            res.WriteBytes(Container.Memory.ToArray());
             res.WriteInt32(0);
             Export.Data = res.ToArray();
         }

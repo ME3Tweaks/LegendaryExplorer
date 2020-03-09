@@ -10,8 +10,8 @@ namespace ME3Explorer
     public struct SerializingContainer
     {
         public bool isLoading;
-        public MemoryStream Memory;
-        public SerializingContainer(MemoryStream m)
+        public EndianReader Memory;
+        public SerializingContainer(EndianReader m)
         {
             this.Memory = m;
             this.isLoading = true;
@@ -20,14 +20,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                byte[] buff = new byte[4];
-                Container.Memory.Read(buff, 0, 4);
-                i = BitConverter.ToInt32(buff, 0);
+                return Container.Memory.ReadInt32();
             }
             else
             {
-                byte[] buff = BitConverter.GetBytes(i);
-                Container.Memory.Write(buff, 0, 4);
+                Container.Memory.Writer.WriteInt32(i);
             }
             return i;
         }
@@ -36,14 +33,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                byte[] buff = new byte[4];
-                Container.Memory.Read(buff, 0, 4);
-                i = BitConverter.ToUInt32(buff, 0);
+                return Container.Memory.ReadUInt32();
             }
             else
             {
-                byte[] buff = BitConverter.GetBytes(i);
-                Container.Memory.Write(buff, 0, 4);
+                Container.Memory.Writer.WriteUInt32(i);
             }
             return i;
         }
@@ -52,14 +46,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                byte[] buff = new byte[4];
-                Container.Memory.Read(buff, 0, 2);
-                i = BitConverter.ToInt16(buff, 0);
+                i = Container.Memory.ReadInt16();
             }
             else
             {
-                byte[] buff = BitConverter.GetBytes(i);
-                Container.Memory.Write(buff, 0, 2);
+                Container.Memory.Writer.WriteInt16(i);
             }
             return i;
         }
@@ -68,14 +59,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                byte[] buff = new byte[4];
-                Container.Memory.Read(buff, 0, 2);
-                i = BitConverter.ToUInt16(buff, 0);
+                i = Container.Memory.ReadUInt16();
             }
             else
             {
-                byte[] buff = BitConverter.GetBytes(i);
-                Container.Memory.Write(buff, 0, 2);
+                Container.Memory.Writer.WriteUInt16(i);
             }
             return i;
         }
@@ -84,11 +72,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                i = (byte)Container.Memory.ReadByte();
+                i = Container.Memory.ReadByte();
             }
             else
             {
-                Container.Memory.WriteByte(i);
+                Container.Memory.Writer.WriteByte(i);
             }
             return i;
         }
@@ -101,7 +89,7 @@ namespace ME3Explorer
             }
             else
             {
-                Container.Memory.WriteByte((byte)c);
+                Container.Memory.Writer.WriteByte((byte)c);
             }
             return c;
         }
@@ -110,14 +98,11 @@ namespace ME3Explorer
         {
             if (Container.isLoading)
             {
-                byte[] buff = new byte[4];
-                Container.Memory.Read(buff, 0, 4);
-                f = BitConverter.ToSingle(buff, 0);
+                f = Container.Memory.ReadSingle();
             }
             else
             {
-                byte[] buff = BitConverter.GetBytes(f);
-                Container.Memory.Write(buff, 0, 4);
+                Container.Memory.Writer.WriteFloat(f);
             }
             return f;
         }

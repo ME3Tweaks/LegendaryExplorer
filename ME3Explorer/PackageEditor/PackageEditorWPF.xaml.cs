@@ -29,6 +29,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
 using ME2Explorer.Unreal;
@@ -309,30 +310,35 @@ namespace ME3Explorer
                         {
                             new DialogueEditorWPF(exp).Show();
                         }
+
                         break;
                     case "FaceFXEditor":
                         if (exp.ClassName == "FaceFXAnimSet")
                         {
                             new FaceFX.FaceFXEditor(exp).Show();
                         }
+
                         break;
                     case "Meshplorer":
                         if (MeshRendererWPF.CanParseStatic(exp))
                         {
                             new MeshplorerWPF(exp).Show();
                         }
+
                         break;
                     case "Soundplorer":
                         if (Soundpanel.CanParseStatic(exp))
                         {
                             new Soundplorer.SoundplorerWPF(exp).Show();
                         }
+
                         break;
                     case "SequenceEditor":
                         if (exp.IsA("SequenceObject"))
                         {
                             new Sequence_Editor.SequenceEditorWPF(exp).Show();
                         }
+
                         break;
                     case "InterpViewer":
                         if (exp.ClassName == "InterpData")
@@ -345,6 +351,7 @@ namespace ME3Explorer
                                 p.SelectedInterpData = exp;
                             }
                         }
+
                         break;
                     case "PathfindingEditor":
                         if (PathfindingEditorWPF.CanParseStatic(exp))
@@ -353,10 +360,12 @@ namespace ME3Explorer
                             pf.Show();
 
                         }
+
                         break;
                 }
             }
         }
+
         private bool CanOpenExportIn(object obj)
         {
             if (obj is string toolName && TryGetSelectedExport(out ExportEntry exp) && !exp.IsDefaultObject)
@@ -379,6 +388,7 @@ namespace ME3Explorer
                         return Pcc.Game == MEGame.ME3 && exp.ClassName == "InterpData";
                 }
             }
+
             return false;
         }
 
@@ -1011,8 +1021,8 @@ namespace ME3Explorer
                 {
                     IsBusy = false;
                     var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}")).ToList(),
-                                             $"{prevTask.Result.Count} Objects that use '{name}'",
-                                             "There may be additional usages of this name in the unparsed binary of some objects", this);
+                        $"{prevTask.Result.Count} Objects that use '{name}'",
+                        "There may be additional usages of this name in the unparsed binary of some objects", this);
                     dlg.Show();
                 });
             }
@@ -1289,6 +1299,7 @@ namespace ME3Explorer
                 }
             }
         }
+
         private void SearchReplaceNames()
         {
 
@@ -1301,7 +1312,7 @@ namespace ME3Explorer
                 return;
 
             var wdlg = MessageBox.Show($"This will replace every name containing the text \"{searchstr}\" with a new name containing \"{replacestr}\".\n" +
-                $"This may break any properties, or links containing this string. Please confirm.", "WARNING:", MessageBoxButton.OKCancel);
+                                       $"This may break any properties, or links containing this string. Please confirm.", "WARNING:", MessageBoxButton.OKCancel);
             if (wdlg == MessageBoxResult.Cancel)
                 return;
 
@@ -1314,10 +1325,12 @@ namespace ME3Explorer
                     Pcc.replaceName(i, newName);
                 }
             }
+
             RefreshNames();
             RefreshView();
             MessageBox.Show("Done", "Search and Replace Names", MessageBoxButton.OK);
         }
+
         private void CheckForDuplicateIndexes()
         {
             if (Pcc == null)
@@ -1455,6 +1468,7 @@ namespace ME3Explorer
         }
 
         private bool TryAddToPersistentLevel(params IEntry[] newEntries) => TryAddToPersistentLevel((IEnumerable<IEntry>)newEntries);
+
         private bool TryAddToPersistentLevel(IEnumerable<IEntry> newEntries)
         {
             ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>().Where(exp => exp.Parent?.ClassName == "Level" && exp.IsA("Actor")).ToArray();
@@ -1600,11 +1614,13 @@ namespace ME3Explorer
                 MessageBox.Show("Files are for different games.");
                 return;
             }
+
             var changedImports = new List<string>();
             var changedNames = new List<string>();
             var changedExports = new List<string>();
             {
                 #region Exports Comparison
+
                 int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
 
                 for (int i = 0; i < numExportsToEnumerate; i++)
@@ -1655,9 +1671,12 @@ namespace ME3Explorer
                     Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
                     changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
                 }
+
                 #endregion
             }
+
             #region Imports
+
             {
                 int numImportsToEnumerate = Math.Min(Pcc.ImportCount, compareFile.ImportCount);
 
@@ -1685,9 +1704,11 @@ namespace ME3Explorer
                     changedImports.Add($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
                 }
             }
+
             #endregion
 
             #region Names
+
             {
                 int numNamesToEnumerate = Math.Min(Pcc.NameCount, compareFile.NameCount);
                 for (int i = 0; i < numNamesToEnumerate; i++)
@@ -1699,7 +1720,7 @@ namespace ME3Explorer
                     if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
 
                     {
-                        changedNames.Add($"Name { i } is different: {name1} |vs| {name2}");
+                        changedNames.Add($"Name {i} is different: {name1} |vs| {name2}");
                     }
                 }
 
@@ -1717,7 +1738,9 @@ namespace ME3Explorer
                     changedNames.Add($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
                 }
             }
+
             #endregion
+
             var fullList = new List<string>();
             fullList.AddRange(changedExports);
             fullList.AddRange(changedImports);
@@ -1733,7 +1756,7 @@ namespace ME3Explorer
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
-                { "Toolname", "Package Editor WPF" }
+                {"Toolname", "Package Editor WPF"}
             });
             CurrentView = CurrentViewMode.Tree;
             LoadCommands();
@@ -2380,6 +2403,7 @@ namespace ME3Explorer
                     {
                         continue;
                     }
+
                     if (update.index > NamesList.Count - 1) //names are 0 indexed
                     {
                         NameReference nr = Pcc.Names[update.index];
@@ -2588,6 +2612,7 @@ namespace ME3Explorer
                             LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
                             return true;
                         }
+
                         break;
                     }
                 case CurrentViewMode.Names when entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count:
@@ -2595,6 +2620,7 @@ namespace ME3Explorer
                     LeftSide_ListView.SelectedIndex = entryIndex;
                     return true;
             }
+
             return false;
         }
 
@@ -2782,6 +2808,7 @@ namespace ME3Explorer
                 return;
 
             string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
+
             void LoopFunc(ref int integer, int count)
             {
                 if (reverse)
@@ -2913,6 +2940,7 @@ namespace ME3Explorer
 
 
             string searchTerm = Search_TextBox.Text.ToLower();
+
             /*if (CurrentView == View.Names)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
@@ -3366,6 +3394,7 @@ namespace ME3Explorer
                 {
                     level.Actors.Add(actorExport.UIndex);
                 }
+
                 targetPersistentLevel.SetBinaryData(level.ToBytes(targetPersistentLevel.FileRef));
             }
 
@@ -4786,10 +4815,10 @@ namespace ME3Explorer
                         {
                             string fileName = Path.GetFileNameWithoutExtension(levelFile);
                             persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
-                                                    {
-                                                        new NameProperty(fileName, "PackageName"),
-                                                        CommonStructs.ColorProp(Color.FromRgb((byte)(i % 256), (byte)((255 - i) % 256), (byte)((i * 7) % 256)), "DrawColor")
-                                                    })
+                            {
+                                new NameProperty(fileName, "PackageName"),
+                                CommonStructs.ColorProp(Color.FromRgb((byte) (i % 256), (byte) ((255 - i) % 256), (byte) ((i * 7) % 256)), "DrawColor")
+                            })
                             {
                                 ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
                                 Class = levStreamingClass,
@@ -4803,6 +4832,7 @@ namespace ME3Explorer
                         {
                             streamingLevelsProp.Add(new ObjectProperty(j));
                         }
+
                         persistentUDK.Exports.First(exp => exp.ClassName == "WorldInfo").WriteProperty(streamingLevelsProp);
                         persistentUDK.Save();
                     }
@@ -4903,31 +4933,38 @@ namespace ME3Explorer
 
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
-            //oh god
-            //why
-
-            //EndianReader er = new EndianReader(new MemoryStream());
-            //BinaryWriter bw = new BinaryWriter(new MemoryStream());
-            //er.Writer.WriteInt32(1);
-            //er.Writer.WriteInt32(2);
-
-            //bw.Write(1);
-            //bw.Write(2);
-            //var readerbytes = er.ToArray();
-            //var readerUnder = er.BaseStream.Length;
-            //var writerBytes = er.Writer.BaseStream.Length;
-            //var readerPos = er.Position;
-            //var writerPos = er.Writer.BaseStream.Position;
-
-            //var bwPos = bw.BaseStream.Position;
-            //var bwLength = bw.BaseStream.Length;
-            //return;
-
-
+            var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
+            var pcc = MEPackageHandler.OpenMEPackage(inputfile, forceLoadFromDisk: true);
+            var trackprops = pcc.Exports.Where(x => x.ClassName == "BioEvtSysTrackProp").ToList();
+            foreach (var trackprop in trackprops)
+            {
+                var props = trackprop.GetProperties();
+                var findActor = props.GetProp<NameProperty>("m_nmFindActor");
+                if (findActor != null && findActor.Value.Name == "Player")
+                {
+                    var propKeys = props.GetProp<ArrayProperty<StructProperty>>("m_aPropKeys");
+                    if (propKeys != null)
+                    {
+                        foreach (var trackdata in propKeys)
+                        {
+                            var prop = trackdata.GetProp<NameProperty>("nmProp");
+                            if (prop != null && prop.Value.Name == "Pistol_Carnifex")
+                            {
+                                prop.Value = "Currently_Equipped_Weapon";
+                                //maybe have to change weapon class. we'll see
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Wrote {trackprop.InstancedFullPath}");
+                    trackprop.WriteProperties(props);
+                }
+            }
+            pcc.Save();
+            return;
             Debug.WriteLine("Opening packages");
             var pcEntry = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\entryMAT.pcc", forceLoadFromDisk: true);
-            var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\BioA_KroN7a_bsp.xxx", forceLoadFromDisk: true);
-
+            //var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\Bioa_Cat003_TEMP2.xxx", forceLoadFromDisk: true);
+            var packageToPort = MEPackageHandler.OpenMEPackage(@"E:\UDKStuff\testmap.udk");
             //Locate PC level we will attach new exports to
             var pcLevel = pcEntry.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
 
@@ -5054,6 +5091,7 @@ namespace ME3Explorer
                         Debug.WriteLine($"Reading {amountToRead:X5} bytes from source pos 0x{leBinary.Position:X5} to output at 0x{strippedLightmapStream.Position:X6}");
                         strippedLightmapStream.WriteBytes(leBinary.ReadBytes(amountToRead)); //write bytes between
                     }
+
                     Debug.WriteLine($"Copied to 0x{leBinary.Position:X4}");
 
                     strippedLightmapStream.WriteInt32(0); //LMT_NONE
@@ -5103,5 +5141,6 @@ namespace ME3Explorer
 
             Debug.WriteLine("Done porting");
         }
+
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using StreamHelpers;
@@ -24,11 +26,11 @@ namespace ME3Explorer.FaceFX
         }
         public ME3FaceFXAnimSet(IMEPackage Pcc, ExportEntry Entry)
         {
-            
+
             pcc = Pcc;
             export = Entry;
             int start = export.propsEnd() + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(export.Data.Skip(start).ToArray()));
+            SerializingContainer Container = new SerializingContainer(new EndianReader(new MemoryStream(export.Data.Skip(start).ToArray())) { Endian = Pcc.Endian});
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -152,7 +154,7 @@ namespace ME3Explorer.FaceFX
                     if (Container.isLoading)
                         d.numKeys = new int[count2];
                     for (int j = 0; j < count2; j++)
-                        d.numKeys[j] = Container + d.numKeys[j]; 
+                        d.numKeys[j] = Container + d.numKeys[j];
                 }
                 else if (Container.isLoading)
                 {
@@ -272,30 +274,28 @@ namespace ME3Explorer.FaceFX
 
         public void DumpToFile(string path)
         {
-            
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
+
+            EndianReader e = new EndianReader(new MemoryStream()) { Endian = Export.FileRef.Endian };
+            SerializingContainer Container = new SerializingContainer(e);
             Container.isLoading = false;
             Serialize(Container);
-            m = Container.Memory;
-            File.WriteAllBytes(path, m.ToArray());
+            Container.Memory.BaseStream.WriteToFile(path);
         }
 
         public void Save()
         {
-            
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m)
+
+            EndianReader e = new EndianReader(new MemoryStream()) { Endian = Export.FileRef.Endian };
+            SerializingContainer Container = new SerializingContainer(e)
             {
                 isLoading = false
             };
             Serialize(Container);
-            m = Container.Memory;
             MemoryStream res = new MemoryStream();
             int start = export.propsEnd();
             res.Write(export.Data, 0, start);
-            res.WriteInt32((int)m.Length);
-            res.WriteStream(m);
+            res.WriteInt32((int)e.Length);
+            res.WriteBytes(e.ToArray());
             res.WriteInt32(0);
             export.Data = res.ToArray();
         }
