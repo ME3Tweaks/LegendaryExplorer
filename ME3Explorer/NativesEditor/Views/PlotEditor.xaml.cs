@@ -80,7 +80,7 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
-        public void SaveFile()
+        public void SaveFile(string filepath = null)
         {
             if (Pcc == null)
             {
@@ -138,7 +138,22 @@ namespace MassEffect.NativesEditor.Views
                 }
             }
 
-            Pcc.Save();
+            if (filepath == null)
+                filepath = Pcc.FilePath;
+
+            Pcc.Save(filepath);
+        }
+
+        public void SaveFileAs()
+        {
+            var dlg = new SaveFileDialog { Filter = "Support files|*.pcc;*.upk" };
+
+            if (dlg.ShowDialog() != true)
+            {
+                return;
+            }
+
+            SaveFile(dlg.FileName);
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -154,6 +169,11 @@ namespace MassEffect.NativesEditor.Views
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFile();
+        }
+
+        private void SaveAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveFileAs();
         }
 
         private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -329,5 +349,6 @@ namespace MassEffect.NativesEditor.Views
             StateEventMapControl.StateEventMapListBox.ScrollIntoView(StateEventMapControl.SelectedStateEvent);
             StateEventMapControl.StateEventMapListBox.Focus();
         }
+
     }
 }

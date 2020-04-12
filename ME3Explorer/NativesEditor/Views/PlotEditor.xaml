@@ -23,6 +23,7 @@
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+        <CommandBinding Command="SaveAs" CanExecute="Save_CanExecute" Executed="SaveAs_Executed"/>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
     </Window.CommandBindings>
     <!-- Content -->
@@ -41,6 +42,7 @@
             <MenuItem Header="_File" Padding="4">
                 <MenuItem Header="_Open" x:Name="OpenFileMenuItem" Command="Open" />
                 <MenuItem Header="_Save" x:Name="SaveFileMenuItem" Command="Save" />
+                <MenuItem Header="_Save As" x:Name="SaveAsFileMenuItem" Command="SaveAs" />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
