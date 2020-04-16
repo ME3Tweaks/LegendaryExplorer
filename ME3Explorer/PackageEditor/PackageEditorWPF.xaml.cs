@@ -196,6 +196,7 @@ namespace ME3Explorer
         public ICommand CloneTreeCommand { get; set; }
         public ICommand FindEntryViaOffsetCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
+        public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
@@ -244,6 +245,7 @@ namespace ME3Explorer
             CloneTreeCommand = new GenericCommand(CloneTree, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
+            CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -1317,6 +1319,101 @@ namespace ME3Explorer
             RefreshView();
             MessageBox.Show("Done", "Search and Replace Names", MessageBoxButton.OK);
         }
+
+        private void CheckForBadObjectPropertyReferences()
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            var badReferences = new List<ListDialog.EntryItem>();
+            void recursiveCheckProperty(IEntry entry, UProperty property)
+            {
+                if (property is ObjectProperty op)
+                {
+                    if (op.Value > 0 && op.Value > Pcc.ExportCount)
+                    {
+                        //bad
+                        //bad
+                        if (op.Name.Name != null)
+                        {
+                            badReferences.Add(new ListDialog.EntryItem(entry, $"{op.Name.Name} Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        }
+                        else
+                        {
+                            badReferences.Add(new ListDialog.EntryItem(entry, $"[Nested property] Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        }
+                    }
+                    else if (op.Value < 0 && Math.Abs(op.Value) > Pcc.ImportCount)
+                    {
+                        //bad
+                        if (op.Name.Name != null)
+                        {
+                            badReferences.Add(new ListDialog.EntryItem(entry, $"{op.Name.Name} Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        }
+                        else
+                        {
+                            badReferences.Add(new ListDialog.EntryItem(entry, $"[Nested property] Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        }
+                    }
+                }
+                else if (property is ArrayProperty<ObjectProperty> aop)
+                {
+                    foreach (var p in aop)
+                    {
+                        recursiveCheckProperty(entry, p);
+                    }
+                }
+                else if (property is StructProperty sp)
+                {
+                    foreach (var p in sp.Properties)
+                    {
+                        recursiveCheckProperty(entry, p);
+                    }
+                }
+                else if (property is ArrayProperty<StructProperty> asp)
+                {
+                    foreach (var p in asp)
+                    {
+                        recursiveCheckProperty(entry, p);
+                    }
+                }
+            }
+
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                var properties = exp.GetProperties();
+                foreach (var prop in properties)
+                {
+                    recursiveCheckProperty(exp, prop);
+                }
+            }
+
+            if (badReferences.Any())
+            {
+                //Clipboard.SetText(copy);
+                void dcHandler(ListDialog.EntryItem clickedItem)
+                {
+                    if (clickedItem != null)
+                    {
+                        GoToNumber(clickedItem.ReferenecedEntry.UIndex);
+                    }
+                }
+
+                MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.", "Bad ObjectProperty references found");
+                ListDialog lw = new ListDialog(badReferences, "Bad object references", "The following items have values outside of the range of the import and export tables. Note that only export properties were scanned, not the binary section following the properties.", this)
+                {
+                    DoubleClickEntryHandler = dcHandler
+                };
+                lw.Show();
+            }
+            else
+            {
+                MessageBox.Show("No bad object references were found. Note that only export properties were scanned, not the binary section following the properties.", "Check complete");
+            }
+        }
+
         private void CheckForDuplicateIndexes()
         {
             if (Pcc == null)
@@ -4766,11 +4863,11 @@ namespace ME3Explorer
                                                         new NameProperty(fileName, "PackageName"),
                                                         CommonStructs.ColorProp(Color.FromRgb((byte)(i % 256), (byte)((255 - i) % 256), (byte)((i * 7) % 256)), "DrawColor")
                                                     })
-                                                    {
-                                                        ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
-                                                        Class = levStreamingClass,
-                                                        Parent = theWorld
-                                                    });
+                            {
+                                ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
+                                Class = levStreamingClass,
+                                Parent = theWorld
+                            });
                             i++;
                         }
 
@@ -4804,7 +4901,7 @@ namespace ME3Explorer
         private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
         {
             var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME1).ToList();
-            
+
             IsBusy = true;
             BusyText = "Scanning";
             Task.Run(() =>
@@ -4813,7 +4910,7 @@ namespace ME3Explorer
                 foreach (string filePath in filePaths)
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                    
+
                     foreach (ExportEntry export in pcc.Exports)
                     {
                         try
