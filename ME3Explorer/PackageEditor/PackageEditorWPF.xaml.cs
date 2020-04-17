@@ -440,7 +440,7 @@ namespace ME3Explorer
                     bw.RunWorkerCompleted += (x, y) =>
                     {
                         IsBusy = false;
-                        ListDialog ld = new ListDialog((List<string>)y.Result, "Imported Files", "The following files were imported.", this);
+                        ListDialog ld = new ListDialog((List<ListDialog.EntryItem>)y.Result, "Imported Files", "The following files were imported.", this) { DoubleClickEntryHandler = entryDoubleClick };
                         ld.Show();
                     };
                     bw.DoWork += (param, eventArgs) =>
@@ -451,7 +451,7 @@ namespace ME3Explorer
                         var allfiles = new List<string>();
                         allfiles.AddRange(Directory.GetFiles(dir, "*.swf"));
                         allfiles.AddRange(Directory.GetFiles(dir, "*.gfx"));
-                        List<string> importedFiles = new List<string>();
+                        var importedFiles = new List<ListDialog.EntryItem>();
                         foreach (var file in allfiles)
                         {
                             var fullpath = Path.GetFileNameWithoutExtension(file);
@@ -489,14 +489,14 @@ namespace ME3Explorer
                                     sourceFileTimestamp = File.GetLastWriteTime(file).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                                 }
 
-                                importedFiles.Add($"{matchingExport.UIndex} {fullpath}");
+                                importedFiles.Add(new ListDialog.EntryItem(matchingExport, $"{matchingExport.UIndex} {fullpath}"));
                                 matchingExport.WriteProperties(props);
                             }
                         }
 
                         if (importedFiles.Count == 0)
                         {
-                            importedFiles.Add("No matching filenames were found.");
+                            importedFiles.Add(new ListDialog.EntryItem(null, "No matching filenames were found."));
                         }
 
                         eventArgs.Result = importedFiles;
@@ -640,6 +640,15 @@ namespace ME3Explorer
             MultiRelinkingModeActive = true;
         }
 
+        private void entryDoubleClick(ListDialog.EntryItem clickedItem)
+        {
+            if (clickedItem != null && clickedItem.ReferencedEntry != null && clickedItem.ReferencedEntry.UIndex != 0)
+            {
+                GoToNumber(clickedItem.ReferencedEntry.UIndex);
+            }
+        }
+
+        //this might not be necessary anymore since we have experimental clone
         private void PerformMultiRelink()
         {
             Debug.WriteLine("Performing multi-relink");
@@ -650,7 +659,7 @@ namespace ME3Explorer
 
             if (relinkResults.Count > 0)
             {
-                ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
+                ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this) { DoubleClickEntryHandler = entryDoubleClick };
                 ld.Show();
             }
             else
@@ -919,9 +928,10 @@ namespace ME3Explorer
                 Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}")).ToList(),
+                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => new ListDialog.EntryItem(kvp.Key, $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
                         $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.InstancedFullPath}",
-                        "There may be additional references to this object in the unparsed binary of some objects", this);
+                        "There may be additional references to this object in the unparsed binary of some objects", this)
+                    { DoubleClickEntryHandler = entryDoubleClick };
                     dlg.Show();
                 });
 
@@ -1011,9 +1021,10 @@ namespace ME3Explorer
                 Task.Run(() => Pcc.FindUsagesOfName(name)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}")).ToList(),
+                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => new ListDialog.EntryItem(kvp.Key, $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
                                              $"{prevTask.Result.Count} Objects that use '{name}'",
-                                             "There may be additional usages of this name in the unparsed binary of some objects", this);
+                                             "There may be additional usages of this name in the unparsed binary of some objects", this)
+                    { DoubleClickEntryHandler = entryDoubleClick };
                     dlg.Show();
                 });
             }
@@ -1392,20 +1403,9 @@ namespace ME3Explorer
 
             if (badReferences.Any())
             {
-                //Clipboard.SetText(copy);
-                void dcHandler(ListDialog.EntryItem clickedItem)
-                {
-                    if (clickedItem != null)
-                    {
-                        GoToNumber(clickedItem.ReferenecedEntry.UIndex);
-                    }
-                }
-
                 MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.", "Bad ObjectProperty references found");
                 ListDialog lw = new ListDialog(badReferences, "Bad object references", "The following items have values outside of the range of the import and export tables. Note that only export properties were scanned, not the binary section following the properties.", this)
-                {
-                    DoubleClickEntryHandler = dcHandler
-                };
+                { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
             }
             else
@@ -1421,7 +1421,7 @@ namespace ME3Explorer
                 return;
             }
 
-            var duplicates = new List<string>();
+            var duplicates = new List<ListDialog.EntryItem>();
             var duplicatesPackagePathIndexMapping = new Dictionary<string, List<int>>();
             foreach (ExportEntry exp in Pcc.Exports)
             {
@@ -1434,7 +1434,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    duplicates.Add($"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})");
+                    duplicates.Add(new ListDialog.EntryItem(exp, $"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})"));
                 }
 
                 indexList.Add(exp.UIndex);
@@ -1443,15 +1443,16 @@ namespace ME3Explorer
             if (duplicates.Count > 0)
             {
                 string copy = "";
-                foreach (string str in duplicates)
+                foreach (var ei in duplicates)
                 {
 
-                    copy += str + "\n";
+                    copy += ei.Message + "\n";
                 }
 
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.", this);
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.", this)
+                { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
             }
             else
@@ -1696,9 +1697,9 @@ namespace ME3Explorer
                 MessageBox.Show("Files are for different games.");
                 return;
             }
-            var changedImports = new List<string>();
-            var changedNames = new List<string>();
-            var changedExports = new List<string>();
+            var changedImports = new List<ListDialog.EntryItem>();
+            var changedNames = new List<ListDialog.EntryItem>();
+            var changedExports = new List<ListDialog.EntryItem>();
             {
                 #region Exports Comparison
                 int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
@@ -1729,12 +1730,12 @@ namespace ME3Explorer
                         //    //Debug.Write(" " + b.ToString("X2"));
                         //}
                         //Debug.WriteLine("");
-                        changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
+                        changedExports.Add(new ListDialog.EntryItem(exp1, $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
                     }
 
                     if (!exp1.Data.SequenceEqual(exp2.Data))
                     {
-                        changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}");
+                        changedExports.Add(new ListDialog.EntryItem(exp1, $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
                     }
                 }
 
@@ -1749,7 +1750,7 @@ namespace ME3Explorer
                 for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
                 {
                     Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
-                    changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
+                    changedExports.Add(new ListDialog.EntryItem(enumerateExtras.Exports[i].FileRef == Pcc ? enumerateExtras.Exports[i] : null, $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}"));
                 }
                 #endregion
             }
@@ -1763,7 +1764,7 @@ namespace ME3Explorer
                     ImportEntry imp2 = compareFile.Imports[i];
                     if (!imp1.Header.SequenceEqual(imp2.Header))
                     {
-                        changedImports.Add($"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}");
+                        changedImports.Add(new ListDialog.EntryItem(imp1, $"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}"));
                     }
                 }
 
@@ -1778,7 +1779,7 @@ namespace ME3Explorer
                 for (int i = numImportsToEnumerate; i < enumerateExtras.ImportCount; i++)
                 {
                     Debug.WriteLine($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
-                    changedImports.Add($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
+                    changedImports.Add(new ListDialog.EntryItem(enumerateExtras.Imports[i].FileRef == Pcc ? enumerateExtras.Imports[i] : null, $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}"));
                 }
             }
             #endregion
@@ -1795,7 +1796,7 @@ namespace ME3Explorer
                     if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
 
                     {
-                        changedNames.Add($"Name { i } is different: {name1} |vs| {name2}");
+                        changedNames.Add(new ListDialog.EntryItem(null, $"Name { i } is different: {name1} |vs| {name2}"));
                     }
                 }
 
@@ -1810,15 +1811,16 @@ namespace ME3Explorer
                 for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
                 {
                     Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                    changedNames.Add($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
+                    changedNames.Add(new ListDialog.EntryItem(null, $"Name only exists in {file}: {i} {enumerateExtras.Names[i]}"));
                 }
             }
             #endregion
-            var fullList = new List<string>();
+            var fullList = new List<ListDialog.EntryItem>();
             fullList.AddRange(changedExports);
             fullList.AddRange(changedImports);
             fullList.AddRange(changedNames);
-            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files", "The following exports, imports and names are different between the files.", this);
+            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files", "The following exports, imports and names are different between the files.", this)
+            { DoubleClickEntryHandler = entryDoubleClick };
             ld.Show();
         }
 
@@ -2831,7 +2833,7 @@ namespace ME3Explorer
 
                 int numExports = Pcc.ExportCount;
                 //Import!
-                List<string> relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, shouldRelink, out IEntry newEntry, crossPCCObjectMap);
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, shouldRelink, out IEntry newEntry, crossPCCObjectMap);
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
@@ -4951,7 +4953,7 @@ namespace ME3Explorer
                 IsBusy = false;
                 List<string> files = prevTask.Result.OrderBy(s => s).ToList();
                 File.WriteAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json"), JsonConvert.SerializeObject(files, Formatting.Indented));
-                ListDialog dlg = new ListDialog(files, "", "ME1 files with externall referenced textures", this);
+                ListDialog dlg = new ListDialog(files, "", "ME1 files with externally referenced textures", this);
                 dlg.Show();
             });
         }

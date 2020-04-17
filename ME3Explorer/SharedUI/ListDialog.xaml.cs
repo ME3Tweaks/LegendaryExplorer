@@ -81,12 +81,12 @@ namespace ME3Explorer.SharedUI
         public class EntryItem
         {
             public string Message { get; }
-            public IEntry ReferenecedEntry { get; }
+            public IEntry ReferencedEntry { get; }
 
             public EntryItem(IEntry entry, string message)
             {
                 Message = message;
-                ReferenecedEntry = entry;
+                ReferencedEntry = entry;
             }
 
             public string ToString() => Message;
@@ -95,10 +95,16 @@ namespace ME3Explorer.SharedUI
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var item = ((FrameworkElement)e.OriginalSource).DataContext as EntryItem;
-            if (item != null)
+            if (item != null && item.ReferencedEntry != null)
             {
-                DoubleClickEntryHandler?.Invoke(item);
-                Debug.WriteLine("Item's Double Click handled!");
+                if (DoubleClickEntryHandler == null)
+                {
+                    MessageBox.Show("This dialog doesn't support double click to goto yet, please report this");
+                }
+                else
+                {
+                    DoubleClickEntryHandler.Invoke(item);
+                }
             }
         }
     }

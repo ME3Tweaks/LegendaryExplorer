@@ -693,6 +693,7 @@
     <Compile Include="SharedUI\Converters\EntryGameMatchVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\Converters\EnumComparisonConverter.cs" />
+    <Compile Include="SharedUI\Converters\IntMatchesToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\InverseVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\UnrealRotationUnitsToDegreesConverter.cs" />
