@@ -382,8 +382,8 @@
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                            <!--<Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />-->
-                            <!--<Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />-->
+                            <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                            <EventSetter Event="Selected" Handler="OnSelected"/>
                         </Style>
                     </TreeView.ItemContainerStyle>
 
