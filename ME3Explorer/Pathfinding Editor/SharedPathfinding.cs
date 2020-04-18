@@ -223,7 +223,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 upstreamfullpath = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
-                if (upstreammatchinglist.Where(x=>x.entry is ExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
+                if (upstreammatchinglist.Where(x => x.entry is ExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
                 {
                     upstreamEntryToAttachTo = upstreammatchinglist[0].entry;
                     break;
@@ -433,15 +433,25 @@ namespace ME3Explorer.Pathfinding_Editor
             return null; //can't get end, or is external
         }
 
+        internal static Point3D GetLocationFromVector(StructProperty vector)
+        {
+            return new Point3D()
+            {
+                X = vector.GetProp<FloatProperty>("X"),
+                Y = vector.GetProp<FloatProperty>("Y"),
+                Z = vector.GetProp<FloatProperty>("Z")
+            };
+        }
+
         public static Point3D GetLocation(ExportEntry export)
         {
             float x = 0, y = 0, z = int.MinValue;
-            if(export.ClassName.Contains("Component") && export.HasParent && export.Parent.ClassName.Contains("CollectionActor"))  //Collection component
+            if (export.ClassName.Contains("Component") && export.HasParent && export.Parent.ClassName.Contains("CollectionActor"))  //Collection component
             {
                 var actorCollection = export.Parent as ExportEntry;
                 var collection = GetCollectionItems(actorCollection);
 
-                if(!(collection?.IsEmpty() ?? true))
+                if (!(collection?.IsEmpty() ?? true))
                 {
                     var positions = GetCollectionLocationData(actorCollection);
                     var idx = collection.FindIndex(o => o != null && o.UIndex == export.UIndex);
@@ -483,7 +493,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (!collectionactor.ClassName.Contains("CollectionActor"))
                 return null;
 
-            if(CollectionItems == null)
+            if (CollectionItems == null)
             {
                 CollectionItems = new List<ExportEntry>();
                 CollectionItems.AddRange(GetCollectionItems(collectionactor));
@@ -540,7 +550,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            if(export.ClassName.Contains("Component"))
+            if (export.ClassName.Contains("Component"))
             {
                 SetCollectionActorLocation(export, x, y, z);
             }
@@ -559,14 +569,14 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static void SetCollectionActorLocation(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
         {
-            if(collectionactor == null)
+            if (collectionactor == null)
             {
                 if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
                     return;
                 collectionactor = (ExportEntry)component.Parent;
             }
 
-            if(collectionitems == null)
+            if (collectionitems == null)
             {
                 collectionitems = GetCollectionItems(collectionactor);
             }

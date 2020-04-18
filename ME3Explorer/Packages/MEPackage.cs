@@ -409,7 +409,7 @@ namespace ME3Explorer.Packages
                 exports.Add(e);
             }
 
-            if (Game == MEGame.ME1)
+            if (Game == MEGame.ME1 && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
             }
@@ -715,9 +715,10 @@ namespace ME3Explorer.Packages
             var exportsToLoad = new List<ExportEntry>();
             foreach (var tlkFileSet in tlkFileSets)
             {
-                MemoryStream r = new MemoryStream(tlkFileSet.Data)
+                EndianReader r = new EndianReader(new MemoryStream(tlkFileSet.Data))
                 {
-                    Position = tlkFileSet.propsEnd()
+                    Position = tlkFileSet.propsEnd(),
+                    Endian = Endian
                 };
                 int count = r.ReadInt32();
                 for (int i = 0; i < count; i++)

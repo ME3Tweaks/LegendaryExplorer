@@ -383,8 +383,8 @@
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                            <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
-                            <EventSetter Event="Selected" Handler="OnSelected"/>
+                            <!--<EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                            <EventSetter Event="Selected" Handler="OnSelected"/>-->
                         </Style>
                     </TreeView.ItemContainerStyle>
 

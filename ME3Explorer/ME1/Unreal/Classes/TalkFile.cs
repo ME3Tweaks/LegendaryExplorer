@@ -8,6 +8,7 @@ using System.Xml;
 using ME3Explorer.Packages;
 using ME1Explorer;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -202,11 +203,14 @@ namespace ME1Explorer.Unreal.Classes
         #endregion
 
         #region Load Data
-        public void LoadTlkData(BinaryReader r = null)
+        public void LoadTlkData(EndianReader r = null)
         {
             if (r == null)
             {
-                r = new BinaryReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode);
+                r = new EndianReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode)
+                {
+                    Endian = pcc.Endian
+                };
             }
             //hashtable
             int entryCount = r.ReadInt32();

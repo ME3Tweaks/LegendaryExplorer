@@ -7,6 +7,7 @@ using System.Windows.Media;
 using ME3Explorer.SharedUI;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.Unreal;
 using Color = System.Windows.Media.Color;
 
@@ -157,7 +158,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (var curvePoint in floatTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
                 {
-                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal")));
+                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal"), curvePoint.GetProp<FloatProperty>("OutVal").Value.ToString()));
                 }
             }
         }
@@ -185,7 +186,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime")));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime"), trackKey.GetProp<NameProperty>("EventName").Value.Name));
                 }
             }
         }
@@ -225,12 +226,24 @@ namespace ME3Explorer.Matinee
             var lookupstruct = export.GetProperty<StructProperty>("LookupTrack");
             if (lookupstruct != null)
             {
-                var trackKeys = lookupstruct.GetProp<ArrayProperty<StructProperty>>("Points");
+                var trackKeys = lookupstruct.GetProp<ArrayProperty<StructProperty>>("Points"); //on lookuptrack
+
+                var posTrack = export.GetProperty<StructProperty>("PosTrack");
+                ArrayProperty<StructProperty> points = posTrack?.GetProp<ArrayProperty<StructProperty>>("Points");
                 if (trackKeys != null)
                 {
+                    int keyindex = 0;
                     foreach (var trackKey in trackKeys)
                     {
-                        Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
+                        string tooltip = null;
+                        if (points != null && points.Count > keyindex)
+                        {
+                            StructProperty vector = points[keyindex].GetProp<StructProperty>("OutVal");
+                            var point = SharedPathfinding.GetLocationFromVector(vector);
+                            tooltip = $"X={point.X},X={point.Y},X={point.Z}";
+                        }
+                        Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), tooltip));
+                        keyindex++;
                     }
                 }
             }
@@ -323,5 +336,5 @@ namespace ME3Explorer.Matinee
         }
     }
 
-    
+
 }

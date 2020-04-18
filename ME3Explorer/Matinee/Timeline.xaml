@@ -281,6 +281,13 @@
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
+                                        <Setter Property="Canvas.ToolTip">
+                                            <Setter.Value>
+                                                <Binding Path="ToolTip" RelativeSource="{RelativeSource Self}"/>
+
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
                                         <Setter Property="Canvas.Bottom" Value="0" />
                                         <!--<Setter Property="Cursor" Value="Hand"/>-->
                                         <Setter Property="Template">
