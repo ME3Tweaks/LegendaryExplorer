@@ -54,7 +54,7 @@ namespace ME3Explorer
         /// <param name="newEntry"></param>
         /// <param name="relinkMap"></param>
         /// <returns></returns>
-        public static List<string> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
+        public static List<ListDialog.EntryItem> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
                                                           out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
@@ -100,7 +100,7 @@ namespace ME3Explorer
                 importChildrenOf(sourceEntry, newEntry);
             }
 
-            List<string> relinkResults = null;
+            List<ListDialog.EntryItem> relinkResults = null;
             if (shouldRelink)
             {
                 relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
@@ -428,7 +428,7 @@ namespace ME3Explorer
          /// <param name="destinationPCC">PCC to add imports to</param>
          /// <param name="objectMapping"></param>
          /// <returns></returns>
-        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null)
+        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<ListDialog.EntryItem> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
             if (string.IsNullOrEmpty(importFullName))
@@ -459,7 +459,7 @@ namespace ME3Explorer
             string[] importParts = importFullName.Split('.');
 
             //recursively ensure parent exists
-            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping);
+            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
 
 
             foreach (ImportEntry sourceImport in sourcePcc.Imports)
@@ -587,7 +587,7 @@ namespace ME3Explorer
                 //Will make sure that, if the class is in a package, that package will exist in pcc
                 IEntry parent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourcePackage, pcc);
 
-                List<string> relinkResults = ImportAndRelinkEntries(PortingOption.CloneAllDependencies, sourceClassExport, pcc, parent, true, out IEntry result);
+                var relinkResults = ImportAndRelinkEntries(PortingOption.CloneAllDependencies, sourceClassExport, pcc, parent, true, out IEntry result);
                 if (relinkResults?.Count > 0)
                 {
                     ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", null);

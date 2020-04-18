@@ -77,7 +77,14 @@ namespace ME3Explorer
                     indent += "| ";
                 }
                 //if (Parent != null && Parent == )
-                str.Write(Name.TrimStart('_') + ": " + Header);// + " "  " (" + PropertyType + ")");
+                if (Name != null)
+                {
+                    str.Write(Name.TrimStart('_') + ": " + Header);// + " "  " (" + PropertyType + ")");
+                }
+                else
+                {
+                    str.Write(Header);// + " "  " (" + PropertyType + ")");
+                }
             }
             else
             {

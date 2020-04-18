@@ -466,7 +466,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        throw new Exception("Should never be saing more than one UV!");
+                        throw new Exception("Should never be saving more than one UV! Num UVs (NumTexCoords): "+svb.NumTexCoords);
                     }
                 }
             }

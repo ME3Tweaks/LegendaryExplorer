@@ -636,7 +636,7 @@ namespace ME3Explorer.TFCCompactor
 
                     if (!File.Exists(_iniPath))
                     {
-                        File.Create(_iniPath);
+                        File.Create(_iniPath).Close();
                     }
 
                     Ini.IniFile ini = new Ini.IniFile(_iniPath);
