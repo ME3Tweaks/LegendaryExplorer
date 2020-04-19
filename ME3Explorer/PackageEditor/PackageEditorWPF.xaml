@@ -253,6 +253,7 @@
                     <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                     <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
                     <MenuItem Header="MGAMERZ - Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
+                    <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Documents;
+using StreamHelpers;
 
 namespace Gammtek.Conduit.IO
 {
@@ -230,21 +231,22 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         public void WriteStringASCII(string asciistr)
         {
-            if (asciistr.Length % 4 != 0) throw new Exception("Cannot write endian-aware strings that are not multiples of 4");
-            List<char[]> charsets = new List<char[]>(asciistr.Length / 4);
-            for (int i = 0; i < asciistr.Length / 4; i++)
-            {
-                charsets.Add(asciistr.Substring(i * 4, 4).ToCharArray());
-                if (Endian == Endian.Big) charsets[i].Reverse();
-            }
-
-            foreach (var charset in charsets)
-            {
-                foreach (var c in charset)
-                {
-                    _source.BaseStream.WriteByte((byte)c);
-                }
-            }
+            //this will be important to write magic numbers backwards.
+            //if (asciistr.Length % 4 != 0) throw new Exception("Cannot write endian-aware strings that are not multiples of 4");
+            //List<char[]> charsets = new List<char[]>(asciistr.Length / 4);
+            //for (int i = 0; i < asciistr.Length / 4; i++)
+            //{
+            //    charsets.Add(asciistr.Substring(i * 4, 4).ToCharArray());
+            //    if (Endian == Endian.Big) charsets[i].Reverse();
+            //}
+            _source.BaseStream.WriteStringASCII(asciistr);
+            //foreach (var charset in charsets)
+            //{
+            //    foreach (var c in charset)
+            //    {
+            //        _source.BaseStream.WriteByte((byte)c);
+            //    }
+            //}
         }
 
         public void WriteFromBuffer(byte[] buffer)

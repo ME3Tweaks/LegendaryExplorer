@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using ME1Explorer;
 using ME3Explorer.SharedUI;
 using ME3Explorer;
 using ME3Explorer.Packages;
@@ -50,17 +52,15 @@ namespace ME3Explorer.Matinee
                 var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
+                    if (trackExport.ClassName == "InterpTrackAnimControl") Debugger.Break();
                     if (trackExport.IsA("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));
                     }
-                    else if (trackExport.IsA("InterpTrackFloatBase"))
+
+                    else if (trackExport.ClassName == "InterpTrackSound")
                     {
-                        Tracks.Add(new InterpTrackFloatBase(trackExport));
-                    }
-                    else if (trackExport.IsA("InterpTrackVectorBase"))
-                    {
-                        Tracks.Add(new InterpTrackVectorBase(trackExport));
+                        Tracks.Add(new InterpTrackSound(trackExport));
                     }
                     else if (trackExport.IsA("InterpTrackEvent"))
                     {
@@ -109,6 +109,14 @@ namespace ME3Explorer.Matinee
 
                         // Tracks.Add(new InterpTrackDirector(trackExport));
 
+                    }
+                    else if (trackExport.IsA("InterpTrackFloatBase"))
+                    {
+                        Tracks.Add(new InterpTrackFloatBase(trackExport));
+                    }
+                    else if (trackExport.IsA("InterpTrackVectorBase"))
+                    {
+                        Tracks.Add(new InterpTrackVectorBase(trackExport));
                     }
                     else
                     {
@@ -172,7 +180,35 @@ namespace ME3Explorer.Matinee
             {
                 foreach (var curvePoint in vectorTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points"))
                 {
-                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal")));
+                    var outval = SharedPathfinding.GetLocationFromVector(curvePoint.GetProp<StructProperty>("OutVal")); //gets X Y Z
+                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal"), $"X={outval.X},Y={outval.Y},Z={outval.Z}"));
+                }
+            }
+        }
+    }
+    public class InterpTrackSound : InterpTrack
+    {
+        public InterpTrackSound(ExportEntry export) : base(export)
+        {
+            var vectorTrackProp = export.GetProperty<StructProperty>("VectorTrack");
+            var sounds = export.GetProperty<ArrayProperty<StructProperty>>("Sounds");
+            if (vectorTrackProp != null)
+            {
+                int keyindex = 0;
+                var points = vectorTrackProp.GetPropOrDefault<ArrayProperty<StructProperty>>("Points");
+                foreach (var curvePoint in points)
+                {
+                    int? soundUIndex = sounds?.Count > keyindex ? sounds?[keyindex].GetProp<ObjectProperty>("Sound")?.Value : null;
+                    string tooltip = null;
+                    if (soundUIndex.HasValue && export.FileRef.TryGetEntry(soundUIndex.Value, out var entry))
+                    {
+                        tooltip += "Sound: " + entry.FullPath;
+                        tooltip += "\nVolume: " + sounds?[keyindex].GetProp<FloatProperty>("Volume")?.Value;
+                        tooltip += "\nPitch: " + sounds?[keyindex].GetProp<FloatProperty>("Pitch")?.Value;
+                        tooltip += "\nLength: " + sounds?[keyindex].GetProp<FloatProperty>("Time")?.Value;
+                    }
+                    Keys.Add(new Key(curvePoint.GetProp<FloatProperty>("InVal"), tooltip));
+                    keyindex++;
                 }
             }
         }
@@ -200,7 +236,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (StructProperty trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime")));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("StartTime"), trackKey.GetProp<StrProperty>("FaceFXSeqName")?.Value));
                 }
             }
         }
@@ -240,7 +276,7 @@ namespace ME3Explorer.Matinee
                         {
                             StructProperty vector = points[keyindex].GetProp<StructProperty>("OutVal");
                             var point = SharedPathfinding.GetLocationFromVector(vector);
-                            tooltip = $"X={point.X},X={point.Y},X={point.Z}";
+                            tooltip = $"X={point.X},Y={point.Y},Z={point.Z}";
                         }
                         Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), tooltip));
                         keyindex++;
@@ -300,7 +336,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time")));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), trackKey.GetProp<NameProperty>("TargetCamGroup").Value.Name));
                 }
             }
         }
@@ -326,15 +362,16 @@ namespace ME3Explorer.Matinee
         public BioEvtSysTrackSubtitles(ExportEntry export) : base(export)
         {
             var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+            var subtitleData = export.GetProperty<ArrayProperty<StructProperty>>("m_aSubtitleData");
             if (trackKeys != null)
             {
+                int keyindex = 0;
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime")));
+                    int strRef = subtitleData?[keyindex]?.GetProp<IntProperty>("nStrRefID");
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime"), ME1TalkFiles.findDataById(strRef, export.FileRef)));
                 }
             }
         }
     }
-
-
 }

@@ -5238,5 +5238,73 @@ namespace ME3Explorer
             Debug.WriteLine("Done porting");
         }
 
+        private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelected(out var uindex);
+            if (selected)
+            {
+                var offsetX = int.Parse(PromptDialog.Prompt(this, "Enter X offset", "Offset X", "0", true));
+                var offsetY = int.Parse(PromptDialog.Prompt(this, "Enter Y offset", "Offset Y", "0", true));
+                var offsetZ = int.Parse(PromptDialog.Prompt(this, "Enter Z offset", "Offset Z", "0", true));
+                var export = Pcc.GetUExport(uindex);
+                var numFrames = export.GetProperty<IntProperty>("NumFrames");
+                var TrackOffsets = export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
+                var bin = export.GetBinaryData();
+                var mem = new MemoryStream(bin);
+                var len = mem.ReadInt32();
+                var animBinStart = mem.Position;
+                for (int i = 0; i < TrackOffsets.Count; i++)
+                {
+                    var bonePosOffset = TrackOffsets[i].Value;
+                    i++;
+                    var bonePosCount = TrackOffsets[i].Value;
+                    //var BoneID = new BinInterpNode
+                    //{
+                    //    Header = $"0x{offset:X5} Bone: {bone} {boneList[bone].Value}",
+                    //    Name = "_" + offset,
+                    //    Tag = NodeType.Unknown
+                    //};
+                    //subnodes.Add(BoneID);
+
+                    for (int j = 0; j < bonePosCount; j++)
+                    {
+                        var offset = mem.Position;
+                        
+                        var posX = mem.ReadSingle();
+                        mem.Position -= 4;
+                        mem.WriteSingle(posX + offsetX);
+                        
+                        var posY = mem.ReadSingle();
+                        mem.Position -= 4;
+                        mem.WriteSingle(posY+ offsetY);
+                        
+                        var posZ = mem.ReadSingle();
+                        mem.Position -= 4;
+                        mem.WriteSingle(posZ + offsetZ);
+                        
+                        Debug.WriteLine($"PosKey {j}: X={posX},Y={posY},Z={posZ}");
+                    }
+
+                    //rotation
+                    i++;
+                    var boneRotOffset = TrackOffsets[i].Value;
+                    i++;
+                    var boneRotCount = TrackOffsets[i].Value;
+
+                    //only support 96NoW
+                    mem.Position = boneRotOffset + animBinStart;
+                    for (int j = 0; j < boneRotCount; j++)
+                    {
+                        var offset = mem.Position;
+                        var rotX = mem.ReadSingle();
+                        var rotY = mem.ReadSingle();
+                        var rotZ = mem.ReadSingle();
+                        Debug.WriteLine($"RotKey {j}: X={rotX},Y={rotY},Z={rotZ}");
+                    }
+                }
+
+                export.SetBinaryData(mem.ToArray());
+            }
+        }
     }
 }
