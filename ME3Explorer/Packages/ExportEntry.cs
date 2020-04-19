@@ -634,6 +634,8 @@ namespace ME3Explorer.Packages
             {
                 MEGame.UDK => 26,
                 MEGame.ME3 => 30,
+                MEGame.ME1 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                MEGame.ME2 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32
             };
 

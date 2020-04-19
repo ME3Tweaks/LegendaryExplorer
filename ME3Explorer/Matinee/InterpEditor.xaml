@@ -11,6 +11,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
+        xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
         mc:Ignorable="d"
         Title="Interp Viewer" Height="750" Width="1300" MinWidth="900" MinHeight="200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Closing="WPFBase_Closing">
@@ -150,8 +151,26 @@
                 </TabControl>
 
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HideHexBox="True"
+                <TabControl Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" TabStripPlacement="Left" >
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="270" />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                    <TabItem Header="Interpreter">
+
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"
                                        Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </TabItem>
+                    <TabItem Header="Curve Editor" IsEnabled="{Binding LoadedExportIsCurve}">
+                        <curveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                    </TabItem>
+                </TabControl>
+
             </Grid>
         </Grid>
     </DockPanel>

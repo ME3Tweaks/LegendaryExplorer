@@ -387,7 +387,7 @@ namespace ME3Explorer
                     case "SequenceEditor":
                         return exp.IsA("SequenceObject");
                     case "InterpViewer":
-                        return Pcc.Game == MEGame.ME3 && exp.ClassName == "InterpData";
+                        return exp.ClassName == "InterpData";
                 }
             }
 

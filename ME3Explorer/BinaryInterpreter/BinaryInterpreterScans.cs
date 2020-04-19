@@ -1500,7 +1500,7 @@ namespace ME3Explorer
                         new BinInterpNode(bin.Position, $"Node: {nodeString = entryRefString(bin)}", NodeType.StructLeafObject) {Length = 4},
                         ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeEntryNode(bin, "StateNode")),
                         new BinInterpNode(bin.Position, $"ProbeMask: {bin.ReadUInt64():X16}"),
-                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
+                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3, () => new ITreeItem[]
                         {
                             MakeUInt16Node(bin, "LatentAction")
                         }, () => new ITreeItem[]

@@ -22,7 +22,7 @@ namespace ME3Explorer.CurveEd
         InterpCurveLinearColor,
     }
 
-    public class InterpCurve
+    public class InterpCurve : NotifyPropertyChangedBase
     {
 
         private readonly IMEPackage pcc;
@@ -30,7 +30,6 @@ namespace ME3Explorer.CurveEd
 
         public string Name { get; set; }
         public ObservableCollectionExtended<Curve> Curves { get; set; }
-
         public InterpCurve(IMEPackage _pcc, StructProperty prop)
         {
             pcc = _pcc;
@@ -122,7 +121,7 @@ namespace ME3Explorer.CurveEd
                     {
                         Curves.Add(new Curve("X", x));
                         Curves.Add(new Curve("Y", y));
-                        Curves.Add(new Curve("Z", z)); 
+                        Curves.Add(new Curve("Z", z));
                     }
                     break;
                 case CurveType.InterpCurveVector2D:
@@ -220,7 +219,7 @@ namespace ME3Explorer.CurveEd
                 case CurveType.InterpCurveFloat:
                     return new StructProperty("InterpCurveFloat", new PropertyCollection
                     {
-                        new ArrayProperty<StructProperty>(Curves[0].CurvePoints.Select(point => 
+                        new ArrayProperty<StructProperty>(Curves[0].CurvePoints.Select(point =>
                             new StructProperty("InterpCurvePointFloat", new PropertyCollection
                             {
                                 new FloatProperty(point.InVal, "InVal"),

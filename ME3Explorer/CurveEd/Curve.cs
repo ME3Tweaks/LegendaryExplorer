@@ -85,8 +85,10 @@ namespace ME3Explorer.CurveEd
         }
     }
 
-    public class Curve
+    public class Curve : NotifyPropertyChangedBase
     {
+        private bool isSelected;
+        public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
         public string Name { get; }
 
         public LinkedList<CurvePoint> CurvePoints;

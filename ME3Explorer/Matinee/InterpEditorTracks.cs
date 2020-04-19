@@ -52,7 +52,6 @@ namespace ME3Explorer.Matinee
                 var trackExports = tracksProp.Where(prop => Export.FileRef.IsUExport(prop.Value)).Select(prop => Export.FileRef.GetUExport(prop.Value));
                 foreach (ExportEntry trackExport in trackExports)
                 {
-                    if (trackExport.ClassName == "InterpTrackAnimControl") Debugger.Break();
                     if (trackExport.IsA("BioInterpTrack"))
                     {
                         Tracks.Add(new BioInterpTrack(trackExport));

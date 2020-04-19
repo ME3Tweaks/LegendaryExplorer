@@ -82,6 +82,11 @@ namespace ME3Explorer.CurveEd
             graph.Paint();
         }
 
+        public void SetSelectedCurve(Curve curve)
+        {
+            curve.IsSelected = true;
+        }
+
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             CurveGraph.TrackLoading = true;
@@ -167,11 +172,11 @@ namespace ME3Explorer.CurveEd
             foreach (var track in InterpCurveTracks)
             {
                 int n = 0;
-                foreach(var curve in track.Curves)
+                foreach (var curve in track.Curves)
                 {
                     n++;
                     curveList.Add(curve.Name);
-                    foreach(var point in curve.CurvePoints)
+                    foreach (var point in curve.CurvePoints)
                     {
                         float time = point.InVal;
                         if (!trackKeys.ContainsKey(time))
@@ -189,7 +194,7 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
-            
+
             //Write to XL
             int xlrow = 1;
             int xlcol = 1;
@@ -208,7 +213,7 @@ namespace ME3Explorer.CurveEd
                 foreach (var point in tk.Value)
                 {
                     xlcol++;
-                    if(point != (float)0.12345678) //skip null values
+                    if (point != (float)0.12345678) //skip null values
                         worksheet.Cell(xlrow, xlcol).Value = point.ToString();
                 }
             }
@@ -313,7 +318,7 @@ namespace ME3Explorer.CurveEd
                         MessageBox.Show("The sheet contains empty cells.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
                         return;
                     }
-                    if(cell.Address.RowNumber > 1 && !float.TryParse(cell.Value.ToString(), out float f))
+                    if (cell.Address.RowNumber > 1 && !float.TryParse(cell.Value.ToString(), out float f))
                     {
                         MessageBox.Show("The values contain text.\nPlease check import sheet.  Aborting.", "Import Curves", MessageBoxButton.OK);
                         return;
@@ -356,7 +361,7 @@ namespace ME3Explorer.CurveEd
                 MessageBox.Show($"{e.FlattenException()}", "Error");
 #endif
             }
-            
+
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -383,7 +388,7 @@ namespace ME3Explorer.CurveEd
             var props = exportEntry.GetProperties();
             foreach (var prop in props)
             {
-                if (prop is StructProperty structProp 
+                if (prop is StructProperty structProp
                     && Enum.TryParse(structProp.StructType, out CurveType _))
                 {
                     return true;
