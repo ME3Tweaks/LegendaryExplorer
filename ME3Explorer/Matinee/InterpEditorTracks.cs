@@ -93,6 +93,22 @@ namespace ME3Explorer.Matinee
                     {
                         Tracks.Add(new InterpTrackDirector(trackExport));
                     }
+                    else if (trackExport.IsA("BioEvtSysTrackDOF"))
+                    {
+                        //Depth of Field
+                        Tracks.Add(new BioEvtSysTrackDOF(trackExport));
+
+                        // Tracks.Add(new InterpTrackDirector(trackExport));
+
+                    }
+                    else if (trackExport.IsA("BioEvtSysTrackSubtitles"))
+                    {
+                        //Depth of Field
+                        Tracks.Add(new BioEvtSysTrackSubtitles(trackExport));
+
+                        // Tracks.Add(new InterpTrackDirector(trackExport));
+
+                    }
                     else
                     {
                         throw new FormatException($"Unknown Track Type: {trackExport.ClassName}");
@@ -207,7 +223,7 @@ namespace ME3Explorer.Matinee
         public InterpTrackMove(ExportEntry export) : base(export)
         {
             var lookupstruct = export.GetProperty<StructProperty>("LookupTrack");
-            if(lookupstruct != null)
+            if (lookupstruct != null)
             {
                 var trackKeys = lookupstruct.GetProp<ArrayProperty<StructProperty>>("Points");
                 if (trackKeys != null)
@@ -276,4 +292,36 @@ namespace ME3Explorer.Matinee
             }
         }
     }
+
+    public class BioEvtSysTrackDOF : InterpTrack
+    {
+        public BioEvtSysTrackDOF(ExportEntry export) : base(export)
+        {
+            var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+            if (trackKeys != null)
+            {
+                foreach (var trackKey in trackKeys)
+                {
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime")));
+                }
+            }
+        }
+    }
+
+    public class BioEvtSysTrackSubtitles : InterpTrack
+    {
+        public BioEvtSysTrackSubtitles(ExportEntry export) : base(export)
+        {
+            var trackKeys = export.GetProperty<ArrayProperty<StructProperty>>("m_aTrackKeys");
+            if (trackKeys != null)
+            {
+                foreach (var trackKey in trackKeys)
+                {
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("fTime")));
+                }
+            }
+        }
+    }
+
+    
 }

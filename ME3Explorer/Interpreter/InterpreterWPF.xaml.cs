@@ -832,7 +832,7 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
-                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID")
+                        if (ip.Name == "m_nStrRefID" || ip.Name == "nLineStrRef" || ip.Name == "nStrRefID" || ip.Name == "m_iStringRef" || ip.Name == "m_iDescriptionStringRef")
                         {
                             parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
@@ -935,6 +935,15 @@ namespace ME3Explorer
                         if (linkName != null)
                         {
                             editableValue = $"SeqVarLink {linkName.Value}";
+                        }
+                    }
+                    else if (sp.StructType == "BaseSliders")
+                    {
+                        editableValue = "";
+                        var linkName = sp.Properties.GetProp<StrProperty>("m_sSliderName");
+                        if (linkName != null)
+                        {
+                            editableValue = $"BaseSliders - {linkName.Value}";
                         }
                     }
                     else if (sp.StructType == "TextureParameterValue")
@@ -1085,7 +1094,7 @@ namespace ME3Explorer
                     break;
             }
 
-            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID")
+            if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
             {
                 return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }

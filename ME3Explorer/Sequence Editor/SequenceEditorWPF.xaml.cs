@@ -1989,9 +1989,9 @@ namespace ME3Explorer.Sequence_Editor
 
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Pcc.Game != MEGame.ME3)
+            if (Pcc.Game > MEGame.ME3)
             {
-                MessageBox.Show(this, "InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, "InterpViewer does not support games other than ME1/2/3.", "Unsupported operation", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

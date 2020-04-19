@@ -1232,6 +1232,7 @@ namespace ME3Explorer
                     using (StringWriter stringoutput = new StringWriter())
                     {
                         TreeViewItems[0].PrintPretty("", stringoutput, true, CurrentLoadedExport);
+                        File.WriteAllText(@"C:\users\mgame\desktop\jack\jackbin.txt", stringoutput.ToString());
                         Clipboard.SetText(stringoutput.ToString());
                     }
                 }
