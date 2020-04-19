@@ -72,18 +72,42 @@ namespace ME3Explorer.Packages
             set => idxLink = value?.UIndex ?? 0;
         }
 
-        private int idxPackageFile { get => EndianReader.ToInt32(_header, 0,FileRef.Endian);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; } }
+        private int idxPackageFile
+        {
+            get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; }
+        }
         //int PackageNameNumber
-        private int idxClassName { get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; } }
+        private int idxClassName
+        {
+            get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; }
+        }
         //int ClassNameNumber
-        public int idxLink { get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int)); HeaderChanged = true; } }
-        private int idxObjectName { get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; } }
-        public int indexValue { get => EndianReader.ToInt32(_header, 24, FileRef.Endian);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; } }
+        public int idxLink
+        {
+            get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
+            set
+            {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                }
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int));
+                HeaderChanged = true;
+            }
+        }
+        private int idxObjectName
+        {
+            get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; }
+        }
+        public int indexValue
+        {
+            get => EndianReader.ToInt32(_header, 24, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; }
+        }
 
 
 

@@ -246,6 +246,11 @@ namespace ME3Explorer.Packages
             get => EndianReader.ToInt32(_header, 4, FileRef.Endian);
             set
             {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
+                }
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 4, sizeof(int));
                 HeaderChanged = true;
             }
@@ -256,6 +261,11 @@ namespace ME3Explorer.Packages
             get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
             set
             {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set export link to itself, this will cause infinite recursion");
+                }
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
             }
