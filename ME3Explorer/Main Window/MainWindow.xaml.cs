@@ -163,6 +163,7 @@ namespace ME3Explorer
                 App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {
+                App.PendingAppLoadedAction?.Invoke();
                 //StartingUpPanel.Visibility = Visibility.Invisible;
                 DoubleAnimation fadeout = new DoubleAnimation
                 {

@@ -42,7 +42,10 @@ namespace ME3Explorer
         /// </summary>
         public const string StaticFilesBaseURL = "https://github.com/ME3Tweaks/ME3Explorer/raw/Beta/StaticFiles/";
         public static string ExecFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec");
-
+        /// <summary>
+        /// When the app is opened for the first time, if its called to open command line arg, this will lbe populated and fired after loading
+        /// </summary>
+        public static Action PendingAppLoadedAction = null;
         public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
 
         public static bool TlkFirstLoadDone; //Set when the TLK loading at startup is finished.
@@ -141,12 +144,14 @@ namespace ME3Explorer
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
-            if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
+            Action actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
+            if (actionDelegate == null)
             {
                 Shutdown(exitCode);
             }
             else
             {
+                PendingAppLoadedAction = actionDelegate;
                 Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
@@ -159,100 +164,120 @@ namespace ME3Explorer
             ME3Explorer.Properties.Settings.Default.Save();
         }
 
-        private int HandleCommandLineJumplistCall(string[] args, out int exitCode)
+        private Action HandleCommandLineJumplistCall(string[] args, out int exitCode)
         {
+            exitCode = 0;
             if (args.Length < 2)
             {
-                exitCode = 0;
-                return 1;
+                return ()=>{}; //do nothing delgate. Will do nothing when main UI loads
             }
 
             string arg = args[1];
             if (arg == "JUMPLIST_PACKAGE_EDITOR")
             {
-                PackageEditorWPF editor = new PackageEditorWPF();
-                editor.Show();
-                editor.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    PackageEditorWPF editor = new PackageEditorWPF();
+                    editor.Show();
+                    editor.Activate();
+                };
             }
+
             if (arg == "JUMPLIST_SEQUENCE_EDITOR")
             {
-                var editor = new SequenceEditorWPF();
-                editor.Show();
-                editor.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    var editor = new SequenceEditorWPF();
+                    editor.Show();
+                    editor.Activate();
+                };
             }
+
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
-                PathfindingEditorWPF editor = new PathfindingEditorWPF();
-                editor.Show();
-                editor.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    PathfindingEditorWPF editor = new PathfindingEditorWPF();
+                    editor.Show();
+                    editor.Activate();
+                };
             }
+
             if (arg == "JUMPLIST_SOUNDPLORER")
             {
-                SoundplorerWPF soundplorerWpf = new SoundplorerWPF();
-                soundplorerWpf.Show();
-                soundplorerWpf.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    SoundplorerWPF soundplorerWpf = new SoundplorerWPF();
+                    soundplorerWpf.Show();
+                    soundplorerWpf.Activate();
+
+                };
             }
+
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_ASIMANAGER")
             {
-                ASIManager asiManager = new ASIManager();
-                asiManager.Show();
-                asiManager.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    ASIManager asiManager = new ASIManager();
+                    asiManager.Show();
+                    asiManager.Activate();
+                };
             }
+
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_MOUNTEDITOR")
             {
-                MountEditorWPF mountEditorWpf = new MountEditorWPF();
-                mountEditorWpf.Show();
-                mountEditorWpf.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    MountEditorWPF mountEditorWpf = new MountEditorWPF();
+                    mountEditorWpf.Show();
+                    mountEditorWpf.Activate();
+                };
             }
+
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_PACKAGEDUMPER")
             {
-                PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper();
-                packageDumper.Show();
-                packageDumper.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    PackageDumper.PackageDumper packageDumper = new PackageDumper.PackageDumper();
+                    packageDumper.Show();
+                    packageDumper.Activate();
+                };
             }
+
             //Do not remove - used by Mass Effect Mod Manager to boot the tool
             if (arg == "JUMPLIST_DLCUNPACKER")
             {
-                DLCUnpacker.DLCUnpacker dlcUnpacker = new DLCUnpacker.DLCUnpacker();
-                dlcUnpacker.Show();
-                dlcUnpacker.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    DLCUnpacker.DLCUnpacker dlcUnpacker = new DLCUnpacker.DLCUnpacker();
+                    dlcUnpacker.Show();
+                    dlcUnpacker.Activate();
+                };
             }
 
             if (arg == "JUMPLIST_DIALOGUEEDITOR")
             {
-                DialogueEditorWPF editor = new DialogueEditorWPF();
-                editor.Show();
-                editor.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    DialogueEditorWPF editor = new DialogueEditorWPF();
+                    editor.Show();
+                    editor.Activate();
+                };
             }
+
             if (arg == "JUMPLIST_MESHPLORER")
             {
-                MeshplorerWPF meshplorerWpf = new MeshplorerWPF();
-                meshplorerWpf.Show();
-                meshplorerWpf.Activate();
-                exitCode = 0;
-                return 1;
+                return () =>
+                {
+                    MeshplorerWPF meshplorerWpf = new MeshplorerWPF();
+                    meshplorerWpf.Show();
+                    meshplorerWpf.Activate();
+                };
             }
+
 
             string ending = Path.GetExtension(args[1]).ToLower();
             switch (ending)
@@ -262,15 +287,17 @@ namespace ME3Explorer
                 case ".upk":
                 case ".u":
                 case ".udk":
-                    PackageEditorWPF editor = new PackageEditorWPF();
-                    editor.Show();
-                    editor.LoadFile(args[1]);
-                    editor.RestoreAndBringToFront();
-                    exitCode = 0;
-                    return 2; //Do not signal bring main forward
+                    return () =>
+                    {
+                        PackageEditorWPF editor = new PackageEditorWPF();
+                        editor.Show();
+                        editor.LoadFile(args[1]);
+                        editor.RestoreAndBringToFront();
+                    };
+                    //return 2; //Do not signal bring main forward
             }
-            exitCode = 0;
-            return 1;
+            exitCode = 0; //is this even used?
+            return null;
         }
 
         /// <summary>

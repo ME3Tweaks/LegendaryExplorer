@@ -129,8 +129,8 @@ namespace ME3Explorer
         //
         public int SignalExternalCommandLineArgs(string[] args)
         {
-            int taskListResponse = HandleCommandLineJumplistCall(args, out _);
-            if (taskListResponse == 0)
+            var taskListResponse = HandleCommandLineJumplistCall(args, out _);
+            if (taskListResponse != null && args.Length == 1) //no params
             {
                 //just a new instance
                 MainWindow.RestoreAndBringToFront();
