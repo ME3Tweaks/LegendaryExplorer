@@ -45,6 +45,7 @@ namespace ME3Explorer.CurveEd
                 graph.Clear();
                 CurrentLoadedExport = exportEntry;
                 Load();
+                CurrentExportName_TextBlock.Text = exportEntry.FullPath.Substring(exportEntry.FullPath.IndexOf("Main_Sequence.") + "Main_Sequence.".Length);
             }
         }
 
@@ -80,11 +81,6 @@ namespace ME3Explorer.CurveEd
 
             TrackList.ItemsSource = InterpCurveTracks;
             graph.Paint();
-        }
-
-        public void SetSelectedCurve(Curve curve)
-        {
-            curve.IsSelected = true;
         }
 
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -381,6 +377,7 @@ namespace ME3Explorer.CurveEd
             graph.Clear();
             InterpCurveTracks = null;
             CurrentLoadedExport = null;
+            CurrentExportName_TextBlock.Text = null;
         }
 
         public override bool CanParse(ExportEntry exportEntry)

@@ -53,7 +53,7 @@ namespace ME3Explorer.Matinee
                 var curve = CurveTab_CurveEditor.InterpCurveTracks.FirstOrDefault()?.Curves.FirstOrDefault();
                 if (curve != null)
                 {
-                    CurveTab_CurveEditor.SetSelectedCurve(curve);
+                    curve.IsSelected = true;
                 }
             }
             else
@@ -301,7 +301,8 @@ namespace ME3Explorer.Matinee
             foreach (var update in exportUpdates)
             {
                 var changedExport = Pcc.getExport(update.index);
-                if (InterpDataExports.Contains(changedExport))
+
+                if (InterpDataExports.Contains(changedExport)) //changes, as it already exists in our list
                 {
                     if (changedExport.ClassName != "InterpData")
                     {
@@ -312,12 +313,13 @@ namespace ME3Explorer.Matinee
                         LoadInterpData(changedExport);
                     }
                 }
-                else if (changedExport.ClassName == "InterpData")
+                else if (changedExport.ClassName == "InterpData") //adding an export to the list of interps
                 {
                     InterpDataExports.Add(changedExport);
                 }
-                else if (changedExport.IsDescendantOf(SelectedInterpData))
+                else if (changedExport.IsDescendantOf(SelectedInterpData)) //track was changed or at least a descendant
                 {
+                    // subcontrol, 
                     timelineControl.RefreshInterpData(changedExport);
                 }
             }

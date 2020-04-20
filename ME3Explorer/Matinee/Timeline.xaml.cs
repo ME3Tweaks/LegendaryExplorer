@@ -137,7 +137,8 @@ namespace ME3Explorer.Matinee
                 {
                     if (changedExport.Parent == interpGroup.Export)
                     {
-                        interpGroup.RefreshTracks();
+                        // export is a child of this group
+                        interpGroup.Tracks.FirstOrDefault(x => x.Export == changedExport)?.LoadTrack(); //reload
                     }
                 }
             }
@@ -206,7 +207,7 @@ namespace ME3Explorer.Matinee
             {
                 lineSpacing = 0.25;
             }
-            else if(Scale > 110)
+            else if (Scale > 110)
             {
                 lineSpacing = 0.5;
             }
@@ -243,7 +244,7 @@ namespace ME3Explorer.Matinee
             double xPos = e.GetPosition(Guide).X / Scale;
             double initialWidth = Guide.ActualWidth / Scale;
             Scale *= 1 + e.Delta / 1000.0;
-            
+
             //Math here is to make zooming centered on the mouse
 
             double xPercent = xPos / initialWidth;
@@ -252,7 +253,7 @@ namespace ME3Explorer.Matinee
             Offset -= widthDiff / 2 + zoomRelativeToMouseDiff;
             DrawGuideLines();
             e.Handled = true;
-        } 
+        }
 
 
         private bool dragging;
