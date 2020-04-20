@@ -134,7 +134,11 @@ namespace ME3Explorer
             {
                 //just a new instance
                 MainWindow.RestoreAndBringToFront();
+            } else
+            {
+                taskListResponse?.Invoke();
             }
+
             return 0;
         }
     }
