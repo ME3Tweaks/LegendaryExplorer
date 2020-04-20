@@ -3208,6 +3208,20 @@ namespace ME3Explorer
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat").Value.Name, out AnimationCompressionFormat rotCompression);
                 int offset = binarystart;
 
+                if (game == MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                {
+                    offset += 12; //seems to have 12?
+                    int animOffset = BitConverter.ToInt32(data, offset);
+                    var animOffsetNode = new BinInterpNode
+                    {
+                        Header = $"0x{offset:X4} AnimBinary Offset: {animOffset:X8}",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    };
+                    offset += 4;
+                    subnodes.Add(animOffsetNode);
+                }
+
                 int binLength = BitConverter.ToInt32(data, offset);
                 var LengthNode = new BinInterpNode
                 {
