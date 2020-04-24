@@ -897,7 +897,9 @@ namespace ME3Explorer
             mem.Position = 0;
             var test = PropertyCollection.ReadProps(texture.Export, mem.BaseStream, "Texture2D", true, true); //do not set properties as this may interfere with some other code. may change later.
             int propStart = CurrentLoadedExport.GetPropertyStart();
-            byte[] propData = mem.BaseStream.ReadFully();
+            var pos = mem.Position;
+            mem.Position = 0;
+            byte[] propData = mem.ToArray();
             if (CurrentLoadedExport.Game == MEGame.ME3)
             {
                 CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();
@@ -907,6 +909,7 @@ namespace ME3Explorer
                 var array = CurrentLoadedExport.Data.Take(propStart).Concat(propData).ToArray();
                 var testdata = new MemoryStream(array);
                 var test2 = PropertyCollection.ReadProps(texture.Export, testdata, "Texture2D", true, true, CurrentLoadedExport); //do not set properties as this may interfere with some other code. may change later.
+                //ME2 post-data is this right?
                 CurrentLoadedExport.Data = CurrentLoadedExport.Data.Take(propStart).Concat(propData).Concat(texture.SerializeNewData()).ToArray();
             }
 
