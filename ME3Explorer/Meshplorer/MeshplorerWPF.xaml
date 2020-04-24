@@ -134,7 +134,10 @@
 
                                 <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
-                                    <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding UIndex}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" ToolTip="Export index"/>
+                                        <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>
