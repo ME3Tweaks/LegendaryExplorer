@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
@@ -210,6 +211,14 @@ namespace ME3Explorer
                                     _subtext = data;
                                 }
                             }
+                        }
+                    }
+                    else if (Entry is ExportEntry ee && ee.Parent != null && ee.Parent.ObjectName == "PersistentLevel")
+                    {
+                        var tag = ee.GetProperty<NameProperty>("Tag");
+                        if (tag != null && tag.Value.Name != Entry.ObjectName)
+                        {
+                            _subtext = tag.Value.Name;
                         }
                     }
 

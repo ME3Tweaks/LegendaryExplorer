@@ -349,22 +349,9 @@
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
-                                <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
-                                    <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                        <Setter Property="Background" Value="Yellow"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                                <TextBlock  Text="{Binding SubText}" FontSize="8" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                <DockPanel>
+                                
+                                <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Style.Triggers>
@@ -375,7 +362,21 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
+                                        <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
+                                                            <Setter Property="Background" Value="Yellow"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
