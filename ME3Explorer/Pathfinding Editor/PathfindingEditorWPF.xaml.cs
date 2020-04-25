@@ -69,9 +69,9 @@ namespace ME3Explorer.Pathfinding_Editor
             "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "DynamicTriggerVolume", "PhysicsVolume", "SFXKillRagdollVolume",
             "BioTrigger", "Trigger", "Trigger_Dynamic", "Trigger_LOS",
             "SFXMedkit", "SFXMedStation", "SFXArmorNode", "SFXTreasureNode", "SFXPointOfInterest", "SFXWeaponFactory",
-            "InterpActor", "KActor", "SFXKActor", "SFXDoor",
+            "InterpActor", "KActor", "SFXKActor", "SFXDoor", "BioUseable",
             "TargetPoint", "Note", "BioMapNote", "BioStartLocation", "BioStartLocationMP",
-            "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXPlaceable_RachniEgg", "SFXPlaceable_RottenRachniEgg", "SFXPlaceable_GethTripMine", "SFXPlaceable_Generic", "SFXPlaceable_CerberusShield", "SFXPlaceable_IndoctrinationDevice",
+            "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXPlaceable_RachniEgg", "SFXPlaceable_RottenRachniEgg", "SFXPlaceable_GethTripMine", "SFXPlaceable_Generic", "SFXPlaceable_CerberusShield", "SFXPlaceable_IndoctrinationDevice", "BioInert",
             "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer",
             "SFXStuntActor", "BioPawn",
             "PointLightToggleable", "PointLightMovable", "SpotLightToggleable", "DirectionalLightToggleable", "SkyLightToggleable",
@@ -84,7 +84,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public static string[] artNodeClasses =
         {
             "StaticMeshActor", "StaticMeshCollectionActor","StaticLightCollectionActor",
-            "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource",
+            "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource", "BioSunActor",
             "PostProcessVolume", "LightVolume", "LightMassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
@@ -1322,6 +1322,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "InterpActor":
                     case "KActor":
                     case "SFXKActor":
+                    case "BioUseable":
                         actorNode = new InterpActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "BioTriggerVolume":
@@ -1369,6 +1370,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "SFXPlaceable_Generic":
                     case "SFXPlaceable_CerberusShield":
                     case "SFXPlaceable_IndoctrinationDevice":
+                    case "BioInert":
                         actorNode = new SFXPlaceable(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXArmorNode":
@@ -1474,6 +1476,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         artNode = new StaticMeshActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "LensFlareSource":
+                    case "BioSunActor":
                         artNode = new LensFlareNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "DirectionalLight":

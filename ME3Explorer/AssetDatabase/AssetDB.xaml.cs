@@ -1014,8 +1014,10 @@ namespace ME3Explorer.AssetDatabase
                 return;
             }
 
-            filename = $"{filename}.*"; //this is wrong. if same filename with different extension exists it will not work! @Kinkojiro
-            filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+            var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
+            filename = $"{filename}.*";
+            filePath = Directory.EnumerateFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir) && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
+
             if (filePath == null)
             {
                 MessageBox.Show($"File {filename} not found in content directory {contentdir}.");
