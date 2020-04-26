@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Gammtek.Conduit.IO;
 
 namespace StreamHelpers
 {
@@ -84,7 +85,7 @@ namespace StreamHelpers
         public static string ReadStringASCIINull(this Stream stream)
         {
             string str = "";
-            for (;;)
+            for (; ; )
             {
                 char c = (char)stream.ReadByte();
                 if (c == 0)
@@ -120,12 +121,32 @@ namespace StreamHelpers
             stream.WriteStringASCII(str + "\0");
         }
 
+        public static void WriteStringASCII(this EndianWriter stream, string str)
+        {
+            stream.Write(Encoding.ASCII.GetBytes(str), 0, Encoding.ASCII.GetByteCount(str));
+        }
+
+        public static void WriteStringASCIINull(this EndianWriter stream, string str)
+        {
+            stream.WriteStringASCII(str + "\0");
+        }
+
         public static void WriteStringUnicode(this Stream stream, string str)
         {
             stream.Write(Encoding.Unicode.GetBytes(str), 0, Encoding.Unicode.GetByteCount(str));
         }
 
         public static void WriteStringUnicodeNull(this Stream stream, string str)
+        {
+            stream.WriteStringUnicode(str + "\0");
+        }
+
+        public static void WriteStringUnicode(this EndianWriter stream, string str)
+        {
+            stream.Write(Encoding.Unicode.GetBytes(str), 0, Encoding.Unicode.GetByteCount(str));
+        }
+
+        public static void WriteStringUnicodeNull(this EndianWriter stream, string str)
         {
             stream.WriteStringUnicode(str + "\0");
         }
@@ -183,9 +204,9 @@ namespace StreamHelpers
         }
 
         /// <summary>
-        /// Writes the remainder of the stream to file from the current position. This should only be used on streams that support seeking. The position is restored after the file has been written.
+        /// Writes the stream to file from the beginning. This should only be used on streams that support seeking. The position is restored after the file has been written.
         /// </summary>
-        /// <param name="stream">Stream to write from with set position</param>
+        /// <param name="stream">Stream to write from</param>
         /// <param name="outfile">File to write to</param>
         public static void WriteToFile(this Stream stream, string outfile)
         {

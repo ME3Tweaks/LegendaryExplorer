@@ -215,7 +215,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteInt32(uidx?.value ?? 0);
+                sc.ms.Writer.WriteInt32(uidx?.value ?? 0);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector3 vec)
@@ -226,9 +226,9 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFloat(vec.X);
-                sc.ms.WriteFloat(vec.Y);
-                sc.ms.WriteFloat(vec.Z);
+                sc.ms.Writer.WriteFloat(vec.X);
+                sc.ms.Writer.WriteFloat(vec.Y);
+                sc.ms.Writer.WriteFloat(vec.Z);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Plane plane)
@@ -239,10 +239,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFloat(plane.Normal.X);
-                sc.ms.WriteFloat(plane.Normal.Y);
-                sc.ms.WriteFloat(plane.Normal.Z);
-                sc.ms.WriteFloat(plane.D);
+                sc.ms.Writer.WriteFloat(plane.Normal.X);
+                sc.ms.Writer.WriteFloat(plane.Normal.Y);
+                sc.ms.Writer.WriteFloat(plane.Normal.Z);
+                sc.ms.Writer.WriteFloat(plane.D);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Rotator rot)
@@ -253,9 +253,9 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteInt32(rot.Pitch);
-                sc.ms.WriteInt32(rot.Yaw);
-                sc.ms.WriteInt32(rot.Roll);
+                sc.ms.Writer.WriteInt32(rot.Pitch);
+                sc.ms.Writer.WriteInt32(rot.Yaw);
+                sc.ms.Writer.WriteInt32(rot.Roll);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Quaternion quat)
@@ -266,10 +266,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFloat(quat.X);
-                sc.ms.WriteFloat(quat.Y);
-                sc.ms.WriteFloat(quat.Z);
-                sc.ms.WriteFloat(quat.W);
+                sc.ms.Writer.WriteFloat(quat.X);
+                sc.ms.Writer.WriteFloat(quat.Y);
+                sc.ms.Writer.WriteFloat(quat.Z);
+                sc.ms.Writer.WriteFloat(quat.W);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector2 vec)
@@ -280,8 +280,8 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFloat(vec.X);
-                sc.ms.WriteFloat(vec.Y);
+                sc.ms.Writer.WriteFloat(vec.X);
+                sc.ms.Writer.WriteFloat(vec.Y);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref Vector2DHalf vec)
@@ -292,8 +292,8 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteUInt16(vec.Xbits);
-                sc.ms.WriteUInt16(vec.Ybits);
+                sc.ms.Writer.WriteUInt16(vec.Xbits);
+                sc.ms.Writer.WriteUInt16(vec.Ybits);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref PackedNormal norm)
@@ -304,10 +304,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteByte(norm.X);
-                sc.ms.WriteByte(norm.Y);
-                sc.ms.WriteByte(norm.Z);
-                sc.ms.WriteByte(norm.W);
+                sc.ms.Writer.WriteByte(norm.X);
+                sc.ms.Writer.WriteByte(norm.Y);
+                sc.ms.Writer.WriteByte(norm.Z);
+                sc.ms.Writer.WriteByte(norm.W);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref BoxSphereBounds bounds)

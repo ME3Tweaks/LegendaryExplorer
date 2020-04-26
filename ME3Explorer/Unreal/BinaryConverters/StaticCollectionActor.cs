@@ -60,10 +60,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFloat(matrix[0, 0]); sc.ms.WriteFloat(matrix[0, 1]); sc.ms.WriteFloat(matrix[0, 2]); sc.ms.WriteFloat(matrix[0, 3]);
-                sc.ms.WriteFloat(matrix[1, 0]); sc.ms.WriteFloat(matrix[1, 1]); sc.ms.WriteFloat(matrix[1, 2]); sc.ms.WriteFloat(matrix[1, 3]);
-                sc.ms.WriteFloat(matrix[2, 0]); sc.ms.WriteFloat(matrix[2, 1]); sc.ms.WriteFloat(matrix[2, 2]); sc.ms.WriteFloat(matrix[2, 3]);
-                sc.ms.WriteFloat(matrix[3, 0]); sc.ms.WriteFloat(matrix[3, 1]); sc.ms.WriteFloat(matrix[3, 2]); sc.ms.WriteFloat(matrix[3, 3]);
+                sc.ms.Writer.WriteFloat(matrix[0, 0]); sc.ms.Writer.WriteFloat(matrix[0, 1]); sc.ms.Writer.WriteFloat(matrix[0, 2]); sc.ms.Writer.WriteFloat(matrix[0, 3]);
+                sc.ms.Writer.WriteFloat(matrix[1, 0]); sc.ms.Writer.WriteFloat(matrix[1, 1]); sc.ms.Writer.WriteFloat(matrix[1, 2]); sc.ms.Writer.WriteFloat(matrix[1, 3]);
+                sc.ms.Writer.WriteFloat(matrix[2, 0]); sc.ms.Writer.WriteFloat(matrix[2, 1]); sc.ms.Writer.WriteFloat(matrix[2, 2]); sc.ms.Writer.WriteFloat(matrix[2, 3]);
+                sc.ms.Writer.WriteFloat(matrix[3, 0]); sc.ms.Writer.WriteFloat(matrix[3, 1]); sc.ms.Writer.WriteFloat(matrix[3, 2]); sc.ms.Writer.WriteFloat(matrix[3, 3]);
             }
         }
     }

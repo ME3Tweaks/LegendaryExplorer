@@ -95,9 +95,12 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
+                <TextBlock DockPanel.Dock="Right" Name="CurrentExportName_TextBlock" Text="Placeholder" Foreground="White"  VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <!-- ugh, no data binding -->
+
             </DockPanel>
         </Border>
-        <TreeView x:Name="TrackList" DockPanel.Dock="Left" Width="200" SelectedItemChanged="TrackList_SelectedItemChanged" Background="#FF888888">
+        <TreeView x:Name="TrackList" DockPanel.Dock="Left" Width="200" SelectedItemChanged="TrackList_SelectedItemChanged" Background="#FF888888" >
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:InterpCurve}" ItemsSource="{Binding Curves}">
                     <Label Content="{Binding Name}"/>
@@ -142,6 +145,7 @@
                     </Setter>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                 </Style>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="Foreground" Value="White"/>

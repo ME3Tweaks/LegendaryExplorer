@@ -588,9 +588,10 @@ namespace ME3Explorer.Meshplorer
             IsBrush = false;
             IsSkeletalMesh = false;
             IsStaticMesh = false;
-            Preview?.Dispose();
             CurrentLoadedExport = null;
             STMCollisionMesh = null;
+            Preview?.Materials.Clear();
+            Preview?.Dispose();
         }
 
         public override void PopOut()

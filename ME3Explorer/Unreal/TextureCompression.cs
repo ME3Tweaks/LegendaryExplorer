@@ -22,6 +22,7 @@ using StreamHelpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SevenZipHelper;
 
 namespace ME3Explorer
 {
@@ -36,6 +37,7 @@ namespace ME3Explorer
         extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
         extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
         extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
+        extLZMA = StorageFlags.externalFile | StorageFlags.compressedLZMA, // ME3 (non-DLC TFC archive)
         empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
     }
 
@@ -49,6 +51,7 @@ namespace ME3Explorer
         externalFile = 1 << 0,
         compressedZlib = 1 << 1,
         compressedLZO = 1 << 4,
+        compressedLZMA = 1 << 8,
         unused = 1 << 5,
     }
 
@@ -180,6 +183,11 @@ namespace ME3Explorer
                     dstLen = LZO2Helper.LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
                 else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
                     dstLen = ZlibHelper.Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                else if (type == StorageTypes.extLZMA)
+                {
+                    block.uncompressedBuffer = LZMA.Decompress(block.compressedBuffer, block.uncomprSize);
+                    dstLen = (uint)block.uncompressedBuffer.Length;
+                }
                 else
                     throw new Exception("Compression type not expected!");
                 if (dstLen != block.uncomprSize)

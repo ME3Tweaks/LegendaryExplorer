@@ -8,6 +8,7 @@ using SharpDX;
 using ME3Explorer.Packages;
 using System.Globalization;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -801,8 +802,8 @@ namespace ME3Explorer.Unreal.Classes
         {
             Loaded = true;
             Flags = (int)((ulong)export.ObjectFlags >> 32);
-            MemoryStream m = new MemoryStream(export.GetBinaryData());
-            SerializingContainer Container = new SerializingContainer(m);
+            EndianReader e = new EndianReader(new MemoryStream(export.GetBinaryData()));
+            SerializingContainer Container = new SerializingContainer(e);
             Container.isLoading = true;
             Serialize(Container);
             try

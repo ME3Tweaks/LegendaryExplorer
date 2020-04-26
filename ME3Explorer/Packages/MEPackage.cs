@@ -5,12 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using StreamHelpers;
+using static ME3Explorer.Packages.CompressionHelper;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
@@ -42,16 +44,35 @@ namespace ME3Explorer.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
-        public const ushort ME3UnrealVersion = 684;
-        public const ushort ME3LicenseeVersion = 194;
-        public const ushort ME2UnrealVersion = 512;
-        public const ushort ME2DemoUnrealVersion = 513;
-        public const ushort ME2LicenseeVersion = 130;
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
-        public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a seperate class
+        public const ushort ME1PS3UnrealVersion = 684; //same as ME3 ;)
+        public const ushort ME1PS3LicenseeVersion = 153;
 
-        public MELocalization Localization { get; private set;}
+        public const ushort ME2UnrealVersion = 512;
+        public const ushort ME2PS3UnrealVersion = 684; //Same as ME3 ;)
+        public const ushort ME2DemoUnrealVersion = 513;
+        public const ushort ME2LicenseeVersion = 130;
+        public const ushort ME2PS3LicenseeVersion = 150;
+
+        public const ushort ME3UnrealVersion = 684;
+        public const ushort ME3WiiUUnrealVersion = 845;
+        public const ushort ME3Xenon2011DemoLicenseeVersion = 185;
+        public const ushort ME3LicenseeVersion = 194;
+
+        public Endian Endian { get; private set; }
+        public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
+        public GamePlatform Platform { get; private set; }
+
+        public enum GamePlatform
+        {
+            PC,
+            Xenon,
+            PS3,
+            WiiU
+        }
+
+        public MELocalization Localization { get; private set; }
         public bool CanReconstruct => canReconstruct(FilePath);
 
         private bool canReconstruct(string path) =>
@@ -108,115 +129,238 @@ namespace ME3Explorer.Packages
                 return;
             }
 
-            using var fs = File.OpenRead(filePath);
+            MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
 
             #region Header
 
-            uint magic = fs.ReadUInt32();
-            if (magic != packageTag)
+            //uint magic = fs.ReadUInt32();
+            //if (magic != packageTagLittleEndian && magic != packageTagBigEndian)
+            //{
+            //    throw new FormatException("Not a supported unreal package!");
+            //}
+
+            EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
+            packageReader.SkipInt32(); //skip magic as we have already read it
+            Endian = packageReader.Endian;
+
+            //Big endian means it will be console version and package header is slightly tweaked as some flags are always set
+
+            // This is stored as integer by cooker as it is flipped by size word in big endian
+            var versionLicenseePacked = packageReader.ReadUInt32();
+
+            int uncompressedSizeForFullCompressedPackage = 0;
+            if (versionLicenseePacked == 0x00020000 && Endian == Endian.Little)
             {
-                throw new FormatException("Not an Unreal package!");
+                //block size - this is a fully compressed file. we must decompress it
+                // these files are little endian package tag for some reason
+                var usfile = filePath + ".us";
+                if (File.Exists(usfile))
+                {
+                    //packageReader.Position = 0xC;
+                    //var uncompSize = packageReader.ReadInt32();
+                    ////calculate number of chunks
+                    //int chunkCoumt = (uncompSize % 0x00020000 == 0)
+                    //    ?
+                    //    uncompSize / 0x00020000
+                    //    :
+                    //    uncompSize / 0x00020000 + 1; //round up
+
+                    //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
+                    fs = new MemoryStream(CompressionHelper.QuickBMSDecompress(filePath, "XboxLZX_le.bms", false));
+                    packageReader = EndianReader.SetupForPackageReading(fs);
+                    packageReader.SkipInt32(); //skip magic as we have already read it
+                    Endian = packageReader.Endian;
+                    versionLicenseePacked = packageReader.ReadUInt32();
+                }
             }
-            ushort unrealVersion = fs.ReadUInt16();
-            ushort licenseeVersion = fs.ReadUInt16();
+
+            var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
+            var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
             switch (unrealVersion)
             {
                 case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
                     Game = MEGame.ME1;
+                    Platform = GamePlatform.PC;
+                    break;
+                case ME1PS3UnrealVersion when licenseeVersion == ME1PS3LicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.PS3;
                     break;
                 case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
                 case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
                     Game = MEGame.ME2;
+                    Platform = GamePlatform.PC;
+                    break;
+                case ME2PS3UnrealVersion when licenseeVersion == ME2PS3LicenseeVersion:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.PS3;
+                    break;
+                case ME3WiiUUnrealVersion when licenseeVersion == ME3LicenseeVersion:
+                    Game = MEGame.ME3;
+                    Platform = GamePlatform.WiiU;
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
                     Game = MEGame.ME3;
+                    Platform = GamePlatform.PC;
+                    break;
+                case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
+                    Game = MEGame.ME3;
+                    Platform = GamePlatform.Xenon;
                     break;
                 default:
                     throw new FormatException("Not a Mass Effect Package!");
             }
-            FullHeaderSize = fs.ReadInt32();
-            int foldernameStrLen = fs.ReadInt32();
+            FullHeaderSize = packageReader.ReadInt32();
+            int foldernameStrLen = packageReader.ReadInt32();
             //always "None", so don't bother saving result
             if (foldernameStrLen > 0)
                 fs.ReadStringASCIINull(foldernameStrLen);
             else
                 fs.ReadStringUnicodeNull(foldernameStrLen * -2);
 
-            Flags = (EPackageFlags)fs.ReadUInt32();
+            Flags = (EPackageFlags)packageReader.ReadUInt32();
 
-            if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
+            //Xenon Demo ME3 doesn't read this
+            if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && Platform != GamePlatform.Xenon)
             {
-                fs.SkipInt32(); //always 0
+                //Consoles are always cooked so this integer is skipped
+                packageReader.SkipInt32(); //always 0
             }
 
-            NameCount = fs.ReadInt32();
-            NameOffset = fs.ReadInt32();
-            ExportCount = fs.ReadInt32();
-            ExportOffset = fs.ReadInt32();
-            ImportCount = fs.ReadInt32();
-            ImportOffset = fs.ReadInt32();
-            DependencyTableOffset = fs.ReadInt32();
+            //if (Platform != GamePlatform.PC)
+            //{
+            //    NameOffset = packageReader.ReadInt32();
+            //    NameCount = packageReader.ReadInt32();
+            //    ExportOffset = packageReader.ReadInt32();
+            //    ExportCount = packageReader.ReadInt32();
+            //    ImportOffset = packageReader.ReadInt32();
+            //    ImportCount = packageReader.ReadInt32();
+            //}
+            //else
+            //{
+            NameCount = packageReader.ReadInt32();
+            NameOffset = packageReader.ReadInt32();
+            ExportCount = packageReader.ReadInt32();
+            ExportOffset = packageReader.ReadInt32();
+            ImportCount = packageReader.ReadInt32();
+            ImportOffset = packageReader.ReadInt32();
+            //}
 
-            if (Game == MEGame.ME3)
+            DependencyTableOffset = packageReader.ReadInt32();
+
+            if (Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
-                ImportExportGuidsOffset = fs.ReadInt32();
-                fs.SkipInt32(); //ImportGuidsCount always 0
-                fs.SkipInt32(); //ExportGuidsCount always 0
-                fs.SkipInt32(); //ThumbnailTableOffset always 0
+                ImportExportGuidsOffset = packageReader.ReadInt32();
+                packageReader.SkipInt32(); //ImportGuidsCount always 0
+                packageReader.SkipInt32(); //ExportGuidsCount always 0
+                packageReader.SkipInt32(); //ThumbnailTableOffset always 0
             }
 
-            PackageGuid = fs.ReadGuid();
-            uint generationsTableCount = fs.ReadUInt32();
+            PackageGuid = packageReader.ReadGuid();
+            uint generationsTableCount = packageReader.ReadUInt32();
             if (generationsTableCount > 0)
             {
                 generationsTableCount--;
-                Gen0ExportCount = fs.ReadInt32();
-                Gen0NameCount = fs.ReadInt32();
-                Gen0NetworkedObjectCount = fs.ReadInt32();
+                Gen0ExportCount = packageReader.ReadInt32();
+                Gen0NameCount = packageReader.ReadInt32();
+                Gen0NetworkedObjectCount = packageReader.ReadInt32();
             }
             //should never be more than 1 generation, but just in case
-            fs.Skip(generationsTableCount * 12);
+            packageReader.Skip(generationsTableCount * 12);
 
-            fs.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
-            fs.SkipInt32();//cookedContentVersion   so we don't have to read them in
+            packageReader.SkipInt32();//engineVersion          Like unrealVersion and licenseeVersion, these 2 are determined by what game this is,
+            packageReader.SkipInt32();//cookedContentVersion   so we don't have to read them in
 
-            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3) //PS3 on ME3 engine
             {
-                fs.SkipInt32(); //always 0
-                fs.SkipInt32(); //always 47699
-                unknown4 = fs.ReadInt32();
-                fs.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
+                packageReader.SkipInt32(); //always 0
+                packageReader.SkipInt32(); //always 47699
+                unknown4 = packageReader.ReadInt32();
+                packageReader.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
             }
 
-            unknown6 = fs.ReadInt32();
-            fs.SkipInt32(); //always -1 in ME1 and ME2, always 145358848 in ME3
+            unknown6 = packageReader.ReadInt32();
+            var constantVal = packageReader.ReadInt32();//always -1 in ME1 and ME2, always 145358848 in ME3
 
-            if (Game == MEGame.ME1)
+            if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
-                fs.SkipInt32(); //always -1
+                packageReader.SkipInt32(); //always -1
             }
 
-            //skip compression type chunks. Decompressor will handle that
-            fs.SkipInt32();
-            int numChunks = fs.ReadInt32();
-            fs.Skip(numChunks * 16);
+            //COMPRESSION AND COMPRESSION CHUNKS
+            var compressionFlagPosition = packageReader.Position;
+            var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
+            int numChunks = packageReader.ReadInt32();
 
-            packageSource = fs.ReadUInt32();
+            //read package source
+            var savedPos = packageReader.Position;
+            packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
+            packageReader.Position = savedPos; //is this not part of chunk table? have we had this mislabeled as 'magic' for chunk decompression?
 
-            if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            Stream inStream = fs;
+            if (IsCompressed && numChunks > 0)
             {
-                fs.SkipInt32(); //always 0
+                inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition);
             }
+
+            /*
+
+            if (numChunks > 0)
+            {
+                var chunkInsertionPosition = fs.Position;
+                //If chunk table exists, package is compressed. We will have to decompress it and reconstitute it to continue reading it
+                List<Chunk> chunkTable = new List<Chunk>();
+                for (int i = 0; i < numChunks; i++)
+                {
+                    //Read chunk table
+                    Chunk c = new Chunk
+                    {
+                        uncompressedOffset = packageReader.ReadInt32(),
+                        uncompressedSize = packageReader.ReadInt32(),
+                        compressedOffset = packageReader.ReadInt32(),
+                        compressedSize = packageReader.ReadInt32()
+                    };
+                    c.Compressed = new byte[c.compressedSize];
+                    c.Uncompressed = new byte[c.uncompressedSize];
+                    //DebugOutput.PrintLn("Chunk " + i + ", compressed size = " + c.compressedSize + ", uncompressed size = " + c.uncompressedSize);
+                    //DebugOutput.PrintLn("Compressed offset = " + c.compressedOffset + ", uncompressed offset = " + c.uncompressedOffset);
+                    chunkTable.Add(c);
+                }
+
+                EndianWriter decompressedWriter = new EndianWriter(new MemoryStream());
+                fs.Position = 0;
+                fs.CopyToEx(decompressedWriter.BaseStream, (int)compressionFlagPosition);
+                decompressedWriter.Write(0); //Compression type None
+                decompressedWriter.Write(0); //Chunk table count
+                var decompressed = CompressionHelper.DecompressChunks(packageReader, chunkTable, compressionType);
+                decompressedWriter.BaseStream.Write(decompressed, 0, decompressed.Length);
+            }*/
+
+
+
+
+
+
+
+            //fs.Skip(numChunks * 16); //chunk table
+
+            // packageSource = packageReader.ReadUInt32();
+
+            //may need re-added
+            //if (Game == MEGame.ME2 || Game == MEGame.ME1)
+            //{
+            //    fs.SkipInt32(); //always 0
+            //}
 
             //Doesn't need to be written out, so it doesn't need to be read in
             //keep this here in case one day we learn that this has a purpose
             /*if (Game == MEGame.ME2 || Game == MEGame.ME3)
                 {
-                    int additionalPackagesToCookCount = fs.ReadInt32();
+                    int additionalPackagesToCookCount = packageReader.ReadInt32();
                     var additionalPackagesToCook = new string[additionalPackagesToCookCount];
                     for (int i = 0; i < additionalPackagesToCookCount; i++)
                     {
-                        int strLen = fs.ReadInt32();
+                        int strLen = packageReader.ReadInt32();
                         if (strLen > 0)
                         {
                             additionalPackagesToCook[i] = fs.ReadStringASCIINull(strLen);
@@ -229,20 +373,21 @@ namespace ME3Explorer.Packages
                 }*/
             #endregion
 
-            Stream inStream = fs;
-            if (IsCompressed && numChunks > 0)
-            {
-                inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(fs) : CompressionHelper.DecompressME1orME2(fs);
-            }
+            //if (IsCompressed && numChunks > 0)
+            //{
+            //    inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(packageReader) : CompressionHelper.DecompressME1orME2(fs);
+            //}
 
+            var endian = packageReader.Endian;
+            packageReader = new EndianReader(inStream) { Endian = endian };
             //read namelist
             inStream.JumpTo(NameOffset);
             for (int i = 0; i < NameCount; i++)
             {
-                names.Add(inStream.ReadUnrealString());
-                if (Game == MEGame.ME1)
+                names.Add(packageReader.ReadUnrealString());
+                if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
                     inStream.Skip(8);
-                else if (Game == MEGame.ME2)
+                else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
                     inStream.Skip(4);
             }
 
@@ -250,7 +395,7 @@ namespace ME3Explorer.Packages
             inStream.JumpTo(ImportOffset);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
+                ImportEntry imp = new ImportEntry(this, packageReader) { Index = i };
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
@@ -259,12 +404,12 @@ namespace ME3Explorer.Packages
             inStream.JumpTo(ExportOffset);
             for (int i = 0; i < ExportCount; i++)
             {
-                ExportEntry e = new ExportEntry(this, inStream) { Index = i };
+                ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }
 
-            if (Game == MEGame.ME1)
+            if (Game == MEGame.ME1 && Platform == GamePlatform.PC)
             {
                 ReadLocalTLKs();
             }
@@ -341,7 +486,7 @@ namespace ME3Explorer.Packages
             try
             {
                 var ms = new MemoryStream();
-            
+
                 //just for positioning. We write over this later when the header values have been updated
                 WriteHeader(ms);
 
@@ -384,9 +529,9 @@ namespace ME3Explorer.Packages
                     ms.WriteFromBuffer(e.Header);
                 }
 
-                DependencyTableOffset = (int) ms.Position;
+                DependencyTableOffset = (int)ms.Position;
                 ms.WriteInt32(0);//zero-count DependencyTable
-                FullHeaderSize = ImportExportGuidsOffset = (int) ms.Position;
+                FullHeaderSize = ImportExportGuidsOffset = (int)ms.Position;
 
                 //export data
                 foreach (ExportEntry e in exports)
@@ -427,7 +572,7 @@ namespace ME3Explorer.Packages
                     AfterSave();
                 }
             }
-            catch (Exception ex) when(!App.IsDebug)
+            catch (Exception ex) when (!App.IsDebug)
             {
                 MessageBox.Show($"Error saving {FilePath}:\n{ex.FlattenException()}");
             }
@@ -435,7 +580,7 @@ namespace ME3Explorer.Packages
 
         private void WriteHeader(Stream ms)
         {
-            ms.WriteUInt32(packageTag);
+            ms.WriteUInt32(packageTagLittleEndian);
             //version
             switch (Game)
             {
@@ -570,9 +715,10 @@ namespace ME3Explorer.Packages
             var exportsToLoad = new List<ExportEntry>();
             foreach (var tlkFileSet in tlkFileSets)
             {
-                MemoryStream r = new MemoryStream(tlkFileSet.Data)
+                EndianReader r = new EndianReader(new MemoryStream(tlkFileSet.Data))
                 {
-                    Position = tlkFileSet.propsEnd()
+                    Position = tlkFileSet.propsEnd(),
+                    Endian = Endian
                 };
                 int count = r.ReadInt32();
                 for (int i = 0; i < count; i++)
@@ -818,7 +964,7 @@ namespace ME3Explorer.Packages
                 {
                     binData.OverwriteRange(24, BitConverter.GetBytes(newDataOffset + export.propsEnd() + 16));
                 }
-                
+
                 export.SetBinaryData(binData);
             }
             //update offsets for pcc-stored mips in Textures
@@ -1051,15 +1197,15 @@ namespace ME3Explorer.Packages
 
             for (int i = 0; i < exports.Count; i++)
             {
-                var newData = new MemoryStream();
-                newData.WriteFromBuffer(prePropBinary[i]);
+                var newData = new EndianReader(new MemoryStream()) { Endian = Endian.Native }; //only can make new packages for x86
+                newData.Writer.Write(prePropBinary[i]);
                 //write back properties in new format
-                propCollections[i]?.WriteTo(newData, this);
+                propCollections[i]?.WriteTo(newData.Writer, this);
 
-                postPropBinary[i].WriteTo(newData, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
-                                                                                                                      //might not matter though
+                postPropBinary[i].WriteTo(newData.Writer, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
+                                                                                                                //might not matter though
 
-                exports[i].Data = newData.ToArray();
+                exports[i].Data = newData.BaseStream.ReadFully();
             }
 
             if (newGame == MEGame.ME3)
@@ -1068,14 +1214,14 @@ namespace ME3Explorer.Packages
                 using var resourcePCC = MEPackageHandler.OpenME3Package(App.CustomResourceFilePath(MEGame.ME3));
                 var normDiffMat = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
 
-                foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName  == "MaterialInstanceConstant"))
+                foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant"))
                 {
                     UIndex[] textures = Array.Empty<UIndex>();
                     if (mat.ClassName == "Material")
                     {
                         textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
                     }
-                    else if(mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    else if (mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
                     {
                         textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
                     }
@@ -1083,7 +1229,7 @@ namespace ME3Explorer.Packages
                     {
                         textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
                     }
-                    else if(mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
+                    else if (mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
                     {
                         textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
                     }

@@ -19,11 +19,12 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class InputComboBoxWPF : NotifyPropertyChangedWindowBase
     {
-        private InputComboBoxWPF(Window owner, string promptText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
+        private InputComboBoxWPF(Window owner, string promptText, string titleText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
         {
             DirectionsText = promptText;
             Topmost = topMost;
             Owner = owner;
+            Title = titleText;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -36,9 +37,9 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static string GetValue(Window owner, string promptText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
+        public static string GetValue(Window owner, string promptText, string titleText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
         {
-            var dlg = new InputComboBoxWPF(owner, promptText, items, defaultValue, topMost);
+            var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
             return dlg.ShowDialog() == true ? dlg.ChosenEntry : "";
         }
 

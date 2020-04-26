@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
@@ -23,6 +24,14 @@ namespace ME3Explorer.Packages
         public int Index { get; set; }
         public int UIndex => Index + 1;
 
+        /// <summary>
+        /// Constructor for generating a new export entry
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="prePropBinary"></param>
+        /// <param name="properties"></param>
+        /// <param name="binary"></param>
+        /// <param name="isClass"></param>
         public ExportEntry(IMEPackage file, byte[] prePropBinary = null, PropertyCollection properties = null, ObjectBinary binary = null, bool isClass = false)
         {
             FileRef = file;
@@ -31,36 +40,41 @@ namespace ME3Explorer.Packages
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
-            var ms = new MemoryStream();
+            var ms = new EndianReader(new MemoryStream()){Endian = Endian.Native};
             if (prePropBinary == null)
             {
                 prePropBinary = new byte[4];
             }
-            ms.WriteFromBuffer(prePropBinary);
+            ms.Writer.WriteFromBuffer(prePropBinary);
             if (!isClass)
             {
                 if (properties == null)
                 {
                     properties = new PropertyCollection();
                 }
-                properties.WriteTo(ms, file);
+                properties.WriteTo(ms.Writer, file);
             }
 
-            binary?.WriteTo(ms, file);
+            binary?.WriteTo(ms.Writer, file);
 
             _data = ms.ToArray();
             DataSize = _data.Length;
         }
 
-        public ExportEntry(IMEPackage file, Stream stream)
+        /// <summary>
+        /// Constructor for reading an export from the package
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="stream"></param>
+        public ExportEntry(IMEPackage file, EndianReader stream)
         {
             FileRef = file;
             OriginalDataSize = 0;
             HeaderOffset = (uint)stream.Position;
             switch (file.Game)
             {
-                case MEGame.ME1:
-                case MEGame.ME2:
+                case MEGame.ME1 when file.Platform != MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when file.Platform != MEPackage.GamePlatform.PS3:
                     {
 
                         long start = stream.Position;
@@ -73,9 +87,11 @@ namespace ME3Explorer.Packages
                         long end = stream.Position;
                         stream.Seek(start, SeekOrigin.Begin);
                         //read header
-                        _header = stream.ReadToBuffer((int)(end - start));
+                        _header = stream.ReadBytes((int)(end - start));
                         break;
                     }
+                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when file.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     {
@@ -84,7 +100,7 @@ namespace ME3Explorer.Packages
                         stream.Seek(-48, SeekOrigin.Current);
 
                         int expInfoSize = 68 + (count * 4);
-                        _header = stream.ReadToBuffer(expInfoSize);
+                        _header = stream.ReadBytes(expInfoSize);
                         break;
                     }
                 default:
@@ -94,11 +110,11 @@ namespace ME3Explorer.Packages
             long headerEnd = stream.Position;
 
             stream.Seek(DataOffset, SeekOrigin.Begin);
-            _data = stream.ReadToBuffer(DataSize);
+            _data = stream.ReadBytes(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
             if (file.Game == MEGame.ME1 && ClassName.Contains("Property") || file.Game != MEGame.ME1 && HasStack)
             {
-                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0;
+                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0; //this is endian specific!
             }
             else
             {
@@ -217,7 +233,7 @@ namespace ME3Explorer.Packages
 
         private int idxClass
         {
-            get => BitConverter.ToInt32(_header, 0);
+            get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int));
@@ -227,9 +243,14 @@ namespace ME3Explorer.Packages
 
         private int idxSuperClass
         {
-            get => BitConverter.ToInt32(_header, 4);
+            get => EndianReader.ToInt32(_header, 4, FileRef.Endian);
             set
             {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
+                }
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 4, sizeof(int));
                 HeaderChanged = true;
             }
@@ -237,9 +258,14 @@ namespace ME3Explorer.Packages
 
         public int idxLink
         {
-            get => BitConverter.ToInt32(_header, 8);
+            get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
             set
             {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set export link to itself, this will cause infinite recursion");
+                }
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
             }
@@ -247,7 +273,7 @@ namespace ME3Explorer.Packages
 
         private int idxObjectName
         {
-            get => BitConverter.ToInt32(_header, 12);
+            get => EndianReader.ToInt32(_header, 12, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 12, sizeof(int));
@@ -257,7 +283,7 @@ namespace ME3Explorer.Packages
 
         public int indexValue
         {
-            get => BitConverter.ToInt32(_header, 16);
+            get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
             set
             {
                 if (indexValue != value)
@@ -270,7 +296,7 @@ namespace ME3Explorer.Packages
 
         private int idxArchetype
         {
-            get => BitConverter.ToInt32(_header, 20);
+            get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int));
@@ -280,7 +306,7 @@ namespace ME3Explorer.Packages
 
         public EObjectFlags ObjectFlags
         {
-            get => (EObjectFlags)BitConverter.ToUInt64(_header, 24);
+            get => (EObjectFlags)EndianReader.ToUInt64(_header, 24, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, _header, 24, sizeof(ulong));
@@ -290,17 +316,17 @@ namespace ME3Explorer.Packages
 
         public int DataSize
         {
-            get => BitConverter.ToInt32(_header, 32);
+            get => EndianReader.ToInt32(_header, 32, FileRef.Endian);
             private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
         }
 
         public int DataOffset
         {
-            get => BitConverter.ToInt32(_header, 36);
+            get => EndianReader.ToInt32(_header, 36, FileRef.Endian);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
         }
 
-        public bool HasComponentMap => FileRef.Game == MEGame.ME1 || FileRef.Game == MEGame.ME2;
+        public bool HasComponentMap => (FileRef.Game == MEGame.ME1 && FileRef.Platform != MEPackage.GamePlatform.PS3) || FileRef.Game == MEGame.ME2;
 
         //me1 and me2 only
         public OrderedMultiValueDictionary<NameReference, int> ComponentMap
@@ -309,13 +335,13 @@ namespace ME3Explorer.Packages
             {
                 var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
                 if (!HasComponentMap) return componentMap;
-                int count = BitConverter.ToInt32(_header, 40);
+                int count = EndianReader.ToInt32(_header, 40, FileRef.Endian);
                 for (int i = 0; i < count; i++)
                 {
                     int pairIndex = 44 + i * 12;
-                    string name = FileRef.GetNameEntry(BitConverter.ToInt32(_header, pairIndex));
-                    componentMap.Add(new NameReference(name, BitConverter.ToInt32(_header, pairIndex + 4)),
-                                                                          BitConverter.ToInt32(_header, pairIndex + 8));
+                    string name = FileRef.GetNameEntry(EndianReader.ToInt32(_header, pairIndex, FileRef.Endian));
+                    componentMap.Add(new NameReference(name, EndianReader.ToInt32(_header, pairIndex + 4, FileRef.Endian)),
+                        EndianReader.ToInt32(_header, pairIndex + 8, FileRef.Endian));
                 }
                 return componentMap;
             }
@@ -326,11 +352,11 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public int ExportFlagsOffset => HasComponentMap ? 44 + BitConverter.ToInt32(_header, 40) * 12 : 40;
+        public int ExportFlagsOffset => HasComponentMap ? 44 + EndianReader.ToInt32(_header, 40, FileRef.Endian) * 12 : 40;
 
         public EExportFlags ExportFlags
         {
-            get => (EExportFlags)BitConverter.ToUInt32(_header, ExportFlagsOffset);
+            get => (EExportFlags)EndianReader.ToUInt32(_header, ExportFlagsOffset, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, ExportFlagsOffset, sizeof(uint));
@@ -342,18 +368,18 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                int count = BitConverter.ToInt32(_header, ExportFlagsOffset + 4);
+                int count = EndianReader.ToInt32(_header, ExportFlagsOffset + 4, FileRef.Endian);
                 var result = new int[count];
                 for (int i = 0; i < count; i++)
                 {
-                    result[i] = BitConverter.ToInt32(_header, ExportFlagsOffset + 8 + i * 4);
+                    result[i] = EndianReader.ToInt32(_header, ExportFlagsOffset + 8 + i * 4, FileRef.Endian);
                 }
                 return result;
             }
             set => RegenerateHeader(null, value);
         }
 
-        public int PackageGuidOffset => ExportFlagsOffset + 8 + BitConverter.ToInt32(_header, ExportFlagsOffset + 4) * 4;
+        public int PackageGuidOffset => ExportFlagsOffset + 8 + EndianReader.ToInt32(_header, ExportFlagsOffset + 4, FileRef.Endian) * 4;
 
         public Guid PackageGUID
         {
@@ -367,7 +393,7 @@ namespace ME3Explorer.Packages
 
         public EPackageFlags PackageFlags
         {
-            get => (EPackageFlags)BitConverter.ToUInt32(_header, PackageGuidOffset + 16);
+            get => (EPackageFlags)EndianReader.ToUInt32(_header, PackageGuidOffset + 16, FileRef.Endian);
             set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, PackageGuidOffset + 16, sizeof(uint));
@@ -564,8 +590,8 @@ namespace ME3Explorer.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            MemoryStream m = new MemoryStream();
-            props.WriteTo(m, FileRef);
+            EndianReader m = new EndianReader(new MemoryStream()) {Endian = FileRef.Endian};
+            props.WriteTo(m.Writer, FileRef);
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             byte[] propData = m.ToArray();
@@ -584,7 +610,7 @@ namespace ME3Explorer.Packages
             if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
                 //DominantLightShadowMap, which goes before everything for some reason
-                int count = BitConverter.ToInt32(_data, 0);
+                int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
                 start += count * 2 + 4;
             }
 
@@ -608,12 +634,14 @@ namespace ME3Explorer.Packages
             {
                 MEGame.UDK => 26,
                 MEGame.ME3 => 30,
+                MEGame.ME1 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
+                MEGame.ME2 when FileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32
             };
 
         public int NetIndex
         {
-            get => BitConverter.ToInt32(_data, GetPropertyStart() - 4);
+            get => EndianReader.ToInt32(_data, GetPropertyStart() - 4, FileRef.Endian);
             set
             {
                 if (value != NetIndex)

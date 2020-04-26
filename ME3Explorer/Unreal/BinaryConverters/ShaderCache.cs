@@ -31,7 +31,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else if (sc.Game == MEGame.ME3 && sc.IsSaving)
             {
-                sc.ms.WriteInt32(0);
+                sc.ms.Writer.WriteInt32(0);
             }
 
             if (sc.Game == MEGame.ME1)
@@ -52,7 +52,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else
             {
-                sc.ms.WriteInt32(Shaders.Count);
+                sc.ms.Writer.WriteInt32(Shaders.Count);
                 foreach ((_, Shader shader) in Shaders)
                 {
                     var temp = shader;
@@ -242,11 +242,11 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFromBuffer(shader.unkBytes);
+                sc.ms.Writer.WriteFromBuffer(shader.unkBytes);
                 endOffset = sc.FileOffset;
                 long endPos = sc.ms.Position;
                 sc.ms.JumpTo(endOffsetPos);
-                sc.ms.WriteInt32(endOffset);
+                sc.ms.Writer.WriteInt32(endOffset);
                 sc.ms.JumpTo(endPos);
             }
         }
@@ -293,7 +293,7 @@ namespace ME3Explorer
                 long endOffset = sc.ms.Position;
                 int endOffsetInFile = sc.FileOffset;
                 sc.ms.JumpTo(endOffsetPos);
-                sc.ms.WriteInt32(endOffsetInFile);
+                sc.ms.Writer.WriteInt32(endOffsetInFile);
                 sc.ms.JumpTo(endOffset);
             }
         }
@@ -328,7 +328,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteByte((byte)sf);
+                sc.ms.Writer.WriteByte((byte)sf);
             }
         }
     }

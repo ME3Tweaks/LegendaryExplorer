@@ -14,6 +14,7 @@ using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using StreamHelpers;
 
 namespace ME3Explorer
 {
@@ -45,6 +46,15 @@ namespace ME3Explorer
                 DLC = new DLCPackage(filename);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(DLC.ToTree());
+
+                //var outf = @"X:\quickbms";
+                //foreach (var f in DLC.Files.Where(x => x.isActualFile))
+                //{
+                //    var outpath = Path.Combine(outf, f.FileName.Replace("/", "\\").TrimStart('\\'));
+                //    Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+                //    var decomp = DLC.DecompressEntry(f);
+                //    decomp.WriteToFile(outpath);
+                //}
             }
             catch (Exception ex)
             {

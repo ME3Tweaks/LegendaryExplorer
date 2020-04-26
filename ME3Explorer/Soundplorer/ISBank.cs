@@ -69,14 +69,14 @@ namespace ME3Explorer.Soundplorer
             {
                 chunksize = 0; //reset
                 var chunkStartPos = ms.BaseStream.Position;
-                string blockName = ms.ReadStringASCII(4);
+                string blockName = ms.ReadEndianASCIIString(4);
                 //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
                 switch (blockName)
                 {
                     case "LIST":
                         chunksize = ms.ReadUInt32();
-                        var nextblockname = ms.ReadStringASCII(4);
-                        var nextblockname2 = ms.ReadStringASCII(4);
+                        var nextblockname = ms.ReadEndianASCIIString(4);
+                        var nextblockname2 = ms.ReadEndianASCIIString(4);
                         if (nextblockname == "samp" && nextblockname2 == "titl")
                         {
                             if (!isEmbedded)
@@ -159,8 +159,8 @@ namespace ME3Explorer.Soundplorer
                             //EMBEDDED ISB
                             //this is the start of a new file.
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
-                            var riffType = ms.ReadStringASCII(4); //type of ISB riff
-                            var riffType2 = ms.ReadStringASCII(4); //type of ISB riff
+                            var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
                             if (riffType != "isbf" && riffType2 == "titl")
                             {
                                 //its an icbftitl, which never has data.
@@ -188,8 +188,8 @@ namespace ME3Explorer.Soundplorer
                         {
                             //ISB file - has external RIFF header and samptitl's separating each data section
                             var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
-                            var riffType = ms.ReadStringASCII(4); //type of ISB riff
-                            var riffType2 = ms.ReadStringASCII(4); //type of ISB riff
+                            var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
                             if (riffType != "isbf" && riffType2 != "titl")
                             {
                                 //its an icbftitl, which never has data, or is not ISB

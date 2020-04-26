@@ -8,6 +8,8 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using StreamHelpers;
 using System.Diagnostics;
+using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.FaceFX
 {
@@ -29,7 +31,7 @@ namespace ME3Explorer.FaceFX
             pcc = Pcc;
             export = Entry;
             int start = export.propsEnd() + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(export.Data.Skip(start).ToArray()));
+            SerializingContainer Container = new SerializingContainer(new EndianReader(new MemoryStream(export.Data.Skip(start).ToArray())));
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -301,27 +303,24 @@ namespace ME3Explorer.FaceFX
         public void DumpToFile(string path)
         {
 
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
+            
+            SerializingContainer Container = new SerializingContainer(new EndianReader(new MemoryStream()));
             Container.isLoading = false;
             Serialize(Container);
-            m = Container.Memory;
-            File.WriteAllBytes(path, m.ToArray());
+            Container.Memory.BaseStream.WriteToFile(path);
         }
 
         public void Save()
         {
 
-            MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
+            SerializingContainer Container = new SerializingContainer(new EndianReader(new MemoryStream()));
             Container.isLoading = false;
             Serialize(Container);
-            m = Container.Memory;
             MemoryStream res = new MemoryStream();
             int start = export.propsEnd();
             res.Write(export.Data, 0, start);
-            res.WriteInt32((int)m.Length);
-            res.WriteStream(m);
+            res.WriteInt32((int)Container.Memory.Length);
+            res.WriteBytes(Container.Memory.ToArray());
             res.WriteInt32(0);
             export.Data = res.ToArray();
         }

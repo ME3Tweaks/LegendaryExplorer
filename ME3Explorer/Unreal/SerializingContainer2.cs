@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using SharpDX;
@@ -14,7 +15,7 @@ namespace ME3Explorer
 {
     public class SerializingContainer2
     {
-        public readonly Stream ms;
+        public readonly EndianReader ms;
         public readonly bool IsLoading;
         public readonly IMEPackage Pcc;
         public readonly int startOffset;
@@ -26,7 +27,7 @@ namespace ME3Explorer
 
         public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
         {
-            ms = stream;
+            ms = new EndianReader(stream) {Endian = pcc.Endian};
             IsLoading = isLoading;
             Pcc = pcc;
             startOffset = offset;
@@ -40,7 +41,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadInt32();
             else
-                sc.ms.WriteInt32(val);
+                sc.ms.Writer.WriteInt32(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref uint val)
@@ -48,7 +49,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadUInt32();
             else
-                sc.ms.WriteUInt32(val);
+                sc.ms.Writer.WriteUInt32(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref short val)
@@ -56,7 +57,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadInt16();
             else
-                sc.ms.WriteInt16(val);
+                sc.ms.Writer.WriteInt16(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref ushort val)
@@ -64,7 +65,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadUInt16();
             else
-                sc.ms.WriteUInt16(val);
+                sc.ms.Writer.WriteUInt16(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref long val)
@@ -72,7 +73,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadInt64();
             else
-                sc.ms.WriteInt64(val);
+                sc.ms.Writer.WriteInt64(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref ulong val)
@@ -80,7 +81,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadUInt64();
             else
-                sc.ms.WriteUInt64(val);
+                sc.ms.Writer.WriteUInt64(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref byte val)
@@ -88,7 +89,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = (byte)sc.ms.ReadByte();
             else
-                sc.ms.WriteByte(val);
+                sc.ms.Writer.WriteByte(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref string val)
@@ -96,7 +97,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadUnrealString();
             else
-                sc.ms.WriteUnrealString(val, sc.Game);
+                sc.ms.Writer.WriteUnrealString(val, sc.Game);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref float val)
@@ -104,7 +105,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadFloat();
             else
-                sc.ms.WriteFloat(val);
+                sc.ms.Writer.WriteFloat(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref double val)
@@ -112,7 +113,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadDouble();
             else
-                sc.ms.WriteDouble(val);
+                sc.ms.Writer.WriteDouble(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref bool val)
@@ -120,7 +121,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 val = sc.ms.ReadBoolInt();
             else
-                sc.ms.WriteBoolInt(val);
+                sc.ms.Writer.WriteBoolInt(val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref byte[] buffer, int size)
@@ -131,7 +132,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteFromBuffer(buffer);
+                sc.ms.Writer.WriteFromBuffer(buffer);
             }
         }
 
@@ -140,7 +141,7 @@ namespace ME3Explorer
             if (sc.IsLoading)
                 guid = sc.ms.ReadGuid();
             else
-                sc.ms.WriteGuid(guid);
+                sc.ms.Writer.WriteGuid(guid);
         }
 
         public delegate void SerializeDelegate<T>(SerializingContainer2 sc, ref T item);
@@ -251,7 +252,7 @@ namespace ME3Explorer
             {
                 long curPos = sc.ms.Position;
                 sc.ms.JumpTo(sizeOnDiskPosition);
-                sc.ms.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
+                sc.ms.Writer.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
                 sc.ms.JumpTo(curPos);
             }
         }
@@ -264,7 +265,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteNameReference(name, sc.Pcc);
+                sc.ms.Writer.WriteNameReference(name, sc.Pcc);
             }
         }
 
@@ -280,10 +281,10 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteByte(color.B);
-                sc.ms.WriteByte(color.G);
-                sc.ms.WriteByte(color.R);
-                sc.ms.WriteByte(color.A);
+                sc.ms.Writer.WriteByte(color.B);
+                sc.ms.Writer.WriteByte(color.G);
+                sc.ms.Writer.WriteByte(color.R);
+                sc.ms.Writer.WriteByte(color.A);
             }
         }
     }

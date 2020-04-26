@@ -138,6 +138,13 @@ namespace ME3Explorer.SequenceObjects
                         var delayValue = properties.GetProp<FloatProperty>("Duration");
                         res += $"Delay: {delayValue?.Value ?? 1}s";
                         break;
+                    case "SeqEvent_Death":
+                        var originator = properties.GetProp<ObjectProperty>("Originator");
+                        if (originator != null && originator.Value != 0)
+                        {
+                            res += $"Originator: {export.FileRef.GetEntry(originator.Value).InstancedFullPath}";
+                        }
+                        break;
                     case "SeqAct_PlaySound":
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Gammtek.Conduit.IO;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
@@ -1012,7 +1013,7 @@ namespace ME3Explorer.Unreal
             {
                 info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
-            int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x14 : 0xC);
+            int nextExport = EndianReader.ToInt32(export.Data, isStruct ? 0x14 : 0xC, export.FileRef.Endian);
             while (nextExport > 0)
             {
                 var entry = pcc.GetUExport(nextExport);
@@ -1028,7 +1029,7 @@ namespace ME3Explorer.Unreal
                         }
                     }
                 }
-                nextExport = BitConverter.ToInt32(entry.Data, 0x10);
+                nextExport = EndianReader.ToInt32(entry.Data, 0x10, export.FileRef.Endian);
             }
             return info;
         }

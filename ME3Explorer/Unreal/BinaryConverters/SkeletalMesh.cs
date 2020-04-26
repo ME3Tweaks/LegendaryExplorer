@@ -438,7 +438,7 @@ namespace ME3Explorer
                                 y = (uint)Math.Truncate(pos.Y * 1023.0).ToInt32().Clamp(-1023, 1023) << 21 >> 11;
                                 z = (uint)Math.Truncate(pos.Z * 1023.0).ToInt32().Clamp(-1023, 1023) << 22 >> 22;
                             }
-                            sc.ms.WriteUInt32(x | y | z);
+                            sc.ms.Writer.WriteUInt32(x | y | z);
                         }
                     }
                     else
@@ -600,7 +600,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    sc.ms.WriteInt32(0);
+                    sc.ms.Writer.WriteInt32(0);
                 }
             }
 

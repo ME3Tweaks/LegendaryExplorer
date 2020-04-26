@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer.Unreal
@@ -3398,8 +3399,8 @@ namespace ME3Explorer.Unreal
         //    Token t = new Token();
         //    Token a = ReadToken(start + 2);
         //    int pos = start + a.raw.Length + 2;
-        //    BitConverter.IsLittleEndian = true;
-        //    //int index = BitConverter.ToInt32(memory, pos);
+        //    EndianReader.IsLittleEndian = true;
+        //    //int index = EndianReader.ToInt32(memory, pos);
         //    //string s = export.FileRef.getObjectName(index);
         //    //pos += 4;
         //    Token b = ReadToken(pos, export);
@@ -3578,7 +3579,7 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            int index = BitConverter.ToInt32(memory, pos);
+            int index = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
             pos += 8;
             string s = export.FileRef.GetNameEntry(index);
@@ -3610,7 +3611,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadGlobalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
             t.text = "Global." + export.FileRef.GetNameEntry(index) + "(";
@@ -3772,7 +3773,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             //string s = "";
             //if (index > 0 && index <= export.FileRef.ExportCount)
             //    s = export.FileRef.Exports[index - 1].ClassName;
@@ -3796,7 +3797,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int pos = start + 1;
-            int size = BitConverter.ToInt16(memory, pos);
+            int size = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
             pos += 2;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
@@ -3815,7 +3816,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int pos = start + 1;
-            int uIndex = BitConverter.ToInt32(memory, pos);
+            int uIndex = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
@@ -3835,9 +3836,9 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int pos = start + 1;
-            float f1 = BitConverter.ToSingle(memory, pos);
-            float f2 = BitConverter.ToSingle(memory, pos + 4);
-            float f3 = BitConverter.ToSingle(memory, pos + 8);
+            float f1 = EndianReader.ToSingle(memory, pos, export.FileRef.Endian);
+            float f2 = EndianReader.ToSingle(memory, pos + 4, export.FileRef.Endian);
+            float f3 = EndianReader.ToSingle(memory, pos + 8, export.FileRef.Endian);
             t.text = "vect(" + f1 + ", " + f2 + ", " + f3 + ")";
             int len = 13;
             t.raw = new byte[len];
@@ -3852,9 +3853,9 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int pos = start + 1;
-            int i1 = BitConverter.ToInt32(memory, pos);
-            int i2 = BitConverter.ToInt32(memory, pos + 4);
-            int i3 = BitConverter.ToInt32(memory, pos + 8);
+            int i1 = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            int i2 = EndianReader.ToInt32(memory, pos + 4, export.FileRef.Endian);
+            int i3 = EndianReader.ToInt32(memory, pos + 8, export.FileRef.Endian);
             t.text = "rot(" + i1 + ", " + i2 + ", " + i3 + ")";
             int len = 13;
             t.raw = new byte[len];
@@ -3911,7 +3912,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = "If(" + export.FileRef.getObjectName(index) + "){"; //remove == null for normal
@@ -3942,7 +3943,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            int index = (Int32)EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = "If(" + export.FileRef.getObjectName(index) + ")\n\t{\n";
@@ -3955,7 +3956,7 @@ namespace ME3Explorer.Unreal
             t.text += "\n\t}";
             if (memory[pos] == 0x06) //jump
             {
-                int offset = BitConverter.ToInt16(memory, pos + 1);
+                int offset = EndianReader.ToInt16(memory, pos + 1, export.FileRef.Endian);
                 t.text += "\nelse\\\\Jump 0x" + offset.ToString("X") + "\n{\n";
                 pos += 3;
                 Token t2 = ReadToken(pos, export);
@@ -3994,12 +3995,12 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int field = BitConverter.ToInt32(memory, start + 1);
+            int field = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
 
-            int type = BitConverter.ToInt32(memory, start + 5);
+            int type = EndianReader.ToInt32(memory, start + 5, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 5, Token.INPACKAGEREFTYPE_ENTRY, type));
-            int skip = BitConverter.ToInt16(memory, start + 7);
+            int skip = EndianReader.ToInt16(memory, start + 7, export.FileRef.Endian);
             int pos = start + 11;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
@@ -4034,7 +4035,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a;
-            int skip = BitConverter.ToInt16(memory, start + 1);
+            int skip = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
             t.text = "";
             int count = 0;
             int pos = start + 3;
@@ -4062,7 +4063,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
             t.text = export.FileRef.GetNameEntry(index);
             int pos = start + 11;
@@ -4095,7 +4096,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4176,7 +4177,7 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
+            ushort jumpoffset = EndianReader.ToUInt16(memory, pos, export.FileRef.Endian);
             pos += 2;
             t.text = "foreach(" + a.text + ") Goto(0x" + jumpoffset.ToString("X4") + ")";
             int len = pos - start;
@@ -4207,7 +4208,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int idx = BitConverter.ToInt32(memory, start + 1);
+            int idx = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, idx));
 
             Token a = ReadToken(start + 5, export);
@@ -4226,7 +4227,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4253,7 +4254,7 @@ namespace ME3Explorer.Unreal
             pos += c.raw.Length;
 
             //Skip jump offset
-            ushort jumpoffset = BitConverter.ToUInt16(memory, pos);
+            ushort jumpoffset = EndianReader.ToUInt16(memory, pos, export.FileRef.Endian);
             pos += 2;
             t.inPackageReferences.AddRange(arrayToken.inPackageReferences);
             t.inPackageReferences.AddRange(iteratorVariableToken.inPackageReferences);
@@ -4287,7 +4288,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4302,7 +4303,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4344,7 +4345,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int n = BitConverter.ToInt32(memory, start + 1);
+            int n = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.text = n.ToString();
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -4365,7 +4366,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
             t.text = export.FileRef.GetNameEntry(index);
@@ -4379,7 +4380,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
             t.text = export.FileRef.GetNameEntry(index);
@@ -4393,7 +4394,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = " '" + export.FileRef.getObjectName(index) + "'";
@@ -4411,7 +4412,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
             IEntry referenced = export.FileRef.GetEntry(index);
             if (referenced.ObjectName == export.ObjectName && referenced != export)
@@ -4450,7 +4451,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4464,8 +4465,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
-            int num = BitConverter.ToInt32(memory, start + 5);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
+            int num = EndianReader.ToInt32(memory, start + 5, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
             t.text = $"'{new NameReference(export.FileRef.GetNameEntry(index), num).Instanced}'";
@@ -4496,7 +4497,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadVirtualFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
             t.text = export.FileRef.GetNameEntry(index) + "(";
@@ -4538,7 +4539,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = "ByteToInt(" + export.FileRef.getObjectName(index) + ")";
@@ -4551,7 +4552,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadStatFloat(int start, ExportEntry export)
         {
             Token t = new Token();
-            float f = BitConverter.ToSingle(memory, start + 1);
+            float f = EndianReader.ToSingle(memory, start + 1, export.FileRef.Endian);
             t.text = f.ToString() + "f";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -4602,9 +4603,9 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + a.raw.Length + 1;
-            int expSize = BitConverter.ToInt16(memory, pos);
+            int expSize = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
             pos += 2;
-            int unkRef = BitConverter.ToInt32(memory, pos);
+            int unkRef = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
             pos += 5;
             Token b = ReadToken(pos, export);
@@ -4623,7 +4624,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadDefaultParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
-            int size = BitConverter.ToInt16(memory, start + 1);
+            int size = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
             Token expression = ReadToken(start + 3, export);
             t.inPackageReferences.AddRange(expression.inPackageReferences);
 
@@ -4673,7 +4674,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadJumpIfNot(int start, ExportEntry export)
         {
             Token t = new Token();
-            int offset = BitConverter.ToInt16(memory, start + 1);
+            int offset = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
             Token a = ReadToken(start + 3, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
@@ -4730,7 +4731,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             t.text = "";
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             if (index > 0 && index <= export.FileRef.Exports.Count)
@@ -4757,7 +4758,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4773,7 +4774,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadInstanceVar(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = BitConverter.ToInt32(memory, start + 1);
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
             t.text = export.FileRef.getObjectName(index);
@@ -4789,7 +4790,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             t.text = "Goto(0x";
 
-            int index = BitConverter.ToInt16(memory, start + 1);
+            int index = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
             t.text += index.ToString("X") + ")";
             t.raw = new byte[3];
             for (int i = 0; i < 3; i++)
@@ -4803,8 +4804,8 @@ namespace ME3Explorer.Unreal
             t.text = "";
 
             //Apparently this is in Big Endian.
-            //BitConverter.IsLittleEndian = false; //oh good, how do we deal with this.
-            int index = BitConverter.ToInt32(memory, start + 1);
+            //EndianReader.IsLittleEndian = false; //oh good, how do we deal with this.
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             index = (int)((index & 0x000000FFU) << 24 | (index & 0x0000FF00U) << 8 | (index & 0x00FF0000U) >> 8 | (index & 0xFF000000U) >> 24);
 
             if (index >= 0 && index < export.FileRef.Names.Count)

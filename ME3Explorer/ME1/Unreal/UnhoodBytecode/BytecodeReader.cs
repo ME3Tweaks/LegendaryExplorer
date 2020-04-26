@@ -988,7 +988,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadCall(string functionName)
         {
-            int pos = (int)_reader.BaseStream.Position - 1;
+            int pos = (int)_reader.BaseStream.Position; //used to be -1. But it shouldn't be afaik cause the last byte will point to 16 if its empty or first param if its not
 
             BytecodeToken p;
             var builder = new StringBuilder(functionName + "(");

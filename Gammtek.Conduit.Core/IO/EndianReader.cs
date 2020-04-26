@@ -16,6 +16,8 @@
 using System;
 using System.IO;
 using System.Text;
+using Gammtek.Conduit.Extensions.IO;
+using StreamHelpers;
 
 namespace Gammtek.Conduit.IO
 {
@@ -119,6 +121,21 @@ namespace Gammtek.Conduit.IO
             {
                 return new string(buffer);
             }
+        }
+
+        /// <summary>
+        /// Reads an unreal-style prefixed string from the underlying stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public string ReadUnrealString()
+        {
+            int length = ReadInt32();
+            if (length == 0)
+            {
+                return "";
+            }
+            return length < 0 ? _source.BaseStream.ReadStringUnicodeNull(length * -2) : _source.BaseStream.ReadStringASCIINull(length);
         }
 
         /// <summary>
@@ -300,5 +317,40 @@ namespace Gammtek.Conduit.IO
         {
             return Endian.To(Endian.Native).Convert(_source.ReadUInt64());
         }
+
+        /// <summary>
+        ///     Skips 4 bytes in the stream.
+        /// </summary>
+        public void SkipInt32()
+        {
+            ReadInt32();
+        }
+
+        public void Seek(long offset, SeekOrigin origin)
+        {
+            _source.BaseStream.Seek(offset, origin);
+        }
+
+        public long Position
+        {
+            get => _source.BaseStream.Position;
+            set => _source.BaseStream.Position = value;
+        }
+
+        /// <summary>
+        /// Generates an EndianReader object that takes a stream that is the start of a package file. It automatically will set the endianness and reset the position to 0.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static EndianReader SetupForPackageReading(Stream input)
+        {
+            EndianReader er = new EndianReader(input);
+            var packageTag = er.ReadUInt32();
+            if (packageTag == packageTagBigEndian) er.Endian = Endian.Big;
+            input.Position -= 4;
+            return er;
+        }
+        public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
+        public const uint packageTagBigEndian = 0xC1832A9E;
     }
 }

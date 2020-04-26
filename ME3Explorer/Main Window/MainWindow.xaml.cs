@@ -116,6 +116,20 @@ namespace ME3Explorer
         {
             Task.Run(() =>
             {
+                //Fetch core count from WMI - this can take like 1-2 seconds and is not typically necessary until a tool is opened
+                try
+                {
+                    App.CoreCount = 2;
+                    foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+                    {
+                        App.CoreCount = int.Parse(item["NumberOfCores"].ToString());
+                    }
+                }
+                catch
+                {
+                    //???
+                }
+
                 // load TLK strings
                 try
                 {
@@ -149,6 +163,7 @@ namespace ME3Explorer
                 App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {
+                App.PendingAppLoadedAction?.Invoke();
                 //StartingUpPanel.Visibility = Visibility.Invisible;
                 DoubleAnimation fadeout = new DoubleAnimation
                 {

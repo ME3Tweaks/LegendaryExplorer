@@ -243,10 +243,18 @@ namespace ME3Explorer
 
                     if (exportEntry.FileRef.Game == MEGame.ME3)
                     {
-                        QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
-                        List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
-                        HIRCObjects.Clear();
-                        HIRCObjects.AddRange(hircObjects);
+                        try
+                        {
+                            QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
+                            List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
+                            HIRCObjects.Clear();
+                            HIRCObjects.AddRange(hircObjects);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Coudln't parse HIRCs");
+                        }
+
                         CurrentLoadedWwisebank = wb;
                     }
                     else
@@ -255,7 +263,7 @@ namespace ME3Explorer
                     }
 
                     List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                    byte[] data = wb.GetChunk("DATA");
+                    byte[] data = wb.GetChunk("DATA",true);
                     int i = 0;
                     if (embeddedWEMFiles.Count > 0)
                     {
@@ -490,7 +498,7 @@ namespace ME3Explorer
                         string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
                         var outpath = basePath + ".wem";
                         File.WriteAllBytes(outpath, wemObject.WemData);
-                        return WwiseStream.ConvertRiffToWav(outpath, wemObject.Game == MEGame.ME2);
+                        return ISBankEntry.ConvertAudioToWave(outpath); //use vgmstream
                     }
                 }
             }

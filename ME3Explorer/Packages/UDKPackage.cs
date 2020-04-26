@@ -6,6 +6,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
+using Gammtek.Conduit.IO;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
@@ -17,6 +18,8 @@ namespace ME3Explorer.Packages
     public sealed class UDKPackage : UnrealPackageFile, IMEPackage
     {
         public MEGame Game => MEGame.UDK;
+        public MEPackage.GamePlatform Platform => MEPackage.GamePlatform.PC;
+        public Endian Endian => Endian.Native; //we do not support big endian UDK packages
         public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()
         {
@@ -88,7 +91,7 @@ namespace ME3Explorer.Packages
             #region Header
 
             uint magic = fs.ReadUInt32();
-            if (magic != packageTag)
+            if (magic != packageTagLittleEndian)
             {
                 throw new FormatException("Not an Unreal package!");
             }
@@ -148,8 +151,11 @@ namespace ME3Explorer.Packages
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
             {
-                inStream = CompressionHelper.DecompressUDK(fs, compressionInfoOffset);
+                inStream = CompressionHelper.DecompressUDK(new EndianReader(fs), compressionInfoOffset);
             }
+
+            var reader = new EndianReader(inStream); //these will always be little endian so we don't actually use this except for passing
+            //through to methods that can use endianness
 
             inStream.JumpTo(NameOffset);
             for (int i = 0; i < NameCount; i++)
@@ -161,7 +167,7 @@ namespace ME3Explorer.Packages
             inStream.JumpTo(ImportOffset);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
+                ImportEntry imp = new ImportEntry(this, reader) { Index = i };
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
@@ -170,7 +176,7 @@ namespace ME3Explorer.Packages
             inStream.JumpTo(ExportOffset);
             for (int i = 0; i < ExportCount; i++)
             {
-                ExportEntry e = new ExportEntry(this, inStream) { Index = i };
+                ExportEntry e = new ExportEntry(this, reader) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }
@@ -321,7 +327,7 @@ namespace ME3Explorer.Packages
 
         private void WriteHeader(Stream ms)
         {
-            ms.WriteUInt32(packageTag);
+            ms.WriteUInt32(packageTagLittleEndian);
             //version
             ms.WriteUInt16(868);
             ms.WriteUInt16(0);

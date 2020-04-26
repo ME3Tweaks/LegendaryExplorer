@@ -429,6 +429,8 @@
     </Compile>
     <Compile Include="MaterialViewer\ShaderCacheManipulator.cs" />
     <Compile Include="MaterialViewer\ShaderCacheReader.cs" />
+    <Compile Include="ME3Tweaks\ME3TweaksBackups.cs" />
+    <Compile Include="ME3Tweaks\ME3TweaksUtilities.cs" />
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>
@@ -1378,10 +1380,6 @@
     <ProjectReference Include="..\Direct3D9 Shader Model 3 Disassembler\Direct3D9 Shader Model 3 Disassembler.csproj">
       <Project>{53AF9E1D-16BC-47A5-884E-5CE72ADCB805}</Project>
       <Name>Direct3D9 Shader Model 3 Disassembler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj">
-      <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
-      <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>

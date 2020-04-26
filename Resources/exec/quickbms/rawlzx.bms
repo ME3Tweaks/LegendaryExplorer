@@ -1,0 +1,16 @@
+// RawLZX Decompression
+// Written by Mgamerz 2020
+//Input file must end with a -[uncompressedsize] in the basename of the file, not including [ ]
+//The entire file is raw LZX data and the compressed size is the size of the input file
+//outpu
+endian BIG
+get COMPRESSED_SIZE ASIZE
+Get outbasename BASENAME
+String UncompSep = "-"
+string UNCOMPRESSED_SIZE = outbasename
+String UNCOMPRESSED_SIZE ! UncompSep
+
+String outbasename + ".decompressed"
+
+ComType XMemDecompress
+Clog outbasename 0 COMPRESSED_SIZE UNCOMPRESSED_SIZE

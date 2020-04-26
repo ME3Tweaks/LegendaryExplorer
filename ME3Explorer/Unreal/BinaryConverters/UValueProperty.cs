@@ -62,7 +62,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteUInt64((ulong)flags);
+                sc.ms.Writer.WriteUInt64((ulong)flags);
             }
         }
     }

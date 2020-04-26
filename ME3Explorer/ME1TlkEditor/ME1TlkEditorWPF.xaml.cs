@@ -146,6 +146,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            CurrentLoadedFile = null;
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
@@ -155,6 +156,8 @@ namespace ME3Explorer.ME1TlkEditor
             FileModified = false;
 
         }
+
+        public string CurrentLoadedFile { get; set; }
 
         public override void UnloadExport()
         {
@@ -230,16 +233,24 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
         {
-
+            var fnameBase = CurrentLoadedExport?.ObjectName.Name;
+            if (fnameBase == null && CurrentLoadedFile != null) fnameBase = Path.GetFileNameWithoutExtension(CurrentLoadedFile);
+            if (fnameBase == null) fnameBase = "TalkFile";
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "XML Files (*.xml)|*.xml",
-                FileName = CurrentLoadedExport.ObjectName + ".xml"
+                FileName = fnameBase + ".xml"
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(CurrentLoadedExport);
-                talkfile.saveToFile(saveFileDialog.FileName);
+                if (CurrentLoadedExport != null)
+                {
+                    ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(CurrentLoadedExport);
+                    talkfile.saveToFile(saveFileDialog.FileName);
+                } else if (CurrentME2ME3TalkFile != null)
+                {
+                    CurrentME2ME3TalkFile.DumpToFile(saveFileDialog.FileName);
+                }
             }
 
         }
@@ -373,7 +384,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             //throw new NotImplementedException();
             UnloadExport();
-
+            CurrentLoadedFile = filepath;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkData(filepath);
 

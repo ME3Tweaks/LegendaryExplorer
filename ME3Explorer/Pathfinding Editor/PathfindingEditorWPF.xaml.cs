@@ -32,6 +32,7 @@ using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using Point = System.Windows.Point;
 using System.Threading.Tasks;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -68,9 +69,9 @@ namespace ME3Explorer.Pathfinding_Editor
             "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicPhysicsVolume", "BioTriggerStream", "SFXCombatZone", "BioTriggerVolume", "TriggerVolume", "DynamicTriggerVolume", "PhysicsVolume", "SFXKillRagdollVolume",
             "BioTrigger", "Trigger", "Trigger_Dynamic", "Trigger_LOS",
             "SFXMedkit", "SFXMedStation", "SFXArmorNode", "SFXTreasureNode", "SFXPointOfInterest", "SFXWeaponFactory",
-            "InterpActor", "KActor", "SFXKActor", "SFXDoor", 
+            "InterpActor", "KActor", "SFXKActor", "SFXDoor", "BioUseable",
             "TargetPoint", "Note", "BioMapNote", "BioStartLocation", "BioStartLocationMP",
-            "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXPlaceable_RachniEgg", "SFXPlaceable_RottenRachniEgg", "SFXPlaceable_GethTripMine", "SFXPlaceable_Generic", "SFXPlaceable_CerberusShield", "SFXPlaceable_IndoctrinationDevice",
+            "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXPlaceable_RachniEgg", "SFXPlaceable_RottenRachniEgg", "SFXPlaceable_GethTripMine", "SFXPlaceable_Generic", "SFXPlaceable_CerberusShield", "SFXPlaceable_IndoctrinationDevice", "BioInert",
             "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer",
             "SFXStuntActor", "BioPawn",
             "PointLightToggleable", "PointLightMovable", "SpotLightToggleable", "DirectionalLightToggleable", "SkyLightToggleable",
@@ -83,7 +84,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public static string[] artNodeClasses =
         {
             "StaticMeshActor", "StaticMeshCollectionActor","StaticLightCollectionActor",
-            "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource",
+            "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource", "BioSunActor",
             "PostProcessVolume", "LightVolume", "LightMassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
@@ -125,7 +126,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
             return !exportEntry.IsDefaultObject && (pathfindingNodeClasses.Contains(exportEntry.ClassName)
-                   || actorNodeClasses.Contains(exportEntry.ClassName) || splineNodeClasses.Contains(exportEntry.ClassName) 
+                   || actorNodeClasses.Contains(exportEntry.ClassName) || splineNodeClasses.Contains(exportEntry.ClassName)
                    || artNodeClasses.Contains(exportEntry.ClassName) || exportEntry.ClassName == "Level");
         }
         private string _currentNodeXY = "Undefined";
@@ -287,7 +288,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand LoadGroupCommand { get; set; }
         public ICommand SaveGroupCommand { get; set; }
         public ICommand ShowTriggerCylindersCommand { get; set; }
-        
+
         private void LoadCommands()
         {
             RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
@@ -963,13 +964,13 @@ namespace ME3Explorer.Pathfinding_Editor
 
             //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
 
-            uint exportid = BitConverter.ToUInt32(data, start);
+            uint exportid = EndianReader.ToUInt32(data, start, Pcc.Endian);
             start += 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
+            uint numberofitems = EndianReader.ToUInt32(data, start, Pcc.Endian);
             int countoffset = start;
 
             start += 4;
-            int bioworldinfoexportid = BitConverter.ToInt32(data, start);
+            int bioworldinfoexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
 
             ExportEntry bioworldinfo = levelToRead.FileRef.GetUExport(bioworldinfoexportid);
             if (bioworldinfo.ObjectName != "BioWorldInfo")
@@ -980,7 +981,7 @@ namespace ME3Explorer.Pathfinding_Editor
             AllObjectsList.Add(bioworldinfo);
 
             start += 4;
-            uint shouldbezero = BitConverter.ToUInt32(data, start);
+            uint shouldbezero = EndianReader.ToUInt32(data, start, Pcc.Endian);
             if (shouldbezero != 0 && levelToRead.FileRef.Game != MEGame.ME1)
             {
                 //INVALID!!!
@@ -1004,7 +1005,7 @@ namespace ME3Explorer.Pathfinding_Editor
             while (itemcount < numberofitems)
             {
                 //get header.
-                int itemexportid = BitConverter.ToInt32(data, start);
+                int itemexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
                 if (levelToRead.FileRef.IsUExport(itemexportid))
                 {
                     ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
@@ -1321,6 +1322,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "InterpActor":
                     case "KActor":
                     case "SFXKActor":
+                    case "BioUseable":
                         actorNode = new InterpActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "BioTriggerVolume":
@@ -1368,6 +1370,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "SFXPlaceable_Generic":
                     case "SFXPlaceable_CerberusShield":
                     case "SFXPlaceable_IndoctrinationDevice":
+                    case "BioInert":
                         actorNode = new SFXPlaceable(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXArmorNode":
@@ -1473,6 +1476,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         artNode = new StaticMeshActorNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "LensFlareSource":
+                    case "BioSunActor":
                         artNode = new LensFlareNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "DirectionalLight":
@@ -2861,7 +2865,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     if (item != null)
                     {
-                        switch(ZFilteringMode)
+                        switch (ZFilteringMode)
                         {
                             case EZFilterIncludeDirection.Above:
                                 if (location.Z <= ZFilteringValue)
@@ -2883,7 +2887,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 break;
                         }
                         ActorNode actorNode = null;
-                        switch(smc.CollectionType)
+                        switch (smc.CollectionType)
                         {
                             case CollectionActor.CollectionActorType.Collection_Lights:
                                 actorNode = new LAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
@@ -2892,7 +2896,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 actorNode = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
                                 break;
                         }
-  
+
                         ActiveNodes.Add(item);
                         GraphNodes.Add(actorNode);
                         actorNode.MouseDown += node_MouseDown;
@@ -2909,7 +2913,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphNodes = GraphNodes.Except(graphNodesToRemove).ToList();
                 graphEditor.nodeLayer.RemoveChildren(graphNodesToRemove);
             }
-            
+
             graphEditor.Refresh();
         }
 
@@ -2988,7 +2992,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void ToggleAllCollections()
         {
-            if(Collections_chkbx.SelectedItems.Count < CollectionActors.Count)
+            if (Collections_chkbx.SelectedItems.Count < CollectionActors.Count)
             {
                 Collections_chkbx.SelectAll();
             }
@@ -3310,7 +3314,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
                 Point3D currentlocation = new Point3D();
-                if(s is SMAC_ActorNode smc)
+                if (s is SMAC_ActorNode smc)
                 {
                     currentlocation = new Point3D(smc.X, smc.Y, smc.Z);
                 }
@@ -3461,9 +3465,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     int start = PersistentLevelExport.propsEnd();
                     //Console.WriteLine("Found start of binary at {start.ToString("X8"));
 
-                    uint exportid = BitConverter.ToUInt32(leveldata, start);
+                    uint exportid = EndianReader.ToUInt32(leveldata, start, Pcc.Endian);
                     start += 4;
-                    uint numberofitems = BitConverter.ToUInt32(leveldata, start);
+                    uint numberofitems = EndianReader.ToUInt32(leveldata, start, Pcc.Endian);
                     numberofitems++;
                     leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems));
 
@@ -3502,7 +3506,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     newNodeEntry.RemoveProperty("Connections");
                     newNodeEntry.RemoveProperty("LinksFrom");
                 }
-                else if(nodeEntry.ClassName.Contains("Component"))
+                else if (nodeEntry.ClassName.Contains("Component"))
                 {
 
                     var parent = nodeEntry.Parent as ExportEntry;
@@ -3519,14 +3523,14 @@ namespace ME3Explorer.Pathfinding_Editor
                     var components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
                     int i = components.IndexOf(new ObjectProperty(nodeEntry));
                     var clonedloc = sca.LocalToWorldTransforms[i];
-                    
+
                     if (components.Count >= 100)
                     {
                         MessageBox.Show("Collection is full. Finding alternative.", "Clone Node");
                         var collectionactors = new List<ExportEntry>();
                         if (parent.IsA("StaticMeshCollectionActor"))
                         {
-                            collectionactors.AddRange(Pcc.Exports.Where(x => x.ClassName == "StaticMeshCollectionActor").ToList()) ;
+                            collectionactors.AddRange(Pcc.Exports.Where(x => x.ClassName == "StaticMeshCollectionActor").ToList());
                         }
                         else
                         {
@@ -3536,14 +3540,14 @@ namespace ME3Explorer.Pathfinding_Editor
                         foreach (var ca in collectionactors)
                         {
                             components = ca.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
-                            if(components.Count < 100)
+                            if (components.Count < 100)
                             {
                                 parent = ca;
                                 foundnewca = true;
                                 break;
                             }
                         }
-                        if(foundnewca)
+                        if (foundnewca)
                         {
                             MessageBox.Show($"Adding cloned component to {parent.UIndex} {parent.ObjectName.Instanced}.", "Clone Node");
                             if (parent.IsA("StaticMeshCollectionActor"))
@@ -3732,7 +3736,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         public ExportEntry OverlayPersistentLevelExport { get; set; }
-        
+
         private void BuildPathfindingChainExperiment()
         {
             OpenFileDialog d = new OpenFileDialog
@@ -3820,13 +3824,13 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             byte[] data = exp.Data;
                             //get a list of staticmesh stuff from the props.
-                            int listsize = BitConverter.ToInt32(data, 28);
+                            int listsize = EndianReader.ToInt32(data, 28, Pcc.Endian);
                             var smacitems = new List<ExportEntry>();
                             for (int i = 0; i < listsize; i++)
                             {
                                 int offset = 32 + i * 4;
                                 //fetch exports
-                                int entryval = BitConverter.ToInt32(data, offset);
+                                int entryval = EndianReader.ToInt32(data, offset, Pcc.Endian);
                                 if (entryval > 0 && entryval < Pcc.ExportCount)
                                 {
                                     ExportEntry export = (ExportEntry)Pcc.GetEntry(entryval);
@@ -3855,9 +3859,9 @@ namespace ME3Explorer.Pathfinding_Editor
                             int smcaindex = 0;
                             while (start < data.Length && smcaindex < listsize - 1)
                             {
-                                float x = BitConverter.ToSingle(data, start + smcaindex * 64 + (12 * 4));
-                                float y = BitConverter.ToSingle(data, start + smcaindex * 64 + (13 * 4));
-                                float z = BitConverter.ToSingle(data, start + smcaindex * 64 + (14 * 4));
+                                float x = EndianReader.ToSingle(data, start + smcaindex * 64 + (12 * 4), Pcc.Endian);
+                                float y = EndianReader.ToSingle(data, start + smcaindex * 64 + (13 * 4), Pcc.Endian);
+                                float z = EndianReader.ToSingle(data, start + smcaindex * 64 + (14 * 4), Pcc.Endian);
                                 data.OverwriteRange(start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
                                 data.OverwriteRange(start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
                                 data.OverwriteRange(start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
@@ -3966,13 +3970,13 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
 
-                        uint exportid = BitConverter.ToUInt32(data, start);
+                        uint exportid = EndianReader.ToUInt32(data, start, Pcc.Endian);
                         start += 4;
-                        uint numberofitems = BitConverter.ToUInt32(data, start);
+                        uint numberofitems = EndianReader.ToUInt32(data, start, Pcc.Endian);
                         int countoffset = start;
 
                         start += 4;
-                        int bioworldinfoexportid = BitConverter.ToInt32(data, start);
+                        int bioworldinfoexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
                         ExportEntry bioworldinfo = package.GetUExport(bioworldinfoexportid);
                         if (bioworldinfo.ObjectName != "BioWorldInfo")
                         {
@@ -3982,7 +3986,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
 
                         start += 4;
-                        uint shouldbezero = BitConverter.ToUInt32(data, start);
+                        uint shouldbezero = EndianReader.ToUInt32(data, start, Pcc.Endian);
                         if (shouldbezero != 0 && package.Game != MEGame.ME1)
                         {
                             //INVALID!!!
@@ -3998,7 +4002,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         while (itemcount < numberofitems)
                         {
                             //get header.
-                            int itemexportid = BitConverter.ToInt32(data, start);
+                            int itemexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
                             if (package.IsUExport(itemexportid))
                             {
                                 ExportEntry exportEntry = package.GetUExport(itemexportid);
@@ -4157,16 +4161,16 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool SwitchIgnoreBlue { get => _switchIgnoreBlue; set => SetProperty(ref _switchIgnoreBlue, value); }
         private float _brightnessAdjustment;
         public float BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
-       
+
         public ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new ObservableCollectionExtended<ExportEntry>();
         private bool _showonlyGroup;
-        public bool ShowOnlyGroup 
-        { 
+        public bool ShowOnlyGroup
+        {
             get => _showonlyGroup;
             set
             {
                 SetProperty(ref _showonlyGroup, value);
-                if(value && HideGroup)
+                if (value && HideGroup)
                 {
                     HideGroup = false;
                 }
@@ -4191,7 +4195,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public string GroupTag { get => _groupTag; set => SetProperty(ref _groupTag, value); }
         private void AddToGroup(object obj)
         {
-            if(ActiveNodes_ListBox.SelectedItem is ExportEntry node)
+            if (ActiveNodes_ListBox.SelectedItem is ExportEntry node)
             {
                 ActorGroup.Add(node);
                 PathfindingNodeTabControl.SelectedIndex = 5;
@@ -4237,7 +4241,7 @@ namespace ME3Explorer.Pathfinding_Editor
             };
             if (d.ShowDialog() == true)
             {
-                if(GroupTag == "Tag")
+                if (GroupTag == "Tag")
                 {
                     var tagdlg = new PromptDialog("Do you want to give this group a memorable tag?", "Saving Group", $"{GroupTag}", true);
                     tagdlg.ShowDialog();
@@ -4260,7 +4264,8 @@ namespace ME3Explorer.Pathfinding_Editor
         private void LoadActorGroup()
         {
             string pccname = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            OpenFileDialog d = new OpenFileDialog {
+            OpenFileDialog d = new OpenFileDialog
+            {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = PathfindingEditorDataFolder,
                 FileName = $"{Pcc.Game}_{pccname}_group",
@@ -4276,7 +4281,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 string grouptag = tr.ReadLine();
                 string uidx = "";
                 var xplist = new List<string>();
-                while( (uidx = tr.ReadLine()) != null)
+                while ((uidx = tr.ReadLine()) != null)
                 {
                     xplist.Add(uidx);
                 }
@@ -4287,9 +4292,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 ActorGroup.ClearEx();
                 GroupTag = grouptag;
                 var errorlist = new List<string>();
-                foreach(var i in xplist)
+                foreach (var i in xplist)
                 {
-                    if(Int32.TryParse(i, out int uid) && uid < Pcc.ExportCount && uid > 0)
+                    if (Int32.TryParse(i, out int uid) && uid < Pcc.ExportCount && uid > 0)
                     {
                         var actor = Pcc.GetUExport(uid);
                         if (actor != null && (actor.IsA("Actor") || actor.Parent.ClassName.Contains("CollectionActor")))
@@ -4301,7 +4306,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     errorlist.Add(i);
                 }
 
-                if(!errorlist.IsEmpty())
+                if (!errorlist.IsEmpty())
                 {
                     MessageBox.Show($"The following object indices were not found or are not actors: {string.Join(", ", errorlist)}");
                 }
@@ -4315,13 +4320,13 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
                 actorlist = level.Actors.Where(a => a.value > 0).Select(a => a.value).ToList();
-                foreach(var actoridx in actorlist)
+                foreach (var actoridx in actorlist)
                 {
                     var actor = Pcc.GetUExport(actoridx);
                     if (actor.IsA("WorldInfo"))
                         continue;
                     ActorGroup.Add(actor);
-                    if(actor.ClassName.Contains("CollectionActor"))
+                    if (actor.ClassName.Contains("CollectionActor"))
                     {
                         ActorGroup.AddRange(SharedPathfinding.GetCollectionItems(actor));
                     }
@@ -4330,7 +4335,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
         private void EditLevelLighting()
         {
-            if(ActorGroup.IsEmpty())
+            if (ActorGroup.IsEmpty())
             {
                 var agdlg = MessageBox.Show("Adding all actors in the level to the actor group.", "Experimental Tools", MessageBoxButton.OKCancel);
                 if (agdlg == MessageBoxResult.Cancel)
@@ -4351,16 +4356,16 @@ namespace ME3Explorer.Pathfinding_Editor
             int n = 0;
 
             List<ExportEntry> AllComponents = new List<ExportEntry>();
-            foreach(var actor in ActorGroup)
+            foreach (var actor in ActorGroup)
             {
                 if (actor.IsA("PrimitiveComponent"))
                 {
                     AllComponents.Add(actor);
                 }
-                else if(actor.IsA("StaticMeshActor") || actor.IsA("DynamicSMActor"))
+                else if (actor.IsA("StaticMeshActor") || actor.IsA("DynamicSMActor"))
                 {
                     var comp = actor.GetProperty<ObjectProperty>("StaticMeshComponent");
-                    if(comp != null)
+                    if (comp != null)
                     {
                         AllComponents.Add(Pcc.GetUExport(comp.Value));
                     }
@@ -4368,7 +4373,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             List<ExportEntry> AllLightComponents = AllComponents.Where(x => LightComponentClasses.Any(l => l == x.ClassName)).ToList();
-            foreach(var exp in AllLightComponents)
+            foreach (var exp in AllLightComponents)
             {
                 float oldred = 0;
                 float oldgreen = 0;
@@ -4387,10 +4392,10 @@ namespace ME3Explorer.Pathfinding_Editor
                                 oldred = float.Parse(fltProp.Value.ToString());
                                 break;
                             case ByteProperty fltProp when clrs.Name == "G":
-                                oldgreen = float.Parse(fltProp.Value.ToString()); 
+                                oldgreen = float.Parse(fltProp.Value.ToString());
                                 break;
                             case ByteProperty fltProp when clrs.Name == "B":
-                                oldblue = float.Parse(fltProp.Value.ToString()); 
+                                oldblue = float.Parse(fltProp.Value.ToString());
                                 break;
                         }
                     }
@@ -4411,12 +4416,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 //Adjust light brightness
                 FloatProperty brightness = exp.GetProperty<FloatProperty>("Brightness");
-                if(brightness == null)
+                if (brightness == null)
                 {
                     brightness = new FloatProperty(1, "Brightness");
                 }
                 float newbrightness = brightness.Value * (1 + brightscalar);
-                if(newbrightness != 1)
+                if (newbrightness != 1)
                 {
                     exp.WriteProperty(new FloatProperty(newbrightness, "Brightness"));
                 }
@@ -4426,12 +4431,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
             List<ExportEntry> AllStaticMeshComponents = AllComponents.Where(x => x.ClassName == "StaticMeshComponent").ToList();
             HashSet<int> TextureMaps = new HashSet<int>();
-            foreach(var comp in AllStaticMeshComponents)
+            foreach (var comp in AllStaticMeshComponents)
             {
                 var binary = ExportBinaryConverter.ConvertPostPropBinary(comp, Pcc.Game);
-                if(binary is StaticMeshComponent sc)
+                if (binary is StaticMeshComponent sc)
                 {
-                    foreach(var lod in sc.LODData)
+                    foreach (var lod in sc.LODData)
                     {
                         if (lod.LightMap.LightMapType == ELightMapType.LMT_2D && lod.LightMap is LightMap_2D lm2)
                         {
@@ -4442,9 +4447,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         else if (lod.LightMap.LightMapType == ELightMapType.LMT_1D && lod.LightMap is LightMap_1D lm1)
                         {
-                            foreach(var qds in lm1.DirectionalSamples)
+                            foreach (var qds in lm1.DirectionalSamples)
                             {
-                                if(qds.Coefficient1 != null)
+                                if (qds.Coefficient1 != null)
                                 {
                                     qds.Coefficient1 = AdjustColors(qds.Coefficient1, brightscalar);
                                 }
@@ -4486,7 +4491,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (!TextureMaps.IsEmpty())
             {
                 List<string> mapdata = new List<string>();
-                foreach(var e in TextureMaps.Where(e => e != 0))
+                foreach (var e in TextureMaps.Where(e => e != 0))
                 {
                     Pcc.TryGetEntry(e, out IEntry xp);
                     string tm = $"#{e} : {xp?.ObjectName.Instanced}";
@@ -4510,7 +4515,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     (SwitchIgnoreGreen && oldgreen > oldred && oldgreen > oldblue) ||
                     (SwitchIgnoreBlue && oldblue < oldred && oldblue < oldgreen)))
             {
-                switch (SwitchRedTo)  
+                switch (SwitchRedTo)
                 {
                     case LightChannel.Red:
                         break;
@@ -4558,8 +4563,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 newgreen = (255 - newgreen) * brightnesscorrectionfactor * (1 + (AdjustGreen / 100)) + newgreen;
                 newblue = (255 - newblue) * brightnesscorrectionfactor * (1 + (AdjustBlue / 100)) + newblue;
             }
-            
-            var vector = new SharpDX.Vector4(newred/255, newgreen/255, newblue/255, oldalpha/255);
+
+            var vector = new SharpDX.Vector4(newred / 255, newgreen / 255, newblue / 255, oldalpha / 255);
             var newColor = new SharpDX.Color(vector);
             return newColor;
         }
@@ -4569,7 +4574,7 @@ namespace ME3Explorer.Pathfinding_Editor
             var shifty = (float)lvlShift_Y.Value;
             var shiftz = (float)lvlShift_Z.Value;
 
-            if(lvlShift_X.Value == 0 && lvlShift_Y.Value == 0 && lvlShift_Z.Value == 0)
+            if (lvlShift_X.Value == 0 && lvlShift_Y.Value == 0 && lvlShift_Z.Value == 0)
             {
                 return;
             }
@@ -4584,11 +4589,11 @@ namespace ME3Explorer.Pathfinding_Editor
 
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to shift every actor in the group?\n" +
                 $"\nX: {shiftx.ToString("+0;-0;0")}\nY: {shifty}\nZ: {shiftz}\n\nThis is an experimental tool. Make backups.", "Pathfinding Editor", MessageBoxButton.OKCancel);
-            if(chkdlg == MessageBoxResult.Cancel)
+            if (chkdlg == MessageBoxResult.Cancel)
                 return;
 
             ShiftActorGroup(new SharpDX.Vector3(shiftx, shifty, shiftz));
-            
+
             MessageBox.Show("Done");
         }
 
@@ -4759,7 +4764,7 @@ namespace ME3Explorer.Pathfinding_Editor
             float groupY = 0;
             float groupZ = 0;
             int actorcount = 0;
-            foreach(var actor in ActorGroup)
+            foreach (var actor in ActorGroup)
             {
                 if (actor == null || actor.ClassName == "BioWorldInfo")
                     continue;
@@ -4838,7 +4843,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 //Clean up Cached PhysSM Data && Rebuild Data Store
                 var newPhysSMmap = new OrderedMultiValueDictionary<UIndex, CachedPhysSMData>();
                 var newPhysSMstore = new List<KCachedConvexData>();
-                foreach (var r in level.CachedPhysSMDataMap)  
+                foreach (var r in level.CachedPhysSMDataMap)
                 {
                     references.Add(r.Key);
                 }
@@ -4892,7 +4897,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 var newNavArray = new List<UIndex>();
                 newNavArray.AddRange(level.NavPoints);
-                foreach (var navref in level.NavPoints) 
+                foreach (var navref in level.NavPoints)
                 {
                     var navpoint = navref?.value ?? -1;
                     if (norefsList.Contains(navpoint) || navpoint == 0)
@@ -4952,7 +4957,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 level.CrossLevelActors = newXLArray;
 
                 //Clean up int lists if empty of NAV points
-                if(level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (Pcc.Game != MEGame.ME3 || level.PylonListStart == 0))
+                if (level.NavPoints.IsEmpty() && level.CoverLinks.IsEmpty() && level.CrossLevelActors.IsEmpty() && (Pcc.Game != MEGame.ME3 || level.PylonListStart == 0))
                 {
                     level.guidToIntMap.Clear();
                     level.guidToIntMap2.Clear();
@@ -4967,9 +4972,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     return;
                 BusyText = "Trashing unwanted items";
                 List<IEntry> itemsToTrash = new List<IEntry>();
-                foreach(var export in Pcc.Exports)
+                foreach (var export in Pcc.Exports)
                 {
-                    if(norefsList.Contains(export.UIndex))
+                    if (norefsList.Contains(export.UIndex))
                     {
                         itemsToTrash.Add(export);
                     }
@@ -4990,7 +4995,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
         private void TrashActorGroup()
         {
-            if(ActorGroup.IsEmpty())
+            if (ActorGroup.IsEmpty())
             {
                 MessageBox.Show("No actors in the current group", "Pathfinding Editor", MessageBoxButton.OK);
                 return;
@@ -5007,7 +5012,7 @@ namespace ME3Explorer.Pathfinding_Editor
             List<ExportEntry> trashcollections = new List<ExportEntry>();
             foreach (var trashactor in ActorGroup)
             {
-                if(trashactor.ClassName.Contains("CollectionActor"))
+                if (trashactor.ClassName.Contains("CollectionActor"))
                 {
                     trashcollections.Add(trashactor); //Only remove collections once components have been deleted.
                 }

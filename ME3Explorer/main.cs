@@ -60,7 +60,7 @@ namespace ME3Explorer
         {
             //Cleanup orphaned temp sounds from soundplorer
             DirectoryInfo tempDirectoryInfo = new DirectoryInfo(System.IO.Path.GetTempPath());
-            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_SOUND_*");
+            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_*");
             foreach (FileInfo file in Files)
             {
                 try
@@ -129,12 +129,16 @@ namespace ME3Explorer
         //
         public int SignalExternalCommandLineArgs(string[] args)
         {
-            int taskListResponse = HandleCommandLineJumplistCall(args, out _);
-            if (taskListResponse == 0)
+            var taskListResponse = HandleCommandLineJumplistCall(args, out _);
+            if (taskListResponse != null && args.Length == 1) //no params
             {
                 //just a new instance
                 MainWindow.RestoreAndBringToFront();
+            } else
+            {
+                taskListResponse?.Invoke();
             }
+
             return 0;
         }
     }

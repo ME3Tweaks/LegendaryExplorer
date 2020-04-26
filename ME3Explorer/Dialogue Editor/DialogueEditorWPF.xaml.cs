@@ -485,7 +485,7 @@ namespace ME3Explorer.Dialogue_Editor
                 if (!Directory.Exists(DialogueEditorDataFolder))
                     Directory.CreateDirectory(DialogueEditorDataFolder);
                 File.WriteAllText(OptionsPath, JsonConvert.SerializeObject(options));
-            }                      
+            }
             );
 
             //Code here remove these objects from leaking the window memory
@@ -631,10 +631,10 @@ namespace ME3Explorer.Dialogue_Editor
             BackParser.RunWorkerCompleted += BackParser_RunWorkerCompleted;
             BackParser.RunWorkerAsync();
 
-            if(!App.TlkFirstLoadDone)
+            if (!App.TlkFirstLoadDone)
             {
                 bool waitingfortlks = true;
-                while(waitingfortlks)
+                while (waitingfortlks)
                 {
                     waitingfortlks = await CheckProcess(100, App.TlkFirstLoadDone, true);
                 }
@@ -670,7 +670,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ParseStageDirections(conv);
                 conv.IsFirstParsed = true;
 
-                if(!conv.IsParsed)
+                if (!conv.IsParsed)
                     BackQueue.Add(conv);
             }
 #if DEBUG
@@ -700,7 +700,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void DetailParse(ConversationExtended conv)
         {
-            
+
             foreach (var spkr in conv.Speakers)
             {
                 spkr.FaceFX_Male = GetFaceFX(conv, spkr.SpeakerID, true);
@@ -799,12 +799,12 @@ namespace ME3Explorer.Dialogue_Editor
                 cond = Node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
                 stevent = Node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
                 bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                if(isReply)
+                if (isReply)
                 {
                     Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
                 }
                 else
-                { 
+                {
                     spkridx = Node.GetProp<IntProperty>("nSpeakerIndex");
                 }
 
@@ -815,7 +815,7 @@ namespace ME3Explorer.Dialogue_Editor
 #if DEBUG
                 throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
 #endif
-                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply); 
+                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
             }
         }
         private void ParseScripts(ConversationExtended conv)
@@ -1271,7 +1271,7 @@ namespace ME3Explorer.Dialogue_Editor
         public void ParseWwiseBank(ConversationExtended conv)
         {
             conv.WwiseBank = null;
-            if(Pcc.Game != MEGame.ME1)
+            if (Pcc.Game != MEGame.ME1)
             {
                 try
                 {
@@ -2213,7 +2213,7 @@ namespace ME3Explorer.Dialogue_Editor
                         layoutStarts.Remove(start);
                     }
 
-                    
+
                     if (layoutEntries.Count > 0)
                     {
                         DiagNodeEntry entry = layoutEntries.Dequeue();
@@ -2295,7 +2295,7 @@ namespace ME3Explorer.Dialogue_Editor
                             {
 
                                 int r = 0;
-                                if (!thisNode.Node.IsReply) 
+                                if (!thisNode.Node.IsReply)
                                 {
                                     if (maxobjHeight > ROW_SPACING) //On entry set spacing for this row
                                     {
@@ -2321,7 +2321,7 @@ namespace ME3Explorer.Dialogue_Editor
                                     thisNode.SetOffset(2 * COLUMN_SPACING, rowAt * ROW_SPACING + rowShift + WATERFALL_SPACING);
                                     maxReplyRow = rowAt;
                                     rowAt++;  //After reply go to next row.
-                                    if(thisNode.Height > maxobjHeight)
+                                    if (thisNode.Height > maxobjHeight)
                                     {
                                         maxobjHeight = thisNode.Height;
                                     }
@@ -2421,7 +2421,7 @@ namespace ME3Explorer.Dialogue_Editor
                     columnlevels[i] = maxrow;
                 }
                 DStart firstNode = startNodes.FirstOrDefault();
-                if(firstNode != null)
+                if (firstNode != null)
                 {
                     rowAt = maxrow + 1;
                     columnAt = 0;
@@ -2442,7 +2442,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 visitedNodes.Add(thisNode.NodeUID);
                                 allNodes.Remove(thisNode);
                                 thisBranch.Add(columnAt, thisNode);
-                                if(columnlevels.TryGetValue(columnAt, out int cmax))
+                                if (columnlevels.TryGetValue(columnAt, out int cmax))
                                 {
                                     cmax = rowAt;
                                 }
@@ -2453,7 +2453,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 if (thisNode.Links.Count != 0)
                                 {
                                     int r = 0;
-                                    if(!thisNode.Node.IsReply) //Conversion factor from nIndex to NodeUID
+                                    if (!thisNode.Node.IsReply) //Conversion factor from nIndex to NodeUID
                                     {
                                         r = 1000;
                                     }
@@ -2466,7 +2466,7 @@ namespace ME3Explorer.Dialogue_Editor
                                         else
                                         {
                                             var pushstack = allNodes.FirstOrDefault(x => x.NodeUID == thisNode.Links[i].Index + r);
-                                            if(pushstack != null) //means link to visited node.  Don't add to Branchstack.
+                                            if (pushstack != null) //means link to visited node.  Don't add to Branchstack.
                                             {
                                                 BranchStack.Push((pushstack, columnAt));
                                             }
@@ -2474,10 +2474,10 @@ namespace ME3Explorer.Dialogue_Editor
                                     }
                                 }
                             }
-                            else if(!thisBranch.IsEmpty()) //REACHED END OF BRANCH Set the positions of the previous branch
+                            else if (!thisBranch.IsEmpty()) //REACHED END OF BRANCH Set the positions of the previous branch
                             {
                                 int tgtRowAt = rowAt;
-                                if(thisBranch.First().Key != 1) //Test if this is inside branch
+                                if (thisBranch.First().Key != 1) //Test if this is inside branch
                                 {
                                     foreach (var dn in thisBranch)
                                     {
@@ -2495,15 +2495,15 @@ namespace ME3Explorer.Dialogue_Editor
                                     dn.Value.SetOffset(dn.Key * COLUMN_SPACING, tgtRowAt * ROW_SPACING + dn.Key * WATERFALL_SPACING);
                                     columnlevels[dn.Key] = tgtRowAt;
                                 }
-                                
+
                                 thisBranch.Clear();
                             }
-                            else if(!BranchStack.IsEmpty())//PRIOR BRANCH IS DONE PULL nextNode from STACK of sub-branches
+                            else if (!BranchStack.IsEmpty())//PRIOR BRANCH IS DONE PULL nextNode from STACK of sub-branches
                             {
-                                
+
                                 (nextNode, columnAt) = BranchStack.Pop();
 
-                                if(visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
+                                if (visitedNodes.Contains(nextNode.NodeUID)) //if nextnode is already up, make sure stack is pulled again without moving down.
                                 {
                                     nextNode = null;
                                 }
@@ -2558,7 +2558,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void RefreshExportLoaders()
         {
-            if(SelectedDialogueNode.WwiseStream_Female == null)
+            if (SelectedDialogueNode.WwiseStream_Female == null)
             {
                 SoundpanelWPF_F.UnloadExport();
             }
@@ -2566,8 +2566,8 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 SoundpanelWPF_F.LoadExport(SelectedDialogueNode.WwiseStream_Female);
             }
-                    
-            if(SelectedDialogueNode.WwiseStream_Male == null)
+
+            if (SelectedDialogueNode.WwiseStream_Male == null)
             {
                 SoundpanelWPF_M.UnloadExport();
             }
@@ -2968,7 +2968,7 @@ namespace ME3Explorer.Dialogue_Editor
             {
                 links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
             }
-            var sdlg = InputComboBoxWPF.GetValue(this, "Pick an entry node to link to", links, links[f], false);
+            var sdlg = InputComboBoxWPF.GetValue(this, "Pick an entry node to link to", "Entry selector", links, links[f], false);
 
             if (sdlg == "")
                 return;
@@ -3879,8 +3879,8 @@ namespace ME3Explorer.Dialogue_Editor
                     LayoutMode = 0;
                     break;
             }
-            DBox.LinesAtTop = ShowLinesOnTop_MenuItem.IsChecked; 
-            DObj.OutputNumbers = HideEntryOutput_MenuItem.IsChecked; 
+            DBox.LinesAtTop = ShowLinesOnTop_MenuItem.IsChecked;
+            DObj.OutputNumbers = HideEntryOutput_MenuItem.IsChecked;
 
             if (CurrentObjects.Any() && ((needsRegen && SaveViewMode == 2) || forceRegen))
             {
@@ -3889,7 +3889,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void GenderTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(e.Source is TabControl tabctrl)
+            if (e.Source is TabControl tabctrl)
             {
                 soundPanelTabControl.SelectedIndex = tabctrl.SelectedIndex;
                 faceFXEditorTabControl.SelectedIndex = tabctrl.SelectedIndex;
@@ -4122,9 +4122,9 @@ namespace ME3Explorer.Dialogue_Editor
             const string input = "Enter a TLK StringRef or the part of a line.";
             string searchtext = PromptDialog.Prompt(this, input, "Search Dialogue");
 
-            if(!string.IsNullOrEmpty(searchtext))
+            if (!string.IsNullOrEmpty(searchtext))
             {
-                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.ToLower().Contains(searchtext.ToLower())); 
+                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.ToLower().Contains(searchtext.ToLower()));
                 if (tgt != null)
                 {
                     DialogueNode_Selected(tgt);
@@ -4229,34 +4229,34 @@ namespace ME3Explorer.Dialogue_Editor
                     DBox.lineColor = newcolor.ToWinformsColor();
                     break;
                 case "ClrPcker_ParaInt":
-                    DObj.paraintColor = newcolor.ToWinformsColor();;
+                    DObj.paraintColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_RenInt":
-                    DObj.renintColor = newcolor.ToWinformsColor();;
+                    DObj.renintColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Agree":
-                    DObj.agreeColor = newcolor.ToWinformsColor();;
+                    DObj.agreeColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Disagree":
-                    DObj.disagreeColor = newcolor.ToWinformsColor();;
+                    DObj.disagreeColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Friendly":
-                    DObj.friendlyColor = newcolor.ToWinformsColor();;
+                    DObj.friendlyColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Hostile":
-                    DObj.hostileColor = newcolor.ToWinformsColor();;
+                    DObj.hostileColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_EntryPen":
-                    DObj.entryPenColor = newcolor.ToWinformsColor();;
+                    DObj.entryPenColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_ReplyPen":
-                    DObj.replyPenColor = newcolor.ToWinformsColor();;
+                    DObj.replyPenColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Entry":
-                    DObj.entryColor = newcolor.ToWinformsColor();;
+                    DObj.entryColor = newcolor.ToWinformsColor(); ;
                     break;
                 case "ClrPcker_Reply":
-                    DObj.replyColor = newcolor.ToWinformsColor();;
+                    DObj.replyColor = newcolor.ToWinformsColor(); ;
                     break;
             }
 
@@ -4293,7 +4293,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void Spacing_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if(e.NewValue == e.OldValue)
+            if (e.NewValue == e.OldValue)
             {
                 return;
             }
@@ -4316,7 +4316,7 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             Clipboard.Clear();
             string copytext = null;
-            switch(cmd)
+            switch (cmd)
             {
                 case "Line":
                     copytext = SelectedDialogueNode.Line;
@@ -4354,7 +4354,7 @@ namespace ME3Explorer.Dialogue_Editor
 
             RefreshView();
 
-            if(reselectedNodeID >= 0)
+            if (reselectedNodeID >= 0)
             {
                 DialogueNode_SelectByIndex(reselectedNodeID, reselectedNodeReply);
             }

@@ -5,9 +5,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ME2Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
+using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
@@ -158,6 +161,77 @@ namespace ME3Explorer
                 }
             }
             set { _displayName = value; OnPropertyChanged(); }
+        }
+
+        private bool loadedSubtext = false;
+        private string _subtext;
+        public string SubText
+        {
+            get
+            {
+                try
+                {
+                    if (loadedSubtext) return _subtext;
+                    if (Entry == null) return null;
+                    if (Entry.ClassName == "WwiseEvent")
+                    {
+                        //parse out tlk id?
+                        if (Entry.ObjectName.Name.StartsWith("VO_"))
+                        {
+                            var parsing = Entry.ObjectName.Name.Substring(3);
+                            var nextUnderScore = parsing.IndexOf("_");
+                            if (nextUnderScore > 0)
+                            {
+                                parsing = parsing.Substring(0, nextUnderScore);
+                                if (int.TryParse(parsing, out var parsedInt))
+                                {
+                                    //Lookup TLK
+                                    var data = TLKManagerWPF.GlobalFindStrRefbyID(parsedInt, Entry.FileRef);
+                                    if (data != "No Data")
+                                    {
+                                        _subtext = data;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (Entry.ClassName == "WwiseStream")
+                    {
+                        //parse out tlk id?
+                        var splits = Entry.ObjectName.Name.Split('_');
+                        for (int i = splits.Length - 1; i > 0; i--)
+                        {
+                            //backwards is faster
+                            if (int.TryParse(splits[i], out var parsed))
+                            {
+                                //Lookup TLK
+                                var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                if (data != "No Data")
+                                {
+                                    _subtext = data;
+                                }
+                            }
+                        }
+                    }
+                    else if (Entry is ExportEntry ee && ee.Parent != null && ee.Parent.ObjectName == "PersistentLevel")
+                    {
+                        var tag = ee.GetProperty<NameProperty>("Tag");
+                        if (tag != null && tag.Value.Name != Entry.ObjectName)
+                        {
+                            _subtext = tag.Value.Name;
+                        }
+                    }
+
+
+                    loadedSubtext = true;
+                    return _subtext;
+                }
+                catch (Exception)
+                {
+                    return "ERROR GETTING SUBTEXT!";
+                }
+            }
+            set { _subtext = value; OnPropertyChanged(); }
         }
 
         public int UIndex => Entry?.UIndex ?? 0;

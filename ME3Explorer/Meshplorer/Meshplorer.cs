@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
@@ -312,7 +313,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     SerializingContainer c = new SerializingContainer();
-                    c.Memory = new MemoryStream();
+                    c.Memory = new EndianReader(new MemoryStream());
                     c.isLoading = false;
                     skm.Serialize(c);
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
@@ -564,7 +565,7 @@ namespace ME3Explorer.Meshplorer
             {
                 skm.Materials[t.Index] = Materials[n] + 1;
                 SerializingContainer con = new SerializingContainer();
-                con.Memory = new MemoryStream();
+                con.Memory = new EndianReader(new MemoryStream());
                 con.isLoading = false;
                 skm.Serialize(con);
                 skm.Export.SetBinaryData(con.Memory.ToArray());
@@ -588,7 +589,7 @@ namespace ME3Explorer.Meshplorer
                 skm.LODModels[t.Parent.Parent.Index].Sections[t.Index] = section;
 
                 SerializingContainer con = new SerializingContainer();
-                con.Memory = new MemoryStream();
+                con.Memory = new EndianReader(new MemoryStream());
                 con.isLoading = false;
                 skm.Serialize(con);
                 skm.Export.SetBinaryData(con.Memory.ToArray());

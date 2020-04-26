@@ -139,8 +139,8 @@ namespace ME3Explorer.MetadataEditor
         public override void LoadExport(ExportEntry exportEntry)
         {
             loadingNewData = true;
-            try
-            {
+            //try
+            //{
                 Row_Archetype.Height = new GridLength(24);
                 Row_ExpClass.Height = new GridLength(24);
                 Row_Superclass.Height = new GridLength(24);
@@ -205,11 +205,11 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
                 InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
                 InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
+            //}
 
             CurrentLoadedEntry = exportEntry;
             OriginalHeader = CurrentLoadedEntry.Header;

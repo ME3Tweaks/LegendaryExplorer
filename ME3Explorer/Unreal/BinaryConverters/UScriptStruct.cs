@@ -18,11 +18,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref StructFlags);
             if (sc.IsLoading)
             {
-                Defaults = PropertyCollection.ReadProps(Export, sc.ms, Export.ObjectName, includeNoneProperty: true, entry: Export);
+                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, includeNoneProperty: true, entry: Export);
             }
             else
             {
-                Defaults.WriteTo(sc.ms, sc.Pcc, true);
+                Defaults.WriteTo(sc.ms.Writer, sc.Pcc, true);
             }
         }
     }
@@ -56,7 +56,7 @@ namespace ME3Explorer
             }
             else
             {
-                sc.ms.WriteUInt32((uint)flags);
+                sc.ms.Writer.WriteUInt32((uint)flags);
             }
         }
     }

@@ -47,17 +47,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>(count);
                 for (int i = 0; i < count; i++)
                 {
-                    CameraList.Add(sc.ms.ReadNameReference(sc.Pcc), PropertyCollection.ReadProps(Export, sc.ms, "BioStageCamera", true, entry: Export));
+                    CameraList.Add(sc.ms.ReadNameReference(sc.Pcc), PropertyCollection.ReadProps(Export, sc.ms.BaseStream, "BioStageCamera", true, entry: Export));
                 }
             }
             else
             {
-                sc.ms.WriteInt32(CameraList.Count);
-                sc.ms.WriteInt32(0);
+                sc.ms.Writer.WriteInt32(CameraList.Count);
+                sc.ms.Writer.WriteInt32(0);
                 foreach ((NameReference name, PropertyCollection props) in CameraList)
                 {
-                    sc.ms.WriteNameReference(name, sc.Pcc);
-                    props.WriteTo(sc.ms, sc.Pcc);
+                    sc.ms.Writer.WriteNameReference(name, sc.Pcc);
+                    props.WriteTo(sc.ms.Writer, sc.Pcc);
                 }
             }
 
@@ -65,7 +65,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             {
                 long endPos = sc.ms.Position;
                 sc.ms.JumpTo(startPos);
-                sc.ms.WriteInt32((int)(endPos - startPos - 4));
+                sc.ms.Writer.WriteInt32((int)(endPos - startPos - 4));
                 sc.ms.JumpTo(endPos);
             }
         }

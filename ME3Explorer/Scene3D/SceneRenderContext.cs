@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D11;
@@ -197,7 +199,8 @@ namespace ME3Explorer.Scene3D
             ImmediateContext.PixelShader.SetSampler(0, SampleState);
 
             // Load the default texture
-            System.Drawing.Bitmap deftex = new System.Drawing.Bitmap(System.Environment.CurrentDirectory + "\\exec\\Default.bmp");
+            var path = Path.Combine(App.ExecFolder, "Default.bmp");
+            System.Drawing.Bitmap deftex = new System.Drawing.Bitmap(path);
             DefaultTexture = LoadTexture(deftex);
             deftex.Dispose();
             DefaultTextureView = new ShaderResourceView(Device, DefaultTexture);

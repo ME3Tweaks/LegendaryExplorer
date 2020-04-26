@@ -117,7 +117,7 @@ namespace ME3Explorer
 
         private void changePathsButton_Click(object sender, RoutedEventArgs e)
         {
-            string game = InputComboBoxWPF.GetValue(this, "Which game's path do you want to change?",
+            string game = InputComboBoxWPF.GetValue(this, "Which game's path do you want to change?", "Change game paths",
                 new[] { "Mass Effect", "Mass Effect 2", "Mass Effect 3" }, "Mass Effect 3");
             if (game != "")
             {

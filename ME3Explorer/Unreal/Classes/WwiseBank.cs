@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
+using StreamHelpers;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -15,7 +17,7 @@ namespace ME3Explorer.Unreal.Classes
         public ExportEntry export;
         public int ExportIndex;
         public IMEPackage pcc;
-        public List<byte[]> Chunks;
+        public List<(string, byte[])> Chunks;
         public List<byte[]> HIRCObjects;
         public int BinaryOffset;
         public byte[] didx_data;
@@ -33,25 +35,28 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
+            EndianReader reader = new EndianReader(new MemoryStream(export.Data)) { Endian = export.FileRef.Endian };
             BinaryOffset = export.propsEnd() + (export.FileRef.Game == MEGame.ME2 ? 0x18 : 0x10);
-            ReadChunks();
+            ReadChunks(reader);
         }
 
-        public void ReadChunks()
+        public void ReadChunks(EndianReader reader)
         {
             int pos = BinaryOffset;
-            Chunks = new List<byte[]>();
-            while (pos < memory.Length)
+            reader.Position = BinaryOffset;
+            Chunks = new List<(string, byte[])>();
+            while (reader.Position < reader.Length)
             {
-                int start = pos;
-                Debug.WriteLine("Reading chunk: " + GetID(memory, start));
-                int size = BitConverter.ToInt32(memory, start + 4) + 8; //size of chunk is at +4, we add 8 as it includes header and size
+                int start = (int)reader.Position;
+                var chunkname = reader.ReadEndianASCIIString(4);
+                Debug.WriteLine("Reading chunk: " + chunkname);
+                int size = reader.ReadInt32() + 8; //size of chunk is at +4, we add 8 as it includes header and size
                 byte[] buff = new byte[size];
                 Buffer.BlockCopy(memory, start, buff, 0, size);
                 //                for (int i = 0; i < size; i++)
                 //                  buff[i] = memory[start + i];
-                Chunks.Add(buff);
-                pos += size;
+                Chunks.Add((chunkname, buff));
+                reader.Skip(size - 8);
             }
         }
 
@@ -62,17 +67,18 @@ namespace ME3Explorer.Unreal.Classes
         public List<(uint, int, int)> GetWEMFilesMetadata()
         {
             var returnData = new List<(uint, int, int)>();
-            foreach (byte[] buff in Chunks)
+            foreach ((string ascii, byte[] buff) in Chunks)
             {
-                if (GetID(buff) == "DIDX")
+                if (ascii.Equals("DIDX"))
                 {
                     //metadata
-                    int lendata = BitConverter.ToInt32(buff, 0x4);
+                    int lendata = EndianReader.ToInt32(buff, 0x4, export.FileRef.Endian);
+
                     for (int i = 0; i < lendata / 0xC; i++)
                     {
-                        uint wemID = BitConverter.ToUInt32(buff, 0x8 + i * 0xC);
-                        int offset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
-                        int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
+                        uint wemID = EndianReader.ToUInt32(buff, 0x8 + i * 0xC, export.FileRef.Endian);
+                        int offset = EndianReader.ToInt32(buff, 0xC + i * 0xC, export.FileRef.Endian);
+                        int size = EndianReader.ToInt32(buff, 0x10 + i * 0xC, export.FileRef.Endian);
                         returnData.Add((wemID, offset, size));
                     }
                     break;
@@ -84,7 +90,7 @@ namespace ME3Explorer.Unreal.Classes
         public string GetQuickScan()
         {
             string res = "";
-            foreach (byte[] buff in Chunks)
+            foreach ((string ascii, byte[] buff) in Chunks)
             {
                 res += "Found Chunk, ID:" + GetID(buff) + " len= " + buff.Length + " bytes\n";
                 switch (GetID(buff))
@@ -143,11 +149,11 @@ namespace ME3Explorer.Unreal.Classes
         /// </summary>
         /// <param name="name">4 character chunk header (BKHD, DATA, DIDX, HIRC, etc.</param>
         /// <returns>byte[] of this chunk, or null if not found</returns>
-        internal byte[] GetChunk(string name)
+        internal byte[] GetChunk(string name, bool caseInsensitive = false)
         {
-            foreach (byte[] buff in Chunks)
+            foreach ((string ascii, byte[] buff) in Chunks)
             {
-                if (GetID(buff) == name)
+                if (GetID(buff).Equals(name, caseInsensitive ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture))
                 {
                     return buff;
                 }
@@ -446,7 +452,7 @@ namespace ME3Explorer.Unreal.Classes
             res.Write(memory, 0, BinaryOffset);
             int size = 0;
             byte[] tmp;
-            foreach (byte[] buff in Chunks)
+            foreach ((string ascii, byte[] buff) in Chunks)
                 switch (GetID(buff))
                 {
                     case "HIRC":
@@ -535,10 +541,10 @@ namespace ME3Explorer.Unreal.Classes
             }
 
             //Write the remaining chunks.
-            List<byte[]> remainingChunks = Chunks.Where(x => GetID(x) != "BKHD" && GetID(x) != "DIDX" && GetID(x) != "DATA").ToList();
-            foreach (byte[] chunk in remainingChunks)
+            List<(string ascii, byte[] buff)> remainingChunks = Chunks.Where(x => x.Item1 != "BKHD" && x.Item1 != "DIDX" && x.Item1 != "DATA").ToList();
+            foreach (var chunk in remainingChunks)
             {
-                newBankBinaryStream.Write(chunk, 0, chunk.Length);
+                newBankBinaryStream.Write(chunk.buff, 0, chunk.buff.Length);
             }
 
             newBankBinaryStream.Position = 0;

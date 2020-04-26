@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ME3Explorer;
+using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
@@ -44,11 +45,26 @@ namespace ME3Explorer.Matinee
         private void TimelineControlOnSelectionChanged(ExportEntry export)
         {
             Properties_InterpreterWPF.LoadExport(export);
+            OnPropertyChanged(nameof(LoadedExportIsCurve));
+            if (CurveTab_CurveEditor.CanParse(export))
+            {
+                CurveTab_CurveEditor.LoadExport(export);
+                // Select first curve
+                var curve = CurveTab_CurveEditor.InterpCurveTracks.FirstOrDefault()?.Curves.FirstOrDefault();
+                if (curve != null)
+                {
+                    curve.IsSelected = true;
+                }
+            }
+            else
+            {
+                CurveTab_CurveEditor.UnloadExport();
+            }
         }
-
+        public bool LoadedExportIsCurve => Properties_InterpreterWPF != null && CurveTab_CurveEditor != null && CurveTab_CurveEditor.CanParse(Properties_InterpreterWPF.CurrentLoadedExport);
         public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new ObservableCollectionExtended<ExportEntry>();
         public ObservableCollectionExtended<string> Animations { get; } = new ObservableCollectionExtended<string>();
-        
+
         #region Properties and Bindings
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -274,17 +290,19 @@ namespace ME3Explorer.Matinee
         {
             timelineControl.InterpDataExport = value;
             Properties_InterpreterWPF.LoadExport(value);
+            OnPropertyChanged(nameof(LoadedExportIsCurve));
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.change == PackageChange.ExportAdd || 
+            IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.change == PackageChange.ExportAdd ||
                                                                                        update.change == PackageChange.ExportData ||
                                                                                        update.change == PackageChange.ExportHeader);
             foreach (var update in exportUpdates)
             {
                 var changedExport = Pcc.getExport(update.index);
-                if (InterpDataExports.Contains(changedExport))
+
+                if (InterpDataExports.Contains(changedExport)) //changes, as it already exists in our list
                 {
                     if (changedExport.ClassName != "InterpData")
                     {
@@ -295,12 +313,13 @@ namespace ME3Explorer.Matinee
                         LoadInterpData(changedExport);
                     }
                 }
-                else if (changedExport.ClassName == "InterpData")
+                else if (changedExport.ClassName == "InterpData") //adding an export to the list of interps
                 {
                     InterpDataExports.Add(changedExport);
                 }
-                else if (changedExport.IsDescendantOf(SelectedInterpData))
+                else if (changedExport.IsDescendantOf(SelectedInterpData)) //track was changed or at least a descendant
                 {
+                    // subcontrol, 
                     timelineControl.RefreshInterpData(changedExport);
                 }
             }

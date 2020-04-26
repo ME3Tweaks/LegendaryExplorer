@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
@@ -11,7 +12,7 @@ namespace ME3Explorer.Packages
     {
         public MEGame Game => FileRef.Game;
 
-        public ImportEntry(IMEPackage pccFile, Stream importData)
+        public ImportEntry(IMEPackage pccFile, EndianReader importData)
         {
             HeaderOffset = importData.Position;
             FileRef = pccFile;
@@ -71,18 +72,42 @@ namespace ME3Explorer.Packages
             set => idxLink = value?.UIndex ?? 0;
         }
 
-        private int idxPackageFile { get => BitConverter.ToInt32(_header, 0);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; } }
+        private int idxPackageFile
+        {
+            get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int)); HeaderChanged = true; }
+        }
         //int PackageNameNumber
-        private int idxClassName { get => BitConverter.ToInt32(_header, 8);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; } }
+        private int idxClassName
+        {
+            get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int)); HeaderChanged = true; }
+        }
         //int ClassNameNumber
-        public int idxLink { get => BitConverter.ToInt32(_header, 16);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int)); HeaderChanged = true; } }
-        private int idxObjectName { get => BitConverter.ToInt32(_header, 20);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; } }
-        public int indexValue { get => BitConverter.ToInt32(_header, 24);
-            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; } }
+        public int idxLink
+        {
+            get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
+            set
+            {
+                // 0 check for setup
+                if (UIndex != 0 && value == UIndex)
+                {
+                    throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
+                }
+                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int));
+                HeaderChanged = true;
+            }
+        }
+        private int idxObjectName
+        {
+            get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int)); HeaderChanged = true; }
+        }
+        public int indexValue
+        {
+            get => EndianReader.ToInt32(_header, 24, FileRef.Endian);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; }
+        }
 
 
 
