@@ -746,7 +746,7 @@ namespace ME3Explorer.PackageEditor
                         {
                             var possibleTFCs = AvailableTFCNames.Where(x => x.StartsWith("Movies_DLC_MOD_") || x.StartsWith("Textures_DLC_MOD_")).ToList();
                             var owner = Window.GetWindow(this);
-                            var tdlg = InputComboBoxWPF.GetValue(owner, "Select a Movie TFC", possibleTFCs);
+                            var tdlg = InputComboBoxWPF.GetValue(owner, "Select a Movie TFC", "TFC Selector",possibleTFCs);
                             if (tdlg == null)
                             {
                                 TextureCacheComboBox.SelectedItem = oldselection;

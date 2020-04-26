@@ -26,6 +26,27 @@ namespace ME3Explorer
                     throw new ArgumentOutOfRangeException(nameof(game), game, null);
             }
         }
+
+        /// <summary>
+        /// Returns cooked path for specified game path and game
+        /// </summary>
+        /// <param name="gamepath"></param>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static string CookedPath(string gamepath, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                case MEGame.ME2:
+                    return Path.Combine(gamepath, "BioGame", "CookedPC");
+                case MEGame.ME3:
+                    return Path.Combine(gamepath, "BioGame", "CookedPCConsole");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
+
         public static string GamePath(MEGame game)
         {
             switch (game)
@@ -40,6 +61,7 @@ namespace ME3Explorer
                     throw new ArgumentOutOfRangeException(nameof(game), game, null);
             }
         }
+
         public static string BioGamePath(MEGame game)
         {
             switch (game)
@@ -65,6 +87,26 @@ namespace ME3Explorer
                     return ME2Directory.DLCPath;
                 case MEGame.ME3:
                     return ME3Directory.DLCPath;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
+
+        /// <summary>
+        /// Returns DLC path for game at the specified game path
+        /// </summary>
+        /// <param name="gamepath"></param>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static string DLCPath(string gamepath, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return Path.Combine(gamepath, "DLC");
+                case MEGame.ME2:
+                case MEGame.ME3:
+                    return Path.Combine(gamepath, "BioGame", "DLC");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(game), game, null);
             }

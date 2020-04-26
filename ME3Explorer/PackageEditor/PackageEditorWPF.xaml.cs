@@ -35,6 +35,7 @@ using Gammtek.Conduit.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
+using ME3Explorer.ME3Tweaks;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -621,7 +622,7 @@ namespace ME3Explorer
 
         private void NewFile()
         {
-            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", new[] { "ME3", "ME2", "ME1", "UDK" }, "ME3");
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", "Create new package file", new[] { "ME3", "ME2", "ME1", "UDK" }, "ME3");
             if (Enum.TryParse(gameString, out MEGame game))
             {
                 var dlg = new SaveFileDialog
@@ -1679,7 +1680,7 @@ namespace ME3Explorer
 
             string filename = Path.GetFileName(Pcc.FilePath);
             string dlcPath = MEDirectories.DLCPath(Pcc.Game);
-            List<string> candidates = MEDirectories.OfficialDLC(Pcc.Game)
+            List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
                 .Select(dlcName => Path.Combine(dlcPath, dlcName))
                 .Prepend(MEDirectories.CookedPath(Pcc.Game))
                 .Where(Directory.Exists)
@@ -1687,13 +1688,29 @@ namespace ME3Explorer
                     Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                         .FirstOrDefault(path => Path.GetFileName(path) == filename))
                 .NonNull().ToList();
-            if (candidates.IsEmpty())
+            var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
+            List<string> backupPathCandidates = new List<string>();
+            if (backupPath != null)
             {
-                MessageBox.Show(this, "Cannot find original file!");
+                var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
+                backupPathCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
+                    .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
+                    .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                    .Where(Directory.Exists)
+                    .Select(cookedPath =>
+                        Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                            .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                    .NonNull());
+                inGameCandidates.Prepend(backupDlcPath);
+            }
+
+            if (inGameCandidates.IsEmpty())
+            {
+                MessageBox.Show(this, "Cannot find any candidates for this file!");
                 return;
             }
 
-            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", candidates, candidates.Last());
+            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison",inGameCandidates, inGameCandidates.Last());
 
             if (string.IsNullOrEmpty(filePath))
             {
@@ -4593,7 +4610,7 @@ namespace ME3Explorer
         private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
         {
             var gameString = InputComboBoxWPF.GetValue(this, "Select which game's files you want converted to having skippable dialogue",
-                new[] { "ME1", "ME2", "ME3" }, "ME1");
+                "Game selector",new[] { "ME1", "ME2", "ME3" }, "ME1");
             if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
                 MessageBox.Show(this, $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
                     "", MessageBoxButton.YesNo))
@@ -4644,7 +4661,7 @@ namespace ME3Explorer
         {
             if (Pcc is MEPackage pcc)
             {
-                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?",
+                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?", "Game file converter",
                     new[] { "ME1", "ME2", "ME3" }, "ME2");
                 if (Enum.TryParse(gameString, out MEGame game))
                 {
@@ -5269,19 +5286,19 @@ namespace ME3Explorer
                     for (int j = 0; j < bonePosCount; j++)
                     {
                         var offset = mem.Position;
-                        
+
                         var posX = mem.ReadSingle();
                         mem.Position -= 4;
                         mem.WriteSingle(posX + offsetX);
-                        
+
                         var posY = mem.ReadSingle();
                         mem.Position -= 4;
-                        mem.WriteSingle(posY+ offsetY);
-                        
+                        mem.WriteSingle(posY + offsetY);
+
                         var posZ = mem.ReadSingle();
                         mem.Position -= 4;
                         mem.WriteSingle(posZ + offsetZ);
-                        
+
                         Debug.WriteLine($"PosKey {j}: X={posX},Y={posY},Z={posZ}");
                     }
 

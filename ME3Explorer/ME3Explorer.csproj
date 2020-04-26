@@ -429,6 +429,8 @@
     </Compile>
     <Compile Include="MaterialViewer\ShaderCacheManipulator.cs" />
     <Compile Include="MaterialViewer\ShaderCacheReader.cs" />
+    <Compile Include="ME3Tweaks\ME3TweaksBackups.cs" />
+    <Compile Include="ME3Tweaks\ME3TweaksUtilities.cs" />
     <Compile Include="Meshplorer\MeshplorerWPF.xaml.cs">
       <DependentUpon>MeshplorerWPF.xaml</DependentUpon>
     </Compile>
