@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
@@ -13,7 +13,15 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Win32;
+using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
+using DataFormats = System.Windows.DataFormats;
+using DragDropEffects = System.Windows.DragDropEffects;
+using DragEventArgs = System.Windows.DragEventArgs;
+using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace ME3Explorer
 {
@@ -55,6 +63,9 @@ namespace ME3Explorer
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
 
+        /// <summary>
+        /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constuctor instead.
+        /// </summary>
         public MeshplorerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer WPF", new WeakReference(this));
@@ -101,7 +112,7 @@ namespace ME3Explorer
 
         private void ExportToUDK()
         {
-            SaveFileDialog d = new SaveFileDialog {Filter = App.UDKFileFilter};
+            SaveFileDialog d = new SaveFileDialog { Filter = App.UDKFileFilter };
             if (d.ShowDialog() == true)
             {
                 try
@@ -472,7 +483,8 @@ namespace ME3Explorer
             {
                 //BusyText = "Loading " + Path.GetFileName(s);
                 //IsBusy = true;
-                StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
+                StatusBar_LeftMostText.Text =
+                    $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
@@ -484,6 +496,11 @@ namespace ME3Explorer
                 AddRecent(s, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
+                if (goToIndex != 0)
+                {
+                    CurrentExport = MeshExports.FirstOrDefault(x => x.UIndex == goToIndex);
+                    ExportQueuedForFocusing = CurrentExport;
+                }
             }
             catch (Exception e)
             {
@@ -574,7 +591,8 @@ namespace ME3Explorer
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
         {
-            if (MeshExportsList.SelectedItem is ExportEntry export){
+            if (MeshExportsList.SelectedItem is ExportEntry export)
+            {
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFile(export.FileRef.FilePath, export.UIndex);

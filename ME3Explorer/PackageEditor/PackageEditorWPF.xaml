@@ -140,10 +140,10 @@
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
                     <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowstored in package header" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
-                    <Separator/>
+                    <!--<Separator/>
                     <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
                     <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#x0a;Selecting this option will relink and then clear the cross-file map."
-                              Command="{Binding PerformMultiRelinkCommand}"/>
+                              Command="{Binding PerformMultiRelinkCommand}"/>-->
                     <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL + A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
@@ -477,7 +477,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
                         </TabItem.Header>
-                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Metadata_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
@@ -501,7 +501,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Binary Interpreter" ToolTip="View and edit binary data for supported classes"/>
                         </TabItem.Header>
-                        <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="MeshRenderer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

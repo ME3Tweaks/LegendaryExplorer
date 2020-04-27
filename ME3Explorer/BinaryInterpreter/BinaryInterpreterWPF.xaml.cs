@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Be.Windows.Forms;
+using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
@@ -46,6 +47,20 @@ namespace ME3Explorer
         }
         public static readonly DependencyProperty AlwaysLoadRegardlessOfSizeProperty = DependencyProperty.Register(
             nameof(AlwaysLoadRegardlessOfSize), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Use only for binding to prevent null bindings
+        /// </summary>
+        public GenericCommand NavigateToEntryCommandInternal { get; set; }
+
+        public RelayCommand NavigateToEntryCommand
+        {
+            get => (RelayCommand)GetValue(NavigateToEntryCallbackProperty);
+            set => SetValue(NavigateToEntryCallbackProperty, value);
+        }
+
+        public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
+            "NavigateToEntryCommand", typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
 
         private HexBox BinaryInterpreter_Hexbox;
 
@@ -108,10 +123,90 @@ namespace ME3Explorer
 
         #region Commands
         public ICommand CopyOffsetCommand { get; set; }
+        public ICommand OpenInPackageEditorCommand { get; set; }
 
         private void LoadCommands()
         {
             CopyOffsetCommand = new RelayCommand(CopyFileOffsetToClipboard, OffsetIsSelected);
+            NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
+            OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, IsSelectedItemAnObjectRef);
+        }
+
+        private bool IsSelectedItemAnObjectRef()
+        {
+            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b);
+        }
+
+        private void FireNavigateCallback()
+        {
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b.Tag))
+            {
+                var pos = b.GetPos();
+                //terribly inefficient. I do'nt use endianconverter here as it's static and i don't want static endian setting
+                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                { Endian = CurrentLoadedExport.FileRef.Endian };
+                er.Position = pos;
+                var value = er.ReadInt32();
+                if (CurrentLoadedExport.FileRef.IsEntry(value))
+                {
+                    NavigateToEntryCommand?.Execute(CurrentLoadedExport.FileRef.GetEntry(value));
+                }
+            }
+        }
+
+        private bool CanFireNavigateCallback()
+        {
+            if (NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b &&
+                IsObjectNodeType(b.Tag))
+            {
+                var pos = b.GetPos();
+                //This will be super inefficient. It may be wiser to cache the value of an object reference in BinInterpNode since we refresh the entire tree
+                //on modification anyways.
+                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                { Endian = CurrentLoadedExport.FileRef.Endian };
+                er.Position = pos;
+                var value = er.ReadInt32();
+                return CurrentLoadedExport.FileRef.IsEntry(value);
+            }
+
+            return false;
+        }
+
+        private void OpenInPackageEditor()
+        {
+            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b))
+            {
+                int index = 0;
+                if (b.UIndexValue == 0)
+                {
+                    EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                        { Endian = CurrentLoadedExport.FileRef.Endian };
+                    index = b.GetObjectRefValue(er);
+                }
+                else
+                {
+                    index = b.UIndexValue;
+                }
+                if (CurrentLoadedExport.FileRef.IsEntry(index))
+                {
+                    PackageEditorWPF p = new PackageEditorWPF();
+                    p.Show();
+                    p.LoadFile(CurrentLoadedExport.FileRef.FilePath, index);
+                    p.Activate(); //bring to front  
+                }
+            }
+        }
+
+        private bool IsObjectNodeType(object nodeobj)
+        {
+            if (nodeobj is BinInterpNode node && node.Tag is BinaryInterpreterWPF.NodeType type)
+            {
+                if (type == NodeType.ArrayLeafObject) return true;
+                if (type == NodeType.ObjectProperty) return true;
+                if (type == NodeType.StructLeafObject) return true;
+            }
+
+            return false;
         }
 
         private void CopyFileOffsetToClipboard(object obj)

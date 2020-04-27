@@ -107,7 +107,10 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" 
+                                         FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" 
+                                         ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+                                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <SharedUI:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                         <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
@@ -192,7 +195,7 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
                             </MultiDataTrigger>
-                             <MultiDataTrigger>
+                            <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
                                     <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
@@ -261,6 +264,18 @@
                         <MenuItem Header="Clear Array" ToolTip="Removes all values from the array." Command="{Binding ClearArrayCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="View referenced object in pop out Interpreter" ToolTip="Opens a new Interpreter window displaying the referenced object value" Command="{Binding PopoutInterpreterForObjectValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object" Command="{Binding NavigateToEntryCommandInternal}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open in new Package Editor" ToolTip="Opens a new Package Editor to this object" Command="{Binding OpenInPackageEditorCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Open in Meshplorer" ToolTip="Opens the referenced export in Meshplorer" Command="{Binding OpenInMeshplorerCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
 
                         <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>

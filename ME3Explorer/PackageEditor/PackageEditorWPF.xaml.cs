@@ -235,7 +235,7 @@ namespace ME3Explorer
         public ICommand CompactShaderCacheCommand { get; set; }
         public ICommand GoToArchetypecommand { get; set; }
         public ICommand ReplaceNamesCommand { get; set; }
-
+        public ICommand NavigateToEntryCommand { get; set; }
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -285,9 +285,17 @@ namespace ME3Explorer
 
             DumpAllShadersCommand = new GenericCommand(DumpAllShaders, HasShaderCache);
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
-
+            NavigateToEntryCommand = new RelayCommand(NavigateToEntry, CanNavigateToEntry);
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
         }
+
+        private void NavigateToEntry(object obj)
+        {
+            IEntry e = (IEntry) obj;
+            GoToNumber(e.UIndex);
+        }
+
+        private bool CanNavigateToEntry(object o) => o is IEntry entry && entry.FileRef == Pcc;
 
         private void GoToArchetype()
         {
@@ -1689,11 +1697,10 @@ namespace ME3Explorer
                         .FirstOrDefault(path => Path.GetFileName(path) == filename))
                 .NonNull().ToList();
             var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
-            List<string> backupPathCandidates = new List<string>();
             if (backupPath != null)
             {
                 var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
-                backupPathCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
+                inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
                     .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
                     .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
                     .Where(Directory.Exists)
@@ -1701,7 +1708,6 @@ namespace ME3Explorer
                         Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                             .FirstOrDefault(path => Path.GetFileName(path) == filename))
                     .NonNull());
-                inGameCandidates.Prepend(backupDlcPath);
             }
 
             if (inGameCandidates.IsEmpty())

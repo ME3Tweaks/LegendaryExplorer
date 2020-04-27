@@ -74,6 +74,28 @@ namespace ME3Explorer.Unreal.Classes
                     }
                 }
             }
+            else if (export.ClassName == "RvrEffectsMaterialUser")
+            {
+                var props = export.GetProperties();
+                if (export.GetProperty<ObjectProperty>("m_pBaseMaterial") is ObjectProperty baseProp)
+                {
+                    // This is an instance... maybe?
+                    if (baseProp.Value > 0)
+                    {
+                        // Local export
+                        ReadMaterial(export.FileRef.GetUExport(baseProp.Value));
+                    }
+                    else
+                    {
+                        ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
+                        if (externalEntry != null)
+                        {
+                            ReadMaterial(externalEntry);
+                        }
+                    }
+                }
+            }
             else if (export.ClassName == "MaterialInstanceConstant")
             {
                 if (ObjectBinary.From(export) is MaterialInstance matInstBin)

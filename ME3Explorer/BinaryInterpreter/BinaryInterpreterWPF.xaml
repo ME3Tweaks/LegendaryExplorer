@@ -14,6 +14,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
                             Loaded="BinaryInterpreter_Loaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
@@ -119,10 +120,20 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
+                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" 
+                              FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" 
+                              PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" 
+                              VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type global:BinInterpNode}" ItemsSource="{Binding Items}">
-                                <TextBlock Text="{Binding Path=Header}" />
+                                <TextBlock Text="{Binding Path=Header}" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                </TextBlock>
+
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                                 <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
@@ -138,10 +149,6 @@
                                                 <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
-
-
-
-
                                     </StackPanel>
                                 </StackPanel>
                                 <HierarchicalDataTemplate.Triggers>
@@ -206,6 +213,17 @@
                                 <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
                             </Style>
                         </TreeView.ItemContainerStyle>
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object" Command="{Binding NavigateToEntryCommandInternal}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                                <MenuItem Header="Open in new Package Editor" ToolTip="Opens a new Package Editor to this object" Command="{Binding OpenInPackageEditorCommand}" sharedUi:Bindings.VisibilityToEnabled="True">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                        
                     </TreeView>
                 </Grid>
             </Grid>

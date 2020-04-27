@@ -23,6 +23,11 @@ namespace ME3Explorer
             LevelItem
         }
 
+        /// <summary>
+        /// Used to cache the UIndex of object refs
+        /// </summary>
+        public int UIndexValue { get; set; }
+
         public string Header { get; set; }
         public string Name { get; set; }
         public object Tag { get; set; }
@@ -47,17 +52,40 @@ namespace ME3Explorer
 
         public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown, EndianReader bin = null, List<(int, int)> itemsToClip = null) : this()
         {
+            //used for rewriting endianness
             //For clipping we will be 4 ahead of where we will want for these. The value 4 previous will be length of a list.
-            if (bin != null && itemsToClip != null)
-            {
-                bin.Seek(-4, SeekOrigin.Current);
-                var amountToSkip = bin.ReadInt32() * 4;
-                itemsToClip.Add(((int)bin.Position - 4, (int)bin.Position + amountToSkip));
-            }
+            //if (bin != null && itemsToClip != null)
+            //{
+            //    bin.Seek(-4, SeekOrigin.Current);
+            //    var amountToSkip = bin.ReadInt32() * 4;
+            //    itemsToClip.Add(((int)bin.Position - 4, (int)bin.Position + amountToSkip));
+            //}
 
-            Header = $"0x{pos:X8}: {text}";
-            Name = $"_{pos}";
+            Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;
+            if (pos >= 0)
+            {
+                Name = $"_{pos}";
+            }
             Tag = nodeType;
+        }
+
+        public long GetPos()
+        {
+            if (!string.IsNullOrEmpty(Name) && long.TryParse(Name.Substring(1), out var pos)) return pos;
+            return 0;
+        }
+
+        public int GetObjectRefValue(EndianReader endianReader)
+        {
+            if (UIndexValue != 0) return UIndexValue; //cached
+            if (Tag is BinaryInterpreterWPF.NodeType type && (type == BinaryInterpreterWPF.NodeType.ArrayLeafObject || type == BinaryInterpreterWPF.NodeType.ObjectProperty || type == BinaryInterpreterWPF.NodeType.StructLeafObject))
+            {
+                var oldPos = endianReader.Position;
+                endianReader.Seek(GetPos(), SeekOrigin.Begin);
+                UIndexValue = endianReader.ReadInt32();
+                endianReader.Seek(oldPos, SeekOrigin.Begin);
+            }
+            return UIndexValue;
         }
 
         public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)

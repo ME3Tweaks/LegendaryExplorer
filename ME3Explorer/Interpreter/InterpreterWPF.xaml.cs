@@ -1,24 +1,25 @@
-﻿using ME1Explorer.Unreal;
-using ME2Explorer.Unreal;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Media;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using System.Windows;
-using System.ComponentModel;
-using ME3Explorer.SharedUI;
-using System.Windows.Input;
-using static ME3Explorer.PackageEditorWPF;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.Meshplorer;
+using ME3Explorer.Packages;
+using ME3Explorer.Properties;
+using ME3Explorer.SharedUI;
+using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
 {
@@ -44,6 +45,19 @@ namespace ME3Explorer
         public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
             nameof(SubstituteImageForHexBox), typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
 
+        /// <summary>
+        /// Use only for binding to prevent null bindings
+        /// </summary>
+        public GenericCommand NavigateToEntryCommandInternal { get; set; }
+
+        public RelayCommand NavigateToEntryCommand
+        {
+            get => (RelayCommand)GetValue(NavigateToEntryCallbackProperty);
+            set => SetValue(NavigateToEntryCallbackProperty, value);
+        }
+
+        public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
+            "NavigateToEntryCommand", typeof(RelayCommand), typeof(InterpreterWPF), new PropertyMetadata(null));
 
         public bool HideHexBox
         {
@@ -61,7 +75,7 @@ namespace ME3Explorer
         public static readonly DependencyProperty ForceSimpleModeProperty = DependencyProperty.Register(
             nameof(ForceSimpleMode), typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, ForceSimpleModeChangedCallback));
 
-        public bool AdvancedView => !ForceSimpleMode && Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
+        public bool AdvancedView => !ForceSimpleMode && Settings.Default.InterpreterWPF_AdvancedDisplay;
 
         public bool ShowPropOffsets => !HideHexBox && AdvancedView;
 
@@ -84,7 +98,7 @@ namespace ME3Explorer
         //when the class matches.
 
 
-        int RescanSelectionOffset = 0;
+        int RescanSelectionOffset;
         private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
         public struct PropHeader
         {
@@ -118,10 +132,10 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
             LoadCommands();
             InitializeComponent();
-            Properties.Settings.Default.PropertyChanged += SettingChanged;
+            Settings.Default.PropertyChanged += SettingChanged;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
             EditorSetElements.Add(Value_ComboBox); //bool, name
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
@@ -135,7 +149,7 @@ namespace ME3Explorer
 
         void SettingChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Properties.Settings.Default.InterpreterWPF_AdvancedDisplay))
+            if (e.PropertyName == nameof(Settings.Default.InterpreterWPF_AdvancedDisplay))
             {
                 OnPropertyChanged(nameof(AdvancedView));
                 OnPropertyChanged(nameof(ShowPropOffsets));
@@ -211,6 +225,8 @@ namespace ME3Explorer
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
         public ICommand GenerateGUIDCommand { get; set; }
+        public ICommand OpenInPackageEditorCommand { get; set; }
+        public ICommand OpenInMeshplorerCommand { get; set; }
         private void LoadCommands()
         {
             AddPropertiesToStructCommand = new GenericCommand(AddPropertiesToStruct, CanAddPropertiesToStruct);
@@ -226,6 +242,7 @@ namespace ME3Explorer
             SortValueArrayDescendingCommand = new GenericCommand(SortValueArrayDescending, CanSortArrayPropByValue);
             ClearArrayCommand = new GenericCommand(ClearArray, CanClearArray);
             PopoutInterpreterForObjectValueCommand = new GenericCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
+            OpenInMeshplorerCommand = new GenericCommand(OpenReferenceInMeshplorer, CanOpenInMeshplorer);
 
             SaveHexChangesCommand = new GenericCommand(Interpreter_SaveHexChanges, IsExportLoaded);
             ToggleHexBoxCommand = new GenericCommand(ToggleHexbox);
@@ -234,6 +251,58 @@ namespace ME3Explorer
             MoveArrayElementUpCommand = new GenericCommand(MoveArrayElementUp, CanMoveArrayElementUp);
             MoveArrayElementDownCommand = new GenericCommand(MoveArrayElementDown, CanMoveArrayElementDown);
             GenerateGUIDCommand = new GenericCommand(GenerateNewGUID, IsItemGUIDImmutable);
+            NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
+            OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, ObjectPropertyExportIsSelected);
+        }
+
+        private void OpenReferenceInMeshplorer()
+        {
+            if (SelectedItem.Property is ObjectProperty op)
+            {
+                MeshplorerWPF p = new MeshplorerWPF(CurrentLoadedExport.FileRef.GetUExport(op.Value));
+                p.Show();
+                p.Activate(); //bring to front
+            }
+        }
+
+        private bool CanOpenInMeshplorer()
+        {
+            if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsUExport(op.Value))
+            {
+                var entry = CurrentLoadedExport.FileRef.GetUExport(op.Value);
+                return MeshRendererWPF.CanParseStatic(entry);
+            }
+
+            return false;
+        }
+
+        private void OpenInPackageEditor()
+        {
+            if (SelectedItem.Property is ObjectProperty op)
+            {
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(CurrentLoadedExport.FileRef.FilePath, op.Value);
+                p.Activate(); //bring to front        
+            }
+        }
+
+        private void FireNavigateCallback()
+        {
+            var objProp = (ObjectProperty)(SelectedItem as UPropertyTreeViewEntry).Property;
+            var entry = CurrentLoadedExport.FileRef.GetEntry(objProp.Value);
+            NavigateToEntryCommand?.Execute(entry);
+        }
+
+        private bool CanFireNavigateCallback()
+        {
+            if (NavigateToEntryCommand != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op)
+            {
+                var entry = CurrentLoadedExport.FileRef.GetEntry(op.Value);
+                return NavigateToEntryCommand.CanExecute(entry);
+            }
+
+            return false;
         }
 
         private bool CanAddArrayElement()
@@ -734,10 +803,10 @@ namespace ME3Explorer
                 case ArrayPropertyBase arrayProp:
                     {
                         int i = 0;
-                        if (arrayProp.Count > 1000 && Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize)
+                        if (arrayProp.Count > 1000 && Settings.Default.InterpreterWPF_LimitArrayPropertySize)
                         {
                             //Too big to load reliably, users won't edit huge things like this anyways.
-                            UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry()
+                            UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry
                             {
                                 DisplayName = "Too many children to display",
                                 HasTooManyChildrenToDisplay = true,
@@ -871,7 +940,7 @@ namespace ME3Explorer
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
-                    parsedValue = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
+                    parsedValue = TLKManagerWPF.GlobalFindStrRefbyID(strrefp.Value, parsingExport.FileRef.Game, parsingExport.FileRef);
                     break;
                 case StrProperty strp:
                     editableValue = strp.Value;
@@ -1097,7 +1166,7 @@ namespace ME3Explorer
 
             if (name == "m_nStrRefID" || name == "nLineStrRef" || name == "nStrRefID" || name == "m_iStringRef" || name == "m_iDescriptionStringRef")
             {
-                return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
+                return TLKManagerWPF.GlobalFindStrRefbyID(value, export.FileRef.Game, export.FileRef);
             }
             return "";
         }
@@ -1208,11 +1277,11 @@ namespace ME3Explorer
         {
             if (HideHexBox)
             {
-                Properties.Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = false;
+                Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = false;
             }
             else
             {
-                Properties.Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = true;
+                Settings.Default.PackageEditor_HideInterpreterHexBox = HideHexBox = true;
                 ToggleHexbox_Button.Visibility = Visibility.Visible;
             }
         }
@@ -1396,7 +1465,7 @@ namespace ME3Explorer
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
 
-                                string str = TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
+                                string str = TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                                 str = str?.Replace("\n", "[\\n]");
                                 if (str?.Length > 82)
                                 {
@@ -1803,12 +1872,10 @@ namespace ME3Explorer
                                 {
                                     break;
                                 }
-                                else
-                                {
-                                    index = Pcc.FindNameOrAdd(input);
-                                    //Wait for namelist to update. we may need to set a timer here.
-                                    Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                                }
+
+                                index = Pcc.FindNameOrAdd(input);
+                                //Wait for namelist to update. we may need to set a timer here.
+                                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                             }
 
                             bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
@@ -1833,12 +1900,10 @@ namespace ME3Explorer
                                 {
                                     break;
                                 }
-                                else
-                                {
-                                    index = Pcc.FindNameOrAdd(input);
-                                    //Wait for namelist to update. we may need to set a timer here.
-                                    Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                                }
+
+                                index = Pcc.FindNameOrAdd(input);
+                                //Wait for namelist to update. we may need to set a timer here.
+                                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                             }
 
                             bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
@@ -2019,7 +2084,7 @@ namespace ME3Explorer
 
         public override void Dispose()
         {
-            Properties.Settings.Default.PropertyChanged -= SettingChanged;
+            Settings.Default.PropertyChanged -= SettingChanged;
             if (Interpreter_Hexbox.ByteProvider != null)
             {
                 Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
