@@ -212,7 +212,7 @@ namespace ME3Explorer
             return false;
         }
 
-        public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsTexture();
+        public override bool CanParse(ExportEntry exportEntry) => !exportEntry.IsDefaultObject && exportEntry.IsTexture();
 
         public override void PopOut()
         {
