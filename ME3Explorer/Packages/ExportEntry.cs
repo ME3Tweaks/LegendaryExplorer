@@ -40,7 +40,7 @@ namespace ME3Explorer.Packages
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
-            var ms = new EndianReader(new MemoryStream()){Endian = Endian.Native};
+            var ms = new EndianReader(new MemoryStream()) { Endian = Endian.Native };
             if (prePropBinary == null)
             {
                 prePropBinary = new byte[4];
@@ -261,10 +261,10 @@ namespace ME3Explorer.Packages
             get => EndianReader.ToInt32(_header, 8, FileRef.Endian);
             set
             {
-                // 0 check for setup
-                if (UIndex != 0 && value == UIndex)
+                // HeaderOffset = 0 means this was instantiated and not read in from a stream
+                if (value == UIndex && HeaderOffset != 0)
                 {
-                    throw new Exception("Cannot set export link to itself, this will cause infinite recursion");
+                    throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                 }
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
@@ -590,7 +590,7 @@ namespace ME3Explorer.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            EndianReader m = new EndianReader(new MemoryStream()) {Endian = FileRef.Endian};
+            EndianReader m = new EndianReader(new MemoryStream()) { Endian = FileRef.Endian };
             props.WriteTo(m.Writer, FileRef);
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();

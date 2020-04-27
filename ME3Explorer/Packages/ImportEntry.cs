@@ -89,8 +89,8 @@ namespace ME3Explorer.Packages
             get => EndianReader.ToInt32(_header, 16, FileRef.Endian);
             set
             {
-                // 0 check for setup
-                if (UIndex != 0 && value == UIndex)
+                // HeaderOffset = 0 means this was instantiated and not read in from a stream
+                if (value == UIndex && HeaderOffset != 0)
                 {
                     throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                 }

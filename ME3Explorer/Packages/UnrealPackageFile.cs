@@ -149,6 +149,7 @@ namespace ME3Explorer.Packages
                 throw new Exception("Cannot add an export entry from another package file");
 
             exportEntry.DataChanged = true;
+            exportEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the export has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
@@ -180,6 +181,10 @@ namespace ME3Explorer.Packages
 
         public bool IsImport(int uindex) => (uindex < 0 && uindex > (int)(1 << 31) && Math.Abs(uindex) <= ImportCount);
 
+        /// <summary>
+        /// Adds an import to the tree. This method is used to add new imports.
+        /// </summary>
+        /// <param name="importEntry"></param>
         public void AddImport(ImportEntry importEntry)
         {
             if (importEntry.FileRef != this)
@@ -187,6 +192,7 @@ namespace ME3Explorer.Packages
 
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
+            importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             imports.Add(importEntry);
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;

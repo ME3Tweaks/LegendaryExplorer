@@ -84,7 +84,12 @@ namespace ME3Explorer.MetadataEditor
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, CanSaveHexChanges);
         }
 
-        private bool CanSaveHexChanges() => CurrentLoadedEntry != null && HexChanged;
+        private bool CanSaveHexChanges()
+        {
+            if (CurrentLoadedEntry == null || !HexChanged) return false;
+
+            return true;
+        }
 
         private void SaveHexChanges()
         {
@@ -141,70 +146,70 @@ namespace ME3Explorer.MetadataEditor
             loadingNewData = true;
             //try
             //{
-                Row_Archetype.Height = new GridLength(24);
-                Row_ExpClass.Height = new GridLength(24);
-                Row_Superclass.Height = new GridLength(24);
-                Row_ImpClass.Height = new GridLength(0);
-                Row_ExpClass.Height = new GridLength(24);
-                Row_Packagefile.Height = new GridLength(0);
-                Row_ObjectFlags.Height = new GridLength(24);
-                Row_ExportDataSize.Height = new GridLength(24);
-                Row_ExportDataOffsetDec.Height = new GridLength(24);
-                Row_ExportDataOffsetHex.Height = new GridLength(24);
-                Row_ExportExportFlags.Height = new GridLength(24);
-                Row_ExportPackageFlags.Height = new GridLength(24);
-                Row_ExportGenerationNetObjectCount.Height = new GridLength(24);
-                Row_ExportGUID.Height = new GridLength(24);
-                InfoTab_Link_TextBlock.Text = "0x08 Link:";
-                InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
+            Row_Archetype.Height = new GridLength(24);
+            Row_ExpClass.Height = new GridLength(24);
+            Row_Superclass.Height = new GridLength(24);
+            Row_ImpClass.Height = new GridLength(0);
+            Row_ExpClass.Height = new GridLength(24);
+            Row_Packagefile.Height = new GridLength(0);
+            Row_ObjectFlags.Height = new GridLength(24);
+            Row_ExportDataSize.Height = new GridLength(24);
+            Row_ExportDataOffsetDec.Height = new GridLength(24);
+            Row_ExportDataOffsetHex.Height = new GridLength(24);
+            Row_ExportExportFlags.Height = new GridLength(24);
+            Row_ExportPackageFlags.Height = new GridLength(24);
+            Row_ExportGenerationNetObjectCount.Height = new GridLength(24);
+            Row_ExportGUID.Height = new GridLength(24);
+            InfoTab_Link_TextBlock.Text = "0x08 Link:";
+            InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
 
-                InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName.Name);
+            InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName.Name);
 
-                LoadAllEntriesBindedItems(exportEntry);
+            LoadAllEntriesBindedItems(exportEntry);
 
-                InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
-                InfoTab_ObjectnameIndex_TextBox.Text = exportEntry.indexValue.ToString();
+            InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
+            InfoTab_ObjectnameIndex_TextBox.Text = exportEntry.indexValue.ToString();
 
-                var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
-                //Don't even get me started on how dumb it is that SelectedItems is read only...
-                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
+            var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
+            //Don't even get me started on how dumb it is that SelectedItems is read only...
+            string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
 
-                InfoTab_Flags_ComboBox.ItemsSource = flagsList;
-                InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
+            InfoTab_Flags_ComboBox.ItemsSource = flagsList;
+            InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
 
-                InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
-                InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
-                InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
+            InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
+            InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
+            InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
 
-                if (exportEntry.HasComponentMap)
+            if (exportEntry.HasComponentMap)
+            {
+                OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
+                string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
+                int pairOffset = 44;
+                foreach ((NameReference name, int uIndex) in componentMap)
                 {
-                    OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
-                    string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
-                    int pairOffset = 44;
-                    foreach ((NameReference name, int uIndex) in componentMap)
-                    {
-                        components += $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
-                        pairOffset += 12;
-                    }
-
-                    Header_Hexbox_ComponentsLabel.Text = components;
-                }
-                else
-                {
-                    Header_Hexbox_ComponentsLabel.Text = "";
+                    components += $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                    pairOffset += 12;
                 }
 
-                InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
-                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList().Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
+                Header_Hexbox_ComponentsLabel.Text = components;
+            }
+            else
+            {
+                Header_Hexbox_ComponentsLabel.Text = "";
+            }
 
-                InfoTab_GenerationNetObjectCount_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
-                int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
-                InfoTab_GenerationNetObjectCount_TextBox.Text = $"{generationNetObjectCount.Length} counts: {{{string.Join(", ", generationNetObjectCount)}}}";
+            InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
+            InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList().Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
 
-                InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
-                InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
-                InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
-                InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
+            InfoTab_GenerationNetObjectCount_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
+            int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
+            InfoTab_GenerationNetObjectCount_TextBox.Text = $"{generationNetObjectCount.Length} counts: {{{string.Join(", ", generationNetObjectCount)}}}";
+
+            InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
+            InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
+            InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
+            InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
             //}
             //catch (Exception e)
             //{
@@ -409,12 +414,21 @@ namespace ME3Explorer.MetadataEditor
             RefreshAllEntriesList(pcc);
         }
 
+        //Exports
         private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!loadingNewData && InfoTab_Class_ComboBox.SelectedIndex >= 0)
             {
                 var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    var exp = CurrentLoadedEntry as ExportEntry;
+                    InfoTab_Class_ComboBox.SelectedIndex = exp.Class != null ? exp.Class.UIndex + CurrentLoadedEntry.FileRef.ImportCount : CurrentLoadedEntry.FileRef.ImportCount;
+                    MessageBox.Show("Cannot set class to self, this will cause infinite recursion in game.");
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -432,10 +446,13 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData && InfoTab_PackageLink_ComboBox.SelectedIndex >= 0)
             {
+
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
-                var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount;
+                var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount; //get the actual UIndex
                 if (unrealIndex == CurrentLoadedEntry?.UIndex)
                 {
+                    MessageBox.Show("Cannot link to self, this will cause infinite recursion.");
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = CurrentLoadedEntry.idxLink + CurrentLoadedEntry.FileRef.ImportCount;
                     return;
                 }
                 headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
@@ -449,6 +466,22 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    MessageBox.Show("Cannot set superclass to self, this will cause infinite recursion in game.");
+                    var exp = CurrentLoadedEntry as ExportEntry;
+
+                    if (exp.HasSuperClass)
+                    {
+                        InfoTab_Superclass_ComboBox.SelectedIndex = exp.SuperClass.UIndex + CurrentLoadedEntry.FileRef.ImportCount;
+                    }
+                    else
+                    {
+                        InfoTab_Superclass_ComboBox.SelectedIndex = CurrentLoadedEntry.FileRef.ImportCount; //0
+                    }
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -485,6 +518,22 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
                 var unrealIndex = selectedArchetTypeIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    MessageBox.Show("Cannot set archetype to self, this will cause infinite recursion in game.");
+                    var exp = CurrentLoadedEntry as ExportEntry;
+
+                    if (exp.HasArchetype)
+                    {
+                        InfoTab_Archetype_ComboBox.SelectedIndex = exp.Archetype.UIndex + CurrentLoadedEntry.FileRef.ImportCount;
+                    }
+                    else
+                    {
+                        InfoTab_Archetype_ComboBox.SelectedIndex = CurrentLoadedEntry.FileRef.ImportCount; //0
+                    }
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
