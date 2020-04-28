@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -168,8 +169,42 @@ namespace ME3Explorer
                                     return;
                                 }
 
+                                if (newMesh.RotOrigin.Pitch != originalMesh.RotOrigin.Pitch ||
+                                    newMesh.RotOrigin.Yaw != originalMesh.RotOrigin.Yaw ||
+                                    newMesh.RotOrigin.Roll != originalMesh.RotOrigin.Roll)
+                                {
+                                    MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
+                                                    $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
+                                                    "The new value is:\n" +
+                                                    $"\nPitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
+                                                    "These values may need to be adjusted to be accurate.");
+                                }
+
                                 newMesh.Materials = originalMesh.Materials.TypedClone();
                                 CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
+
+                                var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
+                                if (lods != null)
+                                {
+                                    if (lods.Count != originalMesh.LODModels.Length)
+                                    {
+                                        MessageBox.Show("ASSERT: The amount of items in the LODInfo array doesn't match the amount of LODs in the original mesh!");
+                                    }
+                                }
+
+                                if (newMesh.LODModels.Length < originalMesh.LODModels.Length)
+                                {
+                                    // we need to update the LOD models
+                                    var newlods = lods.Take(newMesh.LODModels.Length).ToList();
+                                    lods.Clear();
+                                    lods.AddRange(newlods);
+                                    CurrentExport.WriteProperty(lods);
+                                }
+
+                                if (newMesh.LODModels.Length > originalMesh.LODModels.Length)
+                                {
+                                    MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
+                                }
                             }
                             else
                             {

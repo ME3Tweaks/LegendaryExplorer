@@ -127,7 +127,7 @@
                     </Grid>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}">
+                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
