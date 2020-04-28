@@ -130,7 +130,7 @@
                 <DockPanel Grid.Row="0" Grid.Column="0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
                         <CheckBox Content="Brushes" IsChecked="{Binding ShowBrushes}"/>
-                        <CheckBox Content="SkeltalMeshes" Margin="5,0" IsChecked="{Binding ShowSkeletalMeshes}"/>
+                        <CheckBox Content="SkeletalMeshes" Margin="5,0" IsChecked="{Binding ShowSkeletalMeshes}"/>
                         <CheckBox Content="StaticMeshes" IsChecked="{Binding ShowStaticMeshes}"/>
                     </StackPanel>
                     <ListBox  ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" HorizontalContentAlignment="Stretch">
