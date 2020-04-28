@@ -29,7 +29,7 @@
         <StackPanel Name="OnDemand_Panel" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Name="OnDemand_Title_TextBlock" Text="This export is larger than 20KB" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
             <TextBlock Name="OnDemand_Subtext_TextBlock" Text="Large exports are not automatically parsed to improve performance" HorizontalAlignment="Center"/>
-            <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="3" Click="ParseBinary_Button_Click"/>
+            <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="20" Click="ParseBinary_Button_Click"/>
             <fa:ImageAwesome  Name="ParseBinary_Spinner" Grid.Column="7" Icon="Solid_Spinner" Spin="True" SpinDuration="2" Width="24" Height="24" Margin="5"/>
         </StackPanel>
         <DockPanel Name="LoadedContent_Panel">

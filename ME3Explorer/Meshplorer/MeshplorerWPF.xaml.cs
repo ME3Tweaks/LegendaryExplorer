@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -77,6 +80,7 @@ namespace ME3Explorer
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            MeshesView.Filter = FilterExportList;
 
             RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
             LoadRecentList();
@@ -87,6 +91,52 @@ namespace ME3Explorer
         {
             FileQueuedForLoad = exportToLoad.FileRef.FilePath;
             ExportQueuedForFocusing = exportToLoad;
+        }
+
+        private bool _showStaticMeshes = true;
+        private bool _showSkeletalMeshes = true;
+        private bool _showBrushes = true;
+
+        public bool ShowStaticMeshes
+        {
+            get => _showStaticMeshes;
+            set
+            {
+                SetProperty(ref _showStaticMeshes, value);
+                MeshesView.Refresh();
+            }
+        }
+        public bool ShowSkeletalMeshes
+        {
+            get => _showSkeletalMeshes;
+            set
+            {
+                SetProperty(ref _showSkeletalMeshes, value);
+                MeshesView.Refresh();
+            }
+        }
+
+        public bool ShowBrushes
+        {
+            get => _showBrushes;
+            set
+            {
+                SetProperty(ref _showBrushes, value);
+                MeshesView.Refresh();
+            }
+        }
+
+        public ICollectionView MeshesView => CollectionViewSource.GetDefaultView(MeshExports);
+        private bool FilterExportList(object obj)
+        {
+            if (obj is ExportEntry exp)
+            {
+                if (exp.ClassName == "SkeletalMesh" && ShowSkeletalMeshes) return true;
+                if (exp.ClassName == "Brush" && ShowBrushes) return true;
+                if (exp.ClassName == "StaticMesh" && ShowStaticMeshes) return true;
+            }
+
+            return false;
         }
 
         public ICommand OpenFileCommand { get; set; }
@@ -163,6 +213,7 @@ namespace ME3Explorer
                             {
                                 SkeletalMesh newMesh = ObjectBinary.From<SkeletalMesh>(meshExport);
                                 SkeletalMesh originalMesh = ObjectBinary.From<SkeletalMesh>(CurrentExport);
+
                                 if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
                                 {
                                     MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
@@ -176,12 +227,59 @@ namespace ME3Explorer
                                     MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
                                                     $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
                                                     "The new value is:\n" +
-                                                    $"\nPitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
+                                                    $"Pitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
                                                     "These values may need to be adjusted to be accurate.");
                                 }
 
+
                                 newMesh.Materials = originalMesh.Materials.TypedClone();
-                                CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
+
+                                if (true)
+                                {
+                                    CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc)); //used to be NEW MESH
+                                }
+                                else
+                                {
+                                    //Transfer the top LOD in. This is due to some weird shit going on in UDK that makes it blow up.
+
+                                    //Build map of new bone names to old bone names so we can translate them
+                                    List<int> newToOldBoneListIndexMapping = new List<int>(); //Maps old index to new index. This is WV code... but seems to work in a roundabout way
+                                    Dictionary<string, string> incomingToExistingBoneMapping = new Dictionary<string, string>();
+                                    for (int i = 0; i < originalMesh.RefSkeleton.Length; i++)
+                                    {
+                                        var incomingName = newMesh.RefSkeleton[i].Name.Name;
+                                        //var existingName = originalMesh.RefSkeleton[i].Name.Name;
+                                        //incomingToExistingBoneMapping[incomingName] = existingName;
+                                        var mappedIndex = originalMesh.RefSkeleton.FindIndex(x => x.Name.Name == incomingName);
+                                        if (mappedIndex < 0) Debug.WriteLine("Could not map bone! Name: " + incomingName);
+                                        newToOldBoneListIndexMapping.Add(mappedIndex);
+                                    }
+
+                                    var incomingLOD = newMesh.LODModels[0];
+
+                                    //Map ActiveBoneIndexes
+                                    for (int i = 0; i < incomingLOD.ActiveBoneIndices.Length; i++)
+                                    {
+                                        var existingId = incomingLOD.ActiveBoneIndices[i];
+                                        var mappedId = newToOldBoneListIndexMapping[existingId];
+                                        incomingLOD.ActiveBoneIndices[i] = (ushort)mappedId;
+                                    }
+
+                                    foreach (var chunk in incomingLOD.Chunks)
+                                    {
+                                        //Map the BoneMap to the existing map
+                                        for (int i = 0; i < chunk.BoneMap.Length; i++)
+                                        {
+                                            var existingId = chunk.BoneMap[i];
+                                            var mappedId = newToOldBoneListIndexMapping[existingId];
+                                            chunk.BoneMap[i] = (ushort)mappedId;
+                                        }
+                                    }
+
+                                    originalMesh.LODModels[0] = incomingLOD; //DEBUG ONLY
+                                    CurrentExport.SetBinaryData(originalMesh.ToBytes(Pcc)); //used to be NEW MESH
+                                }
+
 
                                 var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
                                 if (lods != null)

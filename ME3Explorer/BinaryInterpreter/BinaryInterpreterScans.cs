@@ -6276,7 +6276,7 @@ namespace ME3Explorer
                     }
                     return node;
                 }, true));
-                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced}: {bin.ReadInt32()}")));
+                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced} => {bin.ReadInt32()}")));
                 subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
                 {
                     Items =

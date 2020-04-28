@@ -62,7 +62,7 @@
             </StatusBar>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="250" Width="250"/>
+                    <ColumnDefinition MinWidth="280" Width="280"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
                     <ColumnDefinition Width="*" MinWidth="300"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
@@ -127,7 +127,13 @@
                     </Grid>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" HorizontalContentAlignment="Stretch">
+                <DockPanel Grid.Row="0" Grid.Column="0">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+                        <CheckBox Content="Brushes" IsChecked="{Binding ShowBrushes}"/>
+                        <CheckBox Content="SkeltalMeshes" Margin="5,0" IsChecked="{Binding ShowSkeletalMeshes}"/>
+                        <CheckBox Content="StaticMeshes" IsChecked="{Binding ShowStaticMeshes}"/>
+                    </StackPanel>
+                    <ListBox  ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type packages:ExportEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
@@ -169,6 +175,7 @@
                     </ListBox.Resources>
                 </ListBox>
 
+                    </DockPanel>
                 <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
