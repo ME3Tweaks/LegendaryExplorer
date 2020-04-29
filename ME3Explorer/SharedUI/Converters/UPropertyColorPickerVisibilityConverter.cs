@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using ME3Explorer.Properties;
 
 namespace ME3Explorer.SharedUI.Converters
 {
@@ -19,7 +20,7 @@ namespace ME3Explorer.SharedUI.Converters
             //Debug.WriteLine("booltocollapsed: " + ((bool)value == true).ToString());
             if (value is StructProperty sp)
             {
-                return (sp.StructType == "Color") ? Visibility.Visible : Visibility.Collapsed;
+                return (sp.StructType == "Color" || sp.StructType == "LinearColor" && Settings.Default.InterpreterWPF_ShowLinearColorWheel) ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
         }

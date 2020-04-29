@@ -1122,7 +1122,7 @@ namespace ME3Explorer
             var uptvi = (UPropertyTreeViewEntry)sender;
             switch (e.PropertyName)
             {
-                case "ColorStructCode" when uptvi.Property is StructProperty colorStruct:
+                case "ColorStructCode" when uptvi.Property is StructProperty colorStruct && colorStruct.StructType == "Color":
                     uptvi.ChildrenProperties.ClearEx();
                     foreach (var subProp in colorStruct.Properties)
                     {
@@ -2139,19 +2139,36 @@ namespace ME3Explorer
         {
             get
             {
-                if (Property is StructProperty colorStruct
-                 && colorStruct.StructType == "Color")
+                if (Property is StructProperty colorStruct)
                 {
-                    if (_colorStructCode != null) return _colorStructCode;
+                    if (colorStruct.StructType == "Color")
+                    {
+                        if (_colorStructCode != null) return _colorStructCode;
 
-                    var a = colorStruct.GetProp<ByteProperty>("A").Value;
-                    var r = colorStruct.GetProp<ByteProperty>("R").Value;
-                    var g = colorStruct.GetProp<ByteProperty>("G").Value;
-                    var b = colorStruct.GetProp<ByteProperty>("B").Value;
+                        var a = colorStruct.GetProp<ByteProperty>("A").Value;
+                        var r = colorStruct.GetProp<ByteProperty>("R").Value;
+                        var g = colorStruct.GetProp<ByteProperty>("G").Value;
+                        var b = colorStruct.GetProp<ByteProperty>("B").Value;
 
-                    _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
-                    return _colorStructCode;
+                        _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
+                        return _colorStructCode;
+                    }
+                    if (colorStruct.StructType == "LinearColor")
+                    {
+                        if (_colorStructCode != null) return _colorStructCode;
+
+                        var a = colorStruct.GetProp<FloatProperty>("A").Value;
+                        var r = colorStruct.GetProp<FloatProperty>("R").Value;
+                        var g = colorStruct.GetProp<FloatProperty>("G").Value;
+                        var b = colorStruct.GetProp<FloatProperty>("B").Value;
+
+                        float[] allcolors = {r, g, b};
+                        var highest = allcolors.Max();
+
+                        _colorStructCode = $"#FF{(int)(r * 255 / highest):X2}{(int)(g * 255 / highest):X2}{(int)(b * 255 / highest):X2}";
+                    }
                 }
+
                 return null;
             }
             set
