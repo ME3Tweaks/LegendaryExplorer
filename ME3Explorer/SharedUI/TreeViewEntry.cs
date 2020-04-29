@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using DocumentFormat.OpenXml.Wordprocessing;
 using ME2Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -169,6 +170,7 @@ namespace ME3Explorer
         {
             get
             {
+                if (!Properties.Settings.Default.PackageEditorWPF_ShowSubText) return null;
                 try
                 {
                     if (loadedSubtext) return _subtext;
@@ -213,7 +215,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    else if (Entry is ExportEntry ee && ee.Parent != null && ee.Parent.ObjectName == "PersistentLevel")
+                    else if (Entry is ExportEntry ee/* && ee.Parent != null && ee.Parent.ObjectName == "PersistentLevel"*/)
                     {
                         var tag = ee.GetProperty<NameProperty>("Tag");
                         if (tag != null && tag.Value.Name != Entry.ObjectName)

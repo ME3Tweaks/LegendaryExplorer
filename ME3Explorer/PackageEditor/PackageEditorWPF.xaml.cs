@@ -5329,5 +5329,10 @@ namespace ME3Explorer
                 export.SetBinaryData(mem.ToArray());
             }
         }
+
+        private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
