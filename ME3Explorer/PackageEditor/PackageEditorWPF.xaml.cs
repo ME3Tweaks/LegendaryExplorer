@@ -291,7 +291,7 @@ namespace ME3Explorer
 
         private void NavigateToEntry(object obj)
         {
-            IEntry e = (IEntry) obj;
+            IEntry e = (IEntry)obj;
             GoToNumber(e.UIndex);
         }
 
@@ -1686,37 +1686,60 @@ namespace ME3Explorer
                 return;
             }
 
-            string filename = Path.GetFileName(Pcc.FilePath);
+            string firstLookupName = Path.GetFileName(Pcc.FilePath);
             string dlcPath = MEDirectories.DLCPath(Pcc.Game);
-            List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
-                .Select(dlcName => Path.Combine(dlcPath, dlcName))
-                .Prepend(MEDirectories.CookedPath(Pcc.Game))
-                .Where(Directory.Exists)
-                .Select(cookedPath =>
-                    Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                        .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                .NonNull().ToList();
-            var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
-            if (backupPath != null)
+
+            List<string> unModdedLookup(string filename)
             {
-                var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
-                inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
-                    .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
-                    .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
+                    .Select(dlcName => Path.Combine(dlcPath, dlcName))
+                    .Prepend(MEDirectories.CookedPath(Pcc.Game))
                     .Where(Directory.Exists)
                     .Select(cookedPath =>
                         Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                             .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                    .NonNull());
+                    .NonNull().ToList();
+                var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
+                if (backupPath != null)
+                {
+                    var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
+                    inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
+                        .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
+                        .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                        .Where(Directory.Exists)
+                        .Select(cookedPath =>
+                            Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                                .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                        .NonNull());
+                }
+
+                return inGameCandidates;
             }
 
-            if (inGameCandidates.IsEmpty())
+            var filecandidates = unModdedLookup(firstLookupName);
+            if (filecandidates.IsEmpty())
             {
-                MessageBox.Show(this, "Cannot find any candidates for this file!");
-                return;
+                //Try to lookup using info in this file
+                var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
+                foreach (var p in packages)
+                {
+                    if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
+                    {
+                        //try this one
+                        var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
+                        filecandidates = unModdedLookup(cookedPackageName); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
+                        break;
+                    }
+                }
+
+                if (filecandidates.IsEmpty())
+                {
+                    MessageBox.Show(this, "Cannot find any candidates for this file!");
+                    return;
+                }
             }
 
-            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison",inGameCandidates, inGameCandidates.Last());
+            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", filecandidates, filecandidates.Last());
 
             if (string.IsNullOrEmpty(filePath))
             {
@@ -4617,7 +4640,7 @@ namespace ME3Explorer
         private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
         {
             var gameString = InputComboBoxWPF.GetValue(this, "Select which game's files you want converted to having skippable dialogue",
-                "Game selector",new[] { "ME1", "ME2", "ME3" }, "ME1");
+                "Game selector", new[] { "ME1", "ME2", "ME3" }, "ME1");
             if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
                 MessageBox.Show(this, $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
                     "", MessageBoxButton.YesNo))

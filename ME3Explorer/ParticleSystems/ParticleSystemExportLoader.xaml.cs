@@ -25,6 +25,13 @@ namespace ME3Explorer.ParticleSystems
             InitializeComponent();
         }
 
+        //Random distributions "Op"
+        //
+        // 0 = NONE
+        // 1 = Random
+        // 2 = Extremes (ends)
+        // 3 = Random (range) take random within range
+
         public override bool CanParse(ExportEntry exportEntry) =>
             !exportEntry.IsDefaultObject && exportEntry.ClassName == "ParticleSystem";
 
@@ -83,7 +90,7 @@ namespace ME3Explorer.ParticleSystems
                                 }
                             }
 
-                            var typeDataExport = (ExportEntry) lodExport.GetProperty<ObjectProperty>("TypeDataModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
+                            var typeDataExport = (ExportEntry)lodExport.GetProperty<ObjectProperty>("TypeDataModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
                             if (typeDataExport != null)
                             {
                                 ParticleSystemNode typeModuleNode = new ParticleSystemNode { Entry = typeDataExport, Header = $"Type Data Module: {typeDataExport.UIndex} {typeDataExport.InstancedFullPath}" };
@@ -111,7 +118,7 @@ namespace ME3Explorer.ParticleSystems
                             if (modules != null)
                             {
                                 int modIndex = 0;
-                                foreach(var module in modules)
+                                foreach (var module in modules)
                                 {
                                     var moduleExp = module.ResolveToEntry(CurrentLoadedExport.FileRef);
                                     if (moduleExp != null)
@@ -136,7 +143,17 @@ namespace ME3Explorer.ParticleSystems
 
         private void GenerateNode(ParticleSystemNode moduleNode)
         {
+            var export = (ExportEntry)moduleNode.Entry;
+            if (export.ClassName == "ParticleModuleSize")
+            {
+                GenerateParticleModuleSize(export, moduleNode);
+            }
             //throw new System.NotImplementedException();
+        }
+
+        private void GenerateParticleModuleSize(ExportEntry export, ParticleSystemNode moduleNode)
+        {
+            
         }
 
         public override void UnloadExport()
