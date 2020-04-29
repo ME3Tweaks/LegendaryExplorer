@@ -113,5 +113,9 @@
     <Setting Name="InterpreterWPF_ShowLinearColorWheel" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="PackageEditorWPF_ShowSubText" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    
   </Settings>
 </SettingsFile>

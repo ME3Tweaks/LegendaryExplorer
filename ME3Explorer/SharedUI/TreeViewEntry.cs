@@ -139,6 +139,12 @@ namespace ME3Explorer
             OnPropertyChanged(nameof(DisplayName));
         }
 
+        public void RefreshSubText()
+        {
+            loadedSubtext = false;
+            SubText = null;
+        }
+
         private string _displayName;
         public string DisplayName
         {

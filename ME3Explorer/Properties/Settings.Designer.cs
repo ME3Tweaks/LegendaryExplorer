@@ -466,5 +466,17 @@ namespace ME3Explorer.Properties {
                 this["InterpreterWPF_ShowLinearColorWheel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PackageEditorWPF_ShowSubText {
+            get {
+                return ((bool)(this["PackageEditorWPF_ShowSubText"]));
+            }
+            set {
+                this["PackageEditorWPF_ShowSubText"] = value;
+            }
+        }
     }
 }

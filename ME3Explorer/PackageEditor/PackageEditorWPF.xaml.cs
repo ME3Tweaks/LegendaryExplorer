@@ -5339,7 +5339,12 @@ namespace ME3Explorer
 
         private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
         {
-
+            Properties.Settings.Default.PackageEditorWPF_ShowSubText = !Properties.Settings.Default.PackageEditorWPF_ShowSubText;
+            Properties.Settings.Default.Save();
+            foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+            {
+                tv.RefreshSubText();
+            }
         }
     }
 }
