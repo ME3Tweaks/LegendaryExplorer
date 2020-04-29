@@ -107,8 +107,11 @@
     <Setting Name="PackageEditor_HideInterpreterHexBox" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-   <Setting Name="UDKCustomPath" Type="System.String" Scope="User">
+    <Setting Name="UDKCustomPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="InterpreterWPF_ShowLinearColorWheel" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

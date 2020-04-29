@@ -24,6 +24,7 @@
         xmlns:packageEditor="clr-namespace:ME3Explorer.PackageEditor"
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
+        xmlns:particleSystems="clr-namespace:ME3Explorer.ParticleSystems"
         Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -202,6 +203,7 @@
                     <MenuItem Header="Interpreter">
                         <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
                         <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
+                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_ShowLinearColorWheel, Mode=TwoWay}" ToolTip="Shos the color wheel picker for LinearColor structs. Linear color structs do not represent R G B values, so this option is off by default."/>
                         <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_LimitArrayPropertySize, Mode=TwoWay}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
@@ -563,6 +565,12 @@
                             <TextBlock Text="Location/Rotation/Scale" ToolTip="Edit the transformation matrix for this component"/>
                         </TabItem.Header>
                         <packageEditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
+                    </TabItem>
+                    <TabItem Name="ParticleSystem_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Particle System" ToolTip="View information about this particle system"/>
+                        </TabItem.Header>
+                        <particleSystems:ParticleSystemExportLoader x:Name="ParticleSystemTab_ParticleSystemLoader"/>
                     </TabItem>
                 </TabControl>
             </Grid>

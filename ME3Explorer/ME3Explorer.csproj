@@ -451,6 +451,9 @@
     <Compile Include="AssetDatabase\AssetDB.xaml.cs">
       <DependentUpon>AssetDB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ParticleSystems\ParticleSystemExportLoader.xaml.cs">
+      <DependentUpon>ParticleSystemExportLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Scene3D\SceneRenderContext.cs" />
     <Compile Include="Scene3D\SceneRenderControlWPF.cs" />
     <Compile Include="Sequence Editor\KismetHelper.cs" />
@@ -1148,6 +1151,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetDatabase\AssetDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ParticleSystems\ParticleSystemExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

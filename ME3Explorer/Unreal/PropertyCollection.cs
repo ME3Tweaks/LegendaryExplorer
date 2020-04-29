@@ -930,6 +930,20 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class ObjectProperty : UProperty, IComparable
     {
+        /// <summary>
+        /// Resolves this object property to its corresponding entry from the package parameter
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public IEntry? ResolveToEntry(IMEPackage package)
+        {
+            if (Value != 0 && package.IsEntry(Value))
+            {
+                return package.GetEntry(Value);
+            }
+
+            return null;
+        }
         public override PropertyType PropType => PropertyType.ObjectProperty;
 
         int _value;

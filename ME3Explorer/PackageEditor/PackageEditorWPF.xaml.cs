@@ -1899,6 +1899,7 @@ namespace ME3Explorer
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
             ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
+            ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
@@ -5328,6 +5329,12 @@ namespace ME3Explorer
 
                 export.SetBinaryData(mem.ToArray());
             }
+        }
+
+        private void InterpreterWPF_LinearColorWheel_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel = !Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel;
+            Properties.Settings.Default.Save();
         }
 
         private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
