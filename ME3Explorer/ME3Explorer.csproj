@@ -715,6 +715,7 @@
     <Compile Include="SharedUI\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\TextBoxBehavior.cs" />
     <Compile Include="SharedUI\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
