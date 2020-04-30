@@ -116,56 +116,56 @@ namespace ME3Explorer
 
                 int pos = 12;
 
-                var functionSuperclass = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                var functionSuperclass = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Function superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
 
                 pos += 4;
-                var nextItemCompilingChain = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                var nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
-                nextItemCompilingChain = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
-                pos = CurrentLoadedExport.Data.Length - 6;
+                pos = data.Length - 6;
                 string flagStr = func.GetFlags();
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
                 pos += 2;
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.Game == MEGame.ME2)
             {
                 //Header
                 int pos = 16;
 
-                var nextItemCompilingChain = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                var nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 8;
-                nextItemCompilingChain = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1 (??)", EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1 (??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Line??)", EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Line??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                int scriptSize = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                int scriptSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;
                 BytecodeStart = pos;
-                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
                 func.Decompile(new TextBuilder(), false); //parse bytecode
 
                 bool defined = func.HasFlag("Defined");
@@ -195,29 +195,29 @@ namespace ME3Explorer
                 }
 
                 //Footer
-                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 17 : 15);
+                pos = data.Length - (func.HasFlag("Net") ? 17 : 15);
                 string flagStr = func.GetFlags();
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
                 pos += 2;
 
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", CurrentLoadedExport.Data[pos], pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", data[pos], pos));
                 pos++;
 
-                int functionFlags = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                int functionFlags = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags.ToString("X8")} {flagStr}", pos));
                 pos += 4;
 
                 //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
                 //{
-                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
                 //pos += 2;
                 //}
 
-                int friendlyNameIndex = EndianReader.ToInt32(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian);
+                int friendlyNameIndex = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.GetNameEntry(friendlyNameIndex)}", pos));
                 pos += 4;
 
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{EndianReader.ToInt16(CurrentLoadedExport.Data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X4")}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X4")}", pos));
                 pos += 4;
 
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);

@@ -45,9 +45,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         /// </summary>
         /// <param name="export"></param>
         /// <returns></returns>
-        public static UnFunction ReadFunction(ExportEntry export)
+        public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(export.Data)))
+            if (dataOverride == null) dataOverride = export.Data;
+            using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
             {
                 reader.ReadBytes(12);
                 int super = reader.ReadInt32();
