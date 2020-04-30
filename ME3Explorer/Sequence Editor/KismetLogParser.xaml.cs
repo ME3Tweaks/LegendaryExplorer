@@ -31,11 +31,12 @@ namespace ME3Explorer.Sequence_Editor
         static string KismetLogME3Path => ME3Directory.gamePath != null ? Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt") : "";
         static string KismetLogME2Path => ME2Directory.gamePath != null ? Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt") : "";
         static string KismetLogME1Path => ME1Directory.gamePath != null ? Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt") : "";
-        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path : 
-                                                           game == MEGame.ME2 ? KismetLogME2Path : 
+        public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path :
+                                                           game == MEGame.ME2 ? KismetLogME2Path :
                                                            game == MEGame.ME1 ? KismetLogME1Path : null;
 
         public Action<string, int> ExportFound { get; set; }
+
 
         public KismetLogParser()
         {
@@ -47,11 +48,13 @@ namespace ME3Explorer.Sequence_Editor
 
         private IMEPackage Pcc;
         private MEGame Game;
+        private ExportEntry SequenceToFilterTo;
 
-        public void LoadLog(MEGame game, IMEPackage pcc = null)
+        public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
-            Analytics.TrackEvent("Used tool", new Dictionary<string,string>(){ { "Toolname", "Kismet Logger for " + game }});
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>() { { "Toolname", "Kismet Logger for " + game } });
             Pcc = pcc;
+            SequenceToFilterTo = filterToSequence;
             Game = game;
             LogLines.ClearEx();
             if (File.Exists(KismetLogPath(Game)))
@@ -74,7 +77,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     if (Int32.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {
-                        return new LoggerInfo
+                        var newInfo = new LoggerInfo
                         {
                             fullLine = line,
                             packageName = packageName,
@@ -82,6 +85,18 @@ namespace ME3Explorer.Sequence_Editor
                             objectName = new NameReference(nameAndIndex.Substring(0, nameAndIndex.LastIndexOf('_')), nameIndex),
                             sequenceName = sequence,
                         };
+
+                        if (Pcc != null && SequenceToFilterTo != null)
+                        {
+                            var referencedEntry = Pcc.Exports.FirstOrDefault(exp => exp.ClassName == newInfo.className && exp.ObjectName == newInfo.objectName && exp.ParentName == sequence);
+                            if (referencedEntry != null && referencedEntry.Parent.InstancedFullPath == SequenceToFilterTo.InstancedFullPath)
+                            {
+                                return newInfo;
+                            }
+                            return null;
+                        }
+
+                        return newInfo;
                     }
                 }
             }

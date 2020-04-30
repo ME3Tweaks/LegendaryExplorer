@@ -135,6 +135,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand ScanFolderForLoopsCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
+        public ICommand KismetLogCurrentSequenceCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -182,7 +183,7 @@ namespace ME3Explorer.Sequence_Editor
                             foreach (var seqObjectRef in seqObjectsList)
                             {
                                 var seqObj = p.GetUExport(seqObjectRef.Value);
-                                if (seqObj.ClassName == "SeqAct_Gate") continue;; //skip gates
+                                if (seqObj.ClassName == "SeqAct_Gate") continue; ; //skip gates
                                 var outputLinks = seqObj.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
                                 if (outputLinks != null)
                                 {
@@ -269,6 +270,8 @@ namespace ME3Explorer.Sequence_Editor
                     return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game));
                 case MEGame game:
                     return File.Exists(KismetLogParser.KismetLogPath(game));
+                case "CurrentSequence":
+                    return Pcc != null && File.Exists(KismetLogParser.KismetLogPath(Pcc.Game)) && SelectedSequence != null;
                 default:
                     return false;
             }
@@ -285,6 +288,9 @@ namespace ME3Explorer.Sequence_Editor
                         break;
                     case MEGame game:
                         kismetLogParser.LoadLog(game);
+                        break;
+                    case "CurrentSequence":
+                        kismetLogParser.LoadLog(Pcc.Game, Pcc, SelectedSequence);
                         break;
                     default:
                         return;

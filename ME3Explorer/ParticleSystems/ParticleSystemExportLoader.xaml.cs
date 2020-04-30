@@ -164,6 +164,14 @@ namespace ME3Explorer.ParticleSystems
 
         public override void PopOut()
         {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ParticleSystemExportLoader(), CurrentLoadedExport)
+                {
+                    Title = $"Particle System - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
+                elhw.Show();
+            }
         }
 
         public override void Dispose()

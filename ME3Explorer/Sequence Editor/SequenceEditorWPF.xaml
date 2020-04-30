@@ -85,6 +85,9 @@
                     <MenuItem Header="Open Kismet Log (restricted to opened file)"
                                 Command="{Binding KismetLogCommand}"
                                 CommandParameter="{StaticResource True}" />
+                    <MenuItem Header="Open Kismet Log (restricted to current sequence)"
+                              Command="{Binding KismetLogCommand}"
+                              CommandParameter="CurrentSequence"/>
                     <MenuItem Header="Open Kismet Log for ME3" Command="{Binding KismetLogCommand}"
                                 CommandParameter="{x:Static packages:MEGame.ME3}" />
                     <MenuItem Header="Open Kismet Log for ME2" Command="{Binding KismetLogCommand}"
