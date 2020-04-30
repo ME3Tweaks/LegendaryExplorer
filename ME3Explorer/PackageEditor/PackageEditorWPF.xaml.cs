@@ -236,6 +236,7 @@ namespace ME3Explorer
         public ICommand GoToArchetypecommand { get; set; }
         public ICommand ReplaceNamesCommand { get; set; }
         public ICommand NavigateToEntryCommand { get; set; }
+        public ICommand ResolveImportCommand { get; set; }
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -287,6 +288,16 @@ namespace ME3Explorer
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
             NavigateToEntryCommand = new RelayCommand(NavigateToEntry, CanNavigateToEntry);
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
+            ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
+        }
+
+        private void OpenImportDefinition()
+        {
+            var curImport = SelectedItem?.Entry as ImportEntry;
+            if (curImport != null)
+            {
+
+            }
         }
 
         private void NavigateToEntry(object obj)
