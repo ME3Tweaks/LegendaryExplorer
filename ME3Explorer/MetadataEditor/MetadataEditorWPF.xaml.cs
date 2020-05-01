@@ -58,6 +58,32 @@ namespace ME3Explorer.MetadataEditor
         private DynamicByteProvider headerByteProvider;
         private bool loadingNewData;
 
+        public bool SubstituteImageForHexBox
+        {
+            get => (bool)GetValue(SubstituteImageForHexBoxProperty);
+            set => SetValue(SubstituteImageForHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
+            nameof(SubstituteImageForHexBox), typeof(bool), typeof(MetadataEditorWPF), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
+
+        private static void SubstituteImageForHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            MetadataEditorWPF i = (MetadataEditorWPF)obj;
+            if (e.NewValue is true && i.Header_Hexbox_Host.Child.Height > 0 && i.Header_Hexbox_Host.Child.Width > 0)
+            {
+                i.hexboxImageSub.Source = i.Header_Hexbox_Host.Child.DrawToBitmapSource();
+                i.hexboxImageSub.Width = i.Header_Hexbox_Host.ActualWidth;
+                i.hexboxImageSub.Height = i.Header_Hexbox_Host.ActualHeight;
+                i.hexboxImageSub.Visibility = Visibility.Visible;
+                i.Header_Hexbox_Host.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                i.Header_Hexbox_Host.Visibility = Visibility.Visible;
+                i.hexboxImageSub.Visibility = Visibility.Collapsed;
+            }
+        }
+
         public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
 
         public MetadataEditorWPF()

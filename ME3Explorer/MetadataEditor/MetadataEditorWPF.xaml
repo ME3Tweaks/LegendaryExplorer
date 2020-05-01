@@ -186,6 +186,7 @@
                          StringViewVisible="True">
             </hb1:HexBox>
         </WindowsFormsHost>
+        <Image Grid.Row="19" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
         <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="20" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
         <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="21" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
     </Grid>
