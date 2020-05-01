@@ -227,6 +227,7 @@ namespace ME3Explorer
         public ICommand GenerateGUIDCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand OpenInMeshplorerCommand { get; set; }
+        public ICommand AttemptOpenImportDefinitionCommand { get; set; }
         private void LoadCommands()
         {
             AddPropertiesToStructCommand = new GenericCommand(AddPropertiesToStruct, CanAddPropertiesToStruct);
@@ -253,6 +254,26 @@ namespace ME3Explorer
             GenerateGUIDCommand = new GenericCommand(GenerateNewGUID, IsItemGUIDImmutable);
             NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
             OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, ObjectPropertyExportIsSelected);
+            AttemptOpenImportDefinitionCommand = new GenericCommand(AttemptOpenImport, ObjectPropertyImportIsSelected);
+        }
+
+        private void AttemptOpenImport()
+        {
+            if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
+            {
+                var export = PackageEditorWPF.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
+                if (export != null)
+                {
+                    PackageEditorWPF p = new PackageEditorWPF();
+                    p.Show();
+                    p.LoadEntry(export);
+                    p.Activate(); //bring to front        
+                }
+                else
+                {
+                    MessageBox.Show("Could not find source of this import. Make sure files are properly named.");
+                }
+            }
         }
 
         private void OpenReferenceInMeshplorer()
@@ -360,6 +381,7 @@ namespace ME3Explorer
         }
 
         private bool ObjectPropertyExportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.IsUExport(op.Value);
+        private bool ObjectPropertyImportIsSelected() => SelectedItem?.Property is ObjectProperty op && Pcc.IsImport(op.Value);
 
         private void SortParsedArrayAscending()
         {
@@ -2162,7 +2184,7 @@ namespace ME3Explorer
                         var g = colorStruct.GetProp<FloatProperty>("G").Value;
                         var b = colorStruct.GetProp<FloatProperty>("B").Value;
 
-                        float[] allcolors = {r, g, b};
+                        float[] allcolors = { r, g, b };
                         var highest = allcolors.Max();
 
                         _colorStructCode = $"#FF{(int)(r * 255 / highest):X2}{(int)(g * 255 / highest):X2}{(int)(b * 255 / highest):X2}";

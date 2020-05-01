@@ -353,10 +353,12 @@ namespace ME3Explorer
                     return null;
                 }
 
+                packagesToCheck.Add(filenameWithoutExtension + "_LOC_INT"); //todo: support users setting preferred language of game files
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
                     packagesToCheck.Add(nextfile);
+                    packagesToCheck.Add(nextfile + "_LOC_INT"); //todo: support users setting preferred language of game files
                     nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
                 }
             }
@@ -374,14 +376,13 @@ namespace ME3Explorer
             }
             packagesToCheck.AddRange(startups.Select(x => Path.GetFileNameWithoutExtension(gameFiles[x]))); //add startup files
 
-            if (gameFiles.TryGetValue("SFXGame.pcc", out var sfxGamePath))
+            string[] extraFiles = { "SFXGame", "Startup", "Engine", "Core" };
+            foreach (var ef in extraFiles)
             {
-                packagesToCheck.Add(Path.GetFileNameWithoutExtension(sfxGamePath));
-            }
-
-            if (gameFiles.TryGetValue("Startup.pcc", out var startupPath))
-            {
-                packagesToCheck.Add(Path.GetFileNameWithoutExtension(startupPath));
+                if (gameFiles.TryGetValue(ef + ".pcc", out var efPath))
+                {
+                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
+                }
             }
 
 
@@ -390,6 +391,19 @@ namespace ME3Explorer
             {
                 Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
                 using var package = MEPackageHandler.OpenMEPackage(packagePath);
+                var packName = Path.GetFileNameWithoutExtension(packagePath);
+                var packageParts = entryFullPath.Split('.').ToList();
+                if (packageParts.Count > 1 && packName == packageParts[0])
+                {
+                    packageParts.RemoveAt(0);
+                    entryFullPath = string.Join(".", packageParts);
+                }
+                else if (packName == packageParts[0])
+                {
+                    //it's literally the file itself
+                    return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
+                }
+
                 return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
             }
 
@@ -421,7 +435,7 @@ namespace ME3Explorer
             return null;
         }
 
-        private void LoadEntry(IEntry entry)
+        public void LoadEntry(IEntry entry)
         {
             LoadFile(entry.FileRef.FilePath, entry.UIndex);
         }

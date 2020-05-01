@@ -179,6 +179,11 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports = new List<ImportEntry>();
         public IReadOnlyList<ImportEntry> Imports => imports;
 
+        /// <summary>
+        /// Determines if this is an Import based on it's UIndex
+        /// </summary>
+        /// <param name="uindex"></param>
+        /// <returns></returns>
         public bool IsImport(int uindex) => (uindex < 0 && uindex > (int)(1 << 31) && Math.Abs(uindex) <= ImportCount);
 
         /// <summary>

@@ -144,7 +144,12 @@ namespace ME3Explorer.Packages
         //reading
         bool IsUExport(int index);
         bool IsName(int index);
-        bool IsImport(int index);
+        /// <summary>
+        /// Checks if the specified UIndex is an import
+        /// </summary>
+        /// <param name="uindex"></param>
+        /// <returns></returns>
+        bool IsImport(int uindex);
         bool IsEntry(int uindex);
         /// <summary>
         ///     gets Export or Import entry, from unreal index. Can return null if index is 0

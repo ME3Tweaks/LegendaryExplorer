@@ -270,6 +270,11 @@
                                 <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="Attempt to find source of this import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding AttemptOpenImportDefinitionCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="Open in Meshplorer" ToolTip="Opens the referenced export in Meshplorer" Command="{Binding OpenInMeshplorerCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
 
                             <MenuItem.Icon>
