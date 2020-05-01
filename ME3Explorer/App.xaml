@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:ME3Explorer"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
         <FontFamily x:Key="TitilliumWeb-Italic">/ME3Explorer;component/Resources/TitilliumWeb-Italic.ttf#Titillium Web</FontFamily>
@@ -17,7 +19,12 @@
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
 
         <System:Double x:Key="InfoPanelWidth">300</System:Double>
-
+        <Style TargetType="TextBox">
+            <Setter Property="sharedUi:TextBoxBehavior.TripleClickSelectAll" Value="True" />
+        </Style>
+        <Style TargetType="{x:Type xctk:WatermarkTextBox}">
+            <Setter Property="sharedUi:TextBoxBehavior.TripleClickSelectAll" Value="True" />
+        </Style>
         <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="1"/>
             <Setter Property="Background" Value="Transparent" />
