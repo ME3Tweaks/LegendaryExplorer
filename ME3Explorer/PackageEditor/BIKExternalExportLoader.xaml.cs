@@ -156,12 +156,12 @@ namespace ME3Explorer.PackageEditor
                 MoviePlayer.Playing += (sender, e) =>
                 {
                     IsVLCPlaying = true;
-                    Debug.WriteLine("Started");
+                    Debug.WriteLine("BikMoviePlayer Started");
                 };
                 MoviePlayer.Stopped += (sender, e) =>
                 {
                     IsVLCPlaying = false;
-                    Debug.WriteLine("Stopped");
+                    Debug.WriteLine("BikMoviePlayer Stopped");
                 };
                 MoviePlayer.EncounteredError += (sender, e) =>
                 {

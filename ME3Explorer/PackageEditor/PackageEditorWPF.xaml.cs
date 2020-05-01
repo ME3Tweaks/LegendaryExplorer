@@ -114,8 +114,17 @@ namespace ME3Explorer
             get => _selectedItem;
             set
             {
+                var oldIndex = _selectedItem?.UIndex;
                 if (SetProperty(ref _selectedItem, value) && !SuppressSelectionEvent)
                 {
+                    if (oldIndex.HasValue && oldIndex.Value != 0 && !IsBackForwardsNavigationEvent)
+                    {
+                        // 0 = tree root
+                        Debug.WriteLine("Push onto backwards: " + oldIndex);
+                        BackwardsIndexes.Push(oldIndex.Value);
+                        ForwardsIndexes.Clear(); //forward list is no longer valid
+                    }
+
                     Preview();
                 }
             }
@@ -2108,7 +2117,8 @@ namespace ME3Explorer
                 NamesList.ClearEx();
                 ClassDropdownList.ClearEx();
                 crossPCCObjectMap.Clear();
-
+                BackwardsIndexes = new Stack<int>();
+                ForwardsIndexes = new Stack<int>();
                 StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
@@ -2755,7 +2765,6 @@ namespace ME3Explorer
             Metadata_Tab.Visibility = Visibility.Visible;
             Intro_Tab.Visibility = Visibility.Collapsed;
             //Debug.WriteLine("New selection: " + n);
-
             if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
             {
                 Interpreter_Tab.IsEnabled = selectedEntry is ExportEntry;
@@ -5553,6 +5562,53 @@ namespace ME3Explorer
             foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
             {
                 tv.RefreshSubText();
+            }
+        }
+
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton.Equals(MouseButton.XButton1))
+                NavigateToPreviousEntry();
+            if (e.ChangedButton.Equals(MouseButton.XButton2))
+                NavigateToNextEntry();
+        }
+
+        private Stack<int> BackwardsIndexes;
+        private Stack<int> ForwardsIndexes;
+        private void NavigateToNextEntry()
+        {
+            if (ForwardsIndexes != null && ForwardsIndexes.Any())
+            {
+                if (SelectedItem != null && SelectedItem.UIndex != 0 && ForwardsIndexes.Peek() != SelectedItem.UIndex)
+                {
+                    Debug.WriteLine("Push onto backwards: " + SelectedItem.UIndex);
+                    BackwardsIndexes.Push(SelectedItem.UIndex);
+                }
+                var index = ForwardsIndexes.Pop();
+                Debug.WriteLine("Navigate to " + index);
+                IsBackForwardsNavigationEvent = true;
+                GoToNumber(index);
+                IsBackForwardsNavigationEvent = true;
+            }
+        }
+
+        public bool IsBackForwardsNavigationEvent = false;
+
+        private void NavigateToPreviousEntry()
+        {
+            if (BackwardsIndexes != null && BackwardsIndexes.Any())
+            {
+                if (SelectedItem != null && SelectedItem.UIndex != 0 && BackwardsIndexes.Peek() != SelectedItem.UIndex)
+                {
+                    Debug.WriteLine("Push onto forwards: " + SelectedItem.UIndex);
+                    ForwardsIndexes.Push(SelectedItem.UIndex);
+                }
+
+                var index = BackwardsIndexes.Pop();
+                Debug.WriteLine("Navigate to " + index);
+                IsBackForwardsNavigationEvent = true;
+                GoToNumber(index);
+                IsBackForwardsNavigationEvent = false;
             }
         }
     }

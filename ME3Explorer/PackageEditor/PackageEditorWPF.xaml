@@ -30,6 +30,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
+        PreviewMouseUp="Window_MouseUp"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
