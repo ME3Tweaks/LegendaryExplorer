@@ -17,15 +17,15 @@ namespace ME3Explorer
 
         //private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
-        private static Dictionary<string, string> cachedME1LoadedFiles;
-        private static Dictionary<string, string> cachedME2LoadedFiles;
-        private static Dictionary<string, string> cachedME3LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedME1LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedME2LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedME3LoadedFiles;
         /// <summary>
         /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false)
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false)
         {
             if (!forceReload)
             {
@@ -48,7 +48,7 @@ namespace ME3Explorer
             }
 
             //make dictionary from basegame files
-            var loadedFiles = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            var loadedFiles = new CaseInsensitiveDictionary<string>();
             if (game == MEGame.UDK)
             {
                 return loadedFiles;

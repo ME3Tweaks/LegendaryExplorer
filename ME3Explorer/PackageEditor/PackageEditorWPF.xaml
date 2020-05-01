@@ -487,7 +487,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Metadata" ToolTip="Edit entry metadata such as class, object name, etc"/>
                         </TabItem.Header>
-                        <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor"/>
+                        <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Bio2DAViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

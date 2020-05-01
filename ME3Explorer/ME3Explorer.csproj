@@ -410,6 +410,7 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CaseInsensitiveDictionary.cs" />
     <Compile Include="CloningImportingAndRelinking\EntryCloner.cs" />
     <Compile Include="CloningImportingAndRelinking\EntryImporter.cs" />
     <Compile Include="CloningImportingAndRelinking\Relinker.cs" />

@@ -293,11 +293,137 @@ namespace ME3Explorer
 
         private void OpenImportDefinition()
         {
-            var curImport = SelectedItem?.Entry as ImportEntry;
-            if (curImport != null)
+            if (TryGetSelectedEntry(out IEntry entry) && entry is ImportEntry curImport)
             {
-
+                BusyText = "Attempting to find source of import...";
+                IsBusy = true;
+                Task.Run(() => ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
+                {
+                    IsBusy = false;
+                    if (prevTask.Result is ExportEntry res)
+                    {
+                        PackageEditorWPF pwpf = new PackageEditorWPF();
+                        pwpf.Show();
+                        pwpf.LoadEntry(res);
+                        pwpf.RestoreAndBringToFront();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Could not find the export that this import references.\nHas the link or name (including parents) of this import been changed?\nDo the filenames match the BioWare naming scheme if it's a BioX file?");
+                    }
+                });
             }
+        }
+
+        public static ExportEntry ResolveImport(ImportEntry entry)
+        {
+            var entryFullPath = entry.FullPath;
+
+            // Next, split the filename by underscores
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
+            string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
+            var packagesToCheck = new List<string>();
+
+            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
+            if (isBioXfile)
+            {
+                string bioXNextFileLookup(string filename)
+                {
+                    //Lookup parents
+                    var bioType = filename[3];
+                    string[] parts = filename.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
+                    {
+                        var levelName = parts[1];
+                        switch (bioType)
+                        {
+                            case 'a' when parts.Length > 2:
+                                return $"bioa_{levelName}";
+                            case 'd' when parts.Length > 2:
+                                return $"biod_{levelName}";
+                            case 's' when parts.Length > 2:
+                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
+                            case 'a' when parts.Length == 2:
+                            case 'd' when parts.Length == 2:
+                            case 's' when parts.Length == 2:
+                                return $"biop_{levelName}";
+                        }
+                    }
+
+                    return null;
+                }
+
+                string nextfile = bioXNextFileLookup(filenameWithoutExtension);
+                while (nextfile != null)
+                {
+                    packagesToCheck.Add(nextfile);
+                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
+                }
+            }
+
+            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.FileRef.Game);
+            List<string> additionalFiles = new List<string>();
+            var startups = new List<string>();
+            if (entry.Game == MEGame.ME2)
+            {
+                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
+            }
+            else
+            {
+                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
+            }
+            packagesToCheck.AddRange(startups.Select(x => Path.GetFileNameWithoutExtension(gameFiles[x]))); //add startup files
+
+            if (gameFiles.TryGetValue("SFXGame.pcc", out var sfxGamePath))
+            {
+                packagesToCheck.Add(Path.GetFileNameWithoutExtension(sfxGamePath));
+            }
+
+            if (gameFiles.TryGetValue("Startup.pcc", out var startupPath))
+            {
+                packagesToCheck.Add(Path.GetFileNameWithoutExtension(startupPath));
+            }
+
+
+            //Perform check and lookup
+            ExportEntry containsImportedExport(string packagePath)
+            {
+                Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
+                using var package = MEPackageHandler.OpenMEPackage(packagePath);
+                return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
+            }
+
+            var currentDirFiles = Directory.GetFiles(containingDirectory, "*.pcc").ToList();
+            foreach (var fname in packagesToCheck)
+            {
+                var fullname = fname + ".pcc"; //pcc only for now.
+
+                //Try local.
+                var localPath = Path.Combine(containingDirectory, fullname);
+                if (File.Exists(localPath))
+                {
+                    var export = containsImportedExport(localPath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+
+                if (gameFiles.TryGetValue(fullname, out var fullgamepath) && !fullgamepath.Equals(localPath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(fullgamepath))
+                {
+                    var export = containsImportedExport(fullgamepath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void LoadEntry(IEntry entry)
+        {
+            LoadFile(entry.FileRef.FilePath, entry.UIndex);
         }
 
         private void NavigateToEntry(object obj)
@@ -435,7 +561,7 @@ namespace ME3Explorer
 
                     string dir = m.FileName;
                     Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
-                    //your sample code                    
+                                                                //your sample code                    
                     foreach (var export in swfsInFile)
                     {
                         string exportFilename = $"{export.FullPath}.swf";
