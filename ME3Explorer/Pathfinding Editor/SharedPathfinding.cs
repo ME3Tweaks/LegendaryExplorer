@@ -757,9 +757,25 @@ namespace ME3Explorer.Pathfinding_Editor
             return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
 
+        public Point3D getDelta(Point3D other)
+        {
+            double deltaX = X - other.X;
+            double deltaY = Y - other.Y;
+            double deltaZ = Z - other.Z;
+            return new Point3D(deltaX,deltaY,deltaZ);
+        }
+
         public override string ToString()
         {
             return $"{X},{Y},{Z}";
+        }
+
+        public Point3D applyDelta(Point3D other)
+        {
+            double deltaX = X + other.X;
+            double deltaY = Y + other.Y;
+            double deltaZ = Z + other.Z;
+            return new Point3D(deltaX, deltaY, deltaZ);
         }
     }
 }

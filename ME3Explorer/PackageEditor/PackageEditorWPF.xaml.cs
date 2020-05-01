@@ -5076,6 +5076,41 @@ namespace ME3Explorer
 
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
+            //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
+            //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
+            //var gmplanet01 = me1em.GetUExport(940);
+            //var itm = me1em.GetUExport(966);
+            //var moon = me1em.GetUExport(936);
+            //var planetPos = SharedPathfinding.GetLocation(gmplanet01);
+            //var moonPos = SharedPathfinding.GetLocation(moon);
+            //var cameraPoint = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
+            //var cameraEuler = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
+
+            //Point3D me2planetPos = new Point3D()
+            //{
+            //    X = -5402.598,
+            //    Y = 13571.81,
+            //    Z = -40187.2
+            //};
+
+
+
+            //Debug.WriteLine("Place moon at:");
+            //var diff = moonPos.getDelta(planetPos);
+            //var newpos = me2planetPos.applyDelta(diff);
+
+            //Debug.WriteLine("X: " + newpos.X);
+            //Debug.WriteLine("Y: " + newpos.Y);
+            //Debug.WriteLine("Z: " + newpos.Z);
+
+            //Debug.WriteLine("Set Camera rotation:");
+
+
+            //Debug.WriteLine("Pitch: " + cameraEuler.X);
+            //Debug.WriteLine("Yaw: " + cameraEuler.Y);
+            //Debug.WriteLine("Roll: " + cameraEuler.Z);
+
+            return;
             var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
             var pcc = MEPackageHandler.OpenMEPackage(inputfile, forceLoadFromDisk: true);
             var trackprops = pcc.Exports.Where(x => x.ClassName == "BioEvtSysTrackProp").ToList();
