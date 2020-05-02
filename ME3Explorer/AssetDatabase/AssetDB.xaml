@@ -484,8 +484,10 @@
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1" Background="LightYellow">
                                 <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
                                     <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click"/>
-                                    <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbeddedTextureViewer" ViewerModeOnly="True" Visibility="Collapsed"/>
-                                    <packed:BIKExternalExportLoader x:Name="BIKExternalExportLoaderTab_BIKExternalExportLoader" ViewerModeOnly="True" Visibility="Collapsed"/>
+                                    <Grid>
+                                        <global:TextureViewerExportLoader x:Name="EmbeddedTextureViewerTab_EmbeddedTextureViewer" ViewerModeOnly="True" Visibility="Collapsed"/>
+                                        <packed:BIKExternalExportLoader x:Name="BIKExternalExportLoaderTab_BIKExternalExportLoader" ViewerModeOnly="True" Visibility="Collapsed"/>
+                                    </Grid>
                                 </DockPanel>
                             </Border>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
