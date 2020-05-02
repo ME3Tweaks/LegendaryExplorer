@@ -1613,6 +1613,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_T4096.IsChecked && tr.SizeX < 4096 && tr.SizeY < 4096)
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool SFFilter(object d)
@@ -1854,7 +1858,26 @@ namespace ME3Explorer.AssetDatabase
                     menu_TMovie.IsChecked = !menu_TMovie.IsChecked;
                     break;
                 case "1024":
-                    menu_T1024.IsChecked = !menu_T1024.IsChecked;
+                    if (!menu_T1024.IsChecked)
+                    {
+                        menu_T4096.IsChecked = false;
+                        menu_T1024.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_T1024.IsChecked = false;
+                    }
+                    break;
+                case "4096":
+                    if (!menu_T4096.IsChecked)
+                    {
+                        menu_T1024.IsChecked = false;
+                        menu_T4096.IsChecked = true;
+                    }
+                    else
+                    {
+                        menu_T4096.IsChecked = false;
+                    }
                     break;
                 case "PS":
                     if (!menu_VFXPartSys.IsChecked)
