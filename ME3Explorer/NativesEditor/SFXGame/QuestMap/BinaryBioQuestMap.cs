@@ -318,8 +318,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 				{
 					InstanceVersion = ReadInt32(),
 					Task = ReadInt32(),
-					State = ReadInt32(),
 					Conditional = ReadInt32(),
+					State = ReadInt32(),
 					Quest = ReadInt32()
 				};
 
@@ -435,8 +435,8 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 			{
 				Write(taskEval.InstanceVersion);
 				Write(taskEval.Task);
-				Write(taskEval.State);
 				Write(taskEval.Conditional);
+				Write(taskEval.State);
 				Write(taskEval.Quest);
 			}
 
