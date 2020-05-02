@@ -1,4 +1,5 @@
 ﻿using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
@@ -226,6 +226,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     public class BytecodeReader
     {
+        /// <summary>
+        /// Map of offsets (from the first byte of this token!) to a name reference
+        /// </summary>
+        public Dictionary<long, NameReference> NameReferences = new Dictionary<long, NameReference>();
+        /// <summary>
+        /// Map of offsets (from the first byte of this token!) to an entry reference
+        /// </summary>
+        public Dictionary<long, IEntry> EntryReferences = new Dictionary<long, IEntry>();
+
         public List<BytecodeToken> ReadTokens = new List<BytecodeToken>();
         public enum ME1OpCodes
         {
@@ -413,6 +422,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         }
 
 
+
+
         private ME1OpCodes[] OpCodesThatReturnNextToken = new ME1OpCodes[] { ME1OpCodes.EX_Skip, ME1OpCodes.EX_EatReturnValue, ME1OpCodes.EX_ByteToInt, ME1OpCodes.EX_BoolVariable, ME1OpCodes.EX_InterfaceContext };
         /// <summary>
         /// ME3Explorer intercepting function to build the token list. As tokens are read the tokens list will be updated.
@@ -581,15 +592,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_ObjectConst:
                     {
-                        int objectIndex = _reader.ReadInt32();
-                        var item = _package.GetEntry(objectIndex);
+                        var item = ReadEntryRef(out var objectIndex);
                         if (item == null) return ErrToken("Unresolved class item " + objectIndex);
                         return Token($"{item.ClassName}'{item.ObjectName.Instanced}'", readerpos);
                     }
 
                 case ME1OpCodes.EX_NameConst:
                     return Token($"'{ReadName()}'", readerpos);
-
                 case ME1OpCodes.EX_EndFunctionParms:
                     return new EndParmsToken(")", readerpos);
 
@@ -610,9 +619,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_FinalFunction:
                     {
-                        int functionIndex = _reader.ReadInt32();
-                        var item = _package.GetEntry(functionIndex);
-                        if (item == null) return ErrToken("Unresolved function item " + item);
+                        var item = ReadEntryRef(out var functionIndex);
+                        if (item == null) return ErrToken("Unresolved function item " + functionIndex);
                         string functionName = item.ObjectName.Instanced;
                         return ReadCall(functionName);
                     }
@@ -644,23 +652,21 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     }
                 case ME1OpCodes.EX_DynamicCast:
                     {
-                        int typeIndex = _reader.ReadInt32();
-                        var item = _package.GetEntry(typeIndex);
+                        var item = ReadEntryRef(out var typeIndex);
                         return WrapNextBytecode(op => Token($"{item.ObjectName.Instanced}({op})", readerpos));
                     }
 
                 case ME1OpCodes.EX_Metacast:
                     {
-                        int typeIndex = _reader.ReadInt32();
-                        var item = _package.GetEntry(typeIndex);
+                        var item = ReadEntryRef(out var typeIndex);
                         if (item == null) return ErrToken("Unresolved class item " + typeIndex);
                         return WrapNextBytecode(op => Token($"Class<{item.ObjectName.Instanced}>({op})", readerpos));
                     }
 
                 case ME1OpCodes.EX_StructMember:
                     {
-                        var field = ReadRef();
-                        var structType = ReadRef();
+                        var field = ReadEntryRef(out var _1);
+                        var structType = ReadEntryRef(out var _2);
                         int wSkip = _reader.ReadInt16();
                         var token = ReadNext();
                         if (IsInvalid(token)) return token;
@@ -703,9 +709,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     }
 
                 case ME1OpCodes.EX_LocalOutVariable:
-                    int valueIndex = _reader.ReadInt32();
-                    var packageItem = _package.GetEntry(valueIndex);
-                    if (packageItem == null) return ErrToken("Unresolved package item " + packageItem);
+                    var packageItem = ReadEntryRef(out var valueIndex);
+                    if (packageItem == null) return ErrToken("Unresolved package item " + valueIndex);
                     return Token(packageItem.ObjectName.Instanced, readerpos);
 
                 case ME1OpCodes.EX_Iterator:
@@ -745,7 +750,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_InterfaceCast:
                     {
-                        var interfaceName = ReadRef();
+                        var interfaceName = ReadEntryRef(out var _);
                         return WrapNextBytecode(op => Token($"{interfaceName.ObjectName.Instanced}({op})", readerpos));
                     }
 
@@ -931,25 +936,36 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal string ReadName()
         {
-            return new NameReference(_package.GetNameEntry(_reader.ReadInt32()), _reader.ReadInt32()).Instanced;
+            var pos = _reader.BaseStream.Position;
+            var nref = _reader.ReadInt32();
+            var nrefinstance = _reader.ReadInt32();
+            var name = _package.GetNameEntry(nref);
+            NameReferences[pos] = name;
+            return new NameReference(name, nrefinstance).Instanced;
         }
 
-        internal IEntry ReadRef()
+        internal IEntry ReadEntryRef(out int idx)
         {
-            int idx = _reader.ReadInt32();
-            return _package.GetEntry(idx);
+            var pos = _reader.BaseStream.Position;
+            idx = _reader.ReadInt32();
+            var entry = _package.GetEntry(idx);
+            if (entry != null)
+            {
+                EntryReferences[pos] = entry;
+            }
+
+            return entry;
         }
 
         internal BytecodeToken ReadRef(Func<IEntry, string> func)
         {
             int pos = (int)_reader.BaseStream.Position - 1; //We already read the bytecode token.
-
-            int index = _reader.ReadInt32();
-            IEntry item = _package.GetEntry(index);
+            var item = ReadEntryRef(out var index);
             if (item == null)
             {
                 return ErrToken("// unresolved reference " + index);
             }
+
             return Token(func(item), pos);
         }
 

@@ -95,7 +95,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             var locals = new List<ExportEntry>();
 
             Tokens = new List<BytecodeSingularToken>();
-            Statements = ReadBytecode();
+            Statements = ReadBytecode(out var bytecodeReader);
+            NameReferences = bytecodeReader.NameReferences;
+            EntryReferences = bytecodeReader.EntryReferences;
             List<ExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
             childrenReversed.Reverse();
 
@@ -199,6 +201,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 result.Append(";").NewLine().NewLine();
             }
         }
+
+        public Dictionary<long, IEntry> EntryReferences { get; set; }
+
+        public Dictionary<long, NameReference> NameReferences { get; set; }
 
         public static string GetPropertyType(ExportEntry exp)
         {

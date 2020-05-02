@@ -24,11 +24,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public abstract void Decompile(TextBuilder result);
 
-        protected StatementList ReadBytecode()
+        protected StatementList ReadBytecode(out BytecodeReader bcReader)
         {
             var s = new MemoryStream(_bytecode);
             var reader = new BinaryReader(s);
-            var bcReader = new BytecodeReader(_self.FileRef, reader);
+            bcReader = new BytecodeReader(_self.FileRef, reader);
             var statements = new StatementList((Statement)null);
             while (s.Position < s.Length)
             {
@@ -190,7 +190,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             result.Append(";").NewLine().NewLine();
             //DecompileChildren(result, false);
 
-            var statementList = ReadBytecode();
+            var statementList = ReadBytecode(out var _);
             if (statementList.Count > 0)
             {
                 DecompileReplicationBlock(result, statementList);

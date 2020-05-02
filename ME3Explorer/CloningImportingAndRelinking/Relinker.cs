@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -121,8 +122,21 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
-                                                                                             $"which cannot be relinked for {relinkingExport.Game}"));
+                            var func = UE3FunctionReader.ReadFunction(sourceExport);
+                            func.Decompile(new TextBuilder(), false); //parse bytecode
+                            var nameRefs = func.NameReferences;
+                            var entryRefs = func.EntryReferences;
+                            foreach (var nr in nameRefs)
+                            {
+                                RelinkNameReference(nr.Value.Name, nr.Key, uStructBinary.ScriptBytes, relinkingExport);
+                            }
+                            foreach (var ef in entryRefs)
+                            {
+                                relinkFailedReport.AddRange(RelinkUnhoodEntryReference(ef.Value, ef.Key, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
+                                    importExportDependencies));
+                            }
+                            //relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
+                            //                                                                 $"which cannot be relinked for {relinkingExport.Game}"));
                         }
                     }
 
@@ -425,6 +439,28 @@ namespace ME3Explorer
             return null;
         }
 
+
+        private static List<ListDialog.EntryItem> RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
+                                            OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
+        {
+            var relinkFailedReport = new List<ListDialog.EntryItem>();
+            Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
+
+            int uIndex = entry.UIndex;
+            var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.FullPath} at 0x{position:X8}",
+                crossFileRefObjectMap, "", importExportDependencies);
+            if (relinkResult is null)
+            {
+                script.OverwriteRange((int) position, BitConverter.GetBytes(uIndex));
+            }
+            else
+            {
+                relinkFailedReport.Add(relinkResult);
+            }
+
+            return relinkFailedReport;
+        }
+
         private static List<ListDialog.EntryItem> RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
                                                 OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
         {
@@ -461,6 +497,18 @@ namespace ME3Explorer
                     relinkFailedReport.Add(relinkResult);
                 }
             }
+        }
+
+        /// <summary>
+        /// This returns nothing as you cannot fail to relink a name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="position"></param>
+        /// <param name="data"></param>
+        /// <param name="destinationExport"></param>
+        private static void RelinkNameReference(string name, long position, byte[] data, ExportEntry destinationExport)
+        {
+            data.OverwriteRange((int)position, BitConverter.GetBytes(destinationExport.FileRef.FindNameOrAdd(name)));
         }
     }
 }
