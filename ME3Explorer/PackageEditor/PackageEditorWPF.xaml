@@ -574,6 +574,12 @@
                         </TabItem.Header>
                         <particleSystems:ParticleSystemExportLoader x:Name="ParticleSystemTab_ParticleSystemLoader"/>
                     </TabItem>
+                    <TabItem Name="ParticleModule_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Particle Module" ToolTip="Particle Module editor"/>
+                        </TabItem.Header>
+                        <particleSystems:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </DockPanel>

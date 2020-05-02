@@ -452,6 +452,9 @@
     <Compile Include="AssetDatabase\AssetDB.xaml.cs">
       <DependentUpon>AssetDB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ParticleSystems\ParticleModuleExportLoader.xaml.cs">
+      <DependentUpon>ParticleModuleExportLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ParticleSystems\ParticleSystemExportLoader.xaml.cs">
       <DependentUpon>ParticleSystemExportLoader.xaml</DependentUpon>
     </Compile>
@@ -1153,6 +1156,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AssetDatabase\AssetDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ParticleSystems\ParticleModuleExportLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

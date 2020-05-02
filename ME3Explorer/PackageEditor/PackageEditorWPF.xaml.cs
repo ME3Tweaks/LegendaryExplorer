@@ -2083,6 +2083,7 @@ namespace ME3Explorer
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
             ExportLoaders[CollectionActorEditorTab_CollectionActorEditor] = CollectionActorEditor_Tab;
             ExportLoaders[ParticleSystemTab_ParticleSystemLoader] = ParticleSystem_Tab;
+            ExportLoaders[ParticleModuleTab_ParticleModuleLoader] = ParticleModule_Tab;
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
