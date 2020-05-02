@@ -1327,7 +1327,10 @@ namespace ME3Explorer
                     using (StringWriter stringoutput = new StringWriter())
                     {
                         TreeViewItems[0].PrintPretty("", stringoutput, true, CurrentLoadedExport);
-                        File.WriteAllText(@"C:\users\mgame\desktop\jack\jackbin.txt", stringoutput.ToString());
+#if DEBUG
+                        //Uncomment this to write it out to disk. sometimes pasting big text busts things
+                        //File.WriteAllText(@"C:\users\public\bincopy.txt", stringoutput.ToString());
+#endif
                         Clipboard.SetText(stringoutput.ToString());
                     }
                 }
