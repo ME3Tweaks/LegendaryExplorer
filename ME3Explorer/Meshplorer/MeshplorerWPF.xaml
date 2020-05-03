@@ -43,7 +43,8 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Import New Mesh from UDK" Command="{Binding ImportFromUDKCommand}"/>
-                    <MenuItem Header="Replace Mesh from UDK" Command="{Binding ReplaceFromUDKCommand}"/>
+                    <MenuItem Header="Replace Mesh from UDK" ToolTip="Replaces an entire mesh from UDK (.upk file)" Command="{Binding ReplaceFromUDKCommand}"/>
+                    <MenuItem Header="Replace single LOD from UDK" ToolTip="Replaces a single LOD from UDK (.upk file). Use this is full replacement is wonky"  Command="{Binding ReplaceLODFromUDKCommand}"/>
                     <MenuItem Header="Export Mesh to UDK" Command="{Binding ExportToUDKCommand}"/>
                     <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
                 </MenuItem>

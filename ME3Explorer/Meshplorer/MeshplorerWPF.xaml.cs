@@ -148,6 +148,7 @@ namespace ME3Explorer
         public ICommand ImportFromUDKCommand { get; set; }
         public ICommand ReplaceFromUDKCommand { get; set; }
         public ICommand ExportToUDKCommand { get; set; }
+        public ICommand ReplaceLODFromUDKCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -159,6 +160,13 @@ namespace ME3Explorer
             ImportFromUDKCommand = new GenericCommand(ImportFromUDK, PackageIsLoaded);
             ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
             ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
+            ReplaceLODFromUDKCommand = new GenericCommand(ImportLODFromUDK, IsSkeletalMeshSelected);
+
+        }
+
+        private void ImportLODFromUDK()
+        {
+            ReplaceFromUDK(true);
         }
 
         private void ExportToUDK()
@@ -199,6 +207,12 @@ namespace ME3Explorer
 
         private void ReplaceFromUDK()
         {
+            ReplaceFromUDK(false);
+        }
+
+
+        private void ReplaceFromUDK(bool lodOnly)
+        {
             OpenFileDialog d = new OpenFileDialog { Filter = App.UDKFileFilter };
             if (d.ShowDialog() == true)
             {
@@ -234,9 +248,35 @@ namespace ME3Explorer
 
                                 newMesh.Materials = originalMesh.Materials.TypedClone();
 
-                                if (true)
+                                var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
+                                if (!lodOnly)
                                 {
-                                    CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc)); //used to be NEW MESH
+                                    CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
+
+                                    //Check LODs count
+                                    if (lods != null)
+                                    {
+                                        if (lods.Count != originalMesh.LODModels.Length)
+                                        {
+                                            MessageBox.Show("ASSERT: The amount of items in the LODInfo array (in the export properties) doesn't match the amount of LODs in the original mesh! You need to correct this. LODInfo count should match the amount of LODModels in the binary.");
+                                        }
+                                    }
+
+                                    if (newMesh.LODModels.Length < originalMesh.LODModels.Length)
+                                    {
+                                        // we need to update the LOD models
+                                        var newlods = lods.Take(newMesh.LODModels.Length).ToList();
+                                        lods.Clear();
+                                        lods.AddRange(newlods);
+                                        CurrentExport.WriteProperty(lods);
+                                    }
+
+                                    if (newMesh.LODModels.Length > originalMesh.LODModels.Length)
+                                    {
+                                        MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
+                                    }
+
+
                                 }
                                 else
                                 {
@@ -275,34 +315,21 @@ namespace ME3Explorer
                                             chunk.BoneMap[i] = (ushort)mappedId;
                                         }
                                     }
+                                    //Remove the other LODs, otherwise this could look really weird when it tries to change lods. I don't know anyone who is adding LOD levels
+                                    originalMesh.LODModels = new[] { incomingLOD };
 
-                                    originalMesh.LODModels[0] = incomingLOD; //DEBUG ONLY
+                                    //write it out
                                     CurrentExport.SetBinaryData(originalMesh.ToBytes(Pcc)); //used to be NEW MESH
-                                }
-
-
-                                var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
-                                if (lods != null)
-                                {
-                                    if (lods.Count != originalMesh.LODModels.Length)
+                                    if (lods.Count > 1)
                                     {
-                                        MessageBox.Show("ASSERT: The amount of items in the LODInfo array doesn't match the amount of LODs in the original mesh!");
+                                        // we need to update the LOD models
+                                        var newlods = lods.Take(1).ToList();
+                                        lods.Clear();
+                                        lods.AddRange(newlods);
+                                        CurrentExport.WriteProperty(lods);
                                     }
                                 }
 
-                                if (newMesh.LODModels.Length < originalMesh.LODModels.Length)
-                                {
-                                    // we need to update the LOD models
-                                    var newlods = lods.Take(newMesh.LODModels.Length).ToList();
-                                    lods.Clear();
-                                    lods.AddRange(newlods);
-                                    CurrentExport.WriteProperty(lods);
-                                }
-
-                                if (newMesh.LODModels.Length > originalMesh.LODModels.Length)
-                                {
-                                    MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
-                                }
                             }
                             else
                             {
@@ -373,7 +400,7 @@ namespace ME3Explorer
                             if (results.Any())
                             {
                                 ListDialog ld = new ListDialog(results, "Relink report",
-                                                               "The following items failed to relink.(This does not mean the import was unsuccesful, " +
+                                                               "The following items failed to relink.(This does not mean the import was unsuccessful, " +
                                                                "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
                                 ld.Show();
                             }
@@ -392,6 +419,7 @@ namespace ME3Explorer
         }
 
         private bool IsMeshSelected() => Mesh3DViewer.IsStaticMesh || Mesh3DViewer.IsSkeletalMesh;
+        private bool IsSkeletalMeshSelected() => Mesh3DViewer.IsSkeletalMesh;
 
         private bool CanConvertToStaticMesh() => Mesh3DViewer.IsSkeletalMesh && Pcc.Game == MEGame.ME3;
 
