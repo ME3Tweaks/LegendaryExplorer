@@ -8,6 +8,8 @@ This fork is updated by ME3Tweaks and contains bleeding edge features for develo
 ## New to modding?
 [Check out our github wiki](https://github.com/ME3Tweaks/ME3Explorer/wiki) which has tutorials on various modding subjects. Want to contribute? Sign up for github and start writing tutorials today for other users.
 
+Need assistance? [Join the ME3Tweaks Discord](https://discord.gg/s8HA6dc).
+
 ## Features
 All stable releases starting with 3.0.7.0 on this fork are signed with the ME3Tweaks code signing certificate.
 
