@@ -47,7 +47,7 @@ steps:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/Release'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_cibuild_$(Build.SourceVersion).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_4.2.0.$(Build.SourceVersion).7z'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
@@ -66,7 +66,7 @@ steps:
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. Click this link, then click the download button. Nightly builds may be unstable and have bugs.",
+        "description": "A new nightly build of ME3Explorer has been built. Click this link, then expand the dropdown and download the 7z file. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
