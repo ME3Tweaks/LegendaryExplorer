@@ -76,6 +76,6 @@ steps:
           "name": "Triggering commit",
           "value": "$(discordmessage)"
         }],
-        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)",
+        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=logs",
         "timestamp": "$(time)"
       }]
