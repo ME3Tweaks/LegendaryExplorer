@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
 using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3Explorer.Meshplorer;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -34,7 +35,12 @@ namespace ME3Explorer
     /// </summary>
     public partial class MeshplorerWPF : WPFBase
     {
-
+        private bool _isRendererBusy;
+        public bool IsRendererBusy
+        {
+            get => _isRendererBusy;
+            set => SetProperty(ref _isRendererBusy, value);
+        }
 
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"Meshplorer\");
         private const string RECENTFILES_FILE = "RECENTFILES";
@@ -66,6 +72,8 @@ namespace ME3Explorer
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
+        public MeshRendererWPF BindableMesh3DViewer => Mesh3DViewer;
+
 
         /// <summary>
         /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constuctor instead.
@@ -80,11 +88,17 @@ namespace ME3Explorer
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            Mesh3DViewer.IsBusyChanged += RendererIsBusyChanged;
             MeshesView.Filter = FilterExportList;
 
             RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
             LoadRecentList();
             RefreshRecent(false);
+        }
+
+        private void RendererIsBusyChanged(object sender, EventArgs e)
+        {
+            IsRendererBusy = Mesh3DViewer.IsBusy;
         }
 
         public MeshplorerWPF(ExportEntry exportToLoad) : this()
@@ -149,6 +163,7 @@ namespace ME3Explorer
         public ICommand ReplaceFromUDKCommand { get; set; }
         public ICommand ExportToUDKCommand { get; set; }
         public ICommand ReplaceLODFromUDKCommand { get; set; }
+        public ICommand ExportToPSKUModelCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -161,7 +176,12 @@ namespace ME3Explorer
             ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsMeshSelected);
             ExportToUDKCommand = new GenericCommand(ExportToUDK, IsMeshSelected);
             ReplaceLODFromUDKCommand = new GenericCommand(ImportLODFromUDK, IsSkeletalMeshSelected);
+            ExportToPSKUModelCommand = new GenericCommand(ExportUsingUModel, IsMeshSelected);
+        }
 
+        private void ExportUsingUModel()
+        {
+            Mesh3DViewer.EnsureUModel();
         }
 
         private void ImportLODFromUDK()
@@ -745,6 +765,7 @@ namespace ME3Explorer
         private void MeshplorerWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             CurrentExport = null;
+            Mesh3DViewer.IsBusyChanged -= RendererIsBusyChanged;
             BinaryInterpreterTab_BinaryInterpreter.Dispose();
             InterpreterTab_Interpreter.Dispose();
             Mesh3DViewer.Dispose();

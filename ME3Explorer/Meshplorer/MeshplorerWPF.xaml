@@ -21,6 +21,7 @@
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
@@ -128,56 +129,76 @@
                     </Grid>
                 </StackPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="0">
+                <DockPanel Grid.Row="0" Grid.Column="0"                              
+                           IsEnabled="{Binding IsRendererBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
                         <CheckBox Content="Brushes" IsChecked="{Binding ShowBrushes}"/>
                         <CheckBox Content="SkeletalMeshes" Margin="5,0" IsChecked="{Binding ShowSkeletalMeshes}"/>
                         <CheckBox Content="StaticMeshes" IsChecked="{Binding ShowStaticMeshes}"/>
                     </StackPanel>
-                    <ListBox  ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" HorizontalContentAlignment="Stretch">
-                    <ListBox.Resources>
-                        <DataTemplate DataType="{x:Type packages:ExportEntry}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+                    <ListBox  ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" 
+                              HorizontalContentAlignment="Stretch">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type packages:ExportEntry}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
 
-                                <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding UIndex}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" ToolTip="Export index"/>
-                                        <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                    <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding UIndex}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" ToolTip="Export index"/>
+                                            <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
-                            </StackPanel>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
-                                    <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="SkeletalMesh">
-                                    <Setter Property="Icon" Value="Solid_Skull" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="StaticMesh">
-                                    <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
-                                    <Setter Property="Icon" Value="Brands_Codepen" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                        <ContextMenu x:Key="MyMenu">
-                            <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked"/>
-                            <MenuItem Header="Replace Mesh from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}"/>
-                            <MenuItem Header="Export Mesh to UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToUDKCommand}"/>
-                            <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
-                        </ContextMenu>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
-                            <Setter Property="Padding" Value="0"/>
-                        </Style>
-                    </ListBox.Resources>
-                </ListBox>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                        <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="SkeletalMesh">
+                                        <Setter Property="Icon" Value="Solid_Skull" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="StaticMesh">
+                                        <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
+                                        <Setter Property="Icon" Value="Brands_Codepen" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                            <ContextMenu x:Key="MyMenu">
+                                <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Replace Mesh from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/udk.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Export Mesh to UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToUDKCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/udk.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKUModelCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/umodel.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
+                            </ContextMenu>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
 
-                    </DockPanel>
-                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
+                </DockPanel>
+                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}" 
+                      IsEnabled="{Binding IsRendererBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>

@@ -138,11 +138,19 @@ namespace ME3Explorer.Meshplorer
 
         #region Busy variables
         private bool _isBusy;
+
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set
+            {
+                if (SetProperty(ref _isBusy, value))
+                {
+                    IsBusyChanged?.Invoke(this, EventArgs.Empty); //caller will just fetch and update this value
+                }
+            }
         }
+
 
         private bool _busyProgressIndeterminate = true;
 
@@ -224,9 +232,12 @@ namespace ME3Explorer.Meshplorer
             UModelExportCommand = new GenericCommand(EnsureUModel, ExportLoaded);
         }
 
+        public event EventHandler IsBusyChanged;
+
         private bool ExportLoaded() => CurrentLoadedExport != null;
         private void ExportViaUModel()
         {
+            BusyText = "Waiting for user input";
             var dlg = new CommonOpenFileDialog
             {
                 IsFolderPicker = true,
@@ -444,25 +455,35 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void EnsureUModel()
+        /// <summary>
+        /// Exports via UModel after ensuring
+        /// </summary>
+        public void EnsureUModel()
         {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += EnsureUModel_BackgroundThread;
-            bw.RunWorkerCompleted += (a, b) =>
-            {
-                if (b.Result is string message)
-                {
-                    BusyText = "Error downloading umodel";
-                    MessageBox.Show($"An error occured fetching umodel. Please comes to the ME3Tweaks Discord for assistance.\n\n{message}", "Error fetching umodel");
-                }
-                else if (b.Result == null)
-                {
-                    ExportViaUModel();
-                }
+            var savewarning = Xceed.Wpf.Toolkit.MessageBox.Show(null, "Exporting a model via UModel requires this package to be saved. Confirm it's OK to save this package before UModel processes exporting from this file.", "Package save warning", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                IsBusy = false;
-            };
-            bw.RunWorkerAsync();
+            if (savewarning == MessageBoxResult.OK)
+            {
+                CurrentLoadedExport.FileRef.Save();
+
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += EnsureUModel_BackgroundThread;
+                bw.RunWorkerCompleted += (a, b) =>
+                {
+                    if (b.Result is string message)
+                    {
+                        BusyText = "Error downloading umodel";
+                        MessageBox.Show($"An error occured fetching umodel. Please comes to the ME3Tweaks Discord for assistance.\n\n{message}", "Error fetching umodel");
+                    }
+                    else if (b.Result == null)
+                    {
+                        ExportViaUModel();
+                    }
+
+                    IsBusy = false;
+                };
+                bw.RunWorkerAsync();
+            }
         }
         public void EnsureUModel_BackgroundThread(object sender, DoWorkEventArgs args)
         {

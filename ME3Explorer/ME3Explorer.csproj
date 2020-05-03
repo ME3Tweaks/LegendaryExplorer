@@ -463,6 +463,7 @@
     <Compile Include="Sequence Editor\KismetHelper.cs" />
     <Compile Include="Sequence Editor\SequenceObjectCreator.cs" />
     <Compile Include="SharedUI\BindingProxy.cs" />
+    <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Dialogue Editor\BioConversation.cs" />
@@ -1556,6 +1557,7 @@
     <Resource Include="Meshplorer\umodel.ico" />
     <Resource Include="Resources\tlkeditor_256x256.ico" />
     <Resource Include="PackageEditor\bink.jpg" />
+    <Resource Include="Meshplorer\udk.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
