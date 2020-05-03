@@ -66,7 +66,7 @@ steps:
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. Click this link, then click the '1 artifact produced' link to download it. Nightly builds may be unstable and have bugs.",
+        "description": "A new nightly build of ME3Explorer has been built. Click this link, then click the download button. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
@@ -76,6 +76,6 @@ steps:
           "name": "Triggering commit",
           "value": "$(discordmessage)"
         }],
-        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=logs",
+        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"
       }]
