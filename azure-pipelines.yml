@@ -75,6 +75,10 @@ steps:
         "fields": [{
           "name": "Triggering commit",
           "value": "$(discordmessage)"
+        },
+        {
+          "name": "Version",
+          "value": "4.2.0.$(Build.BuildId)"
         }],
         "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"
