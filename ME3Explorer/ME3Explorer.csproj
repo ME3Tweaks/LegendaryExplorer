@@ -883,6 +883,9 @@
     <Compile Include="Main Window\TaskPane.xaml.cs">
       <DependentUpon>TaskPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Splash\DPIAwareSplashScreen.xaml.cs">
+      <DependentUpon>DPIAwareSplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StaticLighting\StaticLightingGenerator.cs" />
     <Compile Include="TFCCompactor\TFCCompactor.xaml.cs">
       <DependentUpon>TFCCompactor.xaml</DependentUpon>
@@ -1245,6 +1248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\StatusBarGameIDIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Splash\DPIAwareSplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

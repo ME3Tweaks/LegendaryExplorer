@@ -20,6 +20,7 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
+using ME3Explorer.Splash;
 using ME3Explorer.Unreal;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
@@ -35,7 +36,6 @@ namespace ME3Explorer
         //Should move this to Path.Combine() in future
         public static string AppDataFolder => Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\").FullName;
         public static string StaticExecutablesDirectory => Directory.CreateDirectory(Path.Combine(AppDataFolder, "staticexecutables")).FullName; //ensures directory will always exist.
-
 
         /// <summary>
         /// Static files base URL points to the static directory on the ME3Explorer github and will have executable and other files that are no distributed in the initial download of ME3Explorer.
@@ -143,11 +143,13 @@ namespace ME3Explorer
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
-            splashScreen.Close(TimeSpan.FromMilliseconds(1));
+            
+
             Action actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
             if (actionDelegate == null)
             {
                 Shutdown(exitCode);
+                ME3ExplorerSplashScreen?.Close();
             }
             else
             {
@@ -155,6 +157,12 @@ namespace ME3Explorer
                 Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
+
+                //close splash after
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                ME3ExplorerSplashScreen?.Close();
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
+
                 GameController.InitializeMessageHook(mainWindow);
             }
         }
