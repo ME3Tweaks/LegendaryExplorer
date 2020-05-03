@@ -53,7 +53,7 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'me3explorernightly'
+    ArtifactName: 'me3explorernightly_4.2.0.$(Build.BuildId)'
     publishLocation: 'Container'
 
 - task: ado-discord-webhook@1
