@@ -90,7 +90,7 @@
                         Ashley66444   <LineBreak/>
                         JohnP         <LineBreak/>
                         SirCxyrtyx    <LineBreak/>
-                        ME3Tweaks     <LineBreak/>
+                        ME3Tweaks (Mgamerz)<LineBreak/>
                         MrFob         <LineBreak/>
                         Heff          <LineBreak/>
                         Benji         <LineBreak/>
@@ -118,11 +118,14 @@
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         RS - Texmod                                     <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
+                        Aquadran - Mass Effect Modder  (Textures)       <LineBreak/>
                         VGMStream - Audio decoding                      <LineBreak/>
+                        AppCenter (Microsoft) - Crash telemetry         <LineBreak/>
+                        Xceed WPF Toolkit - UI controls                 <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Documentation">
+                <!--<TabItem Header="Documentation">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <TextBlock>
                         GitHub - SirCxyrtyx                       <LineBreak/>
@@ -131,11 +134,13 @@
                         Wikia - Giftfish and Wiki Contributors    <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
-                </TabItem>
+                </TabItem>-->
                 <TabItem Header="Art + Design">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <TextBlock>
-                        ME3Explorer 3.0 GUI Design by Giftfish and SirCxyrtyx                      <LineBreak/>
+                        Toolset Splashscreen artwork (Antares) by JoeyJazz                         <LineBreak/>
+                        Used with permission for ME3Explorer - ME3Tweaks Fork                      <LineBreak/>
+                        Derivatives of this product must acquire their own license                 <LineBreak/>
                                                                                                    <LineBreak/>
                         FONTS                                                                      <LineBreak/>
                         Exo © Nataneal Gama                                                        <LineBreak/>
@@ -148,7 +153,6 @@
                         “3”, “M”, &amp; Splash Background © BioWare Corp. and Electronic Arts, Inc.<LineBreak/>
                         Hex Code Background © Maksim Kabakou, Shutterstock                         <LineBreak/>
                         Outline icons © Flaticon.com                                               <LineBreak/>
-                        ME3Explorer Graphics and Tool Icons by Giftfish &amp; Kinkojiro            <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -179,8 +183,7 @@
     GNU General Public License for more details.
                         </Paragraph>
                         <Paragraph>You should have received a copy of the GNU General Public License
-    along with this program.  If not, see
-                        \&lt;http://www.gnu.org/licenses/&gt;
+    along with this program.  If not, see http://www.gnu.org/licenses.
                         </Paragraph>
                     </FlowDocument>
                 </RichTextBox.Document>
