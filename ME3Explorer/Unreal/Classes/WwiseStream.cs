@@ -179,7 +179,8 @@ namespace ME3Explorer.Unreal.Classes
             string basePath = GetTempSoundPath();
             if (ExtractRawFromSourceToFile(basePath + ".wem", GetPathToAFC(), DataSize, DataOffset))
             {
-                MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                var dataStream = ISBankEntry.ConvertAudioToWave(basePath + ".wem");
+                //MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
             }
             return basePath + ".wav";
