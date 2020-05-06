@@ -59,11 +59,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     try
                     {
-                        var func = UE3FunctionReader.ReadFunction(Export);
-                        func.Decompile(new TextBuilder(), false); //parse bytecode
-                        var entryRefs = func.EntryReferences;
-                        uIndices.AddRange(entryRefs.Select(x =>
-                            (new UIndex(x.Value.UIndex), "Reference inside of function")));
+                        //var func = UE3FunctionReader.ReadFunction(Export);
+                        //func.Decompile(new TextBuilder(), false); //parse bytecode
+                        //var entryRefs = func.EntryReferences;
+                        //uIndices.AddRange(entryRefs.Select(x =>
+                        //    (new UIndex(x.Value.UIndex), "Reference inside of function")));
 
                         (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
                         foreach (var t in tokens)

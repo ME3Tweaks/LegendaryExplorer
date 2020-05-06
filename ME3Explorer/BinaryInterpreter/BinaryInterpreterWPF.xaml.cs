@@ -180,7 +180,7 @@ namespace ME3Explorer
                 if (b.UIndexValue == 0)
                 {
                     EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
-                        { Endian = CurrentLoadedExport.FileRef.Endian };
+                    { Endian = CurrentLoadedExport.FileRef.Endian };
                     index = b.GetObjectRefValue(er);
                 }
                 else
@@ -444,6 +444,29 @@ namespace ME3Explorer
                     LoadedContent_Panel.Visibility = Visibility.Visible;
                     TreeViewItems.Replace(result);
                 });
+        }
+
+        public static bool IsNativePropertyType(string classname)
+        {
+            switch (classname)
+            {
+                case "IntProperty":
+                case "BoolProperty":
+                case "ArrayProperty":
+                case "FloatProperty":
+                case "ClassProperty":
+                case "ByteProperty":
+                case "StrProperty":
+                case "NameProperty":
+                case "StringRefProperty":
+                case "StructProperty":
+                case "ComponentProperty":
+                case "ObjectProperty":
+                case "DelegateProperty":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private BinInterpNode PerformScanBackground(BinInterpNode topLevelTree, byte[] data, int binarystart)

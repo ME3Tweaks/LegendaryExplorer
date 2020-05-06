@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Gammtek.Conduit.IO;
 using ME2Explorer;
+using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
@@ -181,6 +184,7 @@ namespace ME3Explorer
                 {
                     if (loadedSubtext) return _subtext;
                     if (Entry == null) return null;
+                    var ee = Entry as ExportEntry;
                     if (Entry.ClassName == "WwiseEvent")
                     {
                         //parse out tlk id?
@@ -221,15 +225,73 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    else if (Entry is ExportEntry ee/* && ee.Parent != null && ee.Parent.ObjectName == "PersistentLevel"*/)
+                    else if (ee != null)
                     {
-                        var tag = ee.GetProperty<NameProperty>("Tag");
-                        if (tag != null && tag.Value.Name != Entry.ObjectName)
+                        if (Entry.ClassName == "Function" && ee != null)
                         {
-                            _subtext = tag.Value.Name;
+                            //check if exec
+                            var data = ee.Data;
+                            if (Entry.FileRef.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                            {
+                                var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
+                                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                if (fs.HasFlag("Exec"))
+                                {
+                                    _subtext = "Exec - console command";
+                                }
+                                else if (fs.HasFlag("Native"))
+                                {
+                                    _subtext = "Native";
+                                    var nativeIndex = EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                    if (nativeIndex > 0)
+                                    {
+                                        _subtext += ", index " + nativeIndex;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
+                                var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
+                                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                if (fs.HasFlag("Exec"))
+                                {
+                                    _subtext = "Exec - console command";
+                                }
+                                else if (fs.HasFlag("Native"))
+                                {
+                                    var nativeIndex = EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                    _subtext = "Native, index "+nativeIndex;
+                                }
+                            }
+
+                        }
+                        else if (Entry.ClassName == "Const")
+                        {
+                            var data = ee.Data;
+                            //This is kind of a hack. 
+                            var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
+                            _subtext = "Value: " + value;
+                        }
+                        else if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
+                        {
+                            var data = ee.Data;
+                            //This is kind of a hack. 
+                            UnrealFlags.EPropertyFlags objectFlags = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(data, 0x18, ee.FileRef.Endian);
+                            if ((objectFlags & UnrealFlags.EPropertyFlags.Config) != 0)
+                            {
+                                _subtext = "Config";
+                            }
+                        }
+                        else
+                        {
+                            var tag = ee.GetProperty<NameProperty>("Tag");
+                            if (tag != null && tag.Value.Name != Entry.ObjectName)
+                            {
+                                _subtext = tag.Value.Name;
+                            }
                         }
                     }
-
 
                     loadedSubtext = true;
                     return _subtext;

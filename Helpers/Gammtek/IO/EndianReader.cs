@@ -153,6 +153,29 @@ namespace Gammtek.Conduit.IO
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
+        public static string ReadUnrealString(byte[] data, int position, Endian endian)
+        {
+            int length = ToInt32(data, position, endian);
+            if (length == 0)
+            {
+                return "";
+            }
+
+            if (length > 0)
+            {
+                return Encoding.ASCII.GetString(data, position + 4, length);
+            }
+            else
+            {
+                return Encoding.Unicode.GetString(data, position + 4, length * -2);
+            }
+        }
+
+        /// <summary>
+        /// Reads an unreal-style prefixed string from the underlying stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public string ReadUnrealString()
         {
             int length = ReadInt32();
@@ -387,7 +410,7 @@ namespace Gammtek.Conduit.IO
             set
             {
                 _source.BaseStream.Position = value;
-                if (LittleEndianStream != null) 
+                if (LittleEndianStream != null)
                     LittleEndianStream.Position = value;
             }
         }
@@ -580,7 +603,7 @@ namespace Gammtek.Conduit.IO
         /// Reads an int16 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
-        public static int ToInt16(byte[] buffer, int offset, Endian endianness)
+        public static short ToInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt16(buffer, offset);
             if (IO.Endian.Native != endianness)

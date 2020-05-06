@@ -450,6 +450,8 @@ namespace ME3Explorer.Unreal
             NATIVE_NotEqual_NameName = 0x00FF,
             NATIVE_EqualEqual_NameName = 0x00FE,
             NATIVE_IsA = 0x00C5,
+
+            NATIVE_Sleep = 0x0100, //ME3 Engine.pcc
             NATIVE_ClassIsChildOf = 0x0102,
             NATIVE_NotEqual_ObjectObject = 0x0281,
             NATIVE_EqualEqual_ObjectObject = 0x0280,
@@ -618,7 +620,6 @@ namespace ME3Explorer.Unreal
             NATIVE_SetCollisionSize = 0x011B,
             NATIVE_SetCollision = 0x0106,
             NATIVE_FinishAnim = 0x0105,
-            NATIVE_Sleep = 0x0100,
             NATIVE_WaitForLanding = 0x020F,
             NATIVE_PickWallAdjust = 0x020E,
             NATIVE_ActorReachable = 0x0208,
@@ -702,6 +703,39 @@ namespace ME3Explorer.Unreal
                     res.Add(new Token { text = "Exception: " + e.Message, raw = new byte[] { } });
                 }
             }
+
+            if (export.ClassName == "State")
+            {
+                //parse remaining
+                var postpos = res.Sum(x => x.raw.Length) + start;
+                if (postpos + 0x13 > memory.Length) return res; //hack workaround for UStare parsing
+                res.Add(new Token { text = "Unknown 0x13 bytes", raw = memory.Slice(postpos, 0x13), pos = postpos });
+                postpos += 0x13;
+                res.Add(new Token { text = "State flags", raw = memory.Slice(postpos, 0x4), pos = postpos });
+                postpos += 0x4;
+                res.Add(new Token { text = "Unknown 2 bytes", raw = memory.Slice(postpos, 0x2), pos = postpos });
+                postpos += 0x2;
+                var numMappedFunctions = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
+                res.Add(new Token { text = $"Function map({numMappedFunctions}):", raw = memory.Slice(postpos, 0x4), pos = postpos });
+                postpos += 4;
+                for (int i = 0; i < numMappedFunctions; i++)
+                {
+                    var name = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
+                    var uindex = EndianReader.ToInt32(memory, postpos + 8, export.FileRef.Endian);
+                    var fmtok = new Token
+                    {
+                        text = $"    {export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()",
+                        raw = memory.Length >= postpos + 0xC? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
+                        pos = postpos
+                    };
+                    //apparently ustate already does this
+                    //fmtok.inPackageReferences.Add((postpos, Token.INPACKAGEREFTYPE_NAME, name));
+                    //fmtok.inPackageReferences.Add((postpos + 0x8, Token.INPACKAGEREFTYPE_ENTRY, uindex));
+                    res.Add(fmtok);
+                    postpos += 12;
+                }
+            }
+
             return res;
         }
 
@@ -786,7 +820,7 @@ namespace ME3Explorer.Unreal
                         break;
                     case EX_LabelTable: //0x0C
                         newTok = ReadLableTable(start, export);
-                        newTok.stop = false;
+                        newTok.stop = true; //don't parse more bytecode
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
@@ -1193,6 +1227,15 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
+                    case EX_GotoLabel: //0xD
+                        var innerTok = ReadToken(start + 1, export);
+                        newTok.text = "GotoLabel: " + innerTok.text;
+                        newTok.stop = false;
+                        newTok.raw = memory.Slice(start, 1 + innerTok.raw.Length);
+                        //newTok.raw = start+ + newTok
+                        end = start + 1 + innerTok.raw.Length;
+                        res = newTok;
+                        break;
                     default:
                         newTok = ReadUnknown(start, export);
                         newTok.stop = true;
@@ -1281,6 +1324,11 @@ namespace ME3Explorer.Unreal
             msg.StartPos = start + 0x20; //start of script data in ME3
             _debug.Add(msg);
             return res;
+        }
+
+        private static Token ReadGoToLabel(int start, ExportEntry export)
+        {
+            throw new NotImplementedException();
         }
 
         private static Token ReadNative(int start, ExportEntry export)
@@ -2380,6 +2428,34 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos, export);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
+                    break;
+                case (int)ENatives.NATIVE_Sleep: // 0x0100 - Defined in ME3 Engine.pcc
+                    t.text = "Sleep(";
+                    a = ReadToken(pos, export);
+                    t.text += a.text;
+                    pos += a.raw.Length;
+                    b = ReadToken(pos, export);
+                    if (b.op != EX_EndFunctionParms)
+                    {
+                        t.text += "Should be EX_EndFunctionParms!";
+                    }
+
+                    pos += b.raw.Length;
+                    t.text += ")";
+                    break;
+                case (int)ENatives.NATIVE_FinishRotation: // 0x01FC - Defined in ME3 Engine.pcc
+                    t.text = "FinishRotation()";
+                    //a = ReadToken(pos, export);
+                    //t.text += a.text;
+                    //pos += a.raw.Length;
+                    //b = ReadToken(pos, export);
+                    //if (b.op != EX_EndFunctionParms)
+                    //{
+                    //    t.text += "Should be EX_EndFunctionParms!";
+                    //}
+
+                    pos += 1;//skip EndFuncParams
+                    //t.text += ")";
                     break;
                 case (int)ENatives.NATIVE_ClassIsChildOf:// 0x0102
                     t.text = "ClassIsChildOf(";
@@ -4575,6 +4651,7 @@ namespace ME3Explorer.Unreal
             t.text = "";
             t.raw = new byte[1];
             t.raw[0] = memory[start];
+            t.op = EX_EndFunctionParms;
             return t;
         }
 
@@ -4603,7 +4680,7 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + a.raw.Length + 1;
-            int expSize = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
+            int expSize = EndianReader.ToInt16(memory, pos, export.FileRef.Endian); //memory size?
             pos += 2;
             int unkRef = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
@@ -4801,22 +4878,57 @@ namespace ME3Explorer.Unreal
         private static Token ReadLableTable(int start, ExportEntry export)
         {
             Token t = new Token();
-            t.text = "";
+            t.text = "Label Table:\n";
 
-            //Apparently this is in Big Endian.
-            //EndianReader.IsLittleEndian = false; //oh good, how do we deal with this.
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            index = (int)((index & 0x000000FFU) << 24 | (index & 0x0000FF00U) << 8 | (index & 0x00FF0000U) >> 8 | (index & 0xFF000000U) >> 24);
-
-            if (index >= 0 && index < export.FileRef.Names.Count)
+            //Labels:
+            //NAME (8 bytes) Offset? (4 bytes)
+            int endpos = start + 1; //skip opcode
+            bool isFirst = true;
+            while (endpos + 8 < memory.Length)
             {
-                t.text = export.FileRef.GetNameEntry(index);
-                t.inPackageReferences.Add((position: start + 1, type: Token.INPACKAGEREFTYPE_NAME, value: index));
+                if (isFirst)
+                    isFirst = false;
+                else
+                    t.text += "\n";
+
+
+                int index = EndianReader.ToInt32(memory, endpos, export.FileRef.Endian);
+                int offset = EndianReader.ToInt32(memory, endpos + 8, export.FileRef.Endian);
+                if (export.FileRef.IsName(index))
+                {
+                    var name = export.FileRef.GetNameEntry(index);
+                    if (name == "None")
+                    {
+                        //end of Label Table
+                        t.text += "End of label table (None)";
+                        t.inPackageReferences.Add((position: endpos, type: Token.INPACKAGEREFTYPE_NAME, value: index));
+                        endpos += 8;
+                        break;
+                    }
+                    else
+                    {
+
+
+                        t.text += name + " @ 0x" + offset.ToString("X8") + ")";
+                        t.inPackageReferences.Add((position: endpos, type: Token.INPACKAGEREFTYPE_NAME, value: index));
+                        endpos += 12;
+                    }
+                }
+                else
+                {
+                    t.text += "Label (Invalid name " + index.ToString("X2") + " @ 0x" + offset.ToString("X8");
+                    endpos += 12;
+                }
             }
-            else
-                t.text = "Label (" + index.ToString("X2") + ");";
-            t.raw = new byte[5];
-            for (int i = 0; i < 5; i++)
+
+            var labelTableOffset = EndianReader.ToInt16(memory, endpos, export.FileRef.Endian); //In ME3 I think this is always 0xFFFF, which means there is no label table offset.
+            t.text += "\nLabel table offset: 0x" + labelTableOffset.ToString("X4");
+
+            endpos += 2;
+
+
+            t.raw = new byte[endpos - start];
+            for (int i = 0; i < endpos - start; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }

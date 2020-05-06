@@ -149,7 +149,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public int GetFlagInt()
         {
-            return BitConverter.ToInt32(memory, memsize - 4);
+            return BitConverter.ToInt32(memory, export.ClassName == "Function" ? memsize - 4 : memsize - 10);
         }
 
         public string GetFlags()
