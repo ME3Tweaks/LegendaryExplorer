@@ -2713,15 +2713,6 @@ namespace ME3Explorer
                         });
                         offset += 4;
 
-                        int bqState = BitConverter.ToInt32(data, offset);  //Bool quest State
-                        bquestIDs.Items.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X5} Bool State: {bqState} ",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafInt
-                        });
-                        offset += 4;
-
                         int bqConditional = BitConverter.ToInt32(data, offset);  //Bool quest Conditional
                         bquestIDs.Items.Add(new BinInterpNode
                         {
@@ -2731,6 +2722,14 @@ namespace ME3Explorer
                         });
                         offset += 4;
 
+                        int bqState = BitConverter.ToInt32(data, offset);  //Bool quest State
+                        bquestIDs.Items.Add(new BinInterpNode
+                        {
+                            Header = $"0x{offset:X5} Bool State: {bqState} ",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
 
                         bqQuest = BitConverter.ToInt32(data, offset);  //Bool quest ID
                         bquestIDs.Items.Add(new BinInterpNode
@@ -2817,19 +2816,19 @@ namespace ME3Explorer
                         });
                         offset += 4;
 
-                        int iqState = BitConverter.ToInt32(data, offset);  //Int quest State
+                        int iqConditional = BitConverter.ToInt32(data, offset);  //Int quest Conditional
                         iquestIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Bool State: {iqState} ",
+                            Header = $"0x{offset:X5} Conditional: {iqConditional} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafInt
                         });
                         offset += 4;
 
-                        int iqConditional = BitConverter.ToInt32(data, offset);  //Int quest Conditional
+                        int iqState = BitConverter.ToInt32(data, offset);  //Int quest State
                         iquestIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Conditional: {iqConditional} ",
+                            Header = $"0x{offset:X5} Bool State: {iqState} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafInt
                         });
@@ -2920,19 +2919,19 @@ namespace ME3Explorer
                         });
                         offset += 4;
 
-                        int fqState = BitConverter.ToInt32(data, offset);  //Float quest State
+                        int fqConditional = BitConverter.ToInt32(data, offset);  //Float quest Conditional
                         fquestIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Bool State: {fqState} ",
+                            Header = $"0x{offset:X5} Conditional: {fqConditional} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafInt
                         });
                         offset += 4;
 
-                        int fqConditional = BitConverter.ToInt32(data, offset);  //Float quest Conditional
+                        int fqState = BitConverter.ToInt32(data, offset);  //Float quest State
                         fquestIDs.Items.Add(new BinInterpNode
                         {
-                            Header = $"0x{offset:X5} Conditional: {fqConditional} ",
+                            Header = $"0x{offset:X5} Bool State: {fqState} ",
                             Name = "_" + offset,
                             Tag = NodeType.StructLeafInt
                         });
