@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using StreamHelpers;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
@@ -96,6 +97,35 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
             Tokens = new List<BytecodeSingularToken>();
             Statements = ReadBytecode(out var bytecodeReader);
+
+            //UI only
+            // Man this code is bad
+            // sorry
+            try
+            {
+                var s = bytecodeReader._reader;
+                if (Export.ClassName == "State")
+                {
+                    s.BaseStream.Skip(0x10); //Unknown
+                    var stateFlags = s.ReadInt32();
+                    var unknown = s.ReadInt16();
+                    var functionMapCount = s.ReadInt32();
+                    for (int i = 0; i < functionMapCount; i++)
+                    {
+                        int spos = (int)s.BaseStream.Position;
+                        var name = bytecodeReader.ReadName();
+                        var entry = bytecodeReader.ReadEntryRef(out var _);
+                        Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Excpetion..");
+            }
+
+
+
             NameReferences = bytecodeReader.NameReferences;
             EntryReferences = bytecodeReader.EntryReferences;
             List<ExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
@@ -148,6 +178,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         break; //return param
                     }
                 }
+
+
 
                 //object instance = export.ReadInstance();
                 //if (instance is UnClassProperty)

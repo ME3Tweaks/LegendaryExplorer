@@ -257,6 +257,7 @@ namespace ME3Explorer
             "FaceFXAsset",
             "FloatProperty",
             "FluidSurfaceComponent",
+            "ForceFeedbackWaveform",
             "FracturedStaticMesh",
             "FracturedStaticMeshComponent",
             "GuidCache",
@@ -686,6 +687,9 @@ namespace ME3Explorer
                         break;
                     case "FluidSurfaceComponent":
                         subNodes.AddRange(StartFluidSurfaceComponentScan(data, ref binarystart));
+                        break;
+                    case "ForceFeedbackWaveform":
+                        subNodes.AddRange(StartForceFeedbackWaveformScan(data, ref binarystart));
                         break;
                     case "MorphTarget":
                         subNodes.AddRange(StartMorphTargetScan(data, ref binarystart));

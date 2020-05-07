@@ -428,6 +428,40 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<ITreeItem> StartForceFeedbackWaveformScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                bool? bIsLooping = CurrentLoadedExport.GetProperty<BoolProperty>("bIsLooping")?.Value;
+                var samples = CurrentLoadedExport.GetProperty<ArrayProperty<StructProperty>>("Samples");
+
+                subnodes.Add(MakeInt32Node(bin, "bIsLooping or Unknown"));
+                subnodes.Add(MakeInt32Node(bin, "Unknown or bIsLooping"));
+                int sampleNum = 0;
+                foreach (var s in samples)
+                {
+                    var iNode = new BinInterpNode(bin.Position, $"Sample #{sampleNum}");
+                    subnodes.Add(iNode);
+                    iNode.Items.Add(MakeByteNode(bin, "Left amplitude"));
+                    iNode.Items.Add(MakeByteNode(bin, "Right amplitude"));
+                    iNode.Items.Add(MakeByteNode(bin, "Left function"));
+                    iNode.Items.Add(MakeByteNode(bin, "Right function"));
+                    iNode.Items.Add(MakeFloatNode(bin, "Duration"));
+                }
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartTerrainComponentScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();

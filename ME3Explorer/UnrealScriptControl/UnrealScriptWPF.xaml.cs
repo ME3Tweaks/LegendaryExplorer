@@ -165,7 +165,7 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;
                 BytecodeStart = pos;
-                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
+                var func = CurrentLoadedExport.ClassName == "State"? UE3FunctionReader.ReadState(CurrentLoadedExport, data) : UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
                 func.Decompile(new TextBuilder(), false); //parse bytecode
 
                 bool defined = func.HasFlag("Defined");

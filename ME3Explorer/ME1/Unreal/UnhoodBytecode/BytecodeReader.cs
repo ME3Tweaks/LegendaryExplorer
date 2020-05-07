@@ -15,7 +15,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
     public class BytecodeToken
     {
         public int NativeIndex;
-        private string _text;
+        public string _text;
         private readonly int _offset;
 
         public BytecodeReader.ME1OpCodes OpCode { get; internal set; }
@@ -196,8 +196,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class NothingToken : BytecodeToken
     {
-        public NothingToken(int offset) : base("", offset) { }
+        public NothingToken(int offset, string displayString = "") : base(displayString, offset) { }
     }
+
+
+    class StopToken : BytecodeToken
+    {
+        public StopToken(int offset) : base("EX_Stop (stop state)", offset) { }
+    }
+
 
     class EndOfScriptToken : BytecodeToken
     {
@@ -221,6 +228,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             if (_labels.TryGetValue(offset, out result))
                 return result;
             return null;
+        }
+
+        public void updateUIText()
+        {
+            _text = "Label table:";
+            foreach (var l in _labels)
+            {
+                _text += $"\n{l.Value} @ {l.Key:X8}";
+            }
         }
     }
 
@@ -413,7 +429,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private const int EX_FirstNative = 0x70;*/
 
         private readonly IMEPackage _package;
-        private readonly BinaryReader _reader;
+        public readonly BinaryReader _reader;
 
         public BytecodeReader(IMEPackage package, BinaryReader reader)
         {
@@ -469,7 +485,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_LocalVariable:
                 case ME1OpCodes.EX_InstanceVariable:
                 case ME1OpCodes.EX_NativeParm:
-                    return ReadRef(r => r.ObjectName.Instanced);
+                    return ReadRef(r => r != null ? r.ObjectName.Instanced : "Unresolved");
 
                 case ME1OpCodes.EX_DefaultVariable:
                     return ReadRef(r => $"Default.{r.ObjectName.Instanced}");
@@ -524,6 +540,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                             int offset = _reader.ReadInt32();
                             token.AddLabel(labelName, offset);
                         }
+
+                        var labelTableOFfset = _reader.ReadInt16();
+                        var unknown = _reader.ReadInt16();
+                        token.updateUIText();
                         return token;
                     }
 
@@ -543,11 +563,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return ReadNext();
 
                 case ME1OpCodes.EX_Nothing:
-                    return new NothingToken(readerpos);
+                    return new NothingToken(readerpos, "EX_Nothing");
 
                 case ME1OpCodes.EX_Stop:
-                    _reader.ReadInt16();
-                    return new NothingToken(readerpos);
+                    //_reader.ReadInt16(); Stop seems to be only 1 byte. Not 3
+                    return new StopToken(readerpos);
 
                 case ME1OpCodes.EX_IntZero:
                     return Token("0", readerpos);
@@ -949,10 +969,24 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             var pos = _reader.BaseStream.Position;
             idx = _reader.ReadInt32();
             var entry = _package.GetEntry(idx);
+
+            //Add always so we have relinkability... I guess
             if (entry != null)
             {
                 EntryReferences[pos] = entry;
             }
+            //Following two conditions are for relinking
+            else if (idx < 0)
+            {
+                EntryReferences[pos] = new ImportEntry(_package) { Index = Math.Abs(idx) + 1 }; //Force UIndex
+                return _package.Imports.First(); //this is so rest of parser won't crash. It's a real hack...
+            }
+            else if (idx > 0)
+            {
+                EntryReferences[pos] = new ExportEntry(_package) { Index = Math.Abs(idx) - 1 }; //Force UIndex
+                return _package.Exports.First(); //this is so rest of parser won't crash. It's a real hack...
+            }
+
 
             return entry;
         }
@@ -961,11 +995,6 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             int pos = (int)_reader.BaseStream.Position - 1; //We already read the bytecode token.
             var item = ReadEntryRef(out var index);
-            if (item == null)
-            {
-                return ErrToken("// unresolved reference " + index);
-            }
-
             return Token(func(item), pos);
         }
 

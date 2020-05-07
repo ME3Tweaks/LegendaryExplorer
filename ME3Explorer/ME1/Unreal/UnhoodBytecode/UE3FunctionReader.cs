@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gammtek.Conduit.Extensions.IO;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
@@ -39,6 +40,24 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         //    return tb.ToString();
         //}
 
+        public static UnFunction ReadState(ExportEntry export, byte[] dataOverride = null)
+        {
+            if (dataOverride == null) dataOverride = export.Data;
+            using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
+            {
+                reader.ReadBytes(12); //netindex?, none
+                int super = reader.ReadInt32();
+                int nextCompilingChainItem = reader.ReadInt32();
+                reader.ReadBytes(12);
+                int line = reader.ReadInt32(); //??
+                int textPos = reader.ReadInt32(); //??
+                int scriptSize = reader.ReadInt32();
+                byte[] bytecode = reader.BaseStream.ReadFully(); //read the rest of the state
+                return new UnFunction(export, "STATE",
+                    new FlagValues(0, _flagSet), bytecode, 0, 0);
+            }
+        }
+
         /// <summary>
         /// Reads the function and returns a parsed object contianing information about the function
         /// Ported from Unhood (Modified by Mgamerz)
@@ -50,7 +69,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             if (dataOverride == null) dataOverride = export.Data;
             using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
             {
-                reader.ReadBytes(12);
+                reader.ReadBytes(12); //netindex?, none
                 int super = reader.ReadInt32();
                 int nextCompilingChainItem = reader.ReadInt32();
                 reader.ReadBytes(12);

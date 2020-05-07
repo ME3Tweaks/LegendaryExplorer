@@ -122,19 +122,27 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            var func = UE3FunctionReader.ReadFunction(sourceExport);
+                            var func = sourceExport.ClassName == "State" ? UE3FunctionReader.ReadState(sourceExport) : UE3FunctionReader.ReadFunction(sourceExport);
                             func.Decompile(new TextBuilder(), false); //parse bytecode
                             var nameRefs = func.NameReferences;
                             var entryRefs = func.EntryReferences;
                             foreach (var nr in nameRefs)
                             {
-                                RelinkNameReference(nr.Value.Name, nr.Key, uStructBinary.ScriptBytes, relinkingExport);
+                                if (nr.Key < uStructBinary.ScriptBytes.Length)
+                                {
+                                    RelinkNameReference(nr.Value.Name, nr.Key, uStructBinary.ScriptBytes, relinkingExport);
+                                }
                             }
+
                             foreach (var ef in entryRefs)
                             {
-                                relinkFailedReport.AddRange(RelinkUnhoodEntryReference(ef.Value, ef.Key, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
-                                    importExportDependencies));
+                                if (ef.Key < uStructBinary.ScriptBytes.Length)
+                                {
+                                    relinkFailedReport.AddRange(RelinkUnhoodEntryReference(ef.Value, ef.Key, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
+                                        importExportDependencies));
+                                }
                             }
+
                             //relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
                             //                                                                 $"which cannot be relinked for {relinkingExport.Game}"));
                         }
@@ -235,6 +243,7 @@ namespace ME3Explorer
                         case "WwiseStream":
                         case "WwiseBank":
                         case "Texture2D":
+                        case "ForceFeedbackWaveForm":
                             //these classes have binary but do not need relinking
                             break;
                         default:
@@ -451,7 +460,7 @@ namespace ME3Explorer
                 crossFileRefObjectMap, "", importExportDependencies);
             if (relinkResult is null)
             {
-                script.OverwriteRange((int) position, BitConverter.GetBytes(uIndex));
+                script.OverwriteRange((int)position, BitConverter.GetBytes(uIndex));
             }
             else
             {

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using StreamHelpers;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
@@ -30,7 +31,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             var reader = new BinaryReader(s);
             bcReader = new BytecodeReader(_self.FileRef, reader);
             var statements = new StatementList((Statement)null);
-            while (s.Position < s.Length)
+            bool keepParsing = true;
+            while (s.Position < s.Length && keepParsing)
             {
                 int startOffset = (int)s.Position;
                 //Debug.WriteLine("Reading token at 0x" + startOffset.ToString("X4"));
@@ -60,6 +62,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         ProblemRegistry.RegisterBytecodeError(this, errorToken.ToString());
                     }
                     break;
+                }
+
+                if (/*bc is LabelTableToken || /*bc is StopToken ||*/ bc is EndOfScriptToken)
+                {
+                    keepParsing = false;
+                    break; //Nothing else to parse is bytecode
                 }
             }
             return statements;
