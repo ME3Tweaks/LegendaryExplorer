@@ -1565,6 +1565,7 @@
     <Resource Include="Resources\tlkeditor_256x256.ico" />
     <Resource Include="PackageEditor\bink.jpg" />
     <Resource Include="Meshplorer\udk.ico" />
+    <Resource Include="PackageEditor\EntryIcons\icon_state.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

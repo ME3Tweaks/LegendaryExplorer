@@ -59,22 +59,25 @@ namespace ME3Explorer.Unreal.Classes
         public string GetSignature()
         {
             string result = "";
-            if (Native)
+            if (export.ClassName == "Function")
             {
-                result += "native";
-                if (GetNatIdx() > 0)
-                    result += $"({GetNatIdx()})";
-                result += " ";
-            }
+                if (Native)
+                {
+                    result += "native";
+                    if (GetNatIdx() > 0)
+                        result += $"({GetNatIdx()})";
+                    result += " ";
+                }
 
-            flags.Except("Native", "Event", "Delegate", "Defined", "Public", "HasDefaults", "HasOutParms").Each(f => result += f.ToLower() + " ");
+                flags.Except("Native", "Event", "Delegate", "Defined", "Public", "HasDefaults", "HasOutParms").Each(f => result += f.ToLower() + " ");
+            }
 
             if (HasFlag("Event"))
                 result += "event ";
             else if (HasFlag("Delegate"))
                 result += "delegate ";
             else
-                result += "function ";
+                result += export.ClassName.ToLower() + " ";
             string type = GetReturnType();
             if (type != null)
             {

@@ -110,6 +110,8 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_sequence.png";
                     case "Material":
                         return "/PackageEditor/EntryIcons/icon_material.png";
+                    case "State":
+                        return "/PackageEditor/EntryIcons/icon_state.png";
                 }
             }
             else if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)

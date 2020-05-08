@@ -705,68 +705,7 @@ namespace ME3Explorer.Unreal
                 }
             }
 
-            try
-            {
-                if (export.ClassName == "State")
-                {
-                    //parse remaining
-                    var postpos = res.Sum(x => x.raw.Length) + start;
-                    if (postpos + 0x10 > memory.Length) return res; //hack workaround for UStare parsing
-                    res.Add(new Token { text = "Probemask?", raw = memory.Slice(postpos, 0x8), pos = postpos });
-                    postpos += 0x8;
-
-                    res.Add(new Token { text = "Unknown 8 FF's", raw = memory.Slice(postpos, 0x8), pos = postpos });
-                    postpos += 0x8;
-
-                    res.Add(new Token { text = "Unknown 2 bytes", raw = memory.Slice(postpos, 0x2), pos = postpos });
-                    postpos += 0x2;
-
-
-                    var stateFlagsBytes = memory.Slice(postpos, 0x4);
-                    var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, export.FileRef.Endian);
-                    var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-
-                    res.Add(new Token { text = "State flags: " + string.Join(" ", names), raw = stateFlagsBytes, pos = postpos });
-                    postpos += 0x4;
-
-
-
-                    if ((stateFlags & StateFlags.Simulated) != 0)
-                    {
-                        //Replication offset? Like in Function?
-                        res.Add(new Token { text = "RepOffset? " + EndianReader.ToInt16(memory, postpos, export.FileRef.Endian), raw = memory.Slice(postpos, 0x2), pos = postpos });
-                        postpos += 0x2;
-                    }
-
-
-
-
-                    var numMappedFunctions = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
-                    res.Add(new Token { text = $"Function map({numMappedFunctions}):", raw = memory.Slice(postpos, 0x4), pos = postpos });
-                    postpos += 4;
-                    for (int i = 0; i < numMappedFunctions; i++)
-                    {
-                        var name = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
-                        var uindex = EndianReader.ToInt32(memory, postpos + 8, export.FileRef.Endian);
-                        var fmtok = new Token
-                        {
-                            text = $"    {export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()",
-                            raw = memory.Length >= postpos + 0xC ? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
-                            pos = postpos
-                        };
-                        //apparently ustate already does this
-                        //fmtok.inPackageReferences.Add((postpos, Token.INPACKAGEREFTYPE_NAME, name));
-                        //fmtok.inPackageReferences.Add((postpos + 0x8, Token.INPACKAGEREFTYPE_ENTRY, uindex));
-                        res.Add(fmtok);
-                        postpos += 12;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
+            // rest is part of footer
 
             return res;
         }

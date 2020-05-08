@@ -21,6 +21,7 @@ using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 using static ME3Explorer.Unreal.Bytecode;
 
@@ -131,13 +132,62 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                var size = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", size, pos));
 
-                pos = data.Length - 6;
-                string flagStr = func.GetFlags();
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
-                pos += 2;
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
+
+                if (CurrentLoadedExport.ClassName == "Function")
+                {
+                    pos = data.Length - 6;
+                    string flagStr = func.GetFlags();
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    pos += 2;
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
+                }
+                else
+                {
+                    //State
+                    //parse remaining
+                    var footerstartpos = 0x20 + size;
+                    var footerdata = CurrentLoadedExport.Data.Slice(0x20 + size, (int)CurrentLoadedExport.Data.Length - (0x20 + size));
+                    var fpos = 0;
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos));
+                    fpos += 0x8;
+
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos));
+                    fpos += 0x8;
+
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2 bytes", "??", fpos + footerstartpos));
+                    fpos += 0x2;
+
+
+                    var stateFlagsBytes = footerdata.Slice(fpos, 0x4);
+                    var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, CurrentLoadedExport.FileRef.Endian);
+                    var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("State flags", string.Join(" ", names), fpos + footerstartpos));
+                    fpos += 0x4;
+
+
+
+                    if ((stateFlags & StateFlags.Simulated) != 0)
+                    {
+                        //Replication offset? Like in Function?
+                        ScriptFooterBlocks.Add(new ScriptHeaderItem("RepOffset? ", +EndianReader.ToInt16(footerdata, fpos, CurrentLoadedExport.FileRef.Endian), fpos));
+                        fpos += 0x2;
+                    }
+
+                    var numMappedFunctions = EndianReader.ToInt32(footerdata, fpos, CurrentLoadedExport.FileRef.Endian);
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Num of mapped functions", numMappedFunctions.ToString(), fpos));
+                    fpos += 4;
+                    for (int i = 0; i < numMappedFunctions; i++)
+                    {
+                        var name = EndianReader.ToInt32(footerdata, fpos, CurrentLoadedExport.FileRef.Endian);
+                        var uindex = EndianReader.ToInt32(footerdata, fpos + 8, CurrentLoadedExport.FileRef.Endian);
+                        var funcMap = new ScriptHeaderItem($"FunctionMap[{i}]:", $"{CurrentLoadedExport.FileRef.GetNameEntry(name)} => {CurrentLoadedExport.FileRef.GetEntry(uindex)?.FullPath}()", fpos);
+                        ScriptFooterBlocks.Add(funcMap);
+                        fpos += 12;
+                    }
+                }
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.Game == MEGame.ME2)
             {
@@ -165,7 +215,7 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
                 pos += 4;
                 BytecodeStart = pos;
-                var func = CurrentLoadedExport.ClassName == "State"? UE3FunctionReader.ReadState(CurrentLoadedExport, data) : UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
+                var func = CurrentLoadedExport.ClassName == "State" ? UE3FunctionReader.ReadState(CurrentLoadedExport, data) : UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
                 func.Decompile(new TextBuilder(), false); //parse bytecode
 
                 bool defined = func.HasFlag("Defined");
