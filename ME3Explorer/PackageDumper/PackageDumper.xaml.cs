@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3Explorer.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.PackageDumper
@@ -614,9 +615,17 @@ namespace ME3Explorer.PackageDumper
                                             stringoutput.WriteLine(s.OffsetDisplayableString);
                                         }
                                         break;
+                                    case MEGame.ME3:
+
+                                        Function func3 = new Function(exp.Data, exp);
+                                        func3.ParseFunction();
+                                        stringoutput.WriteLine(func3.GetSignature());
+                                        foreach (var v in func3.ScriptBlocks)
+                                        {
+                                            stringoutput.WriteLine(v.text);
+                                        }
+                                        break;
                                 }
-                                //Function func = new Function(exp.Data, pcc);
-                                //stringoutput.WriteLine(func.ToRawText());
                             }
                             //TODO: Change to UProperty
 
