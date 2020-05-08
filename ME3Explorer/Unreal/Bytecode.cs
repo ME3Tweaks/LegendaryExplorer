@@ -725,7 +725,7 @@ namespace ME3Explorer.Unreal
                     var fmtok = new Token
                     {
                         text = $"    {export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()",
-                        raw = memory.Length >= postpos + 0xC? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
+                        raw = memory.Length >= postpos + 0xC ? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
                         pos = postpos
                     };
                     //apparently ustate already does this
@@ -1212,6 +1212,7 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_Unkn1: // 0x5E
+                        //if (start == 0x30) Debugger.Break();
                         newTok = ReadUnkn1b(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
@@ -3616,11 +3617,12 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos, export);
-            pos += a.raw.Length + 2;
+            //pos += a.raw.Length + 2; // memory size?
             Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
             pos += b.raw.Length;
+            //pos += 2; // 0x16?
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -4117,6 +4119,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 3;
             while (pos < memsize - 6)
             {
+                Debug.WriteLine("Readskip subtoken at " + pos.ToString("X8"));
                 a = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(a.inPackageReferences);
                 pos += a.raw.Length;

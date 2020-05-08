@@ -35,7 +35,7 @@
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Imports" ToolTip="All imports are put into the output files"/>
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Exports" ToolTip="All exports are put into output files"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Text="Properties" ToolTip="Properties are output according to what you see in Interpreter"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="Functions" ToolTip="Function dumping only works for Mass Effect and Mass Effect 3 at this time"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="Functions" ToolTip="Dumps the text of a function. Our bytecode parser is not 100% reliable yet"/>
             <TextBlock Grid.Row="2" Grid.Column="2" Text="ReadsFromConfig" ToolTip="Exports that read from config will be preceeeded with [C]"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Names"  ToolTip="All names in the name table, and their index"/>
 
