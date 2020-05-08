@@ -4491,13 +4491,16 @@ namespace ME3Explorer.Unreal
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
             IEntry referenced = export.FileRef.GetEntry(index);
-            if (referenced.ObjectName == export.ObjectName && referenced != export)
+            if (referenced != null)
             {
-                t.text = referenced.InstancedFullPath + "(";
-            }
-            else
-            {
-                t.text = referenced.ObjectName.Instanced + "(";
+                if (referenced.ObjectName == export.ObjectName && referenced != export)
+                {
+                    t.text = referenced.InstancedFullPath + "(";
+                }
+                else
+                {
+                    t.text = referenced.ObjectName.Instanced + "(";
+                }
             }
 
             int pos = start + 5;

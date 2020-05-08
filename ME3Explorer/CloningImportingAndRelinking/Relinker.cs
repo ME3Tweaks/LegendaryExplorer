@@ -243,7 +243,7 @@ namespace ME3Explorer
                         case "WwiseStream":
                         case "WwiseBank":
                         case "Texture2D":
-                        case "ForceFeedbackWaveForm":
+                        case "ForceFeedbackWaveform":
                             //these classes have binary but do not need relinking
                             break;
                         default:
