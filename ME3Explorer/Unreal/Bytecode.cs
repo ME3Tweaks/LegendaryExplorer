@@ -7,6 +7,7 @@ using ME3Explorer.Packages;
 using System.Diagnostics;
 using Gammtek.Conduit.IO;
 using ME3Explorer.Pathfinding_Editor;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal
 {
@@ -704,36 +705,67 @@ namespace ME3Explorer.Unreal
                 }
             }
 
-            if (export.ClassName == "State")
+            try
             {
-                //parse remaining
-                var postpos = res.Sum(x => x.raw.Length) + start;
-                if (postpos + 0x13 > memory.Length) return res; //hack workaround for UStare parsing
-                res.Add(new Token { text = "Unknown 0x13 bytes", raw = memory.Slice(postpos, 0x13), pos = postpos });
-                postpos += 0x13;
-                res.Add(new Token { text = "State flags", raw = memory.Slice(postpos, 0x4), pos = postpos });
-                postpos += 0x4;
-                res.Add(new Token { text = "Unknown 2 bytes", raw = memory.Slice(postpos, 0x2), pos = postpos });
-                postpos += 0x2;
-                var numMappedFunctions = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
-                res.Add(new Token { text = $"Function map({numMappedFunctions}):", raw = memory.Slice(postpos, 0x4), pos = postpos });
-                postpos += 4;
-                for (int i = 0; i < numMappedFunctions; i++)
+                if (export.ClassName == "State")
                 {
-                    var name = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
-                    var uindex = EndianReader.ToInt32(memory, postpos + 8, export.FileRef.Endian);
-                    var fmtok = new Token
+                    //parse remaining
+                    var postpos = res.Sum(x => x.raw.Length) + start;
+                    if (postpos + 0x10 > memory.Length) return res; //hack workaround for UStare parsing
+                    res.Add(new Token { text = "Probemask?", raw = memory.Slice(postpos, 0x8), pos = postpos });
+                    postpos += 0x8;
+
+                    res.Add(new Token { text = "Unknown 8 FF's", raw = memory.Slice(postpos, 0x8), pos = postpos });
+                    postpos += 0x8;
+
+                    res.Add(new Token { text = "Unknown 2 bytes", raw = memory.Slice(postpos, 0x2), pos = postpos });
+                    postpos += 0x2;
+
+
+                    var stateFlagsBytes = memory.Slice(postpos, 0x4);
+                    var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, export.FileRef.Endian);
+                    var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+                    res.Add(new Token { text = "State flags: " + string.Join(" ", names), raw = stateFlagsBytes, pos = postpos });
+                    postpos += 0x4;
+
+
+
+                    if ((stateFlags & StateFlags.Simulated) != 0)
                     {
-                        text = $"    {export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()",
-                        raw = memory.Length >= postpos + 0xC ? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
-                        pos = postpos
-                    };
-                    //apparently ustate already does this
-                    //fmtok.inPackageReferences.Add((postpos, Token.INPACKAGEREFTYPE_NAME, name));
-                    //fmtok.inPackageReferences.Add((postpos + 0x8, Token.INPACKAGEREFTYPE_ENTRY, uindex));
-                    res.Add(fmtok);
-                    postpos += 12;
+                        //Replication offset? Like in Function?
+                        res.Add(new Token { text = "RepOffset? " + EndianReader.ToInt16(memory, postpos, export.FileRef.Endian), raw = memory.Slice(postpos, 0x2), pos = postpos });
+                        postpos += 0x2;
+                    }
+
+
+
+
+                    var numMappedFunctions = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
+                    res.Add(new Token { text = $"Function map({numMappedFunctions}):", raw = memory.Slice(postpos, 0x4), pos = postpos });
+                    postpos += 4;
+                    for (int i = 0; i < numMappedFunctions; i++)
+                    {
+                        var name = EndianReader.ToInt32(memory, postpos, export.FileRef.Endian);
+                        var uindex = EndianReader.ToInt32(memory, postpos + 8, export.FileRef.Endian);
+                        var fmtok = new Token
+                        {
+                            text = $"    {export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()",
+                            raw = memory.Length >= postpos + 0xC ? memory.Slice(postpos, 0xC) : null, //this is a hack for UState reading
+                            pos = postpos
+                        };
+                        //apparently ustate already does this
+                        //fmtok.inPackageReferences.Add((postpos, Token.INPACKAGEREFTYPE_NAME, name));
+                        //fmtok.inPackageReferences.Add((postpos + 0x8, Token.INPACKAGEREFTYPE_ENTRY, uindex));
+                        res.Add(fmtok);
+                        postpos += 12;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
             }
 
             return res;
@@ -820,7 +852,7 @@ namespace ME3Explorer.Unreal
                         break;
                     case EX_LabelTable: //0x0C
                         newTok = ReadLableTable(start, export);
-                        newTok.stop = true; //don't parse more bytecode
+                        newTok.stop = false; //don't parse more bytecode
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
@@ -4930,7 +4962,7 @@ namespace ME3Explorer.Unreal
             var labelTableOffset = EndianReader.ToInt16(memory, endpos, export.FileRef.Endian); //In ME3 I think this is always 0xFFFF, which means there is no label table offset.
             t.text += "\nLabel table offset: 0x" + labelTableOffset.ToString("X4");
 
-            endpos += 2;
+            endpos += 4; //Skip extra 2
 
 
             t.raw = new byte[endpos - start];
