@@ -4119,7 +4119,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 3;
             while (pos < memsize - 6)
             {
-                Debug.WriteLine("Readskip subtoken at " + pos.ToString("X8"));
+                //Debug.WriteLine("Readskip subtoken at " + pos.ToString("X8"));
                 a = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(a.inPackageReferences);
                 pos += a.raw.Length;
