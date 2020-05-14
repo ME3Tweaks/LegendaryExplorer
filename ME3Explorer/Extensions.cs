@@ -353,6 +353,27 @@ namespace ME3Explorer
 
             return removed;
         }
+
+        public static IEnumerable<T> After<T>(this IEnumerable<T> src, T item)
+        {
+            using IEnumerator<T> enumerator = src.GetEnumerator();
+            while (enumerator.MoveNext() && enumerator.Current?.Equals(item) != true) { } //Explicit comparison to true necessary because it's a nullable bool
+
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+        }
+
+        public static IEnumerable<T> Before<T>(this IEnumerable<T> src, T item)
+        {
+            return src.TakeWhile(t => !t.Equals(item));
+        }
+
+        public static IEnumerable<T> AfterThenBefore<T>(this IEnumerable<T> src, T item)
+        {
+            return src.After(item).Concat(src.Before(item));
+        }
     }
 
     public static class DictionaryExtensions

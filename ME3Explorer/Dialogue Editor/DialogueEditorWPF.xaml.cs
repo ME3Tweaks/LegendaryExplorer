@@ -4117,14 +4117,18 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
         }
+
+        private string searchtext = "";
         private void SearchDialogue()
         {
             const string input = "Enter a TLK StringRef or the part of a line.";
-            string searchtext = PromptDialog.Prompt(this, input, "Search Dialogue");
+            searchtext = PromptDialog.Prompt(this, input, "Search Dialogue", searchtext, true);
 
             if (!string.IsNullOrEmpty(searchtext))
             {
-                DiagNode tgt = CurrentObjects.OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) || d.Node.Line.ToLower().Contains(searchtext.ToLower()));
+                var selectedObj = SelectedObjects.FirstOrDefault();
+                DiagNode tgt = CurrentObjects.AfterThenBefore(selectedObj).OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) 
+                                                                                                               || d.Node.Line.Contains(searchtext, StringComparison.InvariantCultureIgnoreCase));
                 if (tgt != null)
                 {
                     DialogueNode_Selected(tgt);
@@ -4133,7 +4137,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 else
                 {
-                    MessageBox.Show($"{searchtext} not found");
+                    MessageBox.Show($"\"{searchtext}\" not found");
                 }
             }
         }

@@ -80,6 +80,8 @@ namespace ME3Explorer.SequenceObjects
         protected Pen outlinePen;
         protected SText comment;
 
+        public string Comment => comment.Text;
+
         protected SObj(ExportEntry entry, GraphEditor grapheditor)
         {
             pcc = entry.FileRef;
