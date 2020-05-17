@@ -711,6 +711,7 @@ namespace MassEffect.NativesEditor.Views
                 if(SelectedQuestTask != null)
                 {
                     txt_taskName.Text = GlobalFindStrRefbyID(SelectedQuestTask.Name, CodexMapView.package);
+                    txt_taskDesc.Text = GlobalFindStrRefbyID(SelectedQuestTask.Description, CodexMapView.package);
                 }
 
                 if(SelectedQuestPlotItem != null)
