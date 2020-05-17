@@ -55,8 +55,12 @@ namespace MassEffect.NativesEditor.Views
                     int boolId = SearchTerm;
                     searchResultsListBox.ItemsSource = parentRef.StateEventMapControl.StateEvents.Where(x => 
                         x.Value.HasElements && x.Value.Elements.Any(y =>
-                            y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId
-                        )
+                           (y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId)
+                        || (y.ElementType == BioStateEventElementType.Substate && 
+                                (((y as BioStateEventElementSubstate)?.GlobalBool == boolId) 
+                                || (y as BioStateEventElementSubstate)?.ParentIndex == boolId)
+                                /*|| (y as BioStateEventElementSubstate).SiblingIndices.Contains(boolId)*/)
+                           )
                     );
                     break;
                 case "Plot Float":
