@@ -2740,6 +2740,10 @@ namespace ME3Explorer.AssetDatabase
         public void dumpPackageFile(MEGame GameBeingDumped, AssetDB dbScanner)
         {
             using IMEPackage pcc = MEPackageHandler.OpenMEPackage(File);
+            if (pcc.Game != GameBeingDumped)
+            {
+                return; //rogue file from other game or UDK
+            }
             bool IsDLC = pcc.IsInOfficialDLC();
             bool IsMod = !pcc.IsInBasegame() && !IsDLC;
             foreach (ExportEntry exp in pcc.Exports)

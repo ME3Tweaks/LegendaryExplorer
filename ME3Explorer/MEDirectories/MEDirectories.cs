@@ -144,7 +144,7 @@ namespace ME3Explorer
 
         public static bool IsInBasegame(this IMEPackage pcc) => IsInBasegame(pcc.FilePath, pcc.Game);
 
-        public static bool IsInBasegame(string path, MEGame game) => path.StartsWith(CookedPath(game));
+        public static bool IsInBasegame(string path, MEGame game) => game != MEGame.UDK && game != MEGame.Unknown && path.StartsWith(CookedPath(game));
 
         public static bool IsInOfficialDLC(this IMEPackage pcc) => IsInOfficialDLC(pcc.FilePath, pcc.Game);
 
