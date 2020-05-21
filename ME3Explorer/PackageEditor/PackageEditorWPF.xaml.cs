@@ -1088,6 +1088,14 @@ namespace ME3Explorer
                     return;
                 }
 
+                int parentEntry = selected.Entry.Parent?.UIndex ?? 0;
+
+                if (!GoToNumber(parentEntry))
+                {
+                    AllTreeViewNodesX[0].IsProgramaticallySelecting = true;
+                    SelectedItem = AllTreeViewNodesX[0];
+                }
+
                 bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" && exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
