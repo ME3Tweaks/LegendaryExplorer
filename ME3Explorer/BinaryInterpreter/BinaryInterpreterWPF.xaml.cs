@@ -538,7 +538,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartBioTlkFileSetScan(data, ref binarystart));
                         break;
                     case "Class":
-                        subNodes.AddRange(StartClassScan(data));
+                        subNodes.AddRange(StartClassScan2(data));
                         break;
                     case "Enum":
                     case "Const":

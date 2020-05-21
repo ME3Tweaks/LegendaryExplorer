@@ -4648,176 +4648,102 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<ITreeItem> StartClassScan(byte[] data)
+        private IEnumerable<ITreeItem> MakeUFieldNodes(EndianReader bin)
         {
-            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            var subnodes = new List<ITreeItem>();
-            try
+            yield return MakeEntryNode(bin, "SuperClass");
+            yield return MakeEntryNode(bin, "Next item in compiling chain");
+        }
+
+        private IEnumerable<ITreeItem> MakeUStructNodes(EndianReader bin)
+        {
+            foreach (ITreeItem node in MakeUFieldNodes(bin))
             {
-                int offset = 4;
+                yield return node;
+            }
+            if (Pcc.Game <= MEGame.ME2)
+            {
+                yield return MakeInt32Node(bin, "Unknown 1");
+            }
+            yield return MakeEntryNode(bin, "ChildListStart");
+            if (Pcc.Game <= MEGame.ME2)
+            {
+                yield return MakeInt32Node(bin, "Unknown 2");
+                yield return MakeInt32Node(bin, "Source file line number");
+                yield return MakeInt32Node(bin, "Source file text position");
+            }
+            if (Pcc.Game >= MEGame.ME3)
+            {
+                yield return MakeInt32Node(bin, "ScriptByteCodeSize");
+            }
 
-                int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
-                subnodes.Add(new BinInterpNode
+            long pos = bin.Position;
+            int count = bin.ReadInt32();
+            var scriptNode =  new BinInterpNode(pos, $"Script ({count} bytes)");
+
+            byte[] scriptBytes = bin.ReadBytes(count);
+
+            if (Pcc.Game == MEGame.ME3 && count > 0)
+            {
+                try
                 {
-                    Header = $"0x{offset:X5} Superclass Index: {superclassIndex}({superclassStr})",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                int unknown1 = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unknown 1: {unknown1}",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-
-                int childProbeUIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} ChildListStart: {childProbeUIndex} ({CurrentLoadedExport.FileRef.GetEntryString(childProbeUIndex)}))",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-
-                //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
-                //int headerUnknown1 = BitConverter.ToInt32(data, offset);
-                long ignoreMask = BitConverter.ToInt64(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} IgnoreMask: 0x{ignoreMask:X16}",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 8;
-
-                //Int16 labelOffset = BitConverter.ToInt16(data, offset);
-                //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Header = $"0x{offset:X5} LabelOffset: 0x{labelOffset:X4}",
-                //    Name = "_" + offset
-
-                //});
-                //offset += 2;
-
-                int skipAmount = 0x6;
-                //Find end of script block. Seems to be 10 FF's.
-                while (offset + skipAmount + 10 < data.Length)
-                {
-                    //Debug.WriteLine($"Checking at 0x{offset + skipAmount + 10:X4}");
-                    bool isEnd = true;
-                    for (int i = 0; i < 10; i++)
+                    (List<Token> tokens, _) = Bytecode.ParseBytecode(scriptBytes, CurrentLoadedExport, (int)pos + 4);
+                    string scriptText = "";
+                    foreach (Token t in tokens)
                     {
-                        byte b = data[offset + skipAmount + i];
-                        if (b != 0xFF)
-                        {
-                            isEnd = false;
-                            break;
-                        }
+                        scriptText += $"0x{t.pos:X4} {t.text}\n";
                     }
-                    if (isEnd)
+
+                    scriptNode.Items.Add(new BinInterpNode
                     {
-                        break;
-                    }
-                    skipAmount++;
+                        Header = scriptText,
+                        Name = $"_{pos + 4}",
+                        Length = count
+                    });
                 }
-                //if (headerUnknown1 == 33 && headerUnknown2 == 25)
-                //{
-                //    skipAmount = 0x2F;
-                //}
-                //else if (headerUnknown1 == 34 && headerUnknown2 == 26)
-                //{
-                //    skipAmount = 0x30;
-                //}
-                //else if (headerUnknown1 == 728 && headerUnknown2 == 532)
-                //{
-                //    skipAmount = 0x22A;
-                //}
-                int offsetEnd = offset + skipAmount + 10;
-                var scriptBlock = new BinInterpNode
+                catch (Exception) 
                 {
-                    Header = $"0x{offset:X5} State/Script Block: 0x{offset:X4} - 0x{offsetEnd:X4}",
-                    Name = "_" + offset,
-                    IsExpanded = true
-                };
-                subnodes.Add(scriptBlock);
-
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 && skipAmount > 6 && ignoreMask != 0)
-                {
-                    byte[] scriptmemory = data.Skip(offset).Take(skipAmount).ToArray();
-                    try
+                    scriptNode.Items.Add(new BinInterpNode
                     {
-                        var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport, offset);
-                        string scriptText = "";
-                        foreach (Token t in tokens.Item1)
-                        {
-                            scriptText += $"0x{t.pos:X4} {t.text}\n";
-                        }
-
-                        scriptBlock.Items.Add(new BinInterpNode
-                        {
-                            Header = scriptText,
-                            Name = "_" + offset
-                        });
-                    }
-                    catch (Exception) { }
-
-                }
-
-
-                offset += skipAmount + 10;
-
-                uint stateMask = BitConverter.ToUInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} StateFlags: {stateMask} [{getStateFlagsStr(stateMask)}]",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-                //}
-                //offset += 2; //oher unknown
-                int localFunctionsTableCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Local Functions Count: {localFunctionsTableCount}",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-                for (int i = 0; i < localFunctionsTableCount; i++)
-                {
-                    int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
-                    offset += 8;
-                    int functionObjectIndex = BitConverter.ToInt32(data, offset);
-                    offset += 4;
-                    (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}() = {functionObjectIndex} ({CurrentLoadedExport.FileRef.GetEntryString(functionObjectIndex)})",
-                        Name = "_" + (offset - 12),
-                        Tag = NodeType.StructLeafName //might need to add a subnode for the 3rd int
+                        Header = "Error reading script",
+                        Name = $"_{pos + 4}"
                     });
                 }
 
-                UnrealFlags.EClassFlags ClassFlags = (UnrealFlags.EClassFlags)BitConverter.ToUInt32(data, offset);
+            }
 
-                var classFlagsNode = new BinInterpNode()
-                {
-                    Header = $"0x{offset:X5} ClassFlags: 0x{((int)ClassFlags):X8}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                };
+            yield return scriptNode;
+        }
+
+        private IEnumerable<ITreeItem> MakeUStateNodes(EndianReader bin)
+        {
+            foreach (ITreeItem node in MakeUStructNodes(bin))
+            {
+                yield return node;
+            }
+
+            yield return MakeUInt32Node(bin, "State unknown 1");
+            yield return MakeUInt32Node(bin, "State unknown 2");
+            yield return MakeInt32Node(bin, "State unknown 3");
+            yield return MakeInt32Node(bin, "State unknown 4");
+            yield return MakeInt16Node(bin, "State unknown 5");
+            yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr(bin.ReadUInt32())}") { Length = 4 };
+            yield return MakeArrayNode(bin, "Local Functions", i =>
+                                           new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}() = {Pcc.GetEntryString(bin.ReadInt32())}"));
+        }
+
+        private List<ITreeItem> StartClassScan2(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                subnodes.Add(MakeInt32Node(bin, "NetIndex"));
+                subnodes.AddRange(MakeUStateNodes(bin));
+
+                long classFlagsPos = bin.Position;
+                UnrealFlags.EClassFlags ClassFlags = (UnrealFlags.EClassFlags)bin.ReadUInt32();
+
+                var classFlagsNode = new BinInterpNode(classFlagsPos, $"ClassFlags: {(int)ClassFlags:X8}", NodeType.StructLeafInt);
                 subnodes.Add(classFlagsNode);
 
                 //Create claskmask tree
@@ -4829,139 +4755,48 @@ namespace ME3Explorer
                         classFlagsNode.Items.Add(new BinInterpNode
                         {
                             Header = $"{(ulong)flag:X16} {flag} {reason}",
-                            Name = "_" + offset
+                            Name = $"_{classFlagsPos}"
                         });
                     }
                 }
-                offset += 4;
 
-                if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+                if (Pcc.Game <= MEGame.ME2)
                 {
-                    offset += 1; //seems to be a blank byte here
+                    subnodes.Add(MakeByteNode(bin, "Unknown byte"));
+                }
+                subnodes.Add(MakeEntryNode(bin, "Outer Class"));
+                subnodes.Add(MakeNameNode(bin, "Class Config Name"));
+
+                if (Pcc.Game <= MEGame.ME2)
+                {
+                    subnodes.Add(MakeArrayNode(bin, "Unknown name list 1", i => MakeNameNode(bin, $"{i}")));
                 }
 
-                int coreReference = BitConverter.ToInt32(data, offset);
-                string coreRefFullPath = CurrentLoadedExport.FileRef.GetEntryString(coreReference);
+                subnodes.Add(MakeArrayNode(bin, "Component Table", i =>
+                                              new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} ({Pcc.GetEntryString(bin.ReadInt32())})")));
+                subnodes.Add(MakeArrayNode(bin, "Interface Table", i =>
+                                               new BinInterpNode(bin.Position, $"{Pcc.GetEntryString(bin.ReadInt32())} => {Pcc.GetEntryString(bin.ReadInt32())}")));
 
-                subnodes.Add(new BinInterpNode
+                if (Pcc.Game >= MEGame.ME3)
                 {
-                    Header = $"0x{offset:X5} Outer Class: {coreReference} ({coreRefFullPath})",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-                {
-                    offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
-                    offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
-                    int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
-                    //int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
-                    string postCompName = CurrentLoadedExport.FileRef.GetNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
-                    /*if (postCompName != "None")
-                    {
-                        Debugger.Break();
-                    }*/
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Post-Components Blank ({postCompName})",
-                        Name = "_" + offset,
-
-                        Tag = NodeType.StructLeafName
-                    });
-                    offset += 8;
-
-                    int unknown4 = BitConverter.ToInt32(data, offset);
-                    /*if (unknown4 != 0)
-                    {
-                        Debug.WriteLine("Unknown 4 is not 0: {unknown4);
-                       // Debugger.Break();
-                    }*/
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Unknown 4: {unknown4}",
-                        Name = "_" + offset,
-
-                        Tag = NodeType.StructLeafInt
-                    });
-                    offset += 4;
+                    subnodes.Add(MakeNameNode(bin, "Unknown Name"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unknown"));
                 }
                 else
                 {
-                    offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
-                    offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
-
-                    /*int unknown4 = BitConverter.ToInt32(data, offset);
-                    node = new BinaryInterpreterWPFTreeViewItem($"0x{offset:X5} Unknown 4: {unknown4);
-                    node.Name = offset.ToString();
-                    node.Tag = nodeType.StructLeafInt;
-                    subnodes.Add(node);
-                    offset += 4;*/
-
-                    int me12unknownend1 = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} ME1/ME2 Unknown1: {me12unknownend1}",
-                        Name = "_" + offset,
-
-                        Tag = NodeType.StructLeafName
-                    });
-                    offset += 4;
-
-                    int me12unknownend2 = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} ME1/ME2 Unknown2: {me12unknownend2}",
-                        Name = "_" + offset,
-
-                        Tag = NodeType.StructLeafName
-                    });
-                    offset += 4;
+                    subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}")));
                 }
-
-                int defaultsClassLink = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                subnodes.Add(MakeEntryNode(bin, "Defaults"));
+                if (Pcc.Game >= MEGame.ME3)
                 {
-                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({CurrentLoadedExport.FileRef.GetEntryString(defaultsClassLink)}))",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-                {
-                    int functionsTableCount = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Full Functions Table Count: {functionsTableCount}",
-                        Name = "_" + offset,
-
-                        Tag = NodeType.StructLeafInt
-                    });
-                    offset += 4;
-
-                    for (int i = 0; i < functionsTableCount; i++)
-                    {
-                        int functionsTableIndex = BitConverter.ToInt32(data, offset);
-                        string impexpName = CurrentLoadedExport.FileRef.GetEntryString(functionsTableIndex);
-                        (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X5} {impexpName}",
-                            Tag = NodeType.StructLeafObject,
-                            Name = "_" + offset
-
-                        });
-                        offset += 4;
-                    }
+                    subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, "")));
                 }
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
+
             return subnodes;
         }
 
@@ -4992,163 +4827,6 @@ namespace ME3Explorer
                 return "Simulated";
             }
             return "";
-        }
-
-        private int ClassParser_ReadComponentsTable(List<ITreeItem> subnodes, byte[] data, int offset)
-        {
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-            {
-                int componentTableNameIndex = BitConverter.ToInt32(data, offset);
-                //int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
-                offset += 8;
-
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset - 8:X5} Components Table ({CurrentLoadedExport.FileRef.GetNameEntry(componentTableNameIndex)})",
-                    Name = "_" + (offset - 8),
-
-                    Tag = NodeType.StructLeafName
-                });
-                int componentTableCount = BitConverter.ToInt32(data, offset);
-                offset += 4;
-
-                for (int i = 0; i < componentTableCount; i++)
-                {
-                    int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
-                    offset += 8;
-                    int componentObjectIndex = BitConverter.ToInt32(data, offset);
-                    offset += 4;
-                    string objectName = CurrentLoadedExport.FileRef.GetEntryString(componentObjectIndex);
-                    (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}({objectName})",
-                        Name = "_" + (offset - 12),
-
-                        Tag = NodeType.StructLeafName
-                    });
-                }
-            }
-            else
-            {
-                int componentTableCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Components Table Count: {componentTableCount}",
-                    Name = "_" + offset,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-
-                for (int i = 0; i < componentTableCount; i++)
-                {
-                    int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
-                    offset += 8;
-                    int componentObjectIndex = BitConverter.ToInt32(data, offset);
-
-                    string objName = "Null";
-                    if (componentObjectIndex != 0)
-                    {
-                        objName = CurrentLoadedExport.FileRef.GetEntryString(componentObjectIndex);
-                    }
-                    (subnodes.Last() as BinInterpNode).Items.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(nameTableIndex)}({objName})",
-                        Name = "_" + (offset - 8),
-
-                        Tag = NodeType.StructLeafName
-                    });
-                    offset += 4;
-
-                }
-            }
-            return offset;
-        }
-
-        private int ClassParser_ReadImplementsTable(List<ITreeItem> subnodes, byte[] data, int offset)
-        {
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-            {
-                int interfaceCount = BitConverter.ToInt32(data, offset);
-
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Implemented Interfaces Table Count: {interfaceCount}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-                for (int i = 0; i < interfaceCount; i++)
-                {
-                    int interfaceIndex = BitConverter.ToInt32(data, offset);
-                    offset += 4;
-
-                    string objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
-                    BinInterpNode subnode = new BinInterpNode
-                    {
-                        Header = $"0x{offset - 12:X5}  {interfaceIndex} {objectName}",
-                        Name = "_" + (offset - 4),
-                        Tag = NodeType.StructLeafName
-                    };
-                    ((BinInterpNode)subnodes.Last()).Items.Add(subnode);
-
-                    //propertypointer
-                    interfaceIndex = BitConverter.ToInt32(data, offset);
-                    offset += 4;
-
-                    objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
-                    subnode.Items.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}",
-                        Name = "_" + (offset - 4),
-
-                        Tag = NodeType.StructLeafObject
-                    });
-                }
-            }
-            else
-            {
-                int interfaceTableName = BitConverter.ToInt32(data, offset); //????
-                offset += 8;
-
-                int interfaceCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset - 8:X5} Implemented Interfaces Table Count: {interfaceCount} ({CurrentLoadedExport.FileRef.GetNameEntry(interfaceTableName)})",
-                    Name = "_" + (offset - 8),
-
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-                for (int i = 0; i < interfaceCount; i++)
-                {
-                    int interfaceNameIndex = BitConverter.ToInt32(data, offset);
-                    offset += 8;
-
-                    BinInterpNode subnode = new BinInterpNode
-                    {
-                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.GetNameEntry(interfaceNameIndex)}",
-                        Name = "_" + (offset - 8),
-
-                        Tag = NodeType.StructLeafName
-                    };
-                    ((BinInterpNode)subnodes.Last()).Items.Add(subnode);
-
-                    //propertypointer
-                    /* interfaceIndex = BitConverter.ToInt32(data, offset);
-                     offset += 4;
-
-                     objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
-                     TreeNode subsubnode = new TreeNode($"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}");
-                     subsubnode.Name = (offset - 4).ToString();
-                     subsubnode.Tag = nodeType.StructLeafObject;
-                     subnode.Nodes.Add(subsubnode);
-                     */
-                }
-            }
-            return offset;
         }
 
         private List<ITreeItem> StartEnumScan(byte[] data)
@@ -5668,6 +5346,8 @@ namespace ME3Explorer
         private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
         private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
+
+        private static BinInterpNode MakeInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt16()}") { Length = 2 };
 
         private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
