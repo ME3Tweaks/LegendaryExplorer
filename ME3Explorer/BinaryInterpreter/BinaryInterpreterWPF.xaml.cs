@@ -513,7 +513,7 @@ namespace ME3Explorer
                     case "ComponentProperty":
                     case "ObjectProperty":
                     case "DelegateProperty":
-                        subNodes.AddRange(StartObjectScan(data));
+                        subNodes.AddRange(StartPropertyScan(data, ref binarystart));
                         break;
                     case "BioDynamicAnimSet":
                         subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
@@ -538,11 +538,13 @@ namespace ME3Explorer
                         subNodes.AddRange(StartBioTlkFileSetScan(data, ref binarystart));
                         break;
                     case "Class":
-                        subNodes.AddRange(StartClassScan2(data));
+                        subNodes.AddRange(StartClassScan(data));
                         break;
                     case "Enum":
+                        subNodes.AddRange(StartEnumScan(data, ref binarystart));
+                        break;
                     case "Const":
-                        subNodes.AddRange(StartEnumScan(data));
+                        subNodes.AddRange(StartConstScan(data, ref binarystart));
                         break;
                     case "GuidCache":
                         subNodes.AddRange(StartGuidCacheScan(data, ref binarystart));
@@ -607,7 +609,6 @@ namespace ME3Explorer
                         break;
                     case "State":
                         subNodes.AddRange(StartStateScan(data, ref binarystart));
-                        appendGenericScan = true;
                         break;
                     case "TextureMovie":
                         subNodes.AddRange(StartTextureMovieScan(data, ref binarystart));

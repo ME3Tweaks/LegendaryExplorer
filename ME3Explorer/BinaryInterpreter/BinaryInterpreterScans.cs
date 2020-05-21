@@ -222,7 +222,7 @@ namespace ME3Explorer
             {
                 str = bin.BaseStream.ReadStringASCIINull(strLen);
             }
-            return new BinInterpNode(pos, $"{nodeName}: {str}") { Length = strLen + 4 };
+            return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
         }
 
         enum EShaderFrequency : byte
@@ -4079,30 +4079,30 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = binarystart + 0x4;
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binarystart);
+                subnodes.AddRange(MakeUStructNodes(bin));
 
-                int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                ScriptStructFlags flags = (ScriptStructFlags)bin.ReadUInt32();
+                BinInterpNode objectFlagsNode;
+                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 4, $"PropertyFlags: 0x{(uint)flags:X16}")
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
+                    IsExpanded = true
                 });
-                offset += 4;
 
-                int childObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                foreach (var flag in Enums.GetValues<ScriptStructFlags>())
                 {
-                    Header = $"0x{offset:X5} ChildCompilingChain: {childObjTree} {CurrentLoadedExport.FileRef.GetEntryString(childObjTree)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
+                    if (flags.HasFlag(flag))
+                    {
+                        objectFlagsNode.Items.Add(new BinInterpNode
+                        {
+                            Header = $"{(ulong)flag:X16} {flag}",
+                            Name = "_" + bin.Position
+                        });
+                    }
+                }
 
-                offset = binarystart + (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ? 0x18 : 0x24);
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
+                MemoryStream ms = new MemoryStream(data) { Position = bin.Position };
                 var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
@@ -4111,28 +4111,6 @@ namespace ME3Explorer
                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                 }
                 subnodes.AddRange(topLevelTree.ChildrenProperties);
-
-                //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Header = $"{offset:X4} Name: {CurrentLoadedExport.FileRef.getNameEntry(entryUIndex)}",
-                //    Name = "_" + offset.ToString()
-                //});
-                //offset += 12;
-
-
-                /*
-                for (int i = 0; i < count; i++)
-                {
-                    int name1 = BitConverter.ToInt32(data, offset);
-                    int name2 = BitConverter.ToInt32(data, offset + 8);
-                    string text = $"{offset:X4} Item {i}: {CurrentLoadedExport.FileRef.getNameEntry(name1)} => {CurrentLoadedExport.FileRef.getNameEntry(name2)}";
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = text,
-                        Name = "_" + offset.ToString()
-                    });
-                    offset += 16;
-                }*/
             }
             catch (Exception ex)
             {
@@ -4214,24 +4192,21 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<ITreeItem> StartObjectScan(byte[] data)
+        private List<ITreeItem> StartPropertyScan(byte[] data, ref int binaryStart)
         {
             var subnodes = new List<ITreeItem>();
             try
             {
 
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                int offset = 0; //this property starts at 0 for parsing
+                bin.Skip(binaryStart);
 
-                subnodes.Add(MakeInt32Node(bin, "Unreal Unique Index"));
-                subnodes.Add(MakeNameNode(bin, "Unreal None property"));
-                subnodes.Add(MakeEntryNode(bin, "Superclass"));
-                subnodes.Add(MakeEntryNode(bin, "Next item in compiling chain"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown1"));
+                subnodes.AddRange(MakeUFieldNodes(bin));
+                subnodes.Add(MakeInt32Node(bin, "ArraySize"));
 
                 UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)bin.ReadUInt64();
                 BinInterpNode objectFlagsNode;
-                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 8, $"ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}")
+                subnodes.Add(objectFlagsNode = new BinInterpNode(bin.Position - 8, $"PropertyFlags: 0x{(ulong)ObjectFlagsMask:X16}")
                 {
                     IsExpanded = true
                 });
@@ -4250,8 +4225,12 @@ namespace ME3Explorer
                     }
                 }
 
-                subnodes.Add(MakeNameNode(bin, "Unreal None property"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown1"));
+                subnodes.Add(MakeNameNode(bin, "Category"));
+                subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+                if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Net))
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "ReplicationOffset"));
+                }
 
                 switch (CurrentLoadedExport.ClassName)
                 {
@@ -4259,35 +4238,22 @@ namespace ME3Explorer
                     case "StructProperty":
                     case "ObjectProperty":
                     case "ComponentProperty":
-                        {
-                            if ((ObjectFlagsMask & UnrealFlags.EPropertyFlags.RepRetry) != 0)
-                            {
-                                bin.Skip(2);
-                            }
-                            subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
-                        }
+                    case "ArrayProperty":
+                        subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
                         break;
                     case "DelegateProperty":
                         subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
-                        subnodes.Add(MakeEntryNode(bin, "Same as above but only if this in a function"));
-                        break;
-                    case "ArrayProperty":
-                        {
-                            subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
-                        }
+                        subnodes.Add(MakeEntryNode(bin, "Same as above but only if this is in a function"));
                         break;
                     case "ClassProperty":
-                        {
-
-                            subnodes.Add(MakeEntryNode(bin, "Outer class"));
-                            subnodes.Add(MakeEntryNode(bin, "Class type"));
-                        }
+                        subnodes.Add(MakeEntryNode(bin, "Outer class"));
+                        subnodes.Add(MakeEntryNode(bin, "Class type"));
                         break;
                 }
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -4731,7 +4697,7 @@ namespace ME3Explorer
                                            new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}() = {Pcc.GetEntryString(bin.ReadInt32())}"));
         }
 
-        private List<ITreeItem> StartClassScan2(byte[] data)
+        private List<ITreeItem> StartClassScan(byte[] data)
         {
             var subnodes = new List<ITreeItem>();
             try
@@ -4829,102 +4795,63 @@ namespace ME3Explorer
             return "";
         }
 
-        private List<ITreeItem> StartEnumScan(byte[] data)
+        private List<ITreeItem> StartEnumScan(byte[] data, ref int binaryStart)
         {
             var subnodes = new List<ITreeItem>();
 
             try
             {
-                int offset = 0;
-                int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binaryStart);
+                subnodes.AddRange(MakeUFieldNodes(bin));
+
+                subnodes.Add(MakeInt32Node(bin, "Enum size"));
+                int enumCount = bin.Skip(-4).ReadInt32();
+                NameReference enumName = CurrentLoadedExport.ObjectName;
+                for (int i = 0; i < enumCount; i++)
                 {
-                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
-
-                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
-                //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.GetNameEntry(noneUnrealProperty)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafName
-                });
-                offset += 8;
-
-                int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                if (CurrentLoadedExport.ClassName == "Enum")
-                {
-
-                    int enumSize = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Enum Size: {enumSize}",
-                        Name = "_" + offset,
-                        Tag = NodeType.StructLeafInt
-                    });
-                    offset += 4;
-
-                    for (int i = 0; i < enumSize; i++)
-                    {
-                        int enumName = BitConverter.ToInt32(data, offset);
-                        //int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.GetNameEntry(enumName)}",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafName
-                        });
-                        offset += 8;
-                    }
-                }
-
-                if (CurrentLoadedExport.ClassName == "Const")
-                {
-                    int literalStringLength = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Const Literal Length: {literalStringLength}",
-                        Name = "_" + offset,
-                        Tag = NodeType.IntProperty
-                    });
-
-                    //value is stored as a literal string in binary.
-                    MemoryStream stream = new MemoryStream(data) { Position = offset };
-                    offset += 4;
-                    string str = stream.ReadUnrealString();
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = $"0x{offset:X5} Const Literal Value: {str}",
-                        Name = "_" + offset,
-                        Tag = NodeType.StrProperty
-                    });
+                    subnodes.Add(MakeNameNode(bin, $"{enumName}[{i}]"));
                 }
             }
             catch (Exception ex)
             {
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartConstScan(byte[] data, ref int binaryStart)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binaryStart);
+                subnodes.AddRange(MakeUFieldNodes(bin));
+
+                subnodes.Add(MakeStringNode(bin, "Literal Value"));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartStateScan(byte[] data, ref int binaryStart)
+        {
+            var subnodes = new List<ITreeItem>();
+
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binaryStart);
+                subnodes.AddRange(MakeUStateNodes(bin));
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -7023,70 +6950,6 @@ namespace ME3Explorer
                         Tag = NodeType.Unknown
                     });
                 }
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
-
-        private List<ITreeItem> StartStateScan(byte[] data, ref int binarystart)
-        {
-            /*
-             * Has UnrealScript Functions contained within, however 
-             * the exact format of the data has yet to be determined.
-             * Probably better in Script Editor
-             */
-            var subnodes = new List<ITreeItem>();
-
-            try
-            {
-
-
-                /*int length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                int offset = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"{(pos - binarystart):X4} bik offset in file: {offset} (0x{offset:X})",
-                    Name = "_" + pos,
-
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
-                {
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"{(pos - binarystart):X4} The rest of the binary is the bik.",
-                        Name = "_" + pos,
-
-                        Tag = NodeType.Unknown
-                    });
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = "The stream offset to this data will be automatically updated when this file is saved.",
-                        Tag = NodeType.Unknown
-                    });
-                }
-                */
             }
             catch (Exception ex)
             {
