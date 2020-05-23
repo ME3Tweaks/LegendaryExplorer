@@ -4269,7 +4269,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetAllFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4309,7 +4309,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "BioStage", true)) break;
+                    if (findClass(filePath, "Function", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4457,51 +4457,46 @@ namespace ME3Explorer
             }).ContinueWithOnUIThread(prevTask =>
             {
                 IsBusy = false;
-                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this);
+                var listDlg = new ListDialog(interestingExports.OrderBy(s => int.Parse(s.Split(' ')[0])).ToList(), "Interesting Exports", "", this);
                 listDlg.Show();
             });
 
             bool findClass(string filePath, string className, bool withBinary = false)
             {
+                Debug.WriteLine($" {filePath}");
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
                     //if (!pcc.IsCompressed) return false;
-                    if (filePath.Contains("DLC_MOD"))
-                    {
-                        return false;
-                    }
 
                     var exports = pcc.Exports.Where(exp => !exp.IsDefaultObject && exp.ClassName == className);
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
-                            Debug.WriteLine($"{exp.UIndex}: {filePath}");
-                            var obj = ObjectBinary.From(exp);
-                            var ms = new EndianReader(new MemoryStream()) { Endian = exp.FileRef.Endian };
-                            obj.WriteTo(ms.Writer, pcc, exp.DataOffset + exp.propsEnd());
-                            byte[] buff = ms.BaseStream.ReadFully();
-
-                            if (!buff.SequenceEqual(exp.GetBinaryData()))
+                            //Debug.WriteLine($"{exp.UIndex}: {filePath}");
+                            var obj = ObjectBinary.From<UFunction>(exp);
+                            (List<Token> tokens, _) = Bytecode.ParseBytecode(obj.ScriptBytes, exp);
+                            int calculatedMemLength = obj.ScriptStorageSize;
+                            foreach (Token token in tokens)
                             {
-                                string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
-                                File.WriteAllBytes(Path.Combine(userFolder, $"converted{className}"), buff);
-                                File.WriteAllBytes(Path.Combine(userFolder, $"original{className}"), exp.GetBinaryData());
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
+                                foreach ((int _, int type, int _) in token.inPackageReferences)
+                                {
+                                    if (type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                                    {
+                                        calculatedMemLength += 4;
+                                    }
+                                }
                             }
-
-                            continue;
-                            if (!withBinary || exp.propsEnd() < exp.DataSize)
+                            if (obj.ScriptBytecodeSize != calculatedMemLength)
                             {
-                                interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                return true;
+                                interestingExports.Add($"{obj.ScriptBytecodeSize} | #{exp.UIndex}: {filePath}");
+                                //return true;
                             }
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                            interestingExports.Add($"{exp.UIndex} : {filePath}\n{exception}");
                             return true;
                         }
                     }

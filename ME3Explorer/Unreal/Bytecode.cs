@@ -1083,9 +1083,17 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_DynArrayFind:// 0x46
-                        return ReadArrayArg(start, "Find", export);
+                        newTok = ReadArrayArg(start, "Find", export);
+                        newTok.stop = false;
+                        end = start + newTok.raw.Length;
+                        res = newTok;
+                        break;
                     case EX_DynArrayFindStruct: //0x47
-                        return ReadArrayArg2(start, "Find", true, export);
+                        newTok = ReadArrayArg2(start, "Find", true, export);
+                        newTok.stop = false;
+                        end = start + newTok.raw.Length;
+                        res = newTok;
+                        break;
                     case EX_LocalOutVariable: //0x48
                         newTok = ReadLocOutVar(start, export);
                         newTok.stop = false;
@@ -1328,7 +1336,6 @@ namespace ME3Explorer.Unreal
                     while (pos < memsize - 6)
                     {
                         a = ReadToken(pos, export);
-                        t.inPackageReferences.AddRange(a.inPackageReferences);
 
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
@@ -2801,6 +2808,25 @@ namespace ME3Explorer.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_VisibleActors: // 0x0137
+                    t.text = "VisibleActors(";
+                    count = 0;
+                    while (pos < memsize - 6)
+                    {
+                        a = ReadToken(pos, export);
+                        pos += a.raw.Length;
+                        if (a.raw != null && a.raw[0] == 0x16)
+                            break;
+                        if (count != 0)
+                            t.text += "," + a.text;
+                        else
+                            t.text += a.text;
+                        count++;
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+                        a = null;
+                    }
+                    t.text += ")";
+                    break;
                 case (int)ENatives.NATIVE_VisibleCollidingActors: // 0x0138
                     t.text = "VisibleCollidingActors(";
                     count = 0;
@@ -3489,6 +3515,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 3;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
+            pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3503,6 +3530,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 2;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
+            pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3517,6 +3545,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 2;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
+            pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3525,11 +3554,13 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
+        //statement as expression perhaps?
         private static Token Read4FAdd(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 5;
             Token a = ReadToken(pos, export);
+            pos += a.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.text = a.text;
             int len = pos - start;
@@ -3588,12 +3619,13 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos, export);
-            //pos += a.raw.Length + 2; // memory size?
+            pos += a.raw.Length;
             Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
             pos += b.raw.Length;
-            //pos += 2; // 0x16?
+            Token endFunctionParams = ReadToken(pos, export);
+            pos += endFunctionParams.raw.Length;
             t.text = a.text + " " + arg + " " + b.text;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3692,6 +3724,8 @@ namespace ME3Explorer.Unreal
         private static Token ReadCompareStructs(int start, string s, ExportEntry export)
         {
             Token t = new Token();
+            int structType = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, structType));
             int pos = start + 5;
             Token a = ReadToken(pos, export);
             pos += a.raw.Length;
@@ -3866,6 +3900,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             int uIndex = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, uIndex));
             pos += 4;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
@@ -3946,6 +3981,8 @@ namespace ME3Explorer.Unreal
         private static Token ReadEatReturn(int start, ExportEntry export)
         {
             Token t = new Token();
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
             Token a = ReadToken(start + 5, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
@@ -4024,19 +4061,13 @@ namespace ME3Explorer.Unreal
 
         private static Token ReadEmptyDel(int start, ExportEntry export)
         {
-            Token t = new Token();
+            Token t = new Token
+            {
+                text = "EmptyDelegate",
+                raw = new byte[1]
+            };
 
-            int pos = start + 1;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-
-            pos += a.raw.Length;
-            t.text = a.text;
-            int len = pos - start;
-            t.raw = new byte[len];
-            if (start + len <= memsize)
-                for (int i = 0; i < len; i++)
-                    t.raw[i] = memory[start + i];
+            t.raw[0] = memory[start];
             return t;
         }
 
@@ -4416,10 +4447,12 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            int name = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, name));
+            int uIndex = EndianReader.ToInt32(memory, start + 9, export.FileRef.Endian);
+            t.inPackageReferences.Add((start + 9, Token.INPACKAGEREFTYPE_ENTRY, uIndex));
 
-            t.text = export.FileRef.GetNameEntry(index);
+            t.text = export.FileRef.GetNameEntry(name);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
@@ -4714,6 +4747,8 @@ namespace ME3Explorer.Unreal
         private static Token ReadSwitch(int start, ExportEntry export)
         {
             Token t = new Token();
+            int uIndex = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
+            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, uIndex));
             Token a = ReadToken(start + 6, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
 

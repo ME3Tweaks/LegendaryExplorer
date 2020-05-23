@@ -57,6 +57,14 @@ namespace ME3Explorer
             }
         }
 
+        private string _decompiledScriptBoxTitle = "Tokens";
+
+        public string DecompiledScriptBoxTitle
+        {
+            get => _decompiledScriptBoxTitle;
+            set => SetProperty(ref _decompiledScriptBoxTitle, value);
+        }
+
         public bool HexBoxSelectionChanging { get; private set; }
 
         public UnrealScriptWPF()
@@ -105,6 +113,7 @@ namespace ME3Explorer
             TokenList.ClearEx();
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
+            DecompiledScriptBoxTitle = "Decompiled Script";
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
@@ -114,6 +123,7 @@ namespace ME3Explorer
                 DecompiledScriptBlocks.Add(func.GetSignature());
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
+
 
                 int pos = 12;
 
@@ -129,11 +139,25 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size in Memory", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
                 var size = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", size, pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size on disk", size, pos));
+
+                int calculatedLength = size;
+                foreach (var token in func.ScriptBlocks)
+                {
+                    foreach ((int _, int type, int _) in token.inPackageReferences)
+                    {
+                        if (type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                        {
+                            calculatedLength += 4;
+                        }
+                    }
+                }
+
+                DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength})";
 
 
                 if (CurrentLoadedExport.ClassName == "Function")
