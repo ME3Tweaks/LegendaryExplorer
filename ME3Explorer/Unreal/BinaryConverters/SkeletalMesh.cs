@@ -591,6 +591,8 @@ namespace ME3Explorer
                         {
                             int[] vertexInfluences = null;
                             sc.Serialize(ref vertexInfluences, Serialize);
+                            int dummy = 0;
+                            sc.Serialize(ref dummy);
                         }
                         else
                         {

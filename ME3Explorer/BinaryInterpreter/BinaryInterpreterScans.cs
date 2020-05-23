@@ -5900,7 +5900,11 @@ namespace ME3Explorer
                         node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
                         {
                             new BinInterpNode(bin.Position, $"VertexInfluence size: {vertexInfluenceSize = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 },
-                            ListInitHelper.ConditionalAddOne<ITreeItem>(vertexInfluenceSize > 0, () => MakeArrayNode(bin, "VertexInfluences", i => MakeInt32Node(bin, $"{i}")))
+                            ListInitHelper.ConditionalAdd<ITreeItem>(vertexInfluenceSize > 0, () => new ITreeItem[]
+                            {
+                                MakeArrayNode(bin, "VertexInfluences", i => MakeInt32Node(bin, $"{i}")),
+                                MakeInt32Node(bin, "Unknown")
+                            })
                         }));
                         node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
                         {
