@@ -43,18 +43,11 @@ namespace ME3Explorer
         private bool TokenChanging = false;
         private int BytecodeStart;
 
-        private bool _bytesHaveChanged { get; set; }
+        private bool _bytesHaveChanged;
         public bool BytesHaveChanged
         {
-            get { return _bytesHaveChanged; }
-            set
-            {
-                if (_bytesHaveChanged != value)
-                {
-                    _bytesHaveChanged = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _bytesHaveChanged;
+            set => SetProperty(ref _bytesHaveChanged, value);
         }
 
         private string _decompiledScriptBoxTitle = "Tokens";
@@ -64,6 +57,8 @@ namespace ME3Explorer
             get => _decompiledScriptBoxTitle;
             set => SetProperty(ref _decompiledScriptBoxTitle, value);
         }
+
+        private int[] DiskToMemPosMap = new int[0];
 
         public bool HexBoxSelectionChanging { get; private set; }
 
@@ -114,9 +109,10 @@ namespace ME3Explorer
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+                int scriptOffset = CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32;
+                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, scriptOffset);
 
 
                 func.ParseFunction();
@@ -142,22 +138,38 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size in Memory", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                var size = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size on disk", size, pos));
+                var diskSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size on disk", diskSize, pos));
 
-                int calculatedLength = size;
-                foreach (var token in func.ScriptBlocks)
+
+
+                List<int> objRefPositions = func.ScriptBlocks.SelectMany(tok => tok.inPackageReferences)
+                                                .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                                                .Select(tup => tup.position).ToList();
+                int calculatedLength = diskSize + 4 * objRefPositions.Count;
+
+                DiskToMemPosMap = new int[diskSize];
+                int iDisk = 0;
+                int iMem = 0;
+                foreach (int objRefPosition in objRefPositions)
                 {
-                    foreach ((int _, int type, int _) in token.inPackageReferences)
+                    while (iDisk < objRefPosition + 4)
                     {
-                        if (type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
-                        {
-                            calculatedLength += 4;
-                        }
+                        DiskToMemPosMap[iDisk] = iMem;
+                        iDisk++;
+                        iMem++;
                     }
+                    iMem += 4;
+                }
+                while (iDisk < diskSize)
+                {
+                    DiskToMemPosMap[iDisk] = iMem;
+                    iDisk++;
+                    iMem++;
                 }
 
-                DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength})";
+
+                DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
 
 
                 if (CurrentLoadedExport.ClassName == "Function")
@@ -166,14 +178,14 @@ namespace ME3Explorer
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
                     pos += 2;
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian):X8} {func.GetFlags().Substring(6)}", pos));
                 }
                 else
                 {
                     //State
                     //parse remaining
-                    var footerstartpos = 0x20 + size;
-                    var footerdata = CurrentLoadedExport.Data.Slice(0x20 + size, (int)CurrentLoadedExport.Data.Length - (0x20 + size));
+                    var footerstartpos = 0x20 + diskSize;
+                    var footerdata = CurrentLoadedExport.Data.Slice(0x20 + diskSize, (int)CurrentLoadedExport.Data.Length - (0x20 + diskSize));
                     var fpos = 0;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos));
                     fpos += 0x8;
@@ -213,7 +225,7 @@ namespace ME3Explorer
                     }
                 }
             }
-            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1 || CurrentLoadedExport.Game == MEGame.ME2)
+            else if (Pcc.Game == MEGame.ME1 || Pcc.Game == MEGame.ME2)
             {
                 //Header
                 int pos = 16;
@@ -353,7 +365,7 @@ namespace ME3Explorer
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                             }
-                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                            if (Pcc.Game == MEGame.ME1)
                             {
                                 ME1OpCodes m = (ME1OpCodes)currentData[start];
                                 s += $", OpCode: {m}";
@@ -378,6 +390,13 @@ namespace ME3Explorer
                             s += $"Length=0x{len:X8} ";
                             s += $"End=0x{(start + len - 1):X8}";
                         }
+
+                        int diskPos = start - (CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+                        if (Pcc.Game == MEGame.ME3 && diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                        {
+                            s += $" | MemoryPos=0x{DiskToMemPosMap[diskPos]:X4}";
+                        }
+
                         StatusBar_LeftMostText.Text = s;
                     }
                     else
@@ -391,7 +410,7 @@ namespace ME3Explorer
 
                 //Find which decompiled script block the cursor belongs to
                 ListBox selectedBox = null;
-                List<ListBox> allBoxesToUpdate = new List<ListBox>(new ListBox[] { Function_ListBox, Function_Header, Function_Footer });
+                var allBoxesToUpdate = new List<ListBox>(new[] { Function_ListBox, Function_Header, Function_Footer });
                 if (start >= 0x20 && start < CurrentLoadedExport.DataSize - 6)
                 {
                     Token token = null;
@@ -501,7 +520,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    this.value += $" ({ value:X8})";
+                    this.value += $" (0x{value:X4})";
                 }
                 this.offset = offset;
                 length = 4;

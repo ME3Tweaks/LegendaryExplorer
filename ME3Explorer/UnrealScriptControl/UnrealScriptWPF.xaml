@@ -181,7 +181,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding StartPos, StringFormat='0x{0:X5}:'}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding StartPos, StringFormat='0x{0:X4}:'}"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpCode}" Foreground="DarkMagenta" HorizontalAlignment="Stretch"/>
                             <TextBlock Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                         </Grid>
