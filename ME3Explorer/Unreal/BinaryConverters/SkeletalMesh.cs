@@ -161,9 +161,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
     public class SoftSkinVertex
     {
         public Vector3 Position;
-        public PackedNormal TangentX;
-        public PackedNormal TangentY;
-        public PackedNormal TangentZ;
+        public PackedNormal TangentX; // Tangent, U-direction
+        public PackedNormal TangentY; // Binormal, V-direction
+        public PackedNormal TangentZ; // Normal
         public Vector2 UV;
         public Vector2 UV2; //UDK
         public Vector2 UV3; //UDK
@@ -535,11 +535,13 @@ namespace ME3Explorer
                     for (int i = 0; i < vertexData.Length; i++)
                     {
                         GPUSkinVertex vert = vertexData[i];
+                        var normal = (Vector4)vert.TangentZ;
+                        var tangent = (Vector4)vert.TangentX;
                         slm.ME1VertexBufferGPUSkin[i] = new SoftSkinVertex
                         {
                             Position = vert.Position,
                             TangentX = vert.TangentX,
-                            TangentY = new PackedNormal(0, 1, 0, 0), //¯\_(ツ)_/¯
+                            TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)normal, (Vector3)tangent), normal.W * tangent.W) * normal.W),
                             TangentZ = vert.TangentZ,
                             UV = new Vector2(vert.UV.X, vert.UV.Y),
                             InfluenceBones = vert.InfluenceBones.TypedClone(),
