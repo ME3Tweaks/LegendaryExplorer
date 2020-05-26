@@ -138,7 +138,7 @@ namespace ME3Explorer
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size in Memory", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                var diskSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
+                int diskSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size on disk", diskSize, pos));
 
 
@@ -491,14 +491,29 @@ namespace ME3Explorer
 
         private void ScriptEditor_PreviewScript_Click(object sender, RoutedEventArgs e)
         {
-            byte[] data = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
-            StartFunctionScan(data);
+            byte[] newBytes = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            if (CurrentLoadedExport.Game == MEGame.ME3)
+            {
+                int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
+                int diskSize = BitConverter.ToInt32(CurrentLoadedExport.Data, 0x1C);
+                diskSize += sizeDiff;
+                newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
+            }
+            StartFunctionScan(newBytes);
         }
 
         private void ScriptEditor_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
             (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).ApplyChanges();
-            CurrentLoadedExport.Data = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            byte[] newBytes = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            if (CurrentLoadedExport.Game == MEGame.ME3)
+            {
+                int sizeDiff = newBytes.Length - CurrentLoadedExport.DataSize;
+                int diskSize = BitConverter.ToInt32(CurrentLoadedExport.Data, 0x1C);
+                diskSize += sizeDiff;
+                newBytes.OverwriteRange(0x1C, BitConverter.GetBytes(diskSize));
+            }
+            CurrentLoadedExport.Data = newBytes;
         }
 
         private void Tokens_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
