@@ -115,7 +115,8 @@
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type me3bytecode:Token}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0}:'}" />
+                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0} '}" />
+                                <TextBlock x:Name="MemPosBlock" Text="{Binding Path=memPosStr, StringFormat='{}(0x{0}):'}" />
                                 <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Path=text}">
                                     <TextBlock.Style>
                                         <Style>

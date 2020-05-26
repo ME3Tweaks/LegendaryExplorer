@@ -168,6 +168,15 @@ namespace ME3Explorer
                     iMem++;
                 }
 
+                foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
+                {
+                    var diskPos = t.pos - scriptOffset;
+                    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                    {
+                        t.memPos = DiskToMemPosMap[diskPos];
+                    }
+                }
+
 
                 DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
 

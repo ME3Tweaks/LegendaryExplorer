@@ -71,7 +71,7 @@ namespace ME3Explorer.Unreal
              { 0x37, "EX_GlobalFunction" },
              { 0x38, "EX_PrimitiveCast" },
              { 0x39, "EX_DynArrayInsert" },
-             { 0x3A, "EX_ByteToInt" },
+             { 0x3A, "EX_ReturnNothing" },
              { 0x3B, "EX_EqualEqual_DelDel" },
              { 0x3C, "EX_NotEqual_DelDel" },
              { 0x3D, "EX_EqualEqual_DelFunc" },
@@ -378,7 +378,7 @@ namespace ME3Explorer.Unreal
         private const int EX_GlobalFunction = 0x37;
         private const int EX_PrimitiveCast = 0x38;
         private const int EX_DynArrayInsert = 0x39;
-        private const int EX_ByteToInt = 0x3A;        // EX_ReturnNothing = 0x3A
+        private const int EX_ReturnNothing = 0x3A;
         private const int EX_EqualEqual_DelDel = 0x3B;
         private const int EX_NotEqual_DelDel = 0x3C;
         private const int EX_EqualEqual_DelFunc = 0x3D;
@@ -637,6 +637,49 @@ namespace ME3Explorer.Unreal
             NATIVE_LineOfSightTo = 0x0202,
             NATIVE_FindStairRotation = 0x020C,
             NATIVE_UpdateURL = 0x0222
+        };
+
+        enum ECastToken : byte
+        {
+            InterfaceToObject = 0x36,
+            InterfaceToString = 0x37,
+            InterfaceToBool = 0x38,
+            RotatorToVector = 0x39,
+            ByteToInt = 0x3A,
+            ByteToBool = 0x3B,
+            ByteToFloat = 0x3C,
+            IntToByte = 0x3D,
+            IntToBool = 0x3E,
+            IntToFloat = 0x3F,
+            BoolToByte = 0x40,
+            BoolToInt = 0x41,
+            BoolToFloat = 0x42,
+            FloatToByte = 0x43,
+            FloatToInt = 0x44,
+            FloatToBool = 0x45,
+            ObjectToInterface = 0x46,
+            ObjectToBool = 0x47,
+            NameToBool = 0x48,
+            StringToByte = 0x49,
+            StringToInt = 0x4A,
+            StringToBool = 0x4B,
+            StringToFloat = 0x4C,
+            StringToVector = 0x4D,
+            StringToRotator = 0x4E,
+            VectorToBool = 0x4F,
+            VectorToRotator = 0x50,
+            RotatorToBool = 0x51,
+            ByteToString = 0x52,
+            IntToString = 0x53,
+            BoolToString = 0x54,
+            FloatToString = 0x55,
+            ObjectToString = 0x56,
+            NameToString = 0x57,
+            VectorToString = 0x58,
+            RotatorToString = 0x59,
+            DelegateToString = 0x5A,
+            StringToDelegate = 0x5B,
+            StringToName = 0x60
         };
 
         public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export, int pos = 0x20)
@@ -1028,8 +1071,8 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_ByteToInt: // 0x3A
-                        newTok = ReadByteToInt(start, export);
+                    case EX_ReturnNothing: // 0x3A
+                        newTok = ReadReturnNothing(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3815,6 +3858,7 @@ namespace ME3Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos, export);
             pos += c.raw.Length;
+            pos += ReadToken(pos, export).raw.Length; // EX_EndFunctionParms
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
             t.inPackageReferences.AddRange(c.inPackageReferences);
@@ -3880,13 +3924,20 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int pos = start + 1;
-            int size = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
+            int nextCaseLocation = EndianReader.ToInt16(memory, pos, export.FileRef.Endian);
             pos += 2;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
+            if (nextCaseLocation != -1)
+            {
+                Token a = ReadToken(pos, export);
+                t.inPackageReferences.AddRange(a.inPackageReferences);
 
-            pos += a.raw.Length;
-            t.text = "Case " + a.text + ":";
+                pos += a.raw.Length;
+                t.text = "Case " + a.text + ":";
+            }
+            else
+            {
+                t.text = "//End of Switch";
+            }
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4098,10 +4149,19 @@ namespace ME3Explorer.Unreal
         private static Token ReadPrimitiveCast(int start, ExportEntry export)
         {
             Token t = new Token();
+            ECastToken conversionType = (ECastToken)memory[start + 1];
             Token a = ReadToken(start + 2, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
-
-            t.text = a.text;
+            string castStr;
+            if (Enum.IsDefined(typeof(ECastToken), conversionType))
+            {
+                castStr = conversionType.ToString();
+            }
+            else
+            {
+                castStr = "UNKNOWN_CAST";
+            }
+            t.text = $"{castStr}({a.text})";
             int pos = start + a.raw.Length + 2;
             int len = pos - start;
             t.raw = new byte[len];
@@ -4621,14 +4681,14 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteToInt(int start, ExportEntry export)
+        private static Token ReadReturnNothing(int start, ExportEntry export)
         {
             Token t = new Token();
 
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
 
-            t.text = "ByteToInt(" + export.FileRef.getObjectName(index) + ")";
+            t.text = "ReturnNothing(" + export.FileRef.getObjectName(index) + ")";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
@@ -4639,7 +4699,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             float f = EndianReader.ToSingle(memory, start + 1, export.FileRef.Endian);
-            t.text = f.ToString() + "f";
+            t.text = f + "f";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
@@ -5010,18 +5070,19 @@ namespace ME3Explorer.Unreal
         public bool stop;
         public short op { get; set; }
         public int pos { get; set; }
-        public string posStr
-        {
-            get
-            {
-                return pos.ToString("X" + paddingSize);
-            }
-        }
+
+        public int memPos { get; set; } = -1;
+        public string posStr => pos.ToString("X" + paddingSize);
+        public string memPosStr => memPos.ToString("X" + paddingSize);
 
         internal int paddingSize;
 
         public override string ToString()
         {
+            if (memPos >= 0)
+            {
+                return $"0x{pos.ToString("X" + paddingSize)} (0x{memPos.ToString("X" + paddingSize)}): {text}";
+            }
             return $"0x{pos.ToString("X" + paddingSize)} : {text}";
         }
     }
