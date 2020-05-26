@@ -642,7 +642,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         var item = ReadEntryRef(out var functionIndex);
                         if (item == null) return ErrToken("Unresolved function item " + functionIndex);
                         string functionName = item.ObjectName.Instanced;
-                        return ReadCall(functionName);
+                        return ReadCall(readerpos, functionName);
                     }
 
                 case ME1OpCodes.EX_PrimitiveCast:
@@ -653,10 +653,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     }
 
                 case ME1OpCodes.EX_VirtualFunction:
-                    return ReadCall(ReadName());
+                    return ReadCall(readerpos, ReadName());
 
                 case ME1OpCodes.EX_GlobalFunction:
-                    return ReadCall("Global." + ReadName());
+                    return ReadCall(readerpos, "Global." + ReadName());
 
                 case ME1OpCodes.EX_BoolVariable:
                     return ReadNext();
@@ -835,9 +835,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         var methodName = ReadName();
                         if (receiver.ToString().StartsWith("__") && receiver.ToString().EndsWith("__Delegate"))
                         {
-                            return ReadCall(methodName);
+                            return ReadCall(readerpos, methodName);
                         }
-                        return ReadCall(receiver + "." + methodName);
+                        return ReadCall(readerpos, receiver + "." + methodName);
                     }
 
                 case ME1OpCodes.EX_EqualEqual_DelDel:
@@ -1031,10 +1031,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return result.ToString();
         }
 
-        private BytecodeToken ReadCall(string functionName)
+        private BytecodeToken ReadCall(int pos, string functionName)
         {
-            int pos = (int)_reader.BaseStream.Position; //used to be -1. But it shouldn't be afaik cause the last byte will point to 16 if its empty or first param if its not
-
             BytecodeToken p;
             var builder = new StringBuilder(functionName + "(");
             int count = 0;
@@ -1094,7 +1092,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 ReadNext();  // end of parms
                 return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos, nativeIndex);
             }
-            return ReadCall(function.Name);
+            return ReadCall(pos, function.Name);
         }
     }
 

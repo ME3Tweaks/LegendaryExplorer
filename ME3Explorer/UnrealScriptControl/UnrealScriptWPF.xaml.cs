@@ -246,14 +246,11 @@ namespace ME3Explorer
                 nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
-                pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1 (??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                pos += 8;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Line", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Line??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
-
-                pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("TextPos", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
 
                 pos += 4;
                 int scriptSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
@@ -299,7 +296,7 @@ namespace ME3Explorer
                 pos++;
 
                 int functionFlags = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags.ToString("X8")} {flagStr}", pos));
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags:X8} {flagStr}", pos));
                 pos += 4;
 
                 //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
@@ -309,11 +306,8 @@ namespace ME3Explorer
                 //}
 
                 int friendlyNameIndex = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.GetNameEntry(friendlyNameIndex)}", pos));
-                pos += 4;
-
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian).ToString("X4")}", pos));
-                pos += 4;
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name", Pcc.GetNameEntry(friendlyNameIndex), pos) { length = 8 });
+                pos += 8;
 
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
