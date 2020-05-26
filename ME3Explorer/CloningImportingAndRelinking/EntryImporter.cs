@@ -234,21 +234,24 @@ namespace ME3Explorer
 
             //Set superclass
             IEntry superclass = null;
-            switch (sourceExport.SuperClass)
+            if (!IsSafeToImportFrom(sourceExport.FileRef.FilePath, destPackage.Game))
             {
-                case ImportEntry sourceSuperClassImport:
-                    //The class of the export we are importing is an import. We should attempt to relink this.
-                    superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
-                    break;
-                case ExportEntry sourceSuperClassExport:
-                    superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
-                    if (superclass is null && importExportDependencies)
-                    {
-                        IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage, 
-                                                                               true, objectMapping);
-                        superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0,  true, objectMapping);
-                    }
-                    break;
+                switch (sourceExport.SuperClass)
+                {
+                    case ImportEntry sourceSuperClassImport:
+                        //The class of the export we are importing is an import. We should attempt to relink this.
+                        superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
+                        break;
+                    case ExportEntry sourceSuperClassExport:
+                        superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
+                        if (superclass is null && importExportDependencies)
+                        {
+                            IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage, 
+                                                                                   true, objectMapping);
+                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0,  true, objectMapping);
+                        }
+                        break;
+                }
             }
 
             //Check archetype.
