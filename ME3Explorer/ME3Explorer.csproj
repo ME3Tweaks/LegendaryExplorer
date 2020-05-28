@@ -916,6 +916,7 @@
       <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Unreal\ActorUtils.cs" />
+    <Compile Include="Unreal\BinaryConverters\AnimSequence.cs" />
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
     <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
