@@ -5785,8 +5785,15 @@ namespace ME3Explorer
                             MakeBoolIntNode(bin, "NeedsCPUAccess"),
                             MakeByteNode(bin, "Datatype size"),
                         }));
-                        node.Items.Add(MakeInt32Node(bin, "ushort size"));
-                        node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                        node.Items.Add(MakeInt32Node(bin, "Index size"));
+                        if (bin.Skip(-4).ReadInt32() == 2)
+                        {
+                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                        }
+                        else
+                        {
+                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
+                        }
                         node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
                         node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));
                         node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowTriangleDoubleSided", j => MakeByteNode(bin, $"{j}"))));

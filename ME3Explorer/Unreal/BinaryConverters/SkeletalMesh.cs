@@ -478,19 +478,44 @@ namespace ME3Explorer
                 slm = new StaticLODModel();
             }
             sc.Serialize(ref slm.Sections, Serialize);
+            int indexSize = 2;
+            slm.DataTypeSize = 2;
+            if (sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+            {
+                slm.DataTypeSize = 4;
+                indexSize = 4;
+            }
             if (sc.Game == MEGame.UDK)
             {
                 slm.NeedsCPUAccess = true;
                 sc.Serialize(ref slm.NeedsCPUAccess);
                 sc.Serialize(ref slm.DataTypeSize);
             }
-            else if (sc.IsLoading)
+            sc.Serialize(ref indexSize);
+            if (indexSize == 4)
             {
-                slm.DataTypeSize = 2;
+                //have to do this manually due to the size mismatch
+                //as far as I know, despite being saved as uints when the IndexBuffer is longer than ushort.MaxValue,
+                //the actual indicies themselves should not exceed the range of a ushort
+                int count = slm.IndexBuffer?.Length ?? 0;
+                sc.Serialize(ref count);
+                if (sc.IsLoading)
+                {
+                    slm.IndexBuffer = new ushort[count];
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (sc.IsLoading)
+                        slm.IndexBuffer[i] = (ushort)sc.ms.ReadUInt32();
+                    else
+                        sc.ms.Writer.WriteUInt32(slm.IndexBuffer[i]);
+                }
             }
-            int ushortSize = 2;
-            sc.Serialize(ref ushortSize);
-            sc.Serialize(ref slm.IndexBuffer, Serialize);
+            else
+            {
+                sc.Serialize(ref slm.IndexBuffer, Serialize);
+            }
             if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref slm.ShadowIndices, Serialize);
