@@ -3243,7 +3243,7 @@ namespace ME3Explorer
 
                 if (game == MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
                 {
-                    offset += 12; //seems to have 12?
+                    offset += 12;
                     int animOffset = BitConverter.ToInt32(data, offset);
                     var animOffsetNode = new BinInterpNode
                     {
@@ -5785,14 +5785,14 @@ namespace ME3Explorer
                             MakeBoolIntNode(bin, "NeedsCPUAccess"),
                             MakeByteNode(bin, "Datatype size"),
                         }));
-                        node.Items.Add(MakeInt32Node(bin, "Index size"));
-                        if (bin.Skip(-4).ReadInt32() == 2)
+                        node.Items.Add(MakeInt32Node(bin, "Index size?"));
+                        if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
                         {
-                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
                         }
                         else
                         {
-                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
+                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
                         }
                         node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
                         node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));

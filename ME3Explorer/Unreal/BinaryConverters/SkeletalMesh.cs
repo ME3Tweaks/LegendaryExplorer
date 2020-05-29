@@ -480,7 +480,7 @@ namespace ME3Explorer
             sc.Serialize(ref slm.Sections, Serialize);
             int indexSize = 2;
             slm.DataTypeSize = 2;
-            if (sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+            if (sc.Game == MEGame.UDK && sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
             {
                 slm.DataTypeSize = 4;
                 indexSize = 4;
@@ -492,7 +492,7 @@ namespace ME3Explorer
                 sc.Serialize(ref slm.DataTypeSize);
             }
             sc.Serialize(ref indexSize);
-            if (indexSize == 4)
+            if (sc.Game == MEGame.UDK && indexSize == 4)
             {
                 //have to do this manually due to the size mismatch
                 //as far as I know, despite being saved as uints when the IndexBuffer is longer than ushort.MaxValue,
