@@ -1264,7 +1264,7 @@ namespace ME3Explorer
             {
                 switch (bitvi.ArrayAddAlgoritm)
                 {
-                    case BinInterpNode.ArrayPropertyChildAddAlgorithm.LevelItem:
+                    case BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes:
                         BinInterpNode container = bitvi;
                         if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
                         {

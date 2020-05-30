@@ -29,7 +29,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref AnimationData, SCExt.Serialize);
             return;
             int startOffset = (int)sc.ms.Position;
-
+            //todo: serialize data size
             var TrackOffsets = Export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
             var animsetData = Export.GetProperty<ObjectProperty>("m_pBioAnimSetData");
             var boneList = Export.FileRef.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames");
@@ -80,23 +80,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             case AnimationCompressionFormat.ACF_Float96NoW:
                                 sc.Serialize(ref position);
                                 break;
-                            case AnimationCompressionFormat.ACF_Fixed48NoW:
-                                const float scale = 128.0f / 32767.0f;
-                                ushort unkConst = 32767;
-                                if (sc.IsLoading)
-                                {
-                                    position = new Vector3((sc.ms.ReadUInt16() - unkConst) * scale, 
-                                                           (sc.ms.ReadUInt16() - unkConst) * scale, 
-                                                           (sc.ms.ReadUInt16() - unkConst) * scale);
-                                }
-                                else
-                                {
-                                    sc.ms.Writer.WriteUInt16((ushort)(position.X / scale + unkConst));
-                                    sc.ms.Writer.WriteUInt16((ushort)(position.Y / scale + unkConst));
-                                    sc.ms.Writer.WriteUInt16((ushort)(position.Y / scale + unkConst));
-                                }
-                                break;
                             case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                            case AnimationCompressionFormat.ACF_Fixed48NoW:
                             case AnimationCompressionFormat.ACF_Fixed32NoW:
                             case AnimationCompressionFormat.ACF_Float32NoW:
                             case AnimationCompressionFormat.ACF_BioFixed48:
@@ -231,7 +216,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
                             case AnimationCompressionFormat.ACF_Fixed32NoW:
                             case AnimationCompressionFormat.ACF_Float32NoW:
-                                throw new NotImplementedException($"Translation keys in format {compressionFormat} cannot be read!");
+                                throw new NotImplementedException($"Rotation keys in format {compressionFormat} cannot be read!");
                         }
                         Tracks[i].Rotations[j] = rot;
                     }
