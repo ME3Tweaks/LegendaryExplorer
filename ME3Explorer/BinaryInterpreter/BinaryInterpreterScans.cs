@@ -3233,7 +3233,148 @@ namespace ME3Explorer
         private List<ITreeItem> StartAnimSequenceScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
-            var game = CurrentLoadedExport.FileRef.Game;
+
+            #region UDK
+
+            if (Pcc.Game == MEGame.UDK && CurrentLoadedExport.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name == "AKF_PerTrackCompression")
+            {
+                try
+                {
+                    var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
+                    var numFrames = CurrentLoadedExport.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
+
+                    List<string> boneList = ((ExportEntry)CurrentLoadedExport.Parent).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").ToList();
+
+                    var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
+                    bin.JumpTo(binarystart);
+
+                    int numTracks = bin.ReadInt32() * 2;
+                    bin.Skip(-4);
+
+                    BinInterpNode rawAnimDataNode = MakeInt32Node(bin, "RawAnimationData: NumTracks");
+                    subnodes.Add(rawAnimDataNode);
+                    for (int i = 0; i < numTracks; i++)
+                    {
+                        int keySize = bin.ReadInt32();
+                        int numKeys = bin.ReadInt32();
+                        for (int j = 0; j < numKeys; j++)
+                        {
+                            if (keySize == 12)
+                            {
+                                rawAnimDataNode.Items.Add(MakeVectorNode(bin, $"{boneList[i / 2]}, PosKey {j}"));
+                            }
+                            else if (keySize == 16)
+                            {
+                                rawAnimDataNode.Items.Add(MakeQuatNode(bin, $"{boneList[i / 2]}, RotKey {j}"));
+                            }
+                            else
+                            {
+                                throw new NotImplementedException($"Unexpected key size: {keySize}");
+                            }
+                        }
+                    }
+
+                    subnodes.Add(MakeInt32Node(bin, "AnimBinary length"));
+                    var startOff = bin.Position;
+                    for (int i = 0; i < boneList.Count; i++)
+                    {
+                        var boneNode = new BinInterpNode(bin.Position, boneList[i]);
+                        subnodes.Add(boneNode);
+
+                        int posOff = TrackOffsets[i * 2];
+
+                        if (posOff >= 0)
+                        {
+                            bin.JumpTo(startOff + posOff);
+                            int header = bin.ReadInt32();
+                            int numKeys = header & 0x00FFFFFF;
+                            int formatFlags = (header >> 24) & 0x0F;
+                            AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
+                            switch (keyFormat)
+                            {
+                                case AnimationCompressionFormat.ACF_None:
+                                case AnimationCompressionFormat.ACF_Float96NoW:
+                                    break;
+                                case AnimationCompressionFormat.ACF_Fixed48NoW:
+                                case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                                case AnimationCompressionFormat.ACF_Fixed32NoW:
+                                case AnimationCompressionFormat.ACF_Float32NoW:
+                                case AnimationCompressionFormat.ACF_BioFixed48:
+                                default:
+                                    throw new NotImplementedException($"{keyFormat} is not supported yet!");
+                            }
+
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}"));
+
+                            for (int j = 0; j < numKeys; j++)
+                            {
+                                boneNode.Items.Add(MakeVectorNode(bin, $"PosKey {j}"));
+                            }
+                        }
+
+                        int rotOff = TrackOffsets[i * 2 + 1];
+
+                        if (rotOff >= 0)
+                        {
+                            bin.JumpTo(startOff + rotOff);
+                            int header = bin.ReadInt32();
+                            int numKeys = header & 0x00FFFFFF;
+                            int formatFlags = (header >> 24) & 0x0F;
+                            AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
+
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"RotKey Header: {numKeys} keys, Compression: {keyFormat}"));
+                            switch (keyFormat)
+                            {
+                                case AnimationCompressionFormat.ACF_None:
+                                {
+                                    for (int j = 0; j < numKeys; j++)
+                                    {
+                                        boneNode.Items.Add(MakeQuatNode(bin, $"RotKey {j}"));
+                                    }
+                                    break;
+                                }
+                                case AnimationCompressionFormat.ACF_Fixed48NoW:
+                                {
+                                    //todo: account for format flags
+                                    const float scale = 128.0f / 32767.0f;
+                                    const ushort unkConst = 32767;
+                                    float x, y, z;
+                                    for (int j = 0; j < numKeys; j++)
+                                    {
+                                        boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = (bin.ReadUInt16() - unkConst) * scale}, Y: {y = (bin.ReadUInt16() - unkConst) * scale}, Z: {z = (bin.ReadUInt16() - unkConst) * scale}, W: {getW(x, y, z)})"));
+                                    }
+                                    break;
+                                }
+                                case AnimationCompressionFormat.ACF_Float96NoW:
+                                {
+                                    float x, y, z;
+                                    for (int j = 0; j < numKeys; j++)
+                                    {
+                                        boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {getW(x, y, z)})"));
+                                    }
+                                    break;
+                                }
+                                case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                                case AnimationCompressionFormat.ACF_Fixed32NoW:
+                                case AnimationCompressionFormat.ACF_Float32NoW:
+                                case AnimationCompressionFormat.ACF_BioFixed48:
+                                default:
+                                    throw new NotImplementedException($"{keyFormat} is not supported yet!");
+                            }
+
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+                }
+                return subnodes;
+            }
+
+            #endregion
+
+            #region Mass Effect
 
             try
             {
@@ -3250,9 +3391,9 @@ namespace ME3Explorer
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat")?.Value.Name, out AnimationCompressionFormat rotCompression);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out AnimationCompressionFormat posCompression);
 
-                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = Pcc.Endian };
                 bin.JumpTo(binarystart);
-                if (game == MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     bin.Skip(12);
                     subnodes.Add(MakeInt32Node(bin, "AnimBinary Offset"));
@@ -3375,12 +3516,6 @@ namespace ME3Explorer
                         }
 
                         readTrackTable(rotKeys);
-
-                        static float getW(float x, float y, float z)
-                        {
-                            float wSquared = 1.0f - (x * x + y * y + z * z);
-                            return (float)(wSquared > 0 ? Math.Sqrt(wSquared) : 0);
-                        }
                     }
 
                     void readTrackTable(int numKeys)
@@ -3403,7 +3538,15 @@ namespace ME3Explorer
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
+
+            #endregion
             return subnodes;
+
+            static float getW(float x, float y, float z)
+            {
+                float wSquared = 1.0f - (x * x + y * y + z * z);
+                return (float)(wSquared > 0 ? Math.Sqrt(wSquared) : 0);
+            }
         }
 
         private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)

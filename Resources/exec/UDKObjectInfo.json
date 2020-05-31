@@ -1,5 +1,21 @@
 {
-  "Classes": {},
+  "Classes": {
+    "AnimSet": {
+      "properties": [
+        {
+          "Key": "TrackBoneNames",
+          "Value": {
+            "Type": 8,
+            "Reference": "NameProperty",
+            "Transient": false
+          }
+        }
+      ],
+      "baseClass": null,
+      "pccPath": null,
+      "exportIndex": 0
+    },
+  },
   "Structs": {
     "TriangleSortSettings": {
       "properties": [

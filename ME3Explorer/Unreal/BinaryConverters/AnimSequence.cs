@@ -12,7 +12,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public class AnimSequence : ObjectBinary
     {
-        public byte[] AnimationData; //todo: actually parse animation data
+        public byte[] AnimationData;
         public List<AnimTrack> Tracks;
 
         protected override void Serialize(SerializingContainer2 sc)
