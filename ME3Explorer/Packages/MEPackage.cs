@@ -60,6 +60,17 @@ namespace ME3Explorer.Packages
         public const ushort ME3Xenon2011DemoLicenseeVersion = 185;
         public const ushort ME3LicenseeVersion = 194;
 
+        /// <summary>
+        /// Indicates what type of package file this is. 0 is normal, 1 is TESTPATCH patch package.
+        /// </summary>
+        public int PackageTypeId { get; private set; }
+
+        /// <summary>
+        /// This is not useful for modding but we should not be changing the format of the package file.
+        /// </summary>
+        public List<string> AdditionalPackagesToCook = new List<string>();
+
+
         public Endian Endian { get; private set; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
         public GamePlatform Platform { get; private set; }
@@ -223,8 +234,9 @@ namespace ME3Explorer.Packages
             //Xenon Demo ME3 doesn't read this
             if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && Platform != GamePlatform.Xenon)
             {
-                //Consoles are always cooked so this integer is skipped
-                packageReader.SkipInt32(); //always 0
+                //Consoles are always cooked.
+                PackageTypeId = packageReader.ReadInt32(); //0 = standard, 1 = patch ? Not entirely sure. patch_001 files with byte = 0 => game does not load
+
             }
 
             //if (Platform != GamePlatform.PC)
@@ -295,82 +307,40 @@ namespace ME3Explorer.Packages
             //read package source
             var savedPos = packageReader.Position;
             packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
-            packageReader.Position = savedPos; //is this not part of chunk table? have we had this mislabeled as 'magic' for chunk decompression?
 
+            
+            packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
+
+            if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3)
+            {
+                packageReader.SkipInt32(); //always 0
+            }
+
+            //Doesn't need to be written out, so it doesn't need to be read in
+            //keep this here in case one day we learn that this has a purpose
+            //Narrator: On Jan 26, 2020 it turns out this was actually necessary to make it work
+            //with ME3Tweaks Mixins as old code did not remove this section
+            //Also we should strive to ensure closeness to the original source files as possible
+            //because debugging things is a huge PITA if you start to remove stuff
+            if (Game == MEGame.ME2 || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
+            {
+                int additionalPackagesToCookCount = packageReader.ReadInt32();
+                //var additionalPackagesToCook = new string[additionalPackagesToCookCount];
+                for (int i = 0; i < additionalPackagesToCookCount; i++)
+                {
+                    var packageStr = packageReader.ReadUnrealString();
+                    AdditionalPackagesToCook.Add(packageStr);
+                }
+            }
+
+            packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
             {
                 inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition);
             }
 
-            /*
 
-            if (numChunks > 0)
-            {
-                var chunkInsertionPosition = fs.Position;
-                //If chunk table exists, package is compressed. We will have to decompress it and reconstitute it to continue reading it
-                List<Chunk> chunkTable = new List<Chunk>();
-                for (int i = 0; i < numChunks; i++)
-                {
-                    //Read chunk table
-                    Chunk c = new Chunk
-                    {
-                        uncompressedOffset = packageReader.ReadInt32(),
-                        uncompressedSize = packageReader.ReadInt32(),
-                        compressedOffset = packageReader.ReadInt32(),
-                        compressedSize = packageReader.ReadInt32()
-                    };
-                    c.Compressed = new byte[c.compressedSize];
-                    c.Uncompressed = new byte[c.uncompressedSize];
-                    //DebugOutput.PrintLn("Chunk " + i + ", compressed size = " + c.compressedSize + ", uncompressed size = " + c.uncompressedSize);
-                    //DebugOutput.PrintLn("Compressed offset = " + c.compressedOffset + ", uncompressed offset = " + c.uncompressedOffset);
-                    chunkTable.Add(c);
-                }
-
-                EndianWriter decompressedWriter = new EndianWriter(new MemoryStream());
-                fs.Position = 0;
-                fs.CopyToEx(decompressedWriter.BaseStream, (int)compressionFlagPosition);
-                decompressedWriter.Write(0); //Compression type None
-                decompressedWriter.Write(0); //Chunk table count
-                var decompressed = CompressionHelper.DecompressChunks(packageReader, chunkTable, compressionType);
-                decompressedWriter.BaseStream.Write(decompressed, 0, decompressed.Length);
-            }*/
-
-
-
-
-
-
-
-            //fs.Skip(numChunks * 16); //chunk table
-
-            // packageSource = packageReader.ReadUInt32();
-
-            //may need re-added
-            //if (Game == MEGame.ME2 || Game == MEGame.ME1)
-            //{
-            //    fs.SkipInt32(); //always 0
-            //}
-
-            //Doesn't need to be written out, so it doesn't need to be read in
-            //keep this here in case one day we learn that this has a purpose
-            /*if (Game == MEGame.ME2 || Game == MEGame.ME3)
-                {
-                    int additionalPackagesToCookCount = packageReader.ReadInt32();
-                    var additionalPackagesToCook = new string[additionalPackagesToCookCount];
-                    for (int i = 0; i < additionalPackagesToCookCount; i++)
-                    {
-                        int strLen = packageReader.ReadInt32();
-                        if (strLen > 0)
-                        {
-                            additionalPackagesToCook[i] = fs.ReadStringASCIINull(strLen);
-                        }
-                        else
-                        {
-                            additionalPackagesToCook[i] = fs.ReadStringUnicodeNull(strLen * -2);
-                        }
-                    }
-                }*/
             #endregion
 
             //if (IsCompressed && numChunks > 0)
@@ -611,7 +581,7 @@ namespace ME3Explorer.Packages
 
             if (Game == MEGame.ME3 && Flags.HasFlag(EPackageFlags.Cooked))
             {
-                ms.WriteInt32(0);
+                ms.WriteInt32(PackageTypeId);
             }
 
             ms.WriteInt32(NameCount);
@@ -705,7 +675,20 @@ namespace ME3Explorer.Packages
 
             if (Game == MEGame.ME3 || Game == MEGame.ME2)
             {
-                ms.WriteInt32(0);//empty additionalPackagesToCook array
+                //this code is not in me3exp right now
+                ms.WriteInt32(AdditionalPackagesToCook.Count);
+                foreach (var pname in AdditionalPackagesToCook)
+                {
+                    if (Game == MEGame.ME2)
+                    {
+                        //ME2 Uses ASCII
+                        ms.WriteUnrealStringASCII(pname);
+                    }
+                    else
+                    {
+                        ms.WriteUnrealStringUnicode(pname);
+                    }
+                }
             }
         }
         private void ReadLocalTLKs()
