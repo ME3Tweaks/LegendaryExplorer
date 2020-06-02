@@ -33,6 +33,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             switch (className)
             {
+                case "AnimSequence":
+                    return From<AnimSequence>(export);
                 case "BioStage":
                     return From<BioStage>(export);
                 case "Level":

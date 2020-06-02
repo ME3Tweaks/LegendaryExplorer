@@ -110,12 +110,13 @@
                 </ListBox>
             </DockPanel>
             <DockPanel Grid.Row="2" VerticalAlignment="Stretch">
-                <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <TextBlock Text="{Binding DecompiledScriptBoxTitle}" DockPanel.Dock="Top" FontWeight="Bold"/>
                 <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}" SelectionChanged="Function_ListBox_SelectionChanged">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type me3bytecode:Token}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0}:'}" />
+                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0} '}" />
+                                <TextBlock x:Name="MemPosBlock" Text="{Binding Path=memPosStr, StringFormat='{}(0x{0}):'}" />
                                 <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Path=text}">
                                     <TextBlock.Style>
                                         <Style>
@@ -181,7 +182,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding StartPos, StringFormat='0x{0:X5}:'}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding StartPos, StringFormat='0x{0:X4}:'}"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpCode}" Foreground="DarkMagenta" HorizontalAlignment="Stretch"/>
                             <TextBlock Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                         </Grid>

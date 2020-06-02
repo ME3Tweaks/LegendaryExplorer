@@ -310,7 +310,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             EX_GlobalFunction = 0x37,
             EX_PrimitiveCast = 0x38,
             EX_DynArrayInsert = 0x39,
-            EX_ByteToInt = 0x3A,        // EX_ReturnNothing = 0x3A
+            EX_ReturnNothing = 0x3A,        // EX_ReturnNothing = 0x3A
             EX_EqualEqual_DelDel = 0x3B,
             EX_NotEqual_DelDel = 0x3C,
             EX_EqualEqual_DelFunc = 0x3D,
@@ -341,92 +341,49 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             EX_ExtendedNative = 0x60,
             EX_FirstNative = 0x70
         }
-        /*private const int EX_LocalVariable = 0x00;
-        private const int EX_InstanceVariable = 0x01;
-        private const int EX_DefaultVariable = 0x02;
-        private const int EX_Return = 0x04;
-        private const int EX_Switch = 0x05;
-        private const int EX_Jump = 0x06;
-        private const int EX_JumpIfNot = 0x07;
-        private const int EX_Stop = 0x08;
-        private const int EX_Assert = 0x09;
-        private const int EX_Case = 0x0A;
-        private const int EX_Nothing = 0x0B;
-        private const int EX_LabelTable = 0x0C;
-        private const int EX_GotoLabel = 0x0D;
-        private const int EX_EatReturnValue = 0x0E;
-        private const int EX_Let = 0x0F;
-        private const int EX_DynArrayElement = 0x10;
-        private const int EX_New = 0x11;
-        private const int EX_ClassContext = 0x12;
-        private const int EX_Metacast = 0x13;
-        private const int EX_LetBool = 0x14;
-        // EX_EndParmValue = 0x15?
-        private const int EX_EndFunctionParms = 0x16;
-        private const int EX_Self = 0x17;
-        private const int EX_Skip = 0x18;
-        private const int EX_Context = 0x19;
-        private const int EX_ArrayElement = 0x1A;
-        private const int EX_VirtualFunction = 0x1B;
-        private const int EX_FinalFunction = 0x1C;
-        private const int EX_IntConst = 0x1D;
-        private const int EX_FloatConst = 0x1E;
-        private const int EX_StringConst = 0x1F;
-        private const int EX_ObjectConst = 0x20;
-        private const int EX_NameConst = 0x21;
-        private const int EX_RotationConst = 0x22;
-        private const int EX_VectorConst = 0x23;
-        private const int EX_ByteConst = 0x24;
-        private const int EX_IntZero = 0x25;
-        private const int EX_IntOne = 0x26;
-        private const int EX_True = 0x27;
-        private const int EX_False = 0x28;
-        private const int EX_NativeParm = 0x29;
-        private const int EX_NoObject = 0x2A;
-        private const int EX_IntConstByte = 0x2C;
-        private const int EX_BoolVariable = 0x2D;
-        private const int EX_DynamicCast = 0x2E;
-        private const int EX_Iterator = 0x2F;
-        private const int EX_IteratorPop = 0x30;
-        private const int EX_IteratorNext = 0x31;
-        private const int EX_StructCmpEq = 0x32;
-        private const int EX_StructCmpNe = 0x33;
-        private const int EX_UnicodeStringConst = 0x34;
-        private const int EX_StructMember = 0x35;
-        private const int EX_DynArrayLength = 0x36;
-        private const int EX_GlobalFunction = 0x37;
-        private const int EX_PrimitiveCast = 0x38;
-        private const int EX_DynArrayInsert = 0x39;
-        private const int EX_ByteToInt = 0x3A;        // EX_ReturnNothing = 0x3A
-        private const int EX_EqualEqual_DelDel = 0x3B;
-        private const int EX_NotEqual_DelDel = 0x3C;
-        private const int EX_EqualEqual_DelFunc = 0x3D;
-        private const int EX_NotEqual_DelFunc = 0x3E;
-        private const int EX_EmptyDelegate = 0x3F;
-        private const int EX_DynArrayRemove = 0x40;
-        private const int EX_DebugInfo = 0x41;
-        private const int EX_DelegateFunction = 0x42;
-        private const int EX_DelegateProperty = 0x43;
-        private const int EX_LetDelegate = 0x44;
-        private const int EX_Conditional = 0x45;
-        private const int EX_DynArrayFind = 0x46;
-        private const int EX_DynArrayFindStruct = 0x47;
-        private const int EX_LocalOutVariable = 0x48;
-        private const int EX_DefaultParmValue = 0x49;
-        private const int EX_EmptyParmValue = 0x4A;
-        private const int EX_InstanceDelegate = 0x4B;
-        private const int EX_GoW_DefaultValue = 0x50;
-        private const int EX_InterfaceContext = 0x51;
-        private const int EX_InterfaceCast = 0x52;
-        private const int EX_EndOfScript = 0x53;
-        private const int EX_DynArrayAdd = 0x54;
-        private const int EX_DynArrayAddItem = 0x55;
-        private const int EX_DynArrayRemoveItem = 0x56;
-        private const int EX_DynArrayInsertItem = 0x57;
-        private const int EX_DynArrayIterator = 0x58;
 
-        private const int EX_ExtendedNative = 0x60;
-        private const int EX_FirstNative = 0x70;*/
+        enum ECastToken : byte
+        {
+            InterfaceToObject = 0x36,
+            InterfaceToString = 0x37,
+            InterfaceToBool = 0x38,
+            RotatorToVector = 0x39,
+            ByteToInt = 0x3A,
+            ByteToBool = 0x3B,
+            ByteToFloat = 0x3C,
+            IntToByte = 0x3D,
+            IntToBool = 0x3E,
+            IntToFloat = 0x3F,
+            BoolToByte = 0x40,
+            BoolToInt = 0x41,
+            BoolToFloat = 0x42,
+            FloatToByte = 0x43,
+            FloatToInt = 0x44,
+            FloatToBool = 0x45,
+            ObjectToInterface = 0x46,
+            ObjectToBool = 0x47,
+            NameToBool = 0x48,
+            StringToByte = 0x49,
+            StringToInt = 0x4A,
+            StringToBool = 0x4B,
+            StringToFloat = 0x4C,
+            StringToVector = 0x4D,
+            StringToRotator = 0x4E,
+            VectorToBool = 0x4F,
+            VectorToRotator = 0x50,
+            RotatorToBool = 0x51,
+            ByteToString = 0x52,
+            IntToString = 0x53,
+            BoolToString = 0x54,
+            FloatToString = 0x55,
+            ObjectToString = 0x56,
+            NameToString = 0x57,
+            VectorToString = 0x58,
+            RotatorToString = 0x59,
+            DelegateToString = 0x5A,
+            StringToDelegate = 0x5B,
+            StringToName = 0x60
+        };
 
         private readonly IMEPackage _package;
         public readonly BinaryReader _reader;
@@ -440,7 +397,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
 
 
-        private ME1OpCodes[] OpCodesThatReturnNextToken = new ME1OpCodes[] { ME1OpCodes.EX_Skip, ME1OpCodes.EX_EatReturnValue, ME1OpCodes.EX_ByteToInt, ME1OpCodes.EX_BoolVariable, ME1OpCodes.EX_InterfaceContext };
+        private readonly ME1OpCodes[] OpCodesThatReturnNextToken = { ME1OpCodes.EX_Skip, ME1OpCodes.EX_EatReturnValue, ME1OpCodes.EX_ReturnNothing, ME1OpCodes.EX_BoolVariable, ME1OpCodes.EX_InterfaceContext };
         /// <summary>
         /// ME3Explorer intercepting function to build the token list. As tokens are read the tokens list will be updated.
         /// This method is used to prevent significant modifications to ReadNextInternal() (originally ReadNext)
@@ -642,33 +599,42 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         var item = ReadEntryRef(out var functionIndex);
                         if (item == null) return ErrToken("Unresolved function item " + functionIndex);
                         string functionName = item.ObjectName.Instanced;
-                        return ReadCall(functionName);
+                        return ReadCall(readerpos, functionName);
                     }
 
                 case ME1OpCodes.EX_PrimitiveCast:
                     {
-                        var prefix = _reader.ReadByte();
+                        ECastToken conversionType = (ECastToken)_reader.ReadByte();
                         var v = ReadNext();
-                        return v;
+                        string castStr;
+                        if (Enum.IsDefined(typeof(ECastToken), conversionType))
+                        {
+                            castStr = conversionType.ToString();
+                        }
+                        else
+                        {
+                            castStr = "UNKNOWN_CAST";
+                        }
+                        return Token($"{castStr}({v})", readerpos);
                     }
 
                 case ME1OpCodes.EX_VirtualFunction:
-                    return ReadCall(ReadName());
+                    return ReadCall(readerpos, ReadName());
 
                 case ME1OpCodes.EX_GlobalFunction:
-                    return ReadCall("Global." + ReadName());
+                    return ReadCall(readerpos, "Global." + ReadName());
 
                 case ME1OpCodes.EX_BoolVariable:
                     return ReadNext();
-                case ME1OpCodes.EX_ByteToInt:
-                    int objectRefIdx = _reader.ReadInt32();
+                case ME1OpCodes.EX_ReturnNothing:
+                    ReadEntryRef(out var objectRefIdx);
                     if (_package.IsEntry(objectRefIdx))
                     {
-                        return Token($"ByteToInt({_package.getObjectName(objectRefIdx)})", readerpos);
+                        return Token($"ReturnNothing({_package.getObjectName(objectRefIdx)})", readerpos);
                     }
                     else
                     {
-                        return Token($"ByteToInt(Unknown reference {objectRefIdx})", readerpos);
+                        return Token($"ReturnNothing(Unknown reference {objectRefIdx})", readerpos);
                     }
                 case ME1OpCodes.EX_DynamicCast:
                     {
@@ -835,9 +801,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         var methodName = ReadName();
                         if (receiver.ToString().StartsWith("__") && receiver.ToString().EndsWith("__Delegate"))
                         {
-                            return ReadCall(methodName);
+                            return ReadCall(readerpos, methodName);
                         }
-                        return ReadCall(receiver + "." + methodName);
+                        return ReadCall(readerpos, receiver + "." + methodName);
                     }
 
                 case ME1OpCodes.EX_EqualEqual_DelDel:
@@ -1031,10 +997,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return result.ToString();
         }
 
-        private BytecodeToken ReadCall(string functionName)
+        private BytecodeToken ReadCall(int pos, string functionName)
         {
-            int pos = (int)_reader.BaseStream.Position; //used to be -1. But it shouldn't be afaik cause the last byte will point to 16 if its empty or first param if its not
-
             BytecodeToken p;
             var builder = new StringBuilder(functionName + "(");
             int count = 0;
@@ -1094,7 +1058,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 ReadNext();  // end of parms
                 return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos, nativeIndex);
             }
-            return ReadCall(function.Name);
+            return ReadCall(pos, function.Name);
         }
     }
 

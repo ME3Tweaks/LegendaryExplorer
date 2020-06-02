@@ -161,9 +161,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
     public class SoftSkinVertex
     {
         public Vector3 Position;
-        public PackedNormal TangentX;
-        public PackedNormal TangentY;
-        public PackedNormal TangentZ;
+        public PackedNormal TangentX; // Tangent, U-direction
+        public PackedNormal TangentY; // Binormal, V-direction
+        public PackedNormal TangentZ; // Normal
         public Vector2 UV;
         public Vector2 UV2; //UDK
         public Vector2 UV3; //UDK
@@ -478,19 +478,44 @@ namespace ME3Explorer
                 slm = new StaticLODModel();
             }
             sc.Serialize(ref slm.Sections, Serialize);
+            int indexSize = 2;
+            slm.DataTypeSize = 2;
+            if (sc.Game == MEGame.UDK && sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+            {
+                slm.DataTypeSize = 4;
+                indexSize = 4;
+            }
             if (sc.Game == MEGame.UDK)
             {
                 slm.NeedsCPUAccess = true;
                 sc.Serialize(ref slm.NeedsCPUAccess);
                 sc.Serialize(ref slm.DataTypeSize);
             }
-            else if (sc.IsLoading)
+            sc.Serialize(ref indexSize);
+            if (sc.Game == MEGame.UDK && indexSize == 4)
             {
-                slm.DataTypeSize = 2;
+                //have to do this manually due to the size mismatch
+                //as far as I know, despite being saved as uints when the IndexBuffer is longer than ushort.MaxValue,
+                //the actual indicies themselves should not exceed the range of a ushort
+                int count = slm.IndexBuffer?.Length ?? 0;
+                sc.Serialize(ref count);
+                if (sc.IsLoading)
+                {
+                    slm.IndexBuffer = new ushort[count];
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (sc.IsLoading)
+                        slm.IndexBuffer[i] = (ushort)sc.ms.ReadUInt32();
+                    else
+                        sc.ms.Writer.WriteUInt32(slm.IndexBuffer[i]);
+                }
             }
-            int ushortSize = 2;
-            sc.Serialize(ref ushortSize);
-            sc.Serialize(ref slm.IndexBuffer, Serialize);
+            else
+            {
+                sc.Serialize(ref slm.IndexBuffer, Serialize);
+            }
             if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref slm.ShadowIndices, Serialize);
@@ -535,11 +560,13 @@ namespace ME3Explorer
                     for (int i = 0; i < vertexData.Length; i++)
                     {
                         GPUSkinVertex vert = vertexData[i];
+                        var normal = (Vector4)vert.TangentZ;
+                        var tangent = (Vector4)vert.TangentX;
                         slm.ME1VertexBufferGPUSkin[i] = new SoftSkinVertex
                         {
                             Position = vert.Position,
                             TangentX = vert.TangentX,
-                            TangentY = new PackedNormal(0, 1, 0, 0), //¯\_(ツ)_/¯
+                            TangentY = (PackedNormal)(new Vector4(Vector3.Cross((Vector3)normal, (Vector3)tangent), normal.W * tangent.W) * normal.W),
                             TangentZ = vert.TangentZ,
                             UV = new Vector2(vert.UV.X, vert.UV.Y),
                             InfluenceBones = vert.InfluenceBones.TypedClone(),
@@ -591,6 +618,8 @@ namespace ME3Explorer
                         {
                             int[] vertexInfluences = null;
                             sc.Serialize(ref vertexInfluences, Serialize);
+                            int dummy = 0;
+                            sc.Serialize(ref dummy);
                         }
                         else
                         {

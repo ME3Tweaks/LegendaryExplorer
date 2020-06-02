@@ -20,7 +20,7 @@ namespace ME3Explorer
         public enum ArrayPropertyChildAddAlgorithm
         {
             None,
-            LevelItem
+            FourBytes
         }
 
         /// <summary>

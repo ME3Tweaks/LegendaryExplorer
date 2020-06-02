@@ -89,7 +89,7 @@ namespace ME3Explorer.SharedUI
                 ReferencedEntry = entry;
             }
 
-            public string ToString() => Message;
+            public override string ToString() => Message;
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)

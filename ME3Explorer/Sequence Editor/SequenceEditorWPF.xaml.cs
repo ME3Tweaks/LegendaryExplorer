@@ -136,6 +136,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand GotoCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
+        public ICommand SearchCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -148,6 +149,28 @@ namespace ME3Explorer.Sequence_Editor
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
+            SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+        }
+
+        private string searchtext = "";
+        private void SearchDialogue()
+        {
+            const string input = "Enter text to search comments for";
+            searchtext = PromptDialog.Prompt(this, input, "Search Comments", searchtext, true);
+
+            if (!string.IsNullOrEmpty(searchtext))
+            {
+                SObj selectedObj = SelectedObjects.FirstOrDefault();
+                var tgt = CurrentObjects.AfterThenBefore(selectedObj).FirstOrDefault(d => d.Comment.Contains(searchtext, StringComparison.InvariantCultureIgnoreCase));
+                if (tgt != null)
+                {
+                    GoToExport(tgt.Export);
+                }
+                else
+                {
+                    MessageBox.Show($"No comment with \"{searchtext}\" found");
+                }
+            }
         }
 
         private void ScanFolderPackagesForTightLoops()

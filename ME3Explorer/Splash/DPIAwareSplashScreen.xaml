@@ -6,7 +6,7 @@
                                  Width="850"
                                  Height="425"
                                  WindowStartupLocation="CenterScreen" WindowStyle="None" 
-                                 ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize">
+                                 ShowInTaskbar="False" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

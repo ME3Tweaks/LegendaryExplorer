@@ -379,8 +379,10 @@ namespace ME3Explorer.Packages
             {
                 int baseOffset = newDataOffset + export.propsEnd();
                 MemoryStream binData = new MemoryStream(export.GetBinaryData());
-                binData.Skip(12);
+                binData.Skip(8);
+                int thumbnailSize = binData.ReadInt32();
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
+                binData.Skip(thumbnailSize);
                 for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
                 {
                     var storageFlags = (StorageFlags)binData.ReadInt32();
