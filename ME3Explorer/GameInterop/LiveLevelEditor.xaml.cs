@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using FontAwesome5;
 using Gammtek.Conduit.Collections.ObjectModel;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
-using Newtonsoft.Json;
+using ME3Explorer.Unreal.ME3Enums;
 using SharpDX;
 
 namespace ME3Explorer.GameInterop
@@ -72,10 +73,13 @@ namespace ME3Explorer.GameInterop
             GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
             ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             ME3OpenTimer.Tick += CheckIfME3Open;
+            RetryLoadTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
+            RetryLoadTimer.Tick += RetryLoadLiveEditor;
         }
 
         private void LiveLevelEditor_OnClosing(object sender, CancelEventArgs e)
         {
+            DisposeCamPath();
             GameController.RecieveME3Message -= GameControllerOnRecieveMe3Message;
             DataContext = null;
             Instance = null;
@@ -153,6 +157,7 @@ namespace ME3Explorer.GameInterop
         {
             SetBusy("Loading Live Editor", () => {});
             GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
+            RetryLoadTimer.Start();
         }
 
         private static bool AreSupportFilesInstalled()
@@ -200,15 +205,22 @@ namespace ME3Explorer.GameInterop
             }
             else if (msg == "LiveEditor string Loaded")
             {
+                RetryLoadTimer.Stop();
                 BusyText = "Building Actor list";
-                GameController.ExecuteME3ConsoleCommands("ce DumpActors");
+                ReadyToView = true;
+                actorTab.IsSelected = true;
+                InitializeCamPath();
+                EndBusy();
             }
             else if (msg == "LiveEditor string ActorsDumped")
             {
                 BuildActorDict();
-                ReadyToView = true;
-                actorTab.IsSelected = true;
                 EndBusy();
+            }
+            else if (msg == "LiveEditCamPath string CamPathComplete")
+            {
+                playbackState = PlaybackState.Paused;
+                PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             }
             else if (msg.StartsWith("LiveEditor string ActorSelected"))
             {
@@ -253,6 +265,20 @@ namespace ME3Explorer.GameInterop
                 SelectedActor = null;
                 instructionsTab.IsSelected = true;
                 ME3OpenTimer.Stop();
+            }
+        }
+
+        private readonly DispatcherTimer RetryLoadTimer;
+        private void RetryLoadLiveEditor(object sender, EventArgs e)
+        {
+            if (ReadyToView)
+            {
+                EndBusy();
+                RetryLoadTimer.Stop();
+            }
+            else
+            {
+                GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
             }
         }
 
@@ -490,6 +516,156 @@ namespace ME3Explorer.GameInterop
         }
 
         #endregion
+
+        #region CamPath
+
+        private IMEPackage camPathPackage;
+
+        public ExportEntry interpTrackMove { get; set; }
+
+        private FileSystemWatcher savedCamsFileWatcher;
+
+        private EFontAwesomeIcon _playPauseImageSource = EFontAwesomeIcon.Solid_Play;
+        public EFontAwesomeIcon PlayPauseIcon
+        {
+            get => _playPauseImageSource;
+            set => SetProperty(ref _playPauseImageSource, value);
+        }
+
+        private enum PlaybackState
+        {
+            Playing, Stopped, Paused
+        }
+
+        private PlaybackState playbackState = PlaybackState.Stopped;
+
+        private void PlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (noUpdate) return;
+            switch (playbackState)
+            {
+                case PlaybackState.Playing:
+                    pauseCam();
+                    break;
+                case PlaybackState.Stopped:
+                case PlaybackState.Paused:
+                    playCam();
+                    break;
+            }
+        }
+
+        private void playCam()
+        {
+            playbackState = PlaybackState.Playing;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
+            GameController.ExecuteME3ConsoleCommands("ce playcam");
+        }
+
+        private void pauseCam()
+        {
+            playbackState = PlaybackState.Paused;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+            GameController.ExecuteME3ConsoleCommands("ce pausecam");
+        }
+
+        private bool _shouldLoop;
+
+        public bool ShouldLoop
+        {
+            get => _shouldLoop;
+            set
+            {
+                if (SetProperty(ref _shouldLoop, value) && !noUpdate)
+                {
+                    GameController.ExecuteME3ConsoleCommands(_shouldLoop ? "ce loopcam" : "ce noloopcam");
+                }
+            }
+        }
+
+        private void StopAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            if (noUpdate) return;
+            playbackState = PlaybackState.Stopped;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+            GameController.ExecuteME3ConsoleCommands("ce stopcam");
+        }
+
+        private void SaveCamPath(object sender, RoutedEventArgs e)
+        {
+            camPathPackage.GetUExport(63).WriteProperty(new FloatProperty(CurveTab_CurveEditor.Time, "InterpLength"));
+            camPathPackage.GetUExport(77).WriteProperty(new BoolProperty(ShouldLoop, "bOpen"));
+            camPathPackage.Save();
+            LiveEditHelper.PadCamPathFile();
+            GameController.ExecuteME3ConsoleCommands("ce stopcam", "ce LoadCamPath");
+            playbackState = PlaybackState.Stopped;
+            PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
+        }
+
+        private void InitializeCamPath()
+        {
+            camPathPackage = MEPackageHandler.OpenME3Package(LiveEditHelper.CamPathFilePath);
+            interpTrackMove = camPathPackage.GetUExport(70);
+            CurveTab_CurveEditor.LoadExport(interpTrackMove);
+
+            savedCamsFileWatcher = new FileSystemWatcher(ME3Directory.BinariesPath, "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
+            savedCamsFileWatcher.Changed += SavedCamsFileWatcher_Changed;
+            savedCamsFileWatcher.EnableRaisingEvents = true;
+
+            ReloadCams();
+        }
+
+        private void SavedCamsFileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            //needs to be on the UI thread 
+            Dispatcher.BeginInvoke(new Action(ReloadCams));
+        }
+
+        private void ReloadCams() => SavedCams.ReplaceAll(LiveEditHelper.ReadSavedCamsFile());
+
+        private void DisposeCamPath()
+        {
+            camPathPackage?.Dispose();
+            camPathPackage = null;
+            savedCamsFileWatcher?.Dispose();
+        }
+
+        public ObservableCollectionExtended<POV> SavedCams { get; } = new ObservableCollectionExtended<POV>();
+
+        private void AddSavedCamAsKey(object sender, RoutedEventArgs e)
+        {
+            string timeStr = PromptDialog.Prompt(this, "Add key at what time?", "", "0", true);
+
+            if (float.TryParse(timeStr, out float time))
+            {
+                var pov = (POV)((System.Windows.Controls.Button)sender).DataContext;
+
+                var props = interpTrackMove.GetProperties();
+                var interpCurvePos = InterpCurve<Vector3>.FromStructProperty(props.GetProp<StructProperty>("PosTrack"));
+                var interpCurveRot = InterpCurve<Vector3>.FromStructProperty(props.GetProp<StructProperty>("EulerTrack"));
+
+                interpCurvePos.AddPoint(time, pov.Position, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
+                interpCurveRot.AddPoint(time, pov.Rotation, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
+
+                props.AddOrReplaceProp(interpCurvePos.ToStructProperty(MEGame.ME3, "PosTrack"));
+                props.AddOrReplaceProp(interpCurveRot.ToStructProperty(MEGame.ME3, "EulerTrack"));
+                interpTrackMove.WriteProperties(props);
+                CurveTab_CurveEditor.LoadExport(interpTrackMove);
+            }
+        }
+
+        #endregion
+
+        private void ClearKeys(object sender, RoutedEventArgs e)
+        {
+            if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editor?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            {
+                var props = interpTrackMove.GetProperties();
+                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "PosTrack"));
+                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "EulerTrack"));
+                interpTrackMove.WriteProperties(props);
+                CurveTab_CurveEditor.LoadExport(interpTrackMove);
+            }
+        }
     }
     public class ActorEntry
     {

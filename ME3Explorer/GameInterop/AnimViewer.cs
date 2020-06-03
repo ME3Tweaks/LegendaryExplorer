@@ -75,7 +75,7 @@ namespace ME3Explorer.GameInterop
             string tempFilePath = Path.Combine(ME3Directory.cookedPath, $"{saveAsName}.pcc");
 
             pcc.Save(tempFilePath);
-            TryPadFile(tempFilePath, 10_485_760);
+            InteropHelper.TryPadFile(tempFilePath, 10_485_760);
         }
 
         public static void OpenFileInME3(IMEPackage pcc, bool canHotLoad = false, bool shouldPad = true)
@@ -87,7 +87,7 @@ namespace ME3Explorer.GameInterop
             pcc.Save(tempFilePath);
             if (shouldPad)
             {
-                if (!TryPadFile(tempFilePath))
+                if (!InteropHelper.TryPadFile(tempFilePath))
                 {
                     //if file was too big to pad, hotloading is impossible 
                     canHotLoad = false;
@@ -108,23 +108,6 @@ namespace ME3Explorer.GameInterop
             int posY = (int)(SystemParameters.PrimaryScreenHeight - resX) / 2;
             AutoTOCWPF.GenerateAllTOCs();
             Process.Start(ME3Directory.ExecutablePath, $"{tempMapName} -nostartupmovies -Windowed ResX={resX} ResY={resY} WindowPosX={posX} WindowPosY={posY}");
-        }
-
-        public static bool TryPadFile(string tempFilePath, int paddedSize = 52_428_800 /* 50 MB */)
-        {
-            using (FileStream fs = File.OpenWrite(tempFilePath))
-            {
-                fs.Seek(0, SeekOrigin.End);
-                long size = fs.Position;
-                if (size <= paddedSize)
-                {
-                    var paddingSize = paddedSize - size;
-                    fs.WriteZeros((uint)paddingSize);
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

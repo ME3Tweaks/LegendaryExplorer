@@ -116,6 +116,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
             var sy = Math.Sin(Yaw.ToRadians());
             return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
         }
+
+        public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0;
     }
 
     // -1 to 1 converted to 0-255

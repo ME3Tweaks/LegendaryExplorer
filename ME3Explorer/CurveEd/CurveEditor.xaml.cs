@@ -21,6 +21,26 @@ namespace ME3Explorer.CurveEd
     {
         public List<InterpCurve> InterpCurveTracks;
 
+        public float Time
+        {
+            get
+            {
+                float time = 0;
+                if (InterpCurveTracks != null)
+                {
+                    foreach (Curve curve in InterpCurveTracks.SelectMany(interpCurve => interpCurve.Curves))
+                    {
+                        if (curve.CurvePoints.Last?.Value.InVal is float inVal && inVal > time)
+                        {
+                            time = inVal;
+                        }
+                    }
+                }
+
+                return time;
+            }
+        }
+
         public CurveEditor()
         {
             InitializeComponent();

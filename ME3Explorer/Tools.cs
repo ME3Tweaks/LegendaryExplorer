@@ -152,7 +152,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Utilities",
-                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times."
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
             });
             set.Add(new Tool
             {

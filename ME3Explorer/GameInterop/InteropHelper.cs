@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ME3Explorer.Properties;
 using Microsoft.Win32;
+using StreamHelpers;
 
 namespace ME3Explorer.GameInterop
 {
@@ -87,10 +88,25 @@ namespace ME3Explorer.GameInterop
             {
                 string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName)));
 
-                Properties.Settings.Default.ME3Directory = ME3Directory.gamePath = gamePath;
-                Properties.Settings.Default.Save();
+                Settings.Default.ME3Directory = ME3Directory.gamePath = gamePath;
+                Settings.Default.Save();
                 CommandManager.InvalidateRequerySuggested();
             }
+        }
+
+        public static bool TryPadFile(string tempFilePath, int paddedSize = 52_428_800 /* 50 MB */)
+        {
+            using FileStream fs = File.OpenWrite(tempFilePath);
+            fs.Seek(0, SeekOrigin.End);
+            long size = fs.Position;
+            if (size <= paddedSize)
+            {
+                var paddingSize = paddedSize - size;
+                fs.WriteZeros((uint)paddingSize);
+                return true;
+            }
+
+            return false;
         }
     }
 }

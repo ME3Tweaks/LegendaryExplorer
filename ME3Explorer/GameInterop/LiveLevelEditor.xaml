@@ -10,9 +10,10 @@
         xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="LiveLevelEditor" SizeToContent="Width" Closing="LiveLevelEditor_OnClosing">
+        Title="LiveLevelEditor" SizeToContent="WidthAndHeight" Closing="LiveLevelEditor_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
@@ -44,7 +45,7 @@
                                                        UnFullfilledText="Binkw32 asi loader is not installed!"
                                                        ButtonText="Get dlls"
                                                        RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
-                                    <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and an asi, ME3ExplorerInterop.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc, and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
+                                    <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and 2 ASIs, ME3ExplorerInterop.asi and ConsoleExtension.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc, and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                     <animationExplorer:Requirement x:Name="supportFilesInstalledReq"
                                                                    FullfilledText="Support files are installed"
@@ -126,26 +127,91 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <!--<Label Content="Camera" Margin="10,0,0,0"/>
-                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content=" Reset Rotation " Margin="5" Click="ResetCamRotation_Click" />
-                                    <TextBlock Text=" Yaw:  " VerticalAlignment="Center" />
-                                    <xctk:IntegerUpDown Name="camYawUpDown" Value="{Binding CamYaw}" Increment="5" />
-                                    <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
-                                    <xctk:IntegerUpDown Name="camPitchUpDown" Value="{Binding CamPitch}" Increment="5" />
-                                </StackPanel>
-                                <CheckBox Margin="5,0,0,0" IsChecked="{Binding ShouldFollowActor}">
-                                    <Label Content="Follow actor"/>
-                                </CheckBox>
-                            </StackPanel>
-                        </Border>-->
-                        <!--<Label Content="Application" Margin="10,0,0,0"/>
-                        <Border Margin="10,0,10,10" BorderBrush="Red" BorderThickness="2" CornerRadius="5">
-                            <Button Content=" Quit Mass Effect 3 " Margin="5" Click="QuitME3_Click" />
-                        </Border>-->
                     </StackPanel>
+                </TabItem>
+                <TabItem Name="camPathTab" Header="Create Camera Path" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel>
+                        <Label Content="Curve Editor" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5" Height="438">
+                            <curveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                        </Border>
+                        <Label Content="Controls" Margin="10,0,0,0"/>
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button ToolTip="ce playcam / ce pausecam" Click="PlayPause_Click" Margin="5">
+                                        <fa5:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="16" Width="16" Margin="4"/>
+                                    </Button>
+                                    <Button ToolTip="ce stopcam" Click="StopAnimation_Click" Margin="5">
+                                        <fa5:ImageAwesome Icon="Solid_Stop" Height="16" Width="16" Margin="4"/>
+                                    </Button>
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                        <CheckBox IsChecked="{Binding ShouldLoop}" ToolTip="ce loopcam / ce noloopcam"/>
+                                        <TextBlock Text="Loop"/>
+                                    </StackPanel>
+                                    <Button Click="SaveCamPath" Margin="5">
+                                        Save Curve to Game
+                                        <!--<Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=interpTrackMove.EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="#FFFF7B4A"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>-->
+                                    </Button>
+                                    <Button Click="ClearKeys"  Margin="5">
+                                        Clear Keys
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Label Content="Saved Cameras" Margin="10,0,0,0"/>
+
+                        <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">
+                            <ListView ItemsSource="{Binding SavedCams}" AlternationCount="10">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate DataType="local:POV">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=Index}"/>
+                                            <Button Content="Add as key" Click="AddSavedCamAsKey" Margin="5 0 5 0"/>
+                                            <TextBlock Text="{Binding Path=Str}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Name="camPathInstructionsTab" Header="Camera Path Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Margin="15,5,15,5" TextWrapping="Wrap" Width="475">
+                            To populate the Saved Cameras, turn on the flycam with
+                            <Run Style="{DynamicResource cmdStyle}">ToggleFlyCam</Run>, then use the
+                            <Run Style="{DynamicResource cmdStyle}">savecam</Run> console command followed by the numbers 0-9.
+                            (eg. <Run Style="{DynamicResource cmdStyle}">savecam 0</Run> would save the current camera position to the first slot)
+                            You can use <Run Style="{DynamicResource cmdStyle}">loadcam</Run> to return to a saved position while in flycam mode.
+                        </TextBlock>
+                        <TextBlock Margin="15,5,15,5" TextWrapping="Wrap" Width="475">
+                            You can add Saved Cameras as keys to the Curve Editor with the Add Key buttons, or create keys manually by right-clicking in the Curve Editor.
+                            Rest the Curve Editor with the Clear Keys button. To get your edits to show up in game, use the Save Curve to Game button.
+                            You must exit flycam mode before you can play the camera move.
+                        </TextBlock>
+                        <TextBlock Margin="15,5,15,5" TextWrapping="Wrap" Width="475">
+                            Special care must be taken with rotation values from the Saved Cameras. While they will be accurate, the same rotation can be represented in more than one way,
+                            and the transition from one to the next may not be what you intended. For example, your first saved cam may have a yaw of 15°, and the second a yaw of 350°.
+                            That will result in almost a full rotation when played back, when you probably just wanted a smaller turn the other way around the circle.
+                            This can be fixed by subtracting 360 to get a yaw of -10°, which represents the same yaw as 350°, but will result in the camera turning in the opposite direction to get there.
+                            The Saved Cameras are a <Run FontStyle="Italic">starting point</Run>, and you will probably have to do quite a bit of manual tweaking to get what you want.
+                        </TextBlock>
+                    </StackPanel>
+                    <TabItem.Resources>
+                        <Style x:Key="cmdStyle" TargetType="{x:Type Run}">
+                            <Setter Property="FontFamily" Value="Lucida Console"/>
+                            <Setter Property="Background" Value="#33000000"/>
+                        </Style>
+                    </TabItem.Resources>
                 </TabItem>
             </TabControl>
         </Grid>
