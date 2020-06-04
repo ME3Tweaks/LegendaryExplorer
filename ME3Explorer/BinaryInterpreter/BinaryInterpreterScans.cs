@@ -3304,7 +3304,7 @@ namespace ME3Explorer
                                     throw new NotImplementedException($"{keyFormat} is not supported yet!");
                             }
 
-                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}"));
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}") { Length = 4 });
 
                             for (int j = 0; j < numKeys; j++)
                             {
@@ -3322,7 +3322,7 @@ namespace ME3Explorer
                             int formatFlags = (header >> 24) & 0x0F;
                             AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
 
-                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"RotKey Header: {numKeys} keys, Compression: {keyFormat}"));
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"RotKey Header: {numKeys} keys, Compression: {keyFormat}, FormatFlags:{formatFlags:X}") { Length = 4 });
                             switch (keyFormat)
                             {
                                 case AnimationCompressionFormat.ACF_None:
@@ -3338,10 +3338,17 @@ namespace ME3Explorer
                                     //todo: account for format flags
                                     const float scale = 128.0f / 32767.0f;
                                     const ushort unkConst = 32767;
-                                    float x, y, z;
+                                    int keyLength = 2 * ((formatFlags & 1) + ((formatFlags >> 1) & 1) + ((formatFlags >> 2) & 1));
                                     for (int j = 0; j < numKeys; j++)
                                     {
-                                        boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = (bin.ReadUInt16() - unkConst) * scale}, Y: {y = (bin.ReadUInt16() - unkConst) * scale}, Z: {z = (bin.ReadUInt16() - unkConst) * scale}, W: {getW(x, y, z)})"));
+                                        long binPosition = bin.Position;
+                                        float x = (formatFlags & 1) == 1 ? bin.ReadUInt16() : 0,
+                                              y = ((formatFlags >> 1) & 1) == 1 ? bin.ReadUInt16() : 0,
+                                              z = ((formatFlags >> 2) & 1) == 1 ? bin.ReadUInt16() : 0;
+                                        boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x = (x - unkConst) * scale}, Y: {y = (y - unkConst) * scale}, Z: {z = (z - unkConst) * scale}, W: {getW(x, y, z)})")
+                                        {
+                                            Length = keyLength
+                                        });
                                     }
                                     break;
                                 }
@@ -3350,7 +3357,10 @@ namespace ME3Explorer
                                     float x, y, z;
                                     for (int j = 0; j < numKeys; j++)
                                     {
-                                        boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {getW(x, y, z)})"));
+                                        boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {getW(x, y, z)})")
+                                        {
+                                            Length = 12
+                                        });
                                     }
                                     break;
                                 }

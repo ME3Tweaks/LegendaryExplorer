@@ -70,6 +70,7 @@
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             </MenuItem>
             <MenuItem Header="Trash entry and children" ToolTip="Converts this entry and its children into empty data" Command="{Binding TrashCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                 <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>

@@ -218,6 +218,7 @@ namespace ME3Explorer
         public ICommand ImportEmbeddedFileCommand { get; set; }
         public ICommand ReindexCommand { get; set; }
         public ICommand TrashCommand { get; set; }
+        public ICommand SetIndicesInTreeToZeroCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
@@ -268,6 +269,7 @@ namespace ME3Explorer
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             FindReferencesCommand = new GenericCommand(FindReferencesToObject, EntryIsSelected);
             ReindexCommand = new GenericCommand(ReindexObjectByName, ExportIsSelected);
+            SetIndicesInTreeToZeroCommand = new GenericCommand(SetIndicesInTreeToZero, TreeEntryIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
@@ -298,6 +300,22 @@ namespace ME3Explorer
             NavigateToEntryCommand = new RelayCommand(NavigateToEntry, CanNavigateToEntry);
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
+        }
+
+        private void SetIndicesInTreeToZero()
+        {
+            if (TreeEntryIsSelected() &&
+                MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to do this? Removing the Indexes from objects can break things if you don't know what you're doing.", "", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning))
+            {
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+
+                IEnumerable<IEntry> itemsTosetIndexTo0 = selected.FlattenTree().Select(tvEntry => tvEntry.Entry);
+
+                foreach (IEntry entry in itemsTosetIndexTo0)
+                {
+                    entry.indexValue = 0;
+                }
+            }
         }
 
         private void OpenImportDefinition()
