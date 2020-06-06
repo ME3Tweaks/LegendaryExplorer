@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
+using ME3Explorer.GameInterop;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -426,9 +427,21 @@ namespace ME3Explorer.Packages
 
         public void Save(string path)
         {
+            bool isSaveAs = path != FilePath;
+            int originalLength = -1;
+            if (Game == MEGame.ME3 && !isSaveAs && FilePath.StartsWith(ME3Directory.BIOGamePath) && GameController.TryGetME3Process(out _))
+            {
+                try
+                {
+                    originalLength = (int)new FileInfo(FilePath).Length;
+                }
+                catch
+                {
+                    originalLength = -1;
+                }
+            }
             bool compressed = IsCompressed;
             Flags &= ~EPackageFlags.Compressed;
-            bool isSaveAs = path != FilePath;
             try
             {
                 if (canReconstruct(path))
@@ -448,6 +461,16 @@ namespace ME3Explorer.Packages
                 {
                     Flags |= EPackageFlags.Compressed;
                 }
+            }
+
+            if (originalLength > 0)
+            {
+                string relativePath = Path.GetFullPath(FilePath).Substring(Path.GetFullPath(ME3Directory.gamePath).Length);
+                var bin = new MemoryStream();
+                bin.WriteInt32(originalLength);
+                bin.WriteStringASCIINull(relativePath);
+                File.WriteAllBytes(Path.Combine(ME3Directory.BinariesPath, "tocupdate"), bin.ToArray());
+                GameController.SendTOCUpdateMessage();
             }
         }
 
