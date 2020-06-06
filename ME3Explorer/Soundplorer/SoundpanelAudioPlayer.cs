@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StreamHelpers;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -39,6 +40,8 @@ namespace ME3Explorer.Soundplorer
             }
             else
             {
+                //for debugging
+                //audioBuffer.WriteToFile(@"C:\users\Mgamerz\desktop\out.wav");
                 _audioFileReader = new WaveFileReader(audioBuffer);
                 waveChannel = new WaveChannel32(_audioFileReader);
                 waveChannel.PadWithZeroes = false;

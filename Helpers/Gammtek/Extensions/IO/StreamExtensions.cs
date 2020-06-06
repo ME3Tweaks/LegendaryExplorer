@@ -538,6 +538,24 @@ namespace Gammtek.Conduit.Extensions.IO
             return new Guid(a, b, c, d);
         }
 
+        public static void WriteToFile(this MemoryStream stream, string outfile)
+        {
+            long oldPos = stream.Position;
+            stream.Position = 0;
+            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+                stream.CopyTo(file);
+            stream.Position = oldPos;
+        }
+
+        public static void WriteToFile(this EndianReader stream, string outfile)
+        {
+            long oldPos = stream.Position;
+            stream.Position = 0;
+            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+                stream.BaseStream.CopyTo(file);
+            stream.Position = oldPos;
+        }
+
         public static short ReadInt16(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
         {
             var data = stream.ReadBytes(2);

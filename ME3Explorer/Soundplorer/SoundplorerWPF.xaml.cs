@@ -1563,6 +1563,7 @@ namespace ME3Explorer.Soundplorer
             }
             else
             {
+                //placeholder?
                 SubText = new TimeSpan(132045).ToString(@"mm\:ss\:fff");
             }
             /*

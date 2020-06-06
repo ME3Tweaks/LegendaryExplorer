@@ -113,22 +113,46 @@ namespace ME3Explorer.Unreal.Classes
             var rawRiff = ExtractRawFromSource(path, DataSize, DataOffset);
             //Parse RIFF header a bit
             rawRiff.ReadInt32(); //RIFF
-            rawRiff.ReadInt32();//size
-            rawRiff.ReadInt32();//'fmt '
+            rawRiff.ReadInt32(); //size
+            rawRiff.ReadInt32(); //WAVE
+            rawRiff.ReadInt32(); //'fmt '
             var fmtsize = rawRiff.ReadInt32();
+            var fmtPos = rawRiff.Position;
             var riffFormat = rawRiff.ReadUInt16();
+            var unk = rawRiff.ReadInt16(); //lookup in vgmstream
             var sampleRate = rawRiff.ReadInt32();
             var averageBPS = rawRiff.ReadInt32();
             var blockAlign = rawRiff.ReadInt16();
             var bitsPerSample = rawRiff.ReadInt16();
-
+            var extraSize = rawRiff.ReadInt16();
+            long seconds = 0;
             if (riffFormat == 0xFFFF)
             {
                 //Vorbis
 
-            }
+                if (extraSize == 0x30)
+                {
+                    //find 'vorb' chunk (ME2)
+                    rawRiff.Seek(extraSize, SeekOrigin.Current);
+                    var chunkName = rawRiff.ReadStringASCII(4);
+                    uint numSamples = 1; //to prevent division by 0
+                    if (chunkName == "vorb")
+                    {
+                        //ME2 Vorbis
+                        var vorbsize = rawRiff.ReadInt32();
+                        numSamples = rawRiff.ReadUInt32();
+                    }
+                    else if (chunkName == "data")
+                    {
+                        //ME3 Vorbis
+                        var numSamplesOffset = rawRiff.Position = fmtPos + 0x18;
+                        numSamples = rawRiff.ReadUInt32();
+                    }
 
-            return new TimeSpan(22);
+                    seconds = (long) ((double) numSamples / sampleRate);
+                }
+            }
+            return new TimeSpan(0,0,0,(int) seconds);
 
             Stream waveStream = CreateWaveStream(path);
             if (waveStream != null)
@@ -281,10 +305,10 @@ namespace ME3Explorer.Unreal.Classes
             {
                 proc.StandardOutput.BaseStream.CopyTo(outputData);
 
-                /*using (var output = new FileStream(outputFile, FileMode.Create))
-                {
-                    process.StandardOutput.BaseStream.CopyTo(output);
-                }*/
+        /*using (var output = new FileStream(outputFile, FileMode.Create))
+        {
+            process.StandardOutput.BaseStream.CopyTo(output);
+        }*/
             });
             Task.WaitAll(outputTask);
 
@@ -339,10 +363,10 @@ namespace ME3Explorer.Unreal.Classes
                 proc.StandardOutput.BaseStream.CopyTo(outputData);
                 proc.StandardError.BaseStream.CopyTo(outputErrorData);
 
-                /*using (var output = new FileStream(outputFile, FileMode.Create))
-                {
-                    process.StandardOutput.BaseStream.CopyTo(output);
-                }*/
+        /*using (var output = new FileStream(outputFile, FileMode.Create))
+        {
+            process.StandardOutput.BaseStream.CopyTo(output);
+        }*/
             });
             Task.WaitAll(outputTask);
 
