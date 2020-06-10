@@ -346,7 +346,7 @@ namespace ME3Explorer
                 EndianReader propsStream = new EndianReader(new MemoryStream()) { Endian = export.FileRef.Endian };
                 props.WriteTo(propsStream.Writer, export.FileRef);
                 MemoryStream currentDataStream = new MemoryStream(export.Data);
-                byte[] propertydata = propsStream.BaseStream.ReadFully();
+                byte[] propertydata = propsStream.ToArray();
                 int propertyStartOffset = export.GetPropertyStart();
                 var newExportData = new byte[propertyStartOffset + propertydata.Length + binarydata.Length];
                 Buffer.BlockCopy(export.Data, 0, newExportData, 0, propertyStartOffset);
