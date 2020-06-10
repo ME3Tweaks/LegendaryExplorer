@@ -148,6 +148,19 @@ namespace Gammtek.Conduit.IO
             }
         }
 
+        public string ReadStringASCIINull()
+        {
+            string str = "";
+            for (; ; )
+            {
+                char c = (char)_source.ReadByte();
+                if (c == 0)
+                    break;
+                str += c;
+            }
+            return str;
+        }
+
         /// <summary>
         /// Reads an unreal-style prefixed string from the underlying stream.
         /// </summary>

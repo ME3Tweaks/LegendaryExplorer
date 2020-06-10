@@ -81,9 +81,9 @@ namespace ME3Explorer
             }
 
             //Relink Properties
-            PropertyCollection transplantProps = sourceExport.GetProperties();
-            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, transplantProps, crossPCCObjectMappingList, "", importExportDependencies));
-            relinkingExport.WriteProperties(transplantProps);
+            PropertyCollection props = relinkingExport.GetProperties();
+            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies));
+            relinkingExport.WriteProperties(props);
 
             //Relink Binary
             try

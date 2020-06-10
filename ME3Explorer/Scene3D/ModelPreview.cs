@@ -703,7 +703,7 @@ namespace ME3Explorer.Scene3D
                 {
                     if (section.MaterialIndex < Materials.Count)
                     {
-                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
+                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), section.BaseIndex, (uint)section.NumTriangles));
                     }
                 }
                 LODs.Add(new ModelPreviewLOD(mesh, sections));

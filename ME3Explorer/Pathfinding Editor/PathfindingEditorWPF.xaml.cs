@@ -4433,8 +4433,7 @@ namespace ME3Explorer.Pathfinding_Editor
             HashSet<int> TextureMaps = new HashSet<int>();
             foreach (var comp in AllStaticMeshComponents)
             {
-                var binary = ExportBinaryConverter.ConvertPostPropBinary(comp, Pcc.Game);
-                if (binary is StaticMeshComponent sc)
+                if (ObjectBinary.From(comp) is StaticMeshComponent sc)
                 {
                     foreach (var lod in sc.LODData)
                     {

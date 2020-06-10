@@ -1190,10 +1190,11 @@ namespace ME3Explorer.Packages
                 //convert stack, or just get the pre-prop binary if no stack
                 prePropBinary.Add(ExportBinaryConverter.ConvertPrePropBinary(export, newGame));
 
-                propCollections.Add(export.ClassName == "Class" ? null : EntryPruner.RemoveIncompatibleProperties(this, export.GetProperties(), export.ClassName, newGame));
+                PropertyCollection props = export.ClassName == "Class" ? null : EntryPruner.RemoveIncompatibleProperties(this, export.GetProperties(), export.ClassName, newGame);
+                propCollections.Add(props);
 
                 //convert binary data
-                postPropBinary.Add(ExportBinaryConverter.ConvertPostPropBinary(export, newGame));
+                postPropBinary.Add(ExportBinaryConverter.ConvertPostPropBinary(export, newGame, props));
 
                 //writes header in whatever format is correct for newGame
                 export.RegenerateHeader(newGame, true);

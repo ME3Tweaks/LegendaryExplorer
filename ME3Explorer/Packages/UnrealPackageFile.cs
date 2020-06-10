@@ -114,7 +114,7 @@ namespace ME3Explorer.Packages
             return -1;
         }
 
-        public void setNames(List<string> list)
+        public void restoreNames(List<string> list)
         {
             names = list;
             NameCount = names.Count;

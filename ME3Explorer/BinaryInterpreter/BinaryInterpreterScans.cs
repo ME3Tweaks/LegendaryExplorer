@@ -3234,7 +3234,7 @@ namespace ME3Explorer
         {
             var subnodes = new List<ITreeItem>();
 
-            #region UDK
+            #region UDK AKF_PerTrackCompression
 
             if (Pcc.Game == MEGame.UDK && CurrentLoadedExport.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name == "AKF_PerTrackCompression")
             {
@@ -3290,25 +3290,41 @@ namespace ME3Explorer
                             int numKeys = header & 0x00FFFFFF;
                             int formatFlags = (header >> 24) & 0x0F;
                             AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
-                            switch (keyFormat)
-                            {
-                                case AnimationCompressionFormat.ACF_None:
-                                case AnimationCompressionFormat.ACF_Float96NoW:
-                                    break;
-                                case AnimationCompressionFormat.ACF_Fixed48NoW:
-                                case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
-                                case AnimationCompressionFormat.ACF_Fixed32NoW:
-                                case AnimationCompressionFormat.ACF_Float32NoW:
-                                case AnimationCompressionFormat.ACF_BioFixed48:
-                                default:
-                                    throw new NotImplementedException($"{keyFormat} is not supported yet!");
-                            }
+                            
 
-                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}") { Length = 4 });
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}, FormatFlags:{formatFlags:X}") { Length = 4 });
 
                             for (int j = 0; j < numKeys; j++)
                             {
-                                boneNode.Items.Add(MakeVectorNode(bin, $"PosKey {j}"));
+                                switch (keyFormat)
+                                {
+                                    case AnimationCompressionFormat.ACF_None:
+                                    case AnimationCompressionFormat.ACF_Float96NoW:
+                                        if ((formatFlags & 7) == 0)
+                                        {
+                                            boneNode.Items.Add(MakeVectorNode(bin, $"PosKey {j}"));
+                                        }
+                                        else
+                                        {
+                                            long binPosition = bin.Position;
+                                            int keyLength = 4 * ((formatFlags & 1) + ((formatFlags >> 1) & 1) + ((formatFlags >> 2) & 1));
+                                            float x = (formatFlags & 1) != 0 ? bin.ReadFloat() : 0,
+                                                  y = (formatFlags & 2) != 0 ? bin.ReadFloat() : 0,
+                                                  z = (formatFlags & 4) != 0 ? bin.ReadFloat() : 0;
+                                            boneNode.Items.Add(new BinInterpNode(binPosition, $"PosKey {j}: (X: {x}, Y: {y}, Z: {z})")
+                                            {
+                                                Length = keyLength
+                                            });
+                                        }
+                                        break;
+                                    case AnimationCompressionFormat.ACF_Fixed48NoW:
+                                    case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                                    case AnimationCompressionFormat.ACF_Fixed32NoW:
+                                    case AnimationCompressionFormat.ACF_Float32NoW:
+                                    case AnimationCompressionFormat.ACF_BioFixed48:
+                                    default:
+                                        throw new NotImplementedException($"{keyFormat} is not supported yet!");
+                                }
                             }
                         }
 
@@ -3335,17 +3351,16 @@ namespace ME3Explorer
                                 }
                                 case AnimationCompressionFormat.ACF_Fixed48NoW:
                                 {
-                                    //todo: account for format flags
-                                    const float scale = 128.0f / 32767.0f;
+                                    const float scale = 32767.0f;
                                     const ushort unkConst = 32767;
                                     int keyLength = 2 * ((formatFlags & 1) + ((formatFlags >> 1) & 1) + ((formatFlags >> 2) & 1));
                                     for (int j = 0; j < numKeys; j++)
                                     {
                                         long binPosition = bin.Position;
-                                        float x = (formatFlags & 1) == 1 ? bin.ReadUInt16() : 0,
-                                              y = ((formatFlags >> 1) & 1) == 1 ? bin.ReadUInt16() : 0,
-                                              z = ((formatFlags >> 2) & 1) == 1 ? bin.ReadUInt16() : 0;
-                                        boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x = (x - unkConst) * scale}, Y: {y = (y - unkConst) * scale}, Z: {z = (z - unkConst) * scale}, W: {getW(x, y, z)})")
+                                        float x = (formatFlags & 1) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
+                                              y = (formatFlags & 2) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
+                                              z = (formatFlags & 4) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0;
+                                        boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x}, Y: {y}, Z: {z}, W: {getW(x, y, z)})")
                                         {
                                             Length = keyLength
                                         });
@@ -3389,14 +3404,23 @@ namespace ME3Explorer
             try
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
-                var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
                 var numFrames = CurrentLoadedExport.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
 
-                //In ME2, BioAnimSetData can sometimes be in a different package. 
-                List<string> boneList = Pcc.IsUExport(animsetData.Value)
-                    ? Pcc.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").ToList()
-                    : Enumerable.Repeat("???", TrackOffsets.Count / 4).ToList();
+                List<string> boneList;
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    boneList = ((ExportEntry)CurrentLoadedExport.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList();
+                }
+                else
+                {
+                    var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
+                    //In ME2, BioAnimSetData can sometimes be in a different package. 
+                    boneList = animsetData != null && Pcc.IsUExport(animsetData.Value)
+                        ? Pcc.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList()
+                        : null;
+                }
 
+                boneList ??= Enumerable.Repeat("???", TrackOffsets.Count / 4).ToList();
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name, out AnimationKeyFormat keyEncoding);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat")?.Value.Name, out AnimationCompressionFormat rotCompression);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out AnimationCompressionFormat posCompression);
@@ -3408,6 +3432,35 @@ namespace ME3Explorer
                     bin.Skip(12);
                     subnodes.Add(MakeInt32Node(bin, "AnimBinary Offset"));
                 }
+                else if (Pcc.Game == MEGame.UDK)
+                {
+                    int numTracks = bin.ReadInt32() * 2;
+                    bin.Skip(-4);
+
+                    BinInterpNode rawAnimDataNode = MakeInt32Node(bin, "RawAnimationData: NumTracks");
+                    subnodes.Add(rawAnimDataNode);
+                    for (int i = 0; i < numTracks; i++)
+                    {
+                        int keySize = bin.ReadInt32();
+                        int numKeys = bin.ReadInt32();
+                        for (int j = 0; j < numKeys; j++)
+                        {
+                            if (keySize == 12)
+                            {
+                                rawAnimDataNode.Items.Add(MakeVectorNode(bin, $"{boneList[i / 2]}, PosKey {j}"));
+                            }
+                            else if (keySize == 16)
+                            {
+                                rawAnimDataNode.Items.Add(MakeQuatNode(bin, $"{boneList[i / 2]}, RotKey {j}"));
+                            }
+                            else
+                            {
+                                throw new NotImplementedException($"Unexpected key size: {keySize}");
+                            }
+                        }
+                    }
+                }
+
 
                 subnodes.Add(MakeInt32Node(bin, "AnimBinary length"));
                 var startOffset = bin.Position;
@@ -3464,7 +3517,7 @@ namespace ME3Explorer
                         {
                             compressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
                         }
-                        else
+                        else if (Pcc.Game != MEGame.UDK)
                         {
                             boneNode.Items.Add(MakeVectorNode(bin, "Mins"));
                             boneNode.Items.Add(MakeVectorNode(bin, "Ranges"));
@@ -5867,7 +5920,7 @@ namespace ME3Explorer
                             MakeByteNode(bin, "Datatype size"),
                         }));
                         node.Items.Add(MakeInt32Node(bin, "Index size?"));
-                        if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
+                        if (bin.Skip(-4).ReadInt32() == 4)
                         {
                             node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
                         }

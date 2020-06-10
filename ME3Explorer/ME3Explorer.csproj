@@ -956,6 +956,7 @@
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\ME3Enums.cs" />
+    <Compile Include="Unreal\PSA.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />

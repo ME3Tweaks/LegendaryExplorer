@@ -109,7 +109,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public SkelMeshSection[] Sections;
         public bool NeedsCPUAccess; //UDK
         public byte DataTypeSize; //UDK
-        public ushort[] IndexBuffer; //BulkSerialized
+        public uint[] IndexBuffer; //BulkSerialized
         public ushort[] ShadowIndices; //not in UDK
         public ushort[] ActiveBoneIndices;
         public byte[] ShadowTriangleDoubleSided; //not in UDK
@@ -480,7 +480,8 @@ namespace ME3Explorer
             sc.Serialize(ref slm.Sections, Serialize);
             int indexSize = 2;
             slm.DataTypeSize = 2;
-            if (sc.Game == MEGame.UDK && sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+            if ((sc.Game == MEGame.UDK && sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+                || (sc.Game >= MEGame.ME3 && sc.IsSaving && slm.NumVertices > ushort.MaxValue))
             {
                 slm.DataTypeSize = 4;
                 indexSize = 4;
@@ -492,29 +493,26 @@ namespace ME3Explorer
                 sc.Serialize(ref slm.DataTypeSize);
             }
             sc.Serialize(ref indexSize);
-            if (sc.Game == MEGame.UDK && indexSize == 4)
+            if (indexSize == 4)
             {
-                //have to do this manually due to the size mismatch
-                //as far as I know, despite being saved as uints when the IndexBuffer is longer than ushort.MaxValue,
-                //the actual indicies themselves should not exceed the range of a ushort
+                sc.Serialize(ref slm.IndexBuffer, Serialize);
+            }
+            else
+            {
                 int count = slm.IndexBuffer?.Length ?? 0;
                 sc.Serialize(ref count);
                 if (sc.IsLoading)
                 {
-                    slm.IndexBuffer = new ushort[count];
+                    slm.IndexBuffer = new uint[count];
                 }
 
                 for (int i = 0; i < count; i++)
                 {
                     if (sc.IsLoading)
-                        slm.IndexBuffer[i] = (ushort)sc.ms.ReadUInt32();
+                        slm.IndexBuffer[i] = sc.ms.ReadUInt16();
                     else
-                        sc.ms.Writer.WriteUInt32(slm.IndexBuffer[i]);
+                        sc.ms.Writer.WriteUInt16((ushort)slm.IndexBuffer[i]);
                 }
-            }
-            else
-            {
-                sc.Serialize(ref slm.IndexBuffer, Serialize);
             }
             if (sc.Game != MEGame.UDK)
             {

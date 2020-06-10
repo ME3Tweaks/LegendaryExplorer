@@ -27,7 +27,7 @@ namespace ME3Explorer
 
         public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
         {
-            ms = new EndianReader(stream) {Endian = pcc.Endian};
+            ms = new EndianReader(stream) {Endian = pcc?.Endian ?? Endian.Little};
             IsLoading = isLoading;
             Pcc = pcc;
             startOffset = offset;
@@ -150,6 +150,11 @@ namespace ME3Explorer
         {
             int count = arr?.Count ?? 0;
             sc.Serialize(ref count);
+            sc.Serialize(ref arr, count, serialize);
+        }
+
+        public static void Serialize<T>(this SerializingContainer2 sc, ref List<T> arr, int count, SerializeDelegate<T> serialize)
+        {
             if (sc.IsLoading)
             {
                 arr = new List<T>(count);

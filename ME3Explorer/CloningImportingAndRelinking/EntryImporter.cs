@@ -202,7 +202,7 @@ namespace ME3Explorer
             catch (Exception exception) when(!App.IsDebug)
             {
                 //restore namelist in event of failure.
-                destPackage.setNames(names);
+                destPackage.restoreNames(names);
                 MessageBox.Show($"Error occured while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
                 throw;
             }
@@ -212,7 +212,8 @@ namespace ME3Explorer
 
             //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             //for unsupported classes, this will just copy over the binary
-            ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game);
+            //sometimes converting binary requires altering the properties as well
+            ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
             IEntry classValue = null;
@@ -314,16 +315,18 @@ namespace ME3Explorer
             List<string> names = targetExport.FileRef.Names.ToList();
             try
             {
-                incomingExport.GetProperties().WriteTo(res.Writer, targetExport.FileRef);
+                PropertyCollection props = incomingExport.GetProperties();
+                ObjectBinary binary = ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game, props);
+                props.WriteTo(res.Writer, targetExport.FileRef);
+                res.Writer.WriteFromBuffer(binary.ToBytes(targetExport.FileRef));
             }
             catch (Exception exception)
             {
                 //restore namelist in event of failure.
-                targetExport.FileRef.setNames(names);
+                targetExport.FileRef.restoreNames(names);
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
                 return false;
             }
-            res.Writer.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }
@@ -611,7 +614,7 @@ namespace ME3Explorer
                     entriesToRemove.Add(pcc.Imports[i]);
                 }
                 EntryPruner.TrashEntries(pcc, entriesToRemove);
-                pcc.setNames(nameListBackup);
+                pcc.restoreNames(nameListBackup);
                 return null;
             }
         }
