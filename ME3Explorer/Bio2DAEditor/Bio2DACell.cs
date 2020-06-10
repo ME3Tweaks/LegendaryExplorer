@@ -87,7 +87,7 @@ namespace ME3Explorer
                 if (Type != Bio2DADataType.TYPE_NAME) return;
                 if (int.TryParse(value, out int parsed) && parsed >= 0)
                 {
-                    BitConverter.GetBytes(parsed).CopyTo(Data, 4); 
+                    BitConverter.GetBytes(parsed).CopyTo(Data, 4);
                     IsModified = true;
                     OnPropertyChanged(nameof(DisplayableValue));
                 }
@@ -138,8 +138,8 @@ namespace ME3Explorer
                             }
                             if (int.TryParse(value, out int parsed) && Pcc.IsName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes((long)parsed))) //has to be cast as long as 4 vs 8 bytes will never be equal
                             {
-                                
-                                BitConverter.GetBytes(parsed).CopyTo(Data,0);
+
+                                BitConverter.GetBytes(parsed).CopyTo(Data, 0);
                                 IsModified = true;
                             }
                         }
@@ -167,7 +167,17 @@ namespace ME3Explorer
         public int ValueAsName
         {
             get => GetIntValue();
-            set => Data = BitConverter.GetBytes((long)value);
+            set
+            {
+                var oldval = GetIntValue();
+                if (oldval != value)
+                {
+                    Data = BitConverter.GetBytes((long)value);
+                    IsModified = true;
+                    OnPropertyChanged(nameof(ValueAsName));
+                }
+            }
+
         }
 
         public float GetFloatValue()
