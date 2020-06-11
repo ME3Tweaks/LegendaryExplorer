@@ -143,7 +143,7 @@ namespace ME3Explorer.Unreal
                     TotalBones = numBones,
                     KeyQuotum = numBones * numFrames,
                     TrackTime = numFrames,
-                    AnimRate = animSeq.RateScale,
+                    AnimRate = animSeq.NumFrames / animSeq.SequenceLength * animSeq.RateScale,
                     FirstRawFrame = frameCount,
                     NumRawFrames = numFrames
                 });
@@ -159,10 +159,14 @@ namespace ME3Explorer.Unreal
                     for (int boneIdx = 0; boneIdx < numBones; boneIdx++)
                     {
                         AnimTrack animTrack = animSeq.RawAnimationData[boneIdx];
+                        Vector3 posVec = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[animTrack.Positions.Count - 1];
+                        Quaternion rotQuat = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[animTrack.Rotations.Count - 1];
+                        rotQuat = new Quaternion(rotQuat.X, rotQuat.Y * -1, rotQuat.Z, rotQuat.W  * -1);
+                        posVec = new Vector3(posVec.X, posVec.Y * -1, posVec.Z);
                         psa.Keys.Add(new PSAAnimKeys
                         {
-                            Position = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[animTrack.Positions.Count - 1],
-                            Rotation = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[animTrack.Rotations.Count - 1],
+                            Position = posVec,
+                            Rotation = rotQuat,
                             Time = 1
                         });
                     }

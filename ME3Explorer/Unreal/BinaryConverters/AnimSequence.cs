@@ -25,6 +25,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public string Name;
         public int NumFrames;
         public float RateScale;
+        public float SequenceLength;
         private MEGame compressedDataSource;
         private int[] TrackOffsets;
         private AnimationCompressionFormat rotCompression;
@@ -57,6 +58,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 compressedDataSource = sc.Game;
                 NumFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
                 RateScale = Export.GetProperty<FloatProperty>("RateScale")?.Value ?? 1f;
+                SequenceLength = Export.GetProperty<FloatProperty>("SequenceLength")?.Value ?? 0;
                 Name = Export.GetProperty<NameProperty>("SeqName")?.Value ?? Export.ObjectName;
                 TrackOffsets = Export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(i => i.Value).ToArray();
                 if (compressedDataSource == MEGame.UDK)
@@ -295,7 +297,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             static float getW(float x, float y, float z)
             {
                 float wSquared = 1.0f - (x * x + y * y + z * z);
-                return (float)(wSquared > 0 ? Math.Sqrt(wSquared) : 0);
+                return (float)(wSquared > 0f ? Math.Sqrt(wSquared) : 0f);
             }
         }
 

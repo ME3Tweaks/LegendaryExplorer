@@ -1469,6 +1469,7 @@ namespace ME3Explorer.AssetDatabase
                     if (dlg.ShowDialog() == true)
                     {
                         PSA.CreateFrom(animSequence).ToFile(dlg.FileName);
+                        MessageBox.Show("Done!", "PSA Export", MessageBoxButton.OK);
                     }
                 }
             }
