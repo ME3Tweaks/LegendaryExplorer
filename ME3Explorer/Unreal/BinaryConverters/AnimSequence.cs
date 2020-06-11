@@ -21,13 +21,15 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         //for parsing the CompressedAnimationData
 
+        public List<string> Bones;
+        public string Name;
+        public int NumFrames;
+        public float RateScale;
         private MEGame compressedDataSource;
         private int[] TrackOffsets;
-        private List<string> boneList;
         private AnimationCompressionFormat rotCompression;
         private AnimationCompressionFormat posCompression;
         private AnimationKeyFormat keyEncoding;
-        private int numFrames;
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -53,22 +55,24 @@ namespace ME3Explorer.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 compressedDataSource = sc.Game;
-                numFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
+                NumFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
+                RateScale = Export.GetProperty<FloatProperty>("RateScale")?.Value ?? 1f;
+                Name = Export.GetProperty<NameProperty>("SeqName")?.Value ?? Export.ObjectName;
                 TrackOffsets = Export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(i => i.Value).ToArray();
                 if (compressedDataSource == MEGame.UDK)
                 {
-                    boneList = ((ExportEntry)Export.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList();
+                    Bones = ((ExportEntry)Export.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList();
                 }
                 else
                 {
                     var animsetData = Export.GetProperty<ObjectProperty>("m_pBioAnimSetData");
                     //In ME2, BioAnimSetData can sometimes be in a different package. 
-                    boneList = animsetData != null && Export.FileRef.IsUExport(animsetData.Value)
+                    Bones = animsetData != null && Export.FileRef.IsUExport(animsetData.Value)
                         ? Export.FileRef.GetUExport(animsetData.Value)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList()
                         : null;
                 }
 
-                boneList ??= Enumerable.Repeat("???", TrackOffsets.Length / 4).ToList();
+                Bones ??= Enumerable.Repeat("???", TrackOffsets.Length / 4).ToList();
                 Enum.TryParse(Export.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name, out keyEncoding);
                 Enum.TryParse(Export.GetProperty<EnumProperty>("RotationCompressionFormat")?.Value.Name, out rotCompression);
                 Enum.TryParse(Export.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out posCompression);
@@ -85,12 +89,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
 
-        void DecompressAnimationData()
+        public void DecompressAnimationData()
         {
             var ms = new MemoryStream(CompressedAnimationData);
             RawAnimationData = new List<AnimTrack>();
 
-            for (int i = 0; i < boneList.Count; i++)
+            for (int i = 0; i < Bones.Count; i++)
             {
                 int posOff = TrackOffsets[i * 4];
                 int numPosKeys = TrackOffsets[i * 4 + 1];
@@ -138,16 +142,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         var keyTimes = new List<int>(numPosKeys);
                         for (int j = 0; j < numPosKeys; j++)
                         {
-                            keyTimes.Add(numFrames > 0xFF ? ms.ReadUInt16() : ms.ReadByte());
+                            keyTimes.Add(NumFrames > 0xFF ? ms.ReadUInt16() : ms.ReadByte());
                         }
                         //RawAnimationData should have either 1 key, or the same number of keys as frames.
                         //Lerp any missing keys
                         List<Vector3> tempPositions = track.Positions;
-                        track.Positions = new List<Vector3>(numFrames)
+                        track.Positions = new List<Vector3>(NumFrames)
                         {
                             tempPositions[0]
                         };
-                        for (int frameIdx = 1, keyIdx = 1; frameIdx < numFrames; keyIdx++, frameIdx++)
+                        for (int frameIdx = 1, keyIdx = 1; frameIdx < NumFrames; keyIdx++, frameIdx++)
                         {
                             if (keyIdx >= keyTimes.Count)
                             {
@@ -251,16 +255,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         var keyTimes = new List<int>(numRotKeys);
                         for (int j = 0; j < numRotKeys; j++)
                         {
-                            keyTimes.Add(numFrames > 0xFF ? ms.ReadUInt16() : ms.ReadByte());
+                            keyTimes.Add(NumFrames > 0xFF ? ms.ReadUInt16() : ms.ReadByte());
                         }
                         //RawAnimationData should have either 1 key, or the same number of keys as frames.
                         //Slerp any missing keys
                         List<Quaternion> tempRotations = track.Rotations;
-                        track.Rotations = new List<Quaternion>(numFrames)
+                        track.Rotations = new List<Quaternion>(NumFrames)
                         {
                             tempRotations[0]
                         };
-                        for (int frameIdx = 1, keyIdx = 1; frameIdx < numFrames; keyIdx++, frameIdx++)
+                        for (int frameIdx = 1, keyIdx = 1; frameIdx < NumFrames; keyIdx++, frameIdx++)
                         {
                             if (keyIdx >= keyTimes.Count)
                             {
@@ -305,10 +309,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
             keyEncoding = AnimationKeyFormat.AKF_ConstantKeyLerp;
             posCompression = AnimationCompressionFormat.ACF_None;
             rotCompression = newRotationCompression;
-            TrackOffsets = new int[boneList.Count * 4];
+            TrackOffsets = new int[Bones.Count * 4];
             var ms = new MemoryStream();
 
-            for (int i = 0; i < boneList.Count; i++)
+            for (int i = 0; i < Bones.Count; i++)
             {
                 AnimTrack track = RawAnimationData[i];
 

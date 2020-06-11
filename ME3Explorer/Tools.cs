@@ -117,17 +117,17 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Animation Viewer",
-                type = typeof(AnimationExplorer.AnimationExplorerWPF),
+                type = typeof(AnimationExplorer.AnimationViewer),
                 icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
                 open = () =>
                 {
-                    if (AnimationExplorer.AnimationExplorerWPF.Instance == null)
+                    if (AnimationExplorer.AnimationViewer.Instance == null)
                     {
-                        (new AnimationExplorer.AnimationExplorerWPF()).Show();
+                        (new AnimationExplorer.AnimationViewer()).Show();
                     }
                     else
                     {
-                        AnimationExplorer.AnimationExplorerWPF.Instance.RestoreAndBringToFront();
+                        AnimationExplorer.AnimationViewer.Instance.RestoreAndBringToFront();
                     }
                 },
                 tags = new List<string> { "utility", "animation", "gesture" },

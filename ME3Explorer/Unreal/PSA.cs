@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
 using SharpDX;
 
 namespace ME3Explorer.Unreal
@@ -97,6 +99,83 @@ namespace ME3Explorer.Unreal
             public Vector3 Position;
             public Quaternion Rotation;
             public float Time;
+        }
+
+        public static PSA CreateFrom(AnimSequence animSeq) => CreateFrom(new List<AnimSequence>{ animSeq });
+
+        //All Animsequences MUST have the same BoneLists!
+        public static PSA CreateFrom(List<AnimSequence> animSeqs)
+        {
+            if (animSeqs == null)
+            {
+                throw new ArgumentNullException(nameof(animSeqs));
+            }
+
+            if (animSeqs.Count == 0)
+            {
+                throw new ArgumentException("No AnimSequences!", nameof(animSeqs));
+            }
+            var psa = new PSA
+            {
+                Bones = new List<PSABone>(),
+                Infos = new List<PSAAnimInfo>(),
+                Keys = new List<PSAAnimKeys>()
+            };
+
+            int numBones = animSeqs[0].Bones.Count;
+            for (int i = 0; i < numBones; i++)
+            {
+                psa.Bones.Add(new PSABone
+                {
+                    Name = animSeqs[0].Bones[i],
+                    ParentIndex = i == 0 ? -1 : 0
+                });
+            }
+
+            int frameCount = 0;
+            foreach (AnimSequence animSeq in animSeqs)
+            {
+                int numFrames = animSeq.NumFrames;
+                psa.Infos.Add(new PSAAnimInfo
+                {
+                    Name = animSeq.Name,
+                    Group = "None",
+                    TotalBones = numBones,
+                    KeyQuotum = numBones * numFrames,
+                    TrackTime = numFrames,
+                    AnimRate = animSeq.RateScale,
+                    FirstRawFrame = frameCount,
+                    NumRawFrames = numFrames
+                });
+                frameCount += numFrames;
+
+                if (animSeq.RawAnimationData is null)
+                {
+                    animSeq.DecompressAnimationData();
+                }
+
+                for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
+                {
+                    for (int boneIdx = 0; boneIdx < numBones; boneIdx++)
+                    {
+                        AnimTrack animTrack = animSeq.RawAnimationData[boneIdx];
+                        psa.Keys.Add(new PSAAnimKeys
+                        {
+                            Position = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[animTrack.Positions.Count - 1],
+                            Rotation = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[animTrack.Rotations.Count - 1],
+                            Time = 1
+                        });
+                    }
+                }
+            }
+
+            return psa;
+        }
+
+        public void ToFile(string filePath)
+        {
+            using FileStream fs = new FileStream(filePath, FileMode.Create);
+            Serialize(new SerializingContainer2(fs, null));
         }
     }
 }

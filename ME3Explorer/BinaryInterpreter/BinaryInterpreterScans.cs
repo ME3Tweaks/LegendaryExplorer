@@ -5920,7 +5920,7 @@ namespace ME3Explorer
                             MakeByteNode(bin, "Datatype size"),
                         }));
                         node.Items.Add(MakeInt32Node(bin, "Index size?"));
-                        if (bin.Skip(-4).ReadInt32() == 4)
+                        if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
                         {
                             node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
                         }

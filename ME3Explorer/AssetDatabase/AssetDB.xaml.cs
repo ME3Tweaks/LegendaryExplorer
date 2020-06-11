@@ -25,6 +25,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ME3Explorer.GameInterop;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Win32;
+using AnimSequence = ME3Explorer.Unreal.BinaryConverters.AnimSequence;
 
 namespace ME3Explorer.AssetDatabase
 {
@@ -171,6 +173,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand GoToSuperclassCommand { get; set; }
         public ICommand OpenUsagePkgCommand { get; set; }
         public ICommand OpenInAnimViewerCommand { get; set; }
+        public ICommand ExportToPSACommand { get; set; }
         public ICommand FilterClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
@@ -220,6 +223,8 @@ namespace ME3Explorer.AssetDatabase
         {
             return currentView == 5 && currentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
         }
+        private bool CanExportToPSA() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
+
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             //Not applicable
@@ -263,6 +268,7 @@ namespace ME3Explorer.AssetDatabase
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
             OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, CanUseAnimViewer);
+            ExportToPSACommand = new GenericCommand(ExportToPSA, CanExportToPSA);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -1421,14 +1427,14 @@ namespace ME3Explorer.AssetDatabase
             var anim = lstbx_Anims.SelectedItem as Animation;
             if(anim != null)
             {
-                if (!Application.Current.Windows.OfType<AnimationExplorer.AnimationExplorerWPF>().Any())
+                if (!Application.Current.Windows.OfType<AnimationExplorer.AnimationViewer>().Any())
                 {
-                    AnimationExplorer.AnimationExplorerWPF av = new AnimationExplorer.AnimationExplorerWPF(CurrentDataBase, anim);
+                    AnimationExplorer.AnimationViewer av = new AnimationExplorer.AnimationViewer(CurrentDataBase, anim);
                     av.Show();
                 }
                 else
                 {
-                    var aexp = Application.Current.Windows.OfType<AnimationExplorer.AnimationExplorerWPF>().First();
+                    var aexp = Application.Current.Windows.OfType<AnimationExplorer.AnimationViewer>().First();
                     if(aexp.ReadyToView)
                     {
                         aexp.LoadAnimation(anim);
@@ -1438,6 +1444,32 @@ namespace ME3Explorer.AssetDatabase
                         aexp.AnimQueuedForFocus = anim;
                     }
                     aexp.Focus();
+                }
+            }
+        }
+        private void ExportToPSA()
+        {
+            if (lstbx_Anims.SelectedItem is Animation anim && anim.AnimUsages.Any())
+            {
+                var (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
+                (string filename, string contentdir) = FileListExtended[fileListIndex];
+                filename = $"{filename}.*";
+                string filePath = Directory.GetFiles(MEDirectories.GamePath(currentGame), filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                if (pcc.IsUExport(animUIndex) && 
+                    pcc.GetUExport(animUIndex) is ExportEntry animSeqExp &&
+                    ObjectBinary.From(animSeqExp) is AnimSequence animSequence)
+                {
+                    var dlg = new SaveFileDialog
+                    {
+                        Filter = "*.psa|*.psa",
+                        FileName = $"{anim.SeqName}.psa",
+                        AddExtension = true
+                    };
+                    if (dlg.ShowDialog() == true)
+                    {
+                        PSA.CreateFrom(animSequence).ToFile(dlg.FileName);
+                    }
                 }
             }
         }

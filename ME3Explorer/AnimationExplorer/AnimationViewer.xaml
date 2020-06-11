@@ -1,4 +1,4 @@
-﻿<global:NotifyPropertyChangedWindowBase x:Class="ME3Explorer.AnimationExplorer.AnimationExplorerWPF"
+﻿<global:NotifyPropertyChangedWindowBase x:Class="ME3Explorer.AnimationExplorer.AnimationViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -30,27 +30,27 @@
                                                        FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
                                                        UnFullfilledText="Can't find Mass Effect 3 installation!"
                                                        ButtonText="Set ME3 path"
-                                                       RequirementCommand="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                                       RequirementCommand="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewer}}}" />
                                     <local:Requirement x:Name="asiLoaderInstalledReq"
                                                        FullfilledText="Binkw32 asi loader is installed"
                                                        Margin="0,5,0,5"
                                                        UnFullfilledText="Binkw32 asi loader is not installed!"
                                                        ButtonText="Get dlls"
-                                                       RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                                       RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewer}}}" />
                                     <local:Requirement x:Name="me3ClosedReq"
                                                        FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
                                                        UnFullfilledText="Mass Effect 3 must be quit!"
                                                        ButtonText="Kill ME3 process"
-                                                       RequirementCommand="{Binding ME3ClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                                       RequirementCommand="{Binding ME3ClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewer}}}" />
                                     <local:Requirement x:Name="dbLoadedReq"
                                                        FullfilledText="Animation data is loaded" Margin="0,5,0,5"
                                                        UnFullfilledText="Animation data is not loaded!"
                                                        ButtonText="Load Database"
-                                                       RequirementCommand="{Binding DatabaseLoadedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                                       RequirementCommand="{Binding DatabaseLoadedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewer}}}" />
                                 </StackPanel>
                                 <Button Name="startME3Button" Content="Start Mass Effect 3 in Animation Viewer Mode"
                                         Margin="20,10,20,0"
-                                        Command="{Binding StartME3Command, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationExplorerWPF}}}" />
+                                        Command="{Binding StartME3Command, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewer}}}" />
                             </StackPanel>
                         </Border>
                     </Grid>

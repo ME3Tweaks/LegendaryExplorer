@@ -34,9 +34,9 @@ namespace ME3Explorer.AnimationExplorer
     /// <summary>
     /// Interaction logic for AnimationExplorerWPF.xaml
     /// </summary>
-    public partial class AnimationExplorerWPF : NotifyPropertyChangedWindowBase
+    public partial class AnimationViewer : NotifyPropertyChangedWindowBase
     {
-        public static AnimationExplorerWPF Instance;
+        public static AnimationViewer Instance;
 
         private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
         public Animation AnimQueuedForFocus;
@@ -64,7 +64,7 @@ namespace ME3Explorer.AnimationExplorer
             SquadMember = 1
         }
 
-        public AnimationExplorerWPF()
+        public AnimationViewer()
         {
             if (Instance != null)
             {
@@ -81,7 +81,7 @@ namespace ME3Explorer.AnimationExplorer
             ME3OpenTimer.Tick += CheckIfME3Open;
         }
 
-        public AnimationExplorerWPF(PropsDataBase db, Animation AnimToFocus) : this()
+        public AnimationViewer(PropsDataBase db, Animation AnimToFocus) : this()
         {
             AnimQueuedForFocus = AnimToFocus;
             foreach ((string fileName, int dirIndex) in db.FileList)

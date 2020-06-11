@@ -23,7 +23,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 BodySetup = new UIndex(0),
                 LODModels = new[] { new StaticMeshRenderData
                 {
-                    IndexBuffer = lodModel.IndexBuffer.Select(i => (ushort)i).ToArray(),
+                    IndexBuffer = lodModel.IndexBuffer.TypedClone(),
                     NumVertices = numVertices,
                     Edges = new MeshEdge[0],
                     RawTriangles = new StaticMeshTriangle[0],
@@ -108,7 +108,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     triCount = 0;
                     ++elIdx;
                 }
-                tris[i / 3] = new kDOPCollisionTriangle((ushort)lodModel.IndexBuffer[i], (ushort)lodModel.IndexBuffer[i + 1], (ushort)lodModel.IndexBuffer[i + 2],
+                tris[i / 3] = new kDOPCollisionTriangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2],
                                                         lodModel.Sections[elIdx].MaterialIndex);
             }
 
