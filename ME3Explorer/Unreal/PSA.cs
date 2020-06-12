@@ -42,7 +42,7 @@ namespace ME3Explorer.Unreal
                 ChunkID = "ANIMINFO",
                 Version = version,
                 DataSize = 0xa8,
-                DataCount = Infos.Count
+                DataCount = Infos?.Count ?? 0
             };
             sc.Serialize(ref infoHeader);
             sc.Serialize(ref Infos, infoHeader.DataCount, SCExt.Serialize);
@@ -52,7 +52,7 @@ namespace ME3Explorer.Unreal
                 ChunkID = "ANIMKEYS",
                 Version = version,
                 DataSize = 0x20,
-                DataCount = Keys.Count
+                DataCount = Keys?.Count ?? 0
             };
             sc.Serialize(ref keyHeader);
             sc.Serialize(ref Keys, keyHeader.DataCount, SCExt.Serialize);
@@ -138,7 +138,7 @@ namespace ME3Explorer.Unreal
                 int numFrames = animSeq.NumFrames;
                 psa.Infos.Add(new PSAAnimInfo
                 {
-                    Name = animSeq.Name,
+                    Name = animSeq.Name.Instanced,
                     Group = "None",
                     TotalBones = numBones,
                     KeyQuotum = numBones * numFrames,
@@ -176,10 +176,84 @@ namespace ME3Explorer.Unreal
             return psa;
         }
 
+        public List<AnimSequence> GetAnimSequences()
+        {
+            var animSeqs = new List<AnimSequence>();
+
+            List<string> boneNames = Bones.Select(b => b.Name).ToList();
+
+            int boneCount = boneNames.Count;
+            foreach (var info in Infos)
+            {
+                var seq = new AnimSequence
+                {
+                    Bones = boneNames,
+                    Name = info.Name,
+                    NumFrames = info.NumRawFrames,
+                    SequenceLength = info.TrackTime / info.AnimRate,
+                    RateScale = 1,
+                    RawAnimationData = new List<AnimTrack>()
+                };
+
+                for (int boneIdx = 0; boneIdx < boneCount; boneIdx++)
+                {
+                    var track = new AnimTrack
+                    {
+                        Positions = new List<Vector3>(),
+                        Rotations = new List<Quaternion>()
+                    };
+
+                    for (int frameIdx = 0; frameIdx < seq.NumFrames; frameIdx++)
+                    {
+                        int srcIdx = ((info.FirstRawFrame + frameIdx) * boneCount) + boneIdx;
+                        var posVec = Keys[srcIdx].Position;
+                        var rotQuat = Keys[srcIdx].Rotation;
+                        track.Positions.Add(new Vector3(posVec.X, posVec.Y * -1, posVec.Z));
+                        track.Rotations.Add(new Quaternion(rotQuat.X, rotQuat.Y * -1, rotQuat.Z, rotQuat.W * -1));
+                    }
+
+                    //if all keys are identical, replace with a single key
+                    if (track.Positions.Count > 1)
+                    {
+                        var firstKey = track.Positions[0];
+                        if (track.Positions.TrueForAll(key => key == firstKey))
+                        {
+                            track.Positions.Clear();
+                            track.Positions.Add(firstKey);
+                        }
+                    }
+                    if (track.Rotations.Count > 1)
+                    {
+                        var firstKey = track.Rotations[0];
+                        if (track.Rotations.TrueForAll(key => key == firstKey))
+                        {
+                            track.Rotations.Clear();
+                            track.Rotations.Add(firstKey);
+                        }
+                    }
+
+                    seq.RawAnimationData.Add(track);
+                }
+
+                animSeqs.Add(seq);
+            }
+
+
+            return animSeqs;
+        }
+
         public void ToFile(string filePath)
         {
             using FileStream fs = new FileStream(filePath, FileMode.Create);
             Serialize(new SerializingContainer2(fs, null));
+        }
+
+        public static PSA FromFile(string filePath)
+        {
+            var psa = new PSA();
+            using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            psa.Serialize(new SerializingContainer2(fs, null, true));
+            return psa;
         }
     }
 }

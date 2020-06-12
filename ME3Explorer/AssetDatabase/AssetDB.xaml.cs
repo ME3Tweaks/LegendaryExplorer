@@ -174,6 +174,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand OpenUsagePkgCommand { get; set; }
         public ICommand OpenInAnimViewerCommand { get; set; }
         public ICommand ExportToPSACommand { get; set; }
+        public ICommand OpenInAnimationImporterCommand { get; set; }
         public ICommand FilterClassCommand { get; set; }
         public ICommand FilterMatCommand { get; set; }
         public ICommand FilterMeshCommand { get; set; }
@@ -223,7 +224,7 @@ namespace ME3Explorer.AssetDatabase
         {
             return currentView == 5 && currentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
         }
-        private bool CanExportToPSA() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
+        private bool IsAnimSequenceSelected() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -268,7 +269,8 @@ namespace ME3Explorer.AssetDatabase
             OpenUsagePkgCommand = new RelayCommand(OpenUsagePkg, IsUsageSelected);
             SetCRCCommand = new RelayCommand(SetCRCScan);
             OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, CanUseAnimViewer);
-            ExportToPSACommand = new GenericCommand(ExportToPSA, CanExportToPSA);
+            ExportToPSACommand = new GenericCommand(ExportToPSA, IsAnimSequenceSelected);
+            OpenInAnimationImporterCommand = new GenericCommand(OpenInAnimationImporter, IsAnimSequenceSelected);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -1452,9 +1454,7 @@ namespace ME3Explorer.AssetDatabase
             if (lstbx_Anims.SelectedItem is Animation anim && anim.AnimUsages.Any())
             {
                 var (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
-                (string filename, string contentdir) = FileListExtended[fileListIndex];
-                filename = $"{filename}.*";
-                string filePath = Directory.GetFiles(MEDirectories.GamePath(currentGame), filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+                string filePath = GetFilePath(fileListIndex);
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                 if (pcc.IsUExport(animUIndex) && 
                     pcc.GetUExport(animUIndex) is ExportEntry animSeqExp &&
@@ -1462,7 +1462,7 @@ namespace ME3Explorer.AssetDatabase
                 {
                     var dlg = new SaveFileDialog
                     {
-                        Filter = "*.psa|*.psa",
+                        Filter = AnimationImporter.PSAFilter,
                         FileName = $"{anim.SeqName}.psa",
                         AddExtension = true
                     };
@@ -1474,6 +1474,24 @@ namespace ME3Explorer.AssetDatabase
                 }
             }
         }
+        private void OpenInAnimationImporter()
+        {
+            if (lstbx_Anims.SelectedItem is Animation anim && anim.AnimUsages.Any())
+            {
+                (int fileListIndex, int animUIndex, bool isMod) = anim.AnimUsages[0];
+                string filePath = GetFilePath(fileListIndex);
+                var animImporter = new AnimationImporter(filePath, animUIndex);
+                animImporter.Show();
+                animImporter.Activate();
+            }
+        }
+
+        private string GetFilePath(int fileListIndex)
+        {
+            (string filename, string contentdir) = FileListExtended[fileListIndex];
+            return Directory.GetFiles(MEDirectories.GamePath(currentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+        }
+
         private void genderTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(currentView == 8 && (btn_LinePlaybackToggle.IsChecked ?? false))

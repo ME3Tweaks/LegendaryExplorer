@@ -118,7 +118,7 @@ namespace ME3Explorer
             {
                 name = "Animation Viewer",
                 type = typeof(AnimationExplorer.AnimationViewer),
-                icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
                     if (AnimationExplorer.AnimationViewer.Instance == null)
@@ -138,7 +138,7 @@ namespace ME3Explorer
             {
                 name = "Live Level Editor",
                 type = typeof(GameInterop.LiveLevelEditor),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
                 open = () =>
                 {
                     if (GameInterop.LiveLevelEditor.Instance == null)
@@ -171,7 +171,7 @@ namespace ME3Explorer
             {
                 name = "Audio Localizer",
                 type = typeof(AudioLocalizer),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconAudioLocalizer") as ImageSource,
                 open = () =>
                 {
                     (new AudioLocalizer()).Show();
@@ -280,6 +280,19 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
                 description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            });
+            set.Add(new Tool
+            {
+                name = "Animation Importer/Exporter",
+                type = typeof(AnimationImporter),
+                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
+                open = () =>
+                {
+                    (new AnimationImporter()).Show();
+                },
+                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
+                subCategory = "Scene Shop",
+                description = "Import and Export AnimSequences from/to PSA and UDK"
             });
             set.Add(new Tool
             {

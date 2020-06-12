@@ -22,7 +22,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         //for parsing the CompressedAnimationData
 
         public List<string> Bones;
-        public string Name;
+        public NameReference Name;
         public int NumFrames;
         public float RateScale;
         public float SequenceLength;
@@ -85,9 +85,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         public void UpdateProps(PropertyCollection props, MEGame newGame)
         {
-            if (newGame != compressedDataSource && !(newGame <= MEGame.ME3 && compressedDataSource <= MEGame.ME3))
+            if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame <= MEGame.ME3 && compressedDataSource <= MEGame.ME3)))
             {
                 CompressAnimationData(props, newGame);
+                props.RemoveNamedProperty("KeyEncodingFormat");
+                props.RemoveNamedProperty("TranslationCompressionFormat");
+                props.AddOrReplaceProp(new EnumProperty(rotCompression.ToString(), nameof(AnimationCompressionFormat), newGame, "RotationCompressionFormat"));
+                props.AddOrReplaceProp(new ArrayProperty<IntProperty>(TrackOffsets.Select(i => new IntProperty(i)), "CompressedTrackOffsets"));
+                props.AddOrReplaceProp(new IntProperty(NumFrames, "NumFrames"));
+                props.AddOrReplaceProp(new FloatProperty(RateScale, "RateScale"));
+                props.AddOrReplaceProp(new FloatProperty(SequenceLength, "SequenceLength"));
+                props.AddOrReplaceProp(new NameProperty(Name, "SeqName"));
             }
         }
 
@@ -479,10 +487,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
             CompressedAnimationData = ms.ToArray();
             compressedDataSource = game;
 
-            props.RemoveNamedProperty("KeyEncodingFormat");
-            props.RemoveNamedProperty("TranslationCompressionFormat");
-            props.AddOrReplaceProp(new EnumProperty(rotCompression.ToString(), nameof(AnimationCompressionFormat), game, "RotationCompressionFormat"));
-            props.AddOrReplaceProp(new ArrayProperty<IntProperty>(TrackOffsets.Select(i => new IntProperty(i)), "CompressedTrackOffsets"));
 
             void PadTo4()
             {

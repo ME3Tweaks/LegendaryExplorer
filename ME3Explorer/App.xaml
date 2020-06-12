@@ -199,6 +199,10 @@
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/me2me3tlkeditor_256x256.ico"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Resources/udkexplorer_256x256.ico"/>
         <BitmapImage x:Key="iconTLKEditor" UriSource="Resources/tlkeditor_256x256.ico"/>
+        <BitmapImage x:Key="iconLiveLevelEditor" UriSource="Resources/liveleveleditor_256x256.ico"/>
+        <BitmapImage x:Key="iconAnimationImporter" UriSource="Resources/animationimporter_256x256.ico"/>
+        <BitmapImage x:Key="iconAnimViewer" UriSource="Resources/animviewer_256x256.ico"/>
+        <BitmapImage x:Key="iconAudioLocalizer" UriSource="Resources/audiolocalizer_256x256.ico"/>
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/loadingspinner.png"/>
     </Application.Resources>
     <JumpList.JumpList>

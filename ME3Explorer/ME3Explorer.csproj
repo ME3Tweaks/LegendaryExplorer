@@ -294,11 +294,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AnimationExplorer\AnimationImporter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AnimationExplorer\AnimationViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AnimationExplorer\Requirement.xaml">
+    <Page Include="SharedUI\Requirement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -382,10 +386,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AnimationExplorer\AnimationImporter.xaml.cs">
+      <DependentUpon>AnimationImporter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AnimationExplorer\AnimationViewer.xaml.cs">
       <DependentUpon>AnimationViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AnimationExplorer\Requirement.xaml.cs">
+    <Compile Include="Packages\ExportCreator.cs" />
+    <Compile Include="SharedUI\Requirement.xaml.cs">
       <DependentUpon>Requirement.xaml</DependentUpon>
     </Compile>
     <Compile Include="APIKeysP*.cs" />
@@ -1568,6 +1576,10 @@
     <Resource Include="PackageEditor\bink.jpg" />
     <Resource Include="Meshplorer\udk.ico" />
     <Resource Include="PackageEditor\EntryIcons\icon_state.png" />
+    <Resource Include="Resources\animationimporter_256x256.ico" />
+    <Resource Include="Resources\animviewer_256x256.ico" />
+    <Resource Include="Resources\audiolocalizer_256x256.ico" />
+    <Resource Include="Resources\liveleveleditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
