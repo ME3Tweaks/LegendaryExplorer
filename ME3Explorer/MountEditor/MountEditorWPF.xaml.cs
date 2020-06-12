@@ -60,7 +60,7 @@ namespace ME3Explorer.MountEditor
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_SaveFileDependency, "0x09 - SP only | Save file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPMP_SaveFileDependency, "0x1C - SP & MP | No save file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_Patch, "0x0C - MP only | Loads in MP (PATCH)"));
-            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_2, "0x14 - MP only | Loads in MP"));
+            ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_1, "0x14 - MP only | Loads in MP"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_MPOnly_2, "0x34 - MP only | Loads in MP"));
             CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
             MountIDValues.AddRange(ME3MountFlags);
