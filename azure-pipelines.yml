@@ -26,10 +26,11 @@ steps:
       Write-Host "##vso[task.setvariable variable=time]$date"
       $commitMessageFull = git log -1 --pretty=%B
       $author = git log -1 --pretty=format:'%an'
-      $discordmessage="$(Build.SourceVersionMessage)"
-      $numlines = $($discordmessage | measure).Count
-      if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
-      Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
+      Write-Host "##vso[task.setvariable variable=author]$author"
+      # $discordmessage="$(Build.SourceVersionMessage)"
+      # $numlines = $($discordmessage | measure).Count
+      # if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
+      Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
       $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
       Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
@@ -89,7 +90,7 @@ steps:
         },
         "fields": [{
           "name": "Triggering commit",
-          "value": "$(commitMessageFull)"
+          "value": '$(commitMessageFull)'
         },
         {
           "name": "Author",
