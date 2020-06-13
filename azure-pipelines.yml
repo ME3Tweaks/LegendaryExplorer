@@ -25,7 +25,7 @@ steps:
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
       $commitMessageFull = git log -1 --pretty=%B
-      $author = git log -1 --pretty=format;'%an'
+      $author = git log -1 --pretty=format:'%an'
       $discordmessage="$(Build.SourceVersionMessage)"
       $numlines = $($discordmessage | measure).Count
       if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
