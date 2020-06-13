@@ -29,7 +29,7 @@ steps:
       Write-Host "##vso[task.setvariable variable=author]$author"
       $discordmessage="$(Build.SourceVersionMessage)"
       $numlines = $($discordmessage | measure).Count
-      if ($numlines > 0) { $discordmessage=$($discordmessage.replace('\n', '\\n') }
+      if ($numlines > 0) { $discordmessage=$($discordmessage.replace('\n', '\\n')) }
       Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
       Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
       $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
