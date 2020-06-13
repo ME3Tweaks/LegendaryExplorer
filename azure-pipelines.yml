@@ -35,6 +35,8 @@ steps:
       if ($numlines > 0) { $commitMessageFull=$($commitMessageFull.replace('\n', ' ')) }
       Write-Host "Post-newline stripping:"
       Write-Host $commitMessageFull
+      Write-Host "Type of PNL commitmessagefull:"
+      Write-Host $commitMessageFull.GetType()
       Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
       # Commit Message (Singleline)-----------------------
       $discordmessage="$(Build.SourceVersionMessage)"
