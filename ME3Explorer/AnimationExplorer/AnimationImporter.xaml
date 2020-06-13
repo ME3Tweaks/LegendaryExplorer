@@ -38,7 +38,7 @@
             <MenuItem Header="Tools" Padding="4">
                 <MenuItem Header="Import New AnimSequence(s) from PSA" Command="{Binding ImportFromPSACommand}"/>
                 <MenuItem Header="Replace AnimSequence from PSA" Command="{Binding ReplaceFromPSACommand}"/>
-                <MenuItem Header="Import New AnimSequence from UDK" Command="{Binding ImportFromUDKCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                <MenuItem Header="Import New AnimSequence(s) from UDK" Command="{Binding ImportFromUDKCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Replace AnimSequence from UDK" Command="{Binding ReplaceFromUDKCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Export AnimSequence to PSA" Command="{Binding ExportAnimSeqToPSACommand}"/>
                 <MenuItem Header="Export AnimSet to PSA" Command="{Binding ExportAnimSetToPSACommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>

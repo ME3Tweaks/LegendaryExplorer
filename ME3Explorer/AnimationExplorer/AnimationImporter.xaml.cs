@@ -84,7 +84,7 @@ namespace ME3Explorer
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
-        private int UIndexQueuedForFocusing;
+        private readonly int UIndexQueuedForFocusing;
 
         public ObservableCollectionExtended<ExportEntry> AnimSequenceExports { get; } = new ObservableCollectionExtended<ExportEntry>();
 
@@ -103,8 +103,8 @@ namespace ME3Explorer
             SaveFileCommand = new GenericCommand(SaveFile, IsPackageLoaded);
             SaveAsCommand = new GenericCommand(SaveFileAs, IsPackageLoaded);
 
-            ImportFromUDKCommand = new GenericCommand(ImportFromUDK, () => false);//disabled
-            ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, () => false);//disabled
+            ImportFromUDKCommand = new GenericCommand(ImportFromUDK, IsPackageLoaded);
+            ReplaceFromUDKCommand = new GenericCommand(ReplaceFromUDK, IsAnimSequenceSelected);
             ImportFromPSACommand = new GenericCommand(ImportFromPSA, IsPackageLoaded);
             ReplaceFromPSACommand = new GenericCommand(ReplaceFromPSA, IsAnimSequenceSelected);
             ExportAnimSeqToPSACommand = new GenericCommand(ExportAnimSeqToPSA, IsAnimSequenceSelected);
@@ -231,12 +231,119 @@ namespace ME3Explorer
 
         private void ReplaceFromUDK()
         {
-            throw new NotImplementedException();
+            if (CurrentExport.ClassName == "AnimSequence")
+            {
+                var dlg = new OpenFileDialog
+                {
+                    Filter = App.UDKFileFilter,
+                    CheckFileExists = true,
+                    Title = "Select UDK file",
+                    Multiselect = false
+                };
+                if (dlg.ShowDialog(this) == true)
+                {
+                    using var upk = MEPackageHandler.OpenUDKPackage(dlg.FileName);
+                    var animSets = upk.Exports.Where(exp => exp.ClassName == "AnimSet").ToList();
+                    if (animSets.IsEmpty())
+                    {
+                        MessageBox.Show("This file contains no AnimSets!", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    var curSeq = CurrentExport.GetBinaryData<AnimSequence>();
+                    animSets = animSets.Where(set => set.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").SequenceEqual(curSeq.Bones)).ToList();
+                    if (animSets.IsEmpty())
+                    {
+                        MessageBox.Show("This file contains no compatible Animations! TrackBoneNames must be identical to replace this animation.",
+                                        "", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence", entry => entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
+                    if (selectedExport is null)
+                    {
+                        return;
+                    }
+                    AnimSequence selectedAnimSequence = selectedExport.GetBinaryData<AnimSequence>();
+
+
+                    var props = CurrentExport.GetProperties();
+                    var originalSeqName = props.GetProp<NameProperty>("SequenceName");
+                    selectedAnimSequence.UpdateProps(props, CurrentExport.Game);
+                    if (originalSeqName != null)
+                    {
+                        props.AddOrReplaceProp(originalSeqName);
+                    }
+                    CurrentExport.WriteProperties(props);
+                    CurrentExport.SetBinaryData(selectedAnimSequence);
+                    MessageBox.Show("Done!", "Replace From UDK", MessageBoxButton.OK);
+                }
+            }
         }
 
         private void ImportFromUDK()
         {
-            throw new NotImplementedException();
+            var dlg = new OpenFileDialog
+            {
+                Filter = App.UDKFileFilter,
+                CheckFileExists = true,
+                Title = "Select UDK file",
+                Multiselect = false
+            };
+            if (dlg.ShowDialog(this) == true)
+            {
+                using var upk = MEPackageHandler.OpenUDKPackage(dlg.FileName);
+                var animSets = upk.Exports.Where(exp => exp.ClassName == "AnimSet").ToList();
+                if (animSets.IsEmpty())
+                {
+                    MessageBox.Show("This file contains no AnimSets!", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset", 
+                                                                                 entry => animSets.Contains(entry) || entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
+                
+
+                List<AnimSequence> selectedAnimSequences = new List<AnimSequence>();
+                ExportEntry animSet;
+                if (selectedExport?.ClassName == "AnimSequence")
+                {
+                    selectedAnimSequences.Add(selectedExport.GetBinaryData<AnimSequence>());
+                    animSet = (ExportEntry)selectedExport.Parent;
+                }
+                else if (selectedExport?.ClassName == "AnimSet")
+                {
+                    animSet = selectedExport;
+                    var sequences = animSet.GetProperty<ArrayProperty<ObjectProperty>>("Sequences");
+                    if (sequences is null || sequences.IsEmpty())
+                    {
+                        MessageBox.Show("This AnimSets has no AnimSeqeunces!", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    selectedAnimSequences.AddRange(sequences.Select(op => upk.GetUExport(op.Value).GetBinaryData<AnimSequence>()));
+                }
+                else
+                {
+                    return;
+                }
+
+
+                var pkg = ExportCreator.CreatePackageExport(Pcc, animSet.ObjectName);
+
+                var bioAnimSetData = ExportCreator.CreateExport(Pcc, animSet.ObjectName, "BioAnimSetData", pkg);
+                bioAnimSetData.WriteProperty(animSet.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames"));
+
+                foreach (AnimSequence seq in selectedAnimSequences)
+                {
+                    var seqExp = ExportCreator.CreateExport(Pcc, seq.Name, "AnimSequence", pkg);
+                    var props = seqExp.GetProperties();
+                    seq.UpdateProps(props, Pcc.Game);
+                    props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
+                    seqExp.WriteProperties(props);
+                    seqExp.SetBinaryData(seq);
+                }
+                MessageBox.Show("Done!", "Import From UDK", MessageBoxButton.OK);
+            }
         }
 
         private bool IsBioAnimDataSelected() => CurrentExport?.ClassName == "BioAnimSetData";
@@ -445,7 +552,7 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (updates.Any(update => update.change == PackageChange.ExportData && update.index == CurrentExport.Index) && CurrentExport.ClassName == "AnimSequence")
+            if (CurrentExport != null && updates.Any(update => update.change == PackageChange.ExportData && update.index == CurrentExport.Index) && CurrentExport.ClassName == "AnimSequence")
             {
                 CurrentExport = CurrentExport;//trigger propertyset stuff
             }

@@ -83,11 +83,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref CompressedAnimationData, SCExt.Serialize);
         }
 
-        public void UpdateProps(PropertyCollection props, MEGame newGame)
+        public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)
         {
             if (compressedDataSource == MEGame.Unknown || (newGame != compressedDataSource && !(newGame <= MEGame.ME3 && compressedDataSource <= MEGame.ME3)))
             {
-                CompressAnimationData(props, newGame);
+                CompressAnimationData(newGame, newRotationCompression);
                 props.RemoveNamedProperty("KeyEncodingFormat");
                 props.RemoveNamedProperty("TranslationCompressionFormat");
                 props.AddOrReplaceProp(new EnumProperty(rotCompression.ToString(), nameof(AnimationCompressionFormat), newGame, "RotationCompressionFormat"));
@@ -309,7 +309,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
 
-        void CompressAnimationData(PropertyCollection props, MEGame game, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)
+        void CompressAnimationData(MEGame game, AnimationCompressionFormat newRotationCompression)
         {
             if (RawAnimationData is null)
             {
