@@ -16,12 +16,16 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Change artifact name when the version major/minor changes
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
+      $artifactname = "me3explorernightly_4.2.0.$(Build.BuildId)"
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
+      $commitMessageFull = git log -1 --pretty=%B
+      $author = git log -1 --pretty=format;'%an'
       $discordmessage="$(Build.SourceVersionMessage)"
       $numlines = $($discordmessage | measure).Count
       if ($numlines > 0) { $discordmessage=$($discordmessage -split '\n')[0] }
@@ -57,19 +61,15 @@ steps:
     publishLocation: 'Container'
 
 # Notify ME3Tweaks that a new beta build has been built
-- task: InvokeRESTAPI@1
+- task: PowerShell@2
   inputs:
-    connectionType: 'connectedServiceName'
-    serviceConnection: 'ME3Tweaks ME3Explorer Beta Build Notification API'
-    method: 'POST'
-    body: |
-      {
-       "newbuild": 1,
-       "buildId": "$(Build.BuildId)",
-       "artifactname": 'me3explorernightly_4.2.0.$(Build.BuildId)'
-      }
-    urlSuffix: '?newbuild=1'
-    waitForCompletion: 'false'
+    targetType: 'inline'
+    script: |
+      # Webrequest using powershell since invokerestapi doesn't work on anything but server jobs
+      $postParams = @{newbuild='1';moredata='qwerty'}
+      Invoke-WebRequest -Uri $(me3explorerApiEndpoint) -Method POST -Body $postParams
+      
+    errorActionPreference: 'continue'
 
 - task: ado-discord-webhook@1
   inputs:
@@ -89,7 +89,11 @@ steps:
         },
         "fields": [{
           "name": "Triggering commit",
-          "value": "$(discordmessage)"
+          "value": "$(commitMessageFull)"
+        },
+        {
+          "name": "Author",
+          "value": "$(author)"
         },
         {
           "name": "Version",
