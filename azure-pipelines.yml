@@ -56,6 +56,21 @@ steps:
     ArtifactName: 'me3explorernightly_4.2.0.$(Build.BuildId)'
     publishLocation: 'Container'
 
+# Notify ME3Tweaks that a new beta build has been built
+- task: InvokeRESTAPI@1
+  inputs:
+    connectionType: 'connectedServiceName'
+    serviceConnection: 'ME3Tweaks ME3Explorer Beta Build Notification API'
+    method: 'POST'
+    body: |
+      {
+       "newbuild": 1,
+       "buildId": "$(Build.BuildId)",
+       "artifactname": 'me3explorernightly_4.2.0.$(Build.BuildId)'
+      }
+    urlSuffix: '?newbuild=1'
+    waitForCompletion: 'false'
+
 - task: ado-discord-webhook@1
   inputs:
     channelId: '$(discord_channel_id)'
