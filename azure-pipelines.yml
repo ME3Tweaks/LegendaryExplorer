@@ -81,9 +81,8 @@ steps:
     targetType: 'inline'
     script: |
       # Webrequest using powershell since invokerestapi doesn't work on anything but server jobs
-      $postParams = @{newbuild='1';moredata='qwerty'}
-      Invoke-WebRequest -Uri $(me3explorerApiEndpoint) -Method POST -Body $postParams
-      
+      Invoke-WebRequest -Uri $env:ME3EXPLORERAPIENDPOINT
+      Write-Host $env:ME3EXPLORERAPIENDPOINT
     errorActionPreference: 'continue'
 
 - task: ado-discord-webhook@1
