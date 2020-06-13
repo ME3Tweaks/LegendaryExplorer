@@ -782,7 +782,7 @@ namespace ME3Explorer
             //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             TreeViewItems.ClearEx();
-            if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
+            if (CurrentLoadedExport != null && CurrentLoadedExport.DataSize > 20480)
             {
                 //There was likely a large amount of nodes placed onto the UI
                 //Lets free that memory once this export unloads
@@ -801,7 +801,7 @@ namespace ME3Explorer
                     detach?.Invoke();
                 });
 
-                detach = new Action(() => timer.Tick -= handler); // No need for deregistering but just for safety let's do it.
+                detach = () => timer.Tick -= handler; // No need for deregistering but just for safety let's do it.
                 timer.Tick += handler;
                 timer.Start();
             }

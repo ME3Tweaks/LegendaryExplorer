@@ -970,11 +970,6 @@
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
-    <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
-    <Compile Include="Unreal\Classes\AnimSequence.cs" />
-    <Compile Include="Unreal\Classes\AnimSet.cs" />
-    <Compile Include="Unreal\Classes\AnimTree.cs" />
-    <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
     <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
@@ -1025,12 +1020,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AnimationExplorer\AnimationExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AnimationExplorer\AnimationExplorer.Designer.cs">
-      <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1331,9 +1320,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
-      <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>

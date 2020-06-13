@@ -15,6 +15,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.ME3Enums;
+using Microsoft.AppCenter.Analytics;
 using SharpDX;
 
 namespace ME3Explorer.GameInterop
@@ -70,6 +71,10 @@ namespace ME3Explorer.GameInterop
             LoadCommands();
             InitializeComponent();
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Live Level Editor", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
+            {
+                { "Toolname", "Live Level Editor" }
+            });
             GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
             ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             ME3OpenTimer.Tick += CheckIfME3Open;

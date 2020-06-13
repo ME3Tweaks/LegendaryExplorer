@@ -25,6 +25,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using SharpDX;
 using Path = System.IO.Path;
@@ -73,6 +74,10 @@ namespace ME3Explorer.AnimationExplorer
 
             Instance = this;
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Viewer", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
+            {
+                { "Toolname", "Animation Viewer" }
+            });
             DataContext = this;
             InitializeComponent();
             LoadCommands();
@@ -389,7 +394,7 @@ namespace ME3Explorer.AnimationExplorer
             if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
             {
                 LoadingAnimation = true;
-                SetBusy("Loading Animation");
+                SetBusy("Loading Animation", () => LoadingAnimation = false);
                 int animUIndex = 0;
                 string filePath = null;
                 if (anim != null && anim.AnimUsages.Any())

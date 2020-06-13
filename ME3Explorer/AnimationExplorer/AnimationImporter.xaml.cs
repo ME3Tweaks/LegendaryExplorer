@@ -34,7 +34,7 @@ namespace ME3Explorer
         public AnimationImporter()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Importer", new WeakReference(this));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Animation Importer" }
             });
