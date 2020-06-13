@@ -32,11 +32,9 @@ steps:
       $numlines = $($commitMessageFull | measure).Count
       Write-Host "Message before newline stripping:"
       Write-Host $commitMessageFull
-      if ($numlines > 0) { $commitMessageFull=$($commitMessageFull.replace('\n', ' ')) }
-      Write-Host "Post-newline stripping:"
-      Write-Host $commitMessageFull
-      Write-Host "Type of PNL commitmessagefull:"
-      Write-Host $commitMessageFull.GetType()
+      if ($numlines > 0) { 
+        $commitMessageFull=[system.String]::Join(" ", $commitMessageFull)
+      }
       Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
       # Commit Message (Singleline)-----------------------
       $discordmessage="$(Build.SourceVersionMessage)"
