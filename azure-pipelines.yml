@@ -28,7 +28,11 @@ steps:
       # Commit Message (Multiliner)-----------------------
       $commitMessageFull = git log -1 --pretty=%B
       $numlines = $($commitMessageFull | measure).Count
+      Write-Host "Message before newline stripping:"
+      Write-Host $commitMessageFull
       if ($numlines > 0) { $commitMessageFull=$($commitMessageFull.replace('\n', ' ')) }
+      Write-Host "Post-newline stripping:"
+      Write-Host $commitMessageFull
       Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
       # Commit Message (Singleline)-----------------------
       $discordmessage="$(Build.SourceVersionMessage)"
