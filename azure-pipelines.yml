@@ -27,6 +27,8 @@ steps:
       Write-Host "##vso[task.setvariable variable=time]$date"
       # Commit Message (Multiliner)-----------------------
       $commitMessageFull = git log -1 --pretty=%B
+      Write-Host "Type of commitmessagefull:"
+      Write-Host $commitMessageFull.GetType()
       $numlines = $($commitMessageFull | measure).Count
       Write-Host "Message before newline stripping:"
       Write-Host $commitMessageFull
