@@ -120,6 +120,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<StaticMeshCollectionActor>(export);
                 case "StaticLightCollectionActor":
                     return From<StaticLightCollectionActor>(export);
+                case "WwiseEvent":
+                    return From<WwiseEvent>(export);
                 default:
                     return null;
             }

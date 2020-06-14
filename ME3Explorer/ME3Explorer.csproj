@@ -588,12 +588,6 @@
     <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
-    <Compile Include="ME2\FaceFXAnimSetEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\FaceFXAnimSetEditor.Designer.cs">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
@@ -868,7 +862,6 @@
     <Compile Include="Soundplorer\ISBank.cs" />
     <Compile Include="Soundplorer\ISBankEntry.cs" />
     <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
-    <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="SharedUI\ExportLoaderControl.cs" />
     <Compile Include="SharedUI\IExportLoader.cs" />
@@ -961,6 +954,7 @@
     <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
     <Compile Include="Unreal\BinaryConverters\UState.cs" />
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\ME3Enums.cs" />
@@ -984,7 +978,6 @@
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
-    <Compile Include="Unreal\PSAFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
@@ -998,12 +991,6 @@
     </Compile>
     <Compile Include="WPFBase.cs" />
     <Compile Include="SharedUI\Converters\WPFConverters.cs" />
-    <Compile Include="WwiseBankViewer\WwiseViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
-      <DependentUpon>WwiseViewer.cs</DependentUpon>
-    </Compile>
     <Page Include="InitialSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1047,12 +1034,6 @@
     </Compile>
     <Compile Include="SharedUI\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -1336,14 +1317,8 @@
     <EmbeddedResource Include="SharedUI\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
       <DependentUpon>Meshplorer.cs</DependentUpon>
@@ -1364,9 +1339,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
-      <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />

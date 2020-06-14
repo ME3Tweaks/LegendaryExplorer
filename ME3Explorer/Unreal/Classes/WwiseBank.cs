@@ -223,27 +223,20 @@ namespace ME3Explorer.Unreal.Classes
             public const byte TYPE_EVENTACTION = 0x3;
             public const byte TYPE_EVENT = 0x4;
 
-            private int index;
-            public int Index { get { return index; } set { index = value; } }
+            public int Index { get; set; }
 
-            private int offset;
-            public int Offset { get { return offset; } set { offset = value; } }
+            public int Offset { get; set; }
 
-            private byte objtype;
-            public byte ObjType { get { return objtype; } set { objtype = value; } }
+            public byte ObjType { get; set; }
 
-            private int size;
-            public int Size { get { return size; } set { size = value; } }
+            public int Size { get; set; }
 
-            private int id;
-            public int ID { get { return id; } set { id = value; } }
+            public int ID { get; set; }
 
 
-            private byte stype;
-            public byte SoundType { get { return stype; } set { stype = value; } }
+            public byte SoundType { get; set; }
 
-            private int state;
-            public int State { get { return state; } set { state = value; } }
+            public int State { get; set; }
 
             //typeinfo
             public int cnt, unk1, IDaudio, IDsource;//scope,atype;
@@ -275,6 +268,14 @@ namespace ME3Explorer.Unreal.Classes
             {
                 get => _dataChanged;
                 internal set => SetProperty(ref _dataChanged, value);
+            }
+
+            public HIRCObject Clone()
+            {
+                HIRCObject clone = (HIRCObject)MemberwiseClone();
+                clone.eventIDs = eventIDs?.Clone();
+                clone.Data = Data?.TypedClone();
+                return clone;
             }
         }
 
@@ -439,10 +440,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (HIRCObjects == null || n < 0 || n >= HIRCObjects.Count)
                 return;
-            byte[] tmp = new byte[HIRCObjects[n].Length];
-            for (int i = 0; i < HIRCObjects[n].Length; i++)
-                tmp[i] = HIRCObjects[n][i];
-            HIRCObjects.Add(tmp);
+            HIRCObjects.Add(HIRCObjects[n].TypedClone());
         }
 
         public byte[] RecreateBinary(List<byte[]> hircs = null)

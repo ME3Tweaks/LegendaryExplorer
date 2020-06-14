@@ -24,7 +24,6 @@ using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
-using NAudio.Wave;
 using static ME3Explorer.Unreal.Classes.WwiseBank;
 
 namespace ME3Explorer
@@ -40,20 +39,20 @@ namespace ME3Explorer
         WwiseStream wwiseStream;
         public string afcPath = "";
         readonly DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
-        private bool SeekUpdatingDueToTimer = false;
-        private bool SeekDragging = false;
+        private bool SeekUpdatingDueToTimer;
+        private bool SeekDragging;
         Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
         private DynamicByteProvider hircHexProvider;
 
         public IBusyUIHost HostingControl
         {
-            get { return (IBusyUIHost)this.GetValue(HostingControlProperty); }
-            set { this.SetValue(HostingControlProperty, value); }
+            get => (IBusyUIHost)GetValue(HostingControlProperty);
+            set => SetValue(HostingControlProperty, value);
         }
 
         public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
-            "HostingControl", typeof(IBusyUIHost), typeof(Soundpanel));
+            nameof(HostingControl), typeof(IBusyUIHost), typeof(Soundpanel));
 
         private string _quickScanText;
 
@@ -76,7 +75,7 @@ namespace ME3Explorer
 
         private static void PlayBackOnlyModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is Soundpanel editor)
+            if (d is Soundpanel)
             {
                 //do nothing?
             }
@@ -89,10 +88,12 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
-                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
-                elhw.Height = 400;
-                elhw.Width = 400;
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport)
+                {
+                    Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}",
+                    Height = 400,
+                    Width = 400
+                };
                 elhw.Show();
             }
         }
@@ -177,24 +178,22 @@ namespace ME3Explorer
                         try
                         {
                             var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
-                            string samefolderfilepath = System.IO.Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
-                            byte[] headerbytes = new byte[0x56];
+                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
+                            var headerbytes = new byte[0x56];
                             bool bytesread = false;
 
                             if (File.Exists(samefolderfilepath))
                             {
-                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                                {
-                                    fs.Seek(w.DataOffset, SeekOrigin.Begin);
-                                    fs.Read(headerbytes, 0, 0x56);
-                                    bytesread = true;
-                                }
+                                using FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                fs.Seek(w.DataOffset, SeekOrigin.Begin);
+                                fs.Read(headerbytes, 0, 0x56);
+                                bytesread = true;
                             }
 
                             if (bytesread)
                             {
                                 //Parse it
-                                ExportInformationList.Add($"---------Referenced Audio Header----------");
+                                ExportInformationList.Add("---------Referenced Audio Header----------");
                                 ASCIIEncoding ascii = new ASCIIEncoding();
 
                                 ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
@@ -228,9 +227,9 @@ namespace ME3Explorer
                                 ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
                             }
                         }
-                        catch (Exception e)
+                        catch
                         {
-
+                            // ignored
                         }
                     }
 
@@ -250,7 +249,7 @@ namespace ME3Explorer
                             HIRCObjects.Clear();
                             HIRCObjects.AddRange(hircObjects);
                         }
-                        catch (Exception e)
+                        catch
                         {
                             Debug.WriteLine("Coudln't parse HIRCs");
                         }
@@ -373,7 +372,7 @@ namespace ME3Explorer
             }
         }
 
-        private string GetHexForUI(byte[] bytes, int startoffset, int length)
+        private static string GetHexForUI(byte[] bytes, int startoffset, int length)
         {
             string ret = "";
 
@@ -397,10 +396,10 @@ namespace ME3Explorer
             return ret;
         }
 
-        public static UInt32 ReverseBytes(UInt32 value)
+        public static uint ReverseBytes(uint value)
         {
-            return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
-                   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+            return ((value & 0x000000FFU) << 24) | ((value & 0x0000FF00U) << 8) |
+                   ((value & 0x00FF0000U) >> 8) | ((value & 0xFF000000U) >> 24);
         }
 
         public override void UnloadExport()
@@ -495,7 +494,7 @@ namespace ME3Explorer
                         }
 
                         var wemObject = (EmbeddedWEMFile)currentWEMItem;
-                        string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
+                        string basePath = $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
                         var outpath = basePath + ".wem";
                         File.WriteAllBytes(outpath, wemObject.WemData);
                         return ISBankEntry.ConvertAudioToWave(outpath); //use vgmstream
@@ -691,7 +690,7 @@ namespace ME3Explorer
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
-            VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+            VolumeControlValueChangedCommand = new GenericCommand(VolumeControlValueChanged);
 
             //WwisebankEditor commands
             CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
@@ -780,29 +779,10 @@ namespace ME3Explorer
             SearchStatusText = "Hex not found";
         }
 
-        /// <summary>
-        /// Ported from WwiseViewer
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
         public static bool isHexString(string s)
         {
-            string hexChars = "0123456789abcdefABCDEF";
-            for (int i = 0; i < s.Length; i++)
-            {
-                int f = -1;
-                for (int j = 0; j < hexChars.Length; j++)
-                    if (s[i] == hexChars[j])
-                    {
-                        f = j;
-                        break;
-                    }
-
-                if (f == -1)
-                    return false;
-            }
-
-            return true;
+            const string hexChars = "0123456789abcdefABCDEF";
+            return s.All(c => hexChars.Contains(c));
         }
 
         private bool CanCommitBankToFile() => HasPendingHIRCChanges;
@@ -1027,13 +1007,13 @@ namespace ME3Explorer
             var assembly = Assembly.GetExecutingAssembly();
             string[] stuff = assembly.GetManifestResourceNames();
             const string resourceName = "ME3Explorer.Soundplorer.WwiseTemplateProject.zip";
-            string templatefolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject");
+            string templatefolder = Path.Combine(Path.GetTempPath(), "TemplateProject");
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 await TryDeleteDirectory(templatefolder);
                 ZipArchive archive = new ZipArchive(stream);
-                archive.ExtractToDirectory(System.IO.Path.GetTempPath());
+                archive.ExtractToDirectory(Path.GetTempPath());
             }
 
             //Generate the external sources document
@@ -1050,7 +1030,7 @@ namespace ME3Explorer
             {
                 //it's a single file
                 isSingleFile = true;
-                filesToConvert = new string[] { fileOrFolderPath };
+                filesToConvert = new[] { fileOrFolderPath };
                 folderParent = Directory.GetParent(fileOrFolderPath).FullName;
             }
 
@@ -1059,17 +1039,17 @@ namespace ME3Explorer
             XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
             foreach (string file in filesToConvert)
             {
-                XElement source = new XElement("Source", new XAttribute("Path", System.IO.Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
+                XElement source = new XElement("Source", new XAttribute("Path", Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
                 externalSourcesList.Add(source);
             }
 
             //Write ExternalSources.wsources
-            string wsourcesFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
+            string wsourcesFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
 
             File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
             Debug.WriteLine(externalSourcesList.ToString());
 
-            string conversionSettingsFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
+            string conversionSettingsFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
             XmlDocument conversionDoc = new XmlDocument();
             conversionDoc.Load(conversionSettingsFile);
 
@@ -1079,21 +1059,25 @@ namespace ME3Explorer
             conversionDoc.Save(conversionSettingsFile);
             //Run Conversion
 
+            string projFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = wwiseCLIPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    Arguments = $"\"{projFile}\" -ConvertExternalSources Windows",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true
+                }
+            };
             //uncomment the following lines to view output from wwisecli
             //DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
-            Process process = new Process();
-            process.StartInfo.FileName = wwiseCLIPath;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
             //process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
             //process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
 
-            string projFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
-            process.StartInfo.Arguments = $"\"{projFile}\" -ConvertExternalSources Windows";
-
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardOutput = true;
             process.Start();
             //process.BeginOutputReadLine();
             process.WaitForExit();
@@ -1101,13 +1085,13 @@ namespace ME3Explorer
             process.Close();
 
             //Files generates
-            string outputDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "OutputFiles");
-            string copyToDirectory = System.IO.Path.Combine(folderParent, "Converted");
+            string outputDirectory = Path.Combine(Path.GetTempPath(), "TemplateProject", "OutputFiles");
+            string copyToDirectory = Path.Combine(folderParent, "Converted");
             Directory.CreateDirectory(copyToDirectory);
             foreach (string file in filesToConvert)
             {
-                string basename = System.IO.Path.GetFileNameWithoutExtension(file);
-                File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
+                string basename = Path.GetFileNameWithoutExtension(file);
+                File.Copy(Path.Combine(outputDirectory, basename + ".ogg"), Path.Combine(copyToDirectory, basename + ".ogg"), true);
             }
 
             var deleteResult = await TryDeleteDirectory(templatefolder);
@@ -1115,19 +1099,17 @@ namespace ME3Explorer
 
             if (isSingleFile)
             {
-                return System.IO.Path.Combine(copyToDirectory, System.IO.Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
+                return Path.Combine(copyToDirectory, Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
             }
-            else
-            {
-                return copyToDirectory;
-            }
+
+            return copyToDirectory;
         }
 
 
         public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
         {
             if (directoryPath == null)
-                throw new ArgumentNullException(directoryPath);
+                throw new ArgumentNullException(nameof(directoryPath));
             if (maxRetries < 1)
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
             if (millisecondsDelay < 1)
@@ -1167,7 +1149,7 @@ namespace ME3Explorer
             string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
             if (wwisePath != null)
             {
-                wwisePath = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
+                wwisePath = Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
                 if (File.Exists(wwisePath))
                 {
                     //check that it's a supported version...
@@ -1180,24 +1162,18 @@ namespace ME3Explorer
                             MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 64bit to use this feature.");
                         return null;
                     }
-                    else
-                    {
-                        return wwisePath;
-                    }
+
+                    return wwisePath;
                 }
-                else
-                {
-                    if (!silent)
-                        MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
-                    return null;
-                }
-            }
-            else
-            {
+
                 if (!silent)
-                    MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
+                    MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
                 return null;
             }
+
+            if (!silent)
+                MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
+            return null;
         }
 
         // Player commands
@@ -1271,7 +1247,7 @@ namespace ME3Explorer
 
             if (CurrentLoadedAFCFileEntry != null)
             {
-                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
+                string presetfilename = $"{Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
                 SaveFileDialog d = new SaveFileDialog
                 {
                     Filter = "Wave PCM File|*.wav",
@@ -1298,11 +1274,12 @@ namespace ME3Explorer
             if (CurrentLoadedAFCFileEntry != null) return true;
             if (CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
-                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    object currentWEMItem = ExportInfoListBox.SelectedItem;
-                    return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
+                    case "WwiseStream":
+                        return true;
+                    case "WwiseBank":
+                        return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
                 }
             }
 
@@ -1413,17 +1390,15 @@ namespace ME3Explorer
 
             if (CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    CachedStreamSource = CurrentLoadedExport;
-                }
-                else if (CurrentLoadedExport.ClassName == "WwiseBank")
-                {
-                    CachedStreamSource = ExportInfoListBox.SelectedItem;
-                }
-                else if (CurrentLoadedExport.ClassName == "SoundNodeWave")
-                {
-                    CachedStreamSource = ExportInfoListBox.SelectedItem;
+                    case "WwiseStream":
+                        CachedStreamSource = CurrentLoadedExport;
+                        break;
+                    case "WwiseBank":
+                    case "SoundNodeWave":
+                        CachedStreamSource = ExportInfoListBox.SelectedItem;
+                        break;
                 }
             }
         }
@@ -1443,29 +1418,31 @@ namespace ME3Explorer
             if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
             if (CurrentLoadedISACTEntry != null) return true;
             if (CurrentLoadedAFCFileEntry != null) return true;
-            if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+            if (CurrentLoadedExport?.ClassName == "WwiseStream") return true;
 
-            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            if (CurrentLoadedExport?.ClassName == "WwiseBank")
             {
-                object currentWEMItem = ExportInfoListBox.SelectedItem;
-                if (currentWEMItem == null || currentWEMItem is string)
+                switch (ExportInfoListBox.SelectedItem)
                 {
-                    return false; //nothing selected, or current wem is not playable
+                    case null:
+                    case string _:
+                        return false; //nothing selected, or current wem is not playable
+                    case EmbeddedWEMFile _:
+                        return true;
                 }
-
-                if (currentWEMItem is EmbeddedWEMFile) return true;
             }
 
-            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            if (CurrentLoadedExport?.ClassName == "SoundNodeWave")
             {
-                object currentNodeWaveItem = ExportInfoListBox.SelectedItem;
-                if (currentNodeWaveItem == null) return false;
-                if (currentNodeWaveItem is ISBankEntry isbe)
+                switch (ExportInfoListBox.SelectedItem)
                 {
-                    return isbe.DataAsStored != null;
+                    case null:
+                        return false;
+                    case ISBankEntry isbe:
+                        return isbe.DataAsStored != null;
+                    case EmbeddedWEMFile _:
+                        return true;
                 }
-
-                if (currentNodeWaveItem is EmbeddedWEMFile) return true;
             }
 
             return false;
@@ -1493,16 +1470,10 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanStopPlayback(object p)
-        {
-            return _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
-        }
+        private bool CanStopPlayback(object p) => _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
 
         // Events
-        private void TrackControlMouseDown(object p)
-        {
-            _audioPlayer?.Pause();
-        }
+        private void TrackControlMouseDown(object p) => _audioPlayer?.Pause();
 
         private void TrackControlMouseUp(object p)
         {
@@ -1513,25 +1484,11 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanTrackControlMouseDown(object p)
-        {
-            return _playbackState == PlaybackState.Playing;
-        }
+        private bool CanTrackControlMouseDown(object p) => _playbackState == PlaybackState.Playing;
 
-        private bool CanTrackControlMouseUp(object p)
-        {
-            return _playbackState == PlaybackState.Paused;
-        }
+        private bool CanTrackControlMouseUp(object p) => _playbackState == PlaybackState.Paused;
 
-        private void VolumeControlValueChanged(object p)
-        {
-            _audioPlayer?.SetVolume(CurrentVolume); // set value of the slider to current volume
-        }
-
-        private bool CanVolumeControlValueChanged(object p)
-        {
-            return true;
-        }
+        private void VolumeControlValueChanged() => _audioPlayer?.SetVolume(CurrentVolume);
 
         private void _audioPlayer_PlaybackStopped()
         {
@@ -1648,18 +1605,24 @@ namespace ME3Explorer
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
-            //get parent item
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            while (true)
+            {
+                //get parent item
+                DependencyObject parentObject = VisualTreeHelper.GetParent(child);
 
-            //we've reached the end of the tree
-            if (parentObject == null) return null;
-
-            //check if the parent matches the type we're looking for
-            T parent = parentObject as T;
-            if (parent != null)
-                return parent;
-            else
-                return FindParent<T>(parentObject);
+                switch (parentObject)
+                {
+                    //we've reached the end of the tree
+                    case null:
+                        return null;
+                    //check if the parent matches the type we're looking for
+                    case T parent:
+                        return parent;
+                    default:
+                        child = parentObject;
+                        break;
+                }
+            }
         }
 
         private void RepeatingButton_Click(object sender, RoutedEventArgs e)
@@ -1672,20 +1635,19 @@ namespace ME3Explorer
         {
             if (e is KeyEventArgs ke)
             {
-                if (ke.Key == Key.Space)
+                switch (ke.Key)
                 {
-                    if (CanStartPlayback(null))
-                    {
-                        StartOrPausePlaying();
-                    }
-
-                    ke.Handled = true;
-                }
-
-                if (ke.Key == Key.Escape)
-                {
-                    StopPlaying();
-                    ke.Handled = true;
+                    case Key.Space:
+                        if (CanStartPlayback(null))
+                        {
+                            StartOrPausePlaying();
+                        }
+                        ke.Handled = true;
+                        break;
+                    case Key.Escape:
+                        StopPlaying();
+                        ke.Handled = true;
+                        break;
                 }
             }
         }
@@ -1693,13 +1655,13 @@ namespace ME3Explorer
         private void ExportInfoListBox_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (currentSelectedItem != null && currentSelectedItem is EmbeddedWEMFile)
+            if (currentSelectedItem is EmbeddedWEMFile)
             {
                 StopPlaying();
                 StartOrPausePlaying();
             }
 
-            if (currentSelectedItem != null && currentSelectedItem is ISBankEntry && (currentSelectedItem as ISBankEntry).DataAsStored != null)
+            if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
             {
                 StopPlaying();
                 StartOrPausePlaying();
@@ -1990,6 +1952,19 @@ namespace ME3Explorer
                 MessageBox.Show("Done");
             }
         }
+
+        private void CloneHIRCObject(object sender, RoutedEventArgs e)
+        {
+            if (HIRC_ListBox.SelectedItem is HIRCObject h)
+            {
+                HIRCObject clone = h.Clone();
+                clone.Index = HIRCObjects.Count;
+                clone.DataChanged = true;
+                HIRCObjects.Add(clone);
+                HIRC_ListBox.ScrollIntoView(clone);
+                HIRC_ListBox.SelectedItem = clone;
+            }
+        }
     }
 
     public class EmbeddedWEMFile
@@ -2001,7 +1976,7 @@ namespace ME3Explorer
         public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, uint Id = 0)
         {
             this.Id = Id;
-            this.Game = game;
+            Game = game;
             this.WemData = WemData;
             this.DisplayString = DisplayString;
 

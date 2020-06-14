@@ -4287,7 +4287,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetAllFiles(MEGame.ME2)).Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4327,7 +4327,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Function", true)) break;
+                    if (findClass(filePath, "WwiseEvent", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4492,29 +4492,19 @@ namespace ME3Explorer
                         try
                         {
                             //Debug.WriteLine($"{exp.UIndex}: {filePath}");
-                            var obj = ObjectBinary.From<UFunction>(exp);
-                            (List<Token> tokens, _) = Bytecode.ParseBytecode(obj.ScriptBytes, exp);
-                            int calculatedMemLength = obj.ScriptStorageSize;
-                            foreach (Token token in tokens)
+                            var originalData = exp.Data;
+                            exp.SetBinaryData(exp.GetBinaryData<WwiseEvent>());
+                            var newData = exp.Data;
+                            if (!originalData.SequenceEqual(newData))
                             {
-                                foreach ((int _, int type, int _) in token.inPackageReferences)
-                                {
-                                    if (type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
-                                    {
-                                        calculatedMemLength += 4;
-                                    }
-                                }
-                            }
-                            if (obj.ScriptBytecodeSize != calculatedMemLength)
-                            {
-                                interestingExports.Add($"{obj.ScriptBytecodeSize} | #{exp.UIndex}: {filePath}");
+                                interestingExports.Add($"#{exp.UIndex,6} : {filePath}");
                                 //return true;
                             }
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex} : {filePath}\n{exception}");
+                            interestingExports.Add($"#{exp.UIndex,6} : {filePath}\n{exception}");
                             return true;
                         }
                     }
@@ -5167,10 +5157,7 @@ namespace ME3Explorer
             }
         }
 
-        private bool HasShaderCache()
-        {
-            return PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache");
-        }
+        private bool HasShaderCache() => PackageIsLoaded() && Pcc.Exports.Any(exp => exp.ClassName == "ShaderCache");
 
         private void CompactShaderCache()
         {

@@ -16,7 +16,6 @@
              xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
                            xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                           xmlns:wordprocessing="clr-namespace:DocumentFormat.OpenXml.Wordprocessing;assembly=DocumentFormat.OpenXml"
                            mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -76,7 +75,7 @@
                                         </MenuItem>
                                     </ContextMenu>
                                 </TextBlock.ContextMenu>
-                                </TextBlock>
+                            </TextBlock>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type s:String}">
                             <TextBlock Text="{Binding}" Foreground="Gray"/>
@@ -197,6 +196,15 @@
                                             <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
+                                    <StackPanel.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="CloneHIRCObject" ToolTip="Clones HIRC object">
+                                                <MenuItem.Header>
+                                                    <TextBlock Text="Clone" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </StackPanel.ContextMenu>
                                 </StackPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">

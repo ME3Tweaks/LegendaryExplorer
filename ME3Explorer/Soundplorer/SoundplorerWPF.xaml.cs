@@ -5,7 +5,6 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using ME3Explorer.WwiseBankEditor;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NAudio.Wave;
@@ -1308,13 +1307,6 @@ namespace ME3Explorer.Soundplorer
             ReverseEndianDisplayOfIDs_MenuItem.IsChecked = !ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.Save();
-        }
-
-        private void OpenInWwiseBankEditor_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var editor = new WwiseEditor();
-            editor.LoadFile(Pcc.FilePath);
-            editor.Show();
         }
 
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
