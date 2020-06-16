@@ -27,15 +27,24 @@ namespace ME3Explorer
 
         public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
         {
-            ms = new EndianReader(stream) {Endian = pcc.Endian};
+            ms = new EndianReader(stream) {Endian = pcc?.Endian ?? Endian.Little};
             IsLoading = isLoading;
             Pcc = pcc;
             startOffset = offset;
         }
+
+        
     }
 
     public static partial class SCExt
     {
+        public static int SerializeFileOffset(this SerializingContainer2 sc)
+        {
+            int offset = sc.FileOffset + 4;
+            sc.Serialize(ref offset);
+            return offset;
+        }
+
         public static void Serialize(this SerializingContainer2 sc, ref int val)
         {
             if (sc.IsLoading)
@@ -150,6 +159,11 @@ namespace ME3Explorer
         {
             int count = arr?.Count ?? 0;
             sc.Serialize(ref count);
+            sc.Serialize(ref arr, count, serialize);
+        }
+
+        public static void Serialize<T>(this SerializingContainer2 sc, ref List<T> arr, int count, SerializeDelegate<T> serialize)
+        {
             if (sc.IsLoading)
             {
                 arr = new List<T>(count);
@@ -236,8 +250,7 @@ namespace ME3Explorer
             int sizeOnDisk = 0;
             long sizeOnDiskPosition = sc.ms.Position;
             sc.Serialize(ref sizeOnDisk); //when saving, come back and rewrite this after writing arr
-            int offsetInFile = sc.FileOffset + 4;
-            sc.Serialize(ref offsetInFile);
+            sc.SerializeFileOffset();
             if (sc.IsLoading)
             {
                 arr = new T[elementCount];

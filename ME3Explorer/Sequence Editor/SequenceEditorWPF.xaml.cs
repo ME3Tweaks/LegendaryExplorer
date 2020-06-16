@@ -29,10 +29,10 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
-using GongSolutions.Wpf.DragDrop;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
 using ME3Explorer.Unreal.BinaryConverters;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 
@@ -84,7 +84,11 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor WPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
+            {
+                { "Toolname", "Sequence Editor" }
+            });
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";

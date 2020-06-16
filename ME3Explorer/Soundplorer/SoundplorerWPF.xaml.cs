@@ -4,8 +4,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
-using ME3Explorer.WwiseBankEditor;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NAudio.Wave;
@@ -35,7 +33,9 @@ using System.Xml.Linq;
 using FontAwesome5.WPF;
 using FontAwesome5;
 using Gammtek.Conduit.IO;
+using ME3Explorer.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
+using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -44,7 +44,7 @@ namespace ME3Explorer.Soundplorer
     /// </summary>
     public partial class SoundplorerWPF : WPFBase, IBusyUIHost
     {
-        public static readonly string SoundplorerDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
+        public static readonly string SoundplorerDataFolder = Path.Combine(App.AppDataFolder, @"Soundplorer\");
         private const string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
         private string LoadedISBFile;
@@ -154,7 +154,7 @@ namespace ME3Explorer.Soundplorer
         {
             if (propogate && recents != null)
             {
-                foreach (var window in App.Current.Windows)
+                foreach (var window in Application.Current.Windows)
                 {
                     if (window is SoundplorerWPF wpf && this != wpf)
                     {
@@ -246,7 +246,7 @@ namespace ME3Explorer.Soundplorer
             {
                 soundPanel.FreeAudioResources(); //stop playback
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
-                TaskbarText = $"Loading {System.IO.Path.GetFileName(fileName)} ({ByteSize.FromBytes(new FileInfo(fileName).Length)})";
+                TaskbarText = $"Loading {Path.GetFileName(fileName)} ({ByteSize.FromBytes(new FileInfo(fileName).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
@@ -254,13 +254,13 @@ namespace ME3Explorer.Soundplorer
                 UnLoadMEPackage();
                 LoadedISBFile = null;
                 LoadedAFCFile = null;
-                if (System.IO.Path.GetExtension(fileName).ToLower() == ".isb")
+                if (Path.GetExtension(fileName).ToLower() == ".isb")
                 {
                     LoadedISBFile = fileName;
                     StatusBar_GameID_Text.Text = "ISB";
                     StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
                 }
-                else if (System.IO.Path.GetExtension(fileName).ToLower() == ".afc")
+                else if (Path.GetExtension(fileName).ToLower() == ".afc")
                 {
                     LoadedAFCFile = fileName;
                     StatusBar_GameID_Text.Text = "AFC";
@@ -303,7 +303,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     LoadObjects();
                 }
-                Title = $"Soundplorer - {System.IO.Path.GetFileName(fileName)}";
+                Title = $"Soundplorer - {Path.GetFileName(fileName)}";
                 OnPropertyChanged(nameof(AudioFileLoaded));
                 AddRecent(fileName, false);
                 SaveRecentList();
@@ -319,7 +319,7 @@ namespace ME3Explorer.Soundplorer
         {
             BindedItemsList.ClearEx();
             IsBusyTaskbar = true;
-            TaskbarText = $"Loading AFC: {System.IO.Path.GetFileName(LoadedAFCFile)}";
+            TaskbarText = $"Loading AFC: {Path.GetFileName(LoadedAFCFile)}";
             if (backgroundScanner != null && backgroundScanner.IsBusy)
             {
                 backgroundScanner.CancelAsync(); //cancel current operation
@@ -363,7 +363,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     int offset = (int)fileStream.Position;
 
-                    TaskbarText = $"Loading AFC: {System.IO.Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
+                    TaskbarText = $"Loading AFC: {Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
                     string readStr = fileStream.ReadStringASCII(4);
                     if (readStr != "RIFF" && readStr != "RIFX")
                     {
@@ -394,7 +394,7 @@ namespace ME3Explorer.Soundplorer
         {
             BindedItemsList.ClearEx();
             IsBusyTaskbar = true;
-            TaskbarText = $"Loading ISB: {System.IO.Path.GetFileName(LoadedISBFile)}";
+            TaskbarText = $"Loading ISB: {Path.GetFileName(LoadedISBFile)}";
             if (backgroundScanner != null && backgroundScanner.IsBusy)
             {
                 backgroundScanner.CancelAsync(); //cancel current operation
@@ -508,12 +508,12 @@ namespace ME3Explorer.Soundplorer
         private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             IsBusyTaskbar = true; //enforce spinner
-            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath) + " (" + e.ProgressPercentage + "%)";
+            TaskbarText = "Parsing " + Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath) + " (" + e.ProgressPercentage + "%)";
         }
 
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath);
+            TaskbarText = Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FilePath);
             IsBusyTaskbar = false;
         }
 
@@ -525,7 +525,7 @@ namespace ME3Explorer.Soundplorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            string extension = System.IO.Path.GetExtension(Pcc.FilePath);
+            string extension = Path.GetExtension(Pcc.FilePath);
             d.Filter = $"*{extension}|*{extension}";
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
@@ -606,7 +606,7 @@ namespace ME3Explorer.Soundplorer
             if (aEntry != null) soundPanel.LoadAFCEntry(aEntry);
         }
 
-        private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Soundplorer_Closing(object sender, CancelEventArgs e)
         {
             if (backgroundScanner != null && backgroundScanner.IsBusy)
             {
@@ -663,7 +663,7 @@ namespace ME3Explorer.Soundplorer
                                 if (waveStream != null && waveStream.Length > 0)
                                 {
                                     string outputname = wemName + ".wav";
-                                    string outpath = System.IO.Path.Combine(location, outputname);
+                                    string outpath = Path.Combine(location, outputname);
                                     using (var fileStream = File.Create(outpath))
                                     {
                                         waveStream.Seek(0, SeekOrigin.Begin);
@@ -715,15 +715,15 @@ namespace ME3Explorer.Soundplorer
                 return;
             }
 
-            string[] afcFiles = System.IO.Directory.GetFiles(dlg.FileName, "*.afc", SearchOption.AllDirectories);
-            string[] pccFiles = System.IO.Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories);
+            string[] afcFiles = Directory.GetFiles(dlg.FileName, "*.afc", SearchOption.AllDirectories);
+            string[] pccFiles = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories);
 
             if (afcFiles.Any() && pccFiles.Any())
             {
-                string foldername = System.IO.Path.GetFileName(dlg.FileName);
+                string foldername = Path.GetFileName(dlg.FileName);
                 if (foldername.ToLower() == "cookedpcconsole")
                 {
-                    foldername = System.IO.Path.GetFileName(System.IO.Directory.GetParent(dlg.FileName).FullName);
+                    foldername = Path.GetFileName(Directory.GetParent(dlg.FileName).FullName);
                 }
                 string result = PromptDialog.Prompt(this, "Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
                 if (result != null)
@@ -764,8 +764,8 @@ namespace ME3Explorer.Soundplorer
         {
             (string path, string NewAFCBaseName) = (ValueTuple<string, string>)e.Argument;
 
-            var pccFiles = System.IO.Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            var afcFiles = System.IO.Directory.GetFiles(path, "*.afc", SearchOption.AllDirectories);
+            var pccFiles = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
+            var afcFiles = Directory.GetFiles(path, "*.afc", SearchOption.AllDirectories);
             //.Select(x => System.IO.Path.GetFileNameWithoutExtension(x).ToLower()).ToArray();
 
             var referencedAFCAudio = new List<(string, int, int)>();
@@ -818,7 +818,7 @@ namespace ME3Explorer.Soundplorer
 
             var newAFCEntryPointMap = new Dictionary<(string, int, int), long>();
             i = 1;
-            string newAfcPath = System.IO.Path.Combine(path, NewAFCBaseName + ".afc");
+            string newAfcPath = Path.Combine(path, NewAFCBaseName + ".afc");
             if (File.Exists(newAfcPath))
             {
                 File.Delete(newAfcPath);
@@ -909,7 +909,7 @@ namespace ME3Explorer.Soundplorer
             bool silent = location != null;
             if (!silent)
             {
-                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
+                string presetfilename = $"{Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
                 SaveFileDialog d = new SaveFileDialog
                 {
                     Filter = "Wave PCM File|*.wav",
@@ -923,7 +923,7 @@ namespace ME3Explorer.Soundplorer
 
             if (location != null)
             {
-                using (Stream s = WwiseStream.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
+                using (Stream s = WwiseHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
                 {
                     using (var fileStream = File.Create(location))
                     {
@@ -961,7 +961,7 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
 
-                WwiseStream w = new WwiseStream(spExport.Export);
+                WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
                 Stream source = w.CreateWaveStream(w.GetPathToAFC());
                 if (source != null)
                 {
@@ -999,7 +999,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            WwiseStream w = new WwiseStream(spExport.Export);
+                            WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
                             if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
@@ -1013,7 +1013,7 @@ namespace ME3Explorer.Soundplorer
                     break;
                 case AFCFileEntry afcEntry:
                     {
-                        string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afcEntry.AFCPath)}_{afcEntry.Offset}.wem";
+                        string presetfilename = $"{Path.GetFileNameWithoutExtension(afcEntry.AFCPath)}_{afcEntry.Offset}.wem";
 
                         SaveFileDialog d = new SaveFileDialog
                         {
@@ -1022,7 +1022,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            if (WwiseStream.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
+                            if (WwiseHelper.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1047,12 +1047,12 @@ namespace ME3Explorer.Soundplorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    WwiseStream w = new WwiseStream(spExport.Export);
-                    string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
+                    WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
+                    string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
                     if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
-                        MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -1074,7 +1074,7 @@ namespace ME3Explorer.Soundplorer
 
             if (SoundExports_ListBox.SelectedItem is AFCFileEntry afE)
             {
-                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.ogg";
+                string presetfilename = $"{Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.ogg";
                 SaveFileDialog d = new SaveFileDialog
                 {
                     Filter = "Ogg Vorbis|*.ogg",
@@ -1082,11 +1082,11 @@ namespace ME3Explorer.Soundplorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
+                    string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (WwiseStream.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
+                    if (WwiseHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
-                        MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
+                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -1176,9 +1176,9 @@ namespace ME3Explorer.Soundplorer
         /// <param name="e"></param>
         private async void ConvertFolderToWwise_Clicked(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject")))
+            if (Directory.Exists(Path.Combine(Path.GetTempPath(), "TemplateProject")))
             {
-                await Soundpanel.TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
+                await Soundpanel.TryDeleteDirectory(Path.Combine(Path.GetTempPath(), "TemplateProject"));
             }
 
             //Verify Wwise is installed with the correct version
@@ -1233,7 +1233,7 @@ namespace ME3Explorer.Soundplorer
                     {
                         case SoundplorerExport sp when sp.Export.ClassName == "WwiseStream":
                             {
-                                string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                                string outfile = Path.Combine(location, sp.Export.ObjectName + ".wav");
                                 ExportWave(sp, outfile);
                                 break;
                             }
@@ -1244,15 +1244,15 @@ namespace ME3Explorer.Soundplorer
                             }
                         case ISACTFileEntry ife:
                             {
-                                string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                                string outfile = Path.Combine(location, Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
                                 MemoryStream ms = ife.Entry.GetWaveStream();
                                 File.WriteAllBytes(outfile, ms.ToArray());
                                 break;
                             }
                         case AFCFileEntry afE:
                             {
-                                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
-                                ExportWaveAFC(afE, System.IO.Path.Combine(location, presetfilename));
+                                string presetfilename = $"{Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
+                                ExportWaveAFC(afE, Path.Combine(location, presetfilename));
                                 break;
                             }
                     }
@@ -1308,13 +1308,6 @@ namespace ME3Explorer.Soundplorer
             ReverseEndianDisplayOfIDs_MenuItem.IsChecked = !ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.Save();
-        }
-
-        private void OpenInWwiseBankEditor_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var editor = new WwiseEditor();
-            editor.LoadFile(Pcc.FilePath);
-            editor.Show();
         }
 
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1624,7 +1617,7 @@ namespace ME3Explorer.Soundplorer
 
         public ISACTFileEntry(ISBankEntry entry)
         {
-            this.Entry = entry;
+            Entry = entry;
             SubText = "Calculating stream length";
             Icon = EFontAwesomeIcon.Solid_Spinner;
             NeedsLoading = true;
@@ -1695,7 +1688,7 @@ namespace ME3Explorer.Soundplorer
         }
         public SoundplorerExport(ExportEntry export)
         {
-            this.Export = export;
+            Export = export;
             if (Export.ClassName == "WwiseStream")
             {
                 SubText = "Calculating stream length";
@@ -1719,7 +1712,7 @@ namespace ME3Explorer.Soundplorer
         {
             if (Export.ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(Export);
+                WwiseStream w = Export.GetBinaryData<WwiseStream>();
                 string afcPath = w.GetPathToAFC();
                 if (afcPath == "")
                 {

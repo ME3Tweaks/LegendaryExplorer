@@ -47,6 +47,17 @@ namespace ME3Explorer.GameInterop
             }
         }
 
+        public static bool SendTOCUpdateMessage()
+        {
+            if (TryGetME3Process(out Process me3Process))
+            {
+                const uint ME3_TOCUPDATE = 0x8000 + 'T' + 'O' + 'C';
+                return SendMessage(me3Process.MainWindowHandle, ME3_TOCUPDATE, 0, 0);
+            }
+
+            return false;
+        }
+
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, params string[] commands) => ExecuteConsoleCommands(hWnd, game, commands.AsEnumerable());
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
         {
@@ -85,6 +96,8 @@ namespace ME3Explorer.GameInterop
             return IntPtr.Zero;
         }
 
+        [DllImport("user32.dll")]
+        static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         [DllImport("user32.dll")]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         const int WM_SYSKEYDOWN = 0x0104;

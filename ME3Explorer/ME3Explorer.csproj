@@ -294,11 +294,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AnimationExplorer\AnimationExplorerWPF.xaml">
+    <Page Include="AnimationExplorer\AnimationImporter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AnimationExplorer\Requirement.xaml">
+    <Page Include="AnimationExplorer\AnimationViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\Requirement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -382,10 +386,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AnimationExplorer\AnimationExplorerWPF.xaml.cs">
-      <DependentUpon>AnimationExplorerWPF.xaml</DependentUpon>
+    <Compile Include="AnimationExplorer\AnimationImporter.xaml.cs">
+      <DependentUpon>AnimationImporter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AnimationExplorer\Requirement.xaml.cs">
+    <Compile Include="AnimationExplorer\AnimationViewer.xaml.cs">
+      <DependentUpon>AnimationViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Packages\ExportCreator.cs" />
+    <Compile Include="SharedUI\Requirement.xaml.cs">
       <DependentUpon>Requirement.xaml</DependentUpon>
     </Compile>
     <Compile Include="APIKeysP*.cs" />
@@ -580,12 +588,6 @@
     <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
-    <Compile Include="ME2\FaceFXAnimSetEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\FaceFXAnimSetEditor.Designer.cs">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
@@ -860,7 +862,6 @@
     <Compile Include="Soundplorer\ISBank.cs" />
     <Compile Include="Soundplorer\ISBankEntry.cs" />
     <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
-    <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="SharedUI\ExportLoaderControl.cs" />
     <Compile Include="SharedUI\IExportLoader.cs" />
@@ -918,11 +919,14 @@
     <Compile Include="Unreal\ActorUtils.cs" />
     <Compile Include="Unreal\BinaryConverters\AnimSequence.cs" />
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
+    <Compile Include="Unreal\BinaryConverters\BioGestureRuntimeData.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
     <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
+    <Compile Include="Unreal\BinaryConverters\GuidCache.cs" />
     <Compile Include="Unreal\BinaryConverters\InterpCurve.cs" />
     <Compile Include="Unreal\BinaryConverters\KDOPTreeBuilder.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticCollectionActor.cs" />
+    <Compile Include="Unreal\BinaryConverters\UTexture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\UClass.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
@@ -953,19 +957,18 @@
     <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
     <Compile Include="Unreal\BinaryConverters\UState.cs" />
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseStream.cs" />
+    <Compile Include="Unreal\WwiseHelper.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\ME3Enums.cs" />
+    <Compile Include="Unreal\PSA.cs" />
     <Compile Include="Unreal\SerializingContainer2.cs" />
     <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
-    <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
-    <Compile Include="Unreal\Classes\AnimSequence.cs" />
-    <Compile Include="Unreal\Classes\AnimSet.cs" />
-    <Compile Include="Unreal\Classes\AnimTree.cs" />
-    <Compile Include="Unreal\Classes\BioAnimSetData.cs" />
     <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
@@ -973,14 +976,12 @@
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\World.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
-    <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
-    <Compile Include="Unreal\PSAFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TalkFile.cs" />
     <Compile Include="Unreal\TextureCompression.cs" />
@@ -994,12 +995,6 @@
     </Compile>
     <Compile Include="WPFBase.cs" />
     <Compile Include="SharedUI\Converters\WPFConverters.cs" />
-    <Compile Include="WwiseBankViewer\WwiseViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WwiseBankViewer\WwiseViewer.Designer.cs">
-      <DependentUpon>WwiseViewer.cs</DependentUpon>
-    </Compile>
     <Page Include="InitialSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1016,12 +1011,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AnimationExplorer\AnimationExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AnimationExplorer\AnimationExplorer.Designer.cs">
-      <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1049,12 +1038,6 @@
     </Compile>
     <Compile Include="SharedUI\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -1322,9 +1305,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
-      <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
@@ -1341,14 +1321,8 @@
     <EmbeddedResource Include="SharedUI\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
-      <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer\Meshplorer.resx">
       <DependentUpon>Meshplorer.cs</DependentUpon>
@@ -1369,9 +1343,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
-      <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
@@ -1567,6 +1538,10 @@
     <Resource Include="PackageEditor\bink.jpg" />
     <Resource Include="Meshplorer\udk.ico" />
     <Resource Include="PackageEditor\EntryIcons\icon_state.png" />
+    <Resource Include="Resources\animationimporter_256x256.ico" />
+    <Resource Include="Resources\animviewer_256x256.ico" />
+    <Resource Include="Resources\audiolocalizer_256x256.ico" />
+    <Resource Include="Resources\liveleveleditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

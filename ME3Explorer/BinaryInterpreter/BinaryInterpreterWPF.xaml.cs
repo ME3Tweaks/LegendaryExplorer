@@ -60,7 +60,23 @@ namespace ME3Explorer
         }
 
         public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
-            "NavigateToEntryCommand", typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
+            nameof(NavigateToEntryCommand), typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
+
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
 
         private HexBox BinaryInterpreter_Hexbox;
 
@@ -265,6 +281,7 @@ namespace ME3Explorer
             "IntProperty",
             "Level",
             "LightMapTexture2D",
+            "MapProperty",
             "Material",
             "MaterialInstanceConstant",
             "MaterialInstanceConstants",
@@ -513,6 +530,7 @@ namespace ME3Explorer
                     case "ComponentProperty":
                     case "ObjectProperty":
                     case "DelegateProperty":
+                    case "MapProperty":
                         subNodes.AddRange(StartPropertyScan(data, ref binarystart));
                         break;
                     case "BioDynamicAnimSet":
@@ -782,7 +800,7 @@ namespace ME3Explorer
             //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             TreeViewItems.ClearEx();
-            if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
+            if (CurrentLoadedExport != null && CurrentLoadedExport.DataSize > 20480)
             {
                 //There was likely a large amount of nodes placed onto the UI
                 //Lets free that memory once this export unloads
@@ -801,7 +819,7 @@ namespace ME3Explorer
                     detach?.Invoke();
                 });
 
-                detach = new Action(() => timer.Tick -= handler); // No need for deregistering but just for safety let's do it.
+                detach = () => timer.Tick -= handler; // No need for deregistering but just for safety let's do it.
                 timer.Tick += handler;
                 timer.Start();
             }
@@ -993,6 +1011,9 @@ namespace ME3Explorer
         private void BinaryInterpreter_Loaded(object sender, RoutedEventArgs e)
         {
             BinaryInterpreter_Hexbox = (HexBox)BinaryInterpreter_Hexbox_Host.Child;
+
+            this.bind(HexBoxMinWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MinWidth));
+            this.bind(HexBoxMaxWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MaxWidth));
         }
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
@@ -1321,10 +1342,10 @@ namespace ME3Explorer
             else
             {
                 i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
-                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
-                i.HexboxColumnDefinition.MinWidth = 220;
-                i.HexboxColumnDefinition.MaxWidth = 718;
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
             }
         }
 

@@ -17,6 +17,7 @@ using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
@@ -62,6 +63,10 @@ namespace ME3Explorer
         public AudioLocalizer()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Audio Localizer", new WeakReference(this));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
+            {
+                { "Toolname", "Audio Localizer" }
+            });
 
             DataContext = this;
             LoadCommands();

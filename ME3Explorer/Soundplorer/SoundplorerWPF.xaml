@@ -15,7 +15,7 @@
         Drop="Window_Drop"
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Soundplorer" Height="450" Width="830" Loaded="SoundplorerWPF_OnLoaded">
+        Title="Soundplorer" Height="483" Width="830" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -55,7 +55,6 @@
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
         <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
         <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:SoundplorerWPFCommands.OpenInWwiseBankEditor" Executed="OpenInWwiseBankEditor_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
@@ -70,7 +69,6 @@
                     <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
                     <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="_Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="_Open in WwiseBank Editor" Command="Commands:SoundplorerWPFCommands.OpenInWwiseBankEditor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
 
                     <Separator/>
                     <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>

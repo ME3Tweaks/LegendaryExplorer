@@ -200,7 +200,7 @@ namespace ME3Explorer.Packages
         ///     exposed so that the property import function can restore the namelist after a failure.
         ///     please don't use it anywhere else.
         /// </summary>
-        void setNames(List<string> list);
+        void restoreNames(List<string> list);
 
         /// <summary>
         /// Removes trashed imports and exports if they are at the end of their respective lists

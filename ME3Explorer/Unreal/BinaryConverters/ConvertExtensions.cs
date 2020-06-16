@@ -109,7 +109,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     ++elIdx;
                 }
                 tris[i / 3] = new kDOPCollisionTriangle(lodModel.IndexBuffer[i], lodModel.IndexBuffer[i + 1], lodModel.IndexBuffer[i + 2],
-                                                            lodModel.Sections[elIdx].MaterialIndex);
+                                                        lodModel.Sections[elIdx].MaterialIndex);
             }
 
             stm.kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(tris, stm.LODModels[0].PositionVertexBuffer.VertexData);

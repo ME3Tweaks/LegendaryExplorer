@@ -14,21 +14,25 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public static class ExportBinaryConverter
     {
-        public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame)
+        public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame, PropertyCollection newProps)
         {
             if (export.GetBinaryData().Length == 0)
             {
                 return Array.Empty<byte>();
             }
 
-            if (From(export) is ObjectBinary objbin)
-            {
-                return objbin;
-            }
-
             if (export.IsTexture())
             {
                 return ConvertTexture2D(export, newGame);
+            }
+
+            if (From(export) is ObjectBinary objbin)
+            {
+                if (objbin is AnimSequence animSeq)
+                {
+                    animSeq.UpdateProps(newProps, newGame);
+                }
+                return objbin;
             }
 
             switch (export.ClassName)

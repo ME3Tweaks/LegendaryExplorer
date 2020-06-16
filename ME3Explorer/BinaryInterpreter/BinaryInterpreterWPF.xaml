@@ -97,7 +97,7 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                        <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
                         <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>

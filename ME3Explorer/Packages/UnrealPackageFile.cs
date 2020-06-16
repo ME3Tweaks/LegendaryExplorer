@@ -114,7 +114,7 @@ namespace ME3Explorer.Packages
             return -1;
         }
 
-        public void setNames(List<string> list)
+        public void restoreNames(List<string> list)
         {
             names = list;
             NameCount = names.Count;
@@ -133,7 +133,11 @@ namespace ME3Explorer.Packages
             return index + 1;
         }
 
-        public NameReference GetNextIndexedName(string name) => new NameReference(name, GetNextIndexForName(name));
+        public NameReference GetNextIndexedName(string name)
+        {
+            name = name.Trim().Replace(' ', '_'); //no spaces 
+            return new NameReference(name, GetNextIndexForName(name));
+        }
 
         #endregion
 

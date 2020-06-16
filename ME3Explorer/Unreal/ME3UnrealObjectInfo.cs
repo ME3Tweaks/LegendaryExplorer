@@ -926,6 +926,25 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SFXSeqAct_SetStuntBodyMesh"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
 
+            //Kinkojiro - New Class - SFXSeqAct_SetStuntMeshes
+            NewClasses["SFXSeqAct_SetStuntMeshes"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 79, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<string, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<string, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<string, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                }
+            };
+            newSequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",

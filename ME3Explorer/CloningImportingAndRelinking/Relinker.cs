@@ -81,9 +81,9 @@ namespace ME3Explorer
             }
 
             //Relink Properties
-            PropertyCollection transplantProps = sourceExport.GetProperties();
-            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, transplantProps, crossPCCObjectMappingList, "", importExportDependencies));
-            relinkingExport.WriteProperties(transplantProps);
+            PropertyCollection props = relinkingExport.GetProperties();
+            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies));
+            relinkingExport.WriteProperties(props);
 
             //Relink Binary
             try
@@ -126,25 +126,22 @@ namespace ME3Explorer
                             func.Decompile(new TextBuilder(), false); //parse bytecode
                             var nameRefs = func.NameReferences;
                             var entryRefs = func.EntryReferences;
-                            foreach (var nr in nameRefs)
+                            foreach ((long position, NameReference nameRef) in nameRefs)
                             {
-                                if (nr.Key < uStructBinary.ScriptBytes.Length)
+                                if (position < uStructBinary.ScriptBytes.Length)
                                 {
-                                    RelinkNameReference(nr.Value.Name, nr.Key, uStructBinary.ScriptBytes, relinkingExport);
+                                    RelinkNameReference(nameRef.Name, position, uStructBinary.ScriptBytes, relinkingExport);
                                 }
                             }
 
-                            foreach (var ef in entryRefs)
+                            foreach ((long position, IEntry entry) in entryRefs)
                             {
-                                if (ef.Key < uStructBinary.ScriptBytes.Length)
+                                if (position < uStructBinary.ScriptBytes.Length)
                                 {
-                                    relinkFailedReport.AddRange(RelinkUnhoodEntryReference(ef.Value, ef.Key, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
+                                    relinkFailedReport.AddRange(RelinkUnhoodEntryReference(entry, position, uStructBinary.ScriptBytes, sourceExport, relinkingExport, crossPCCObjectMappingList,
                                         importExportDependencies));
                                 }
                             }
-
-                            //relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. {relinkingExport.ClassName} contains script, " +
-                            //                                                                 $"which cannot be relinked for {relinkingExport.Game}"));
                         }
                     }
 
@@ -158,64 +155,6 @@ namespace ME3Explorer
                 {
                     switch (relinkingExport.ClassName)
                     {
-                        //todo: make a WwiseEvent ObjectBinary class
-                        case "WwiseEvent":
-                            {
-                                void relinkAtPosition(int binaryPosition, string propertyName)
-                                {
-                                    int uIndex = BitConverter.ToInt32(binarydata, binaryPosition);
-                                    var relinkResult = relinkUIndex(sourcePcc, relinkingExport, ref uIndex, propertyName,
-                                                                       crossPCCObjectMappingList, "", importExportDependencies);
-                                    if (relinkResult is null)
-                                    {
-                                        binarydata.OverwriteRange(binaryPosition, BitConverter.GetBytes(uIndex));
-                                    }
-                                    else
-                                    {
-                                        relinkFailedReport.Add(relinkResult);
-                                    }
-                                }
-
-                                if (relinkingExport.FileRef.Game == MEGame.ME3)
-                                {
-                                    int count = BitConverter.ToInt32(binarydata, 0);
-                                    for (int j = 0; j < count; j++)
-                                    {
-                                        relinkAtPosition(4 + (j * 4), $"(Binary Property: WwiseStreams[{j}])");
-                                    }
-
-                                    relinkingExport.SetBinaryData(binarydata);
-                                }
-                                else if (relinkingExport.FileRef.Game == MEGame.ME2)
-                                {
-                                    int parsingPos = 4;
-                                    int linkCount = BitConverter.ToInt32(binarydata, parsingPos);
-                                    parsingPos += 4;
-                                    for (int j = 0; j < linkCount; j++)
-                                    {
-                                        int bankcount = BitConverter.ToInt32(binarydata, parsingPos);
-                                        parsingPos += 4;
-                                        for (int k = 0; k < bankcount; k++)
-                                        {
-                                            relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseBanks[{k}])");
-
-                                            parsingPos += 4;
-                                        }
-
-                                        int wwisestreamcount = BitConverter.ToInt32(binarydata, parsingPos);
-                                        parsingPos += 4;
-                                        for (int k = 0; k < wwisestreamcount; k++)
-                                        {
-                                            relinkAtPosition(parsingPos, $"(Binary Property: link[{j}].WwiseStreams[{k}])");
-
-                                            parsingPos += 4;
-                                        }
-                                    }
-
-                                    relinkingExport.SetBinaryData(binarydata);
-                                }
-                            }
-                            break;
                         case "DominantDirectionalLightComponent":
                         case "SphericalHarmonicLightComponent":
                         case "DominantPointLightComponent":

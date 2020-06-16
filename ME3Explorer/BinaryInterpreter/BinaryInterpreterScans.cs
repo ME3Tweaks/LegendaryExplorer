@@ -3234,7 +3234,7 @@ namespace ME3Explorer
         {
             var subnodes = new List<ITreeItem>();
 
-            #region UDK
+            #region UDK AKF_PerTrackCompression
 
             if (Pcc.Game == MEGame.UDK && CurrentLoadedExport.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name == "AKF_PerTrackCompression")
             {
@@ -3290,25 +3290,41 @@ namespace ME3Explorer
                             int numKeys = header & 0x00FFFFFF;
                             int formatFlags = (header >> 24) & 0x0F;
                             AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
-                            switch (keyFormat)
-                            {
-                                case AnimationCompressionFormat.ACF_None:
-                                case AnimationCompressionFormat.ACF_Float96NoW:
-                                    break;
-                                case AnimationCompressionFormat.ACF_Fixed48NoW:
-                                case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
-                                case AnimationCompressionFormat.ACF_Fixed32NoW:
-                                case AnimationCompressionFormat.ACF_Float32NoW:
-                                case AnimationCompressionFormat.ACF_BioFixed48:
-                                default:
-                                    throw new NotImplementedException($"{keyFormat} is not supported yet!");
-                            }
+                            
 
-                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}") { Length = 4 });
+                            boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}, FormatFlags:{formatFlags:X}") { Length = 4 });
 
                             for (int j = 0; j < numKeys; j++)
                             {
-                                boneNode.Items.Add(MakeVectorNode(bin, $"PosKey {j}"));
+                                switch (keyFormat)
+                                {
+                                    case AnimationCompressionFormat.ACF_None:
+                                    case AnimationCompressionFormat.ACF_Float96NoW:
+                                        if ((formatFlags & 7) == 0)
+                                        {
+                                            boneNode.Items.Add(MakeVectorNode(bin, $"PosKey {j}"));
+                                        }
+                                        else
+                                        {
+                                            long binPosition = bin.Position;
+                                            int keyLength = 4 * ((formatFlags & 1) + ((formatFlags >> 1) & 1) + ((formatFlags >> 2) & 1));
+                                            float x = (formatFlags & 1) != 0 ? bin.ReadFloat() : 0,
+                                                  y = (formatFlags & 2) != 0 ? bin.ReadFloat() : 0,
+                                                  z = (formatFlags & 4) != 0 ? bin.ReadFloat() : 0;
+                                            boneNode.Items.Add(new BinInterpNode(binPosition, $"PosKey {j}: (X: {x}, Y: {y}, Z: {z})")
+                                            {
+                                                Length = keyLength
+                                            });
+                                        }
+                                        break;
+                                    case AnimationCompressionFormat.ACF_Fixed48NoW:
+                                    case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
+                                    case AnimationCompressionFormat.ACF_Fixed32NoW:
+                                    case AnimationCompressionFormat.ACF_Float32NoW:
+                                    case AnimationCompressionFormat.ACF_BioFixed48:
+                                    default:
+                                        throw new NotImplementedException($"{keyFormat} is not supported yet!");
+                                }
                             }
                         }
 
@@ -3335,17 +3351,16 @@ namespace ME3Explorer
                                 }
                                 case AnimationCompressionFormat.ACF_Fixed48NoW:
                                 {
-                                    //todo: account for format flags
-                                    const float scale = 128.0f / 32767.0f;
+                                    const float scale = 32767.0f;
                                     const ushort unkConst = 32767;
                                     int keyLength = 2 * ((formatFlags & 1) + ((formatFlags >> 1) & 1) + ((formatFlags >> 2) & 1));
                                     for (int j = 0; j < numKeys; j++)
                                     {
                                         long binPosition = bin.Position;
-                                        float x = (formatFlags & 1) == 1 ? bin.ReadUInt16() : 0,
-                                              y = ((formatFlags >> 1) & 1) == 1 ? bin.ReadUInt16() : 0,
-                                              z = ((formatFlags >> 2) & 1) == 1 ? bin.ReadUInt16() : 0;
-                                        boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x = (x - unkConst) * scale}, Y: {y = (y - unkConst) * scale}, Z: {z = (z - unkConst) * scale}, W: {getW(x, y, z)})")
+                                        float x = (formatFlags & 1) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
+                                              y = (formatFlags & 2) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
+                                              z = (formatFlags & 4) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0;
+                                        boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x}, Y: {y}, Z: {z}, W: {getW(x, y, z)})")
                                         {
                                             Length = keyLength
                                         });
@@ -3389,14 +3404,23 @@ namespace ME3Explorer
             try
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
-                var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
                 var numFrames = CurrentLoadedExport.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
 
-                //In ME2, BioAnimSetData can sometimes be in a different package. 
-                List<string> boneList = Pcc.IsUExport(animsetData.Value)
-                    ? Pcc.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames").Select(np => $"{np}").ToList()
-                    : Enumerable.Repeat("???", TrackOffsets.Count / 4).ToList();
+                List<string> boneList;
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    boneList = ((ExportEntry)CurrentLoadedExport.Parent)?.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList();
+                }
+                else
+                {
+                    var animsetData = CurrentLoadedExport.GetProperty<ObjectProperty>("m_pBioAnimSetData");
+                    //In ME2, BioAnimSetData can sometimes be in a different package. 
+                    boneList = animsetData != null && Pcc.IsUExport(animsetData.Value)
+                        ? Pcc.GetUExport(animsetData.Value).GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames")?.Select(np => $"{np}").ToList()
+                        : null;
+                }
 
+                boneList ??= Enumerable.Repeat("???", TrackOffsets.Count / 4).ToList();
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("KeyEncodingFormat")?.Value.Name, out AnimationKeyFormat keyEncoding);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("RotationCompressionFormat")?.Value.Name, out AnimationCompressionFormat rotCompression);
                 Enum.TryParse(CurrentLoadedExport.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out AnimationCompressionFormat posCompression);
@@ -3408,6 +3432,35 @@ namespace ME3Explorer
                     bin.Skip(12);
                     subnodes.Add(MakeInt32Node(bin, "AnimBinary Offset"));
                 }
+                else if (Pcc.Game == MEGame.UDK)
+                {
+                    int numTracks = bin.ReadInt32() * 2;
+                    bin.Skip(-4);
+
+                    BinInterpNode rawAnimDataNode = MakeInt32Node(bin, "RawAnimationData: NumTracks");
+                    subnodes.Add(rawAnimDataNode);
+                    for (int i = 0; i < numTracks; i++)
+                    {
+                        int keySize = bin.ReadInt32();
+                        int numKeys = bin.ReadInt32();
+                        for (int j = 0; j < numKeys; j++)
+                        {
+                            if (keySize == 12)
+                            {
+                                rawAnimDataNode.Items.Add(MakeVectorNode(bin, $"{boneList[i / 2]}, PosKey {j}"));
+                            }
+                            else if (keySize == 16)
+                            {
+                                rawAnimDataNode.Items.Add(MakeQuatNode(bin, $"{boneList[i / 2]}, RotKey {j}"));
+                            }
+                            else
+                            {
+                                throw new NotImplementedException($"Unexpected key size: {keySize}");
+                            }
+                        }
+                    }
+                }
+
 
                 subnodes.Add(MakeInt32Node(bin, "AnimBinary length"));
                 var startOffset = bin.Position;
@@ -3464,7 +3517,7 @@ namespace ME3Explorer
                         {
                             compressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
                         }
-                        else
+                        else if (Pcc.Game != MEGame.UDK)
                         {
                             boneNode.Items.Add(MakeVectorNode(bin, "Mins"));
                             boneNode.Items.Add(MakeVectorNode(bin, "Ranges"));
@@ -4205,50 +4258,98 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                subnodes.Add(MakeArrayNode(bin, "AnimToPackageMap?", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")));
+                subnodes.Add(MakeArrayNode(bin, "m_mapAnimSetOwners", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")
+                {
+                    Length = 16
+                }));
 
                 int count;
-                var propDataNode = new BinInterpNode(bin.Position, $"PropData? ({count = bin.ReadInt32()} items)");
-                subnodes.Add(propDataNode);
-                for (int i = 0; i < count; i++)
+                if (CurrentLoadedExport.Game == MEGame.ME1)
                 {
-                    BinInterpNode node = new BinInterpNode(bin.Position, $"{i}")
+                    var propDataNode = new BinInterpNode(bin.Position, $"m_mapCharTypeOverrides ({count = bin.ReadInt32()} items)");
+                    subnodes.Add(propDataNode);
+                    for (int i = 0; i < count; i++)
                     {
-                        IsExpanded = true
-                    };
-                    propDataNode.Items.Add(node);
-                    node.Items.Add(MakeNameNode(bin, "PropName1"));
-                    node.Items.Add(MakeNameNode(bin, "PropName2"));
-                    node.Items.Add(MakeStringNode(bin, "PropMeshPath"));
-                    node.Items.Add(MakeNameNode(bin, "Bone"));
-                    node.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
-                    node.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
-                    node.Items.Add(MakeVectorNode(bin, "Scale3D"));
-                    int count2;
-                    var propActionsNode = new BinInterpNode(bin.Position, $"Prop Actions ({count2 = bin.ReadInt32()} items)");
-                    node.Items.Add(propActionsNode);
-                    for (int j = 0; j < count2; j++)
+                        propDataNode.Items.Add(new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                        {
+                            Length = 8,
+                            IsExpanded = true,
+                            Items =
+                            {
+                                MakeNameNode(bin, "nm_Female"),
+                                MakeNameNode(bin, "nm_Asari"),
+                                MakeNameNode(bin, "nm_Turian"),
+                                MakeNameNode(bin, "nm_Salarian"),
+                                MakeNameNode(bin, "nm_Quarian"),
+                                MakeNameNode(bin, "nm_Other"),
+                                MakeNameNode(bin, "nm_Krogan"),
+                                MakeNameNode(bin, "nm_Geth"),
+                                MakeNameNode(bin, "nm_Other_Artificial")
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    var propDataNode = new BinInterpNode(bin.Position, $"m_mapMeshProps ({count = bin.ReadInt32()} items)");
+                    subnodes.Add(propDataNode);
+                    for (int i = 0; i < count; i++)
                     {
-                        BinInterpNode node2 = new BinInterpNode(bin.Position, $"{j}")
+                        BinInterpNode node = new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                        {
+                            Length = 8
+                        };
+                        propDataNode.Items.Add(node);
+                        node.Items.Add(MakeNameNode(bin, "nmPropName"));
+                        node.Items.Add(MakeStringNode(bin, "sMesh"));
+                        node.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                        node.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
+                        node.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
+                        node.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
+                        int count2;
+                        var propActionsNode = new BinInterpNode(bin.Position, $"mapActions ({count2 = bin.ReadInt32()} items)")
                         {
                             IsExpanded = true
                         };
-                        propActionsNode.Items.Add(node2);
-                        node2.Items.Add(MakeNameNode(bin, "ActionName1"));
-                        node2.Items.Add(MakeNameNode(bin, "ActionName2"));
-                        node2.Items.Add(MakeInt32Node(bin, "Equip?"));
-                        node2.Items.Add(MakeNameNode(bin, "Name3"));
-                        node2.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
-                        node2.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
-                        node2.Items.Add(MakeVectorNode(bin, "Scale3D"));
-                        node2.Items.Add(MakeStringNode(bin, "ParticleSystem"));
-                        node2.Items.Add(MakeStringNode(bin, "ClientEffect"));
-                        node2.Items.Add(MakeInt32Node(bin, "unk"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeNameNode(bin, "Name?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                        node.Items.Add(propActionsNode);
+                        for (int j = 0; j < count2; j++)
+                        {
+                            BinInterpNode node2 = new BinInterpNode(bin.Position, $"{j}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                            {
+                                Length = 8
+                            };
+                            propActionsNode.Items.Add(node2);
+                            node2.Items.Add(MakeNameNode(bin, "nmActionName"));
+                            if (CurrentLoadedExport.Game == MEGame.ME2)
+                            {
+                                node2.Items.Add(MakeStringNode(bin, "sEffect"));
+                            }
+
+                            node2.Items.Add(MakeBoolIntNode(bin, "bActivate"));
+                            node2.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                            node2.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
+                            node2.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
+                            node2.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
+                            if (CurrentLoadedExport.Game == MEGame.ME3)
+                            {
+                                node2.Items.Add(MakeStringNode(bin, "sParticleSys"));
+                                node2.Items.Add(MakeStringNode(bin, "sClientEffect"));
+                                node2.Items.Add(MakeBoolIntNode(bin, "bCooldown"));
+                                node2.Items.Add(new BinInterpNode(bin.Position, "tSpawnParams")
+                                {
+                                    Length = 0x38,
+                                    IsExpanded = true,
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "vHitLocation"),
+                                        MakeVectorNode(bin, "vHitNormal"),
+                                        MakeNameNode(bin, "nmHitBone"),
+                                        MakeVectorNode(bin, "vRayDir"),
+                                        MakeVectorNode(bin, "vSpawnValue")
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -4327,6 +4428,10 @@ namespace ME3Explorer
                     case "ClassProperty":
                         subnodes.Add(MakeEntryNode(bin, "Outer class"));
                         subnodes.Add(MakeEntryNode(bin, "Class type"));
+                        break;
+                    case "MapProperty":
+                        subnodes.Add(MakeEntryNode(bin, "Key Type"));
+                        subnodes.Add(MakeEntryNode(bin, "Value Type"));
                         break;
                 }
             }
@@ -4964,7 +5069,7 @@ namespace ME3Explorer
                     Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} {CurrentLoadedExport.FileRef.GetNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Header = $"{(pos - binarystart):X4} {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(nameRef), nameIdx).Instanced}: {{{guid}}}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafName

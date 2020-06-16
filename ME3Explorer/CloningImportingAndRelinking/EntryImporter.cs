@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -55,7 +56,7 @@ namespace ME3Explorer
         /// <param name="relinkMap"></param>
         /// <returns></returns>
         public static List<ListDialog.EntryItem> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
-                                                          out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null)
+                                                                        out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
@@ -202,7 +203,7 @@ namespace ME3Explorer
             catch (Exception exception) when(!App.IsDebug)
             {
                 //restore namelist in event of failure.
-                destPackage.setNames(names);
+                destPackage.restoreNames(names);
                 MessageBox.Show($"Error occured while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
                 throw;
             }
@@ -212,7 +213,8 @@ namespace ME3Explorer
 
             //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
             //for unsupported classes, this will just copy over the binary
-            ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game);
+            //sometimes converting binary requires altering the properties as well
+            ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
             IEntry classValue = null;
@@ -314,16 +316,18 @@ namespace ME3Explorer
             List<string> names = targetExport.FileRef.Names.ToList();
             try
             {
-                incomingExport.GetProperties().WriteTo(res.Writer, targetExport.FileRef);
+                PropertyCollection props = incomingExport.GetProperties();
+                ObjectBinary binary = ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game, props);
+                props.WriteTo(res.Writer, targetExport.FileRef);
+                res.Writer.WriteFromBuffer(binary.ToBytes(targetExport.FileRef));
             }
             catch (Exception exception)
             {
                 //restore namelist in event of failure.
-                targetExport.FileRef.setNames(names);
+                targetExport.FileRef.restoreNames(names);
                 MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
                 return false;
             }
-            res.Writer.WriteFromBuffer(ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game).ToBytes(targetExport.FileRef));
             targetExport.Data = res.ToArray();
             return true;
         }
@@ -342,7 +346,7 @@ namespace ME3Explorer
         public static IEntry GetOrAddCrossImportOrPackage(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC,
                                                           bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null)
         {
-            if (string.IsNullOrEmpty(importFullName))
+            if (String.IsNullOrEmpty(importFullName))
             {
                 return null;
             }
@@ -387,7 +391,7 @@ namespace ME3Explorer
             string[] importParts = importFullName.Split('.');
 
             //recursively ensure parent exists. when importParts.Length == 1, this will return null
-            IEntry parent = GetOrAddCrossImportOrPackage(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
+            IEntry parent = GetOrAddCrossImportOrPackage(String.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
                                                          importNonPackageExportsToo, objectMapping);
 
 
@@ -434,7 +438,7 @@ namespace ME3Explorer
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<ListDialog.EntryItem> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
-            if (string.IsNullOrEmpty(importFullName))
+            if (String.IsNullOrEmpty(importFullName))
             {
                 return destinationPCC.getEntryOrAddImport(packageName, "Package");
             }
@@ -462,7 +466,7 @@ namespace ME3Explorer
             string[] importParts = importFullName.Split('.');
 
             //recursively ensure parent exists
-            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
+            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(String.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
 
 
             foreach (ImportEntry sourceImport in sourcePcc.Imports)
@@ -611,7 +615,7 @@ namespace ME3Explorer
                     entriesToRemove.Add(pcc.Imports[i]);
                 }
                 EntryPruner.TrashEntries(pcc, entriesToRemove);
-                pcc.setNames(nameListBackup);
+                pcc.restoreNames(nameListBackup);
                 return null;
             }
         }
@@ -619,20 +623,23 @@ namespace ME3Explorer
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
         private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "BIOC_Base.u", "BIOC_BaseDLC_Vegas.u", "BIOC_BaseDLC_UNC.u" };
 
-        private static readonly string[] me2FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc" };
+        private static readonly string[] me2FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup_INT.pcc" };
 
         private static readonly string[] me3FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup.pcc", "GFxUI.pcc", "GameFramework.pcc" };
 
         public static bool IsSafeToImportFrom(string path, MEGame game)
         {
             string fileName = Path.GetFileName(path);
-            return (game switch
+            return FilesSafeToImportFrom(game).Any(f => fileName == f);
+        }
+
+        private static string[] FilesSafeToImportFrom(MEGame game) =>
+            game switch
             {
                 MEGame.ME1 => me1FilesSafeToImportFrom,
                 MEGame.ME2 => me2FilesSafeToImportFrom,
                 _ => me3FilesSafeToImportFrom
-            }).Any(f => fileName == f);
-        }
+            };
 
         public static bool CanImport(string className, MEGame game) => CanImport(UnrealObjectInfo.GetClassOrStructInfo(game, className), game);
 
@@ -650,6 +657,125 @@ namespace ME3Explorer
                 _ => me1Me2StackDummy
             });
             return ms.ToArray();
+        }
+
+        public static ExportEntry ResolveImport(ImportEntry entry)
+        {
+            var entryFullPath = entry.FullPath;
+
+            // Next, split the filename by underscores
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
+            string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
+            var packagesToCheck = new List<string>();
+
+            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
+            if (isBioXfile)
+            {
+                string bioXNextFileLookup(string filename)
+                {
+                    //Lookup parents
+                    var bioType = filename[3];
+                    string[] parts = filename.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
+                    {
+                        var levelName = parts[1];
+                        switch (bioType)
+                        {
+                            case 'a' when parts.Length > 2:
+                                return $"bioa_{levelName}";
+                            case 'd' when parts.Length > 2:
+                                return $"biod_{levelName}";
+                            case 's' when parts.Length > 2:
+                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
+                            case 'a' when parts.Length == 2:
+                            case 'd' when parts.Length == 2:
+                            case 's' when parts.Length == 2:
+                                return $"biop_{levelName}";
+                        }
+                    }
+
+                    return null;
+                }
+
+                packagesToCheck.Add(filenameWithoutExtension + "_LOC_INT"); //todo: support users setting preferred language of game files
+                string nextfile = bioXNextFileLookup(filenameWithoutExtension);
+                while (nextfile != null)
+                {
+                    packagesToCheck.Add(nextfile);
+                    packagesToCheck.Add(nextfile + "_LOC_INT"); //todo: support users setting preferred language of game files
+                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
+                }
+            }
+
+            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
+            List<string> additionalFiles = new List<string>();
+            var startups = new List<string>();
+            if (entry.Game == MEGame.ME2)
+            {
+                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
+            }
+            else
+            {
+                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
+            }
+            packagesToCheck.AddRange(startups.Select(x => Path.GetFileNameWithoutExtension(gameFiles[x]))); //add startup files
+
+            foreach (var fileName in FilesSafeToImportFrom(entry.Game))
+            {
+                if (gameFiles.TryGetValue(fileName, out var efPath))
+                {
+                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
+                }
+            }
+
+
+            //Perform check and lookup
+            ExportEntry containsImportedExport(string packagePath)
+            {
+                Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
+                using var package = MEPackageHandler.OpenMEPackage(packagePath);
+                var packName = Path.GetFileNameWithoutExtension(packagePath);
+                var packageParts = entryFullPath.Split('.').ToList();
+                if (packageParts.Count > 1 && packName == packageParts[0])
+                {
+                    packageParts.RemoveAt(0);
+                    entryFullPath = String.Join(".", packageParts);
+                }
+                else if (packName == packageParts[0])
+                {
+                    //it's literally the file itself
+                    return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
+                }
+
+                return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
+            }
+
+            var currentDirFiles = Directory.GetFiles(containingDirectory, "*.pcc").ToList();
+            foreach (var fname in packagesToCheck)
+            {
+                var fullname = fname + ".pcc"; //pcc only for now.
+
+                //Try local.
+                var localPath = Path.Combine(containingDirectory, fullname);
+                if (File.Exists(localPath))
+                {
+                    var export = containsImportedExport(localPath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+
+                if (gameFiles.TryGetValue(fullname, out var fullgamepath) && !fullgamepath.Equals(localPath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(fullgamepath))
+                {
+                    var export = containsImportedExport(fullgamepath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

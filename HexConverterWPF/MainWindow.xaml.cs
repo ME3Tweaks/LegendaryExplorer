@@ -255,10 +255,11 @@ namespace HexConverter
             Dispatcher.BeginInvoke(d, System.Windows.Threading.DispatcherPriority.ApplicationIdle, sender);
         }
 
-        static string hexChars = "0123456789abcdefABCDEF";
+        private const string hexChars = "0123456789abcdefABCDEF";
 
         private void Hex_TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            //is user attempts to enter a non-hex character, set handled to true, preventing it from being entered
             if (e.Text.All(c => !hexChars.Contains(c)))
             {
                 e.Handled = true;

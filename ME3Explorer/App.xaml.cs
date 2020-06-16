@@ -45,7 +45,7 @@ namespace ME3Explorer
         /// <summary>
         /// When the app is opened for the first time, if its called to open command line arg, this will lbe populated and fired after loading
         /// </summary>
-        public static Action PendingAppLoadedAction = null;
+        public static Action PendingAppLoadedAction;
         public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
 
         public static bool TlkFirstLoadDone; //Set when the TLK loading at startup is finished.
@@ -129,9 +129,9 @@ namespace ME3Explorer
             //Be.Windows.Forms.HexBox.SetColors((IsDarkMode ? Color.FromArgb(255, 55, 55, 55) : Colors.White).ToWinformsColor(), SystemColors.ControlTextColor.ToWinformsColor());
 
             Parallel.Invoke(
-                            () => ME1UnrealObjectInfo.loadfromJSON(),
-                            () => ME2UnrealObjectInfo.loadfromJSON(),
-                            () => ME3UnrealObjectInfo.loadfromJSON()
+                            ME1UnrealObjectInfo.loadfromJSON,
+                            ME2UnrealObjectInfo.loadfromJSON,
+                            ME3UnrealObjectInfo.loadfromJSON
                 );
 
 

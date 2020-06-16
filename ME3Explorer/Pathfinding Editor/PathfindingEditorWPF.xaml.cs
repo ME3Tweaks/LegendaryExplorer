@@ -85,7 +85,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             "StaticMeshActor", "StaticMeshCollectionActor","StaticLightCollectionActor",
             "PointLight", "SpotLight", "DirectionalLight", "SkyLight", "LensFlareSource", "BioSunActor",
-            "PostProcessVolume", "LightVolume", "LightMassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
+            "PostProcessVolume", "LightVolume", "LightmassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
             "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnviromentVolume", "WwiseMusicVolume"
@@ -1493,7 +1493,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "PostProcessVolume":
                     case "LightVolume":
-                    case "LightMassImportanceVolume":
+                    case "LightmassImportanceVolume":
                     case "FogVolumeHalfspaceDensityInfo":
                     case "FogVolumeSphericalDensityInfo":
                         artNode = new GenericVolumeNode(uindex, x, y, exportToLoad.FileRef, graphEditor);
@@ -4433,8 +4433,7 @@ namespace ME3Explorer.Pathfinding_Editor
             HashSet<int> TextureMaps = new HashSet<int>();
             foreach (var comp in AllStaticMeshComponents)
             {
-                var binary = ExportBinaryConverter.ConvertPostPropBinary(comp, Pcc.Game);
-                if (binary is StaticMeshComponent sc)
+                if (ObjectBinary.From(comp) is StaticMeshComponent sc)
                 {
                     foreach (var lod in sc.LODData)
                     {

@@ -120,6 +120,21 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<StaticMeshCollectionActor>(export);
                 case "StaticLightCollectionActor":
                     return From<StaticLightCollectionActor>(export);
+                case "WwiseEvent":
+                    return From<WwiseEvent>(export);
+                case "WwiseStream":
+                    return From<WwiseStream>(export);
+                case "BioGestureRuntimeData":
+                    return From<BioGestureRuntimeData>(export);
+                case "LightMapTexture2D":
+                    return From<LightMapTexture2D>(export);
+                case "Texture2D":
+                case "ShadowMapTexture2D":
+                case "TerrainWeightMapTexture":
+                case "TextureFlipBook":
+                    return From<UTexture2D>(export);
+                case "GuidCache":
+                    return From<GuidCache>(export);
                 default:
                     return null;
             }

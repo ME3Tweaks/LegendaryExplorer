@@ -562,6 +562,8 @@
                                 <SharedUI:ListBoxScroll.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="View in Animviewer" Command="{Binding OpenInAnimViewerCommand}" ToolTip="Open in Animviewer." />
+                                        <MenuItem Header="Open In Animation Importer/Exporter" Command="{Binding OpenInAnimationImporterCommand}"/>
+                                        <MenuItem Header="Export To PSA" Command="{Binding ExportToPSACommand}"/>
                                     </ContextMenu>
                                 </SharedUI:ListBoxScroll.ContextMenu>
                             </SharedUI:ListBoxScroll>

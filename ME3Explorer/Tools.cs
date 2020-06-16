@@ -117,17 +117,17 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Animation Viewer",
-                type = typeof(AnimationExplorer.AnimationExplorerWPF),
-                icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+                type = typeof(AnimationExplorer.AnimationViewer),
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
-                    if (AnimationExplorer.AnimationExplorerWPF.Instance == null)
+                    if (AnimationExplorer.AnimationViewer.Instance == null)
                     {
-                        (new AnimationExplorer.AnimationExplorerWPF()).Show();
+                        (new AnimationExplorer.AnimationViewer()).Show();
                     }
                     else
                     {
-                        AnimationExplorer.AnimationExplorerWPF.Instance.RestoreAndBringToFront();
+                        AnimationExplorer.AnimationViewer.Instance.RestoreAndBringToFront();
                     }
                 },
                 tags = new List<string> { "utility", "animation", "gesture" },
@@ -138,7 +138,7 @@ namespace ME3Explorer
             {
                 name = "Live Level Editor",
                 type = typeof(GameInterop.LiveLevelEditor),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
                 open = () =>
                 {
                     if (GameInterop.LiveLevelEditor.Instance == null)
@@ -171,7 +171,7 @@ namespace ME3Explorer
             {
                 name = "Audio Localizer",
                 type = typeof(AudioLocalizer),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconAudioLocalizer") as ImageSource,
                 open = () =>
                 {
                     (new AudioLocalizer()).Show();
@@ -280,6 +280,19 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
                 description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            });
+            set.Add(new Tool
+            {
+                name = "Animation Importer/Exporter",
+                type = typeof(AnimationImporter),
+                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
+                open = () =>
+                {
+                    (new AnimationImporter()).Show();
+                },
+                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
+                subCategory = "Scene Shop",
+                description = "Import and Export AnimSequences from/to PSA and UDK"
             });
             set.Add(new Tool
             {
@@ -462,29 +475,6 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
             });
-            set.Add(new Tool
-            {
-                name = "FaceFXAnimSet Editor",
-                type = typeof(FaceFX.FaceFXAnimSetEditor),
-                icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
-                open = () =>
-                {
-                    (new FaceFX.FaceFXAnimSetEditor()).Show();
-                    //string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3", true);
-                    //switch (result)
-                    //{
-                    //    case "ME3":
-                    //        (new FaceFX.FaceFXAnimSetEditor()).Show();
-                    //        break;
-                    //    case "ME2":
-                    //        (new ME2Explorer.FaceFXAnimSetEditor()).Show();
-                    //        break;
-                    //}
-                },
-                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
-                subCategory = "Scene Shop",
-                description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
-            });
             //Benji's tool. Uncomment when we have more progress.
             /*set.Add(new Tool
             {
@@ -602,22 +592,9 @@ namespace ME3Explorer
                 {
                     (new Soundplorer.SoundplorerWPF()).Show();
                 },
-                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc" },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
                 subCategory = "Scene Shop",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
-            });
-            set.Add(new Tool
-            {
-                name = "WwiseBank Editor",
-                type = typeof(WwiseBankEditor.WwiseEditor),
-                icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
-                open = () =>
-                {
-                    (new WwiseBankEditor.WwiseEditor()).Show();
-                },
-                tags = new List<string> { "developer", "dialogue", "text", "line" },
-                subCategory = "Scene Shop",
-                description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
             });
             #endregion
 

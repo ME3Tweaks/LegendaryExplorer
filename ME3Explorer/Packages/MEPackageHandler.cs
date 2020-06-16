@@ -36,7 +36,7 @@ namespace ME3Explorer.Packages
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
                     EndianReader er = new EndianReader(fs);
-                    if (fs.ReadUInt32() == MEPackage.packageTagBigEndian) er.Endian = Endian.Big;
+                    if (fs.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
 
                     // This is stored as integer by cooker as it is flipped by size word in big endian
                     versionLicenseePacked = er.ReadUInt32();

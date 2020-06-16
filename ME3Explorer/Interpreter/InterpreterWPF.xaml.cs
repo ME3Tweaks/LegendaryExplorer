@@ -75,6 +75,22 @@ namespace ME3Explorer
         public static readonly DependencyProperty ForceSimpleModeProperty = DependencyProperty.Register(
             nameof(ForceSimpleMode), typeof(bool), typeof(InterpreterWPF), new PropertyMetadata(false, ForceSimpleModeChangedCallback));
 
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(InterpreterWPF), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(InterpreterWPF), new PropertyMetadata(default(int)));
+
         public bool AdvancedView => !ForceSimpleMode && Settings.Default.InterpreterWPF_AdvancedDisplay;
 
         public bool ShowPropOffsets => !HideHexBox && AdvancedView;
@@ -177,10 +193,11 @@ namespace ME3Explorer
             else
             {
                 i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexbox_Button.Visibility = i.SaveHexChange_Button.Visibility = Visibility.Visible;
-                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
-                i.HexboxColumnDefinition.MinWidth = 220;
-                i.HexboxColumnDefinition.MaxWidth = 718;
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
+                
             }
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
@@ -261,7 +278,7 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
             {
-                var export = PackageEditorWPF.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
+                var export = EntryImporter.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
                 if (export != null)
                 {
                     PackageEditorWPF p = new PackageEditorWPF();
@@ -1763,6 +1780,9 @@ namespace ME3Explorer
 
             Interpreter_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
             Interpreter_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
+
+            this.bind(HexBoxMinWidthProperty, Interpreter_Hexbox, nameof(Interpreter_Hexbox.MinWidth));
+            this.bind(HexBoxMaxWidthProperty, Interpreter_Hexbox, nameof(Interpreter_Hexbox.MaxWidth));
         }
 
         private void Interpreter_Hexbox_BytesChanged(object sender, EventArgs e)

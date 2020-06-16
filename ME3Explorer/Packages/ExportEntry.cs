@@ -48,10 +48,7 @@ namespace ME3Explorer.Packages
             ms.Writer.WriteFromBuffer(prePropBinary);
             if (!isClass)
             {
-                if (properties == null)
-                {
-                    properties = new PropertyCollection();
-                }
+                properties ??= new PropertyCollection();
                 properties.WriteTo(ms.Writer, file);
             }
 
