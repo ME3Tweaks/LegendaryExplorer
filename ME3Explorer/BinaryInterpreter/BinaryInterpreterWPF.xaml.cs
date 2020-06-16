@@ -60,7 +60,23 @@ namespace ME3Explorer
         }
 
         public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
-            "NavigateToEntryCommand", typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
+            nameof(NavigateToEntryCommand), typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
+
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
 
         private HexBox BinaryInterpreter_Hexbox;
 
@@ -995,6 +1011,9 @@ namespace ME3Explorer
         private void BinaryInterpreter_Loaded(object sender, RoutedEventArgs e)
         {
             BinaryInterpreter_Hexbox = (HexBox)BinaryInterpreter_Hexbox_Host.Child;
+
+            this.bind(HexBoxMinWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MinWidth));
+            this.bind(HexBoxMaxWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MaxWidth));
         }
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
@@ -1323,10 +1342,10 @@ namespace ME3Explorer
             else
             {
                 i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
-                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
-                i.HexboxColumnDefinition.MinWidth = 220;
-                i.HexboxColumnDefinition.MaxWidth = 718;
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
             }
         }
 

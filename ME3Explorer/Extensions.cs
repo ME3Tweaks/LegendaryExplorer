@@ -506,7 +506,18 @@ namespace ME3Explorer
         /// <param name="sourceProp">property being bound to</param>
         /// <param name="converter">optional value converter</param>
         /// <param name="parameter">optional value converter parameter</param>
-        public static void bind(this FrameworkElement bound, DependencyProperty boundProp, FrameworkElement source, string sourceProp,
+        public static void bind(this FrameworkElement bound, DependencyProperty boundProp, object source, string sourceProp,
+                                IValueConverter converter = null, object parameter = null)
+        {
+            Binding b = new Binding { Source = source, Path = new PropertyPath(sourceProp) };
+            if (converter != null)
+            {
+                b.Converter = converter;
+                b.ConverterParameter = parameter;
+            }
+            bound.SetBinding(boundProp, b);
+        }
+        public static void bind(this FrameworkContentElement bound, DependencyProperty boundProp, object source, string sourceProp,
             IValueConverter converter = null, object parameter = null)
         {
             Binding b = new Binding { Source = source, Path = new PropertyPath(sourceProp) };
