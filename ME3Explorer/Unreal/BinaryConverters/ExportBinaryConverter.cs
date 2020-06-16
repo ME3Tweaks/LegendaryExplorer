@@ -21,6 +21,11 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 return Array.Empty<byte>();
             }
 
+            if (export.IsTexture())
+            {
+                return ConvertTexture2D(export, newGame);
+            }
+
             if (From(export) is ObjectBinary objbin)
             {
                 if (objbin is AnimSequence animSeq)
@@ -28,11 +33,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     animSeq.UpdateProps(newProps, newGame);
                 }
                 return objbin;
-            }
-
-            if (export.IsTexture())
-            {
-                return ConvertTexture2D(export, newGame);
             }
 
             switch (export.ClassName)

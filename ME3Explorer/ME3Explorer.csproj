@@ -919,11 +919,14 @@
     <Compile Include="Unreal\ActorUtils.cs" />
     <Compile Include="Unreal\BinaryConverters\AnimSequence.cs" />
     <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
+    <Compile Include="Unreal\BinaryConverters\BioGestureRuntimeData.cs" />
     <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
     <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
+    <Compile Include="Unreal\BinaryConverters\GuidCache.cs" />
     <Compile Include="Unreal\BinaryConverters\InterpCurve.cs" />
     <Compile Include="Unreal\BinaryConverters\KDOPTreeBuilder.cs" />
     <Compile Include="Unreal\BinaryConverters\StaticCollectionActor.cs" />
+    <Compile Include="Unreal\BinaryConverters\UTexture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\UClass.cs" />
     <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
@@ -955,6 +958,8 @@
     <Compile Include="Unreal\BinaryConverters\UState.cs" />
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
     <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseStream.cs" />
+    <Compile Include="Unreal\WwiseHelper.cs" />
     <Compile Include="Unreal\CommonStructs.cs" />
     <Compile Include="Unreal\DLCPackage2.cs" />
     <Compile Include="Unreal\ME3Enums.cs" />
@@ -971,7 +976,6 @@
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\World.cs" />
     <Compile Include="Unreal\Classes\WwiseBank.cs" />
-    <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />

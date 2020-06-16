@@ -261,7 +261,7 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null && SelectedItem != null && SelectedItem.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsImport(op.Value))
             {
-                var export = PackageEditorWPF.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
+                var export = EntryImporter.ResolveImport(CurrentLoadedExport.FileRef.GetImport(op.Value));
                 if (export != null)
                 {
                     PackageEditorWPF p = new PackageEditorWPF();

@@ -32,10 +32,19 @@ namespace ME3Explorer
             Pcc = pcc;
             startOffset = offset;
         }
+
+        
     }
 
     public static partial class SCExt
     {
+        public static int SerializeFileOffset(this SerializingContainer2 sc)
+        {
+            int offset = sc.FileOffset + 4;
+            sc.Serialize(ref offset);
+            return offset;
+        }
+
         public static void Serialize(this SerializingContainer2 sc, ref int val)
         {
             if (sc.IsLoading)
@@ -241,8 +250,7 @@ namespace ME3Explorer
             int sizeOnDisk = 0;
             long sizeOnDiskPosition = sc.ms.Position;
             sc.Serialize(ref sizeOnDisk); //when saving, come back and rewrite this after writing arr
-            int offsetInFile = sc.FileOffset + 4;
-            sc.Serialize(ref offsetInFile);
+            sc.SerializeFileOffset();
             if (sc.IsLoading)
             {
                 arr = new T[elementCount];

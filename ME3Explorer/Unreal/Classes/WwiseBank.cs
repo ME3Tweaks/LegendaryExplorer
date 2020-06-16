@@ -209,14 +209,6 @@ namespace ME3Explorer.Unreal.Classes
         //public string[] ActionTypes = {"Stop", "Pause", "Resume", "Play", "Trigger", "Mute", "UnMute", "Set Voice Pitch", "Reset Voice Pitch", "Set Voice Volume", "Reset Voice Volume", "Set Bus Volume", "Reset Bus Volume", "Set Voice Low-pass Filter", "Reset Voice Low-pass Filter", "Enable State" , "Disable State", "Set State", "Set Game Parameter", "Reset Game Parameter", "Set Switch", "Enable Bypass or Disable Bypass", "Reset Bypass Effect", "Break", "Seek"};
         //public string[] EventScopes = { "Game object: Switch or Trigger", "Global", "Game object: by ID", "Game object: State", "All", "All Except ID" };
 
-        public string GetHircDesc(byte[] buff)
-        {
-            string res = "";
-            res += "ID(" + buff[0].ToString("X2") + ") Size = " + BitConverter.ToInt32(buff, 1).ToString("X8") + " ";
-            res += "*" + GetHircObjType(buff[0]);
-            return res;
-        }
-
         public class HIRCObject : NotifyPropertyChangedBase
         {
             public const byte TYPE_SOUNDSFXVOICE = 0x2;
@@ -413,34 +405,9 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        public bool ExportAllWEMFiles(string path)
-        {
-            if (data_data == null || didx_data == null || data_data.Length == 0 || didx_data.Length == 0)
-                return false;
-            int len = didx_data.Length - 8;
-            int count = len / 0xC;
-            for (int i = 0; i < count; i++)
-            {
-                int id = BitConverter.ToInt32(didx_data, 0x8 + i * 0xC);
-                int start = BitConverter.ToInt32(didx_data, 0xC + i * 0xC) + 0x8;
-                int size = BitConverter.ToInt32(didx_data, 0x10 + i * 0xC);
-                FileStream fs = new FileStream(Path.Combine(path, i.ToString("d4") + "_" + id.ToString("X8") + ".wem"), FileMode.Create, FileAccess.Write);
-                fs.Write(data_data, start, size);
-                fs.Close();
-            }
-            return true;
-        }
-
         public string GetID(byte[] buff, int offset = 0)
         {
             return "" + (char)buff[offset] + (char)buff[offset + 1] + (char)buff[offset + 2] + (char)buff[offset + 3];
-        }
-
-        public void CloneHIRCObject(int n)
-        {
-            if (HIRCObjects == null || n < 0 || n >= HIRCObjects.Count)
-                return;
-            HIRCObjects.Add(HIRCObjects[n].TypedClone());
         }
 
         public byte[] RecreateBinary(List<byte[]> hircs = null)

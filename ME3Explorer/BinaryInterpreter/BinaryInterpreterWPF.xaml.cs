@@ -265,6 +265,7 @@ namespace ME3Explorer
             "IntProperty",
             "Level",
             "LightMapTexture2D",
+            "MapProperty",
             "Material",
             "MaterialInstanceConstant",
             "MaterialInstanceConstants",
@@ -513,6 +514,7 @@ namespace ME3Explorer
                     case "ComponentProperty":
                     case "ObjectProperty":
                     case "DelegateProperty":
+                    case "MapProperty":
                         subNodes.AddRange(StartPropertyScan(data, ref binarystart));
                         break;
                     case "BioDynamicAnimSet":

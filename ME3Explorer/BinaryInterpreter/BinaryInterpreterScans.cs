@@ -4258,50 +4258,98 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                subnodes.Add(MakeArrayNode(bin, "AnimToPackageMap?", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")));
+                subnodes.Add(MakeArrayNode(bin, "m_mapAnimSetOwners", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)} => {bin.ReadNameReference(Pcc)}")
+                {
+                    Length = 16
+                }));
 
                 int count;
-                var propDataNode = new BinInterpNode(bin.Position, $"PropData? ({count = bin.ReadInt32()} items)");
-                subnodes.Add(propDataNode);
-                for (int i = 0; i < count; i++)
+                if (CurrentLoadedExport.Game == MEGame.ME1)
                 {
-                    BinInterpNode node = new BinInterpNode(bin.Position, $"{i}")
+                    var propDataNode = new BinInterpNode(bin.Position, $"m_mapCharTypeOverrides ({count = bin.ReadInt32()} items)");
+                    subnodes.Add(propDataNode);
+                    for (int i = 0; i < count; i++)
                     {
-                        IsExpanded = true
-                    };
-                    propDataNode.Items.Add(node);
-                    node.Items.Add(MakeNameNode(bin, "PropName1"));
-                    node.Items.Add(MakeNameNode(bin, "PropName2"));
-                    node.Items.Add(MakeStringNode(bin, "PropMeshPath"));
-                    node.Items.Add(MakeNameNode(bin, "Bone"));
-                    node.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
-                    node.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
-                    node.Items.Add(MakeVectorNode(bin, "Scale3D"));
-                    int count2;
-                    var propActionsNode = new BinInterpNode(bin.Position, $"Prop Actions ({count2 = bin.ReadInt32()} items)");
-                    node.Items.Add(propActionsNode);
-                    for (int j = 0; j < count2; j++)
+                        propDataNode.Items.Add(new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                        {
+                            Length = 8,
+                            IsExpanded = true,
+                            Items =
+                            {
+                                MakeNameNode(bin, "nm_Female"),
+                                MakeNameNode(bin, "nm_Asari"),
+                                MakeNameNode(bin, "nm_Turian"),
+                                MakeNameNode(bin, "nm_Salarian"),
+                                MakeNameNode(bin, "nm_Quarian"),
+                                MakeNameNode(bin, "nm_Other"),
+                                MakeNameNode(bin, "nm_Krogan"),
+                                MakeNameNode(bin, "nm_Geth"),
+                                MakeNameNode(bin, "nm_Other_Artificial")
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    var propDataNode = new BinInterpNode(bin.Position, $"m_mapMeshProps ({count = bin.ReadInt32()} items)");
+                    subnodes.Add(propDataNode);
+                    for (int i = 0; i < count; i++)
                     {
-                        BinInterpNode node2 = new BinInterpNode(bin.Position, $"{j}")
+                        BinInterpNode node = new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                        {
+                            Length = 8
+                        };
+                        propDataNode.Items.Add(node);
+                        node.Items.Add(MakeNameNode(bin, "nmPropName"));
+                        node.Items.Add(MakeStringNode(bin, "sMesh"));
+                        node.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                        node.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
+                        node.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
+                        node.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
+                        int count2;
+                        var propActionsNode = new BinInterpNode(bin.Position, $"mapActions ({count2 = bin.ReadInt32()} items)")
                         {
                             IsExpanded = true
                         };
-                        propActionsNode.Items.Add(node2);
-                        node2.Items.Add(MakeNameNode(bin, "ActionName1"));
-                        node2.Items.Add(MakeNameNode(bin, "ActionName2"));
-                        node2.Items.Add(MakeInt32Node(bin, "Equip?"));
-                        node2.Items.Add(MakeNameNode(bin, "Name3"));
-                        node2.Items.Add(MakeVectorNode(bin, "OffsetPosition"));
-                        node2.Items.Add(MakeRotatorNode(bin, "OffsetRotation"));
-                        node2.Items.Add(MakeVectorNode(bin, "Scale3D"));
-                        node2.Items.Add(MakeStringNode(bin, "ParticleSystem"));
-                        node2.Items.Add(MakeStringNode(bin, "ClientEffect"));
-                        node2.Items.Add(MakeInt32Node(bin, "unk"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeNameNode(bin, "Name?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
-                        node2.Items.Add(MakeVectorNode(bin, "unk?"));
+                        node.Items.Add(propActionsNode);
+                        for (int j = 0; j < count2; j++)
+                        {
+                            BinInterpNode node2 = new BinInterpNode(bin.Position, $"{j}: {bin.ReadNameReference(Pcc)}", NodeType.StructLeafName)
+                            {
+                                Length = 8
+                            };
+                            propActionsNode.Items.Add(node2);
+                            node2.Items.Add(MakeNameNode(bin, "nmActionName"));
+                            if (CurrentLoadedExport.Game == MEGame.ME2)
+                            {
+                                node2.Items.Add(MakeStringNode(bin, "sEffect"));
+                            }
+
+                            node2.Items.Add(MakeBoolIntNode(bin, "bActivate"));
+                            node2.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                            node2.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
+                            node2.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
+                            node2.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
+                            if (CurrentLoadedExport.Game == MEGame.ME3)
+                            {
+                                node2.Items.Add(MakeStringNode(bin, "sParticleSys"));
+                                node2.Items.Add(MakeStringNode(bin, "sClientEffect"));
+                                node2.Items.Add(MakeBoolIntNode(bin, "bCooldown"));
+                                node2.Items.Add(new BinInterpNode(bin.Position, "tSpawnParams")
+                                {
+                                    Length = 0x38,
+                                    IsExpanded = true,
+                                    Items =
+                                    {
+                                        MakeVectorNode(bin, "vHitLocation"),
+                                        MakeVectorNode(bin, "vHitNormal"),
+                                        MakeNameNode(bin, "nmHitBone"),
+                                        MakeVectorNode(bin, "vRayDir"),
+                                        MakeVectorNode(bin, "vSpawnValue")
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -4380,6 +4428,10 @@ namespace ME3Explorer
                     case "ClassProperty":
                         subnodes.Add(MakeEntryNode(bin, "Outer class"));
                         subnodes.Add(MakeEntryNode(bin, "Class type"));
+                        break;
+                    case "MapProperty":
+                        subnodes.Add(MakeEntryNode(bin, "Key Type"));
+                        subnodes.Add(MakeEntryNode(bin, "Value Type"));
                         break;
                 }
             }
@@ -5017,7 +5069,7 @@ namespace ME3Explorer
                     Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} {CurrentLoadedExport.FileRef.GetNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Header = $"{(pos - binarystart):X4} {new NameReference(CurrentLoadedExport.FileRef.GetNameEntry(nameRef), nameIdx).Instanced}: {{{guid}}}",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafName

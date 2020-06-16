@@ -649,8 +649,7 @@ namespace ME3Explorer
                 int byteCount = data.xmlFile?.Length ?? 0;
                 sc.Serialize(ref byteCount);
                 sc.Serialize(ref byteCount);
-                int xmlOffsetInFile = sc.FileOffset + 4;
-                sc.Serialize(ref xmlOffsetInFile);
+                sc.SerializeFileOffset();
                 sc.Serialize(ref data.xmlFile, byteCount);
             }
             else if (sc.IsLoading)

@@ -324,7 +324,7 @@ namespace ME3Explorer
             {
                 BusyText = "Attempting to find source of import...";
                 IsBusy = true;
-                Task.Run(() => ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() => EntryImporter.ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)
@@ -340,126 +340,6 @@ namespace ME3Explorer
                     }
                 });
             }
-        }
-
-        public static ExportEntry ResolveImport(ImportEntry entry)
-        {
-            var entryFullPath = entry.FullPath;
-
-            // Next, split the filename by underscores
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
-            string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
-            var packagesToCheck = new List<string>();
-
-            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
-            if (isBioXfile)
-            {
-                string bioXNextFileLookup(string filename)
-                {
-                    //Lookup parents
-                    var bioType = filename[3];
-                    string[] parts = filename.Split('_');
-                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
-                    {
-                        var levelName = parts[1];
-                        switch (bioType)
-                        {
-                            case 'a' when parts.Length > 2:
-                                return $"bioa_{levelName}";
-                            case 'd' when parts.Length > 2:
-                                return $"biod_{levelName}";
-                            case 's' when parts.Length > 2:
-                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
-                            case 'a' when parts.Length == 2:
-                            case 'd' when parts.Length == 2:
-                            case 's' when parts.Length == 2:
-                                return $"biop_{levelName}";
-                        }
-                    }
-
-                    return null;
-                }
-
-                packagesToCheck.Add(filenameWithoutExtension + "_LOC_INT"); //todo: support users setting preferred language of game files
-                string nextfile = bioXNextFileLookup(filenameWithoutExtension);
-                while (nextfile != null)
-                {
-                    packagesToCheck.Add(nextfile);
-                    packagesToCheck.Add(nextfile + "_LOC_INT"); //todo: support users setting preferred language of game files
-                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
-                }
-            }
-
-            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.FileRef.Game);
-            List<string> additionalFiles = new List<string>();
-            var startups = new List<string>();
-            if (entry.Game == MEGame.ME2)
-            {
-                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
-            }
-            else
-            {
-                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
-            }
-            packagesToCheck.AddRange(startups.Select(x => Path.GetFileNameWithoutExtension(gameFiles[x]))); //add startup files
-
-            string[] extraFiles = { "SFXGame", "Startup", "Engine", "Core" };
-            foreach (var ef in extraFiles)
-            {
-                if (gameFiles.TryGetValue(ef + ".pcc", out var efPath))
-                {
-                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
-                }
-            }
-
-
-            //Perform check and lookup
-            ExportEntry containsImportedExport(string packagePath)
-            {
-                Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
-                using var package = MEPackageHandler.OpenMEPackage(packagePath);
-                var packName = Path.GetFileNameWithoutExtension(packagePath);
-                var packageParts = entryFullPath.Split('.').ToList();
-                if (packageParts.Count > 1 && packName == packageParts[0])
-                {
-                    packageParts.RemoveAt(0);
-                    entryFullPath = string.Join(".", packageParts);
-                }
-                else if (packName == packageParts[0])
-                {
-                    //it's literally the file itself
-                    return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
-                }
-
-                return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
-            }
-
-            var currentDirFiles = Directory.GetFiles(containingDirectory, "*.pcc").ToList();
-            foreach (var fname in packagesToCheck)
-            {
-                var fullname = fname + ".pcc"; //pcc only for now.
-
-                //Try local.
-                var localPath = Path.Combine(containingDirectory, fullname);
-                if (File.Exists(localPath))
-                {
-                    var export = containsImportedExport(localPath);
-                    if (export != null)
-                    {
-                        return export;
-                    }
-                }
-
-                if (gameFiles.TryGetValue(fullname, out var fullgamepath) && !fullgamepath.Equals(localPath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(fullgamepath))
-                {
-                    var export = containsImportedExport(fullgamepath);
-                    if (export != null)
-                    {
-                        return export;
-                    }
-                }
-            }
-            return null;
         }
 
         public void LoadEntry(IEntry entry)
@@ -4287,10 +4167,10 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetAllFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetAllFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
-            var foundClasses = new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
+            var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
             IsBusy = true;
             BusyText = "Scanning";
@@ -4327,7 +4207,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "WwiseEvent", true)) break;
+                    if (findClass(filePath, "Texture2D", true)) break;
                     //findClassesWithBinary(filePath);
                     continue;
 
@@ -4475,7 +4355,7 @@ namespace ME3Explorer
             }).ContinueWithOnUIThread(prevTask =>
             {
                 IsBusy = false;
-                var listDlg = new ListDialog(interestingExports.OrderBy(s => int.Parse(s.Split(' ')[0])).ToList(), "Interesting Exports", "", this);
+                var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this);
                 listDlg.Show();
             });
 
@@ -4486,25 +4366,27 @@ namespace ME3Explorer
                 {
                     //if (!pcc.IsCompressed) return false;
 
-                    var exports = pcc.Exports.Where(exp => !exp.IsDefaultObject && exp.ClassName == className);
+                    var exports = pcc.Exports.Where(exp => !exp.IsDefaultObject && exp.IsA(className));
                     foreach (ExportEntry exp in exports)
                     {
                         try
                         {
                             //Debug.WriteLine($"{exp.UIndex}: {filePath}");
                             var originalData = exp.Data;
-                            exp.SetBinaryData(exp.GetBinaryData<WwiseEvent>());
+                            exp.SetBinaryData(ObjectBinary.From(exp));
                             var newData = exp.Data;
                             if (!originalData.SequenceEqual(newData))
                             {
-                                interestingExports.Add($"#{exp.UIndex,6} : {filePath}");
-                                //return true;
+                                interestingExports.Add($"#{exp.UIndex,5} : {filePath}");
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), newData);
+                                return true;
                             }
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add($"#{exp.UIndex,6} : {filePath}\n{exception}");
+                            interestingExports.Add($"#{exp.UIndex,5} : {filePath}\n{exception}");
                             return true;
                         }
                     }
@@ -4525,8 +4407,15 @@ namespace ME3Explorer
                         {
                             if (!foundClasses.Contains(exp.ClassName) && exp.propsEnd() < exp.DataSize)
                             {
-                                foundClasses.Add(exp.ClassName);
-                                interestingExports.Add($"{exp.ClassName.PadRight(30)} #{exp.UIndex}: {filePath}");
+                                if (ObjectBinary.From(exp) != null)
+                                {
+                                    foundClasses.Add(exp.ClassName);
+                                }
+                                else if(exp.GetBinaryData().Any(b => b != 0))
+                                {
+                                    foundClasses.Add(exp.ClassName);
+                                    interestingExports.Add($"{exp.ClassName,30} #{exp.UIndex}: {filePath}");
+                                }
                             }
                         }
                         catch (Exception exception)

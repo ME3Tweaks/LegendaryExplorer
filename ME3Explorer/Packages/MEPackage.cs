@@ -7,13 +7,11 @@ using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
 using ME3Explorer.GameInterop;
-using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using StreamHelpers;
-using static ME3Explorer.Packages.CompressionHelper;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages

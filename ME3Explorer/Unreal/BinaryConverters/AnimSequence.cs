@@ -40,8 +40,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
-                int offset = sc.FileOffset + 4;
-                sc.Serialize(ref offset);
+                sc.SerializeFileOffset();
             }
 
             if (sc.Game == MEGame.UDK)

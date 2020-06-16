@@ -22,9 +22,11 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
+using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using static ME3Explorer.Unreal.Classes.WwiseBank;
+using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
 {
@@ -158,8 +160,8 @@ namespace ME3Explorer
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
-                    WwiseStream w = new WwiseStream(exportEntry);
-                    ExportInformationList.Add($"Filename : {w.FileName ?? "Stored in this PCC"}");
+                    WwiseStream w = exportEntry.GetBinaryData<WwiseStream>();
+                    ExportInformationList.Add($"Filename : {w.Filename ?? "Stored in this PCC"}");
                     if (!PlayBackOnlyMode)
                     {
                         ExportInformationList.Add($"Data size: {w.DataSize} bytes");
@@ -173,12 +175,12 @@ namespace ME3Explorer
                         ExportInformationList.Add(wemId);
                     }
 
-                    if (w.FileName != null && !PlayBackOnlyMode)
+                    if (w.Filename != null && !PlayBackOnlyMode)
                     {
                         try
                         {
                             var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
-                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
+                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
                             var headerbytes = new byte[0x56];
                             bool bytesread = false;
 
@@ -448,7 +450,7 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedAFCFileEntry != null)
             {
-                return WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                return WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
             else
             {
@@ -457,7 +459,7 @@ namespace ME3Explorer
                 {
                     if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                     {
-                        wwiseStream = new WwiseStream(localCurrentExport);
+                        wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
                         string path;
                         if (wwiseStream.IsPCCStored)
                         {
@@ -920,7 +922,7 @@ namespace ME3Explorer
             MemoryStream convertedStream = null;
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
-                convertedStream = WwiseStream.ConvertWwiseOggToME3Ogg(fileStream);
+                convertedStream = WwiseHelper.ConvertWwiseOggToME3Ogg(fileStream);
             }
 
             //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
@@ -1190,7 +1192,7 @@ namespace ME3Explorer
                     };
                     if (d.ShowDialog() == true)
                     {
-                        WwiseStream w = new WwiseStream(CurrentLoadedExport);
+                        WwiseStream w = CurrentLoadedExport.GetBinaryData<WwiseStream>();
                         string wavPath = w.CreateWave(w.GetPathToAFC());
                         if (wavPath != null && File.Exists(wavPath))
                         {
@@ -1255,7 +1257,7 @@ namespace ME3Explorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    Stream s = WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                    Stream s = WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))
                     {
                         s.Seek(0, SeekOrigin.Begin);
@@ -1570,7 +1572,7 @@ namespace ME3Explorer
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(exportToWorkOn);
+                WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
                 if (w.IsPCCStored)
                 {
                     //TODO: enable replacing of PCC-stored sounds
@@ -1593,7 +1595,7 @@ namespace ME3Explorer
                 }
 
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
-                CurrentLoadedExport.Data = w.memory.TypedClone();
+                exportToWorkOn.SetBinaryData(w);
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
