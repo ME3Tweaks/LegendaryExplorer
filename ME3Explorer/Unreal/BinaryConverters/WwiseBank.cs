@@ -12,7 +12,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    public class AKWwiseBank : ObjectBinary
+    public class WwiseBank : ObjectBinary
     {
         public uint Unk1;//ME2
         public uint Unk2;//ME2
@@ -32,6 +32,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         private byte[] ME2STMGFallback; //STMG chunk for ME2 isn't decoded yet
         private byte[] ENVS_Chunk;//Unparsed
         private byte[] FXPR_Chunk;//Unparsed, ME2 only
+
+        #region Serialization
 
         private static readonly uint bkhd = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("BKHD"), 0);
         private static readonly uint stmg = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("STMG"), 0);
@@ -206,15 +208,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         int count = sc.ms.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
-                            byte type = sc.Game == MEGame.ME3 ? sc.ms.ReadByte() : (byte)sc.ms.ReadInt32();
-                            int len = sc.ms.ReadInt32() - 4;
-                            uint id = sc.ms.ReadUInt32();
-                            HIRCObjects.Add(id, new HIRCObject
-                            {
-                                Type = type,
-                                ID = id,
-                                Raw = sc.ms.ReadBytes(len)
-                            });
+                            var ho = HIRCObject.Create(sc);
+                            HIRCObjects.Add(ho.ID, ho);
                         }
                         break;
                     case "STID":
@@ -324,18 +319,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 writer.WriteInt32(HIRCObjects.Count);
                 foreach ((uint _, HIRCObject h) in HIRCObjects)
                 {
-                    if (sc.Game == MEGame.ME3)
-                    {
-                        writer.WriteByte(h.Type);
-                    }
-                    else
-                    {
-                        writer.WriteInt32(h.Type);
-                    }
-
-                    writer.WriteInt32(h.Raw.Length + 4);
-                    writer.WriteUInt32(h.ID);
-                    writer.WriteBytes(h.Raw);
+                    writer.WriteBytes(h.ToBytes(sc.Game));
                 }
 
                 var endPos = sc.ms.Position;
@@ -379,14 +363,170 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
         }
 
+        #endregion
+
         public class HIRCObject
         {
-            public byte Type;
+            public HIRCType Type;
             public uint ID;
-            public byte[] Raw;
+            public virtual int DataLength => unparsed.Length + 4;
+            protected byte[] unparsed;
+
+            public static HIRCObject Create(SerializingContainer2 sc)
+            {
+                HIRCType type = (HIRCType)(sc.Game == MEGame.ME3 ? sc.ms.ReadByte() : (byte)sc.ms.ReadInt32());
+                int len = sc.ms.ReadInt32();
+                uint id = sc.ms.ReadUInt32();
+                return type switch
+                {
+                    HIRCType.SoundSXFSoundVoice => new SoundSFXVoice
+                    {
+                        Type = type,
+                        ID = id,
+                        Unk1 = sc.ms.ReadUInt32(),
+                        State = sc.ms.ReadUInt32(),
+                        AudioID = sc.ms.ReadUInt32(),
+                        SourceID = sc.ms.ReadUInt32(),
+                        SoundType = sc.ms.ReadByte(),
+                        unparsed = sc.ms.ReadBytes(len - 21)
+                    },
+                    HIRCType.Event => new Event
+                    {
+                        Type = type,
+                        ID = id,
+                        EventActions = new List<uint>(Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => sc.ms.ReadUInt32()))
+                    },
+                    _ => new HIRCObject
+                    {
+                        Type = type,
+                        ID = id,
+                        unparsed = sc.ms.ReadBytes(len - 4)
+                    }
+                };
+            }
+
+            public virtual byte[] ToBytes(MEGame game)
+            {
+                var ms = new MemoryStream();
+                if (game == MEGame.ME3)
+                {
+                    ms.WriteByte((byte)Type);
+                }
+                else
+                {
+                    ms.WriteInt32((byte)Type);
+                }
+
+                ms.WriteInt32(DataLength);
+                ms.WriteUInt32(ID);
+                ms.WriteBytes(unparsed);
+                return ms.ToArray();
+            }
+
+            public virtual HIRCObject Clone()
+            {
+                HIRCObject clone = (HIRCObject)MemberwiseClone();
+                clone.unparsed = unparsed?.TypedClone();
+                return clone;
+            }
         }
 
+        public class SoundSFXVoice : HIRCObject
+        {
+            public uint Unk1;
+            public uint State;  //0=embed, 1=streamed, 2=stream/prefetched
+            public uint AudioID;
+            public uint SourceID;
+            public byte SoundType; //0=SFX, 1=Voice
+
+            public override int DataLength => unparsed.Length + 21;
+
+            public override byte[] ToBytes(MEGame game)
+            {
+                var ms = new MemoryStream();
+                if (game == MEGame.ME3)
+                {
+                    ms.WriteByte((byte)Type);
+                }
+                else
+                {
+                    ms.WriteInt32((byte)Type);
+                }
+
+                ms.WriteInt32(DataLength);
+                ms.WriteUInt32(ID);
+                ms.WriteUInt32(Unk1);
+                ms.WriteUInt32(State);
+                ms.WriteUInt32(AudioID);
+                ms.WriteUInt32(SourceID);
+                ms.WriteByte(SoundType);
+                ms.WriteBytes(unparsed);
+                return ms.ToArray();
+            }
+        }
+
+        //public string[] ActionTypes = {"Stop", "Pause", "Resume", "Play", "Trigger", "Mute", "UnMute", "Set Voice Pitch", "Reset Voice Pitch", "Set Voice Volume", "Reset Voice Volume", "Set Bus Volume", "Reset Bus Volume", "Set Voice Low-pass Filter", "Reset Voice Low-pass Filter", "Enable State" , "Disable State", "Set State", "Set Game Parameter", "Reset Game Parameter", "Set Switch", "Enable Bypass or Disable Bypass", "Reset Bypass Effect", "Break", "Seek"};
+        //public string[] EventScopes = { "Game object: Switch or Trigger", "Global", "Game object: by ID", "Game object: State", "All", "All Except ID" };
+        public class Event : HIRCObject
+        {
+            public List<uint> EventActions;
+
+            public override int DataLength => 8 + EventActions.Count * 4;
+
+            public override byte[] ToBytes(MEGame game)
+            {
+                var ms = new MemoryStream();
+                if (game == MEGame.ME3)
+                {
+                    ms.WriteByte((byte)Type);
+                }
+                else
+                {
+                    ms.WriteInt32((byte)Type);
+                }
+
+                ms.WriteInt32(DataLength);
+                ms.WriteUInt32(ID);
+                ms.WriteInt32(EventActions.Count);
+                foreach (uint eventAction in EventActions)
+                {
+                    ms.WriteUInt32(eventAction);
+                }
+                return ms.ToArray();
+            }
+
+            public override HIRCObject Clone()
+            {
+                Event clone = (Event)MemberwiseClone();
+                clone.EventActions = EventActions.Clone();
+                return clone;
+            }
+        }
     }
+
+    public enum HIRCType : byte
+    {
+        Settings = 0x1,
+        SoundSXFSoundVoice = 0x2,
+        EventAction = 0x3,
+        Event = 0x4,
+        RandomOrSequenceContainer = 0x5,
+        SwitchContainer = 0x6,
+        ActorMixer = 0x7,
+        AudioBus = 0x8,
+        BlendContainer = 0x9,
+        MusicSegment = 0xA,
+        MusicTrack = 0xB,
+        MusicSwitchContainer = 0xC,
+        MusicPlaylistContainer = 0xD,
+        Attenuation = 0xE,
+        DialogueEvent = 0xF,
+        MotionBus = 0x10,
+        MotionFX = 0x11,
+        Effect = 0x12,
+        AuxiliaryBus = 0x13
+    }
+
     public class WwiseStateManagement
     {
         public float VolumeThreshold;

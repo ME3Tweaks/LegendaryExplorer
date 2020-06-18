@@ -23,9 +23,9 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
-using static ME3Explorer.Unreal.Classes.WwiseBank;
 using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
@@ -64,7 +64,7 @@ namespace ME3Explorer
             set => SetProperty(ref _quickScanText, value);
         }
 
-        public ObservableCollectionExtended<HIRCObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCObject>();
+        public ObservableCollectionExtended<HIRCDisplayObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCDisplayObject>();
 
         public bool PlayBackOnlyMode
         {
@@ -183,7 +183,7 @@ namespace ME3Explorer
                         ExportInformationList.Add($"Data size: {w.DataSize} bytes");
                         ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
                         string wemId = $"ID: 0x{w.Id:X8}";
-                        if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                        if (ShouldReverseIDEndianness)
                         {
                             wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
                         }
@@ -256,69 +256,31 @@ namespace ME3Explorer
 
                 if (exportEntry.ClassName == "WwiseBank")
                 {
-                    WwiseBank wb = new WwiseBank(exportEntry);
+                    WwiseBank wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
+                    HIRCObjects.Clear();
+                    HIRCObjects.AddRange(wb.HIRCObjects.Values().Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
 
-                    if (exportEntry.FileRef.Game == MEGame.ME3)
+                    if (wb.EmbeddedFiles.Count > 0)
                     {
-                        try
+                        int i = 0;
+                        foreach ((uint id, byte[] bytes) in wb.EmbeddedFiles)
                         {
-                            QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
-                            List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
-                            HIRCObjects.Clear();
-                            HIRCObjects.AddRange(hircObjects);
-                        }
-                        catch
-                        {
-                            Debug.WriteLine("Coudln't parse HIRCs");
-                        }
-
-                        CurrentLoadedWwisebank = wb;
-                    }
-                    else
-                    {
-                        QuickScanText = "Cannot scan ME2 game files.";
-                    }
-
-                    List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                    byte[] data = wb.GetChunk("DATA",true);
-                    int i = 0;
-                    if (embeddedWEMFiles.Count > 0)
-                    {
-                        foreach ((uint wemID, int offset, int size) singleWemMetadata in embeddedWEMFiles)
-                        {
-                            var wemData = new byte[singleWemMetadata.size];
-                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                            Buffer.BlockCopy(data, singleWemMetadata.offset + 0x8, wemData, 0, singleWemMetadata.size);
-                            //check for RIFF header as some don't seem to have it and are not playable.
-                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-
-                            string wemId = singleWemMetadata.wemID.ToString("X8");
-                            if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                            string wemId = id.ToString("X8");
+                            if (ShouldReverseIDEndianness)
                             {
-                                wemId = $"{ReverseBytes(singleWemMetadata.wemID):X8} (Reversed)";
+                                wemId = $"{ReverseBytes(id):X8} (Reversed)";
                             }
 
-                            string wemName = "Embedded WEM 0x" + wemId; // + "(" + singleWemMetadata.Item1 + ")";
-
-                            /* //HIRC lookup, if I ever get around to supporting HIRC
-                            List<Tuple<string, int, double>> wemInfo;
-                            if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry, out wemInfo))
-                            {
-                                var info = wemInfo.FirstOrDefault(x => x.Item2 == singleWemMetadata.Item1); //item2 in x = ID, singleWemMetadata.Item1 = ID
-                                if (info != null)
-                                {
-                                    //have info
-                                    wemName = info.Item1;
-                                }
-                            }*/
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, exportEntry.FileRef.Game, singleWemMetadata.wemID);
+                            string wemHeader = $"{(char)bytes[0]}{(char)bytes[1]}{(char)bytes[2]}{(char)bytes[3]}";
+                            string wemName = $"{i}: Embedded WEM 0x{wemId}";
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(bytes, wemName, exportEntry.FileRef.Game, id);
                             if (wemHeader == "RIFF")
                             {
                                 ExportInformationList.Add(wem);
                             }
                             else
                             {
-                                ExportInformationList.Add($"{i}: {wemName} - No RIFF header");
+                                ExportInformationList.Add($"{wemName} - No RIFF header");
                             }
 
                             AllWems.Add(wem);
@@ -450,7 +412,7 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Gets a PCM stream of data (WAV) from either teh currently loaded export or selected WEM
+        /// Gets a PCM stream of data (WAV) from either the currently loaded export or selected WEM
         /// </summary>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
@@ -722,12 +684,21 @@ namespace ME3Explorer
 
         private void SaveHIRCHex()
         {
-            if (HIRC_ListBox.SelectedItem is HIRCObject ho)
+            int idx = HIRC_ListBox.SelectedIndex;
+            if (idx != -1)
             {
-                ho.Data = hircHexProvider.Bytes.ToArray();
+                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Bytes.ToArray()), Pcc.Game)
+                {
+                    DataChanged = true
+                };
                 HIRCHexChanged = false;
                 OnPropertyChanged(nameof(HIRCHexChanged));
             }
+        }
+
+        private WwiseBank.HIRCObject CreateHircObjectFromHex(byte[] bytes)
+        {
+            return WwiseBank.HIRCObject.Create(new SerializingContainer2(new MemoryStream(bytes), Pcc, true));
         }
 
         private bool CanSearchHIRCHex()
@@ -776,12 +747,11 @@ namespace ME3Explorer
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
 
-            byte[] hirc;
             int count = HIRCObjects.Count;
             int hexboxIndex = (int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
             for (int i = 0; i < count; i++)
             {
-                hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
+                byte[] hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
                 int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
                 if (indexIn > -1)
                 {
@@ -807,7 +777,13 @@ namespace ME3Explorer
 
         private void CommitBankToFile()
         {
-            CurrentLoadedExport.Data = CurrentLoadedWwisebank.RecreateBinary(HIRCObjects.Select(x => x.Data).ToList());
+            CurrentLoadedWwisebank.HIRCObjects.Clear();
+            CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
+            CurrentLoadedExport.SetBinaryData(CurrentLoadedWwisebank);
+            foreach (var hircObject in HIRCObjects)
+            {
+                hircObject.DataChanged = false;
+            }
         }
 
         private bool _hircHexChanged;
@@ -920,7 +896,6 @@ namespace ME3Explorer
         /// <param name="wem"></param>
         private void ReplaceWEMAudioFromWwiseOgg(string oggPath, EmbeddedWEMFile wem)
         {
-            WwiseBank w = new WwiseBank(CurrentLoadedExport);
             if (oggPath == null)
             {
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
@@ -935,7 +910,7 @@ namespace ME3Explorer
                 }
             }
 
-            MemoryStream convertedStream = null;
+            MemoryStream convertedStream;
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
                 convertedStream = WwiseHelper.ConvertWwiseOggToME3Ogg(fileStream);
@@ -950,8 +925,9 @@ namespace ME3Explorer
             {
                 wem.WemData = convertedStream.ToArray();
             }
-
-            w.UpdateDataChunk(AllWems); //updates this export's data.
+            CurrentLoadedWwisebank.EmbeddedFiles.Clear();
+            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedExport.SetBinaryData(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             MessageBox.Show("Done");
         }
@@ -1689,12 +1665,12 @@ namespace ME3Explorer
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HIRCNotableItems.ClearEx();
-            if (HIRC_ListBox.SelectedItem is HIRCObject h)
+            if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
             {
                 HIRC_ListBox.ScrollIntoView(h);
 
                 OriginalHIRCHex = h.Data;
-                hircHexProvider.ReplaceBytes(h.Data);
+                hircHexProvider.ReplaceBytes(OriginalHIRCHex);
                 SoundpanelHIRC_Hexbox.Refresh();
 
                 HIRCNotableItems.Add(new HIRCNotableItem
@@ -1707,7 +1683,7 @@ namespace ME3Explorer
                 HIRCNotableItems.Add(new HIRCNotableItem
                 {
                     Offset = 0x1,
-                    Header = $"Size: 0x{h.Size:X8}",
+                    Header = $"Size: 0x{h.Data.Length - 5:X8}",
                     Length = 4
                 });
 
@@ -1719,9 +1695,9 @@ namespace ME3Explorer
                 });
 
                 int start = 0x9;
-                switch (h.ObjType)
+                switch ((HIRCType)h.ObjType)
                 {
-                    case HIRCObject.TYPE_SOUNDSFXVOICE:
+                    case HIRCType.SoundSXFSoundVoice:
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
@@ -1741,7 +1717,7 @@ namespace ME3Explorer
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"Audio ID: {h.unk1:X8}",
+                            Header = $"Audio ID: {h.AudioID:X8}",
                             Length = 4
                         });
 
@@ -1749,7 +1725,7 @@ namespace ME3Explorer
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"Source ID: 0x{h.IDsource:X8}",
+                            Header = $"Source ID: 0x{h.SourceID:X8}",
                             Length = 4
                         });
 
@@ -1761,15 +1737,15 @@ namespace ME3Explorer
                             Length = 4
                         });
                         break;
-                    case HIRCObject.TYPE_EVENT:
+                    case HIRCType.Event:
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"# of event actions to fire: {h.eventIDs.Count}",
+                            Header = $"# of event actions to fire: {h.EventIDs.Count}",
                             Length = 4
                         });
                         start += 4;
-                        foreach (int eventid in h.eventIDs)
+                        foreach (uint eventid in h.EventIDs)
                         {
                             HIRCNotableItems.Add(new HIRCNotableItem
                             {
@@ -1839,10 +1815,10 @@ namespace ME3Explorer
                         string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                         if (start <= memory.Length - 4)
                         {
-                            int val = BitConverter.ToInt32(memory, start);
+                            uint val = BitConverter.ToUInt32(memory, start);
                             float fval = BitConverter.ToSingle(memory, start);
                             s += $", Int: {val} (0x{val:X8}) Float: {fval}";
-                            HIRCObject referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
+                            var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
 
                             if (referencedHIRCbyID != null)
                             {
@@ -1905,6 +1881,7 @@ namespace ME3Explorer
         public bool HasPendingHIRCChanges => HIRCObjects.Any(x => x.DataChanged);
 
         private byte[] OriginalHIRCHex;
+        private static bool ShouldReverseIDEndianness => Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness;
 
         private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
         {
@@ -1977,12 +1954,13 @@ namespace ME3Explorer
 
         private void CloneHIRCObject(object sender, RoutedEventArgs e)
         {
-            if (HIRC_ListBox.SelectedItem is HIRCObject h)
+            if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
             {
-                HIRCObject clone = h.Clone();
-                clone.Index = HIRCObjects.Count;
-                clone.DataChanged = true;
-                HIRCObjects.Add(clone);
+                WwiseBank.HIRCObject clone = CreateHircObjectFromHex(h.Data).Clone();
+                HIRCObjects.Add(new HIRCDisplayObject(HIRCObjects.Count, clone, Pcc.Game)
+                {
+                    DataChanged = true
+                });
                 HIRC_ListBox.ScrollIntoView(clone);
                 HIRC_ListBox.SelectedItem = clone;
             }

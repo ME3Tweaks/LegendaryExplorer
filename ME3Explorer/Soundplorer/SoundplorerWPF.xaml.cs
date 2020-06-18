@@ -33,6 +33,7 @@ using System.Xml.Linq;
 using FontAwesome5.WPF;
 using FontAwesome5;
 using Gammtek.Conduit.IO;
+using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
 using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
@@ -44,9 +45,6 @@ namespace ME3Explorer.Soundplorer
     /// </summary>
     public partial class SoundplorerWPF : WPFBase, IBusyUIHost
     {
-        public static readonly string SoundplorerDataFolder = Path.Combine(App.AppDataFolder, @"Soundplorer\");
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
         private string LoadedISBFile;
         private string LoadedAFCFile;
         BackgroundWorker backgroundScanner;
@@ -119,6 +117,11 @@ namespace ME3Explorer.Soundplorer
 
         private bool ExportIsSelected() => SoundExports_ListBox.SelectedItem is SoundplorerExport;
 
+        #region Recents
+
+        public static readonly string SoundplorerDataFolder = Path.Combine(App.AppDataFolder, @"Soundplorer\");
+        private const string RECENTFILES_FILE = "RECENTFILES";
+        public List<string> RFiles;
         private void LoadRecentList()
         {
             Recents_MenuItem.IsEnabled = false;
@@ -221,6 +224,8 @@ namespace ME3Explorer.Soundplorer
             }
             Recents_MenuItem.IsEnabled = true;
         }
+
+        #endregion
 
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -626,9 +631,8 @@ namespace ME3Explorer.Soundplorer
         {
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                WwiseBank wb = new WwiseBank(spExport.Export);
-                List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                if (embeddedWEMFiles.Count > 0)
+                var bank = spExport.Export.GetBinaryData<WwiseBank>();
+                if (bank.EmbeddedFiles.Count > 0)
                 {
                     if (location == null)
                     {
@@ -644,32 +648,21 @@ namespace ME3Explorer.Soundplorer
                         location = dlg.FileName;
                     }
 
-                    byte[] data = wb.GetChunk("DATA");
-                    if (embeddedWEMFiles.Count > 0)
+                    foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
                     {
-                        foreach ((uint wemID, int offset, int size) singleWemMetadata in embeddedWEMFiles)
+                        string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                        string wemName = $"{spExport.Export.ObjectName}_0x{wemID:X8}";
+                        if (wemHeader == "RIFF")
                         {
-                            byte[] wemData = new byte[singleWemMetadata.size];
-                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                            Buffer.BlockCopy(data, singleWemMetadata.offset + 0x8, wemData, 0, singleWemMetadata.size);
-                            //check for RIFF header as some don't seem to have it and are not playable.
-                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-                            string wemName = $"{spExport.Export.ObjectName}_0x{singleWemMetadata.wemID:X8}";
-
-                            if (wemHeader == "RIFF")
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export.FileRef.Game); //will correct truncated stuff
+                            Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
+                            if (waveStream != null && waveStream.Length > 0)
                             {
-                                EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export.FileRef.Game); //will correct truncated stuff
-                                Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
-                                if (waveStream != null && waveStream.Length > 0)
-                                {
-                                    string outputname = wemName + ".wav";
-                                    string outpath = Path.Combine(location, outputname);
-                                    using (var fileStream = File.Create(outpath))
-                                    {
-                                        waveStream.Seek(0, SeekOrigin.Begin);
-                                        waveStream.CopyTo(fileStream);
-                                    }
-                                }
+                                string outputname = wemName + ".wav";
+                                string outpath = Path.Combine(location, outputname);
+                                waveStream.SeekBegin();
+                                using var fileStream = File.Create(outpath);
+                                waveStream.CopyTo(fileStream);
                             }
                         }
                     }
@@ -1352,29 +1345,22 @@ namespace ME3Explorer.Soundplorer
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
-                    WwiseBank wb = new WwiseBank(spExport.Export);
-                    List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                    byte[] data = wb.GetChunk("DATA");
-                    int i = 0;
-                    if (embeddedWEMFiles.Count > 0)
+                    var bank = spExport.Export.GetBinaryData<WwiseBank>();
+                    if (bank.EmbeddedFiles.Count > 0)
                     {
+                        int i = 0;
                         var AllWems = new List<EmbeddedWEMFile>();
-                        foreach ((uint wemID, int offset, int size) singleWemMetadata in embeddedWEMFiles)
+                        foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
                         {
-                            var wemData = new byte[singleWemMetadata.size];
-                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                            Buffer.BlockCopy(data, singleWemMetadata.offset + 0x8, wemData, 0, singleWemMetadata.size);
-                            //check for RIFF header as some don't seem to have it and are not playable.
-                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-
-                            string wemId = singleWemMetadata.wemID.ToString("X8");
+                            string wemId = wemID.ToString("X8");
                             string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export.FileRef.Game, singleWemMetadata.wemID);
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export.FileRef.Game, wemID);
                             AllWems.Add(wem);
                             i++;
                         }
-                        wb.UpdateDataChunk(AllWems);
+                        bank.EmbeddedFiles.Clear();
+                        bank.EmbeddedFiles.AddRange(AllWems.Select(wem => new KeyValuePair<uint, byte[]>(wem.Id, wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData)));
                         ExportBank(spExport);
                     }
                 }
@@ -1736,9 +1722,8 @@ namespace ME3Explorer.Soundplorer
             }
             if (Export.ClassName == "WwiseBank")
             {
-                WwiseBank wb = new WwiseBank(Export);
-                List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                SubText = $"{embeddedWEMFiles.Count} embedded WEM{(embeddedWEMFiles.Count != 1 ? "s" : "")}";
+                var bank = Export.GetBinaryData<WwiseBank>();
+                SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
                 NeedsLoading = false;
                 Icon = EFontAwesomeIcon.Solid_University;
             }

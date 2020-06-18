@@ -976,7 +976,7 @@
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\World.cs" />
-    <Compile Include="Unreal\Classes\WwiseBank.cs" />
+    <Compile Include="Soundplorer\HIRCDisplayObject.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />

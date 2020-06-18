@@ -125,7 +125,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "WwiseStream":
                     return From<WwiseStream>(export);
                 case "WwiseBank":
-                    return From<AKWwiseBank>(export);
+                    return From<WwiseBank>(export);
                 case "BioGestureRuntimeData":
                     return From<BioGestureRuntimeData>(export);
                 case "LightMapTexture2D":

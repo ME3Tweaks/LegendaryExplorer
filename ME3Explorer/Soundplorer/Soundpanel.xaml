@@ -186,7 +186,7 @@
 
                     <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch">
                         <ListBox.Resources>
-                            <DataTemplate DataType="{x:Type unrealclasses:WwiseBank+HIRCObject}">
+                            <DataTemplate DataType="{x:Type soundplorer:HIRCDisplayObject}">
                                 <StackPanel Name="HIRCContainer" Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
                                     <StackPanel>
