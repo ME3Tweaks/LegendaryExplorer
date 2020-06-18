@@ -4442,6 +4442,224 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<ITreeItem> Scan_WwiseStream(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
+                bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Unk1"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unk2"));
+                    if (bin.Skip(-8).ReadInt64() == 0)
+                    {
+                        return subnodes;
+                    }
+                    subnodes.Add(MakeGuidNode(bin, "UnkGuid"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unk3"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unk4"));
+                }
+                subnodes.Add(MakeUInt32Node(bin, "Unk5"));
+                int dataSize = bin.ReadInt32();
+                bin.Skip(-4);
+                subnodes.Add(MakeInt32Node(bin, "DataSize1"));
+                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
+                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                if (CurrentLoadedExport.GetProperty<NameProperty>("Filename") is null)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, "Embedded sound data. Use Soundplorer to modify this data.")
+                    {
+                        Length = dataSize
+                    });
+                    subnodes.Add(new BinInterpNode
+                    {
+                        Header = "The stream offset to this data will be automatically updated when this file is saved.",
+                        Tag = NodeType.Unknown
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> Scan_WwiseBank(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
+                bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Unk1"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unk2"));
+                    if (bin.Skip(-8).ReadInt64() == 0)
+                    {
+                        return subnodes;
+                    }
+                }
+                subnodes.Add(MakeUInt32Node(bin, "Unk3"));
+                subnodes.Add(MakeInt32Node(bin, "DataSize1"));
+                int dataSize = bin.Skip(-4).ReadInt32();
+                subnodes.Add(MakeInt32Node(bin, "DataSize2"));
+                subnodes.Add(MakeInt32Node(bin, "DataOffset"));
+                
+                var chunksNode = new BinInterpNode(bin.Position, "Chunks")
+                {
+                    IsExpanded = true,
+                };
+                subnodes.Add(chunksNode);
+                while (bin.Position < bin.Length)
+                {
+                    var start = bin.Position;
+                    string chunkID = bin.ReadEndianASCIIString(4);
+                    int size = bin.ReadInt32();
+                    var chunk = new BinInterpNode(start, $"{chunkID}: {size} bytes")
+                    {
+                        Length = size + 8
+                    };
+                    chunksNode.Items.Add(chunk);
+
+                    switch (chunkID)
+                    {
+                        case "BKHD":
+                            chunk.Items.Add(MakeUInt32Node(bin, "Version"));
+                            chunk.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
+                            chunk.Items.Add(MakeUInt32Node(bin, "Unk Zero"));
+                            chunk.Items.Add(MakeUInt32Node(bin, "Unk Zero"));
+                            break;
+                        case "STMG":
+                            if (Pcc.Game == MEGame.ME2)
+                            {
+                                chunk.Items.Add(new BinInterpNode(bin.Position, "STMG node not parsed for ME2"));
+                                break;
+                            }
+                            chunk.Items.Add(MakeFloatNode(bin, "Volume Threshold"));
+                            if (Pcc.Game == MEGame.ME3)
+                            {
+                                chunk.Items.Add(MakeUInt16Node(bin, "Max Voice Instances"));
+                            }
+                            int numStateGroups;
+                            var stateGroupsNode = new BinInterpNode(bin.Position, $"State Groups ({numStateGroups = bin.ReadInt32()})");
+                            chunk.Items.Add(stateGroupsNode);
+                            for (int i = 0; i < numStateGroups; i++)
+                            {
+                                stateGroupsNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
+                                stateGroupsNode.Items.Add(MakeUInt32Node(bin, "Default Transition Time (ms)"));
+                                int numTransitionTimes;
+                                var transitionTimesNode = new BinInterpNode(bin.Position, $"Custom Transition Times ({numTransitionTimes = bin.ReadInt32()})");
+                                stateGroupsNode.Items.Add(transitionTimesNode);
+                                for (int j = 0; j < numTransitionTimes; j++)
+                                {
+                                    transitionTimesNode.Items.Add(MakeUInt32HexNode(bin, "'From' state ID"));
+                                    transitionTimesNode.Items.Add(MakeUInt32HexNode(bin, "'To' state ID"));
+                                    transitionTimesNode.Items.Add(MakeUInt32Node(bin, "Transition Time (ms)"));
+                                }
+                            }
+                            int numSwitchGroups;
+                            var switchGroupsNode = new BinInterpNode(bin.Position, $"Switch Groups ({numSwitchGroups = bin.ReadInt32()})");
+                            chunk.Items.Add(switchGroupsNode);
+                            for (int i = 0; i < numSwitchGroups; i++)
+                            {
+                                switchGroupsNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
+                                switchGroupsNode.Items.Add(MakeUInt32HexNode(bin, "Game Parameter ID"));
+                                int numPoints;
+                                var pointNode = new BinInterpNode(bin.Position, $"Points ({numPoints = bin.ReadInt32()})");
+                                switchGroupsNode.Items.Add(pointNode);
+                                for (int j = 0; j < numPoints; j++)
+                                {
+                                    pointNode.Items.Add(MakeFloatNode(bin, "Game Parameter value"));
+                                    pointNode.Items.Add(MakeUInt32HexNode(bin, "ID of Switch set when Game Parameter >= given value"));
+                                    pointNode.Items.Add(MakeUInt32Node(bin, "Curve shape. (9 = constant)"));
+                                }
+                            }
+                            int numGameParams;
+                            var gameParamNode = new BinInterpNode(bin.Position, $"Game Parameters ({numGameParams = bin.ReadInt32()})");
+                            chunk.Items.Add(gameParamNode);
+                            for (int i = 0; i < numGameParams; i++)
+                            {
+                                gameParamNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
+                                gameParamNode.Items.Add(MakeFloatNode(bin, "default value"));
+                            }
+                            break;
+                        case "DIDX":
+                            for (int i = 0; i < size / 12; i++)
+                            {
+                                BinInterpNode item = new BinInterpNode(bin.Position, $"{i}: Embedded File Info")
+                                {
+                                    Length = 12,
+                                    IsExpanded = true
+                                };
+                                chunk.Items.Add(item);
+                                item.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
+                                item.Items.Add(MakeUInt32Node(bin, "Offset"));
+                                item.Items.Add(MakeUInt32Node(bin, "Length"));
+
+                                // //todo: remove testing code
+                                // bin.Skip(-8);
+                                // int off = bin.ReadInt32();
+                                // int len = bin.ReadInt32();
+                                // item.Items.Add(new BinInterpNode(0xf4 + off, "file start"));
+                                // item.Items.Add(new BinInterpNode(0xf4 + off + len, "file end"));
+                            }
+                            break;
+                        case "DATA":
+                            chunk.Items.Add(new BinInterpNode(bin.Position, "Start of DATA section. Embedded file offsets are relative to here"));
+                            break;
+                        case "HIRC":
+                            chunk.Items.Add(MakeUInt32Node(bin, "HIRC object count"));
+                            uint hircCount = bin.Skip(-4).ReadUInt32();
+                            for (int i = 0; i < hircCount; i++)
+                            {
+                                int len;
+                                chunk.Items.Add(new BinInterpNode(bin.Position, $"{i}: Type: 0x{(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32()):X} Length:{len = bin.ReadInt32()} ID:{bin.ReadUInt32():X} ")
+                                {
+                                    Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4),
+                                    IsExpanded = true
+                                });
+                                bin.Skip(len - 4);
+                            }
+                            break;
+                        case "STID":
+                            chunk.Items.Add(MakeUInt32Node(bin, "Unk One"));
+                            chunk.Items.Add(MakeUInt32Node(bin, "WwiseBanks referenced in this bank"));
+                            uint soundBankCount = bin.Skip(-4).ReadUInt32();
+                            for (int i = 0; i < soundBankCount; i++)
+                            {
+                                BinInterpNode item = new BinInterpNode(bin.Position, $"{i}: Referenced WwiseBank")
+                                {
+                                    Length = 12,
+                                    IsExpanded = true
+                                };
+                                item.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
+                                int strLen = bin.ReadByte();
+                                item.Items.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadStringASCII(strLen)}") { Length = strLen });
+                                chunk.Items.Add(item);
+                            }
+                            break;
+                        default:
+                            chunk.Items.Add(new BinInterpNode(bin.Position, "UNPARSED CHUNK!"));
+                            break;
+                    }
+
+                    bin.JumpTo(start + size + 8);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
         private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
         {
             var subnodes = new List<ITreeItem>();
@@ -5453,6 +5671,8 @@ namespace ME3Explorer
         private static BinInterpNode MakeFloatNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
 
         private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
+
+        private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X}") { Length = 4 };
 
         private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 

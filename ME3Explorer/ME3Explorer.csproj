@@ -957,6 +957,7 @@
     <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
     <Compile Include="Unreal\BinaryConverters\UState.cs" />
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseBank.cs" />
     <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
     <Compile Include="Unreal\BinaryConverters\WwiseStream.cs" />
     <Compile Include="Unreal\WwiseHelper.cs" />
