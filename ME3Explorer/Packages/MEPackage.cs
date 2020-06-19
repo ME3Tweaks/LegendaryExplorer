@@ -43,6 +43,9 @@ namespace ME3Explorer.Packages
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
     {
+        public const ushort BL2UnrealVersion = 832;
+        public const ushort BL2LicenseeVersion = 46;
+
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
         public const ushort ME1PS3UnrealVersion = 684; //same as ME3 ;)
@@ -217,6 +220,10 @@ namespace ME3Explorer.Packages
                     Game = MEGame.ME3;
                     Platform = GamePlatform.Xenon;
                     break;
+                case BL2UnrealVersion when licenseeVersion == BL2LicenseeVersion:
+                    Game = MEGame.ME3; //Change to BL2
+                    Platform = GamePlatform.PC;
+                    break;
                 default:
                     throw new FormatException("Not a Mass Effect Package!");
             }
@@ -231,24 +238,15 @@ namespace ME3Explorer.Packages
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
             //Xenon Demo ME3 doesn't read this
+
+            /* This code doesn't seem relevant to BL2?
             if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && Platform != GamePlatform.Xenon)
             {
                 //Consoles are always cooked.
                 PackageTypeId = packageReader.ReadInt32(); //0 = standard, 1 = patch ? Not entirely sure. patch_001 files with byte = 0 => game does not load
 
-            }
+            }*/
 
-            //if (Platform != GamePlatform.PC)
-            //{
-            //    NameOffset = packageReader.ReadInt32();
-            //    NameCount = packageReader.ReadInt32();
-            //    ExportOffset = packageReader.ReadInt32();
-            //    ExportCount = packageReader.ReadInt32();
-            //    ImportOffset = packageReader.ReadInt32();
-            //    ImportCount = packageReader.ReadInt32();
-            //}
-            //else
-            //{
             NameCount = packageReader.ReadInt32();
             NameOffset = packageReader.ReadInt32();
             ExportCount = packageReader.ReadInt32();
@@ -262,9 +260,9 @@ namespace ME3Explorer.Packages
             if (Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
-                packageReader.SkipInt32(); //ImportGuidsCount always 0
-                packageReader.SkipInt32(); //ExportGuidsCount always 0
-                packageReader.SkipInt32(); //ThumbnailTableOffset always 0
+                var importGuidsCount = packageReader.ReadInt32();
+                var exportsGuidCount = packageReader.ReadInt32(); //ExportGuidsCount always 0?
+                var thumbnailTableOffset = packageReader.ReadInt32(); //ThumbnailTableOffset always 0?
             }
 
             PackageGuid = packageReader.ReadGuid();
@@ -290,8 +288,9 @@ namespace ME3Explorer.Packages
                 packageReader.SkipInt32(); //always 1 in ME1, always 1966080 in ME2
             }
 
-            unknown6 = packageReader.ReadInt32();
-            var constantVal = packageReader.ReadInt32();//always -1 in ME1 and ME2, always 145358848 in ME3
+            //BL2: Could be either of these two following. not sure
+            //unknown6 = packageReader.ReadInt32();
+            //var constantVal = packageReader.ReadInt32();//always -1 in ME1 and ME2, always 145358848 in ME3
 
             if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
             {
@@ -307,7 +306,7 @@ namespace ME3Explorer.Packages
             var savedPos = packageReader.Position;
             packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
 
-            
+
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
             if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3)
@@ -358,6 +357,9 @@ namespace ME3Explorer.Packages
                     inStream.Skip(8);
                 else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)
                     inStream.Skip(4);
+                //BL2: Something follows name string here, not really sure what it is
+                if (Game == MEGame.ME3)
+                    inStream.Skip(8);
             }
 
             //read importTable

@@ -4148,59 +4148,59 @@ namespace ME3Explorer.Pathfinding_Editor
                             {
                                 var subSLCAexport = Pcc.GetUExport(lightCollection.Components[j].value);
                                 if (subSLCAexport.ObjectName.Name.Contains("SpotLight"))
-                                    // ME1 AMD Lighting Fix test code
+                                // ME1 AMD Lighting Fix test code
                                 //subSLCAexport.ObjectName.Name.Contains("DirectionalLight_2_LC") //Beginning area
                                 //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_0_LC") //beginning area
                                 //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_6_LC") //beginning area
 
-                                    ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
-                                    ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
 
-                                    //// removing these did nothing for midsection near vigil
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
-                                    ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
-                                    ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
-                                    ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_43_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
+                                //// removing these did nothing for midsection near vigil
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_43_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
 
-                                    ////did nothign for middle
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_3_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_26_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_10_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_23_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
+                                ////did nothign for middle
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_3_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_26_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_10_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_23_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
 
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_15_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_319_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_5_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_17_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_18_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_7_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_1_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_13_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_14_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_9_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_11_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_19_LC") //
-                                    //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_12_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_15_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_319_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_5_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_17_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_18_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_7_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_1_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_13_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_14_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_9_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_11_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_19_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_12_LC") //
 
-                                    // ART 40
-                                    //subSLCAexport.ObjectName.Name.Contains("DirectionalLight_0_LC")
-                                    subSLCAexport.ObjectName.Name.Contains("DirectionalLight") && lightCollection.Export.indexValue == 118
+                                // ART 40
+                                //subSLCAexport.ObjectName.Name.Contains("DirectionalLight_0_LC")
+                                //subSLCAexport.ObjectName.Name.Contains("DirectionalLight") && lightCollection.Export.indexValue == 118
 
                                 //|| true
-                                )
+                                // )
                                 {
                                     Debug.WriteLine("Remove " + subSLCAexport.UIndex + " " + subSLCAexport.InstancedFullPath + " from " + export.InstancedFullPath);
                                     lightCollection.Components.RemoveAt(j);

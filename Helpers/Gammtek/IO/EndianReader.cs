@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,6 +23,7 @@ using StreamHelpers;
 
 namespace Gammtek.Conduit.IO
 {
+    [DebuggerDisplay("EndianReader - Native Endian (PC): {_endian.IsNative}, Position 0x{Position.ToString(\"X8\")}")]
     /// <summary>
     ///     BinaryReader that supports reading and writing individual bits from
     ///     the stream and reordering values based on Endian settings between

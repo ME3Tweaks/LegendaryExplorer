@@ -66,7 +66,10 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME2PS3UnrealVersion && licenseVersion == MEPackage.ME2PS3LicenseeVersion ||
                     version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
-                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
+                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion ||
+
+                    version == MEPackage.BL2UnrealVersion && licenseVersion == MEPackage.BL2LicenseeVersion
+                    )
                 {
                     package = MEConstructorDelegate(pathToFile, MEGame.Unknown);
                 }
