@@ -109,10 +109,10 @@ namespace ME3Explorer.ActorNodes
                     SetDefaultShape();
                 }
             }
-            else if(cylinder)
+            else if (cylinder)
             {
                 Tuple<float, float, float> dimensions = getCylinderDimensions();
-                if(dimensions != null)
+                if (dimensions != null)
                 {
                     var cylinderX = this.X - dimensions.Item1;
                     var cylinderY = this.Y - dimensions.Item2;
@@ -697,16 +697,28 @@ namespace ME3Explorer.ActorNodes
     {
         public float Z;
         private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static readonly Color directionOutlinePenColor = Color.FromArgb(55, 150, 190);
         private static readonly PointF[] outlineShape = { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
+        private static readonly PointF[] directionOutlineShape = { new PointF(0, 22), new PointF(50, 0), new PointF(50, 50), new PointF(0, 28) };
 
         public LAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, float z)
             : base(idx, x, y, p, grapheditor, z)
         {
         }
 
-        public override Color GetDefaultShapeColor() => outlinePenColor;
+        public override Color GetDefaultShapeColor()
+        {
+            if (export.ClassName == "DirectionalLightComponent")
+                return directionOutlinePenColor;
+            return outlinePenColor;
+        }
 
-        public override PointF[] GetDefaultShapePoints() => outlineShape;
+        public override PointF[] GetDefaultShapePoints()
+        {
+            if (export.ClassName == "DirectionalLightComponent")
+                return directionOutlineShape;
+            return outlineShape;
+        }
     }
 
     public class BioTriggerVolume : ActorNode
@@ -832,8 +844,8 @@ namespace ME3Explorer.ActorNodes
     {
         private static readonly Color outlinePenColor = Color.FromArgb(255, 0, 0);
         private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(128, 0, 0));
-        private static readonly PointF[] outlineShape = { new PointF(17, 0), new PointF(33, 0), new PointF(41, 9), new PointF(41, 20), 
-            new PointF(35, 30), new PointF(35, 36), new PointF(34, 36), new PointF(32, 37), new PointF(32, 47), new PointF(30, 50), 
+        private static readonly PointF[] outlineShape = { new PointF(17, 0), new PointF(33, 0), new PointF(41, 9), new PointF(41, 20),
+            new PointF(35, 30), new PointF(35, 36), new PointF(34, 36), new PointF(32, 37), new PointF(32, 47), new PointF(30, 50),
             new PointF(20, 50), new PointF(18, 47), new PointF(18, 37), new PointF(16, 36), new PointF(15, 36), new PointF(15, 30),
             new PointF(9, 20), new PointF(9, 9)
 

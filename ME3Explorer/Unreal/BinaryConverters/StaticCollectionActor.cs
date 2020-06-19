@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ME3Explorer.Packages;
 using SharpDX;
 using StreamHelpers;
@@ -7,6 +8,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
 {
     public abstract class StaticCollectionActor : ObjectBinary
     {
+        public List<UIndex> Components;
+
         public List<Matrix> LocalToWorldTransforms;
 
         public abstract string ComponentPropName { get; }
@@ -21,6 +24,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             if (sc.IsLoading)
             {
+                // Components are technically not part of the binary data. However they are required to be parsed for this class so we might as well just leverage their utility here.
+                Components = components.Select(x => new UIndex(x.Value)).ToList();
                 LocalToWorldTransforms = new List<Matrix>(components.Count);
             }
 
