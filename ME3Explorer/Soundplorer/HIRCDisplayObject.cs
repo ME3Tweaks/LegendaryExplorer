@@ -74,10 +74,10 @@ namespace ME3Explorer.Soundplorer
             {
                 case WwiseBank.SoundSFXVoice sfxVoice:
                     unk1 = sfxVoice.Unk1;
-                    State = sfxVoice.State;
+                    State = (uint)sfxVoice.State;
                     SourceID = sfxVoice.SourceID;
                     AudioID = sfxVoice.AudioID;
-                    SoundType = sfxVoice.SoundType;
+                    SoundType = (byte)sfxVoice.SoundType;
                     break;
                 case WwiseBank.Event eventHIRC:
                     EventIDs = eventHIRC.EventActions.Clone();

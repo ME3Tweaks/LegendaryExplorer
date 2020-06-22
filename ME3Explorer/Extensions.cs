@@ -278,15 +278,11 @@ namespace ME3Explorer
             return -1;
         }
 
-        public static bool IsEmpty<T>(this ICollection<T> list)
-        {
-            return list.Count == 0;
-        }
+        public static bool IsEmpty<T>(this ICollection<T> list) => list.Count == 0;
 
-        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
-        {
-            return !enumerable.Any();
-        }
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
+        public static bool Any<T>(this ICollection<T> collection) => collection.Count > 0;
+
         /// <summary>
         /// Creates a sequence of tuples by combining the two sequences. The resulting sequence will length of the shortest of the two.
         /// </summary>
@@ -1069,6 +1065,10 @@ namespace ME3Explorer
             m.M33 /= scale.Z;
             return (translation, scale, m.GetRotator());
         }
+
+        public static uint ReinterpretAsUint(this int i) => BitConverter.ToUInt32(BitConverter.GetBytes(i), 0);
+
+        public static int ReinterpretAsInt(this uint i) => BitConverter.ToInt32(BitConverter.GetBytes(i), 0);
     }
 
     public static class Enums

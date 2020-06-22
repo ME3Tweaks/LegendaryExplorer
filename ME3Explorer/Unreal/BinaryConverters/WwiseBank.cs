@@ -384,10 +384,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         Type = type,
                         ID = id,
                         Unk1 = sc.ms.ReadUInt32(),
-                        State = sc.ms.ReadUInt32(),
+                        State = (SoundState)sc.ms.ReadUInt32(),
                         AudioID = sc.ms.ReadUInt32(),
                         SourceID = sc.ms.ReadUInt32(),
-                        SoundType = sc.ms.ReadByte(),
+                        SoundType = (SoundType)sc.ms.ReadByte(),
                         unparsed = sc.ms.ReadBytes(len - 21)
                     },
                     HIRCType.Event => new Event
@@ -395,6 +395,16 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         Type = type,
                         ID = id,
                         EventActions = new List<uint>(Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => sc.ms.ReadUInt32()))
+                    },
+                    HIRCType.EventAction => new EventAction
+                    {
+                        Type = type,
+                        ID = id,
+                        Scope = (EventActionScope)sc.ms.ReadByte(),
+                        ActionType = (EventActionType)sc.ms.ReadByte(),
+                        Unk1 = sc.ms.ReadUInt16(),
+                        ReferencedObjectID = sc.ms.ReadUInt32(),
+                        unparsed = sc.ms.ReadBytes(len - 12)
                     },
                     _ => new HIRCObject
                     {
@@ -434,10 +444,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public class SoundSFXVoice : HIRCObject
         {
             public uint Unk1;
-            public uint State;  //0=embed, 1=streamed, 2=stream/prefetched
+            public SoundState State;  
             public uint AudioID;
             public uint SourceID;
-            public byte SoundType; //0=SFX, 1=Voice
+            public SoundType SoundType; //0=SFX, 1=Voice
 
             public override int DataLength => unparsed.Length + 21;
 
@@ -456,13 +466,26 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 ms.WriteInt32(DataLength);
                 ms.WriteUInt32(ID);
                 ms.WriteUInt32(Unk1);
-                ms.WriteUInt32(State);
+                ms.WriteUInt32((uint)State);
                 ms.WriteUInt32(AudioID);
                 ms.WriteUInt32(SourceID);
-                ms.WriteByte(SoundType);
+                ms.WriteByte((byte)SoundType);
                 ms.WriteBytes(unparsed);
                 return ms.ToArray();
             }
+        }
+
+        public enum SoundType : byte
+        {
+            SFX = 0,
+            Voice = 1
+        }
+
+        public enum SoundState : uint
+        {
+            Embed = 0,
+            Streamed = 1,
+            StreamPrefetched = 2
         }
 
         //public string[] ActionTypes = {"Stop", "Pause", "Resume", "Play", "Trigger", "Mute", "UnMute", "Set Voice Pitch", "Reset Voice Pitch", "Set Voice Volume", "Reset Voice Volume", "Set Bus Volume", "Reset Bus Volume", "Set Voice Low-pass Filter", "Reset Voice Low-pass Filter", "Enable State" , "Disable State", "Set State", "Set Game Parameter", "Reset Game Parameter", "Set Switch", "Enable Bypass or Disable Bypass", "Reset Bypass Effect", "Break", "Seek"};
@@ -500,6 +523,50 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 Event clone = (Event)MemberwiseClone();
                 clone.EventActions = EventActions.Clone();
                 return clone;
+            }
+        }
+
+        public enum EventActionScope : byte
+        {
+            Global = 0x10,
+            GameAction = 0x11
+        }
+
+        public enum EventActionType : byte
+        {
+            Play = 0x40,
+            Stop = 0x10
+        }
+
+        public class EventAction : HIRCObject
+        {
+            public EventActionScope Scope;
+            public EventActionType ActionType;
+            public ushort Unk1;
+            public uint ReferencedObjectID;
+
+            public override int DataLength => 12 + unparsed.Length;
+
+            public override byte[] ToBytes(MEGame game)
+            {
+                var ms = new MemoryStream();
+                if (game == MEGame.ME3)
+                {
+                    ms.WriteByte((byte)Type);
+                }
+                else
+                {
+                    ms.WriteInt32((byte)Type);
+                }
+
+                ms.WriteInt32(DataLength);
+                ms.WriteUInt32(ID);
+                ms.WriteByte((byte)Scope);
+                ms.WriteByte((byte)ActionType);
+                ms.WriteUInt16(Unk1);
+                ms.WriteUInt32(ReferencedObjectID);
+                ms.WriteBytes(unparsed);
+                return ms.ToArray();
             }
         }
     }

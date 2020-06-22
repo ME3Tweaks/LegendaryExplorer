@@ -1815,7 +1815,7 @@ namespace ME3Explorer
                         string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                         if (start <= memory.Length - 4)
                         {
-                            uint val = BitConverter.ToUInt32(memory, start);
+                            int val = BitConverter.ToInt32(memory, start);
                             float fval = BitConverter.ToSingle(memory, start);
                             s += $", Int: {val} (0x{val:X8}) Float: {fval}";
                             var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);

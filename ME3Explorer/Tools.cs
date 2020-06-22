@@ -596,6 +596,19 @@ namespace ME3Explorer
                 subCategory = "Scene Shop",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
+            set.Add(new Tool
+            {
+                name = "Wwise Graph Editor",
+                type = typeof(WwiseEditor.WwiseEditorWPF),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new WwiseEditor.WwiseEditorWPF()).Show();
+                },
+                tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
+                subCategory = "Scene Shop",
+                description = "Edit WwiseBanks",
+            });
             #endregion
 
             items = set;

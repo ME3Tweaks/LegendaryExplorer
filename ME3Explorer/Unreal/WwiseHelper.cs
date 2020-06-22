@@ -238,8 +238,10 @@ namespace ME3Explorer.Unreal
             return convertedStream;
         }
 
-        public static string GetHircObjTypeString(byte b) =>
-            (HIRCType)b switch
+        public static string GetHircObjTypeString(byte b) => GetHircObjTypeString((HIRCType)b);
+
+        public static string GetHircObjTypeString(HIRCType ht) =>
+            ht switch
             {
                 HIRCType.SoundSXFSoundVoice => "Sound SFX/Sound Voice",
                 HIRCType.EventAction => "Event Action",
@@ -261,6 +263,14 @@ namespace ME3Explorer.Unreal
                 HIRCType.MotionBus => "Motion Bus",
                 HIRCType.MotionFX => "Motion FX",
                 _ => "UNKNOWN HIRCOBJECT TYPE!"
+            };
+
+        public static string GetEventActionTypeString(WwiseBank.EventActionType actionType) =>
+            actionType switch
+            {
+                WwiseBank.EventActionType.Play => "Play",
+                WwiseBank.EventActionType.Stop => "Stop",
+                _ => "Unknown Action"
             };
     }
 }

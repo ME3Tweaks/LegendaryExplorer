@@ -294,6 +294,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WwiseEditor\WwiseEditorWPF.xaml.cs">
+      <DependentUpon>WwiseEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WwiseEditor\WwiseObjects.cs" />
     <Page Include="AnimationExplorer\AnimationImporter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1273,6 +1280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UnrealScriptControl\UnrealScriptWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WwiseEditor\WwiseEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
