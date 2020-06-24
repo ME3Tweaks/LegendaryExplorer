@@ -294,6 +294,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WwiseEditor\WwiseEditorWPF.xaml.cs">
+      <DependentUpon>WwiseEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WwiseEditor\WwiseObjects.cs" />
     <Page Include="AnimationExplorer\AnimationImporter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -957,6 +964,7 @@
     <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
     <Compile Include="Unreal\BinaryConverters\UState.cs" />
     <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
+    <Compile Include="Unreal\BinaryConverters\WwiseBank.cs" />
     <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
     <Compile Include="Unreal\BinaryConverters\WwiseStream.cs" />
     <Compile Include="Unreal\WwiseHelper.cs" />
@@ -975,7 +983,7 @@
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\BinaryConverters\World.cs" />
-    <Compile Include="Unreal\Classes\WwiseBank.cs" />
+    <Compile Include="Soundplorer\HIRCDisplayObject.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
@@ -1275,6 +1283,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WwiseEditor\WwiseEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ME1\HuffmanCompression.cs" />
@@ -1542,6 +1554,7 @@
     <Resource Include="Resources\animviewer_256x256.ico" />
     <Resource Include="Resources\audiolocalizer_256x256.ico" />
     <Resource Include="Resources\liveleveleditor_256x256.ico" />
+    <Resource Include="Resources\WwiseEditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -254,6 +254,8 @@ namespace Gammtek.Conduit.IO
             Write(buffer);
         }
 
+        public void WriteBytes(byte[] bytes) => WriteFromBuffer(bytes);
+
         public void WriteByte(byte b)
         {
             Write(b);
@@ -309,6 +311,11 @@ namespace Gammtek.Conduit.IO
         {
             //this needs checked. i think its right
             Write(val);
+        }
+
+        public void WriteZeros(int count)
+        {
+            _source.Write(new byte[count]);
         }
     }
 }

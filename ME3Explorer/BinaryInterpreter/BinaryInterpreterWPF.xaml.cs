@@ -543,8 +543,10 @@ namespace ME3Explorer
                         subNodes.AddRange(StartMetaDataScan(data, ref binarystart));
                         break;
                     case "WwiseStream":
+                        subNodes.AddRange(Scan_WwiseStream(data));
+                        break;
                     case "WwiseBank":
-                        subNodes.AddRange(Scan_WwiseStreamBank(data));
+                        subNodes.AddRange(Scan_WwiseBank(data));
                         break;
                     case "WwiseEvent":
                         subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));

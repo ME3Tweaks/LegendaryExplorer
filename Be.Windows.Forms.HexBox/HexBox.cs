@@ -9,6 +9,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Be.Windows.Forms
 {
@@ -2279,13 +2280,22 @@ namespace Be.Windows.Forms
             {
                 string sBuffer = (string)da.GetData(typeof(string));
                 Regex invalidHex = new Regex("[^0-9A-Fa-f]");
-                if (!invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0 && _keyInterpreter == _ki)
+                bool hexString = !invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0;
+                if (!hexString)
+                {
+                    string spaceLess = sBuffer.Replace(" ", "");
+                    if (!invalidHex.IsMatch(spaceLess) && spaceLess.Length % 2 == 0)
+                    {
+                        hexString = true;
+                        sBuffer = spaceLess;
+                    }
+                }
+                if (hexString && _keyInterpreter == _ki)
                 {
                     buffer = new byte[sBuffer.Length / 2];
-                    byte tmp;
                     for (int i = 0; i < sBuffer.Length; i += 2)
                     {
-                        if (!byte.TryParse(sBuffer.Substring(i, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.CurrentInfo, out tmp))
+                        if (!byte.TryParse(sBuffer.Substring(i, 2), NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out byte tmp))
                         {
                             buffer = null;
                             break;
@@ -2293,10 +2303,7 @@ namespace Be.Windows.Forms
                         buffer[i / 2] = tmp;
                     }
                 }
-                if (buffer == null)
-                {
-                    buffer = System.Text.Encoding.ASCII.GetBytes(sBuffer);
-                }
+                buffer ??= Encoding.ASCII.GetBytes(sBuffer);
             }
             else
             {

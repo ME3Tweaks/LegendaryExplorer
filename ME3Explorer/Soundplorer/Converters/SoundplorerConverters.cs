@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using static ME3Explorer.Unreal.Classes.WwiseBank;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -19,15 +19,12 @@ namespace ME3Explorer.Soundplorer
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int b = (int)value;
-            switch (b)
+            uint b = (uint)value;
+            return b switch
             {
-                case 0:
-                    return $"Sound SFX({value})";
-
-                default:
-                    return $"Sound Voice({value})";
-            }
+                0 => $"Sound SFX({value})",
+                _ => $"Sound Voice({value})"
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -41,18 +38,14 @@ namespace ME3Explorer.Soundplorer
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int i = (int)value;
-            switch (i)
+            uint i = (uint)value;
+            return i switch
             {
-                case 0:
-                    return $"Embedded";
-                case 1:
-                    return $"Streamed";
-                case 2:
-                    return $"Streamed with prefetch";
-                default:
-                    return $"Unknown playback fetch type: {value}";
-            }
+                0 => $"Embedded",
+                1 => $"Streamed",
+                2 => $"Streamed with prefetch",
+                _ => $"Unknown playback fetch type: {value}"
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -66,7 +59,7 @@ namespace ME3Explorer.Soundplorer
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WwiseBank.GetHircObjType((byte)value);
+            return WwiseHelper.GetHircObjTypeString((byte)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -83,7 +76,7 @@ namespace ME3Explorer.Soundplorer
             if (parameter != null)
             {
                 int iparameter = int.Parse((string)parameter);
-                HIRCObject ho = (HIRCObject)value;
+                HIRCDisplayObject ho = (HIRCDisplayObject)value;
                 return iparameter == ho.ObjType ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;

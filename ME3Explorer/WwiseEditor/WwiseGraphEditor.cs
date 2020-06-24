@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
-using ME3Explorer.SequenceObjects;
+using ME3Explorer.WwiseEditor;
 using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
@@ -19,12 +19,12 @@ namespace UMD.HCIL.GraphEditor
     /// Creates a simple graph control with some random nodes and connected edges.
     /// An event handler allows users to drag nodes around, keeping the edges connected.
     /// </summary>
-    public sealed class GraphEditor : PCanvas
+    public sealed class WwiseGraphEditor : PCanvas
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components;
+        private Container components;
 
         private readonly ZoomController zoomController;
 
@@ -36,11 +36,11 @@ namespace UMD.HCIL.GraphEditor
         /// <summary>
         /// Empty Constructor is necessary so that this control can be used as an applet.
         /// </summary>
-        public GraphEditor() : this(DEFAULT_WIDTH, DEFAULT_HEIGHT) { }
+        public WwiseGraphEditor() : this(DEFAULT_WIDTH, DEFAULT_HEIGHT) { }
         public PLayer nodeLayer;
         public PLayer edgeLayer;
         public PLayer backLayer;
-        public GraphEditor(int width, int height)
+        public WwiseGraphEditor(int width, int height)
         {
             InitializeComponent();
             this.Size = new Size(width, height);
@@ -60,7 +60,7 @@ namespace UMD.HCIL.GraphEditor
         public void AllowDragging()
         {
             nodeLayer.RemoveInputEventListener(dragHandler);
-            nodeLayer.AddInputEventListener(dragHandler);
+            nodeLayer.AddInputEventListener(dragHandler); 
         }
 
         public void DisableDragging()
@@ -73,7 +73,7 @@ namespace UMD.HCIL.GraphEditor
             backLayer.AddChild(p);
         }
 
-        public void addEdge(SeqEdEdge p)
+        public void addEdge(WwiseEdEdge p)
         {
             edgeLayer.AddChild(p);
             UpdateEdge(p);
@@ -84,7 +84,7 @@ namespace UMD.HCIL.GraphEditor
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdge(SeqEdEdge edge)
+        public static void UpdateEdge(WwiseEdEdge edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
@@ -107,15 +107,9 @@ namespace UMD.HCIL.GraphEditor
                 }
 
                 end.X += node2.GlobalBounds.Width / 2;
-                if (edge is EventEdge)
-                {
-                    h2y = h1y;
-                }
-                else
-                {
-                    h2y = 0;
-                    end.Y += node2.GlobalBounds.Height / 2;
-                }
+
+                h2y = 0;
+                end.Y += node2.GlobalBounds.Height / 2;
             }
             else
             {
@@ -229,11 +223,11 @@ namespace UMD.HCIL.GraphEditor
             {
                 if (!e.Handled)
                 {
-                    var edgesToUpdate = new HashSet<SeqEdEdge>();
+                    var edgesToUpdate = new HashSet<WwiseEdEdge>();
                     base.OnDrag(sender, e);
-                    if (e.PickedNode is SObj sObj)
+                    if (e.PickedNode is WwiseHircObjNode sObj)
                     {
-                        foreach (SeqEdEdge edge in sObj.Edges)
+                        foreach (WwiseEdEdge edge in sObj.Edges)
                         {
                             edgesToUpdate.Add(edge);
                         }
@@ -243,12 +237,12 @@ namespace UMD.HCIL.GraphEditor
                     {
                         foreach (PNode node in g.nodeLayer)
                         {
-                            if (node is SObj obj && obj.IsSelected && obj != e.PickedNode)
+                            if (node is WwiseHircObjNode obj && obj.IsSelected && obj != e.PickedNode)
                             {
                                 SizeF s = e.GetDeltaRelativeTo(obj);
                                 s = obj.LocalToParent(s);
                                 obj.OffsetBy(s.Width, s.Height);
-                                foreach (SeqEdEdge edge in obj.Edges)
+                                foreach (WwiseEdEdge edge in obj.Edges)
                                 {
                                     edgesToUpdate.Add(edge);
                                 }
@@ -256,7 +250,7 @@ namespace UMD.HCIL.GraphEditor
                         }
                     }
 
-                    foreach (SeqEdEdge edge in edgesToUpdate)
+                    foreach (WwiseEdEdge edge in edgesToUpdate)
                     {
                         UpdateEdge(edge);
                     }
@@ -287,7 +281,7 @@ namespace UMD.HCIL.GraphEditor
         /// </summary>
         public void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            components = new Container();
         }
         #endregion
         
@@ -308,74 +302,6 @@ namespace UMD.HCIL.GraphEditor
                     updatingCount = 0;
                 }
             }
-        }
-    }
-
-    public class ZoomController : IDisposable
-    {
-        private PCamera camera;
-        private PCanvas graphEditor;
-
-        public ZoomController(PCanvas graphEditor)
-        {
-            this.graphEditor = graphEditor;
-            this.camera = graphEditor.Camera;
-            camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += OnMouseWheel;
-            graphEditor.KeyDown += OnKeyDown;
-        }
-
-        public void Dispose()
-        {
-            //Remove event handlers for memory cleanup
-            if (graphEditor != null)
-            {
-                graphEditor.KeyDown -= OnKeyDown;
-                graphEditor.Camera.MouseWheel -= OnMouseWheel;
-            }
-            graphEditor = null;
-            camera = null;
-
-        }
-
-        public void OnKeyDown(object o, KeyEventArgs e)
-        {
-            if (e.Control)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.OemMinus:
-                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                        break;
-                    case Keys.Oemplus:
-                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                        break;
-                }
-            }
-        }
-
-        public void OnMouseWheel(object o, PInputEventArgs ea)
-        {
-            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
-        }
-
-        private void scaleView(float scaleDelta, PointF p)
-        {
-            const float MIN_SCALE = .005f;
-            const float MAX_SCALE = 15;
-            float currentScale = camera.ViewScale;
-            float newScale = currentScale * scaleDelta;
-            if (newScale < MIN_SCALE)
-            {
-                camera.ViewScale = MIN_SCALE;
-                return;
-            }
-            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
-            {
-                camera.ViewScale = MAX_SCALE;
-                return;
-            }
-            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
         }
     }
 }

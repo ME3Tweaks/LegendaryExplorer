@@ -148,6 +148,11 @@ namespace Gammtek.Conduit.IO
             }
         }
 
+        public string ReadStringASCII(int count)
+        {
+            return new string(ReadChars(count));
+        }
+
         public string ReadStringASCIINull()
         {
             string str = "";

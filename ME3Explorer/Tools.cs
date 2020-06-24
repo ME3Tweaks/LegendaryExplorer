@@ -416,18 +416,6 @@ namespace ME3Explorer
             #endregion
 
             #region Create Mods
-            //set.Add(new Tool
-            //{
-            //    name = "Audio Editor",
-            //    type = typeof(Audio_Editor.AudioEditor),
-            //    icon = Application.Current.FindResource("iconAudioEditor") as ImageSource,
-            //    open = () =>
-            //    {
-            //        (new Audio_Editor.AudioEditor()).Show();
-            //    },
-            //    tags = new List<string> { "developer", "afc", "sound", "wwise" },
-            //    subCategory = "Core",
-            //});
             set.Add(new Tool
             {
                 name = "Conditionals Editor",
@@ -595,6 +583,21 @@ namespace ME3Explorer
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
                 subCategory = "Scene Shop",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+            });
+            set.Add(new Tool
+            {
+                name = "Wwise Graph Editor",
+                type = typeof(WwiseEditor.WwiseEditorWPF),
+                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
+                open = () =>
+                {
+                    (new WwiseEditor.WwiseEditorWPF()).Show();
+                },
+                tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
+                subCategory = "Scene Shop",
+                description = "Wwise Editor currently has no editing functionality. " +
+                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
+                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
             });
             #endregion
 
