@@ -56,14 +56,6 @@ namespace ME3Explorer
         public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
             nameof(HostingControl), typeof(IBusyUIHost), typeof(Soundpanel));
 
-        private string _quickScanText;
-
-        public string QuickScanText
-        {
-            get => _quickScanText;
-            set => SetProperty(ref _quickScanText, value);
-        }
-
         public ObservableCollectionExtended<HIRCDisplayObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCDisplayObject>();
 
         public bool PlayBackOnlyMode

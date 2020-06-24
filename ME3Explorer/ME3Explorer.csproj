@@ -1554,6 +1554,7 @@
     <Resource Include="Resources\animviewer_256x256.ico" />
     <Resource Include="Resources\audiolocalizer_256x256.ico" />
     <Resource Include="Resources\liveleveleditor_256x256.ico" />
+    <Resource Include="Resources\WwiseEditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

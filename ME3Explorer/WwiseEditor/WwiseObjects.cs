@@ -440,12 +440,14 @@ namespace ME3Explorer.WwiseEditor
                 {
                     titleBox.Pen = selectedPen;
                     outLinkBox.Pen = selectedPen;
+                    varLinkBox.Pen = selectedPen;
                     MoveToFront();
                 }
                 else
                 {
                     titleBox.Pen = outlinePen;
                     outLinkBox.Pen = outlinePen;
+                    varLinkBox.Pen = outlinePen;
                 }
             }
         }

@@ -16,14 +16,18 @@
                 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                 mc:Ignorable="d"
                 Loaded="WwiseEditorWPF_OnLoaded"
+                Closing="WwiseEditorWPF_OnClosing"
                 d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/ME3Explorer;component/Resources/WwiseEditor_256x256.ico">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter"/>
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" Name="openInPackEdMenuItem"/>
+        </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
@@ -48,11 +52,11 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout" />
-                    <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}"
-                                ToolTip="Save image of full Sequence" />
+                    <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence" />
                 </MenuItem>
 
                 <MenuItem Header="View Options" Padding="4">
+                    <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True" />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                 </MenuItem>
@@ -78,41 +82,14 @@
                     <RowDefinition Height="2*" />
                     <RowDefinition Height="5" />
                     <RowDefinition Height="1*" />
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="Auto" Name="kismetLogParserRow" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" Name="soundPanelColumn"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="CurrentObjects_ListBox" Grid.Column="2" Grid.RowSpan="3"
-                            ItemsSource="{Binding CurrentObjects}"
-                            HorizontalContentAlignment="Stretch"
-                            SelectionMode="Extended"
-                            Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding ID}" />
-                                <!--<TextBlock Grid.Column="1" Text="{Binding Export.ObjectName.Instanced}" />-->
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemContainerStyle>
-                        <Style>
-                            <Style.Triggers>
-                                <Trigger Property="Selector.IsSelected" Value="True">
-                                    <Setter Property="TextElement.FontWeight" Value="Bold" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                <me3Explorer:Soundpanel x:Name="soundPanel" Grid.Column="2" Grid.RowSpan="3" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" />
                 <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
                 <Grid Column="0" Row="2">
@@ -127,9 +104,13 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Grid.ColumnSpan="3"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                        <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold" />
-                        <TextBlock Margin="5">
-                            Wwise Editor
+                        <TextBlock Margin="5" Text="Welcome to Wwise Editor" FontWeight="Bold"/>
+                        <TextBlock Margin="5" TextWrapping="Wrap">
+                            Wwise Editor currently has no editing functionality. 
+                            It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports.
+                            There are many relationships not shown, due to most HIRC objects not being parsed yet.
+
+                            Circles are Exports (WwiseEvent or WwiseStream). Everything else is a HIRC Object; more detail can be seen on them in the HIRCs tab on the right.
                             <LineBreak />
                         </TextBlock>
                     </StackPanel>
@@ -215,9 +196,31 @@
                     </ListBox>
                     <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
                                     Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" />
-                    <me3Explorer:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2"
-                                            Grid.ColumnSpan="2" HideHexBox="True"
-                                            Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    <TabControl TabStripPlacement="Left" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"
+                                Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}" >
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <ContentPresenter Content="{TemplateBinding Content}">
+                                                <ContentPresenter.LayoutTransform>
+                                                    <RotateTransform Angle="270" />
+                                                </ContentPresenter.LayoutTransform>
+                                            </ContentPresenter>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Padding" Value="3" />
+                            </Style>
+                        </TabControl.Resources>
+                        <TabItem Header="Interpreter">
+                            <me3Explorer:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"/>
+                        </TabItem>
+                        <TabItem Header="Binary Interpreter" >
+                            <me3Explorer:BinaryInterpreterWPF x:Name="binaryInterpreter"/>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
                 <Grid Grid.Column="0" Grid.Row="0" Name="graphGrid">
                     <Grid.ColumnDefinitions>
@@ -231,9 +234,6 @@
                     </WindowsFormsHost>
                     <Image Grid.Column="1" Visibility="Hidden" Name="graphImageSub" Stretch="None" />
                 </Grid>
-                <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Visibility="{Binding ElementName=kismetLogParser, Path=Visibility}" />
             </Grid>
         </DockPanel>
         <xctk:BusyIndicator Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}" IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}"/>

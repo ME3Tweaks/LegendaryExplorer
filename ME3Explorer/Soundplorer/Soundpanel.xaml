@@ -52,8 +52,8 @@
                         </ContextMenu>
 
                         <!--Sets a context menu for each ListBoxItem in the current ListBox-->
-                        
-                        
+
+
                         <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
@@ -103,13 +103,15 @@
                 <Grid HorizontalAlignment="Center" Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="16"/> <!--Margin-->
+                        <ColumnDefinition Width="16"/>
+                        <!--Margin-->
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="48"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="48"/>
                         <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="16"/> <!--Margin-->
+                        <ColumnDefinition Width="16"/>
+                        <!--Margin-->
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -146,9 +148,6 @@
                 </Grid>
 
             </Grid>
-        </TabItem>
-        <TabItem Header="Bank Info" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
-            <TextBox Text="{Binding QuickScanText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
         </TabItem>
         <TabItem Header="HIRCs" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
             <DockPanel LastChildFill="True">

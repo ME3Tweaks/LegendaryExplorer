@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,7 +25,11 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using UMD.HCIL.GraphEditor;
+using UMD.HCIL.Piccolo;
+using UMD.HCIL.Piccolo.Event;
+using UMD.HCIL.Piccolo.Nodes;
 using static UMD.HCIL.Piccolo.Extensions;
+using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using Path = System.IO.Path;
@@ -58,6 +64,15 @@ namespace ME3Explorer.WwiseEditor
 
             graphEditor = (WwiseGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
+
+            if (File.Exists(OptionsPath))
+            {
+                var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
+                if (options.ContainsKey("AutoSave"))
+                    AutoSaveView_MenuItem.IsChecked = (bool)options["AutoSave"];
+            }
+
+            soundPanel.SoundPanel_TabsControl.SelectedIndex = 1;
         }
         public WwiseEditorWPF(ExportEntry exportToLoad) : this()
         {
@@ -90,9 +105,39 @@ namespace ME3Explorer.WwiseEditor
             get => _currentExport;
             set
             {
+                if (AutoSaveView_MenuItem.IsChecked)
+                {
+                    saveView();
+                }
                 if (SetProperty(ref _currentExport, value))
                 {
                     LoadBank(value, true);
+                }
+            }
+        }
+
+        private WwiseHircObjNode _selectedNode;
+        public WwiseHircObjNode SelectedNode
+        {
+            get => _selectedNode;
+            private set
+            {
+                if (value != _selectedNode && _selectedNode != null)
+                {
+                    _selectedNode.IsSelected = false;
+                }
+                if (SetProperty(ref _selectedNode, value) && value != null)
+                {
+                    value.IsSelected = true;
+                    if (panToSelection)
+                    {
+                        graphEditor.Camera.AnimateViewToCenterBounds(value.GlobalFullBounds, false, 100);
+                    }
+
+                    if (!(value is WExport))
+                    {
+                        soundPanel.HIRC_ListBox.SelectedIndex = CurrentObjects.IndexOf(value);
+                    }
                 }
             }
         }
@@ -110,8 +155,8 @@ namespace ME3Explorer.WwiseEditor
             OpenCommand = new GenericCommand(OpenFile);
             SaveCommand = new GenericCommand(SavePackage, IsPackageLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, IsPackageLoaded);
-            //SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
-            //SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
+            SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
         }
 
         private bool IsPackageLoaded() => Pcc != null;
@@ -141,6 +186,7 @@ namespace ME3Explorer.WwiseEditor
                 try
                 {
 #endif
+
                 LoadFile(d.FileName);
                 AddRecent(d.FileName, false);
                 SaveRecentList();
@@ -159,6 +205,11 @@ namespace ME3Explorer.WwiseEditor
         {
             try
             {
+                Properties_InterpreterWPF.UnloadExport();
+                binaryInterpreter.UnloadExport();
+                soundPanel.FreeAudioResources();
+                SelectedNode = null;
+
                 StatusBar_LeftMostText.Text =
                     $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -169,6 +220,18 @@ namespace ME3Explorer.WwiseEditor
                 graphEditor.edgeLayer.RemoveAllChildren();
 
                 WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
+
+
+                if (WwiseBankExports.IsEmpty())
+                {
+                    UnLoadMEPackage();
+                    MessageBox.Show(this, "This file does not contain any WwiseBanks!");
+                    StatusText = "Select a package file to load";
+                    Title = "Wwise Editor";
+                    CurrentFile = null;
+                    soundPanelColumn.Width = GridLength.Auto;
+                    return;
+                }
 
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Wwise Editor - {s}";
@@ -185,6 +248,8 @@ namespace ME3Explorer.WwiseEditor
                 {
                     CurrentExport = null;
                 }
+
+                soundPanelColumn.Width = new GridLength(425);
             }
             catch (Exception e)
             {
@@ -193,6 +258,7 @@ namespace ME3Explorer.WwiseEditor
                 UnLoadMEPackage();
                 Title = "Wwise Editor";
                 CurrentFile = null;
+                soundPanelColumn.Width = GridLength.Auto;
             }
         }
 
@@ -208,6 +274,8 @@ namespace ME3Explorer.WwiseEditor
             CurrentWwiseBank = export.GetBinaryData<WwiseBank>();
             SetupJSON(export);
             Properties_InterpreterWPF.LoadExport(export);
+            binaryInterpreter.LoadExport(export);
+            soundPanel.LoadExport(export);
 
             if (fromFile)
             {
@@ -240,7 +308,7 @@ namespace ME3Explorer.WwiseEditor
             Layout();
             foreach (var o in CurrentObjects)
             {
-                //todo: mousedown handlers
+                o.MouseDown += node_MouseDown;
             }
 
             if (SavedPositions.IsEmpty())
@@ -338,21 +406,24 @@ namespace ME3Explorer.WwiseEditor
                     obj.CreateConnections(CurrentObjects);
                 }
 
-                float x = 0, y = 0;
                 foreach (WwiseHircObjNode obj in CurrentObjects)
                 {
-                    SaveData savedInfo = new SaveData();
+                    SaveData savedInfo = default;
+                    uint id = obj is WExport wExp ? wExp.Export.UIndex.ReinterpretAsUint() : obj.ID;
                     if (SavedPositions.Any())
                     {
-                        savedInfo = SavedPositions.FirstOrDefault(p => obj.ID == p.ID);
+                        savedInfo = SavedPositions.FirstOrDefault(p => id == p.ID);
                     }
 
-                    bool hasSavedPosition = savedInfo.ID == obj.ID;
+                    bool hasSavedPosition = savedInfo.ID == id;
                     if (hasSavedPosition)
                     {
                         obj.Layout(savedInfo.X, savedInfo.Y);
                     }
-                    obj.Layout();
+                    else
+                    {
+                        obj.Layout();
+                    }
                 }
 
                 foreach (WwiseEdEdge edge in graphEditor.edgeLayer)
@@ -491,9 +562,134 @@ namespace ME3Explorer.WwiseEditor
             }
         }
 
+        private bool panToSelection = true;
+        protected void node_MouseDown(object sender, PInputEventArgs e)
+        {
+            if (sender is WwiseHircObjNode obj)
+            {
+                obj.posAtDragStart = obj.GlobalFullBounds;
+                if (e.Button == System.Windows.Forms.MouseButtons.Right)
+                {
+                    panToSelection = false;
+
+                    SelectedNode = obj;
+                    OpenNodeContextMenu(obj);
+                }
+                else if (!obj.IsSelected)
+                {
+                    panToSelection = false;
+                    SelectedNode = obj;
+                }
+            }
+        }
+
+        private bool AllowWindowRefocus = true;
+        public void OpenNodeContextMenu(WwiseHircObjNode obj)
+        {
+            if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
+            {
+                bool showContextMenu = false;
+                if (contextMenu.GetChild("openInPackEdMenuItem") is MenuItem openInPackEdMenuItem)
+                {
+
+                    if (obj is WExport)
+                    {
+                        openInPackEdMenuItem.Visibility = Visibility.Visible;
+                        showContextMenu = true;
+                    }
+                    else
+                    {
+                        openInPackEdMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                if (showContextMenu)
+                {
+                    contextMenu.IsOpen = true;
+                    graphEditor.DisableDragging();
+                }
+            }
+        }
+
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            graphEditor.AllowDragging();
+            if (AllowWindowRefocus)
+            {
+                Focus(); //this will make window bindings work, as context menu is not part of the visual tree, and focus will be on there if the user clicked it.
+            }
+
+            AllowWindowRefocus = true;
+        }
+
+        private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (SelectedNode is WExport wExport)
+            {
+                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                PackageEditorWPF p = new PackageEditorWPF();
+                p.Show();
+                p.LoadFile(wExport.Export.FileRef.FilePath, wExport.Export.UIndex);
+                p.Activate(); //bring to front
+            }
+        }
+
+        public void RefreshView()
+        {
+            saveView(false);
+            LoadBank(CurrentExport, false);
+        }
+
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            //todo
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(update => update.change.HasFlag(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (CurrentExport != null && updatedExports.Contains(CurrentExport.Index))
+            {
+                if (CurrentExport.ClassName != "WwiseBank")
+                {
+                    CurrentExport = null;
+                    graphEditor.nodeLayer.RemoveAllChildren();
+                    graphEditor.edgeLayer.RemoveAllChildren();
+                    CurrentObjects.ClearEx();
+                    Properties_InterpreterWPF.UnloadExport();
+                }
+
+                RefreshView();
+                WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
+                return;
+            }
+
+            bool refreshedBanks = false, refreshedView = false;
+            foreach (var i in updatedExports)
+            {
+                if (Pcc.IsUExport(i + 1))
+                {
+                    string className = Pcc.getExport(i).ClassName;
+
+                    if (!refreshedBanks && className == "WwiseBank")
+                    {
+                        WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
+                        refreshedBanks = true;
+                    }
+
+                    if (!refreshedView && (className == "WwiseStream" || className == "WwiseEvent"))
+                    {
+                        RefreshView();
+                        refreshedView = true;
+                    }
+
+                    if (refreshedView && refreshedBanks)
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         private void WwiseEditorWPF_OnLoaded(object sender, RoutedEventArgs e)
@@ -523,6 +719,7 @@ namespace ME3Explorer.WwiseEditor
         }
 
         public static readonly string WwiseEditorDataFolder = Path.Combine(App.AppDataFolder, "WwiseEditor");
+        public static readonly string OptionsPath = Path.Combine(WwiseEditorDataFolder, "WwiseEditorOptions.JSON");
         public static readonly string ME3ViewsPath = Path.Combine(WwiseEditorDataFolder, "ME3Views");
         public static readonly string ME2ViewsPath = Path.Combine(WwiseEditorDataFolder, "ME2Views");
 
@@ -538,6 +735,60 @@ namespace ME3Explorer.WwiseEditor
             };
 
             JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.Index}.{bankID:X8}.{objectName}.JSON");
+        }
+
+        private void saveView(bool toFile = true)
+        {
+            if (CurrentObjects.Count == 0)
+                return;
+            SavedPositions = new List<SaveData>();
+            foreach (WwiseHircObjNode obj in CurrentObjects)
+            {
+                if (obj.Pickable)
+                {
+                    SavedPositions.Add(new SaveData
+                    {
+                        ID = obj is WExport wExp ? wExp.Export.UIndex.ReinterpretAsUint() : obj.ID,
+                        X = obj.X + obj.Offset.X,
+                        Y = obj.Y + obj.Offset.Y
+                    });
+                }
+            }
+
+            if (toFile)
+            {
+                string outputFile = JsonConvert.SerializeObject(SavedPositions);
+                if (!Directory.Exists(Path.GetDirectoryName(JSONpath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(JSONpath));
+                File.WriteAllText(JSONpath, outputFile);
+                SavedPositions.Clear();
+            }
+        }
+
+        private void SaveImage()
+        {
+            if (CurrentObjects.Count == 0)
+                return;
+            string objectName = System.Text.RegularExpressions.Regex.Replace(CurrentExport.ObjectName.Instanced, @"[<>:""/\\|?*]", "");
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "PNG Files (*.png)|*.png",
+                FileName = $"{CurrentFile}.{objectName}"
+            };
+            if (d.ShowDialog() == true)
+            {
+                PNode r = graphEditor.Root;
+                RectangleF rr = r.GlobalFullBounds;
+                PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
+                p.Brush = Brushes.White;
+                graphEditor.addBack(p);
+                graphEditor.Camera.Visible = false;
+                Image image = graphEditor.Root.ToImage();
+                graphEditor.Camera.Visible = true;
+                image.Save(d.FileName, ImageFormat.Png);
+                graphEditor.backLayer.RemoveAllChildren();
+                MessageBox.Show(this, "Done.");
+            }
         }
 
         #region Recents
@@ -696,6 +947,22 @@ namespace ME3Explorer.WwiseEditor
         {
             get => _statusText;
             set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+        }
+
+        private void WwiseEditorWPF_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (AutoSaveView_MenuItem.IsChecked)
+                saveView();
+
+            var options = new Dictionary<string, object>
+            {
+                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
+            };
+            string outputFile = JsonConvert.SerializeObject(options);
+            if (!Directory.Exists(WwiseEditorDataFolder))
+                Directory.CreateDirectory(WwiseEditorDataFolder);
+            File.WriteAllText(OptionsPath, outputFile);
+            soundPanel.Dispose();
         }
     }
 }

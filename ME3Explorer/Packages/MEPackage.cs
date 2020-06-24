@@ -16,16 +16,22 @@ using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.Packages
 {
+    [Flags]
     public enum PackageChange
     {
-        ExportData,
-        ExportHeader,
-        Import,
-        Names,
-        ExportAdd,
-        ImportAdd,
-        ExportRemove,
-        ImportRemove
+        Export = 0b_000_001,
+        Import = 0b_000_010,
+        Names = 0b_000_100,
+        Add = 0b_001_000,
+        Remove = 0b_010_000,
+        Data = 0b_100_000,
+        Header = 0b_1_000_000,
+        ExportData = Export | Data,
+        ExportHeader = Export | Header,
+        ExportAdd = Export | Add,
+        ImportAdd = Import | Add,
+        ExportRemove = Export | Remove,
+        ImportRemove = Import | Remove
     }
 
     [DebuggerDisplay("PackageUpdate | {change} on index {index}")]

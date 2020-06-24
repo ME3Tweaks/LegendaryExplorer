@@ -162,6 +162,7 @@
         <!--<BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>-->
         <!--<BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>-->
         <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebankeditor_256x256.ico"/>
+        <BitmapImage x:Key="iconWwiseEditor" UriSource="Resources/WwiseEditor_256x256.ico"/>
 
         <BitmapImage x:Key="iconAutoTOC" UriSource="Resources/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconModMaker" UriSource="Resources/modmaker_256x256.ico"/>

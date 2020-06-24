@@ -4618,13 +4618,7 @@ namespace ME3Explorer
                             uint hircCount = bin.Skip(-4).ReadUInt32();
                             for (int i = 0; i < hircCount; i++)
                             {
-                                int len;
-                                chunk.Items.Add(new BinInterpNode(bin.Position, $"{i}: Type: 0x{(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32()):X} Length:{len = bin.ReadInt32()} ID:{bin.ReadUInt32():X} ")
-                                {
-                                    Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4),
-                                    IsExpanded = true
-                                });
-                                bin.Skip(len - 4);
+                                chunk.Items.Add(ScanHircObject(bin, i));
                             }
                             break;
                         case "STID":
@@ -4658,6 +4652,96 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
+
+            BinInterpNode ScanHircObject(EndianReader bin, int idx)
+            {
+                var startPos = bin.Position;
+                HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32());
+                int len = bin.ReadInt32();
+                uint id = bin.ReadUInt32();
+                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
+                {
+                    Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4)
+                };
+                bin.JumpTo(startPos);
+                node.Items.Add(MakeByteNode(bin, "Type"));
+                node.Items.Add(MakeInt32Node(bin, "Length"));
+                node.Items.Add(MakeUInt32HexNode(bin, "ID"));
+                var endPos = startPos + node.Length;
+                switch (hircType)
+                {
+                    case HIRCType.Event:
+                        node.Items.Add(MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}")));
+                        break;
+                    case HIRCType.EventAction:
+                    {
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBank.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                        WwiseBank.EventActionType actType;
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBank.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
+                        node.Items.Add(MakeUInt16Node(bin, "Unknown1"));
+                        node.Items.Add(MakeUInt32HexNode(bin, "Referenced Object ID"));
+                        switch (actType)
+                        {
+                            case WwiseBank.EventActionType.Play:
+                                node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
+                                node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
+                                node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range lower bound (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range upper bound (ms)"));
+                                node.Items.Add(MakeByteNode(bin, "Fade-in curve Shape"));
+                                    break;
+                            case WwiseBank.EventActionType.Stop:
+                                node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
+                                node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
+                                node.Items.Add(MakeUInt32Node(bin, "Fade-out (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range lower bound (ms)"));
+                                node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range upper bound (ms)"));
+                                node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
+                                    break;
+                        }
+                        goto default;
+                    }
+                    case HIRCType.SoundSXFSoundVoice:
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown1"));
+                        node.Items.Add(new BinInterpNode(bin.Position, $"State: {(WwiseBank.SoundState)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
+                        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
+                        node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {(WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        goto default;
+                    case HIRCType.RandomOrSequenceContainer:
+                    case HIRCType.SwitchContainer:
+                    case HIRCType.ActorMixer:
+                    case HIRCType.AudioBus:
+                    case HIRCType.BlendContainer:
+                    case HIRCType.MusicSegment:
+                    case HIRCType.MusicTrack:
+                    case HIRCType.MusicSwitchContainer:
+                    case HIRCType.MusicPlaylistContainer:
+                    case HIRCType.Attenuation:
+                    case HIRCType.DialogueEvent:
+                    case HIRCType.MotionBus:
+                    case HIRCType.MotionFX:
+                    case HIRCType.Effect:
+                    case HIRCType.AuxiliaryBus:
+                    case HIRCType.Settings:
+                    default:
+                        if (bin.Position < endPos)
+                        {
+                            node.Items.Add(new BinInterpNode(bin.Position, "Unknown bytes")
+                            {
+                                Length = (int)(endPos - bin.Position)
+                            });
+                        }
+                        break;
+                }
+
+                bin.JumpTo(endPos);
+                return node;
+            }
         }
 
         private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
@@ -5672,7 +5756,7 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
-        private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X}") { Length = 4 };
+        private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X8}") { Length = 4 };
 
         private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
