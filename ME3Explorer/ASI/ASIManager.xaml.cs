@@ -403,7 +403,7 @@ namespace ME3Explorer.ASI
                 wc.DownloadFileCompleted += (a, b) => LoadManifest(StagedManifestLocation, true);
                 wc.DownloadFileAsync(
                     // Param1 = Link of file
-                    new System.Uri("https://me3tweaks.com/mods/asi/getmanifest?AllGames=1"),
+                    new System.Uri("https://raw.githubusercontent.com/ME3Tweaks/ME3Explorer/Beta/ME3Explorer/ME3Tweaks/asimanifest.xml"),
                     // Param2 = Path to save
                     StagedManifestLocation);
             }

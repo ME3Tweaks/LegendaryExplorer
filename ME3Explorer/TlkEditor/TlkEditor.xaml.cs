@@ -251,10 +251,5 @@ namespace ME3Explorer
             };
             howToWindow.Show();
         }
-
-        private void Forums_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://me3tweaks.com/forums");
-        }
     }
 }
