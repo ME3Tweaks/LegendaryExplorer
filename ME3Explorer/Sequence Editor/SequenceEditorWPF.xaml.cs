@@ -384,7 +384,6 @@ namespace ME3Explorer.Sequence_Editor
         #endregion
 
         private string _statusText;
-
         public string StatusText
         {
             get => _statusText;
@@ -445,7 +444,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool PackageIsLoaded()
         {
-            System.Diagnostics.Debug.WriteLine("Package Is Loaded.");
+            Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
 
@@ -458,7 +457,7 @@ namespace ME3Explorer.Sequence_Editor
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
                 LoadMEPackage(fileName);
-                CurrentFile = System.IO.Path.GetFileName(fileName);
+                CurrentFile = Path.GetFileName(fileName);
                 LoadSequences();
                 if (TreeViewRootNodes.IsEmpty())
                 {

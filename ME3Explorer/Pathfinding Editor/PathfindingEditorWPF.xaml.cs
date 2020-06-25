@@ -272,6 +272,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand CheckNetIndexesCommand { get; set; }
         public ICommand LoadOverlayFileCommand { get; set; }
         public ICommand CalculateInterpAgainstTargetPointCommand { get; set; }
+        public ICommand RemoveAllSpotlightsCommand { get; set; }
         public ICommand TrashAndRemoveFromLevelCommand { get; set; }
         public ICommand RemoveFromLevelCommand { get; set; }
         public ICommand AddNewSplineActorToChainCommand { get; set; }
@@ -327,6 +328,7 @@ namespace ME3Explorer.Pathfinding_Editor
             CheckNetIndexesCommand = new GenericCommand(CheckNetIndexes, PackageIsLoaded);
             LoadOverlayFileCommand = new GenericCommand(LoadOverlay, PackageIsLoaded);
             CalculateInterpAgainstTargetPointCommand = new GenericCommand(CalculateInterpStartEndTargetpoint, TargetPointIsSelected);
+            RemoveAllSpotlightsCommand = new GenericCommand(RemoveAllSpotLights, PackageIsLoaded);
             TrashAndRemoveFromLevelCommand = new GenericCommand(TrashAndRemoveFromLevel);
             RemoveFromLevelCommand = new GenericCommand(RemoveFromLevel, IsActorSelected);
             AddNewSplineActorToChainCommand = new GenericCommand(AddSplineActorToChain, IsSplineActorSelected);
@@ -346,7 +348,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private bool IsSplineActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("SplineActor");
 
-        private bool IsActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && exp.IsA("Actor");
+        private bool IsActorSelected() => ActiveNodes_ListBox.SelectedItem is ExportEntry exp && (exp.IsA("Actor") || exp.IsA("Component"));
 
         private bool NodeIsSelected(object obj)
         {
@@ -2857,50 +2859,63 @@ namespace ME3Explorer.Pathfinding_Editor
             CollectionActor smc = (CollectionActor)e.Item;
             if (e.IsSelected && ShowArtLayer)
             {
-                List<Point3D> locations = smc.GetLocationData();
-                for (int i = 0; i < smc.CollectionItems.Count; i++)
+                StaticCollectionActor sca = null;
+                if (smc.export.ObjectName == "StaticLightCollectionActor")
                 {
-                    var item = smc.CollectionItems[i];
-                    var location = locations[i];
-
-                    if (item != null)
+                    sca = smc.export.GetBinaryData<StaticLightCollectionActor>();
+                }
+                else if (smc.export.ObjectName == "StaticMeshCollectionActor")
+                {
+                    sca = smc.export.GetBinaryData<StaticMeshCollectionActor>();
+                }
+                List<Point3D> locations = smc.GetLocationData();
+                if (sca.LocalToWorldTransforms != null)
+                {
+                    for (int i = 0; i < sca.LocalToWorldTransforms.Count; i++)
                     {
-                        switch (ZFilteringMode)
-                        {
-                            case EZFilterIncludeDirection.Above:
-                                if (location.Z <= ZFilteringValue)
-                                    continue;
-                                break;
-                            case EZFilterIncludeDirection.AboveEquals:
-                                if (location.Z < ZFilteringValue)
-                                    continue;
-                                break;
-                            case EZFilterIncludeDirection.BelowEquals:
-                                if (location.Z > ZFilteringValue)
-                                    continue;
-                                break;
-                            case EZFilterIncludeDirection.Below:
-                                if (location.Z >= ZFilteringValue)
-                                    continue;
-                                break;
-                            default:
-                                break;
-                        }
-                        ActorNode actorNode = null;
-                        switch (smc.CollectionType)
-                        {
-                            case CollectionActor.CollectionActorType.Collection_Lights:
-                                actorNode = new LAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
-                                break;
-                            default:
-                                actorNode = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
-                                break;
-                        }
+                        var item = smc.CollectionItems[i];
+                        var location = locations[i];
 
-                        ActiveNodes.Add(item);
-                        GraphNodes.Add(actorNode);
-                        actorNode.MouseDown += node_MouseDown;
-                        graphEditor.addNode(actorNode);
+                        if (item != null)
+                        {
+                            switch (ZFilteringMode)
+                            {
+                                case EZFilterIncludeDirection.Above:
+                                    if (location.Z <= ZFilteringValue)
+                                        continue;
+                                    break;
+                                case EZFilterIncludeDirection.AboveEquals:
+                                    if (location.Z < ZFilteringValue)
+                                        continue;
+                                    break;
+                                case EZFilterIncludeDirection.BelowEquals:
+                                    if (location.Z > ZFilteringValue)
+                                        continue;
+                                    break;
+                                case EZFilterIncludeDirection.Below:
+                                    if (location.Z >= ZFilteringValue)
+                                        continue;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            ActorNode actorNode = null;
+                            switch (smc.CollectionType)
+                            {
+                                case CollectionActor.CollectionActorType.Collection_Lights:
+                                    actorNode = new LAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
+                                    break;
+                                default:
+                                    actorNode = new SMAC_ActorNode(item.UIndex, (int)location.X, (int)location.Y, Pcc, graphEditor, (int)location.Z);
+                                    break;
+                            }
+
+                            ActiveNodes.Add(item);
+                            GraphNodes.Add(actorNode);
+                            actorNode.MouseDown += node_MouseDown;
+                            graphEditor.addNode(actorNode);
+                        }
                     }
                 }
             }
@@ -3619,23 +3634,6 @@ namespace ME3Explorer.Pathfinding_Editor
             return null;
         }
 
-        private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
-        {
-            ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
-
-            Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
-
-            if (levelBin.Actors.Contains(nodeEntry))
-            {
-                AllowRefresh = false;
-                levelBin.Actors.Remove(nodeEntry);
-                PersistentLevelExport.SetBinaryData(levelBin);
-                EntryPruner.TrashEntryAndDescendants(nodeEntry);
-                AllowRefresh = true;
-                RefreshGraph();
-                MessageBox.Show("Removed item from level.");
-            }
-        }
         private void RemoveFromLevel()
         {
             ExportEntry nodeEntry = (ExportEntry)ActiveNodes_ListBox.SelectedItem;
@@ -3650,6 +3648,33 @@ namespace ME3Explorer.Pathfinding_Editor
                 AllowRefresh = true;
                 RefreshGraph();
                 MessageBox.Show("Removed item from level.");
+            }
+            else
+            {
+                var parent = (ExportEntry)nodeEntry.Parent;
+                if (parent.IsA("StaticLightCollectionActor") || parent.IsA("StaticMeshCollectionActor"))
+                {
+                    StaticCollectionActor sca;
+                    if (parent.IsA("StaticMeshCollectionActor"))
+                    {
+                        sca = parent.GetBinaryData<StaticMeshCollectionActor>();
+                    }
+                    else
+                    {
+                        sca = parent.GetBinaryData<StaticLightCollectionActor>();
+                    }
+
+                    AllowRefresh = false;
+                    var components = parent.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
+                    int i = components.IndexOf(new ObjectProperty(nodeEntry));
+                    components.RemoveAt(i);
+                    sca.LocalToWorldTransforms.RemoveAt(i);
+                    parent.WriteProperty(components);
+                    parent.SetBinaryData(sca);
+                    AllowRefresh = true;
+                    RefreshGraph();
+                    MessageBox.Show("Removed item from level.");
+                }
             }
         }
         private void TrashAndRemoveFromLevel()
@@ -4083,6 +4108,124 @@ namespace ME3Explorer.Pathfinding_Editor
                 StatusText = "Scanning completed";
             };
             worker.RunWorkerAsync();
+        }
+
+        private void RemoveAllSpotLights()
+        {
+            //var files = Directory.GetFiles(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\LOS", "*.SFM", SearchOption.AllDirectories);
+            //foreach (var v in files)
+            //{
+            //    using var p = MEPackageHandler.OpenMEPackage(v);
+            //    if (p.Exports.Any(x => x.ClassName == "DirectionalLightComponent"))
+            //    {
+            //        Debug.WriteLine($"Dlc in {p.FilePath}");
+            //    }
+            //}
+            //return;
+            AllowRefresh = false;
+
+            bool removed = false;
+            Level levelBin = PersistentLevelExport.GetBinaryData<Level>();
+            for (int i = levelBin.Actors.Count - 1; i >= 0; i--)
+            {
+                var actor = levelBin.Actors[i];
+                if (actor.value > 0)
+                {
+                    var export = Pcc.GetUExport(actor.value);
+                    if (export.ObjectName == "SpotLight")
+                    {
+                        Debug.WriteLine("Remove " + export.UIndex + " " + export.InstancedFullPath + " from level");
+                        levelBin.Actors.RemoveAt(i);
+                        removed = true;
+                    }
+                    else
+                    if (export.ObjectName == "StaticLightCollectionActor")
+                    {
+                        var lightCollection = export.GetBinaryData<StaticLightCollectionActor>();
+                        if (lightCollection.Components != null)
+                        {
+                            for (int j = lightCollection.Components.Count - 1; j >= 0; j--)
+                            {
+                                var subSLCAexport = Pcc.GetUExport(lightCollection.Components[j].value);
+                                if (subSLCAexport.ObjectName.Name.Contains("SpotLight"))
+                                // ME1 AMD Lighting Fix test code
+                                //subSLCAexport.ObjectName.Name.Contains("DirectionalLight_2_LC") //Beginning area
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_0_LC") //beginning area
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_6_LC") //beginning area
+
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
+
+                                //// removing these did nothing for midsection near vigil
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
+                                ////|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_43_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
+
+                                ////did nothign for middle
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_22_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_3_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_26_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_4_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_28_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_8_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_20_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_24_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_27_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_10_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_23_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_25_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_21_LC") //
+
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_15_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_319_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_5_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_17_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_18_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_7_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_1_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_13_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_14_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_9_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_11_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_19_LC") //
+                                //|| subSLCAexport.ObjectName.Name.Contains("DirectionalLight_12_LC") //
+
+                                // ART 40
+                                //subSLCAexport.ObjectName.Name.Contains("DirectionalLight_0_LC")
+                                //subSLCAexport.ObjectName.Name.Contains("DirectionalLight") && lightCollection.Export.indexValue == 118
+
+                                //|| true
+                                // )
+                                {
+                                    Debug.WriteLine("Remove " + subSLCAexport.UIndex + " " + subSLCAexport.InstancedFullPath + " from " + export.InstancedFullPath);
+                                    lightCollection.Components.RemoveAt(j);
+                                    lightCollection.LocalToWorldTransforms.RemoveAt(j);
+                                    removed = true;
+                                }
+                            }
+
+                            lightCollection.Export.WriteProperty(new ArrayProperty<ObjectProperty>(lightCollection.Components.Select(x => new ObjectProperty(x.value)).ToList(), lightCollection.ComponentPropName));
+                            lightCollection.Export.SetBinaryData(lightCollection);
+                        }
+                    }
+                }
+            }
+
+            if (!removed)
+            {
+                AllowRefresh = true;
+            }
+            else
+            {
+                PersistentLevelExport.SetBinaryData(levelBin);
+                RefreshGraph();
+                MessageBox.Show("Removed item(s) from level. See debug log");
+            }
         }
 
         private void CalculateInterpStartEndTargetpoint()

@@ -5,14 +5,16 @@ namespace ME3Explorer
 {
     public enum EMountFileFlag
     {
-        ME2_NoSaveFileDependency = 0x1,
-        ME2_SaveFileDependency = 0x2,
+        ME2_NoSaveFileDependency = 0x0, //Based on tajfun research
+        ME2_SaveFileDependency = 0x2, //Based on tajfun research
         ME3_SPOnly_NoSaveFileDependency = 0x8,
         ME3_SPOnly_SaveFileDependency = 0x9,
         ME3_SPMP_SaveFileDependency = 0x1C,
         ME3_MPOnly_Patch = 0x0C,
         ME3_MPOnly_1 = 0x14,
-        ME3_MPOnly_2 = 0x34
+        ME3_MPOnly_2 = 0x34,
+        ME1_SaveFileDependency = 0x100, //not an actual value.
+        ME1_NoSaveFileDependency = 0x101 //not an actual value.
     }
 
     public class MountFile
@@ -56,7 +58,7 @@ namespace ME3Explorer
         private void LoadMountFileME2(MemoryStream ms)
         {
             IsME2 = true;
-            ms.Seek(0x1, SeekOrigin.Begin);
+            ms.Seek(0x28, SeekOrigin.Begin);
             MountFlag = (EMountFileFlag)ms.ReadByte();
             ms.Seek(0xC, SeekOrigin.Begin);
             MountPriority = ms.ReadUInt16();
@@ -89,7 +91,8 @@ namespace ME3Explorer
                 ms.WriteByte(0x0);
 
                 //@ 0x01 - Mount Flag
-                ms.WriteByte((byte)MountFlag);
+                // NOT ACTUALY MOUNT FLAG IT SEEMS, ACCORDING TO TAJFUN.
+                ms.WriteByte(0x2);
                 ms.WriteInt16(0x0);
 
                 //@ 0x04
@@ -107,7 +110,9 @@ namespace ME3Explorer
                 var guidbytes = new byte[] { 0xAE, 0x0F, 0x43, 0xDD, 0x0B, 0x52, 0x5D, 0x4C, 0x9E, 0x28, 0x0D, 0x77, 0x6D, 0x86, 0x91, 0x55 };
                 ms.WriteFromBuffer(guidbytes);
                 ms.WriteInt32(0x0);
-                ms.WriteInt32(0x2);
+
+                //@ 0x28 - Mount Flag
+                ms.WriteInt32((int)MountFlag);
 
                 //@ 0x2C - Common Name
                 //ms.WriteInt32(commonname.Length);
@@ -118,7 +123,7 @@ namespace ME3Explorer
 
                 //@ 0x00 After TLKID - FolderName
                 //ms.WriteInt32(dlcfolder.Length);
-                ms.WriteUnrealStringASCII(ME2Only_DLCFolderName); 
+                ms.WriteUnrealStringASCII(ME2Only_DLCFolderName);
 
                 //@ Final 4 bytes
                 ms.WriteInt32(0x0);

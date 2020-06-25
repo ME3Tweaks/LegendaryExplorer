@@ -38,7 +38,7 @@ namespace ME3Explorer.AssetDatabase
     public partial class AssetDB : WPFBase
     {
         #region Declarations
-        public const string dbCurrentBuild = "3.0"; //If changes are made that invalidate old databases edit this.
+        public const string dbCurrentBuild = "4.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
@@ -1668,6 +1668,114 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && !menu_TGPromo.IsChecked && tr.TexGrp == "Promotional")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGChar1024.IsChecked && tr.TexGrp == "Character1024")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGCharDiff.IsChecked && tr.TexGrp == "CharacterDiff")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGCharNorm.IsChecked && tr.TexGrp == "CharacterNorm")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGCharSpec.IsChecked && tr.TexGrp == "CharacterSpec")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGWorld.IsChecked && tr.TexGrp == "World")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGWorldSpec.IsChecked && tr.TexGrp == "WorldSpecular")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGWorldNorm.IsChecked && tr.TexGrp == "WorldNormalMap")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAmblgtMap.IsChecked && tr.TexGrp == "AmbientLightMap")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGShadowMap.IsChecked && tr.TexGrp == "Shadowmap")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGEnviro64.IsChecked && tr.TexGrp == "Environment64")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGEnviro128.IsChecked && tr.TexGrp == "Environment128")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGEnviro256.IsChecked && tr.TexGrp == "Environment256")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGEnviro512.IsChecked && tr.TexGrp == "Environment512")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGEnviro1024.IsChecked && tr.TexGrp == "Environment1024")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGVFX64.IsChecked && tr.TexGrp == "VFX64")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGVFX128.IsChecked && tr.TexGrp == "VFX128")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGVFX256.IsChecked && tr.TexGrp == "VFX256")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGVFX512.IsChecked && tr.TexGrp == "VFX512")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGVFX1024.IsChecked && tr.TexGrp == "VFX1024")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAPL64.IsChecked && tr.TexGrp == "APL64")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAPL128.IsChecked && tr.TexGrp == "APL128")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAPL256.IsChecked && tr.TexGrp == "APL256")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAPL512.IsChecked && tr.TexGrp == "APL512")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGAPL1024.IsChecked && tr.TexGrp == "APL1024")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGUI.IsChecked && tr.TexGrp == "UI")
+            {
+                showthis = false;
+            }
+            if (showthis && !menu_TGNone.IsChecked && tr.TexGrp == "n/a")
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool SFFilter(object d)
@@ -1929,6 +2037,64 @@ namespace ME3Explorer.AssetDatabase
                     {
                         menu_T4096.IsChecked = false;
                     }
+                    break;
+                case "TGShow":
+                    menu_TGPromo.IsChecked = true;
+                    menu_TGChar1024.IsChecked = true;
+                    menu_TGCharDiff.IsChecked = true;
+                    menu_TGCharNorm.IsChecked = true;
+                    menu_TGCharSpec.IsChecked = true;
+                    menu_TGWorld.IsChecked = true;
+                    menu_TGWorldSpec.IsChecked = true;
+                    menu_TGWorldNorm.IsChecked = true;
+                    menu_TGAmblgtMap.IsChecked = true;
+                    menu_TGShadowMap.IsChecked = true;
+                    menu_TGEnviro64.IsChecked = true;
+                    menu_TGEnviro128.IsChecked = true;
+                    menu_TGEnviro256.IsChecked = true;
+                    menu_TGEnviro512.IsChecked = true;
+                    menu_TGEnviro1024.IsChecked = true;
+                    menu_TGVFX64.IsChecked = true;
+                    menu_TGVFX128.IsChecked = true;
+                    menu_TGVFX256.IsChecked = true;
+                    menu_TGVFX512.IsChecked = true;
+                    menu_TGVFX1024.IsChecked = true;
+                    menu_TGAPL64.IsChecked = true;
+                    menu_TGAPL128.IsChecked = true;
+                    menu_TGAPL256.IsChecked = true;
+                    menu_TGAPL512.IsChecked = true;
+                    menu_TGAPL1024.IsChecked = true;
+                    menu_TGUI.IsChecked = true;
+                    menu_TGNone.IsChecked = true;
+                    break;
+                case "TGClear":
+                    menu_TGPromo.IsChecked = false;
+                    menu_TGChar1024.IsChecked = false;
+                    menu_TGCharDiff.IsChecked = false;
+                    menu_TGCharNorm.IsChecked = false;
+                    menu_TGCharSpec.IsChecked = false;
+                    menu_TGWorld.IsChecked = false;
+                    menu_TGWorldSpec.IsChecked = false;
+                    menu_TGWorldNorm.IsChecked = false;
+                    menu_TGAmblgtMap.IsChecked = false;
+                    menu_TGShadowMap.IsChecked = false;
+                    menu_TGEnviro64.IsChecked = false;
+                    menu_TGEnviro128.IsChecked = false;
+                    menu_TGEnviro256.IsChecked = false;
+                    menu_TGEnviro512.IsChecked = false;
+                    menu_TGEnviro1024.IsChecked = false;
+                    menu_TGVFX64.IsChecked = false;
+                    menu_TGVFX128.IsChecked = false;
+                    menu_TGVFX256.IsChecked = false;
+                    menu_TGVFX512.IsChecked = false;
+                    menu_TGVFX1024.IsChecked = false;
+                    menu_TGAPL64.IsChecked = false;
+                    menu_TGAPL128.IsChecked = false;
+                    menu_TGAPL256.IsChecked = false;
+                    menu_TGAPL512.IsChecked = false;
+                    menu_TGAPL1024.IsChecked = false;
+                    menu_TGUI.IsChecked = false;
+                    menu_TGNone.IsChecked = false;
                     break;
                 case "PS":
                     if (!menu_VFXPartSys.IsChecked)
@@ -2651,6 +2817,8 @@ namespace ME3Explorer.AssetDatabase
         public bool IsModOnly { get => _IsModOnly; set => SetProperty(ref _IsModOnly, value); }
         private string _CFormat;
         public string CFormat { get => _CFormat; set => SetProperty(ref _CFormat, value); }
+        private string _TexGrp;
+        public string TexGrp { get => _TexGrp; set => SetProperty(ref _TexGrp, value); }
         private int _SizeX;
         public int SizeX { get => _SizeX; set => SetProperty(ref _SizeX, value); }
         private int _SizeY;
@@ -2659,13 +2827,14 @@ namespace ME3Explorer.AssetDatabase
         public string CRC { get => _CRC; set => SetProperty(ref _CRC, value); }
         public ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages { get; } = new ObservableCollectionExtended<Tuple<int, int, bool, bool>>(); //File reference, then export, isDLC file, isMod file
 
-        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages)
+        public TextureRecord(string TextureName, string ParentPackage, bool IsDLCOnly, bool IsModOnly, string CFormat, string TexGrp, int SizeX, int SizeY, string CRC, ObservableCollectionExtended<Tuple<int, int, bool, bool>> TextureUsages)
         {
             this.TextureName = TextureName;
             this.ParentPackage = ParentPackage;
             this.IsDLCOnly = IsDLCOnly;
             this.IsModOnly = IsModOnly;
             this.CFormat = CFormat;
+            this.TexGrp = TexGrp;
             this.SizeX = SizeX;
             this.SizeY = SizeY;
             this.CRC = CRC;
@@ -2806,12 +2975,8 @@ namespace ME3Explorer.AssetDatabase
                 try
                 {
                     string pClass = exp.ClassName;  //Handle basic class record
-                    string pExp = exp.ObjectName;
+                    string pExp = exp.ObjectName.Instanced;
                     string pKey = exp.InstancedFullPath.ToLower();
-                    if (exp.indexValue > 0)
-                    {
-                        pExp = $"{pExp}_{exp.indexValue - 1}";
-                    }
                     string pSuperClass = null;
                     string pDefinitionPackage = null;
                     int pDefUID = 0;
@@ -3050,7 +3215,7 @@ namespace ME3Explorer.AssetDatabase
                                     var pSeq = exp.GetProperty<NameProperty>("SequenceName");
                                     if (pSeq != null)
                                     {
-                                        aSeq = pSeq.Value;
+                                        aSeq = pSeq.Value.Instanced;
                                         aGrp = pExp.Replace($"{aSeq}_", null);
                                     }
 
@@ -3191,6 +3356,7 @@ namespace ME3Explorer.AssetDatabase
                                 int psizeX = 0;
                                 int psizeY = 0;
                                 string cRC = "n/a";
+                                string texgrp = "n/a";
                                 if (exp.ClassName != "TextureCube")
                                 {
                                     pformat = "TextureMovie";
@@ -3198,6 +3364,11 @@ namespace ME3Explorer.AssetDatabase
                                     {
                                         var formp = exp.GetProperty<EnumProperty>("Format");
                                         pformat = formp?.Value.Name ?? "n/a";
+                                        pformat = pformat.Replace("PF_", String.Empty);
+                                        var tgrp = exp.GetProperty<EnumProperty>("LODGroup");
+                                        texgrp = tgrp?.Value.Instanced ?? "n/a";
+                                        texgrp = texgrp.Replace("TEXTUREGROUP_",String.Empty);
+                                        texgrp = texgrp.Replace("_", String.Empty);
                                         if (ScanCRC)
                                         {
                                             cRC = Texture2D.GetTextureCRC(exp).ToString("X8");
@@ -3208,7 +3379,7 @@ namespace ME3Explorer.AssetDatabase
                                     var propY = exp.GetProperty<IntProperty>("SizeY");
                                     psizeY = propY?.Value ?? 0;
                                 }
-                                var NewTex = new TextureRecord(pExp, parent, IsDLC, IsMod, pformat, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool, bool>>() { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
+                                var NewTex = new TextureRecord(pExp, parent, IsDLC, IsMod, pformat, texgrp, psizeX, psizeY, cRC, new ObservableCollectionExtended<Tuple<int, int, bool, bool>>() { new Tuple<int, int, bool, bool>(FileKey, pExportUID, IsDLC, IsMod) });
                                 dbScanner.GeneratedText.TryAdd(pKey, NewTex);
                             }
                         }
