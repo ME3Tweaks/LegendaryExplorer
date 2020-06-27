@@ -39,7 +39,7 @@ namespace ME3Explorer.ActorNodes
                 float theta = 0;
                 if (export.GetProperty<StructProperty>("Rotation") is StructProperty rotation)
                 {
-                    theta = rotation.GetProp<IntProperty>("Yaw").Value.ToDegrees();
+                    theta = rotation.GetProp<IntProperty>("Yaw").Value.UnrealRotationUnitsToDegrees();
                 }
 
                 float circleX1 = (float)(25 + 20 * Math.Cos((theta + 5) * Math.PI / 180));

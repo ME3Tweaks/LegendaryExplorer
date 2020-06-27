@@ -15,7 +15,7 @@ namespace ME3Explorer.SharedUI.Converters
         {
             if (value is int i)
             {
-                return i.ToDegrees();
+                return i.UnrealRotationUnitsToDegrees();
             }
             return 0;
         }
@@ -24,7 +24,7 @@ namespace ME3Explorer.SharedUI.Converters
         {
             if (value is double d)
             {
-                return ((float)d).ToUnrealRotationUnits();
+                return ((float)d).DegreesToUnrealRotationUnits();
             }
 
             return 0;

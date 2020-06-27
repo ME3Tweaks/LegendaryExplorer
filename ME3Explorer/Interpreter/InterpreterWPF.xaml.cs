@@ -948,7 +948,7 @@ namespace ME3Explorer
 
                         if (parent.Property is StructProperty property && property.StructType == "Rotator")
                         {
-                            parsedValue = $"({ip.Value.ToDegrees():0.0######} degrees)";
+                            parsedValue = $"({ip.Value.UnrealRotationUnitsToDegrees():0.0######} degrees)";
                         }
                     }
                     break;
@@ -1345,7 +1345,7 @@ namespace ME3Explorer
                         {
                             //we support editing rotators as degrees. We will preview the raw value and enter data in degrees instead.
                             SupportedEditorSetElements.Add(ParsedValue_TextBlock);
-                            Value_TextBox.Text = $"{ip.Value.ToDegrees():0.0######}";
+                            Value_TextBox.Text = $"{ip.Value.UnrealRotationUnitsToDegrees():0.0######}";
                             ParsedValue_TextBlock.Text = $"{ip.Value} (raw value)"; //raw
                         }
                         break;
@@ -1463,7 +1463,7 @@ namespace ME3Explorer
                             //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
                             if (float.TryParse(Value_TextBox.Text, out float degrees))
                             {
-                                ParsedValue_TextBlock.Text = $"{degrees.ToUnrealRotationUnits()} (raw value)";
+                                ParsedValue_TextBlock.Text = $"{degrees.DegreesToUnrealRotationUnits()} (raw value)";
                             }
                             else
                             {
@@ -1829,7 +1829,7 @@ namespace ME3Explorer
                                 //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
                                 if (float.TryParse(Value_TextBox.Text, out float degrees))
                                 {
-                                    ip.Value = degrees.ToUnrealRotationUnits();
+                                    ip.Value = degrees.DegreesToUnrealRotationUnits();
                                     updated = true;
                                 }
                             }

@@ -231,6 +231,7 @@ namespace ME3Explorer
 
         public ICommand OpenFileCommand { get; set; }
         public ICommand NewFileCommand { get; set; }
+        public ICommand NewLevelFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand FindCommand { get; set; }
@@ -284,6 +285,7 @@ namespace ME3Explorer
 
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
+            NewLevelFileCommand = new GenericCommand(NewLevelFile);
             SaveFileCommand = new GenericCommand(SaveFile, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
             FindCommand = new GenericCommand(FocusSearch, PackageIsLoaded);
@@ -711,6 +713,27 @@ namespace ME3Explorer
             }
         }
 
+        private void NewLevelFile()
+        {
+            var dlg = new SaveFileDialog
+            {
+                Filter = "*.pcc|*.pcc",
+                OverwritePrompt = true
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                if (File.Exists(dlg.FileName))
+                {
+                    File.Delete(dlg.FileName);
+                }
+                File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), dlg.FileName);
+                LoadFile(dlg.FileName);
+                AddRecent(dlg.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+        }
+
         private bool CanPerformMultiRelink() => MultiRelinkingModeActive && crossPCCObjectMap.Count > 0;
 
         private void EnableMultirelinkingMode()
@@ -720,7 +743,7 @@ namespace ME3Explorer
 
         private void entryDoubleClick(ListDialog.EntryItem clickedItem)
         {
-            if (clickedItem != null && clickedItem.ReferencedEntry != null && clickedItem.ReferencedEntry.UIndex != 0)
+            if (clickedItem?.ReferencedEntry != null && clickedItem.ReferencedEntry.UIndex != 0)
             {
                 GoToNumber(clickedItem.ReferencedEntry.UIndex);
             }

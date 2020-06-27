@@ -176,7 +176,7 @@ namespace ME3Explorer.Unreal
                                 return ures;
                             }
                         }
-                        Debug.WriteLine($"[ME3] Array type lookup failed for {propName} in class {className} in export {parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry.FileRef.FilePath}");
+                        Debug.WriteLine($"[ME3] Array type lookup failed for {propName} in class {className} in export {parsingEntry?.FileRef.GetEntryString(parsingEntry.UIndex)} in {parsingEntry?.FileRef.FilePath}");
                         ME3UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
                     }
 #endif

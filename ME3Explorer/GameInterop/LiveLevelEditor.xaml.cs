@@ -276,12 +276,11 @@ namespace ME3Explorer.GameInterop
                             break;
                         }
                     }
-                    rot = new Rotator((floats[0]).ToUnrealRotationUnits(), (floats[1]).ToUnrealRotationUnits(), (floats[2]).ToUnrealRotationUnits());
+                    rot = Rotator.FromDirectionVector(new Vector3(floats));
                 }
                 noUpdate = true;
-                Yaw = (int)rot.Yaw;
-                Pitch = (int)rot.Pitch;
-                Roll = (int)rot.Roll;
+                Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
+                Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
                 noUpdate = false;
                 EndBusy();
             }
@@ -505,19 +504,6 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        private int _roll;
-        public int Roll
-        {
-            get => _roll;
-            set
-            {
-                if (SetProperty(ref _roll, value))
-                {
-                    UpdateRotation();
-                }
-            }
-        }
-
         private int _rotIncrement = 5;
         public int RotIncrement
         {
@@ -539,7 +525,7 @@ namespace ME3Explorer.GameInterop
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), ((float)Roll).ToUnrealRotationUnits()).GetDirectionalVector();
+            (float x, float y, float z) = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
             GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),

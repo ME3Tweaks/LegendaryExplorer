@@ -27,9 +27,9 @@ namespace ME3Explorer.Unreal
 
         public static Matrix ComposeLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 pivot = default)
         {
-            double pitch = rotation.Pitch.ToRadians();
-            double yaw = rotation.Yaw.ToRadians();
-            double roll = rotation.Roll.ToRadians();
+            double pitch = rotation.Pitch.UnrealRotationUnitsToRadians();
+            double yaw = rotation.Yaw.UnrealRotationUnitsToRadians();
+            double roll = rotation.Roll.UnrealRotationUnitsToRadians();
 
             float sp = (float)Math.Sin(pitch);
             float sy = (float)Math.Sin(yaw);
@@ -90,9 +90,9 @@ namespace ME3Explorer.Unreal
 
         public static Matrix InverseRotation(Rotator rot)
         {
-            double pitch = rot.Pitch.ToRadians();
-            double yaw = rot.Yaw.ToRadians();
-            double roll = rot.Roll.ToRadians();
+            double pitch = rot.Pitch.UnrealRotationUnitsToRadians();
+            double yaw = rot.Yaw.UnrealRotationUnitsToRadians();
+            double roll = rot.Roll.UnrealRotationUnitsToRadians();
 
             float sp = (float)Math.Sin(pitch);
             float sy = (float)Math.Sin(yaw);

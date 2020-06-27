@@ -512,7 +512,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
+            (float x, float y, float z) = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
             GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),
@@ -722,7 +722,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)CamPitch).ToUnrealRotationUnits(), ((float)CamYaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
+            (float x, float y, float z) = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
             GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.CamXRotComponent),
                                                      VarCmd(y, FloatVarIndexes.CamYRotComponent),
                                                      VarCmd(z, FloatVarIndexes.CamZRotComponent),

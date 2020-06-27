@@ -892,17 +892,22 @@ namespace ME3Explorer
         /// <summary>
         /// Converts Degrees to Unreal rotation units
         /// </summary>
-        public static int ToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
-        
+        public static int DegreesToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
+
+        /// <summary>
+        /// Converts Radians to Unreal rotation units
+        /// </summary>
+        public static int RadiansToUnrealRotationUnits(this float radians) => Convert.ToInt32(radians * 180 / Math.PI * 65536f / 360f);
+
         /// <summary>
         /// Converts Unreal rotation units to Degrees
         /// </summary>
-        public static float ToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
+        public static float UnrealRotationUnitsToDegrees(this int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
 
         /// <summary>
         /// Converts Unreal rotation units to Radians
         /// </summary>
-        public static double ToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
+        public static double UnrealRotationUnitsToRadians(this int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
 
         /// <summary>
         /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
@@ -1034,7 +1039,7 @@ namespace ME3Explorer
 
             static int RadToURR(double d)
             {
-                return ((float)(d * (180.0 / Math.PI))).ToUnrealRotationUnits();
+                return ((float)(d * (180.0 / Math.PI))).DegreesToUnrealRotationUnits();
             }
         }
 

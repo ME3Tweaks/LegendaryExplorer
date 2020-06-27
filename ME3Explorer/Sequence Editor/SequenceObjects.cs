@@ -128,11 +128,11 @@ namespace ME3Explorer.SequenceObjects
                         string newText = "";
                         if (newMap != null)
                         {
-                            newText += $"Map: :{newMap}\n";
+                            newText += $"Map: :{newMap.Value.Instanced}\n";
                         }
                         if (startPoint != null)
                         {
-                            newText += $"Startpoint: {startPoint}";
+                            newText += $"Startpoint: {startPoint.Value.Instanced}";
                         }
                         res += newText;
                         break;
@@ -272,7 +272,7 @@ namespace ME3Explorer.SequenceObjects
                 if ((prop.Name == "VarName" || prop.Name == "varName")
                     && prop is NameProperty nameProp)
                 {
-                    SText VarName = new SText(nameProp.Value, Color.Red, false)
+                    SText VarName = new SText(nameProp.Value.Instanced, Color.Red, false)
                     {
                         Pickable = false,
                         TextAlignment = StringAlignment.Center,
@@ -355,7 +355,7 @@ namespace ME3Explorer.SequenceObjects
                             switch (prop)
                             {
                                 case NameProperty nameProp when nameProp.Name == "m_sObjectTagToFind":
-                                    return nameProp.Value;
+                                    return nameProp.Value.Instanced;
                                 case StrProperty strProp when strProp.Name == "m_sObjectTagToFind":
                                     return strProp.Value;
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
@@ -398,10 +398,10 @@ namespace ME3Explorer.SequenceObjects
                             {
                                 //Named Variable
                                 case NameProperty nameProp when nameProp.Name == "FindVarName":
-                                    return $"< {nameProp.Value} >";
+                                    return $"< {nameProp.Value.Instanced} >";
                                 //SeqVar_Name
                                 case NameProperty nameProp when nameProp.Name == "NameValue":
-                                    return nameProp.Value;
+                                    return nameProp.Value.Instanced;
                                 //External
                                 case StrProperty strProp when strProp.Name == "VariableLabel":
                                     return $"Extern:\n{strProp.Value}";
@@ -1287,7 +1287,7 @@ namespace ME3Explorer.SequenceObjects
             foreach (var prop in props)
             {
                 if (prop.Name.Name.Contains("EventName") || prop.Name == "sScriptName")
-                    s += "\n\"" + (prop as NameProperty) + "\"";
+                    s += "\n\"" + (prop as NameProperty)?.Value.Instanced + "\"";
                 else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
                     s += "\n\"" + (prop as StrProperty) + "\"";
             }
@@ -1517,7 +1517,7 @@ namespace ME3Explorer.SequenceObjects
                             break;
                         }
                     case NameProperty nameProp when nameProp.Name == "EventName" || nameProp.Name == "StateName":
-                        s += $"\n\"{nameProp}\"";
+                        s += $"\n\"{nameProp.Value.Instanced}\"";
                         break;
                     case StrProperty strProp when strProp.Name == "OutputLabel" || strProp.Name == "m_sMovieName":
                         s += $"\n\"{strProp}\"";

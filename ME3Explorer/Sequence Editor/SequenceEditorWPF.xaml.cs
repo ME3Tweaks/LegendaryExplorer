@@ -1437,6 +1437,19 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
+                if (contextMenu.GetChild("repointIncomingReferences") is MenuItem repointIncomingReferences)
+                {
+
+                    if (obj is SVar sVar)
+                    {
+                        repointIncomingReferences.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        repointIncomingReferences.Visibility = Visibility.Collapsed;
+                    }
+                }
+
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }

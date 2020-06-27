@@ -4833,7 +4833,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             var calcX = (double)posX * cosCalcYaw - (double)posY * sinCalcYaw;
                             var calcY = (double)posX * sinCalcYaw + (double)posY * cosCalcYaw;
 
-                            var newYaw = uuYaw + ((float)rotateyawdegrees).ToUnrealRotationUnits();
+                            var newYaw = uuYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
 
                             SharpDX.Matrix newm = ActorUtils.ComposeLocalToWorld(new SharpDX.Vector3((float)calcX, (float)calcY, posZ),
                                       new Rotator(uuPitch, newYaw, uuRoll),
@@ -4882,7 +4882,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Write props
                     var newx = (float)calcX;
                     var newy = (float)calcY;
-                    var newYaw = (Int32)oldYaw + ((float)rotateyawdegrees).ToUnrealRotationUnits();
+                    var newYaw = (Int32)oldYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
 
                     locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
                     locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));

@@ -193,9 +193,9 @@ namespace ME3Explorer.GameInterop
                         Position = new Vector3(fs.ReadFloat(), fs.ReadFloat(), fs.ReadFloat()),
                         Rotation = new Vector3
                         {
-                            Y = (fs.ReadInt32() % 65536).ToDegrees(),
-                            Z = (fs.ReadInt32() % 65536).ToDegrees(),
-                            X = (fs.ReadInt32() % 65536).ToDegrees()
+                            Y = (fs.ReadInt32() % 65536).UnrealRotationUnitsToDegrees(),
+                            Z = (fs.ReadInt32() % 65536).UnrealRotationUnitsToDegrees(),
+                            X = (fs.ReadInt32() % 65536).UnrealRotationUnitsToDegrees()
                         },
                         FOV = fs.ReadFloat(),
                         Index = i

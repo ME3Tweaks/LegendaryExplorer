@@ -108,12 +108,20 @@ namespace ME3Explorer.Unreal.BinaryConverters
             Roll = roll;
         }
 
+        public static Rotator FromDirectionVector(Vector3 dirVec)
+        {
+            (float x, float y, float z) = dirVec;
+            var pitch = Math.Atan2(z, Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)));
+            var yaw = Math.Atan2(y, x);
+            return new Rotator(((float)pitch).RadiansToUnrealRotationUnits(), ((float)yaw).RadiansToUnrealRotationUnits(), 0);
+        }
+
         public Vector3 GetDirectionalVector()
         {
-            var cp = Math.Cos(Pitch.ToRadians());
-            var cy = Math.Cos(Yaw.ToRadians());
-            var sp = Math.Sin(Pitch.ToRadians());
-            var sy = Math.Sin(Yaw.ToRadians());
+            var cp = Math.Cos(Pitch.UnrealRotationUnitsToRadians());
+            var cy = Math.Cos(Yaw.UnrealRotationUnitsToRadians());
+            var sp = Math.Sin(Pitch.UnrealRotationUnitsToRadians());
+            var sy = Math.Sin(Yaw.UnrealRotationUnitsToRadians());
             return new Vector3((float)(cp * cy), (float)(cp * sy), (float)sp);
         }
 

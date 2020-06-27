@@ -100,7 +100,8 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4" >
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
-                    <MenuItem Header="Create new package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
+                    <MenuItem Header="Create new empty package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
+                    <MenuItem Header="Create new ME3 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 package with the minimum setup to load as a level"/>
                     <MenuItem Header="Save"  Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save a copy to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Open in...">
