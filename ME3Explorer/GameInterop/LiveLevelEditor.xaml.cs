@@ -247,13 +247,41 @@ namespace ME3Explorer.GameInterop
                         }
                     }
                     pos = new Vector3(floats);
+
+
                 }
                 noUpdate = true;
                 XPos = (int)pos.X;
                 YPos = (int)pos.Y;
                 ZPos = (int)pos.Z;
-                Yaw = 180;
-                Pitch = 0;
+                noUpdate = false;
+                EndBusy();
+            }
+            else if (msg.StartsWith("LiveEditor string ActorRotation"))
+            {
+                Rotator rot = defaultRotation;
+                if (msg.IndexOf("vector") is int idx && idx > 0 &&
+                    msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
+                {
+                    var floats = new float[3];
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (float.TryParse(strings[i], out float f))
+                        {
+                            floats[i] = f;
+                        }
+                        else
+                        {
+                            floats = defaultPosition.ToArray();
+                            break;
+                        }
+                    }
+                    rot = new Rotator((floats[0]).ToUnrealRotationUnits(), (floats[1]).ToUnrealRotationUnits(), (floats[2]).ToUnrealRotationUnits());
+                }
+                noUpdate = true;
+                Yaw = (int)rot.Yaw;
+                Pitch = (int)rot.Pitch;
+                Roll = (int)rot.Roll;
                 noUpdate = false;
                 EndBusy();
             }
@@ -404,7 +432,7 @@ namespace ME3Explorer.GameInterop
 
         #region Position/Rotation
         private static readonly Vector3 defaultPosition = Vector3.Zero;
-
+        private readonly Rotator defaultRotation = new Rotator(0,0,0);
         private int _xPos = (int)defaultPosition.X;
         public int XPos
         {
@@ -477,6 +505,19 @@ namespace ME3Explorer.GameInterop
             }
         }
 
+        private int _roll;
+        public int Roll
+        {
+            get => _roll;
+            set
+            {
+                if (SetProperty(ref _roll, value))
+                {
+                    UpdateRotation();
+                }
+            }
+        }
+
         private int _rotIncrement = 5;
         public int RotIncrement
         {
@@ -498,7 +539,7 @@ namespace ME3Explorer.GameInterop
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), 0).GetDirectionalVector();
+            (float x, float y, float z) = new Rotator(((float)Pitch).ToUnrealRotationUnits(), ((float)Yaw).ToUnrealRotationUnits(), ((float)Roll).ToUnrealRotationUnits()).GetDirectionalVector();
             GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),

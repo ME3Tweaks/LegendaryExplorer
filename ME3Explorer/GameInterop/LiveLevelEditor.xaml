@@ -120,6 +120,8 @@
                                     <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="{Binding RotIncrement}"/>
                                     <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
                                     <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}"/>
+                                    <TextBlock Text=" Roll:  " VerticalAlignment="Center" />
+                                    <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}" Increment="{Binding RotIncrement}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
