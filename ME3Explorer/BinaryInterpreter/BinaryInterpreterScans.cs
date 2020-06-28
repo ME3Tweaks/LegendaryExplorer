@@ -4710,11 +4710,75 @@ namespace ME3Explorer
                         node.Items.Add(new BinInterpNode(bin.Position, $"State: {(WwiseBank.SoundState)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
                         node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
                         node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                        node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {(WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        WwiseBank.SoundType soundType;
+                        node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {soundType = (WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
+                        //switch(soundType)
+                        //{
+                        //    case WwiseBank.SoundType.SFX:
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "UnknownInt32"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "UnknownInt32"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Unknown Reference ID"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
+                        //        break;
+                        //    case WwiseBank.SoundType.Voice:
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
+                        //        break;
+                        //}
+                        //node.Items.Add(MakeByteNode(bin, "Unknown32"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "PreVolume-UnknownF6"));
+                        //node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
                         goto default;
                     case HIRCType.RandomOrSequenceContainer:
                     case HIRCType.SwitchContainer:
                     case HIRCType.ActorMixer:
+                        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        bool hasAuxBus = false;
+                        node.Items.Add(MakeBoolByteNode(bin, "Has Auxiliary buses?")); //Set Bool using this TO DO
+                        if(hasAuxBus)
+                        {
+                            node.Items.Add(MakeByteNode(bin, "Unknown"));
+                            node.Items.Add(MakeByteNode(bin, "Unknown"));
+                            node.Items.Add(MakeUInt32HexNode(bin, "Auxiliary Bus Reference ID"));
+                            node.Items.Add(MakeByteNode(bin, "Unknown"));
+                            node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        }
+                        node.Items.Add(MakeUInt32HexNode(bin, "Master Audio Bus Reference ID"));
+                        node.Items.Add(MakeUInt32HexNode(bin, "Unknown 4 bytes"));
+                        node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));
+                        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        node.Items.Add(MakeByteNode(bin, "PreVolume-Unknown_hexF6"));
+                        node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_B_4bytes"));
+                        node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_C_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_D_4bytes"));
+                        node.Items.Add(MakeFloatNode(bin, "Pitch"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_E_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_F_4bytes"));
+                        node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes"));
+                        node.Items.Add(MakeByteNode(bin, "Unknown_hex_usually01"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_Int"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
+                        node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_J_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_K_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
+                        node.Items.Add(MakeUInt32Node(bin, "Unknown_M_4bytes"));
+                        node.Items.Add(MakeByteNode(bin, "UnknownByte"));
+                        node.Items.Add(MakeArrayNode(bin, "Input References", i => MakeUInt32HexNode(bin, $"{i}")));
+                        break;
                     case HIRCType.AudioBus:
                     case HIRCType.BlendContainer:
                     case HIRCType.MusicSegment:
@@ -4727,6 +4791,13 @@ namespace ME3Explorer
                     case HIRCType.MotionFX:
                     case HIRCType.Effect:
                     case HIRCType.AuxiliaryBus:
+                        //node.Items.Add(MakeByteNode(bin, "Count of something?"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        //node.Items.Add(MakeUInt32Node(bin, "Unknown_Int"));
+                        //node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
+                        break;
                     case HIRCType.Settings:
                     default:
                         if (bin.Position < endPos)
@@ -4735,6 +4806,7 @@ namespace ME3Explorer
                             {
                                 Length = (int)(endPos - bin.Position)
                             });
+                            
                         }
                         break;
                 }
