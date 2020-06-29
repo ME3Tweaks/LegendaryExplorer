@@ -433,6 +433,14 @@ namespace ME3Explorer
                         }
 
                         break;
+                    case "WwiseEditor":
+                        if (exp.ClassName == "WwiseBank")
+                        {
+                            var w = new WwiseEditor.WwiseEditorWPF(exp);
+                            w.Show();
+                        }
+
+                        break;
                 }
             }
         }
@@ -457,6 +465,8 @@ namespace ME3Explorer
                         return exp.IsA("SequenceObject");
                     case "InterpViewer":
                         return exp.ClassName == "InterpData";
+                    case "WwiseEditor":
+                        return exp.ClassName == "WwiseBank";
                 }
             }
 
