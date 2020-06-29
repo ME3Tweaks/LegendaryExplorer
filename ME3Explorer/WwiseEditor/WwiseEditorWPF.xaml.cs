@@ -73,7 +73,9 @@ namespace ME3Explorer.WwiseEditor
             }
 
             soundPanel.SoundPanel_TabsControl.SelectedIndex = 1;
+            soundPanel.HIRCObjectSelected += SoundPanel_HIRCObjectSelected;
         }
+
         public WwiseEditorWPF(ExportEntry exportToLoad) : this()
         {
             FileQueuedForLoad = exportToLoad.FileRef.FilePath;
@@ -562,6 +564,15 @@ namespace ME3Explorer.WwiseEditor
             }
         }
 
+        private void SoundPanel_HIRCObjectSelected(uint id)
+        {
+            if (CurrentObjects.Where(node => !(node is WExport)).FirstOrDefault(node => node.ID == id) is {} nodeToSelect)
+            {
+                panToSelection = true;
+                SelectedNode = nodeToSelect;
+            }
+        }
+
         private bool panToSelection = true;
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
@@ -956,12 +967,13 @@ namespace ME3Explorer.WwiseEditor
 
             var options = new Dictionary<string, object>
             {
-                {"AutoSave", AutoSaveView_MenuItem.IsChecked},
+                {"AutoSave", AutoSaveView_MenuItem.IsChecked}
             };
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(WwiseEditorDataFolder))
                 Directory.CreateDirectory(WwiseEditorDataFolder);
             File.WriteAllText(OptionsPath, outputFile);
+            soundPanel.HIRCObjectSelected -= SoundPanel_HIRCObjectSelected;
             soundPanel.Dispose();
         }
     }

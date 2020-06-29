@@ -1257,113 +1257,120 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any())
-                 && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
+                if (contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
-                    bool hasLinks = false;
-                    if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
+                    if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any() || sBox.EventLinks.Any()))
                     {
-                        outputLinksMenuItem.Visibility = Visibility.Collapsed;
-                        outputLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Outlinks.Count; i++)
+                        bool hasLinks = false;
+                        if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
                         {
-                            for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
+                            outputLinksMenuItem.Visibility = Visibility.Collapsed;
+                            outputLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.Outlinks.Count; i++)
                             {
-                                outputLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
+                                for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
                                 {
-                                    Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
+                                    outputLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { sBox.RemoveOutlink(linkConnection, linkIndex); };
+                                    outputLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+
+                            if (outputLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllOutputLinks;
                                 outputLinksMenuItem.Items.Add(temp);
                             }
                         }
 
-                        if (outputLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllOutputLinks;
-                            outputLinksMenuItem.Items.Add(temp);
-                        }
-                    }
-
-                    if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
-                    {
-                        varLinksMenuItem.Visibility = Visibility.Collapsed;
-                        varLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.Varlinks.Count; i++)
-                        {
-                            for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
+                            varLinksMenuItem.Visibility = Visibility.Collapsed;
+                            varLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.Varlinks.Count; i++)
                             {
-                                varLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
+                                for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
                                 {
-                                    Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
+                                    varLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) => { sBox.RemoveVarlink(linkConnection, linkIndex); };
+                                    varLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+
+                            if (varLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllVarLinks;
                                 varLinksMenuItem.Items.Add(temp);
                             }
                         }
-
-                        if (varLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllVarLinks;
-                            varLinksMenuItem.Items.Add(temp);
-                        }
-                    }
-                    if (breakLinksMenuItem.GetChild("eventLinksMenuItem") is MenuItem eventLinksMenuItem)
-                    {
-                        eventLinksMenuItem.Visibility = Visibility.Collapsed;
-                        eventLinksMenuItem.Items.Clear();
-                        for (int i = 0; i < sBox.EventLinks.Count; i++)
-                        {
-                            for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
+                            eventLinksMenuItem.Visibility = Visibility.Collapsed;
+                            eventLinksMenuItem.Items.Clear();
+                            for (int i = 0; i < sBox.EventLinks.Count; i++)
                             {
-                                eventLinksMenuItem.Visibility = Visibility.Visible;
-                                hasLinks = true;
-                                var temp = new MenuItem
+                                for (int j = 0; j < sBox.EventLinks[i].Links.Count; j++)
                                 {
-                                    Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
-                                };
-                                int linkConnection = i;
-                                int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveEventlink(linkConnection, linkIndex);
-                                };
+                                    eventLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.EventLinks[i].Desc} to {sBox.EventLinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) =>
+                                    {
+                                        sBox.RemoveEventlink(linkConnection, linkIndex);
+                                    };
+                                    eventLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+
+                            if (eventLinksMenuItem.Items.Count > 0)
+                            {
+                                var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
+                                temp.Click += removeAllEventLinks;
                                 eventLinksMenuItem.Items.Add(temp);
                             }
                         }
-
-                        if (eventLinksMenuItem.Items.Count > 0)
+                        if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
                         {
-                            var temp = new MenuItem { Header = "Break All", Tag = obj.Export };
-                            temp.Click += removeAllEventLinks;
-                            eventLinksMenuItem.Items.Add(temp);
+                            if (hasLinks)
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Visibility = Visibility.Visible;
+                                breakAllLinksMenuItem.Tag = obj.Export;
+                            }
+                            else
+                            {
+                                breakLinksMenuItem.Visibility = Visibility.Collapsed;
+                                breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
+                            }
                         }
                     }
-                    if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
+                    else
                     {
-                        if (hasLinks)
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Visibility = Visibility.Visible;
-                            breakAllLinksMenuItem.Tag = obj.Export;
-                        }
-                        else
-                        {
-                            breakLinksMenuItem.Visibility = Visibility.Collapsed;
-                            breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
-                        }
+                        breakLinksMenuItem.Visibility = Visibility.Collapsed;
                     }
                 }
+                
 
                 if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
                 {

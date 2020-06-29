@@ -1654,6 +1654,8 @@ namespace ME3Explorer
             }
         }
 
+        public event Action<uint> HIRCObjectSelected; 
+
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HIRCNotableItems.ClearEx();
@@ -1750,6 +1752,7 @@ namespace ME3Explorer
 
                         break;
                 }
+                HIRCObjectSelected?.Invoke(h.ID);
             }
             else
             {

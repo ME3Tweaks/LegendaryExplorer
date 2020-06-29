@@ -409,7 +409,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return unknownValue;
                     case VarTypes.MatineeData:
-                        return $"#{UIndex}\nInterpData";
+                        return $"#{UIndex}\n{Export.ObjectName.Instanced}";
                     case VarTypes.Vector:
                         if (props.GetProp<StructProperty>("VectValue") is { } vecStruct)
                         {

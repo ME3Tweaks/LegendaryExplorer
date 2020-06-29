@@ -8,7 +8,6 @@ using ME3Explorer.SplineNodes;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,20 +16,16 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using Gammtek.Conduit.Extensions.Collections.Generic;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
-using Point = System.Windows.Point;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
 
@@ -958,43 +953,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
             AllObjectsList.Clear();
 
-            //Read persistent level binary
-            byte[] data = levelToRead.Data;
-
-            //find start of class binary (end of props)
-            int start = levelToRead.propsEnd();
-
-            //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
-
-            uint exportid = EndianReader.ToUInt32(data, start, Pcc.Endian);
-            start += 4;
-            uint numberofitems = EndianReader.ToUInt32(data, start, Pcc.Endian);
-            int countoffset = start;
-
-            start += 4;
-            int bioworldinfoexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
-
-            ExportEntry bioworldinfo = levelToRead.FileRef.GetUExport(bioworldinfoexportid);
-            if (bioworldinfo.ObjectName != "BioWorldInfo")
-            {
-                //INVALID!!
-                return false;
-            }
-            AllObjectsList.Add(bioworldinfo);
-
-            start += 4;
-            uint shouldbezero = EndianReader.ToUInt32(data, start, Pcc.Endian);
-            if (shouldbezero != 0 && levelToRead.FileRef.Game != MEGame.ME1)
-            {
-                //INVALID!!!
-                return false;
-            }
-            int itemcount = 1; //Skip bioworldinfo and Class
-            if (levelToRead.FileRef.Game != MEGame.ME1)
-            {
-                start += 4;
-                itemcount = 2;
-            }
             List<ExportEntry> bulkActiveNodes = new List<ExportEntry>();
             //bool hasPathNode = false;
             //bool hasActorNode = false;
@@ -1004,19 +962,17 @@ namespace ME3Explorer.Pathfinding_Editor
             //seems like it would require two passes unless each level object type was put into a specific list and then the lists were appeneded to form the final list.
             //That would ruin ordering of exports, but does that really matter?
 
-            while (itemcount < numberofitems)
+            Level level = levelToRead.GetBinaryData<Level>();
+            foreach (UIndex levelActor in level.Actors)
             {
-                //get header.
-                int itemexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
+                int itemexportid = levelActor.value;
                 if (levelToRead.FileRef.IsUExport(itemexportid))
                 {
                     ExportEntry exportEntry = levelToRead.FileRef.GetUExport(itemexportid);
                     AllObjectsList.Add(exportEntry);
 
-                    if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name) || (HideGroup && ActorGroup.Contains(exportEntry)) || (ShowOnlyGroup && !ActorGroup.Contains(exportEntry)))
+                    if (exportEntry.ClassName == "BioWorldInfo" || ignoredobjectnames.Contains(exportEntry.ObjectName.Name) || (HideGroup && ActorGroup.Contains(exportEntry)) || (ShowOnlyGroup && !ActorGroup.Contains(exportEntry)))
                     {
-                        start += 4;
-                        itemcount++;
                         continue;
                     }
 
@@ -1085,15 +1041,6 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         bulkActiveNodes.Add(exportEntry);
                     }
-
-                    start += 4;
-                    itemcount++;
-                }
-                else
-                {
-                    //INVALID ITEM ENCOUNTERED!
-                    start += 4;
-                    itemcount++;
                 }
             }
 
@@ -3987,56 +3934,18 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         var persistenLevelExp = package.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
                         if (persistenLevelExp == null) continue;
-                        //Scan
-                        byte[] data = persistenLevelExp.Data;
 
-                        //find start of class binary (end of props)
-                        int start = persistenLevelExp.propsEnd();
-
-                        //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
-
-                        uint exportid = EndianReader.ToUInt32(data, start, Pcc.Endian);
-                        start += 4;
-                        uint numberofitems = EndianReader.ToUInt32(data, start, Pcc.Endian);
-                        int countoffset = start;
-
-                        start += 4;
-                        int bioworldinfoexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
-                        ExportEntry bioworldinfo = package.GetUExport(bioworldinfoexportid);
-                        if (bioworldinfo.ObjectName != "BioWorldInfo")
+                        Level level = persistenLevelExp.GetBinaryData<Level>();
+                        foreach (UIndex levelActor in level.Actors)
                         {
-                            //INVALID!!
-                            Debug.WriteLine("Error: BioworldInfo object is not bioworldinfo name");
-                            continue;
-                        }
-
-                        start += 4;
-                        uint shouldbezero = EndianReader.ToUInt32(data, start, Pcc.Endian);
-                        if (shouldbezero != 0 && package.Game != MEGame.ME1)
-                        {
-                            //INVALID!!!
-                            Debug.WriteLine("Error: should be zero, not zero in " + package.FilePath);
-                            continue;
-                        }
-                        int itemcount = 1; //Skip bioworldinfo and Class
-                        if (package.Game != MEGame.ME1)
-                        {
-                            start += 4;
-                            itemcount = 2;
-                        }
-                        while (itemcount < numberofitems)
-                        {
-                            //get header.
-                            int itemexportid = EndianReader.ToInt32(data, start, Pcc.Endian);
+                            int itemexportid = levelActor.value;
                             if (package.IsUExport(itemexportid))
                             {
                                 ExportEntry exportEntry = package.GetUExport(itemexportid);
                                 //AllLevelObjects.Add(exportEntry);
 
-                                if (ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
+                                if (exportEntry.ClassName == "BioWorldInfo" || ignoredobjectnames.Contains(exportEntry.ObjectName.Name))
                                 {
-                                    start += 4;
-                                    itemcount++;
                                     continue;
                                 }
 
@@ -4084,15 +3993,6 @@ namespace ME3Explorer.Pathfinding_Editor
                                 //{
                                 //    bulkActiveNodes.Add(exportEntry);
                                 //}
-
-                                start += 4;
-                                itemcount++;
-                            }
-                            else
-                            {
-                                //INVALID ITEM ENCOUNTERED!
-                                start += 4;
-                                itemcount++;
                             }
                         }
 
