@@ -2127,12 +2127,17 @@ namespace ME3Explorer
         public override void Dispose()
         {
             Settings.Default.PropertyChanged -= SettingChanged;
-            if (Interpreter_Hexbox.ByteProvider != null)
+            
+
+            if (Interpreter_Hexbox != null)
             {
-                Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
+                if (Interpreter_Hexbox.ByteProvider != null)
+                {
+                    Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
+                }
+                Interpreter_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
             }
 
-            Interpreter_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
             Interpreter_Hexbox = null;
             Interpreter_Hexbox_Host.Child.Dispose();
             Interpreter_Hexbox_Host.Dispose();

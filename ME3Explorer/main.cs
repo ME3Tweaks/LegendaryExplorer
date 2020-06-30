@@ -33,6 +33,7 @@ namespace ME3Explorer
         [STAThread]
         public static void Main()
         {
+            GC.TryStartNoGCRegion(250_000_000);
             UnblockLibFiles();
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {

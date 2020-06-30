@@ -733,10 +733,14 @@ namespace ME3Explorer.MetadataEditor
 
         public override void Dispose()
         {
-            Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
-            Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
-            Header_Hexbox_Host.Child.Dispose();
+            if (Header_Hexbox != null)
+            {
+                Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
+            }
+
             Header_Hexbox = null;
+            Header_Hexbox_Host.Child.Dispose();
             Header_Hexbox_Host.Dispose();
             Header_Hexbox_Host = null;
         }

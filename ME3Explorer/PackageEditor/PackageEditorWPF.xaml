@@ -31,7 +31,7 @@
         Drop="Window_Drop"
         AllowDrop="True"
         PreviewMouseUp="Window_MouseUp"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>

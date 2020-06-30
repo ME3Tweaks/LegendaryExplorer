@@ -1993,6 +1993,7 @@ namespace ME3Explorer
             LoadCommands();
 
             InitializeComponent();
+            DataContext = this;
             ((FrameworkElement)Resources["EntryContextMenu"]).DataContext = this;
 
             //map export loaders to their tabs

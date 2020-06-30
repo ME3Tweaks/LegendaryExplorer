@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,17 +154,26 @@ namespace ME3Explorer
             }
             else
             {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+                {
+                    new PackageEditorWPF().Close(); //pre-parse xaml to improve PackEd startup time
+                }
+                if (GCSettings.LatencyMode == GCLatencyMode.NoGCRegion)
+                    GC.EndNoGCRegion();
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                GC.Collect();
                 PendingAppLoadedAction = actionDelegate;
                 Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
 
                 //close splash after
-                ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 ME3ExplorerSplashScreen?.Close();
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
 
                 GameController.InitializeMessageHook(mainWindow);
+                PendingAppLoadedAction?.Invoke();
             }
         }
 
@@ -172,7 +182,7 @@ namespace ME3Explorer
             ME3Explorer.Properties.Settings.Default.Save();
         }
 
-        private Action HandleCommandLineJumplistCall(string[] args, out int exitCode)
+        private static Action HandleCommandLineJumplistCall(string[] args, out int exitCode)
         {
             exitCode = 0;
             if (args.Length < 2)
