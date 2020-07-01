@@ -30,6 +30,15 @@ namespace ME3Explorer
         public static readonly DependencyProperty CategoryProperty =
             DependencyProperty.Register(nameof(Category), typeof(string), typeof(ToolPanel), new PropertyMetadata(""));
 
+        public string Subtext
+        {
+            get => (string)GetValue(SubtextProperty);
+            set => SetValue(SubtextProperty, value);
+        }
+
+        public static readonly DependencyProperty SubtextProperty = DependencyProperty.Register(
+            nameof(Subtext), typeof(string), typeof(ToolPanel), new PropertyMetadata(default(string)));
+
         public Thickness ItemMargin
         {
             get => (Thickness)GetValue(ItemMarginProperty);
