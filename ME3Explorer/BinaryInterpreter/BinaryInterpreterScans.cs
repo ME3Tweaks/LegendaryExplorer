@@ -4786,18 +4786,21 @@ namespace ME3Explorer
                     case HIRCType.SwitchContainer:
                     case HIRCType.ActorMixer:
                         node.Items.Add(MakeByteNode(bin, "Unknown"));
-                        bool hasAuxBus = false;
-                        node.Items.Add(MakeBoolByteNode(bin, "Has Auxiliary buses?")); //Set Bool using this TO DO
-                        if(hasAuxBus)
+                        int nEffects = 0;
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Count of Effects (?Aux Bus?): {nEffects = bin.ReadByte()}") { Length = 1 });
+                        for (int b = 0; b < nEffects; b++)
                         {
                             node.Items.Add(MakeByteNode(bin, "Unknown"));
                             node.Items.Add(MakeByteNode(bin, "Unknown"));
-                            node.Items.Add(MakeUInt32HexNode(bin, "Auxiliary Bus Reference ID"));
+                            node.Items.Add(MakeUInt32HexNode(bin, "Effect Reference ID"));
                             node.Items.Add(MakeByteNode(bin, "Unknown"));
+                        }
+                        if(nEffects > 0)
+                        {
                             node.Items.Add(MakeByteNode(bin, "Unknown"));
                         }
                         node.Items.Add(MakeUInt32HexNode(bin, "Master Audio Bus Reference ID"));
-                        node.Items.Add(MakeUInt32HexNode(bin, "Unknown 4 bytes"));
+                        node.Items.Add(MakeUInt32HexNode(bin, "Audio Out link"));
                         node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Is here on a standard mixer? Appears in SoundSFX/voice
                         node.Items.Add(MakeByteNode(bin, "Unknown"));
                         node.Items.Add(MakeByteNode(bin, "Unknown"));
@@ -4814,11 +4817,11 @@ namespace ME3Explorer
                         node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes")); //Mixer end
-                        goto default;
+                        
 
                         //Minimum is 4 x 4bytes but can expanded
                         bool hasEffects = false; //Maybe something else
-                        node.Items.Add(MakeByteNode(bin, "Unknown_Byte->Int+4b+Float"));  //Count of something? effects?
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Unknown_Byte->Int + Unk4 + Float: {hasEffects = bin.ReadBoolByte()}") { Length = 1 }); //Count of something? effects?
                         if(hasEffects)
                         {
                             node.Items.Add(MakeInt32Node(bin, "Unknown_Int"));
@@ -4826,22 +4829,25 @@ namespace ME3Explorer
                             node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
                         }
                         bool hasAttenuation = false;
-                        node.Items.Add(MakeByteNode(bin, "UnknownByte->Attenuations")); //RPTCs? Count? Attenuations?
-                        if(hasAttenuation)
+                        node.Items.Add(new BinInterpNode(bin.Position, $"Attenuations?: {hasAttenuation = bin.ReadBoolByte()}") { Length = 1 }); //RPTCs? Count? Attenuations?
+                        if (hasAttenuation)
                         {
                             node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int")); //<= extra if byte?
                             node.Items.Add(MakeUInt32HexNode(bin, "Attenuation? Reference")); //<= extra if byte?
                             node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
                             node.Items.Add(MakeUInt32Node(bin, "Unknown_M_4bytes"));
+                            node.Items.Add(MakeByteNode(bin, "UnknownByte"));
+                        }
+                        else
+                        {
+                            node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int"));
+                            node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
                         }
 
 
-                        node.Items.Add(MakeByteNode(bin, "UnknownByte"));
-
-                        node.Items.Add(MakeByteNode(bin, "UnknownByte"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_N_4bytes"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_O_4bytes"));
-                        node.Items.Add(MakeUInt32Node(bin, "Unknown_P_4bytes"));
+                        goto default;
                         node.Items.Add(MakeArrayNode(bin, "Input References", i => MakeUInt32HexNode(bin, $"{i}")));
                         goto default;
                     case HIRCType.AudioBus:
