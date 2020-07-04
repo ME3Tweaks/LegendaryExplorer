@@ -945,6 +945,15 @@ namespace ME3Explorer.Unreal
             };
             newSequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
 
+            //SirCxyrtyx - New Class - SeqAct_ME3ExpAcessDumpedActorsList
+            NewClasses["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
+            {
+                baseClass = "SeqAct_Log",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 103, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",

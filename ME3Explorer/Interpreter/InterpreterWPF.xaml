@@ -127,7 +127,7 @@
                                                Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" 
-                                                      SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
+                                                      SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60" Closed="ColorPicker_Closed"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"
                                            Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterWPF}, Converter={StaticResource BoolToVisibilityConverter}}"/>

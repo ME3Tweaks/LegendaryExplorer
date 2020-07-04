@@ -78,7 +78,7 @@ namespace ME3Explorer.GameInterop
             GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
             ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             ME3OpenTimer.Tick += CheckIfME3Open;
-            RetryLoadTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
+            RetryLoadTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
             RetryLoadTimer.Tick += RetryLoadLiveEditor;
         }
 
@@ -110,7 +110,7 @@ namespace ME3Explorer.GameInterop
 
         private void RegenActorList()
         {
-            SetBusy("Building Actor List");
+            SetBusy("Building Actor List", () => {});
             GameController.ExecuteME3ConsoleCommands("ce DumpActors");
         }
 
@@ -160,7 +160,7 @@ namespace ME3Explorer.GameInterop
 
         private void LoadLiveEditor()
         {
-            SetBusy("Loading Live Editor", () => {});
+            SetBusy("Loading Live Editor", () => RetryLoadTimer.Stop());
             GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
             RetryLoadTimer.Start();
         }
@@ -207,6 +207,8 @@ namespace ME3Explorer.GameInterop
                 {
                     ME3OpenTimer.Start();
                 }
+
+                ActorDict.Clear();
             }
             else if (msg == "LiveEditor string Loaded")
             {
@@ -318,10 +320,10 @@ namespace ME3Explorer.GameInterop
 
         private void BuildActorDict()
         {
+            ActorDict.Clear();
             string actorDumpPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "ME3ExpActorDump.txt");
             if (!File.Exists(actorDumpPath))
             {
-                ActorDict.Clear();
                 return;
             }
 
