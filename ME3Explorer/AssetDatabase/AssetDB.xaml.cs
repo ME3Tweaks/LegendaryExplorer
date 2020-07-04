@@ -27,6 +27,8 @@ using ME3Explorer.GameInterop;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using AnimSequence = ME3Explorer.Unreal.BinaryConverters.AnimSequence;
+using Gammtek.Conduit.Extensions.Collections.Generic;
+using SQLite.Extensions;
 
 namespace ME3Explorer.AssetDatabase
 {
@@ -165,6 +167,7 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
+        public Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string> CustomFileList { get; } = new Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string>(); //FileKey, filename
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -182,6 +185,10 @@ namespace ME3Explorer.AssetDatabase
         public ICommand FilterAnimsCommand { get; set; }
         public ICommand FilterVFXCommand { get; set; }
         public ICommand SetCRCCommand { get; set; }
+        public ICommand FilterFilesCommand { get; set; }
+        public ICommand LoadFileListCommand { get; set; }
+        public ICommand SaveFileListCommand { get; set; }
+        public ICommand EditFileListCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -271,6 +278,10 @@ namespace ME3Explorer.AssetDatabase
             OpenInAnimViewerCommand = new RelayCommand(OpenInAnimViewer, CanUseAnimViewer);
             ExportToPSACommand = new GenericCommand(ExportToPSA, IsAnimSequenceSelected);
             OpenInAnimationImporterCommand = new GenericCommand(OpenInAnimationImporter, IsAnimSequenceSelected);
+            FilterFilesCommand = new RelayCommand(SetFilters);
+            LoadFileListCommand = new GenericCommand(LoadCustomFileList);
+            SaveFileListCommand = new GenericCommand(SaveCustomFileList);
+            EditFileListCommand = new RelayCommand(EditCustomFileList);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -684,6 +695,7 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Conversations.ClearEx();
             CurrentDataBase.Lines.ClearEx();
             FileListExtended.ClearEx();
+            CustomFileList.Clear();
             SpeakerList.ClearEx();
             FilterBox.Clear();
             Filter();
@@ -1518,6 +1530,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !cr.ClassUsages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MaterialFilter(object d)
@@ -1580,6 +1596,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !mr.MaterialUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool MeshFilter(object d)
@@ -1595,6 +1615,10 @@ namespace ME3Explorer.AssetDatabase
                 showthis = false;
             }
             if (showthis && menu_fltrStM.IsChecked && mr.IsSkeleton)
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !mr.MeshUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1616,6 +1640,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !ar.AnimUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool PSFilter(object d)
@@ -1631,6 +1659,10 @@ namespace ME3Explorer.AssetDatabase
                 showthis = false;
             }
             if (showthis && menu_VFXRvrEff.IsChecked && ps.VFXType == ParticleSys.VFXClass.ParticleSystem)
+            {
+                showthis = false;
+            }
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !ps.PSUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1776,6 +1808,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
+            if(showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() &&!tr.TextureUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool SFFilter(object d)
@@ -1786,7 +1822,10 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
             }
-
+            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !sf.GUIUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            {
+                showthis = false;
+            }
             return showthis;
         }
         bool LineFilter(object d)
@@ -2118,6 +2157,19 @@ namespace ME3Explorer.AssetDatabase
                         menu_VFXRvrEff.IsChecked = false;
                     }
                     break;
+                case "CustFiles":
+                    if (!menu_fltrCustFiles.IsChecked)
+                    {
+                        menu_fltrCustFiles.IsChecked = true;
+                        expander_CustomFiles.IsExpanded = true;
+                    }
+                    else
+                    {
+                        menu_fltrCustFiles.IsChecked = false;
+                        if(CustomFileList.IsEmpty())
+                            expander_CustomFiles.IsExpanded = false;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -2211,6 +2263,171 @@ namespace ME3Explorer.AssetDatabase
         {
             e.Handled = true;
             Filter();
+        }
+
+        private void SaveCustomFileList()
+        {
+            if (CustomFileList.IsEmpty())
+            {
+                MessageBox.Show("You cannot save an empty file list.", "Save File List", MessageBoxButton.OK);
+                return;
+            }
+
+            string directory = Path.GetDirectoryName(CurrentDBPath);
+
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = $"*.txt|*.txt",
+                InitialDirectory = directory,
+                FileName = $"ADB_{currentGame}_*",
+                AddExtension = true
+            };
+            if (d.ShowDialog() == true)
+            {
+                TextWriter tw = new StreamWriter(d.FileName);
+                foreach (KeyValuePair<int, string> file in CustomFileList)
+                {
+                    tw.WriteLine(file.Value);
+                }
+                tw.Close();
+                MessageBox.Show("Done.");
+            }
+        }
+        private void LoadCustomFileList()
+        {
+            string directory = Path.GetDirectoryName(CurrentDBPath);
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Filter = $"*.txt|*.txt",
+                InitialDirectory = directory,
+                FileName = $"ADB_{currentGame}_*",
+                AddExtension = true
+
+            };
+            if (d.ShowDialog() == true)
+            {
+                TextReader tr = new StreamReader(d.FileName);
+                string name = "";
+                var nameslist = new List<string>();
+                while ((name = tr.ReadLine()) != null)
+                {
+                    nameslist.Add(name);
+                }
+
+                var cdlg = MessageBox.Show($"Group file read:\n\nGame: {currentGame}\nFile: {d.FileName}\nn\nAdd these files?", "Asset Database", MessageBoxButton.YesNo);
+                if (cdlg == MessageBoxResult.No)
+                    return;
+                CustomFileList.Clear();
+                var errorlist = new List<string>();
+                foreach (var n in nameslist)
+                {
+                    string[] parts = n.Split(' ');
+                    if (parts[0] != null && parts[1] != null)
+                    {
+                        var key = FileListExtended.IndexOf(new Tuple<string, string>(parts[0], parts[1]));
+                        if (key >= 0)
+                        {
+                            CustomFileList.Add(key, n);
+                            continue;
+                        }
+                    }
+                    errorlist.Add(n);
+                }
+
+                if (!errorlist.IsEmpty())
+                {
+                    MessageBox.Show($"The following files are not in the {currentGame} database:\n{string.Join(", ", errorlist)}");
+                }
+            }
+        }
+      
+        private void EditCustomFileList(object obj)
+        {
+            var action = obj as string;
+            int FileKey = -1;
+
+            switch (action)
+            {
+                case "Add":
+                    if (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
+                    {
+                        var c = lstbx_Usages.SelectedItem as ClassUsage;
+                        FileKey = c.FileKey;
+                    }
+                    else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
+                    {
+                        var m = lstbx_MatUsages.SelectedItem as Tuple<int, int, bool>;
+                        FileKey = m.Item1;
+                    }
+                    else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
+                    {
+                        var s = lstbx_MeshUsages.SelectedItem as Tuple<int, int, bool>;
+                        FileKey = s.Item1;
+
+                    }
+                    else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
+                    {
+                        var t = lstbx_TextureUsages.SelectedItem as Tuple<int, int, bool, bool>;
+                        FileKey = t.Item1;
+                    }
+                    else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
+                    {
+                        var a = lstbx_AnimUsages.SelectedItem as Tuple<int, int, bool>;
+                        FileKey = a.Item1;
+
+                    }
+                    else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
+                    {
+                        var ps = lstbx_PSUsages.SelectedItem as Tuple<int, int, bool, bool>;
+                        FileKey = ps.Item1;
+                    }
+                    else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
+                    {
+                        var sf = (Tuple<int, int, bool>)lstbx_GUIUsages.SelectedItem;
+                        FileKey = sf.Item1;
+                    }
+                    else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
+                    {
+                        FileKey = FileListExtended.FindIndex(f => f.Item1 == CurrentConvo.Item2);
+                    }
+                    else if (lstbx_Files.SelectedIndex >= 0 && currentView == 0)
+                    {
+                        foreach (var fr in lstbx_Files.SelectedItems)
+                        {
+                            var fileref = (Tuple<string, string>)fr;
+                            FileKey = FileListExtended.IndexOf(fileref);
+                            if (!CustomFileList.ContainsKey(FileKey))
+                            {
+                                var file = FileListExtended[FileKey];
+                                CustomFileList.Add(FileKey, $"{file.Item1} {file.Item2}");
+                            }
+                        }
+                        FileKey = -1;
+                    }
+                    if (!expander_CustomFiles.IsExpanded)
+                        expander_CustomFiles.IsExpanded = true;
+                    if (FileKey >= 0 && !CustomFileList.ContainsKey(FileKey))
+                    {
+                        var file = FileListExtended[FileKey];
+                        CustomFileList.Add(FileKey, $"{file.Item1} {file.Item2}");
+                    }
+                    break;
+                case "Remove":
+                    if (lstbx_CustomFiles.SelectedIndex >= 0 && currentView == 0)
+                    {
+                        var cf = (KeyValuePair<int, string>)lstbx_CustomFiles.SelectedItem;
+                        FileKey = cf.Key;
+                    }
+                    if(FileKey >= 0 && CustomFileList.ContainsKey(FileKey))
+                        CustomFileList.Remove(FileKey);
+                    break;
+                case "Clear":
+                    CustomFileList.Clear();
+                    break;
+                default:
+                    break;
+            }
+
         }
         #endregion
 
