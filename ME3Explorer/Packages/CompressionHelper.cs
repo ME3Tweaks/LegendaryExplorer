@@ -478,7 +478,7 @@ namespace ME3Explorer.Packages
                     //Debug.WriteLine($"Extract 0x{datasize:X8} bytes starting from 0x{chunkTableStart:X8}");
                     var bmsDatapath = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.bin";
                     File.WriteAllBytes(bmsDatapath, c.Compressed);
-                    c.Uncompressed = QuickBMSDecompress(bmsDatapath, "XboxLZX", true);
+                    c.Uncompressed = QuickBMSDecompress(bmsDatapath, "XboxLZX.bms", true);
                     if (c.Uncompressed.Length != c.uncompressedSize)
                         Debug.Write("WRONG LENGTH DECOMPRESSED");
                     c.header = h;
