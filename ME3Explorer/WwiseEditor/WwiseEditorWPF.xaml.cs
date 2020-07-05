@@ -647,7 +647,7 @@ namespace ME3Explorer.WwiseEditor
 
         public void RefreshView()
         {
-            saveView(false);
+            //saveView(false);
             LoadBank(CurrentExport, false);
         }
 

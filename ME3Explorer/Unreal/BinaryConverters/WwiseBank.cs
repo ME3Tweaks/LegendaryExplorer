@@ -379,33 +379,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 uint id = sc.ms.ReadUInt32();
                 return type switch
                 {
-                    HIRCType.SoundSXFSoundVoice => new SoundSFXVoice
-                    {
-                        Type = type,
-                        ID = id,
-                        Unk1 = sc.ms.ReadUInt32(),
-                        State = (SoundState)sc.ms.ReadUInt32(),
-                        AudioID = sc.ms.ReadUInt32(),
-                        SourceID = sc.ms.ReadUInt32(),
-                        SoundType = (SoundType)sc.ms.ReadByte(),
-                        unparsed = sc.ms.ReadBytes(len - 21)
-                    },
-                    HIRCType.Event => new Event
-                    {
-                        Type = type,
-                        ID = id,
-                        EventActions = new List<uint>(Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => sc.ms.ReadUInt32()))
-                    },
-                    HIRCType.EventAction => new EventAction
-                    {
-                        Type = type,
-                        ID = id,
-                        Scope = (EventActionScope)sc.ms.ReadByte(),
-                        ActionType = (EventActionType)sc.ms.ReadByte(),
-                        Unk1 = sc.ms.ReadUInt16(),
-                        ReferencedObjectID = sc.ms.ReadUInt32(),
-                        unparsed = sc.ms.ReadBytes(len - 12)
-                    },
+                    HIRCType.SoundSXFSoundVoice => SoundSFXVoice.Create(sc, id, len),
+                    HIRCType.Event => Event.Create(sc, id),
+                    HIRCType.EventAction => EventAction.Create(sc, id, len),
                     _ => new HIRCObject
                     {
                         Type = type,
@@ -416,6 +392,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
 
             public virtual byte[] ToBytes(MEGame game)
+            {
+                MemoryStream ms = WriteHIRCObjectHeader(game);
+                ms.WriteBytes(unparsed);
+                return ms.ToArray();
+            }
+
+            protected MemoryStream WriteHIRCObjectHeader(MEGame game)
             {
                 var ms = new MemoryStream();
                 if (game == MEGame.ME3)
@@ -429,8 +412,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
                 ms.WriteInt32(DataLength);
                 ms.WriteUInt32(ID);
-                ms.WriteBytes(unparsed);
-                return ms.ToArray();
+                return ms;
             }
 
             public virtual HIRCObject Clone()
@@ -447,31 +429,49 @@ namespace ME3Explorer.Unreal.BinaryConverters
             public SoundState State;  
             public uint AudioID;
             public uint SourceID;
+            public int UnkType;
+            public int UnkPrefetchLength;
             public SoundType SoundType; //0=SFX, 1=Voice
 
-            public override int DataLength => unparsed.Length + 21;
+            private int ParsedLength => 21 + (State == SoundState.Streamed ? 0 : 8);
+            public override int DataLength => unparsed.Length + ParsedLength;
 
             public override byte[] ToBytes(MEGame game)
             {
-                var ms = new MemoryStream();
-                if (game == MEGame.ME3)
-                {
-                    ms.WriteByte((byte)Type);
-                }
-                else
-                {
-                    ms.WriteInt32((byte)Type);
-                }
-
-                ms.WriteInt32(DataLength);
-                ms.WriteUInt32(ID);
+                MemoryStream ms = WriteHIRCObjectHeader(game);
                 ms.WriteUInt32(Unk1);
                 ms.WriteUInt32((uint)State);
                 ms.WriteUInt32(AudioID);
                 ms.WriteUInt32(SourceID);
+                if (State != SoundState.Streamed)
+                {
+                    ms.WriteInt32(UnkType);
+                    ms.WriteInt32(UnkPrefetchLength);
+                }
                 ms.WriteByte((byte)SoundType);
                 ms.WriteBytes(unparsed);
                 return ms.ToArray();
+            }
+
+            public static SoundSFXVoice Create(SerializingContainer2 sc, uint id, int len)
+            {
+                SoundSFXVoice sfxVoice = new SoundSFXVoice
+                {
+                    Type = HIRCType.SoundSXFSoundVoice,
+                    ID = id,
+                    Unk1 = sc.ms.ReadUInt32(),
+                    State = (SoundState)sc.ms.ReadUInt32(),
+                    AudioID = sc.ms.ReadUInt32(),
+                    SourceID = sc.ms.ReadUInt32()
+                };
+                if (sfxVoice.State != SoundState.Streamed)
+                {
+                    sfxVoice.UnkType = sc.ms.ReadInt32();
+                    sfxVoice.UnkPrefetchLength = sc.ms.ReadInt32();
+                }
+                sfxVoice.SoundType = (SoundType)sc.ms.ReadByte();
+                sfxVoice.unparsed = sc.ms.ReadBytes(len - sfxVoice.ParsedLength);
+                return sfxVoice;
             }
         }
 
@@ -498,18 +498,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             public override byte[] ToBytes(MEGame game)
             {
-                var ms = new MemoryStream();
-                if (game == MEGame.ME3)
-                {
-                    ms.WriteByte((byte)Type);
-                }
-                else
-                {
-                    ms.WriteInt32((byte)Type);
-                }
-
-                ms.WriteInt32(DataLength);
-                ms.WriteUInt32(ID);
+                MemoryStream ms = WriteHIRCObjectHeader(game);
                 ms.WriteInt32(EventActions.Count);
                 foreach (uint eventAction in EventActions)
                 {
@@ -524,6 +513,13 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 clone.EventActions = EventActions.Clone();
                 return clone;
             }
+            public static Event Create(SerializingContainer2 sc, uint id) =>
+                new Event
+                {
+                    Type = HIRCType.Event,
+                    ID = id,
+                    EventActions = new List<uint>(Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => sc.ms.ReadUInt32()))
+                };
         }
 
         public enum EventActionScope : byte
@@ -549,18 +545,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
             public override byte[] ToBytes(MEGame game)
             {
-                var ms = new MemoryStream();
-                if (game == MEGame.ME3)
-                {
-                    ms.WriteByte((byte)Type);
-                }
-                else
-                {
-                    ms.WriteInt32((byte)Type);
-                }
-
-                ms.WriteInt32(DataLength);
-                ms.WriteUInt32(ID);
+                MemoryStream ms = WriteHIRCObjectHeader(game);
                 ms.WriteByte((byte)Scope);
                 ms.WriteByte((byte)ActionType);
                 ms.WriteUInt16(Unk1);
@@ -568,6 +553,17 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 ms.WriteBytes(unparsed);
                 return ms.ToArray();
             }
+            public static EventAction Create(SerializingContainer2 sc, uint id, int len) =>
+                new EventAction
+                {
+                    Type = HIRCType.EventAction,
+                    ID = id,
+                    Scope = (EventActionScope)sc.ms.ReadByte(),
+                    ActionType = (EventActionType)sc.ms.ReadByte(),
+                    Unk1 = sc.ms.ReadUInt16(),
+                    ReferencedObjectID = sc.ms.ReadUInt32(),
+                    unparsed = sc.ms.ReadBytes(len - 12)
+                };
         }
     }
 
