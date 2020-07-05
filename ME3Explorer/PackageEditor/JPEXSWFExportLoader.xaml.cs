@@ -77,18 +77,63 @@ namespace ME3Explorer.PackageEditor
 
         private bool JPEXExportFileExists() => CurrentLoadedExport != null && File.Exists(Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf"));
 
+        /// <summary>
+        /// Assets commonly referenced by swf files
+        /// </summary>
+        private static Dictionary<(string, string), string> ME3SharedAssets = new Dictionary<(string infilename, string outfilename), string>
+        {
+            {("PC_SharedAssets","PC_SharedAssets"), "Startup.pcc"},
+            {("Xbox_ControllerIcons","Xbox_ControllerIcons"), "Startup.pcc"},
+            {("gfxfonts", "fonts/gfxfontlib"), "SFXGUI_Fonts.pcc"}
+        };
+
+        private void extractSwf(ExportEntry export, string destination)
+        {
+            Debug.WriteLine($"Extracting {export.InstancedFullPath} to {destination}");
+            var props = export.GetProperties();
+            string dataPropName = export.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
+            byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).bytes;
+            File.WriteAllBytes(destination, data);
+        }
 
         private void OpenExportInJPEX()
         {
             try
             {
-                var props = CurrentLoadedExport.GetProperties();
-                string dataPropName = CurrentLoadedExport.ClassName == "GFxMovieInfo" ? "RawData" : "Data";
+                // Get additional assets used by swf
+                Dictionary<(string infile, string outfile), string> sharedAssets = null;
+                switch (CurrentLoadedExport.Game)
+                {
+                    case MEGame.ME3:
+                        sharedAssets = ME3SharedAssets;
+                        break;
+                }
+                //if game is not installed this will probably fail
+                var loadedFiles = MELoadedFiles.GetAllFiles(CurrentLoadedExport.Game).ToList();
 
-                byte[] data = props.GetProp<ImmutableByteArrayProperty>(dataPropName).bytes;
+                if (sharedAssets != null)
+                {
+                    foreach (var asset in sharedAssets)
+                    {
+                        if (asset.Key.infile == CurrentLoadedExport.ObjectName.Name) continue; //don't extract if we're opening an asset
+                        var packageF = loadedFiles.FirstOrDefault(x => Path.GetFileName(x) == asset.Value);
+                        if (packageF != null)
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(packageF);
+                            var export = package.Exports.FirstOrDefault(x => x.ObjectName.Name == asset.Key.infile);
+                            if (export != null)
+                            {
+                                // Extract asset to same path as our destination SWF
+                                var outfile = Path.Combine(Path.GetTempPath(), asset.Key.outfile + ".swf");
+                                Directory.CreateDirectory(Path.GetDirectoryName(outfile)); //some items must be in subfolder
+                                extractSwf(export, outfile);
+                            }
+                        }
+                    }
+                }
+
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".swf");
-
-                File.WriteAllBytes(writeoutPath, data);
+                extractSwf(CurrentLoadedExport, writeoutPath);
 
                 Process process = new Process
                 {
