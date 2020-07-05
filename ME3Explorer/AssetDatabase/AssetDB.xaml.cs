@@ -167,7 +167,10 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
-        public Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string> CustomFileList { get; } = new Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string>(); //FileKey, filename
+        public Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string> CustomFileList { get; } = new Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string>(); //FileKey, filename<space>Dir
+        public const string CustomListDesc = "Custom File Lists allow the database to be filtered so only assets that are in certain files or groups of files are shown. Lists can be saved/reloaded.";
+        private bool _isFilteredByFiles;
+        public bool IsFilteredByFiles { get => _isFilteredByFiles; set => SetProperty(ref _isFilteredByFiles, value); }
         public ICommand GenerateDBCommand { get; set; }
         public ICommand SaveDBCommand { get; set; }
         public ICommand SwitchMECommand { get; set; }
@@ -696,6 +699,8 @@ namespace ME3Explorer.AssetDatabase
             CurrentDataBase.Lines.ClearEx();
             FileListExtended.ClearEx();
             CustomFileList.Clear();
+            IsFilteredByFiles = false;
+            expander_CustomFiles.IsExpanded = false;
             SpeakerList.ClearEx();
             FilterBox.Clear();
             Filter();
@@ -1530,7 +1535,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !cr.ClassUsages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !cr.ClassUsages.Select(c => c.FileKey).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1596,7 +1601,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !mr.MaterialUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.MaterialUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1618,7 +1623,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !mr.MeshUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !mr.MeshUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1640,7 +1645,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !ar.AnimUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ar.AnimUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1662,7 +1667,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !ps.PSUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !ps.PSUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1808,7 +1813,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = false;
             }
-            if(showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() &&!tr.TextureUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if(showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() &&!tr.TextureUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -1822,7 +1827,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
             }
-            if (showthis && menu_fltrCustFiles.IsChecked && !CustomFileList.IsEmpty() && !sf.GUIUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
+            if (showthis && IsFilteredByFiles && !CustomFileList.IsEmpty() && !sf.GUIUsages.Select(tuple => tuple.Item1).Intersect(CustomFileList.Keys).Any())
             {
                 showthis = false;
             }
@@ -2158,15 +2163,15 @@ namespace ME3Explorer.AssetDatabase
                     }
                     break;
                 case "CustFiles":
-                    if (!menu_fltrCustFiles.IsChecked)
+                    if (IsFilteredByFiles)
                     {
-                        menu_fltrCustFiles.IsChecked = true;
+                        btn_custFilter.Content = "Filtered";
                         expander_CustomFiles.IsExpanded = true;
                     }
                     else
                     {
-                        menu_fltrCustFiles.IsChecked = false;
-                        if(CustomFileList.IsEmpty())
+                        btn_custFilter.Content = "Filter";
+                        if (CustomFileList.IsEmpty())
                             expander_CustomFiles.IsExpanded = false;
                     }
                     break;
@@ -2264,7 +2269,6 @@ namespace ME3Explorer.AssetDatabase
             e.Handled = true;
             Filter();
         }
-
         private void SaveCustomFileList()
         {
             if (CustomFileList.IsEmpty())
@@ -2279,7 +2283,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
-                FileName = $"ADB_{currentGame}_*",
+                FileName = $"ADB_{currentGame}_*.txt",
                 AddExtension = true
             };
             if (d.ShowDialog() == true)
@@ -2300,7 +2304,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
-                FileName = $"ADB_{currentGame}_*",
+                FileName = $"ADB_{currentGame}_*.txt",
                 AddExtension = true
 
             };
@@ -2314,7 +2318,7 @@ namespace ME3Explorer.AssetDatabase
                     nameslist.Add(name);
                 }
 
-                var cdlg = MessageBox.Show($"Group file read:\n\nGame: {currentGame}\nFile: {d.FileName}\nn\nAdd these files?", "Asset Database", MessageBoxButton.YesNo);
+                var cdlg = MessageBox.Show($"Replace current list with these names:\n{String.Join("\n",nameslist)}", "Asset Database", MessageBoxButton.YesNo);
                 if (cdlg == MessageBoxResult.No)
                     return;
                 CustomFileList.Clear();
@@ -2340,12 +2344,10 @@ namespace ME3Explorer.AssetDatabase
                 }
             }
         }
-      
         private void EditCustomFileList(object obj)
         {
             var action = obj as string;
             int FileKey = -1;
-
             switch (action)
             {
                 case "Add":
@@ -2411,6 +2413,13 @@ namespace ME3Explorer.AssetDatabase
                         var file = FileListExtended[FileKey];
                         CustomFileList.Add(FileKey, $"{file.Item1} {file.Item2}");
                     }
+                    SortedDictionary<int, string> orderlist = new SortedDictionary<int, string>();
+                    foreach (KeyValuePair<int, string> file in CustomFileList)
+                    {
+                        orderlist.Add(file.Key,file.Value);
+                    }
+                    CustomFileList.Clear();
+                    CustomFileList.AddRange(orderlist);
                     break;
                 case "Remove":
                     if (lstbx_CustomFiles.SelectedIndex >= 0 && currentView == 0)
@@ -2427,7 +2436,7 @@ namespace ME3Explorer.AssetDatabase
                 default:
                     break;
             }
-
+            
         }
         #endregion
 

@@ -62,7 +62,7 @@
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                         <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
                         <Separator/>
-                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles"  ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True"/>
+                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsChecked="{Binding IsFilteredByFiles}"/>
                         <MenuItem Header="Filelist Actions">
                             <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
                             <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current filelist."/>
@@ -173,19 +173,48 @@
                                 <TextBlock Text="All game files (right click to open in various tools)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
                                 <Expander Name="expander_CustomFiles" DockPanel.Dock="Right" MaxWidth="300" ExpandDirection="Left" IsExpanded="False" Background="Orange" Padding="2" >
                                     <Expander.Header>
-                                        <TextBlock Text="Custom File List" Background="Orange" VerticalAlignment="Stretch" TextAlignment="Center" Padding="3" ToolTip="Custom FileList" DockPanel.Dock="Right">
+                                        <TextBlock Text="Custom File List" Background="Orange" VerticalAlignment="Stretch" TextAlignment="Center" Padding="3" DockPanel.Dock="Right" ToolTip="{x:Static local:AssetDB.CustomListDesc}">
                                             <TextBlock.LayoutTransform>
                                                 <RotateTransform Angle="-90"/>
                                             </TextBlock.LayoutTransform>
                                         </TextBlock>
                                     </Expander.Header>
-                                    <SharedUI:ListBoxScroll x:Name="lstbx_CustomFiles" MinWidth="200" ItemsSource="{Binding CustomFileList}" Grid.Row="1" DockPanel.Dock="Left">
-                                        <SharedUI:ListBoxScroll.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Remove From Custom List" Command="{Binding EditFileListCommand}" CommandParameter="Remove" ToolTip="Remove this from Custom File List" />
-                                            </ContextMenu>
-                                        </SharedUI:ListBoxScroll.ContextMenu>
-                                    </SharedUI:ListBoxScroll>
+                                    <DockPanel LastChildFill="True" DockPanel.Dock="Left">
+                                        <StackPanel DockPanel.Dock="Top">
+                                            <Border BorderBrush="Black" BorderThickness="1" >
+                                                <TextBlock Padding="3" FontSize="11" TextAlignment="Center" Background="AliceBlue" TextWrapping="WrapWithOverflow">
+                                                <Run Text="{x:Static local:AssetDB.CustomListDesc}"/>
+                                                </TextBlock>
+                                            </Border>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="25"/>
+                                                </Grid.RowDefinitions>
+                                                <ToggleButton x:Name="btn_custFilter" Content="Filter" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." MinWidth="20" ClickMode="Release" IsChecked="{Binding IsFilteredByFiles}" Grid.Column="0"/>
+                                                <Button Content="Load" MaxHeight="40" Command="{Binding LoadFileListCommand}" ToolTip="Load custom file list" ClickMode="Release" Grid.Column="1"/>
+                                                <Button Content="Save" MaxHeight="40" Command="{Binding SaveFileListCommand}" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="2"/>
+                                                <Button Content="Clear" MaxHeight="40" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Save custom file list" ClickMode="Release" Grid.Column="3"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <SharedUI:ListBoxScroll x:Name="lstbx_CustomFiles" ItemsSource="{Binding CustomFileList}" MinWidth="200" Grid.Row="1" DockPanel.Dock="Bottom">
+                                            <SharedUI:ListBoxScroll.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Remove From Custom List" Command="{Binding EditFileListCommand}" CommandParameter="Remove" ToolTip="Remove this from Custom File List" />
+                                                </ContextMenu>
+                                            </SharedUI:ListBoxScroll.ContextMenu>
+                                            <SharedUI:ListBoxScroll.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Value}"/>
+                                                </DataTemplate>
+                                            </SharedUI:ListBoxScroll.ItemTemplate>
+                                        </SharedUI:ListBoxScroll>
+                                    </DockPanel>
                                 </Expander>
                                 <ListView x:Name="lstbx_Files" DockPanel.Dock="Bottom" MinWidth="300" ItemsSource="{Binding Path=FileListExtended}" GridViewColumnHeader.Click="views_ColumnHeader_Click">
                                     <ListView.View>
@@ -673,6 +702,7 @@
                                         </TextBlock>
                                     </DataTemplate>
                                 </SharedUI:ListBoxScroll.ItemTemplate>
+                                
                                 <SharedUI:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Style.Triggers>
