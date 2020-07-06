@@ -4082,8 +4082,16 @@ namespace ME3Explorer.Unreal
 
             int index = (Int32)EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            int skip = 0;
+            if (memory[start + 5] == 1)
+            {
+                skip = (Int32)EndianReader.ToInt16(memory, start + 6, export.FileRef.Endian);
+            }
 
-            t.text = "If(" + export.FileRef.getObjectName(index) + ")\n\t{\n";
+            t.text = "If(" + export.FileRef.getObjectName(index) + ")";
+            if (skip > 0)
+                t.text += $" // else jump to 0x{skip:X4}";
+            t.text += "\n\t{\n";
             int pos = start + 8;
             Token a = ReadToken(pos, export);
             t.inPackageReferences.AddRange(a.inPackageReferences);
