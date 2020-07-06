@@ -62,13 +62,12 @@
                         <MenuItem Header="Go to SuperClass" Command="{Binding GoToSuperclassCommand}" ToolTip="Go to the superclass for more properties."/>
                         <MenuItem Header="Re-save Database without empty lines" Name="menu_SaveXEmptyLines" Command="{Binding SaveDBCommand}" ToolTip="This will save the Database without the lines with no TLK reference." IsEnabled="False"/>
                         <Separator/>
-                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsChecked="{Binding IsFilteredByFiles}"/>
+                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=IsFilteredByFiles, Mode=TwoWay}"/>
                         <MenuItem Header="Filelist Actions">
                             <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
                             <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current filelist."/>
                             <MenuItem Header="Clear" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Clear the current filelist."/>
                         </MenuItem>
-
                         <Separator/>
                         <MenuItem Header="Filter Animations">
                             <MenuItem Name="menu_fltrAnim" Header="Only Animations" Command="{Binding FilterAnimsCommand}" CommandParameter="Anim" ToolTip="Show animsequences only." StaysOpenOnClick="True"/>
