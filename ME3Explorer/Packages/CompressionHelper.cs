@@ -588,17 +588,17 @@ namespace ME3Explorer.Packages
             proc.Start();
             proc.WaitForExit();
             var outputFilename = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(bmsDataPath) + ".decompressed");
-            if (isTemp)
+            //if (isTemp)
                 //File.Delete(bmsDataPath); //intermediate
 
-            if (File.Exists(outputFilename))
-            {
-                var decompressed = File.ReadAllBytes(outputFilename);
-                if (isTemp)
-                    File.Delete(outputFilename);
-                return decompressed;
-            }
-
+                if (File.Exists(outputFilename))
+                {
+                    var decompressed = File.ReadAllBytes(outputFilename);
+                    if (isTemp)
+                        File.Delete(outputFilename);
+                    return decompressed;
+                }
+            Debug.WriteLine("Null QuickBMS decompression!");
             return null;
         }
 
