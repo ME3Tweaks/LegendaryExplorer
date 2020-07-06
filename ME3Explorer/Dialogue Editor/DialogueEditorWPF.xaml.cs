@@ -1668,9 +1668,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 return; //nothing is loaded
             }
-            List<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names).ToList();
+            List<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.HasFlag(PackageChange.Export)).ToList();
 
             if (SelectedConv != null && CurrentLoadedExport.ClassName != "BioConversation")
             {
@@ -1689,9 +1687,9 @@ namespace ME3Explorer.Dialogue_Editor
                 return;
             }
 
-            List<int> updatedConvos = relevantUpdates.Select(x => x.index).Where(update => Pcc.getExport(update).ClassName == "BioConversation").ToList();
+            List<int> updatedConvos = relevantUpdates.Select(x => x.Index).Where(update => Pcc.GetEntry(update)?.ClassName == "BioConversation").ToList();
 
-            if (relevantUpdates.Select(x => x.index).Any(update => Pcc.getExport(update).ClassName == "FaceFXAnimSet"))
+            if (relevantUpdates.Select(x => x.Index).Any(update => Pcc.GetEntry(update)?.ClassName == "FaceFXAnimSet"))
             {
                 FFXAnimsets.Clear(); //REBUILD ANIMSET LIST IF NEW ONES and Rerun parsing of speakers.
                 foreach (var exp in Pcc.Exports.Where(exp => exp.ClassName == "FaceFXAnimSet"))
@@ -1699,12 +1697,12 @@ namespace ME3Explorer.Dialogue_Editor
                     FFXAnimsets.Add(exp);
                 }
 
-                if (SelectedConv != null) updatedConvos.Add(SelectedConv.Export.Index);
+                if (SelectedConv != null) updatedConvos.Add(SelectedConv.Export.UIndex);
             }
 
             if (SelectedDialogueNode != null) //Update any changes to live dialogue node
             {
-                if (relevantUpdates.Select(x => x.index).Any(update => Pcc.getExport(update) == SelectedDialogueNode.Interpdata))
+                if (relevantUpdates.Select(x => x.Index).Any(update => Pcc.GetEntry(update) == SelectedDialogueNode.Interpdata))
                 {
                     if (SelectedDialogueNode.Interpdata.ClassName == "Interpdata") //If changed??
                     {
@@ -1727,10 +1725,12 @@ namespace ME3Explorer.Dialogue_Editor
             int sSelectedIdx = Speakers_ListBox.SelectedIndex;
             foreach (var uxp in updatedConvos)
             {
-                var exp = Pcc.getExport(uxp);
-                int index = Conversations.FindIndex(i => i.ExportUID == exp.UIndex);
+                int index = Conversations.FindIndex(i => i.ExportUID == uxp);
                 Conversations.RemoveAt(index);
-                Conversations.Insert(index, new ConversationExtended(exp));
+                if (Pcc.GetEntry(uxp) is ExportEntry exp)
+                {
+                    Conversations.Insert(index, new ConversationExtended(exp));
+                }
             }
 
             FirstParse();
@@ -2737,7 +2737,7 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
 
-            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.Index}{objectName}.JSON");
+            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.UIndex - 1}{objectName}.JSON");
         }
 
         private void Speakers_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

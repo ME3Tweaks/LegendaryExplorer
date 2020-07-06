@@ -1777,15 +1777,12 @@ namespace ME3Explorer.Pathfinding_Editor
         #region EditNodes
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            List<PackageChange> changes = updates.Select(x => x.change).ToList();
-            bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
-            bool exportsAdded = changes.Contains(PackageChange.ExportAdd);
+            List<PackageChange> changes = updates.Select(x => x.Change).ToList();
+            bool hasExportNonDataChanges = changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
 
             var activeNode = ActiveNodes_ListBox.SelectedItem as ExportEntry;
-            //we might need to identify parent depths and add those first
-            List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
-            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x => x.index).OrderBy(x => x).ToList();
-            if (exportsAdded || exportNonDataChanges) //may optimize by checking if chagnes include anything we care about
+
+            if (hasExportNonDataChanges) //may optimize by checking if chagnes include anything we care about
             {
                 //Do a full refresh
                 ExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as ExportEntry;
@@ -1794,14 +1791,14 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
 
-            var loadedincices = ActiveNodes.Select(x => x.Index).ToList(); //Package updates are 0 based
-            var nodesToUpdate = updates.Where(x => x.change == PackageChange.ExportData && loadedincices.Contains(x.index)).Select(x => x.index).ToList();
+            List<int> loadedincices = ActiveNodes.Select(exp => exp.UIndex).ToList();
+            List<int> nodesToUpdate = updates.Where(x => x.Change == PackageChange.ExportData && loadedincices.Contains(x.Index)).Select(x => x.Index).ToList();
 
             if (nodesToUpdate.Count > 0)
             {
                 foreach (var node in ActiveNodes)
                 {
-                    if (nodesToUpdate.Contains(node.Index))
+                    if (nodesToUpdate.Contains(node.UIndex))
                     {
                         PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == node.UIndex);
                         if (s is SplineActorNode splineActorNode)
@@ -3840,7 +3837,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                                 InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
                                 smcaindex++;
-                                Debug.WriteLine($"{exp.Index} {smcaindex} SMAC Flipping {x},{y},{z}");
+                                Debug.WriteLine($"{exp.UIndex} {smcaindex} SMAC Flipping {x},{y},{z}");
                             }
                             exp.Data = data;
                         }
@@ -3854,7 +3851,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
                                 FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
                                 FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.Index} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
                                 xProp.Value *= -1;
                                 yProp.Value *= -1;

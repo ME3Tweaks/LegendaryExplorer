@@ -233,13 +233,13 @@ namespace ME3Explorer.Unreal
         }
 
         #region Generating
-        private static ClassInfo generateClassInfo(int index, UDKPackage pcc)
+        private static ClassInfo generateClassInfo(int uIndex, UDKPackage pcc)
         {
             ClassInfo info = new ClassInfo
             {
-                baseClass = pcc.Exports[index].SuperClassName,
-                exportIndex = index,
-                ClassName = pcc.Exports[index].ObjectName
+                baseClass = pcc.GetUExport(uIndex).SuperClassName,
+                ExportUIndex = uIndex ,
+                ClassName = pcc.GetUExport(uIndex).ObjectName
             };
             if (pcc.FilePath.Contains("BIOGame"))
             {
@@ -252,7 +252,7 @@ namespace ME3Explorer.Unreal
 
             foreach (ExportEntry entry in pcc.Exports)
             {
-                if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
+                if (entry.idxLink == uIndex && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
@@ -388,7 +388,7 @@ namespace ME3Explorer.Unreal
         internal static ClassInfo generateClassInfo(ExportEntry export)
         {
             if (!IsLoaded) loadfromJSON();
-            return generateClassInfo(export.Index, export.FileRef as UDKPackage);
+            return generateClassInfo(export.UIndex, export.FileRef as UDKPackage);
         }
 
         #endregion

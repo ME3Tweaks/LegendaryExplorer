@@ -33,9 +33,6 @@ namespace ME3Explorer
         [STAThread]
         public static void Main()
         {
-            //Improve startup time by temporarily disabling garbage collector
-            //This causes a ~600mb spike in memory usage during startup
-            GC.TryStartNoGCRegion(250_000_000);
             UnblockLibFiles();
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {

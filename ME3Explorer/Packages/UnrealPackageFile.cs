@@ -84,7 +84,7 @@ namespace ME3Explorer.Packages
                 namesAdded++;
                 NameCount = names.Count;
 
-                updateTools(PackageChange.Names, NameCount - 1);
+                updateTools(PackageChange.NameAdd, NameCount - 1);
                 OnPropertyChanged(nameof(NameCount));
             }
         }
@@ -94,7 +94,7 @@ namespace ME3Explorer.Packages
             if (IsName(idx))
             {
                 names[idx] = newName;
-                updateTools(PackageChange.Names, idx);
+                updateTools(PackageChange.NameEdit, idx);
             }
         }
 
@@ -108,7 +108,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (String.Compare(nameToFind, GetNameEntry(i)) == 0)
+                if (string.Compare(nameToFind, GetNameEntry(i)) == 0)
                     return i;
             }
             return -1;
@@ -159,11 +159,10 @@ namespace ME3Explorer.Packages
             exports.Add(exportEntry);
             ExportCount = exports.Count;
 
-            updateTools(PackageChange.ExportAdd, ExportCount - 1);
+            updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             OnPropertyChanged(nameof(ExportCount));
         }
 
-        public ExportEntry getExport(int index) => exports[index];
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
 
         public bool TryGetUExport(int uIndex, out ExportEntry export)
@@ -188,7 +187,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="uindex"></param>
         /// <returns></returns>
-        public bool IsImport(int uindex) => (uindex < 0 && uindex > (int)(1 << 31) && Math.Abs(uindex) <= ImportCount);
+        public bool IsImport(int uindex) => (uindex < 0 && uindex > int.MinValue && Math.Abs(uindex) <= ImportCount);
 
         /// <summary>
         /// Adds an import to the tree. This method is used to add new imports.
@@ -206,7 +205,7 @@ namespace ME3Explorer.Packages
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
 
-            updateTools(PackageChange.ImportAdd, ImportCount - 1);
+            updateTools(PackageChange.ImportAdd, importEntry.UIndex);
             OnPropertyChanged(nameof(ImportCount));
         }
 
@@ -315,7 +314,7 @@ namespace ME3Explorer.Packages
 
                 lastImport.PropertyChanged -= importChanged;
                 imports.RemoveAt(i);
-                updateTools(PackageChange.ImportRemove, i);
+                updateTools(PackageChange.ImportRemove, lastImport.UIndex);
             }
             if (ImportCount != imports.Count)
             {
@@ -335,7 +334,7 @@ namespace ME3Explorer.Packages
 
                 lastExport.PropertyChanged -= importChanged;
                 exports.RemoveAt(i);
-                updateTools(PackageChange.ExportRemove, i);
+                updateTools(PackageChange.ExportRemove, lastExport.UIndex);
             }
             if (ExportCount != exports.Count)
             {
@@ -347,7 +346,7 @@ namespace ME3Explorer.Packages
             {
                 trashPackage.PropertyChanged -= importChanged;
                 exports.Remove(trashPackage);
-                updateTools(PackageChange.ExportRemove, ExportCount - 1);
+                updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
             }
             if (ExportCount != exports.Count)
             {
@@ -480,10 +479,10 @@ namespace ME3Explorer.Packages
                 switch (e.PropertyName)
                 {
                     case nameof(ExportEntry.DataChanged):
-                        updateTools(PackageChange.ExportData, exp.Index);
+                        updateTools(PackageChange.ExportData, exp.UIndex);
                         break;
                     case nameof(ExportEntry.HeaderChanged):
-                        updateTools(PackageChange.ExportHeader, exp.Index);
+                        updateTools(PackageChange.ExportHeader, exp.UIndex);
                         break;
                 }
             }
@@ -494,7 +493,7 @@ namespace ME3Explorer.Packages
             if (sender is ImportEntry imp
              && e.PropertyName == nameof(ImportEntry.HeaderChanged))
             {
-                updateTools(PackageChange.Import, imp.Index);
+                updateTools(PackageChange.ImportHeader, imp.UIndex);
             }
         }
 
@@ -509,7 +508,7 @@ namespace ME3Explorer.Packages
             {
                 return;
             }
-            PackageUpdate update = new PackageUpdate { change = change, index = index };
+            PackageUpdate update = new PackageUpdate(change, index);
             bool isNewUpdate;
             lock (_updatelock)
             {
@@ -537,27 +536,28 @@ namespace ME3Explorer.Packages
                             updates = pendingUpdates.ToList();
                             pendingUpdates.Clear();
                         }
-                        var removedImports = updates.Where(u => u.change == PackageChange.ImportRemove).Select(u => u.index).ToList();
-                        var removedExports = updates.Where(u => u.change == PackageChange.ExportRemove).Select(u => u.index).ToList();
+                        var removedImports = updates.Where(u => u.Change == PackageChange.ImportRemove).Select(u => u.Index).ToList();
+                        var removedExports = updates.Where(u => u.Change == PackageChange.ExportRemove).Select(u => u.Index).ToList();
                         var pendingUpdatesList = new List<PackageUpdate>();
+                        //remove add/change updates for entries that have been removed
                         foreach (PackageUpdate upd in updates)
                         {
-                            switch (upd.change)
+                            switch (upd.Change)
                             {
                                 case PackageChange.ExportAdd:
                                 case PackageChange.ExportData:
                                 case PackageChange.ExportHeader:
                                 {
-                                    if (!removedExports.Contains(upd.index))
+                                    if (!removedExports.Contains(upd.Index))
                                     {
                                         pendingUpdatesList.Add(upd);
                                     }
                                     break;
                                 }
                                 case PackageChange.ImportAdd:
-                                case PackageChange.Import:
+                                case PackageChange.ImportHeader:
                                 {
-                                    if (!removedImports.Contains(upd.index))
+                                    if (!removedImports.Contains(upd.Index))
                                     {
                                         pendingUpdatesList.Add(upd);
                                     }

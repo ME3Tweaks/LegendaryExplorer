@@ -703,7 +703,7 @@ namespace ME3Explorer.Sequence_Editor
                         break;
                 }
 
-                JSONpath = $"{viewsPath}{CurrentFile}.#{export.Index}{objectName}.JSON";
+                JSONpath = $"{viewsPath}{CurrentFile}.#{export.UIndex - 1}{objectName}.JSON";
                 RefOrRefChild = false;
             }
         }
@@ -1176,11 +1176,9 @@ namespace ME3Explorer.Sequence_Editor
                 return; //nothing is loaded
             }
 
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.Index))
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
+            if (SelectedSequence != null && updatedExports.Contains(SelectedSequence.UIndex))
             {
                 //loaded sequence is no longer a sequence
                 if (!SelectedSequence.IsSequence())
@@ -1199,14 +1197,14 @@ namespace ME3Explorer.Sequence_Editor
                 return;
             }
 
-            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Index)).Any())
+            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.UIndex)).Any())
             {
                 RefreshView();
             }
 
             foreach (var i in updatedExports)
             {
-                if (Pcc.IsUExport(i + 1) && Pcc.getExport(i).IsSequence())
+                if (Pcc.IsUExport(i) && Pcc.GetUExport(i).IsSequence())
                 {
                     LoadSequences();
                     break;
@@ -1696,7 +1694,7 @@ namespace ME3Explorer.Sequence_Editor
                 ExportEntry clonedExport = cloneObject(obj.Export, SelectedSequence);
                 customSaveData.Add(new SaveData
                 {
-                    index = clonedExport.Index,
+                    index = clonedExport.UIndex - 1,
                     X = graphEditor.Camera.ViewCenterX,
                     Y = graphEditor.Camera.ViewCenterY
                 });
@@ -2002,7 +2000,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             customSaveData.Add(new SaveData
             {
-                index = exportToAdd.Index,
+                index = exportToAdd.UIndex - 1,
                 X = graphEditor.Camera.ViewCenterX,
                 Y = graphEditor.Camera.ViewCenterY
             });

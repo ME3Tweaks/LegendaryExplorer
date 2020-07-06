@@ -548,18 +548,16 @@ namespace ME3Explorer.Soundplorer
             }
 
             List<SoundplorerExport> bindedListAsCasted = BindedItemsList.Cast<SoundplorerExport>().ToList();
-            List<PackageChange> changes = updates.Select(x => x.change).ToList();
-            bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
-            bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
+            List<PackageChange> changes = updates.Select(x => x.Change).ToList();
 
-            var loadedIndexes = bindedListAsCasted.Where(x => x.Export != null).Select(y => y.Export.Index).ToList();
+            var loadedUIndexes = bindedListAsCasted.Where(x => x.Export != null).Select(y => y.Export.UIndex).ToList();
 
             List<SoundplorerExport> exportsRequiringReload = new List<SoundplorerExport>();
             foreach (PackageUpdate pc in updates)
             {
-                if (loadedIndexes.Contains(pc.index))
+                if (loadedUIndexes.Contains(pc.Index))
                 {
-                    SoundplorerExport sp = bindedListAsCasted.First(x => x.Export.Index == pc.index);
+                    SoundplorerExport sp = bindedListAsCasted.First(x => x.Export.UIndex == pc.Index);
                     exportsRequiringReload.Add(sp);
                 }
             }

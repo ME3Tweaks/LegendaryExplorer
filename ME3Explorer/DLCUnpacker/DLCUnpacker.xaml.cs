@@ -35,7 +35,7 @@ namespace ME3Explorer.DLCUnpacker
     /// <summary>
     /// Interaction logic for DLCUnpacker.xaml
     /// </summary>
-    public partial class DLCUnpacker : WPFBase
+    public partial class DLCUnpacker : NotifyPropertyChangedWindowBase
     {
         public ICommand UnpackDLCCommand { get; set; }
         public ICommand CancelUnpackCommand { get; set; }
@@ -459,11 +459,6 @@ namespace ME3Explorer.DLCUnpacker
             int totalFiles = (int)sfarsToUnpack.Sum(x => x.TotalFilesInDLC);
             int processedFiles = sfarsToUnpack.Sum(x => x.CurrentFilesProcessed);
             OverallProgressValue = (int)(100.0 * processedFiles) / totalFiles;
-        }
-
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            //This tool does not handle updates.
         }
 
         private void DLCUnpacker_Closing(object sender, CancelEventArgs e)

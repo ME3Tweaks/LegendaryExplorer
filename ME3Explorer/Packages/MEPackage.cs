@@ -19,32 +19,46 @@ namespace ME3Explorer.Packages
     [Flags]
     public enum PackageChange
     {
-        Export = 0b_000_001,
-        Import = 0b_000_010,
-        Names = 0b_000_100,
-        Add = 0b_001_000,
-        Remove = 0b_010_000,
-        Data = 0b_100_000,
-        Header = 0b_1_000_000,
-        ExportData = Export | Data,
-        ExportHeader = Export | Header,
-        ExportAdd = Export | Add,
-        ImportAdd = Import | Add,
-        ExportRemove = Export | Remove,
-        ImportRemove = Import | Remove
+        Export = 0x1,
+        Import = 0x2,
+        Name = 0x4,
+        Add = 0x8,
+        Remove = 0x10,
+        Data = 0x20,
+        Header = 0x40,
+        Entry = 0x80,
+        EntryAdd = Entry | Add,
+        EntryRemove = Entry | Remove,
+        EntryHeader = Entry | Header,
+        ExportData = Export | Data | Entry,
+        ExportHeader = Export | EntryHeader,
+        ImportHeader = Import | EntryHeader,
+        ExportAdd = Export | EntryAdd,
+        ImportAdd = Import | EntryAdd,
+        ExportRemove = Export | EntryRemove,
+        ImportRemove = Import | EntryRemove,
+        NameAdd = Name | Add,
+        NameRemove = Name | Remove,
+        NameEdit = Name | Data
     }
 
-    [DebuggerDisplay("PackageUpdate | {change} on index {index}")]
-    public struct PackageUpdate
+    [DebuggerDisplay("PackageUpdate | {Change} on index {Index}")]
+    public readonly struct PackageUpdate
     {
         /// <summary>
         /// Details on what piece of data has changed
         /// </summary>
-        public PackageChange change;
+        public readonly PackageChange Change;
         /// <summary>
-        /// 0-based index of what item has changed in this package -1 = import 0, 0 = export 0
+        /// index of what item has changed. Meaning depends on value of Change
         /// </summary>
-        public int index;
+        public readonly int Index;
+
+        public PackageUpdate(PackageChange change, int index)
+        {
+            this.Change = change;
+            this.Index = index;
+        }
     }
 
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable

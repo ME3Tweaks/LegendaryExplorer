@@ -47,12 +47,6 @@ namespace ME3Explorer
             Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
         }
 
-        public void LoadME3Package(string s)
-        {
-            UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
-        }
-
         protected void UnLoadMEPackage()
         {
             pcc?.Release(wpfWindow: this);

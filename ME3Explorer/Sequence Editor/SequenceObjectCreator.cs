@@ -124,7 +124,7 @@ namespace ME3Explorer.Sequence_Editor
                         if (File.Exists(filepath))
                         {
                             using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
-                            ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
+                            ExportEntry classExport = importPCC.GetUExport(classInfo.ExportUIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 

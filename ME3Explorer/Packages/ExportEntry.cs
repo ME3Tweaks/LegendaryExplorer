@@ -21,7 +21,7 @@ namespace ME3Explorer.Packages
 
         public MEGame Game => FileRef.Game;
 
-        public int Index { get; set; }
+        public int Index { private get; set; }
         public int UIndex => Index + 1;
 
         /// <summary>
@@ -41,10 +41,7 @@ namespace ME3Explorer.Packages
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
             var ms = new EndianReader(new MemoryStream()) { Endian = Endian.Native };
-            if (prePropBinary == null)
-            {
-                prePropBinary = new byte[4];
-            }
+            prePropBinary ??= new byte[4];
             ms.Writer.WriteFromBuffer(prePropBinary);
             if (!isClass)
             {

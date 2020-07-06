@@ -295,12 +295,10 @@ namespace ME3Explorer.Matinee
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.change == PackageChange.ExportAdd ||
-                                                                                       update.change == PackageChange.ExportData ||
-                                                                                       update.change == PackageChange.ExportHeader);
+            IEnumerable<PackageUpdate> exportUpdates = updates.Where(update => update.Change.HasFlag(PackageChange.Export));
             foreach (var update in exportUpdates)
             {
-                var changedExport = Pcc.getExport(update.index);
+                var changedExport = Pcc.GetUExport(update.Index);
 
                 if (InterpDataExports.Contains(changedExport)) //changes, as it already exists in our list
                 {

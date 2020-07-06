@@ -695,30 +695,32 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (updates.Any(update => update.change == PackageChange.ExportData && update.index == CurrentExport.Index)
+            if (updates.Any(update => update.Change == PackageChange.ExportData && update.Index == CurrentExport.UIndex)
              && Mesh3DViewer.CanParse(CurrentExport))
             {
                 CurrentExport = CurrentExport;//trigger propertyset stuff
             }
 
-            List<PackageUpdate> exportUpdates = updates.Where(upd => upd.change == PackageChange.ExportData || upd.change == PackageChange.ExportHeader ||
-                                                                     upd.change == PackageChange.ExportRemove || upd.change == PackageChange.ExportAdd).ToList();
+            List<PackageUpdate> exportUpdates = updates.Where(upd => upd.Change.HasFlag(PackageChange.Export)).ToList();
             bool shouldUpdateList = false;
             foreach (ExportEntry meshExport in MeshExports)
             {
-                if (exportUpdates.Any(upd => upd.index == meshExport.Index))
+                if (exportUpdates.Any(upd => upd.Index == meshExport.UIndex))
                 {
                     shouldUpdateList = true;
                     break;
                 }
             }
 
-            foreach (PackageUpdate update in exportUpdates)
+            if (!shouldUpdateList)
             {
-                if (!MeshExports.Contains(Pcc.GetEntry(update.index)))
+                foreach (PackageUpdate update in exportUpdates)
                 {
-                    shouldUpdateList = true;
-                    break;
+                    if (Pcc.GetEntry(update.Index) is ExportEntry exp && Mesh3DViewer.CanParse(exp))
+                    {
+                        shouldUpdateList = true;
+                        break;
+                    }
                 }
             }
 

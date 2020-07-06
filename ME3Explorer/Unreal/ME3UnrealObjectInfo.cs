@@ -106,7 +106,7 @@ namespace ME3Explorer.Unreal
                         if (File.Exists(filepath))
                         {
                             using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
-                            ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
+                            ExportEntry classExport = importPCC.GetUExport(info.ExportUIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry defaults = importPCC.GetUExport(classBin.Defaults);
 
@@ -659,7 +659,7 @@ namespace ME3Explorer.Unreal
                         {
                             using (IMEPackage importPCC = MEPackageHandler.OpenME3Package(filepath))
                             {
-                                var exportToRead = importPCC.GetUExport(info.exportIndex);
+                                var exportToRead = importPCC.GetUExport(info.ExportUIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
                                 PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), structName);
                                 foreach (var prop in defaults)
@@ -835,7 +835,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 22, //in ME3Resources.pcc
+                ExportUIndex = 22, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
@@ -849,7 +849,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 30, //in ME3Resources.pcc
+                ExportUIndex = 30, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
@@ -863,7 +863,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 40, //in ME3Resources.pcc
+                ExportUIndex = 40, //in ME3Resources.pcc
             };
             newSequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
@@ -872,7 +872,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 45, //in ME3Resources.pcc
+                ExportUIndex = 45, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("PrePivot", new PropertyInfo(PropertyType.StructProperty, "Vector")),
@@ -885,7 +885,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 49, //in ME3Resources.pcc
+                ExportUIndex = 49, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("MaterialIndex", new PropertyInfo(PropertyType.IntProperty)),
@@ -899,7 +899,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 57, //in ME3Resources.pcc
+                ExportUIndex = 57, //in ME3Resources.pcc
             };
             newSequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
@@ -908,7 +908,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 61, //in ME3Resources.pcc
+                ExportUIndex = 61, //in ME3Resources.pcc
             };
             newSequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
@@ -917,7 +917,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 65, //in ME3Resources.pcc
+                ExportUIndex = 65, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("NewSkelMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
@@ -931,7 +931,7 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SequenceAction",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 79, //in ME3Resources.pcc
+                ExportUIndex = 79, //in ME3Resources.pcc
                 properties =
                 {
                     new KeyValuePair<string, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
@@ -950,28 +950,28 @@ namespace ME3Explorer.Unreal
             {
                 baseClass = "SeqAct_Log",
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 103, //in ME3Resources.pcc
+                ExportUIndex = 103, //in ME3Resources.pcc
             };
             newSequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
-                exportIndex = 0,
+                ExportUIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["Package"] = new ClassInfo
             {
                 baseClass = "Object",
-                exportIndex = 0,
+                ExportUIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
             NewClasses["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
-                exportIndex = 0,
+                ExportUIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
@@ -991,7 +991,7 @@ namespace ME3Explorer.Unreal
             NewClasses["FracturedStaticMesh"] = new ClassInfo
             {
                 baseClass = "StaticMesh",
-                exportIndex = 0,
+                ExportUIndex = 0,
                 pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                 properties =
                 {
@@ -1039,7 +1039,7 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex,
+                ExportUIndex = export.UIndex,
                 ClassName = export.ObjectName
             };
             if (export.IsClass)

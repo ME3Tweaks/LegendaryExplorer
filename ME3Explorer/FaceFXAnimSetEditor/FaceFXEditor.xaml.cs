@@ -141,13 +141,11 @@ namespace ME3Explorer.FaceFX
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (SelectedExport != null && updatedExports.Contains(SelectedExport.Index))
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.HasFlag(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
+            if (SelectedExport != null && updatedExports.Contains(SelectedExport.UIndex))
             {
-                int index = SelectedExport.Index;
+                int index = SelectedExport.UIndex;
                 //loaded FaceFXAnimset is no longer a FaceFXAnimset
                 if (SelectedExport.ClassName != "FaceFXAnimSet")
                 {
@@ -159,15 +157,15 @@ namespace ME3Explorer.FaceFX
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(AnimSets.Select(x => x.Index)).Any())
+            if (updatedExports.Intersect(AnimSets.Select(exp => exp.UIndex)).Any())
             {
                 RefreshComboBox();
             }
             else
             {
-                foreach (var i in updatedExports)
+                foreach (var uIdx in updatedExports)
                 {
-                    if (Pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    if (Pcc.GetEntry(uIdx)?.ClassName == "FaceFXAnimSet")
                     {
                         RefreshComboBox();
                         break;

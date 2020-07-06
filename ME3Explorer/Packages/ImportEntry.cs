@@ -28,7 +28,7 @@ namespace ME3Explorer.Packages
 
         public long HeaderOffset { get; set; }
 
-        public int Index { get; set; }
+        public int Index { private get; set; }
         public int UIndex => -Index - 1;
 
         public IMEPackage FileRef { get; protected set; }

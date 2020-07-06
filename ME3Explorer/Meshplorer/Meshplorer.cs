@@ -605,11 +605,9 @@ namespace ME3Explorer.Meshplorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (skm != null && updatedExports.Contains(skm.Export.Index)) //Property updates are done through Index, not UIndex unfortunately.
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
+            if (skm != null && updatedExports.Contains(skm.Export.UIndex)) 
             {
                 //loaded SkeletalMesh is no longer a SkeletalMesh
                 if (skm.Export.ClassName != "SkeletalMesh")
@@ -624,13 +622,13 @@ namespace ME3Explorer.Meshplorer
                 {
                     LoadSkeletalMesh(skm.Export.UIndex); //this will be refactored someday
                 }
-                updatedExports.Remove(skm.Export.Index);
+                updatedExports.Remove(skm.Export.UIndex);
             }
-            else if (stm != null && updatedExports.Contains(stm.Export.Index))
+            else if (stm != null && updatedExports.Contains(stm.Export.UIndex))
             {
-                int index = stm.Export.Index;
+                int index = stm.Export.UIndex;
                 //loaded SkeletalMesh is no longer a SkeletalMesh
-                if (Pcc.getExport(index).ClassName != "StaticMesh")
+                if (Pcc.GetUExport(index).ClassName != "StaticMesh")
                 {
                     stm = null;
                     preview?.Dispose();
@@ -644,7 +642,7 @@ namespace ME3Explorer.Meshplorer
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(Materials).Count() > 0)
+            if (updatedExports.Intersect(Materials).Any())
             {
                 RefreshMaterialList();
             }
@@ -652,7 +650,7 @@ namespace ME3Explorer.Meshplorer
             {
                 foreach (var i in updatedExports)
                 {
-                    string className = Pcc.getExport(i).ClassName;
+                    string className = Pcc.GetUExport(i).ClassName;
                     if (className == "MaterialInstanceConstant" || className == "Material")
                     {
                         RefreshMaterialList();
@@ -660,7 +658,7 @@ namespace ME3Explorer.Meshplorer
                     }
                 }
             }
-            if (updatedExports.Intersect(Objects).Count() > 0)
+            if (updatedExports.Intersect(Objects).Any())
             {
                 RefreshMeshList();
             }
@@ -668,7 +666,7 @@ namespace ME3Explorer.Meshplorer
             {
                 foreach (var i in updatedExports)
                 {
-                    string className = Pcc.getExport(i).ClassName;
+                    string className = Pcc.GetUExport(i).ClassName;
                     if (className == "SkeletalMesh" || className == "StaticMesh")
                     {
                         RefreshMeshList();

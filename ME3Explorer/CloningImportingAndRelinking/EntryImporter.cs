@@ -579,12 +579,12 @@ namespace ME3Explorer
 
                 using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackage(sourceFilePath);
 
-                if (!sourcePackage.IsUExport(info.exportIndex))
+                if (!sourcePackage.IsUExport(info.ExportUIndex))
                 {
                     return null; //not sure how this would happen
                 }
 
-                ExportEntry sourceClassExport = sourcePackage.GetUExport(info.exportIndex);
+                ExportEntry sourceClassExport = sourcePackage.GetUExport(info.ExportUIndex);
 
                 if (sourceClassExport.ObjectName != className)
                 {

@@ -658,9 +658,9 @@ namespace ME3Explorer.WwiseEditor
                 return;
             }
 
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(update => update.change.HasFlag(PackageChange.Export));
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (CurrentExport != null && updatedExports.Contains(CurrentExport.Index))
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(update => update.Change.HasFlag(PackageChange.Export));
+            List<int> updatedExports = relevantUpdates.Select(x => x.Index).ToList();
+            if (CurrentExport != null && updatedExports.Contains(CurrentExport.UIndex))
             {
                 if (CurrentExport.ClassName != "WwiseBank")
                 {
@@ -677,11 +677,11 @@ namespace ME3Explorer.WwiseEditor
             }
 
             bool refreshedBanks = false, refreshedView = false;
-            foreach (var i in updatedExports)
+            foreach (var uIndex in updatedExports)
             {
-                if (Pcc.IsUExport(i + 1))
+                if (Pcc.IsUExport(uIndex))
                 {
-                    string className = Pcc.getExport(i).ClassName;
+                    string className = Pcc.GetUExport(uIndex).ClassName;
 
                     if (!refreshedBanks && className == "WwiseBank")
                     {
@@ -745,7 +745,7 @@ namespace ME3Explorer.WwiseEditor
                 _ => ME3ViewsPath
             };
 
-            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.Index}.{bankID:X8}.{objectName}.JSON");
+            JSONpath = Path.Combine(viewsPath, $"{CurrentFile}.#{export.UIndex}.{bankID:X8}.{objectName}.JSON");
         }
 
         private void saveView(bool toFile = true)

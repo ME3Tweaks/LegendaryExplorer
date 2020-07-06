@@ -159,8 +159,6 @@ namespace ME3Explorer
                 {
                     new PackageEditorWPF().Close(); //pre-parse xaml to improve PackEd startup time
                 }
-                if (GCSettings.LatencyMode == GCLatencyMode.NoGCRegion)
-                    GC.EndNoGCRegion();
                 GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 GC.Collect();
                 PendingAppLoadedAction = actionDelegate;

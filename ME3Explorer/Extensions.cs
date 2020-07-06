@@ -1100,6 +1100,11 @@ namespace ME3Explorer
             }
             return q.ToArray();
         }
+
+        public static bool Has<T>(this T enumValue, T flag) where T : Enum
+        {
+            return enumValue.HasFlag(flag);
+        }
     }
 
     public static class TypeExtension

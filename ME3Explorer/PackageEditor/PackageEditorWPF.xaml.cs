@@ -2459,23 +2459,22 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            List<PackageChange> changes = updates.Select(x => x.change).ToList();
-            if (changes.Contains(PackageChange.Names))
+            List<PackageChange> changes = updates.Select(x => x.Change).ToList();
+            if (changes.Contains(PackageChange.Name))
             {
                 foreach (ExportLoaderControl elc in ExportLoaders.Keys)
                 {
                     elc.SignalNamelistAboutToUpdate();
                 }
 
-                RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
+                RefreshNames(updates.Where(x => x.Change.HasFlag(PackageChange.Name)).ToList());
                 foreach (ExportLoaderControl elc in ExportLoaders.Keys)
                 {
                     elc.SignalNamelistChanged();
                 }
             }
 
-            List<PackageUpdate> removeChanges = updates.Where(x => x.change == PackageChange.ExportRemove || x.change == PackageChange.ImportRemove).OrderBy(x => x.index).ToList();
-            if (removeChanges.Any())
+            if (updates.Any(x => x.Change == PackageChange.ExportRemove || x.Change == PackageChange.ImportRemove))
             {
                 InitializeTreeView();
                 InitClassDropDown();
@@ -2484,33 +2483,26 @@ namespace ME3Explorer
                 return;
             }
 
-            bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
-            bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
-            bool hasSelection = GetSelected(out int n);
+            bool hasImportChanges = changes.Any(x => x.HasFlag(PackageChange.Import));
+            bool hasExportNonDataChanges = changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
+            bool hasSelection = GetSelected(out int selectedEntryUIndex);
 
-            List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
-            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader || x.change == PackageChange.Import).Select(x => x.change == PackageChange.ExportHeader ? x.index + 1 : -x.index - 1).OrderBy(x => x).ToList();
+            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index).ToList();
             if (addedChanges.Count > 0)
             {
                 InitClassDropDown();
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
-                var addedChangesByUIndex = new List<PackageUpdate>();
-                foreach (PackageUpdate u in addedChanges)
-                {
-                    //convert to uindex
-                    addedChangesByUIndex.Add(new PackageUpdate { change = u.change, index = u.change == PackageChange.ExportAdd ? u.index + 1 : -u.index - 1 });
-                }
 
                 List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
 
                 //filter to only nodes that don't exist yet (created by external tools)
                 foreach (TreeViewEntry tvi in treeViewItems)
                 {
-                    addedChangesByUIndex.RemoveAll(x => x.index == tvi.UIndex);
+                    addedChanges.RemoveAll(x => x.Index == tvi.UIndex);
                 }
 
-                List<IEntry> entriesToAdd = addedChangesByUIndex.Select(change => Pcc.GetEntry(change.index)).ToList();
+                List<IEntry> entriesToAdd = addedChanges.Select(change => Pcc.GetEntry(change.Index)).ToList();
 
                 //Generate new nodes
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
@@ -2549,32 +2541,30 @@ namespace ME3Explorer
                 nodesToSortChildrenFor.ToList().ForEach(x => x.SortChildren());
                 SuppressSelectionEvent = false;
 
-                int currentLeftSideListMaxCount = LeftSideList_ItemsSource.Count - 1;
                 if (CurrentView == CurrentViewMode.Imports)
                 {
-                    foreach (PackageUpdate update in addedChangesByUIndex)
+                    foreach (PackageUpdate update in addedChanges)
                     {
-                        if (update.index < 0)
+                        if (update.Index < 0)
                         {
-                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.index));
+                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.Index));
                         }
                     }
                 }
 
-
-                //Author: Mgamerz
                 if (CurrentView == CurrentViewMode.Exports)
                 {
-                    foreach (PackageUpdate update in addedChangesByUIndex)
+                    foreach (PackageUpdate update in addedChanges)
                     {
-                        if (update.index > 0)
+                        if (update.Index > 0)
                         {
-                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.index));
+                            LeftSideList_ItemsSource.Add(Pcc.GetEntry(update.Index));
                         }
                     }
                 }
             }
 
+            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index).ToHashSet();
             if (headerChanges.Count > 0)
             {
                 List<TreeViewEntry> tree = AllTreeViewNodesX[0].FlattenTree();
@@ -2608,9 +2598,9 @@ namespace ME3Explorer
             }
 
 
-            if (CurrentView == CurrentViewMode.Imports && importChanges ||
-                CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
-                CurrentView == CurrentViewMode.Tree && (importChanges || exportNonDataChanges))
+            if (CurrentView == CurrentViewMode.Imports && hasImportChanges ||
+                CurrentView == CurrentViewMode.Exports && hasExportNonDataChanges ||
+                CurrentView == CurrentViewMode.Tree && (hasImportChanges || hasExportNonDataChanges))
             {
                 RefreshView();
                 if (QueuedGotoNumber != 0 && GoToNumber(QueuedGotoNumber))
@@ -2619,12 +2609,12 @@ namespace ME3Explorer
                 }
                 else if (hasSelection)
                 {
-                    GoToNumber(n);
+                    GoToNumber(selectedEntryUIndex);
                 }
             }
 
             if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
-                updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
+                updates.Contains(new PackageUpdate(PackageChange.ExportData, selectedEntryUIndex)))
             {
                 Preview(true);
             }
@@ -2641,27 +2631,27 @@ namespace ME3Explorer
             else
             {
                 //only modify the list
-                updates = updates.OrderBy(x => x.index).ToList(); //ensure ascending order
+                updates = updates.OrderBy(x => x.Index).ToList(); //ensure ascending order
                 foreach (PackageUpdate update in updates)
                 {
-                    if (update.index >= Pcc.NameCount)
+                    if (update.Index >= Pcc.NameCount)
                     {
                         continue;
                     }
 
-                    if (update.index > NamesList.Count - 1) //names are 0 indexed
+                    if (update.Index > NamesList.Count - 1) //names are 0 indexed
                     {
-                        NameReference nr = Pcc.Names[update.index];
-                        NamesList.Add(new IndexedName(update.index, nr));
-                        LeftSideList_ItemsSource.Add(new IndexedName(update.index, nr));
+                        NameReference nr = Pcc.Names[update.Index];
+                        NamesList.Add(new IndexedName(update.Index, nr));
+                        LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
                     }
                     else
                     {
-                        IndexedName indexed = new IndexedName(update.index, Pcc.Names[update.index]);
-                        NamesList[update.index] = indexed;
+                        IndexedName indexed = new IndexedName(update.Index, Pcc.Names[update.Index]);
+                        NamesList[update.Index] = indexed;
                         if (CurrentView == CurrentViewMode.Names)
                         {
-                            LeftSideList_ItemsSource[update.index] = indexed;
+                            LeftSideList_ItemsSource[update.Index] = indexed;
                         }
                     }
                 }

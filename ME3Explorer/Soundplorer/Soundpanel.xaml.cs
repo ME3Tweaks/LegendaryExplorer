@@ -164,7 +164,7 @@ namespace ME3Explorer
 
                 }
                 CurrentPackage = exportEntry.FileRef;*/
-                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
+                ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;

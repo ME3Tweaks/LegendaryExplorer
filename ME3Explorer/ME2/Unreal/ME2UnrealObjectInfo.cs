@@ -318,7 +318,7 @@ namespace ME2Explorer.Unreal
                     {
                         using (IMEPackage importPCC = MEPackageHandler.OpenME2Package(filepath))
                         {
-                            var exportToRead = importPCC.GetUExport(info.exportIndex);
+                            var exportToRead = importPCC.GetUExport(info.ExportUIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
                             PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
                             foreach (var prop in defaults)
@@ -462,14 +462,14 @@ namespace ME2Explorer.Unreal
                 NewClasses.Add("LightMapTexture2D", new ClassInfo
                 {
                     baseClass = "Texture2D",
-                    exportIndex = 0,
+                    ExportUIndex = 0,
                     pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
                 });
 
                 NewClasses["StaticMesh"] = new ClassInfo
                 {
                     baseClass = "Object",
-                    exportIndex = 0,
+                    ExportUIndex = 0,
                     pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
                     properties =
                     {
@@ -508,7 +508,7 @@ namespace ME2Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = export.SuperClassName,
-                exportIndex = export.UIndex,
+                ExportUIndex = export.UIndex,
                 ClassName = export.ObjectName
             };
             if (!isStruct)

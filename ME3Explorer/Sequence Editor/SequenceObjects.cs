@@ -68,7 +68,7 @@ namespace ME3Explorer.SequenceObjects
 
         public RectangleF posAtDragStart;
 
-        public int Index => export.Index;
+        public int Index => UIndex - 1;
 
         public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }

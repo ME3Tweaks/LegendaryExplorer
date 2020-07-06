@@ -37,7 +37,7 @@ namespace ME3Explorer.AssetDatabase
     /// <summary>
     /// Interaction logic for AssetDB
     /// </summary>
-    public partial class AssetDB : WPFBase
+    public partial class AssetDB : NotifyPropertyChangedWindowBase
     {
         #region Declarations
         public const string dbCurrentBuild = "4.0"; //If changes are made that invalidate old databases edit this.
@@ -66,6 +66,12 @@ namespace ME3Explorer.AssetDatabase
         private bool _BusyBarInd;
         public bool BusyBarInd { get => _BusyBarInd; set => SetProperty(ref _BusyBarInd, value); }
         public MEGame currentGame;
+        public MEGame CurrentGame
+        {
+            get => currentGame;
+            set => SetProperty(ref currentGame, value);
+        }
+
         private string CurrentDBPath { get; set; }
         public PropsDataBase CurrentDataBase { get; } = new PropsDataBase(MEGame.Unknown, null, null, new ObservableCollectionExtended<Tuple<string, int>>(), new List<string>(), new ObservableCollectionExtended<ClassRecord>(), new ObservableCollectionExtended<Material>(),
             new ObservableCollectionExtended<Animation>(), new ObservableCollectionExtended<MeshRecord>(), new ObservableCollectionExtended<ParticleSys>(), new ObservableCollectionExtended<TextureRecord>(), new ObservableCollectionExtended<GUIElement>(), 
@@ -192,6 +198,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand LoadFileListCommand { get; set; }
         public ICommand SaveFileListCommand { get; set; }
         public ICommand EditFileListCommand { get; set; }
+
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -232,14 +239,9 @@ namespace ME3Explorer.AssetDatabase
         }
         private bool CanUseAnimViewer(object obj)
         {
-            return currentView == 5 && currentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
+            return currentView == 5 && CurrentGame == MEGame.ME3 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
         }
         private bool IsAnimSequenceSelected() => currentView == 5 && lstbx_Anims.SelectedIndex >= 0 && !((lstbx_Anims.SelectedItem as Animation)?.IsAmbPerf ?? true);
-
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            //Not applicable
-        }
 
         #endregion
 
@@ -257,7 +259,7 @@ namespace ME3Explorer.AssetDatabase
             //Get default db / gane
             CurrentDBPath = Properties.Settings.Default.AssetDBPath;
             Enum.TryParse<MEGame>(Properties.Settings.Default.AssetDBGame, out MEGame game);
-            currentGame = game;
+            CurrentGame = game;
 
             InitializeComponent();
 
@@ -295,9 +297,9 @@ namespace ME3Explorer.AssetDatabase
             IsBusy = true;
             BusyBarInd = true;
 
-            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && currentGame != MEGame.Unknown && currentGame != MEGame.UDK)
+            if (CurrentDBPath != null && CurrentDBPath.EndsWith("zip") && File.Exists(CurrentDBPath) && CurrentGame != MEGame.Unknown && CurrentGame != MEGame.UDK)
             {
-                SwitchGame(currentGame.ToString());
+                SwitchGame(CurrentGame.ToString());
             }
             else
             {
@@ -312,7 +314,7 @@ namespace ME3Explorer.AssetDatabase
                 return;
 
             Properties.Settings.Default.AssetDBPath = CurrentDBPath;
-            Properties.Settings.Default.AssetDBGame = currentGame.ToString();
+            Properties.Settings.Default.AssetDBGame = CurrentGame.ToString();
             EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
             BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
             MeshRendererTab_MeshRenderer.UnloadExport();
@@ -595,14 +597,14 @@ namespace ME3Explorer.AssetDatabase
             var guiSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.GUIElements));
             var convSrl = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentDataBase.Conversations));
             var linesExLine = new ObservableCollectionExtended<ConvoLine>();
-            if (ParseConvos && currentGame != MEGame.ME1)
+            if (ParseConvos && CurrentGame != MEGame.ME1)
             {
                 foreach(var line in CurrentDataBase.Lines)
                 {
                     linesExLine.Add(new ConvoLine(line.StrRef, line.Speaker, line.Convo));
                 }
             }
-            else if (currentGame == MEGame.ME1)
+            else if (CurrentGame == MEGame.ME1)
             {
                 linesExLine.AddRange(CurrentDataBase.Lines);
             }
@@ -613,62 +615,62 @@ namespace ME3Explorer.AssetDatabase
                 using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                 {
                     await Task.WhenAll(masterSrl,clsSrl, mtlSrl, animSrl, mshSrl, psSrl, txtSrl, guiSrl, convSrl, lineSrl);
-                    var build = dbCurrentBuild.Trim(new Char[] { ' ', '*', '.' });
-                    var masterjson = archive.CreateEntry($"MasterDB{currentGame}_{build}.json");
+                    var build = dbCurrentBuild.Trim(' ', '*', '.');
+                    var masterjson = archive.CreateEntry($"MasterDB{CurrentGame}_{build}.json");
                     using (var entryStream = masterjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(masterSrl.Result));
                     }
-                    var classjson = archive.CreateEntry($"{dbTableType.Class.ToString()}DB{currentGame}.json");
+                    var classjson = archive.CreateEntry($"{dbTableType.Class.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = classjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(clsSrl.Result));
                     }
-                    var matjson = archive.CreateEntry($"{dbTableType.Materials.ToString()}DB{currentGame}.json");
+                    var matjson = archive.CreateEntry($"{dbTableType.Materials.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = matjson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(mtlSrl.Result));
                     }
-                    var animJson = archive.CreateEntry($"{dbTableType.Animations.ToString()}DB{currentGame}.json");
+                    var animJson = archive.CreateEntry($"{dbTableType.Animations.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = animJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(animSrl.Result));
                     }
-                    var mshJson = archive.CreateEntry($"{dbTableType.Meshes.ToString()}DB{currentGame}.json");
+                    var mshJson = archive.CreateEntry($"{dbTableType.Meshes.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = mshJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(mshSrl.Result));
                     }
-                    var psJson = archive.CreateEntry($"{dbTableType.Particles.ToString()}DB{currentGame}.json");
+                    var psJson = archive.CreateEntry($"{dbTableType.Particles.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = psJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(psSrl.Result));
                     }
-                    var txtJson = archive.CreateEntry($"{dbTableType.Textures.ToString()}DB{currentGame}.json");
+                    var txtJson = archive.CreateEntry($"{dbTableType.Textures.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = txtJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(txtSrl.Result));
                     }
-                    var guiJson = archive.CreateEntry($"{dbTableType.GUIElements.ToString()}DB{currentGame}.json");
+                    var guiJson = archive.CreateEntry($"{dbTableType.GUIElements.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = guiJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(guiSrl.Result));
                     }
-                    var convJson = archive.CreateEntry($"{dbTableType.Convos.ToString()}DB{currentGame}.json");
+                    var convJson = archive.CreateEntry($"{dbTableType.Convos.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = convJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
                         await Task.Run(() => streamWriter.Write(convSrl.Result));
                     }
-                    var lineJson = archive.CreateEntry($"{dbTableType.Lines.ToString()}DB{currentGame}.json");
+                    var lineJson = archive.CreateEntry($"{dbTableType.Lines.ToString()}DB{CurrentGame}.json");
                     using (var entryStream = lineJson.Open())
                     using (var streamWriter = new StreamWriter(entryStream))
                     {
@@ -684,7 +686,7 @@ namespace ME3Explorer.AssetDatabase
         }
         public void ClearDataBase()
         {
-            CurrentDataBase.meGame = currentGame;
+            CurrentDataBase.meGame = CurrentGame;
             CurrentDataBase.GenerationDate = null;
             CurrentDataBase.FileList.Clear();
             CurrentDataBase.ContentDir.Clear();
@@ -707,7 +709,7 @@ namespace ME3Explorer.AssetDatabase
         }
         private void GetConvoLinesBackground()
         {
-            if(currentGame == MEGame.ME1)
+            if(CurrentGame == MEGame.ME1)
             {
                 var spkrs = new List<string>();
                 foreach (var line in CurrentDataBase.Lines)
@@ -769,7 +771,7 @@ namespace ME3Explorer.AssetDatabase
         {
             foreach (var ol in _linequeue.GetConsumingEnumerable(CancellationToken.None))
             {
-                switch (currentGame)
+                switch (CurrentGame)
                 {
                     case MEGame.ME1:
                         //Shouldn't be called in ME1
@@ -818,27 +820,21 @@ namespace ME3Explorer.AssetDatabase
             switch (p)
             {
                 case "ME1":
-                    currentGame = MEGame.ME1;
-                    StatusBar_GameID_Text.Text = "ME1";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                    CurrentGame = MEGame.ME1;
                     switchME1_menu.IsChecked = true;
                     btn_LinePlaybackToggle.IsEnabled = false;
                     break;
                 case "ME2":
-                    currentGame = MEGame.ME2;
-                    StatusBar_GameID_Text.Text = "ME2";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                    CurrentGame = MEGame.ME2;
                     switchME2_menu.IsChecked = true;
                     break;
                 default:
-                    currentGame = MEGame.ME3;
-                    StatusBar_GameID_Text.Text = "ME3";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                    CurrentGame = MEGame.ME3;
                     switchME3_menu.IsChecked = true;
                     menu_fltrPerf.IsEnabled = true;
                     break;
             }
-            CurrentDBPath = GetDBPath(currentGame);
+            CurrentDBPath = GetDBPath(CurrentGame);
 
             if (CurrentDBPath != null && File.Exists(CurrentDBPath))
             {
@@ -850,7 +846,7 @@ namespace ME3Explorer.AssetDatabase
                 cancelloading?.Cancel();
                 cancelloading = new CancellationTokenSource();
                 var start = DateTime.UtcNow;
-                LoadDatabase(CurrentDBPath, currentGame, CurrentDataBase, cancelloading.Token).ContinueWithOnUIThread(prevTask =>
+                LoadDatabase(CurrentDBPath, CurrentGame, CurrentDataBase, cancelloading.Token).ContinueWithOnUIThread(prevTask =>
                 {
                     if (CurrentDataBase.DataBaseversion == null || CurrentDataBase.DataBaseversion != dbCurrentBuild)
                     {
@@ -1031,11 +1027,11 @@ namespace ME3Explorer.AssetDatabase
         private void OpenInToolkit(string tool, string filename, string contentdir, int export = 0)
         {
             string filePath = null;
-            string rootPath = MEDirectories.GamePath(currentGame);
+            string rootPath = MEDirectories.GamePath(CurrentGame);
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
 
@@ -1225,7 +1221,7 @@ namespace ME3Explorer.AssetDatabase
                 meshPcc?.Dispose();
                 return;
             }
-            string rootPath = MEDirectories.GamePath(currentGame);
+            string rootPath = MEDirectories.GamePath(CurrentGame);
             var selecteditem = lstbx_Meshes.SelectedItem as MeshRecord;
             var filekey = selecteditem.MeshUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey].Item1;
@@ -1233,7 +1229,7 @@ namespace ME3Explorer.AssetDatabase
 
             if (rootPath == null)
             {
-                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
             filename = $"{filename}.*";
@@ -1297,11 +1293,11 @@ namespace ME3Explorer.AssetDatabase
             
             var filekey = selecteditem.TextureUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey].Item1;
-            string rootPath = MEDirectories.GamePath(currentGame);
+            string rootPath = MEDirectories.GamePath(CurrentGame);
             var cdir = CurrentDataBase.ContentDir[CurrentDataBase.FileList[filekey].Item2];
             if (rootPath == null)
             {
-                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
 
@@ -1358,7 +1354,7 @@ namespace ME3Explorer.AssetDatabase
         private void ToggleLinePlayback()
         {
             bool showAudio = false;
-            if (btn_LinePlaybackToggle.IsChecked == true && (lstbx_Lines.SelectedIndex >= 0) && CurrentConvo.Item1 != null && currentGame != MEGame.ME1 && currentView == 8)
+            if (btn_LinePlaybackToggle.IsChecked == true && (lstbx_Lines.SelectedIndex >= 0) && CurrentConvo.Item1 != null && CurrentGame != MEGame.ME1 && currentView == 8)
             {
                 showAudio = true;
             }
@@ -1373,10 +1369,10 @@ namespace ME3Explorer.AssetDatabase
             var selecteditem = lstbx_Lines.SelectedItem as ConvoLine;
             var filename = CurrentConvo.Item2;
             var cdir = CurrentConvo.Item4;
-            string rootPath = MEDirectories.GamePath(currentGame);
+            string rootPath = MEDirectories.GamePath(CurrentGame);
             if (rootPath == null)
             {
-                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
 
@@ -1506,7 +1502,7 @@ namespace ME3Explorer.AssetDatabase
         private string GetFilePath(int fileListIndex)
         {
             (string filename, string contentdir) = FileListExtended[fileListIndex];
-            return Directory.GetFiles(MEDirectories.GamePath(currentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+            return Directory.GetFiles(MEDirectories.GamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
         }
 
         private void genderTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2283,7 +2279,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
-                FileName = $"ADB_{currentGame}_*.txt",
+                FileName = $"ADB_{CurrentGame}_*.txt",
                 AddExtension = true
             };
             if (d.ShowDialog() == true)
@@ -2304,7 +2300,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 Filter = $"*.txt|*.txt",
                 InitialDirectory = directory,
-                FileName = $"ADB_{currentGame}_*.txt",
+                FileName = $"ADB_{CurrentGame}_*.txt",
                 AddExtension = true
 
             };
@@ -2340,7 +2336,7 @@ namespace ME3Explorer.AssetDatabase
 
                 if (!errorlist.IsEmpty())
                 {
-                    MessageBox.Show($"The following files are not in the {currentGame} database:\n{string.Join(", ", errorlist)}");
+                    MessageBox.Show($"The following files are not in the {CurrentGame} database:\n{string.Join(", ", errorlist)}");
                 }
             }
         }
@@ -2449,11 +2445,11 @@ namespace ME3Explorer.AssetDatabase
             {
                 outputDir = App.AppDataFolder;
             }
-            string rootPath = MEDirectories.GamePath(currentGame);
+            string rootPath = MEDirectories.GamePath(CurrentGame);
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {
-                MessageBox.Show($"{currentGame} has not been found. Please check your ME3Explorer settings");
+                MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
                 return;
             }
 
@@ -2461,7 +2457,7 @@ namespace ME3Explorer.AssetDatabase
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
 
-            await dumpPackages(files, currentGame);
+            await dumpPackages(files, CurrentGame);
         }
         private async Task dumpPackages(List<string> files, MEGame game)
         {
@@ -2523,7 +2519,7 @@ namespace ME3Explorer.AssetDatabase
             //}
 
             IsBusy = true;
-            BusyHeader = $"Generating database for {currentGame}";
+            BusyHeader = $"Generating database for {CurrentGame}";
             ProcessingQueue = new ActionBlock<ClassScanSingleFileTask>(x =>
             {
                 if (x.DumpCanceled)
@@ -2604,7 +2600,7 @@ namespace ME3Explorer.AssetDatabase
             MidDock.IsEnabled = true;
             MessageBox.Show("Done");
 
-            if (currentGame != MEGame.ME1 && ParseConvos)
+            if (CurrentGame != MEGame.ME1 && ParseConvos)
             {
                 GetConvoLinesBackground();
             }

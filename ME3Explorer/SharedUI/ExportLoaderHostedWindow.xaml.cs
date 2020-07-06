@@ -172,7 +172,7 @@ namespace ME3Explorer.SharedUI
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (updates.Any(x => x.change == PackageChange.Names))
+            if (updates.Any(x => x.Change.Has(PackageChange.Name)))
             {
                 HostedControl.SignalNamelistAboutToUpdate();
                 NamesList.ReplaceAll(Pcc.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
@@ -182,8 +182,8 @@ namespace ME3Explorer.SharedUI
             //Put code to reload the export here
             foreach (var update in updates)
             {
-                if ((update.change == PackageChange.ExportAdd || update.change == PackageChange.ExportData)
-                    && update.index == LoadedExport.Index)
+                if ((update.Change.Has(PackageChange.Export))
+                    && update.Index == LoadedExport.UIndex)
                 {
                     HostedControl.LoadExport(LoadedExport); //reload export
                     return;

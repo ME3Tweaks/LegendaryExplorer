@@ -552,29 +552,31 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (CurrentExport != null && updates.Any(update => update.change == PackageChange.ExportData && update.index == CurrentExport.Index) && CurrentExport.ClassName == "AnimSequence")
+            if (CurrentExport != null && updates.Any(update => update.Change == PackageChange.ExportData && update.Index == CurrentExport.UIndex) && CurrentExport.ClassName == "AnimSequence")
             {
                 CurrentExport = CurrentExport;//trigger propertyset stuff
             }
 
-            List<PackageUpdate> exportUpdates = updates.Where(upd => upd.change == PackageChange.ExportData || upd.change == PackageChange.ExportHeader ||
-                                                                     upd.change == PackageChange.ExportRemove || upd.change == PackageChange.ExportAdd).ToList();
+            List<PackageUpdate> exportUpdates = updates.Where(upd => upd.Change.HasFlag(PackageChange.Export)).ToList();
             bool shouldUpdateList = false;
             foreach (ExportEntry animSequenceExport in AnimSequenceExports)
             {
-                if (exportUpdates.Any(upd => upd.index == animSequenceExport.Index))
+                if (exportUpdates.Any(upd => upd.Index == animSequenceExport.UIndex))
                 {
                     shouldUpdateList = true;
                     break;
                 }
             }
 
-            foreach (PackageUpdate update in exportUpdates)
+            if (!shouldUpdateList)
             {
-                if (!AnimSequenceExports.Contains(Pcc.GetEntry(update.index)))
+                foreach (PackageUpdate update in exportUpdates)
                 {
-                    shouldUpdateList = true;
-                    break;
+                    if (Pcc.GetEntry(update.Index) is IEntry entry && entry.ClassName == "AnimSequence")
+                    {
+                        shouldUpdateList = true;
+                        break;
+                    }
                 }
             }
 
