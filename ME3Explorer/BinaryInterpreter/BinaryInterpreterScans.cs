@@ -4868,7 +4868,7 @@ namespace ME3Explorer
                         //node.Items.Add(MakeByteNode(bin, "Unknown"));
                         //node.Items.Add(MakeUInt32Node(bin, "Unknown_Int"));
                         //node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
-                        break;
+                        //break;
                     case HIRCType.Settings:
                     default:
                         if (bin.Position < endPos)

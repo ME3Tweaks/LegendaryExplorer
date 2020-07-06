@@ -94,7 +94,7 @@ namespace MassEffect3.Coalesce
                 foreach (var file in coal.Files)
                 {
                     var fileId = Path.GetFileNameWithoutExtension(file.Name);
-                    fileId = ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase));
+                    fileId = ProperNames.FirstOrDefault(s => s.Equals(fileId, StringComparison.InvariantCultureIgnoreCase)) ?? fileId;
 
                     var iniPath = $"{destinationPath}/{fileId}.xml";
 

@@ -2169,6 +2169,11 @@ namespace ME3Explorer
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
+
+        private void ColorPicker_Closed(object sender, RoutedEventArgs e)
+        {
+            Interpreter_SaveHexChanges();
+        }
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {" + nameof(DisplayName) + "}")]
