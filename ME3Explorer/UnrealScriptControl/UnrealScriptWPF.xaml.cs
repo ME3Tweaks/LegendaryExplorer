@@ -111,8 +111,7 @@ namespace ME3Explorer
             DecompiledScriptBoxTitle = "Decompiled Script";
             if (Pcc.Game == MEGame.ME3)
             {
-                int scriptOffset = CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32;
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, scriptOffset);
+                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, 32);
 
 
                 func.ParseFunction();
@@ -170,7 +169,7 @@ namespace ME3Explorer
 
                 foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
                 {
-                    var diskPos = t.pos - scriptOffset;
+                    var diskPos = t.pos - 32;
                     if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
                     {
                         t.memPos = DiskToMemPosMap[diskPos];
@@ -214,12 +213,12 @@ namespace ME3Explorer
 
 
 
-                    if ((stateFlags & StateFlags.Simulated) != 0)
-                    {
-                        //Replication offset? Like in Function?
-                        ScriptFooterBlocks.Add(new ScriptHeaderItem("RepOffset? ", +EndianReader.ToInt16(footerdata, fpos, CurrentLoadedExport.FileRef.Endian), fpos));
-                        fpos += 0x2;
-                    }
+                    //if ((stateFlags & StateFlags.Simulated) != 0)
+                    //{
+                    //    //Replication offset? Like in Function?
+                    //    ScriptFooterBlocks.Add(new ScriptHeaderItem("RepOffset? ", EndianReader.ToInt16(footerdata, fpos, CurrentLoadedExport.FileRef.Endian), fpos));
+                    //    fpos += 0x2;
+                    //}
 
                     var numMappedFunctions = EndianReader.ToInt32(footerdata, fpos, CurrentLoadedExport.FileRef.Endian);
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Num of mapped functions", numMappedFunctions.ToString(), fpos));
