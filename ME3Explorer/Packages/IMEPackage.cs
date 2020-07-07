@@ -47,6 +47,7 @@ namespace ME3Explorer.Packages
     [DebuggerDisplay("PropertyInfo | {Type} , parent: {Reference}, transient: {Transient}")]
     public class PropertyInfo : IEquatable<PropertyInfo>
     {
+        //DO NOT CHANGE THE NAME OF ANY OF THESE fields/properties. THIS WILL BREAK JSON PARSING!
         public Unreal.PropertyType Type { get; }
         public string Reference { get; }
         public bool Transient { get; }
@@ -102,6 +103,7 @@ namespace ME3Explorer.Packages
 
     public class ClassInfo
     {
+        //DO NOT CHANGE THE NAME OF ANY OF THESE fields/properties. THIS WILL BREAK JSON PARSING!
         [JsonIgnore]
         public string ClassName { get; set; }
 
@@ -110,7 +112,7 @@ namespace ME3Explorer.Packages
         //Relative to BIOGame
         public string pccPath;
 
-        public int ExportUIndex;
+        public int exportIndex;
         public bool isAbstract;
 
         public bool TryGetPropInfo(string name, MEGame game, out PropertyInfo propInfo) =>
