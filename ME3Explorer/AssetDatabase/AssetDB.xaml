@@ -924,6 +924,7 @@
                                                 <Image Source="/Resources/dialogueeditor_256x256.ico" Width="64"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <MenuItem Header="Copy to Clipboard" Command="{Binding CopyToClipboardCommand}" CommandParameter="Line" ToolTip="Copy this line's text to the clipboard."/>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
                             </ListView>
