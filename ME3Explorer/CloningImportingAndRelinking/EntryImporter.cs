@@ -200,7 +200,7 @@ namespace ME3Explorer
                     props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
                 }
             }
-            catch (Exception exception) when(!App.IsDebug)
+            catch (Exception exception) when (!App.IsDebug)
             {
                 //restore namelist in event of failure.
                 destPackage.restoreNames(names);
@@ -248,9 +248,9 @@ namespace ME3Explorer
                         superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
                         if (superclass is null && importExportDependencies)
                         {
-                            IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage, 
+                            IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
                                                                                    true, objectMapping);
-                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0,  true, objectMapping);
+                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping);
                         }
                         break;
                 }
@@ -267,7 +267,7 @@ namespace ME3Explorer
                     archetype = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceArchetypeExport.FullPath && x.indexValue == sourceArchetypeExport.indexValue);
                     if (archetype is null && importExportDependencies)
                     {
-                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage, 
+                        IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage,
                                                                               true, objectMapping);
                         archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping);
                     }
@@ -295,7 +295,7 @@ namespace ME3Explorer
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
         {
 
-            EndianReader res = new EndianReader(new MemoryStream()) {Endian = targetExport.FileRef.Endian}; 
+            EndianReader res = new EndianReader(new MemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
                 res.Writer.WriteFromBuffer(incomingExport.Data.Slice(0, 8));
@@ -425,16 +425,16 @@ namespace ME3Explorer
 
             throw new Exception($"Unable to add {importFullName} to file! Could not find it!");
         }
-        
+
         /// <summary>
-         /// Adds an import from the importingPCC to the destinationPCC with the specified importFullName, or returns the existing one if it can be found. 
-         /// This will add parent imports and packages as neccesary
-         /// </summary>
-         /// <param name="importFullName">GetFullPath() of an import from ImportingPCC</param>
-         /// <param name="sourcePcc">PCC to import imports from</param>
-         /// <param name="destinationPCC">PCC to add imports to</param>
-         /// <param name="objectMapping"></param>
-         /// <returns></returns>
+        /// Adds an import from the importingPCC to the destinationPCC with the specified importFullName, or returns the existing one if it can be found. 
+        /// This will add parent imports and packages as neccesary
+        /// </summary>
+        /// <param name="importFullName">GetFullPath() of an import from ImportingPCC</param>
+        /// <param name="sourcePcc">PCC to import imports from</param>
+        /// <param name="destinationPCC">PCC to add imports to</param>
+        /// <param name="objectMapping"></param>
+        /// <returns></returns>
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<ListDialog.EntryItem> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
@@ -590,7 +590,7 @@ namespace ME3Explorer
                 {
                     return null;
                 }
-                    
+
                 //Will make sure that, if the class is in a package, that package will exist in pcc
                 IEntry parent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourcePackage, pcc);
 
@@ -728,6 +728,39 @@ namespace ME3Explorer
                 }
             }
 
+            if (entry.Game == MEGame.ME3)
+            {
+                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+                {
+                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
+                }
+            }
+
+            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
+            if (!packagesToCheck.Contains(entry.ObjectName) && gameFiles.TryGetValue(entry.ObjectName + ".pcc", out var efxPath)) //todo: support ME1 extensions
+            {
+                packagesToCheck.Add(Path.GetFileNameWithoutExtension(efxPath));
+            }
+
+            // Finally, let's see if there is same-named top level package folder file. This is a crapshoot in ME2/3 but is how it works in ME1
+            string topLevel = null;
+            IEntry p = entry.Parent;
+            if (p != null)
+            {
+                while (p.Parent != null)
+                {
+                    p = p.Parent;
+                }
+
+                if (p.ClassName == "Package")
+                {
+                    if (!packagesToCheck.Contains(p.ObjectName) && gameFiles.TryGetValue(p.ObjectName + ".pcc", out var efPath)) //todo: support ME1 extensions
+                    {
+                        packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
+                    }
+                }
+            }
 
             //Perform check and lookup
             ExportEntry containsImportedExport(string packagePath)
@@ -750,7 +783,6 @@ namespace ME3Explorer
                 return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
             }
 
-            var currentDirFiles = Directory.GetFiles(containingDirectory, "*.pcc").ToList();
             foreach (var fname in packagesToCheck)
             {
                 var fullname = fname + ".pcc"; //pcc only for now.

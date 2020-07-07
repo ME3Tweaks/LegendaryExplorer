@@ -732,13 +732,17 @@ namespace ME3Explorer.Unreal
         {
             var res = new List<Token>();
             int pos = start;
+           
             Token t = ReadToken(pos, export);
             res.Add(t);
+
             while (!t.stop)
             {
                 try
                 {
                     pos += t.raw.Length;
+                    if (res.Count == 13)
+                        Debug.WriteLine("hi");
                     t = ReadToken(pos, export);
                     res.Add(t);
                 }
@@ -1381,7 +1385,7 @@ namespace ME3Explorer.Unreal
                         a = ReadToken(pos, export);
 
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -1682,7 +1686,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -1887,7 +1891,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -1906,7 +1910,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -1932,7 +1936,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -1979,7 +1983,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2147,7 +2151,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2166,7 +2170,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2185,7 +2189,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2204,7 +2208,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2223,7 +2227,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2242,7 +2246,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2279,7 +2283,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2298,7 +2302,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2317,7 +2321,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2336,7 +2340,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2355,7 +2359,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2374,7 +2378,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2393,7 +2397,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2412,7 +2416,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2486,7 +2490,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2505,7 +2509,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2524,7 +2528,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2543,7 +2547,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2580,7 +2584,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2599,7 +2603,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2618,7 +2622,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2637,7 +2641,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2656,7 +2660,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2725,7 +2729,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2744,7 +2748,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2763,7 +2767,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2782,7 +2786,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2801,7 +2805,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2820,7 +2824,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2839,7 +2843,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2858,7 +2862,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2877,7 +2881,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2896,7 +2900,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2951,7 +2955,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -2979,7 +2983,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -2998,7 +3002,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3017,7 +3021,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3036,7 +3040,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3055,7 +3059,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3074,7 +3078,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3093,7 +3097,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3112,7 +3116,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3134,7 +3138,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3153,7 +3157,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3172,7 +3176,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += ", " + a.text;
@@ -3263,7 +3267,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.text != "null")
                             t.text += a.text;
@@ -3300,7 +3304,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3319,7 +3323,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3338,7 +3342,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3357,7 +3361,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3398,7 +3402,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3417,7 +3421,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
@@ -3436,7 +3440,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -3455,7 +3459,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -3474,7 +3478,7 @@ namespace ME3Explorer.Unreal
                     {
                         a = ReadToken(pos, export);
                         pos += a.raw.Length;
-                        if (a.raw != null && a.raw[0] == 0x16)
+                        if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                             break;
                         if (count != 0)
                             t.text += "," + a.text;
@@ -3601,11 +3605,17 @@ namespace ME3Explorer.Unreal
         private static Token Read4FAdd(int start, ExportEntry export)
         {
             Token t = new Token();
+            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             int pos = start + 5;
-            Token a = ReadToken(pos, export);
-            pos += a.raw.Length;
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            t.text = a.text;
+            if (index != 0)
+            {
+                // no idea what this is supposed to be.
+                Token a = ReadToken(pos, export);
+                pos += a.raw.Length;
+                t.inPackageReferences.AddRange(a.inPackageReferences);
+                t.text = a.text;
+            }
+
             int len = pos - start;
             t.raw = new byte[len];
             for (int i = 0; i < len; i++)
@@ -3625,7 +3635,7 @@ namespace ME3Explorer.Unreal
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
-                if (t2.raw != null && t2.raw[0] == 0x16)
+                if (t2.raw != null && t2.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + t2.text;
@@ -3715,7 +3725,7 @@ namespace ME3Explorer.Unreal
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
-                if (t2.raw != null && t2.raw[0] == 0x16)
+                if (t2.raw != null && t2.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + t2.text;
@@ -3747,7 +3757,7 @@ namespace ME3Explorer.Unreal
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
-                if (t2.raw != null && t2.raw[0] == 0x16)
+                if (t2.raw != null && t2.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + t2.text;
@@ -4193,7 +4203,7 @@ namespace ME3Explorer.Unreal
                 a = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(a.inPackageReferences);
                 pos += a.raw.Length;
-                if (a.raw != null && a.raw[0] == 0x16)
+                if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + a.text;
@@ -4215,7 +4225,7 @@ namespace ME3Explorer.Unreal
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
             t.text = export.FileRef.GetNameEntry(index);
-            int pos = start + 11;
+            int pos = start + 11; //originally 11?
             t.text += "(";
             int count = 0;
             while (pos < memsize - 6)
@@ -4224,7 +4234,7 @@ namespace ME3Explorer.Unreal
                 t.inPackageReferences.AddRange(a.inPackageReferences);
 
                 pos += a.raw.Length;
-                if (a.raw != null && a.raw[0] == 0x16)
+                if (a.raw != null && a.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + a.text;
@@ -4585,7 +4595,7 @@ namespace ME3Explorer.Unreal
                 Token t2 = ReadToken(pos, export);
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
                 pos += t2.raw.Length;
-                if (t2.raw != null && t2.raw[0] == 0x16)
+                if (t2.raw != null && t2.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + t2.text;
@@ -4663,7 +4673,7 @@ namespace ME3Explorer.Unreal
                 t.inPackageReferences.AddRange(t2.inPackageReferences);
 
                 pos += t2.raw.Length;
-                if (t2.raw != null && t2.raw[0] == 0x16)
+                if (t2.raw != null && t2.raw[0] == EX_EndFunctionParms)
                     break;
                 if (count != 0)
                     t.text += "," + t2.text;
