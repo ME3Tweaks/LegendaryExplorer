@@ -7,7 +7,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
-using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
@@ -15,7 +14,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using StreamHelpers;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -29,9 +27,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
@@ -4119,7 +4115,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4159,8 +4155,9 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "WwiseBank", true)) break;
+                    //if (findClass(filePath, "WwiseBank", true)) break;
                     //findClassesWithBinary(filePath);
+                    ScanScripts(filePath);
                     continue;
 
                     #region Header Scan
@@ -4491,6 +4488,30 @@ namespace ME3Explorer
                     {
                         Console.WriteLine(exception);
                         interestingExports.Add($"{filePath}\n{exception}");
+                    }
+                }
+            }
+
+            void ScanScripts(string filePath)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                foreach (ExportEntry exp in pcc.Exports.Where(exp => !exp.IsDefaultObject))
+                {
+                    try
+                    {
+                        if (exp.ClassName == "Function" && ObjectBinary.From(exp) is UStruct uStruct)
+                        {
+                            (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
+                            if (tokens.FirstOrDefault(token => token.OpCode == "[0x4F] EX_StringRefConst") is {} token)
+                            {
+                                interestingExports.Add($"{token.StartPos} #{exp.UIndex}: {filePath}");
+                            }
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
                     }
                 }
             }

@@ -89,6 +89,7 @@ namespace ME3Explorer.Unreal
              { 0x49, "EX_DefaultParmValue" },
              { 0x4A, "EX_EmptyParmValue" },
              { 0x4B, "EX_InstanceDelegate" },
+             { 0x4F, "EX_StringRefConst" },
              { 0x50, "EX_GoW_DefaultValue" },
              { 0x51, "EX_InterfaceContext" },
              { 0x52, "EX_InterfaceCast" },
@@ -396,6 +397,7 @@ namespace ME3Explorer.Unreal
         private const int EX_DefaultParmValue = 0x49;
         private const int EX_EmptyParmValue = 0x4A;
         private const int EX_InstanceDelegate = 0x4B;
+        private const int EX_StringRefConst = 0x4F;
         private const int EX_GoW_DefaultValue = 0x50;
         private const int EX_InterfaceContext = 0x51;
         private const int EX_InterfaceCast = 0x52;
@@ -742,8 +744,6 @@ namespace ME3Explorer.Unreal
                 try
                 {
                     pos += t.raw.Length;
-                    if (res.Count == 13)
-                        Debug.WriteLine("hi");
                     t = ReadToken(pos, export);
                     res.Add(t);
                 }
@@ -1166,8 +1166,8 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case 0x4F:
-                        newTok = Read4FAdd(start, export);
+                    case EX_StringRefConst: // 0x4F
+                        newTok = ReadStringRefConst(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3602,20 +3602,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        //statement as expression perhaps?
-        private static Token Read4FAdd(int start, ExportEntry export)
+        private static Token ReadStringRefConst(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             int pos = start + 5;
-            if (index != 0)
-            {
-                // no idea what this is supposed to be.
-                Token a = ReadToken(pos, export);
-                pos += a.raw.Length;
-                t.inPackageReferences.AddRange(a.inPackageReferences);
-                t.text = a.text;
-            }
+            t.text = $"${index}({ME3TalkFiles.findDataById(index)})";
 
             int len = pos - start;
             t.raw = new byte[len];

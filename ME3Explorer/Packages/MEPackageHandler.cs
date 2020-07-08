@@ -12,6 +12,7 @@ namespace ME3Explorer.Packages
     public static class MEPackageHandler
     {
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
+        private static object _openPackagesLock = new Object();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
@@ -25,26 +26,35 @@ namespace ME3Explorer.Packages
 
         public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage package;
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
-            if (forceLoadFromDisk || !openPackages.ContainsKey(pathToFile))
+
+            IMEPackage package;
+            if (forceLoadFromDisk)
+            {
+                package = LoadPackage(pathToFile);
+            }
+            else
+            {
+                package = openPackages.GetOrAdd(pathToFile, LoadPackage);
+            }
+
+            IMEPackage LoadPackage(string filePath)
             {
                 ushort version = 0;
                 ushort licenseVersion = 0;
-                uint versionLicenseePacked;
                 bool fullyCompressed = false;
-                using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     EndianReader er = new EndianReader(fs);
                     if (fs.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
 
                     // This is stored as integer by cooker as it is flipped by size word in big endian
-                    versionLicenseePacked = er.ReadUInt32();
+                    uint versionLicenseePacked = er.ReadUInt32();
                     if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little)
                     {
                         //block size - this is a fully compressed file. we must decompress it
                         //for some reason fully compressed files use a little endian package tag
-                        var usfile = pathToFile + ".us";
+                        var usfile = filePath + ".us";
                         if (File.Exists(usfile))
                         {
                             fullyCompressed = true;
@@ -58,7 +68,7 @@ namespace ME3Explorer.Packages
                     }
                 }
 
-
+                IMEPackage pkg;
                 if (fullyCompressed ||
                     (version == MEPackage.ME3UnrealVersion && (licenseVersion == MEPackage.ME3LicenseeVersion || licenseVersion == MEPackage.ME3Xenon2011DemoLicenseeVersion)) ||
                     version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
@@ -68,12 +78,12 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
                     version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
                 {
-                    package = MEConstructorDelegate(pathToFile, MEGame.Unknown);
+                    pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
-                    package = UDKConstructorDelegate(pathToFile, false);
+                    pkg = UDKConstructorDelegate(filePath, false);
                 }
                 else
                 {
@@ -82,13 +92,10 @@ namespace ME3Explorer.Packages
 
                 if (!forceLoadFromDisk)
                 {
-                    package.noLongerUsed += Package_noLongerUsed;
-                    openPackages.TryAdd(pathToFile, package);
+                    pkg.noLongerUsed += Package_noLongerUsed;
                 }
-            }
-            else
-            {
-                package = openPackages[pathToFile];
+
+                return pkg;
             }
 
             if (wpfWindow != null)

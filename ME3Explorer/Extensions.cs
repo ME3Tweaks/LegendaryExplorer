@@ -350,6 +350,7 @@ namespace ME3Explorer
             return removed;
         }
 
+        //IEnumerable containing everything after item
         public static IEnumerable<T> After<T>(this IEnumerable<T> src, T item)
         {
             using IEnumerator<T> enumerator = src.GetEnumerator();
@@ -361,11 +362,15 @@ namespace ME3Explorer
             }
         }
 
+
+        //IEnumerable containing everything before item
         public static IEnumerable<T> Before<T>(this IEnumerable<T> src, T item)
         {
             return src.TakeWhile(t => !t.Equals(item));
         }
 
+        //IEnumerable containing everything after item, then everything before item
+        //useful for looparound search starting in the middle of a list
         public static IEnumerable<T> AfterThenBefore<T>(this IEnumerable<T> src, T item)
         {
             return src.After(item).Concat(src.Before(item));

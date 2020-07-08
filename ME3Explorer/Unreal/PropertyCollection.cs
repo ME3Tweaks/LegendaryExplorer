@@ -28,7 +28,8 @@ namespace ME3Explorer.Unreal
         private readonly string TypeName;
         private readonly ClassInfo info;
         private readonly MEGame game;
-        private readonly ExportEntry _export;
+        private readonly string sourceFilePath;
+        private readonly int sourceExportUIndex;
 
         /// <summary>
         /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
@@ -70,16 +71,25 @@ namespace ME3Explorer.Unreal
                 return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
             }
             //dynamic lookup
-            ExportEntry exportToBuildFor = _export;
-            if (!_export.IsClass && _export.Class is ExportEntry classExport)
+            try
             {
-                exportToBuildFor = classExport;
+                using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackage(sourceFilePath);
+                ExportEntry exportToBuildFor = sourcePackage.GetUExport(sourceExportUIndex);
+                if (!exportToBuildFor.IsClass && exportToBuildFor.Class is ExportEntry classExport)
+                {
+                    exportToBuildFor = classExport;
+                }
+                ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                if (classInfo.TryGetPropInfo(name, game, out propInfo))
+                {
+                    return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                }
             }
-            ClassInfo classInfo = UnrealObjectInfo.generateClassInfo(exportToBuildFor);
-            if (classInfo.TryGetPropInfo(name, game, out propInfo))
+            catch
             {
-                return (T)UnrealObjectInfo.getDefaultProperty(game, name, propInfo, true, IsImmutable);
+                throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
             }
+
             throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
         }
 
@@ -130,7 +140,8 @@ namespace ME3Explorer.Unreal
 
         public PropertyCollection(ExportEntry export, string typeName)
         {
-            _export = export;
+            sourceExportUIndex = export.UIndex;
+            sourceFilePath = export.FileRef.FilePath;
             TypeName = typeName;
             game = export.FileRef.Game;
             info = UnrealObjectInfo.GetClassOrStructInfo(game, typeName);
