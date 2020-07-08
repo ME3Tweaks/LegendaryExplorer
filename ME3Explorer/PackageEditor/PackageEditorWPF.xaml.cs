@@ -130,14 +130,6 @@ namespace ME3Explorer
             }
         }
 
-        private bool _multiRelinkingModeActive;
-
-        public bool MultiRelinkingModeActive
-        {
-            get => _multiRelinkingModeActive;
-            set => SetProperty(ref _multiRelinkingModeActive, value);
-        }
-
 
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private const string RECENTFILES_FILE = "RECENTFILES";
@@ -277,8 +269,6 @@ namespace ME3Explorer
             SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
-            MultidropRelinkingCommand = new GenericCommand(EnableMultirelinkingMode, PackageIsLoaded);
-            PerformMultiRelinkCommand = new GenericCommand(PerformMultiRelink, CanPerformMultiRelink);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
             GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
             ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
@@ -744,13 +734,6 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanPerformMultiRelink() => MultiRelinkingModeActive && crossPCCObjectMap.Count > 0;
-
-        private void EnableMultirelinkingMode()
-        {
-            MultiRelinkingModeActive = true;
-        }
-
         private void entryDoubleClick(ListDialog.EntryItem clickedItem)
         {
             if (clickedItem?.ReferencedEntry != null && clickedItem.ReferencedEntry.UIndex != 0)
@@ -758,29 +741,6 @@ namespace ME3Explorer
                 GoToNumber(clickedItem.ReferencedEntry.UIndex);
             }
         }
-
-        //this might not be necessary anymore since we have experimental clone
-        private void PerformMultiRelink()
-        {
-            Debug.WriteLine("Performing multi-relink");
-            var entry = crossPCCObjectMap.Keys.FirstOrDefault();
-            var relinkResults = Relinker.RelinkAll(crossPCCObjectMap);
-            crossPCCObjectMap.Clear();
-
-
-            if (relinkResults.Count > 0)
-            {
-                ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this) { DoubleClickEntryHandler = entryDoubleClick };
-                ld.Show();
-            }
-            else
-            {
-                MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
-            }
-
-            MultiRelinkingModeActive = false;
-        }
-
 
         private void PopoutCurrentView()
         {
@@ -2460,7 +2420,7 @@ namespace ME3Explorer
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             List<PackageChange> changes = updates.Select(x => x.Change).ToList();
-            if (changes.Contains(PackageChange.Name))
+            if (changes.Any(x => x.HasFlag(PackageChange.Name)))
             {
                 foreach (ExportLoaderControl elc in ExportLoaders.Keys)
                 {
@@ -2941,34 +2901,11 @@ namespace ME3Explorer
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem && sourceItem.Parent != null)
             {
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
-                if (!MultiRelinkingModeActive)
-                {
-                    crossPCCObjectMap.Clear();
-                }
+                crossPCCObjectMap.Clear();
 
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
-                }
-
-                bool ClearRelinkingMapIfPortingContinues = false;
-                if (MultiRelinkingModeActive && crossPCCObjectMap.Count > 0)
-                {
-                    //Check the incoming file matches the object in Cross PCC Object Map, otherwise will will have to discard the map or cancel the porting
-                    var sentry = crossPCCObjectMap.Keys.First();
-                    if (sentry.FileRef != sourceItem.Entry.FileRef)
-                    {
-                        var promptResult = MessageBox.Show($"The item dropped does not come from the same package file as other items in your multi-drop relinking session:\n{sourceItem.Entry.FileRef.FilePath}\n\nContinuing will drop all items in your relinking session.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
-                        if (promptResult == MessageBoxResult.Cancel)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            ClearRelinkingMapIfPortingContinues = true;
-
-                        }
-                    }
                 }
 
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem, Pcc.Game);
@@ -2978,39 +2915,30 @@ namespace ME3Explorer
                     return;
                 }
 
-                if (ClearRelinkingMapIfPortingContinues)
-                {
-                    crossPCCObjectMap.Clear();
-                    MultiRelinkingModeActive = false;
-                }
 
                 if (sourceItem.Entry.FileRef == null)
                 {
                     return;
                 }
 
-                bool shouldRelink = !MultiRelinkingModeActive;
                 IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
 
                 int numExports = Pcc.ExportCount;
                 //Import!
-                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, shouldRelink, out IEntry newEntry, crossPCCObjectMap);
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
-                if (!MultiRelinkingModeActive)
+                crossPCCObjectMap.Clear();
+                if ((relinkResults?.Count ?? 0) > 0)
                 {
-                    crossPCCObjectMap.Clear();
-                    if ((relinkResults?.Count ?? 0) > 0)
-                    {
-                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
-                        ld.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
-                    }
+                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
+                    ld.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
                 }
 
                 RefreshView();
@@ -4435,7 +4363,7 @@ namespace ME3Explorer
                                 {
                                     foundClasses.Add(exp.ClassName);
                                 }
-                                else if(exp.GetBinaryData().Any(b => b != 0))
+                                else if (exp.GetBinaryData().Any(b => b != 0))
                                 {
                                     foundClasses.Add(exp.ClassName);
                                     interestingExports.Add($"{exp.ClassName,30} #{exp.UIndex}: {filePath}");
@@ -5158,6 +5086,40 @@ namespace ME3Explorer
 
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
+            var pl = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+            if (pl != null)
+            {
+                var persistentLevel = ObjectBinary.From<Level>(pl);
+                var nlSU = persistentLevel.NavListStart;
+                var nlS = Pcc.GetUExport(nlSU.value);
+                List<ExportEntry> navList = new List<ExportEntry>();
+                List<ExportEntry> itemsMissingFromWorldNPC = new List<ExportEntry>();
+                if (!persistentLevel.NavPoints.Any(x => x.value == nlS.UIndex))
+                {
+                    itemsMissingFromWorldNPC.Add(nlS);
+                }
+                var nnP = nlS.GetProperty<ObjectProperty>("nextNavigationPoint");
+                navList.Add(nlS);
+                Debug.WriteLine($"{nlS.UIndex} {nlS.InstancedFullPath}");
+                while (nnP != null)
+                {
+                    var nextNavigationPoint = nnP.ResolveToEntry(Pcc) as ExportEntry;
+                    Debug.WriteLine($"{nextNavigationPoint.UIndex} {nextNavigationPoint.InstancedFullPath}");
+                    if (!persistentLevel.NavPoints.Any(x => x.value == nextNavigationPoint.UIndex))
+                    {
+                        itemsMissingFromWorldNPC.Add(nextNavigationPoint);
+                    }
+                    navList.Add(nextNavigationPoint);
+                    nnP = nextNavigationPoint.GetProperty<ObjectProperty>("nextNavigationPoint");
+                }
+
+                Debug.WriteLine($"{navList.Count} items in actual nav chain");
+                foreach (var v in itemsMissingFromWorldNPC)
+                {
+                    Debug.WriteLine($"Item missing from NavPoints list: {v.UIndex} {v.InstancedFullPath}");
+                }
+            }
+
             //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
             //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
             //var gmplanet01 = me1em.GetUExport(940);
