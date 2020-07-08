@@ -1524,6 +1524,10 @@ namespace ME3Explorer.AssetDatabase
                     var line = (ConvoLine)lstbx_Lines.SelectedItem;
                     copytext = line.Line;
                     break;
+                case "StrRef":
+                    var lineref = (ConvoLine)lstbx_Lines.SelectedItem;
+                    copytext = lineref.StrRef.ToString();
+                    break;
                 default:
                     break;
             }
