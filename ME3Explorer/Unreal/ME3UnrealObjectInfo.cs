@@ -1128,20 +1128,20 @@ namespace ME3Explorer.Unreal
                 case "ClassProperty":
                 case "ComponentProperty":
                     type = PropertyType.ObjectProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.Data, entry.Data.Length - 4, entry.FileRef.Endian));
                     break;
                 case "StructProperty":
                     type = PropertyType.StructProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.Data, entry.Data.Length - 4, entry.FileRef.Endian));
                     break;
                 case "BioMask4Property":
                 case "ByteProperty":
                     type = PropertyType.ByteProperty;
-                    reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
+                    reference = pcc.getObjectName(EndianReader.ToInt32(entry.Data, entry.Data.Length - 4, entry.FileRef.Endian));
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
-                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(BitConverter.ToInt32(entry.Data, 44)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.Data, 44, entry.FileRef.Endian)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gammtek.Conduit.IO;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 
@@ -147,12 +148,12 @@ namespace ME3Explorer.Unreal.Classes
         public int GetNatIdx()
         {
 
-            return BitConverter.ToInt16(memory, memsize - 6);
+            return EndianReader.ToInt16(memory, memsize - 6, export.FileRef.Endian);
         }
 
         public int GetFlagInt()
         {
-            return BitConverter.ToInt32(memory, export.ClassName == "Function" ? memsize - 4 : memsize - 10);
+            return EndianReader.ToInt32(memory, export.ClassName == "Function" ? memsize - 4 : memsize - 10, export.FileRef.Endian);
         }
 
         public string GetFlags()
@@ -176,7 +177,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
                 {
-                    var uindexOfOuter = BitConverter.ToInt32(returnValue.Data, returnValue.Data.Length - 4);
+                    var uindexOfOuter = EndianReader.ToInt32(returnValue.Data, returnValue.Data.Length - 4, export.FileRef.Endian);
                     IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
                     if (entry != null)
                     {
