@@ -198,7 +198,7 @@ namespace ME3Explorer.AssetDatabase
         public ICommand LoadFileListCommand { get; set; }
         public ICommand SaveFileListCommand { get; set; }
         public ICommand EditFileListCommand { get; set; }
-
+        public ICommand CopyToClipboardCommand { get; set; }
         private bool CanCancelDump(object obj)
         {
             return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
@@ -287,6 +287,7 @@ namespace ME3Explorer.AssetDatabase
             LoadFileListCommand = new GenericCommand(LoadCustomFileList);
             SaveFileListCommand = new GenericCommand(SaveCustomFileList);
             EditFileListCommand = new RelayCommand(EditCustomFileList);
+            CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
         }
 
         private void AssetDB_Loaded(object sender, RoutedEventArgs e)
@@ -1498,7 +1499,6 @@ namespace ME3Explorer.AssetDatabase
                 animImporter.Activate();
             }
         }
-
         private string GetFilePath(int fileListIndex)
         {
             (string filename, string contentdir) = FileListExtended[fileListIndex];
@@ -1512,6 +1512,28 @@ namespace ME3Explorer.AssetDatabase
                 ToggleLinePlayback(); ;
             }
         }
+        private void CopyStringToClipboard(object obj)
+        {
+            if (!(obj is string cmd))
+                return;
+            Clipboard.Clear();
+            string copytext = null;
+            switch (cmd)
+            {
+                case "Line":
+                    var line = (ConvoLine)lstbx_Lines.SelectedItem;
+                    copytext = line.Line;
+                    break;
+                default:
+                    break;
+            }
+
+            if (copytext == null)
+                return;
+
+            Clipboard.SetText(copytext);
+        }
+
         #endregion
 
         #region Filters
