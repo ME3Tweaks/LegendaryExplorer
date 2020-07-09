@@ -33,6 +33,7 @@ using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
 using ME3Explorer.ME3Tweaks;
 using ME3Explorer.Meshplorer;
+using ME3Explorer.PackageEditor;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
@@ -5117,41 +5118,14 @@ namespace ME3Explorer
             }
         }
 
+        private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.ValidateNavpointChain(Pcc);
+        }
+
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
-            var pl = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
-            if (pl != null)
-            {
-                var persistentLevel = ObjectBinary.From<Level>(pl);
-                var nlSU = persistentLevel.NavListStart;
-                var nlS = Pcc.GetUExport(nlSU.value);
-                List<ExportEntry> navList = new List<ExportEntry>();
-                List<ExportEntry> itemsMissingFromWorldNPC = new List<ExportEntry>();
-                if (!persistentLevel.NavPoints.Any(x => x.value == nlS.UIndex))
-                {
-                    itemsMissingFromWorldNPC.Add(nlS);
-                }
-                var nnP = nlS.GetProperty<ObjectProperty>("nextNavigationPoint");
-                navList.Add(nlS);
-                Debug.WriteLine($"{nlS.UIndex} {nlS.InstancedFullPath}");
-                while (nnP != null)
-                {
-                    var nextNavigationPoint = nnP.ResolveToEntry(Pcc) as ExportEntry;
-                    Debug.WriteLine($"{nextNavigationPoint.UIndex} {nextNavigationPoint.InstancedFullPath}");
-                    if (!persistentLevel.NavPoints.Any(x => x.value == nextNavigationPoint.UIndex))
-                    {
-                        itemsMissingFromWorldNPC.Add(nextNavigationPoint);
-                    }
-                    navList.Add(nextNavigationPoint);
-                    nnP = nextNavigationPoint.GetProperty<ObjectProperty>("nextNavigationPoint");
-                }
-
-                Debug.WriteLine($"{navList.Count} items in actual nav chain");
-                foreach (var v in itemsMissingFromWorldNPC)
-                {
-                    Debug.WriteLine($"Item missing from NavPoints list: {v.UIndex} {v.InstancedFullPath}");
-                }
-            }
+            
 
             //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
             //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
@@ -5400,69 +5374,9 @@ namespace ME3Explorer
         private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
         {
             var selected = GetSelected(out var uindex);
-            if (selected)
+            if (selected && uindex > 0)
             {
-                var offsetX = int.Parse(PromptDialog.Prompt(this, "Enter X offset", "Offset X", "0", true));
-                var offsetY = int.Parse(PromptDialog.Prompt(this, "Enter Y offset", "Offset Y", "0", true));
-                var offsetZ = int.Parse(PromptDialog.Prompt(this, "Enter Z offset", "Offset Z", "0", true));
-                var export = Pcc.GetUExport(uindex);
-                var numFrames = export.GetProperty<IntProperty>("NumFrames");
-                var TrackOffsets = export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
-                var bin = export.GetBinaryData();
-                var mem = new MemoryStream(bin);
-                var len = mem.ReadInt32();
-                var animBinStart = mem.Position;
-                for (int i = 0; i < TrackOffsets.Count; i++)
-                {
-                    var bonePosOffset = TrackOffsets[i].Value;
-                    i++;
-                    var bonePosCount = TrackOffsets[i].Value;
-                    //var BoneID = new BinInterpNode
-                    //{
-                    //    Header = $"0x{offset:X5} Bone: {bone} {boneList[bone].Value}",
-                    //    Name = "_" + offset,
-                    //    Tag = NodeType.Unknown
-                    //};
-                    //subnodes.Add(BoneID);
-
-                    for (int j = 0; j < bonePosCount; j++)
-                    {
-                        var offset = mem.Position;
-
-                        var posX = mem.ReadSingle();
-                        mem.Position -= 4;
-                        mem.WriteSingle(posX + offsetX);
-
-                        var posY = mem.ReadSingle();
-                        mem.Position -= 4;
-                        mem.WriteSingle(posY + offsetY);
-
-                        var posZ = mem.ReadSingle();
-                        mem.Position -= 4;
-                        mem.WriteSingle(posZ + offsetZ);
-
-                        Debug.WriteLine($"PosKey {j}: X={posX},Y={posY},Z={posZ}");
-                    }
-
-                    //rotation
-                    i++;
-                    var boneRotOffset = TrackOffsets[i].Value;
-                    i++;
-                    var boneRotCount = TrackOffsets[i].Value;
-
-                    //only support 96NoW
-                    mem.Position = boneRotOffset + animBinStart;
-                    for (int j = 0; j < boneRotCount; j++)
-                    {
-                        var offset = mem.Position;
-                        var rotX = mem.ReadSingle();
-                        var rotY = mem.ReadSingle();
-                        var rotZ = mem.ReadSingle();
-                        Debug.WriteLine($"RotKey {j}: X={rotX},Y={rotY},Z={rotZ}");
-                    }
-                }
-
-                export.SetBinaryData(mem.ToArray());
+                PackageEditorExperiments.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
             }
         }
 
@@ -5527,6 +5441,11 @@ namespace ME3Explorer
                 GoToNumber(index);
                 IsBackForwardsNavigationEvent = false;
             }
+        }
+
+        private void CreateTestPatchDelta_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.BuildTestPatchComparison();
         }
     }
 }

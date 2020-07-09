@@ -294,6 +294,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>

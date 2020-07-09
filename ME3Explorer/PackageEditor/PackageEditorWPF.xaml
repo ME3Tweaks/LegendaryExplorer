@@ -220,12 +220,8 @@
                 <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebugVisibility}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
-                    <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
-                    <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
-                    <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
                     <MenuItem Header="Rebuild Object Infos">
                         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
                         <MenuItem Header="Build ME2 Object Info" Click="BuildME2ObjectInfo_Clicked"/>
@@ -235,29 +231,45 @@
                         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
                         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
-                    <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
-                    <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
-                    <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
-                    <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
-                    <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
-                    <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
-                    <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
-                    <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
-                    <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
-                    <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
-                    <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
-                    <MenuItem Header="Make all Dialogue Nodes in game skippable" Click="ConvertAllDialogueToSkippable_Click"/>
-                    <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
-                    <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
-                    <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
-                    <MenuItem Header="UDKify" Click="UDKifyTest"/>
-                    <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
-                    <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
-                    <MenuItem Header="MGAMERZ - Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
-                    <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
+                    <MenuItem Header="Mgamerz's Programming Circus">
+                        <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
+                        <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
+                        <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
+                        <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
+
+                        <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
+                        <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
+                        <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
+
+                        <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
+                        <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
+                        <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
+                        <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
+                        <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
+                        <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
+
+                        <MenuItem Header="Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
+                        <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
+                        <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
+
+                    </MenuItem>
+                    <MenuItem Header="SirCxyrtyx's Code Emporium">
+                        <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
+                        <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
+                        <MenuItem Header="Make all Dialogue Nodes in game skippable" Click="ConvertAllDialogueToSkippable_Click"/>
+                        <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
+                        <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
+                        <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
+                        <MenuItem Header="UDKify" Click="UDKifyTest"/>
+                        <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
+                        <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
+                    </MenuItem>
+                    
+                    
+                    
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
