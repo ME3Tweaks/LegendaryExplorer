@@ -99,21 +99,21 @@ namespace ME3Explorer.Unreal
              { 0x56, "EX_DynArrayRemoveItem" },
              { 0x57, "EX_DynArrayInsertItem" },
              { 0x58, "EX_DynArrayIterator" },
+             { 0x59, "EX_DynArraySort" },
              { 0x5E, "EX_Unkn1" },
              { 0x5B, "EX_Unkn2" },
              { 0x61, "EX_Unkn3" },
              { 0x62, "EX_Unkn4" },
              { 0x5C, "EX_Unkn5" },
              { 0x65, "EX_Unkn6" },
-             { 0x64, "EX_Unkn7" },
-             { 0x63, "EX_Unkn8" },
+             { 0x64, "EX_OptIfInstance" },
+             { 0x63, "EX_OptIfLocal" },
              { 0x5D, "EX_Unkn9" },
              { 0x5F, "EX_Unkn10" },
              { 0x60, "EX_Unkn11" },
              { 0x6A, "EX_Unkn12" },
              { 0x6E, "EX_Unkn13" },
-             { 0x5A, "EX_Unkn14" },
-             { 0x59, "EX_Unkn15" },
+             { 0x5A, "EX_FilterEditorOnly" },
              { 0x0218, "NATIVE_SaveConfig" },
              { 0x0076, "NATIVE_Disable" },
              { 0x0075, "NATIVE_Enable" },
@@ -407,23 +407,24 @@ namespace ME3Explorer.Unreal
         private const int EX_DynArrayRemoveItem = 0x56;
         private const int EX_DynArrayInsertItem = 0x57;
         private const int EX_DynArrayIterator = 0x58;
+        private const int EX_DynArraySort = 0x59;
+        private const int EX_FilterEditorOnly = 0x5A;
 
-
-        private const int EX_Unkn1 = 0x5E;
         private const int EX_Unkn2 = 0x5B;
-        private const int EX_Unkn3 = 0x61;
-        private const int EX_Unkn4 = 0x62;
         private const int EX_Unkn5 = 0x5C;
-        private const int EX_Unkn6 = 0x65;
-        private const int EX_Unkn7 = 0x64;
-        private const int EX_Unkn8 = 0x63;
         private const int EX_Unkn9 = 0x5D;
+        private const int EX_Unkn1 = 0x5E;
         private const int EX_Unkn10 = 0x5F;
         private const int EX_Unkn11 = 0x60;
+        private const int EX_Unkn3 = 0x61;
+        private const int EX_Unkn4 = 0x62;
+
+        private const int EX_OptIfLocal = 0x63;
+        private const int EX_OptIfInstance = 0x64;
+
+        private const int EX_Unkn6 = 0x65;
         private const int EX_Unkn12 = 0x6A;
         private const int EX_Unkn13 = 0x6E;
-        private const int EX_Unkn14 = 0x5A;
-        private const int EX_Unkn15 = 0x59;
 
 
 
@@ -1226,14 +1227,14 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn15: // 0x59
-                        newTok = ReadUnkn15(start, export);
+                    case EX_DynArraySort: // 0x59
+                        newTok = ReadArrayArg(start, "Sort", export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn14: // 0x5A
-                        newTok = ReadUnkn14(start, export);
+                    case EX_FilterEditorOnly: // 0x5A
+                        newTok = ReadFilterEditorOnly(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -1288,14 +1289,14 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn8: //0x63
-                        newTok = ReadUnkn8(start, export);
+                    case EX_OptIfLocal: //0x63
+                        newTok = ReadObjectConditionalJump(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn7: //0x64
-                        newTok = ReadUnkn7(start, export);
+                    case EX_OptIfInstance: //0x64
+                        newTok = ReadObjectConditionalJump(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -1337,7 +1338,7 @@ namespace ME3Explorer.Unreal
                 }
             }
             BytecodeSingularToken msg = new BytecodeSingularToken();
-            byteOpnameMap.TryGetValue(t < 0x60 ? (short)t : newTok.op, out string opname);
+            byteOpnameMap.TryGetValue(t < 0x6F ? (short)t : newTok.op, out string opname);
             if (string.IsNullOrEmpty(opname))
             {
                 opname = $"UNKNOWN(0x{t:X2})";
@@ -3557,14 +3558,12 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn14(int start, ExportEntry export)
+        private static Token ReadFilterEditorOnly(int start, ExportEntry export)
         {
             Token t = new Token();
+            int offset = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
+            t.text = $"If Not In Editor Goto(0x{offset:X});";
             int pos = start + 3;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            pos += a.raw.Length;
-            t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
             for (int i = 0; i < len; i++)
@@ -4048,20 +4047,25 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn8(int start, ExportEntry export)
+        private static Token ReadObjectConditionalJump(int start, ExportEntry export)
         {
             Token t = new Token();
 
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+            bool check = memory[start + 5] != 0;
+            int offset = EndianReader.ToInt16(memory, start + 6, export.FileRef.Endian);
 
-            t.text = "If(" + export.FileRef.getObjectName(index) + "){"; //remove == null for normal
+            if (!check)
+            {
+                t.text = $"If ({export.FileRef.getObjectName(index)}) Goto(0x{offset:X});";
+            }
+            else
+            {
+                t.text = $"If (!{export.FileRef.getObjectName(index)}) Goto(0x{offset:X});";
+            }
             int pos = start + 8;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
 
-            t.text += a.text + "}";
-            pos += a.raw.Length;
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)

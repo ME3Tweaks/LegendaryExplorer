@@ -4158,6 +4158,10 @@ namespace ME3Explorer
                     //if (findClass(filePath, "WwiseBank", true)) break;
                     //findClassesWithBinary(filePath);
                     ScanScripts(filePath);
+                    if (interestingExports.Any())
+                    {
+                        break;
+                    }
                     continue;
 
                     #region Header Scan
@@ -4502,9 +4506,9 @@ namespace ME3Explorer
                         if (exp.ClassName == "Function" && ObjectBinary.From(exp) is UStruct uStruct)
                         {
                             (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
-                            if (tokens.FirstOrDefault(token => token.OpCode == "[0x4F] EX_StringRefConst") is {} token)
+                            if (tokens.FirstOrDefault(token => token.OpCode.StartsWith("[0x65]") || token.OpCode.StartsWith("[0x6A]") || token.OpCode.StartsWith("[0x6E]")) is {} token)
                             {
-                                interestingExports.Add($"{token.StartPos} #{exp.UIndex}: {filePath}");
+                                interestingExports.Add($"{token.StartPos:X} #{exp.UIndex}: {filePath}");
                             }
                         }
                     }
