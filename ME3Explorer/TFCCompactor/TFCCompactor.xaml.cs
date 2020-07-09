@@ -259,7 +259,7 @@ namespace ME3Explorer.TFCCompactor
         public static string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting", "Movies" };
         private void BeginReferencedTFCScan()
         {
-            backgroundWorker = new BackgroundWorker {WorkerReportsProgress = true};
+            backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
             var dlcDir = SelectedGame.DLCPath;
             dlcDir = Path.Combine(dlcDir, SelectedDLCModFolder);
 
@@ -300,7 +300,7 @@ namespace ME3Explorer.TFCCompactor
                         if (movieScan)
                         {
                             var movieExports = package.Exports.Where(x => x.ClassName == "TextureMovie");
-                            foreach( var movietexture in movieExports)
+                            foreach (var movietexture in movieExports)
                             {
                                 if (movietexture.GetProperty<NameProperty>("TextureFileCacheName") is NameProperty tfcNameProperty)
                                 {
@@ -370,11 +370,11 @@ namespace ME3Explorer.TFCCompactor
 
         private void BeginTFCCompaction()
         {
-            backgroundWorker = new BackgroundWorker {WorkerReportsProgress = true};
+            backgroundWorker = new BackgroundWorker { WorkerReportsProgress = true };
             string sourceGamePath = Path.GetDirectoryName(Path.GetDirectoryName(SelectedGame.DLCPath));
             string workingGamePath = StagingDirectory; //Todo: Allow user to change this path
 
-            if(movieScan)
+            if (movieScan)
             {
                 backgroundWorker.DoWork += (a, b) =>
                 {
@@ -595,6 +595,33 @@ namespace ME3Explorer.TFCCompactor
                                 else
                                 {
                                     //Can't find TFC!
+
+                                    //Can we try ME3Tweaks backup?
+                                    var me3BackupPath = ME3Tweaks.ME3TweaksBackups.GetGameBackupPath(MEGame.ME3);
+                                    if (me3BackupPath != null && Directory.Exists(me3BackupPath))
+                                    {
+                                        sfar = Path.Combine(me3BackupPath, "BioGame", "DLC", dlcFolderName, "CookedPCConsole", "Default.sfar");
+                                        if (File.Exists(sfar) && new FileInfo(sfar).Length > 32)
+                                        {
+                                            //sfar exists and is not fully unpacked (with mem style 32 byte sfar)
+                                            DLCPackage p = new DLCPackage(sfar);
+                                            var tfcIndex = p.FindFileEntry(tfcShortName + ".tfc");
+                                            if (tfcIndex >= 0)
+                                            {
+                                                var tfcMemory = p.DecompressEntry(tfcIndex);
+                                                File.WriteAllBytes(destPath, tfcMemory.ToArray());
+                                                tfcMemory.Close();
+                                                continue; //OK
+                                            }
+                                            else
+                                            {
+                                                //Can't find TFC!
+                                                b.Result = (CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory OR backup path: {tfc}");
+                                                return;
+                                            }
+                                        }
+                                    }
+
                                     b.Result = (CompactionResult.RESULT_ERROR_TFC_NOT_FOUND, $"Unable to find TFC for compaction in game directory: {tfc}");
                                     return;
                                 }
@@ -741,7 +768,7 @@ namespace ME3Explorer.TFCCompactor
 
                 };
             }
-            
+
             backgroundWorker.ProgressChanged += (a, b) =>
             {
                 if (b.UserState is ThreadCommand tc)
