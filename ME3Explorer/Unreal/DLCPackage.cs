@@ -377,7 +377,7 @@ namespace ME3Explorer.Unreal
                         currentLZXCompressedSize += compressedBlockSize;
 
                         inputBlock = new byte[compressedBlockSize];
-                        //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
+                        Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
                         fs.Read(inputBlock, 0, (int)compressedBlockSize);
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         if (Header.CompressionScheme == "amzl")
@@ -387,7 +387,7 @@ namespace ME3Explorer.Unreal
                                 throw new Exception("Decompression Error");
                             result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
                             left -= uncompressedBlockSize;
-                            continue;
+                            //continue;
                         }
 
                         if (Header.CompressionScheme == "lzx")
