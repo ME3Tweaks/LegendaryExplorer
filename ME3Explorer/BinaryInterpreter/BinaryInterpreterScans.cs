@@ -5384,7 +5384,7 @@ namespace ME3Explorer
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, "")));
+                    subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, $"{i}: ")));
                 }
             }
             catch (Exception ex)

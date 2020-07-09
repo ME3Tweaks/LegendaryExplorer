@@ -105,7 +105,7 @@ namespace ME3Explorer.Unreal
              { 0x61, "EX_Unkn3" },
              { 0x62, "EX_Unkn4" },
              { 0x5C, "EX_Unkn5" },
-             { 0x65, "EX_Unkn6" },
+             { 0x65, "EX_NamedFunction" },
              { 0x64, "EX_OptIfInstance" },
              { 0x63, "EX_OptIfLocal" },
              { 0x5D, "EX_Unkn9" },
@@ -419,8 +419,7 @@ namespace ME3Explorer.Unreal
 
         private const int EX_OptIfLocal = 0x63;
         private const int EX_OptIfInstance = 0x64;
-
-        private const int EX_Unkn6 = 0x65;
+        private const int EX_NamedFunction = 0x65;
 
 
 
@@ -1297,8 +1296,8 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn6: //0x65
-                        newTok = ReadUnkn6(start, export);
+                    case EX_NamedFunction: //0x65
+                        newTok = ReadNamedFunction(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -4169,14 +4168,17 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn6(int start, ExportEntry export)
+        private static Token ReadNamedFunction(int start, ExportEntry export)
         {
             Token t = new Token();
+            int pos = start + 1;
+            int nameIdx = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, nameIdx));
+            pos += 8;
+            int funcIndex = EndianReader.ToUInt16(memory, pos, export.FileRef.Endian); //index of this function in the class' Full Function List
+            pos += 2;
 
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
-            t.text = export.FileRef.GetNameEntry(index);
-            int pos = start + 11; //originally 11?
+            t.text = export.FileRef.GetNameEntry(nameIdx);
             t.text += "(";
             int count = 0;
             while (pos < memsize - 6)
