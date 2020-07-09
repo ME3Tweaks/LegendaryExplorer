@@ -111,8 +111,6 @@ namespace ME3Explorer.Unreal
              { 0x5D, "EX_Unkn9" },
              { 0x5F, "EX_Unkn10" },
              { 0x60, "EX_Unkn11" },
-             { 0x6A, "EX_Unkn12" },
-             { 0x6E, "EX_Unkn13" },
              { 0x5A, "EX_FilterEditorOnly" },
              { 0x0218, "NATIVE_SaveConfig" },
              { 0x0076, "NATIVE_Disable" },
@@ -423,8 +421,6 @@ namespace ME3Explorer.Unreal
         private const int EX_OptIfInstance = 0x64;
 
         private const int EX_Unkn6 = 0x65;
-        private const int EX_Unkn12 = 0x6A;
-        private const int EX_Unkn13 = 0x6E;
 
 
 
@@ -1303,18 +1299,6 @@ namespace ME3Explorer.Unreal
                         break;
                     case EX_Unkn6: //0x65
                         newTok = ReadUnkn6(start, export);
-                        newTok.stop = false;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                    case EX_Unkn12: // 0x6A
-                        newTok = ReadUnkn12(start, export);
-                        newTok.stop = false;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                    case EX_Unkn13: // 0x6E
-                        newTok = ReadUnkn13(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3571,21 +3555,6 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn13(int start, ExportEntry export)
-        {
-            Token t = new Token();
-            int pos = start + 2;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            pos += a.raw.Length;
-            t.text = a.text;
-            int len = pos - start;
-            t.raw = new byte[len];
-            for (int i = 0; i < len; i++)
-                t.raw[i] = memory[start + i];
-            return t;
-        }
-
         private static Token ReadGoWVal(int start, ExportEntry export)
         {
             Token t = new Token();
@@ -3637,21 +3606,6 @@ namespace ME3Explorer.Unreal
 
             }
             t.text += ");";
-            int len = pos - start;
-            t.raw = new byte[len];
-            for (int i = 0; i < len; i++)
-                t.raw[i] = memory[start + i];
-            return t;
-        }
-
-        private static Token ReadUnkn12(int start, ExportEntry export)
-        {
-            Token t = new Token();
-            int pos = start + 3;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            pos += a.raw.Length;
-            t.text = a.text;
             int len = pos - start;
             t.raw = new byte[len];
             for (int i = 0; i < len; i++)
@@ -4765,9 +4719,9 @@ namespace ME3Explorer.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             int pos = start + a.raw.Length + 1;
-            int expSize = EndianReader.ToInt16(memory, pos, export.FileRef.Endian); //memory size?
+            int expSize = EndianReader.ToInt16(memory, pos, export.FileRef.Endian); //mem size to skip if a is null
             pos += 2;
-            int unkRef = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            int unkRef = EndianReader.ToInt32(memory, pos, export.FileRef.Endian); //property corresponding to the return value 
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
             pos += 5;
             Token b = ReadToken(pos, export);
