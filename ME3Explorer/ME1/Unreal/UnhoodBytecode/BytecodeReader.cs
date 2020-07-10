@@ -51,7 +51,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
             opcodetext = $"[{((byte)OpCode):X2}] {opcodetext}";
             bcst.CurrentStack = _text;
-            bcst.OpCode = opcodetext;
+            bcst.OpCodeString = opcodetext;
             bcst.StartPos = _offset + scriptStartOffset;
             return bcst;
         }

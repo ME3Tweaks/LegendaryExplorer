@@ -4190,6 +4190,13 @@ namespace ME3Explorer
             d.Show();
         }
 
+        class OpcodeInfo
+        {
+            public readonly HashSet<string> PropTypes = new HashSet<string>();
+            public readonly HashSet<string> PropLocations = new HashSet<string>();
+            public readonly List<(string filePath, int uIndex, int position)> Usages = new List<(string filePath, int uIndex, int position)>();
+        }
+
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
@@ -4198,34 +4205,17 @@ namespace ME3Explorer
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
+
+
+            var unkOpcodes = Enumerable.Range(0x5B, 8).ToList();
+            unkOpcodes.Add(0);
+            unkOpcodes.Add(1);
+            var unkOpcodesInfo = unkOpcodes.ToDictionary(i => i, i => new OpcodeInfo());
+
             IsBusy = true;
             BusyText = "Scanning";
             Task.Run(() =>
             {
-                var unknown4ME2Set = new HashSet<int>();
-                var me2FlagsDict = new Dictionary<int, EPackageFlags>
-                {
-                    [104398850] = (EPackageFlags)0xFFFFFFFF,
-                    [104857600] = (EPackageFlags)0xFFFFFFFF,
-                    [104857603] = (EPackageFlags)0xFFFFFFFF,
-                    [104398851] = (EPackageFlags)0xFFFFFFFF,
-                    [105119752] = (EPackageFlags)0xFFFFFFFF,
-                    [105119751] = (EPackageFlags)0xFFFFFFFF,
-                    [105119744] = (EPackageFlags)0xFFFFFFFF,
-                    [105054209] = (EPackageFlags)0xFFFFFFFF,
-                    [104529921] = (EPackageFlags)0xFFFFFFFF,
-                    [105119746] = (EPackageFlags)0xFFFFFFFF,
-                };
-                var unknown6ME3Set = new HashSet<int>();
-                var me3FlagsDict = new Dictionary<int, EPackageFlags>
-                {
-                    [355663872] = (EPackageFlags)0xFFFFFFFF,
-                    [355663876] = (EPackageFlags)0xFFFFFFFF,
-                    [355663879] = (EPackageFlags)0xFFFFFFFF,
-                    [355663877] = (EPackageFlags)0xFFFFFFFF,
-                    [355663874] = (EPackageFlags)0xFFFFFFFF,
-                    [355663881] = (EPackageFlags)0xFFFFFFFF,
-                };
                 foreach (string filePath in filePaths)
                 {
                     //ScanShaderCache(filePath);
@@ -4236,155 +4226,60 @@ namespace ME3Explorer
                     //if (findClass(filePath, "WwiseBank", true)) break;
                     //findClassesWithBinary(filePath);
                     ScanScripts(filePath);
-                    if (interestingExports.Count > 0)
-                    {
-                        break;
-                    }
-                    continue;
-
-                    #region Header Scan
-
-                    try
-                    {
-                        using (var fs = File.OpenRead(filePath))
-                        {
-                            int magic = fs.ReadInt32();
-                            ushort unrealVersion = fs.ReadUInt16();
-                            MEGame meGame = unrealVersion == 491 ? MEGame.ME1 : unrealVersion == 512 ? MEGame.ME2 : MEGame.ME3;
-                            ushort licenseeVersion = fs.ReadUInt16();
-                            uint fullheadersize = fs.ReadUInt32();
-                            int foldernameStrLen = fs.ReadInt32();
-                            if (foldernameStrLen > 0)
-                            {
-                                string str = fs.ReadStringASCIINull(foldernameStrLen);
-                            }
-                            else
-                            {
-                                string str = fs.ReadStringUnicodeNull(foldernameStrLen * -2);
-                            }
-
-                            EPackageFlags flags = (EPackageFlags)fs.ReadUInt32();
-
-                            if (meGame == MEGame.ME3 && flags.HasFlag(EPackageFlags.Cooked))
-                            {
-                                int unknown1 = fs.ReadInt32();
-                            }
-
-                            uint nameCount = fs.ReadUInt32();
-                            uint nameOffset = fs.ReadUInt32();
-                            uint exportCount = fs.ReadUInt32();
-                            uint exportOffset = fs.ReadUInt32();
-                            uint importCount = fs.ReadUInt32();
-                            uint importOffset = fs.ReadUInt32();
-                            uint dependencyTableOffset = fs.ReadUInt32();
-
-                            if (meGame == MEGame.ME3)
-                            {
-                                uint importExportGuidsOffset = fs.ReadUInt32();
-                                uint importGuidsCount = fs.ReadUInt32();
-                                uint exportGuidsCount = fs.ReadUInt32();
-                                uint thumbnailTableOffset = fs.ReadUInt32();
-                            }
-
-                            Guid packageGuid = fs.ReadGuid();
-                            uint generationsTableCount = fs.ReadUInt32();
-
-                            for (int i = 0; i < generationsTableCount; i++)
-                            {
-                                uint generationExportcount = fs.ReadUInt32();
-                                uint generationImportcount = fs.ReadUInt32();
-                                uint generationNetcount = fs.ReadUInt32();
-                            }
-
-                            int engineVersion = fs.ReadInt32();
-                            int cookedContentVersion = fs.ReadInt32();
-
-                            if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
-                            {
-                                int unknown2 = fs.ReadInt32();
-                                int unknown3 = fs.ReadInt32();
-                                int unknown4 = fs.ReadInt32();
-                                int unknown5 = fs.ReadInt32();
-                                if (meGame == MEGame.ME2)
-                                {
-                                    unknown4ME2Set.Add(unknown4);
-                                    me2FlagsDict[unknown4] &= flags;
-                                }
-                            }
-
-                            int unknown6 = fs.ReadInt32();
-                            int unknown7 = fs.ReadInt32();
-                            if (meGame == MEGame.ME3)
-                            {
-                                unknown6ME3Set.Add(unknown6);
-                                me3FlagsDict[unknown6] &= flags;
-                            }
-
-                            if (meGame == MEGame.ME1)
-                            {
-                                int unknown8 = fs.ReadInt32();
-                            }
-
-                            UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)fs.ReadUInt32();
-                            int numChunks = fs.ReadInt32();
-                            var compressedOffsets = new int[numChunks];
-                            for (int i = 0; i < numChunks; i++)
-                            {
-                                int uncompressedOffset = fs.ReadInt32();
-                                int uncompressedSize = fs.ReadInt32();
-                                compressedOffsets[i] = fs.ReadInt32();
-                                int compressedSize = fs.ReadInt32();
-                            }
-
-                            uint packageSource = fs.ReadUInt32();
-
-                            if (meGame == MEGame.ME2 || meGame == MEGame.ME1)
-                            {
-                                int unknown9 = fs.ReadInt32();
-                            }
-
-                            if (meGame == MEGame.ME2 || meGame == MEGame.ME3)
-                            {
-                                int additionalPackagesToCookCount = fs.ReadInt32();
-                                var additionalPackagesToCook = new string[additionalPackagesToCookCount];
-                                for (int i = 0; i < additionalPackagesToCookCount; i++)
-                                {
-                                    int strLen = fs.ReadInt32();
-                                    if (strLen > 0)
-                                    {
-                                        additionalPackagesToCook[i] = fs.ReadStringASCIINull(strLen);
-                                    }
-                                    else
-                                    {
-                                        additionalPackagesToCook[i] = fs.ReadStringUnicodeNull(strLen * -2);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception exception) when (!App.IsDebug)
-                    {
-                        interestingExports.Add($"{filePath}\n{exception}");
-                        break;
-                    }
-
-                    #endregion
+                    //if (interestingExports.Count > 0)
+                    //{
+                    //    break;
+                    //}
                 }
 
                 return;
-                interestingExports.Add($"unknown4 ME2: {string.Join(", ", unknown4ME2Set)}");
-                foreach ((int unknown, EPackageFlags value) in me2FlagsDict)
-                {
-                    interestingExports.Add($"{unknown}: {value}");
-                }
-
-                interestingExports.Add($"unknown6 ME3: {string.Join(", ", unknown6ME3Set)}");
-                foreach ((int unknown, EPackageFlags value) in me3FlagsDict)
-                {
-                    interestingExports.Add($"{unknown}: {value}");
-                }
             }).ContinueWithOnUIThread(prevTask =>
             {
+                using (var fs = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OpcodesInfo.txt"), FileMode.Create))
+                using (var writer = new CodeWriter(fs))
+                {
+                    foreach ((int opCode, OpcodeInfo info) in unkOpcodesInfo)
+                    {
+                        writer.WriteLine($"OpCode: 0x{opCode:X}");
+                        writer.IncreaseIndent();
+                        writer.WriteLine($"NumUsages: {info.Usages.Count}");
+                        writer.WriteLine(nameof(info.PropTypes));
+                        writer.IncreaseIndent();
+                        foreach (var propType in info.PropTypes)
+                        {
+                            writer.WriteLine(propType);
+                        }
+                        writer.DecreaseIndent();
+                        writer.WriteLine(nameof(info.PropLocations));
+                        writer.IncreaseIndent();
+                        foreach (var location in info.PropLocations)
+                        {
+                            writer.WriteLine(location);
+                        }
+                        writer.DecreaseIndent();
+                        writer.DecreaseIndent();
+                    }
+                    //writer.WriteLine();
+                    //writer.WriteLine();
+                    //writer.WriteLine("================================================================");
+                    //writer.WriteLine("                           USAGES");
+                    //writer.WriteLine("================================================================");
+                    //writer.WriteLine();
+                    //writer.WriteLine();
+                    //foreach ((int opCode, OpcodeInfo info) in unkOpcodesInfo)
+                    //{
+                    //    writer.WriteLine();
+                    //    writer.WriteLine();
+                    //    writer.WriteLine($"OpCode: 0x{opCode:X}");
+                    //    writer.IncreaseIndent();
+                    //    foreach ((string filePath, int uIndex, int position) in info.Usages)
+                    //    {
+                    //        writer.WriteLine($"0x{position,-5:X} #{uIndex,-10} {filePath}");
+                    //    }
+                    //    writer.DecreaseIndent();
+                    //}
+                }
+
                 IsBusy = false;
                 var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this);
                 listDlg.Show();
@@ -4456,39 +4351,6 @@ namespace ME3Explorer
                         }
                     }
                 }
-            }
-
-            bool ScanLightComponents(string filePath)
-            {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
-                {
-                    var exports = pcc.Exports.Where(exp => exp.IsA("DominantSpotLightComponent"));
-                    foreach (ExportEntry exp in exports)
-                    {
-                        try
-                        {
-                            MemoryStream bin = new MemoryStream(exp.Data);
-                            bin.JumpTo(exp.propsEnd());
-
-                            while (bin.Position < bin.Length)
-                            {
-                                if (bin.ReadByte() > 0)
-                                {
-                                    interestingExports.Add($"{exp.UIndex}: {filePath}");
-                                    return true;
-                                }
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
             }
 
             void ScanShaderCache(string filePath)
@@ -4583,22 +4445,46 @@ namespace ME3Explorer
                     {
                         if (exp.ClassName == "Function" && ObjectBinary.From(exp) is UStruct uStruct)
                         {
+                            byte[] data = exp.Data;
                             (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
-                            if (tokens.FirstOrDefault(tok => tok.OpCode.Contains("UNKNOWN")) is { } token)
+                            foreach (var token in tokens)
                             {
-                                interestingExports.Add($"{token.StartPos:X} #{exp.UIndex}: {filePath}");
-                            }
-                            continue;
-                            var x65Toks = tokens.Where(token => token.OpCode.StartsWith("[0x65]")).ToList();
-                            if (x65Toks.Any())
-                            {
-                                var data = exp.Data;
-                                foreach (BytecodeSingularToken tok in x65Toks)
+                                if (unkOpcodes.Contains(token.OpCode))
                                 {
-                                    if (data[tok.StartPos + 10] != 0)
+                                    var info = unkOpcodesInfo[token.OpCode];
+                                    info.Usages.Add(pcc.FilePath, exp.UIndex, token.StartPos);
+                                    int refUIndex = EndianReader.ToInt32(data, token.StartPos + 1, pcc.Endian);
+                                    IEntry entry = pcc.GetEntry(refUIndex);
+                                    info.PropTypes.Add(refUIndex switch
                                     {
-                                        interestingExports.Add($"{tok.StartPos:X} #{exp.UIndex}: {filePath}");
+                                        0 => "Null",
+                                        _ when entry != null => entry.ClassName,
+                                        _ => "Invalid"
+                                    });
+                                    if (entry != null)
+                                    {
+                                        if (entry.Parent == exp)
+                                        {
+                                            info.PropLocations.Add("Local");
+                                        }
+                                        else if (entry.Parent == exp.Parent)
+                                        {
+                                            info.PropLocations.Add("ThisClass");
+                                        }
+                                        else if (entry.Parent.ClassName == "Function")
+                                        {
+                                            info.PropLocations.Add("OtherFunction");
+                                        }
+                                        else if (exp.Parent.IsA(entry.Parent.ObjectName))
+                                        {
+                                            info.PropLocations.Add("AncestorClass");
+                                        }
+                                        else
+                                        {
+                                            info.PropLocations.Add("Other");
+                                        }
                                     }
+
                                 }
                             }
                         }

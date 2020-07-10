@@ -100,17 +100,17 @@ namespace ME3Explorer.Unreal
              { 0x57, "EX_DynArrayInsertItem" },
              { 0x58, "EX_DynArrayIterator" },
              { 0x59, "EX_DynArraySort" },
-             { 0x5E, "EX_Unkn1" },
-             { 0x5B, "EX_Unkn2" },
-             { 0x61, "EX_Unkn3" },
-             { 0x62, "EX_Unkn4" },
-             { 0x5C, "EX_Unkn5" },
+             { 0x5E, "EX_LocalObjectVariable" },
+             { 0x5B, "EX_LocalFloatVariable" },
+             { 0x61, "EX_InstanceByteVariable" },
+             { 0x62, "EX_InstanceObjectVariable" },
+             { 0x5C, "EX_LocalIntVariable" },
              { 0x65, "EX_NamedFunction" },
              { 0x64, "EX_OptIfInstance" },
              { 0x63, "EX_OptIfLocal" },
-             { 0x5D, "EX_Unkn9" },
-             { 0x5F, "EX_Unkn10" },
-             { 0x60, "EX_Unkn11" },
+             { 0x5D, "EX_LocalByteVariable" },
+             { 0x5F, "EX_InstanceFloatVariable" },
+             { 0x60, "EX_InstanceIntVariable" },
              { 0x5A, "EX_FilterEditorOnly" },
              { 0x0218, "NATIVE_SaveConfig" },
              { 0x0076, "NATIVE_Disable" },
@@ -409,16 +409,14 @@ namespace ME3Explorer.Unreal
         private const int EX_DynArrayIterator = 0x58;
         private const int EX_DynArraySort = 0x59;
         private const int EX_FilterEditorOnly = 0x5A;
-
-        private const int EX_Unkn2 = 0x5B;
-        private const int EX_Unkn5 = 0x5C;
-        private const int EX_Unkn9 = 0x5D;
-        private const int EX_Unkn1 = 0x5E;
-        private const int EX_Unkn10 = 0x5F;
-        private const int EX_Unkn11 = 0x60;
-        private const int EX_Unkn3 = 0x61;
-        private const int EX_Unkn4 = 0x62;
-
+        private const int EX_LocalFloatVariable = 0x5B;
+        private const int EX_LocalIntVariable = 0x5C;
+        private const int EX_LocalByteVariable = 0x5D;
+        private const int EX_LocalObjectVariable = 0x5E;
+        private const int EX_InstanceFloatVariable = 0x5F;
+        private const int EX_InstanceIntVariable = 0x60;
+        private const int EX_InstanceByteVariable = 0x61;
+        private const int EX_InstanceObjectVariable = 0x62;
         private const int EX_OptIfLocal = 0x63;
         private const int EX_OptIfInstance = 0x64;
         private const int EX_NamedFunction = 0x65;
@@ -773,7 +771,7 @@ namespace ME3Explorer.Unreal
             byte t = memory[start];
             Token newTok = new Token { op = t };
             int end = start;
-            if (t <= 0x60)
+            if (t <= 0x65)
             {
                 switch (t)
                 {
@@ -841,6 +839,15 @@ namespace ME3Explorer.Unreal
                         newTok = ReadLableTable(start, export);
                         newTok.stop = false; //don't parse more bytecode
                         end = start + newTok.raw.Length;
+                        res = newTok;
+                        break;
+                    case EX_GotoLabel: //0xD
+                        var innerTok = ReadToken(start + 1, export);
+                        newTok.text = "GotoLabel: " + innerTok.text;
+                        newTok.stop = false;
+                        newTok.raw = memory.Slice(start, 1 + innerTok.raw.Length);
+                        //newTok.raw = start+ + newTok
+                        end = start + 1 + innerTok.raw.Length;
                         res = newTok;
                         break;
                     case EX_EatReturnValue: // 0x0E
@@ -1238,51 +1245,14 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_Unkn1: // 0x5E
-                        //if (start == 0x30) Debugger.Break();
-                        newTok = ReadUnkn1b(start, export);
-                        newTok.stop = false;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                    case EX_Unkn2: // 0x5B
-                    case EX_Unkn5: // 0x5C                                    
-                    case EX_Unkn9: // 0x5D
-                    case EX_Unkn10: // 0x5F
-                    case EX_Unkn11: // 0x60
-                        newTok = ReadUnkn1(start, export);
-                        newTok.stop = false;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                    case EX_GotoLabel: //0xD
-                        var innerTok = ReadToken(start + 1, export);
-                        newTok.text = "GotoLabel: " + innerTok.text;
-                        newTok.stop = false;
-                        newTok.raw = memory.Slice(start, 1 + innerTok.raw.Length);
-                        //newTok.raw = start+ + newTok
-                        end = start + 1 + innerTok.raw.Length;
-                        res = newTok;
-                        break;
-                    default:
-                        newTok = ReadUnknown(start, export);
-                        newTok.stop = true;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                }
-            }
-            else
-            {
-                switch (t)
-                {
-                    case EX_Unkn3: //0x61
-                        newTok = ReadUnkn3(start, export);
-                        newTok.stop = false;
-                        end = start + newTok.raw.Length;
-                        res = newTok;
-                        break;
-                    case EX_Unkn4: //0x62
+                    case EX_LocalObjectVariable: // 0x5E
+                    case EX_LocalFloatVariable: // 0x5B
+                    case EX_LocalIntVariable: // 0x5C                                    
+                    case EX_LocalByteVariable: // 0x5D
+                    case EX_InstanceFloatVariable: // 0x5F
+                    case EX_InstanceIntVariable: // 0x60
+                    case EX_InstanceByteVariable: //0x61
+                    case EX_InstanceObjectVariable: //0x62
                         newTok = ReadUnkn4(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
@@ -1307,25 +1277,31 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     default:
-                        if (t < 0x70)
-                        {
-                            newTok = ReadExtNative(start, export);
-                            newTok.stop = false;
-                            end = start + newTok.raw.Length;
-                            res = newTok;
-                        }
-                        else
-                        {
-                            newTok = ReadNative(start, export);
-                            newTok.stop = false;
-                            end = start + newTok.raw.Length;
-                            res = newTok;
-                        }
+                        //throw exception here perhaps? 
+                        newTok = ReadUnknown(start, export);
+                        newTok.stop = true;
+                        end = start + newTok.raw.Length;
+                        res = newTok;
                         break;
                 }
             }
+            else if (t < 0x70)
+            {
+                //Never reached?
+                newTok = ReadExtNative(start, export);
+                newTok.stop = false;
+                end = start + newTok.raw.Length;
+                res = newTok;
+            }
+            else
+            {
+                newTok = ReadNative(start, export);
+                newTok.stop = false;
+                end = start + newTok.raw.Length;
+                res = newTok;
+            }
             BytecodeSingularToken msg = new BytecodeSingularToken();
-            byteOpnameMap.TryGetValue(t < 0x6F ? (short)t : newTok.op, out string opname);
+            byteOpnameMap.TryGetValue(t < 0x66 ? t : newTok.op, out string opname);
             if (string.IsNullOrEmpty(opname))
             {
                 opname = $"UNKNOWN(0x{t:X2})";
@@ -1334,7 +1310,8 @@ namespace ME3Explorer.Unreal
             string op = $"[0x{t:X2}] {opname}";
             string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
-            msg.OpCode = op;
+            msg.OpCode = t < 0x66 ? t : newTok.op;
+            msg.OpCodeString = op;
             msg.CurrentStack = data;
             msg.TokenIndex = thiscount;
             msg.StartPos = start + 0x20; //start of script data in ME3
@@ -3523,28 +3500,7 @@ namespace ME3Explorer.Unreal
         //        for (int i = 0; i < len; i++)
         //            t.raw[i] = memory[start + i];
         //    return t;
-        //}
-
-        private static Token ReadUnkn15(int start, ExportEntry export)
-        {
-            Token t = new Token();
-            int pos = start + 1;
-            Token a = ReadToken(pos, export);
-            pos += a.raw.Length + 2;
-            Token b = ReadToken(pos, export);
-            pos += b.raw.Length;
-            Token c = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-            t.inPackageReferences.AddRange(b.inPackageReferences);
-            t.inPackageReferences.AddRange(c.inPackageReferences);
-            pos += c.raw.Length;
-            t.text = b.text + "(" + a.text + ");";
-            int len = pos - start;
-            t.raw = new byte[len];
-            for (int i = 0; i < len; i++)
-                t.raw[i] = memory[start + i];
-            return t;
-        }
+        //
 
         private static Token ReadFilterEditorOnly(int start, ExportEntry export)
         {
@@ -3856,29 +3812,6 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1b(int start, ExportEntry export)
-        {
-            Token t = new Token();
-
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            //string s = "";
-            //if (index > 0 && index <= export.FileRef.ExportCount)
-            //    s = export.FileRef.Exports[index - 1].ClassName;
-            //if (index * -1 > 0 && index * -1 <= export.FileRef.ImportCount)
-            //    s = export.FileRef.Imports[index * -1 - 1].ClassName;
-            //s = s.Replace("Property", "");
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-
-            t.text = export.FileRef.getObjectName(index);
-            int pos = start + 5;
-            int len = pos - start;
-            t.raw = new byte[len];
-            if (start + len <= memsize)
-                for (int i = 0; i < len; i++)
-                    t.raw[i] = memory[start + i];
-            return t;
-        }
-
         private static Token ReadCase(int start, ExportEntry export)
         {
             Token t = new Token();
@@ -4038,48 +3971,6 @@ namespace ME3Explorer.Unreal
             t.text = "1";
             t.raw = new byte[1];
             t.raw[0] = memory[start];
-            return t;
-        }
-
-        private static Token ReadUnkn7(int start, ExportEntry export)
-        {
-            Token t = new Token();
-
-            int index = (Int32)EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-            int skip = 0;
-            if (memory[start + 5] == 1)
-            {
-                skip = (Int32)EndianReader.ToInt16(memory, start + 6, export.FileRef.Endian);
-            }
-
-            t.text = "If(" + export.FileRef.getObjectName(index) + ")";
-            if (skip > 0)
-                t.text += $" // else jump to 0x{skip:X4}";
-            t.text += "\n\t{\n";
-            int pos = start + 8;
-            Token a = ReadToken(pos, export);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
-
-            pos += a.raw.Length;
-            t.text += "\t\t" + a.text;
-            t.text += "\n\t}";
-            if (memory[pos] == 0x06) //jump
-            {
-                int offset = EndianReader.ToInt16(memory, pos + 1, export.FileRef.Endian);
-                t.text += "\nelse\\\\Jump 0x" + offset.ToString("X") + "\n{\n";
-                pos += 3;
-                Token t2 = ReadToken(pos, export);
-                t.inPackageReferences.AddRange(t2.inPackageReferences);
-
-                pos += t2.raw.Length;
-                t.text += t2.text + "\n}";
-            }
-            int len = pos - start;
-            t.raw = new byte[len];
-            if (start + len <= memsize)
-                for (int i = 0; i < 5; i++)
-                    t.raw[i] = memory[start + i];
             return t;
         }
 
@@ -4397,21 +4288,6 @@ namespace ME3Explorer.Unreal
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
-                    t.raw[i] = memory[start + i];
-            return t;
-        }
-
-        private static Token ReadUnkn3(int start, ExportEntry export)
-        {
-            Token t = new Token();
-
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-
-            t.text = export.FileRef.getObjectName(index);
-            t.raw = new byte[5];
-            if (start + 5 <= memsize)
-                for (int i = 0; i < 5; i++)
                     t.raw[i] = memory[start + i];
             return t;
         }
@@ -5020,13 +4896,15 @@ namespace ME3Explorer.Unreal
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
         public int TokenIndex { get; set; }
-        public string OpCode { get; set; }
+        public string OpCodeString { get; set; }
         public string CurrentStack { get; set; }
         public int StartPos { get; set; }
 
+        public int OpCode;
+
         public override string ToString()
         {
-            return $"0x{StartPos.ToString("X4")}: {OpCode} {CurrentStack}";
+            return $"0x{StartPos:X4}: {OpCodeString} {CurrentStack}";
         }
 
         public int CompareTo(BytecodeSingularToken that)

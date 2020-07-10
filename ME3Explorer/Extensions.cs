@@ -375,6 +375,12 @@ namespace ME3Explorer
         {
             return src.After(item).Concat(src.Before(item));
         }
+
+        public static void Add<T, U>(this IList<(T, U)> list, T item1, U item2) => list.Add((item1, item2));
+
+        public static void Add<T, U, V>(this IList<(T, U, V)> list, T item1, U item2, V item3) => list.Add((item1, item2, item3));
+
+        public static void Add<T, U, V, W>(this IList<(T, U, V, W)> list, T item1, U item2, V item3, W item4) => list.Add((item1, item2, item3, item4));
     }
 
     public static class DictionaryExtensions
