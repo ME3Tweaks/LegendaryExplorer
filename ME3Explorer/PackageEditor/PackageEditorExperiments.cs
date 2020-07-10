@@ -361,12 +361,19 @@ namespace ME3Explorer.PackageEditor
                 MemoryStream outStream = new MemoryStream();
                 using (var image = new MagickImage(pngImage))
                 {
-                    var tintColor = MagickColor.FromRgb((byte) 200, (byte) 20, (byte) 20);
-                    //image.Colorize(tintColor, new Percentage(20));
-                    image.Tint("90",tintColor);
-                    image.Write(outStream);
+
+                    var tintColor = MagickColor.FromRgb((byte)128, (byte)0, (byte)0);
+                    //image.Colorize(tintColor, new Percentage(80), new Percentage(5), new Percentage(5) );
+                    //image.Settings.FillColor = tintColor;
+                    //image.Tint("30%", tintColor);
+                    image.Modulate(new Percentage(82), new Percentage(100),new Percentage(0));
+                    //image.Colorize(tintColor, new Percentage(100), new Percentage(0), new Percentage(0) );
+                    image.Write(outStream, MagickFormat.Png32);
                 }
-                var convertedBackImage = new MassEffectModder.Images.Image(outStream,Image.ImageFormat.PNG);
+                //outStream = pngImage;
+                outStream.Position = 0;
+                outStream.WriteToFile(Path.Combine(Directory.CreateDirectory(@"C:\users\mgame\desktop\normalizedCols").FullName, v.ObjectName.Instanced + ".png"));
+                var convertedBackImage = new MassEffectModder.Images.Image(outStream, Image.ImageFormat.PNG);
                 t2d.Replace(convertedBackImage, t2d.Export.GetProperties());
             }
         }

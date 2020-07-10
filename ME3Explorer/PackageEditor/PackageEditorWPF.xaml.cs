@@ -3211,7 +3211,7 @@ namespace ME3Explorer
                         continue;
                     }
 
-                    if (node.Entry.ObjectName.Name.ToLower().Contains(searchTerm))
+                    if (node.Entry.ObjectName.Instanced.ToLower().Contains(searchTerm))
                     {
                         node.IsProgramaticallySelecting = true;
                         SelectedItem = node;
