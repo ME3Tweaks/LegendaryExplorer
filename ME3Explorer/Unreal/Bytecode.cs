@@ -140,7 +140,7 @@ namespace ME3Explorer.Unreal
              { 0x00EE, "NATIVE_Locs" },
              { 0x00EB, "NATIVE_Caps" },
              { 0x00EA, "NATIVE_Right" },
-             { 0x0080, "NATIVE_Left" },
+             { 0x028D, "NATIVE_Left" },
              { 0x028C, "NATIVE_Mid" },
              { 0x028B, "NATIVE_InStr" },
              { 0x028A, "NATIVE_Len" },
@@ -199,6 +199,7 @@ namespace ME3Explorer.Unreal
              { 0x00F5, "NATIVE_FMax" },
              { 0x00F4, "NATIVE_FMin" },
              { 0x00C3, "NATIVE_FRand" },
+             { 0x00C7, "NATIVE_Round"},
              { 0x00C2, "NATIVE_Square" },
              { 0x00C1, "NATIVE_Sqrt" },
              { 0x00C0, "NATIVE_Loge" },
@@ -221,7 +222,8 @@ namespace ME3Explorer.Unreal
              { 0x00B0, "NATIVE_Less_FloatFloat" },
              { 0x00AF, "NATIVE_Subtract_FloatFloat" },
              { 0x00AE, "NATIVE_Add_FloatFloat" },
-             { 0x00FD, "NATIVE_Percent_FloatFloat" },
+             { 0x00FD, "NATIVE_Percent_IntInt" },
+             { 0x00AD, "NATIVE_Percent_FloatFloat" },
              { 0x00AC, "NATIVE_Divide_FloatFloat" },
              { 0x00AB, "NATIVE_Multiply_FloatFloat" },
              { 0x00AA, "NATIVE_MultiplyMultiply_FloatFloat" },
@@ -460,7 +462,7 @@ namespace ME3Explorer.Unreal
             NATIVE_Locs = 0x00EE,
             NATIVE_Caps = 0x00EB,
             NATIVE_Right = 0x00EA,
-            NATIVE_Left = 0x0080,
+            NATIVE_Left = 0x028D,
             NATIVE_Mid = 0x028C,
             NATIVE_InStr = 0x028B,
             NATIVE_Len = 0x028A,
@@ -519,6 +521,7 @@ namespace ME3Explorer.Unreal
             NATIVE_FMax = 0x00F5,
             NATIVE_FMin = 0x00F4,
             NATIVE_FRand = 0x00C3,
+            NATIVE_Round = 0x00C7,
             NATIVE_Square = 0x00C2,
             NATIVE_Sqrt = 0x00C1,
             NATIVE_Loge = 0x00C0,
@@ -541,7 +544,8 @@ namespace ME3Explorer.Unreal
             NATIVE_Less_FloatFloat = 0x00B0,
             NATIVE_Subtract_FloatFloat = 0x00AF,
             NATIVE_Add_FloatFloat = 0x00AE,
-            NATIVE_Percent_FloatFloat = 0x00FD,
+            NATIVE_Percent_IntInt = 0x00FD,
+            NATIVE_Percent_FloatFloat = 0x00AD,
             NATIVE_Divide_FloatFloat = 0x00AC,
             NATIVE_Multiply_FloatFloat = 0x00AB,
             NATIVE_MultiplyMultiply_FloatFloat = 0x00AA,
@@ -1954,12 +1958,12 @@ namespace ME3Explorer.Unreal
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
                     break;
-                case 0xC7: //unknown
+                case (int)ENatives.NATIVE_Round: //0x00C7
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
                     b = ReadToken(pos, export);
                     pos += b.raw.Length;
-                    t.text = a.text;
+                    t.text = $"Round({a.text})";
                     break;
                 case (int)ENatives.NATIVE_Repl: // 0x00C9
                     t.text = "Repl(";
@@ -2413,7 +2417,8 @@ namespace ME3Explorer.Unreal
                     }
                     t.text += ")";
                     break;
-                case (int)ENatives.NATIVE_Percent_FloatFloat: // 0x00FD
+                case (int)ENatives.NATIVE_Percent_FloatFloat: // 0x00AD
+                case (int)ENatives.NATIVE_Percent_IntInt: // 0x00FD
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
                     b = ReadToken(pos, export);
@@ -3339,7 +3344,7 @@ namespace ME3Explorer.Unreal
                     }
                     t.text += ")";
                     break;
-                case 0x028D: //unkown == (int)ENatives.NATIVE_Mid: // 0x028C
+                case (int)ENatives.NATIVE_Left: // 0x028D
                     t.text = "Left(";
                     count = 0;
                     while (pos < memsize - 6)
