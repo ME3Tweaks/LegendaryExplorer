@@ -251,6 +251,7 @@
                         <MenuItem Header="Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
                         <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
                         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
+                        <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
 
                     </MenuItem>
                     <MenuItem Header="SirCxyrtyx's Code Emporium">

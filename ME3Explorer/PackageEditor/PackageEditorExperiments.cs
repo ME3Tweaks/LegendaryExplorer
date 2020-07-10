@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions.IO;
+using ImageMagick;
+using MassEffectModder.Images;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -340,6 +342,33 @@ namespace ME3Explorer.PackageEditor
             }
 
             export.SetBinaryData(mem.ToArray());
+        }
+
+        /// <summary>
+        /// Extracts all NoramlizedAverateColors, tints them, and then reinstalls them to the export they came from
+        /// </summary>
+        /// <param name="Pcc"></param>
+        public static void TintAllNormalizedAverageColors(IMEPackage Pcc)
+        {
+            var normalizedExports = Pcc.Exports
+                .Where(x => x.ClassName == "LightMapTexture2D" && x.ObjectName.Name.StartsWith("NormalizedAverageColor")).ToList();
+            foreach (var v in normalizedExports)
+            {
+                MemoryStream pngImage = new MemoryStream();
+                Texture2D t2d = new Texture2D(v);
+                t2d.ExportToPNG(outStream: pngImage);
+                pngImage.Position = 0; //reset
+                MemoryStream outStream = new MemoryStream();
+                using (var image = new MagickImage(pngImage))
+                {
+                    var tintColor = MagickColor.FromRgb((byte) 200, (byte) 20, (byte) 20);
+                    //image.Colorize(tintColor, new Percentage(20));
+                    image.Tint("90",tintColor);
+                    image.Write(outStream);
+                }
+                var convertedBackImage = new MassEffectModder.Images.Image(outStream,Image.ImageFormat.PNG);
+                t2d.Replace(convertedBackImage, t2d.Export.GetProperties());
+            }
         }
 
         /// <summary>

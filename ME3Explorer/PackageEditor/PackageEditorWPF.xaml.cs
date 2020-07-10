@@ -5447,5 +5447,10 @@ namespace ME3Explorer
         {
             PackageEditorExperiments.BuildTestPatchComparison();
         }
+
+        private void TintAllNormalizedAverageColor_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.TintAllNormalizedAverageColors(Pcc);
+        }
     }
 }
