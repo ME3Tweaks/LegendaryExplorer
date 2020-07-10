@@ -4159,7 +4159,7 @@ namespace ME3Explorer
                     //if (findClass(filePath, "WwiseBank", true)) break;
                     //findClassesWithBinary(filePath);
                     ScanScripts(filePath);
-                    if (interestingExports.Count > 1)
+                    if (interestingExports.Count > 0)
                     {
                         break;
                     }
@@ -4507,6 +4507,11 @@ namespace ME3Explorer
                         if (exp.ClassName == "Function" && ObjectBinary.From(exp) is UStruct uStruct)
                         {
                             (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
+                            if (tokens.FirstOrDefault(tok => tok.OpCode.Contains("UNKNOWN")) is { } token)
+                            {
+                                interestingExports.Add($"{token.StartPos:X} #{exp.UIndex}: {filePath}");
+                            }
+                            continue;
                             var x65Toks = tokens.Where(token => token.OpCode.StartsWith("[0x65]")).ToList();
                             if (x65Toks.Any())
                             {
