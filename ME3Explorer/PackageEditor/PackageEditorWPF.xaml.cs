@@ -40,6 +40,7 @@ using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
+using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
@@ -1417,6 +1418,7 @@ namespace ME3Explorer
             }
 
             var badReferences = new List<ListDialog.EntryItem>();
+
             void recursiveCheckProperty(IEntry entry, UProperty property)
             {
                 if (property is ObjectProperty op)
@@ -1468,27 +1470,102 @@ namespace ME3Explorer
                         recursiveCheckProperty(entry, p);
                     }
                 }
+                else if (property is DelegateProperty dp)
+                {
+                    if (dp.Value.Object != 0 && !Pcc.IsEntry(dp.Value.Object))
+                    {
+                        badReferences.Add(new ListDialog.EntryItem(entry, $"DelegateProperty {dp.Name.Name} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                    }
+                }
             }
 
             foreach (ExportEntry exp in Pcc.Exports)
             {
-                var properties = exp.GetProperties();
-                foreach (var prop in properties)
+                if (exp.idxArchetype != 0 && !Pcc.IsEntry(exp.idxArchetype))
                 {
-                    recursiveCheckProperty(exp, prop);
+                    badReferences.Add(new ListDialog.EntryItem(exp, $"Archetype {exp.idxArchetype} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                }
+
+                if (exp.idxSuperClass != 0 && !Pcc.IsEntry(exp.idxSuperClass))
+                {
+                    badReferences.Add(new ListDialog.EntryItem(exp, $"Header SuperClass {exp.idxSuperClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                }
+
+                if (exp.idxClass != 0 && !Pcc.IsEntry(exp.idxClass))
+                {
+                    badReferences.Add(new ListDialog.EntryItem(exp, $"Header Class {exp.idxClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                }
+
+                if (exp.idxLink != 0 && !Pcc.IsEntry(exp.idxLink))
+                {
+                    badReferences.Add(new ListDialog.EntryItem(exp, $"Header Link {exp.idxLink} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                }
+
+                if (exp.HasComponentMap)
+                {
+                    foreach (var c in exp.ComponentMap)
+                    {
+                        if (!Pcc.IsEntry(c.Value))
+                        {
+                            // Can components point to 0? I don't think so
+                            badReferences.Add(new ListDialog.EntryItem(exp, $"Header Component Map item ({c.Value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                        }
+                    }
+                }
+
+                //find stack references
+                if (exp.HasStack && exp.Data is byte[] data)
+                {
+                    var stack1 = EndianReader.ToInt32(exp.Data, 0, exp.FileRef.Endian);
+                    var stack2 = EndianReader.ToInt32(exp.Data, 4, exp.FileRef.Endian);
+                    if (stack1 != 0 && !Pcc.IsEntry(stack1))
+                    {
+                        badReferences.Add(new ListDialog.EntryItem(exp, $"Export Stack[0] ({stack1}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    }
+
+                    if (stack2 != 0 && !Pcc.IsEntry(stack2))
+                    {
+                        badReferences.Add(new ListDialog.EntryItem(exp, $"Export Stack[1] ({stack2}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    }
+                }
+
+                var props = exp.GetProperties();
+                foreach (var p in props)
+                {
+                    recursiveCheckProperty(exp, p);
+                }
+
+                //find binary references
+                try
+                {
+                    if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                    {
+                        List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                        foreach ((UIndex uIndex, string propName) in indices)
+                        {
+                            if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
+                            {
+                                badReferences.Add(new ListDialog.EntryItem(exp, $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                            }
+                        }
+                    }
+                }
+                catch (Exception e) when (!App.IsDebug)
+                {
+                    badReferences.Add(new ListDialog.EntryItem(exp, $"Unable to parse binary for export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
             }
 
             if (badReferences.Any())
             {
                 MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.", "Bad ObjectProperty references found");
-                ListDialog lw = new ListDialog(badReferences, "Bad object references", "The following items have values outside of the range of the import and export tables. Note that only export properties were scanned, not the binary section following the properties.", this)
+                ListDialog lw = new ListDialog(badReferences, "Bad object references", "The following items have values outside of the range of the import and export tables. Note that this is a best-effort check and may not be 100% accurate.", this)
                 { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
             }
             else
             {
-                MessageBox.Show("No bad object references were found. Note that only export properties were scanned, not the binary section following the properties.", "Check complete");
+                MessageBox.Show("No bad object references were found. Note that this is a best-effort check and may not be 100% accurate.", "Check complete");
             }
         }
 
@@ -4117,7 +4194,7 @@ namespace ME3Explorer
         {
             MEGame game = MEGame.ME1;
             var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
-            //var filePaths = MELoadedFiles.GetAllFiles(game);
+                                                                       //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
@@ -5130,7 +5207,7 @@ namespace ME3Explorer
 
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
-            
+
 
             //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
             //var me1em = MEPackageHandler.OpenMEPackage(me1emf);

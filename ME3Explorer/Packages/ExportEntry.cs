@@ -225,20 +225,20 @@ namespace ME3Explorer.Packages
 
         public uint HeaderOffset { get; set; }
 
-        private int idxClass
+        public int idxClass
         {
             get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
-            set
+            private set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int));
                 HeaderChanged = true;
             }
         }
 
-        private int idxSuperClass
+        public int idxSuperClass
         {
             get => EndianReader.ToInt32(_header, 4, FileRef.Endian);
-            set
+            private set
             {
                 // 0 check for setup
                 if (UIndex != 0 && value == UIndex)
@@ -288,10 +288,10 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private int idxArchetype
+        public int idxArchetype
         {
             get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
-            set
+            private set
             {
                 Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int));
                 HeaderChanged = true;
