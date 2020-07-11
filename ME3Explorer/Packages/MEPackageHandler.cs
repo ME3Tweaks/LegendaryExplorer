@@ -1,9 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using Gammtek.Conduit.IO;
 using StreamHelpers;
 
@@ -12,7 +13,6 @@ namespace ME3Explorer.Packages
     public static class MEPackageHandler
     {
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
-        private static object _openPackagesLock = new Object();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
@@ -20,11 +20,11 @@ namespace ME3Explorer.Packages
 
         public static void Initialize()
         {
-            UDKConstructorDelegate = UDKPackage.Initialize();
-            MEConstructorDelegate = MEPackage.Initialize();
+            UDKConstructorDelegate = UDKPackage.RegisterLoader();
+            MEConstructorDelegate = MEPackage.RegisterLoader();
         }
 
-        public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
 
@@ -79,11 +79,13 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
                 {
                     pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
                     pkg = UDKConstructorDelegate(filePath, false);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else
                 {
@@ -98,14 +100,9 @@ namespace ME3Explorer.Packages
                 return pkg;
             }
 
-            if (wpfWindow != null)
+            if (user != null)
             {
-                package.RegisterTool(new GenericWindow(wpfWindow, Path.GetFileName(pathToFile)));
-                addToPackagesInTools(package);
-            }
-            else if (winForm != null)
-            {
-                package.RegisterTool(new GenericWindow(winForm, Path.GetFileName(pathToFile)));
+                package.RegisterTool(user);
                 addToPackagesInTools(package);
             }
             else
@@ -154,51 +151,51 @@ namespace ME3Explorer.Packages
 
         }
 
-        public static IMEPackage OpenUDKPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenUDKPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.UDK)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not a UDK package file.");
         }
 
-        public static IMEPackage OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME3Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME3)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME3 package file.");
         }
 
-        public static IMEPackage OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME2Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME2)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME2 package file.");
         }
 
-        public static IMEPackage OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME1Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME1)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME1 package file.");
         }
 
@@ -211,27 +208,6 @@ namespace ME3Explorer.Packages
             {
                 Debug.WriteLine(package.Key);
             }
-        }
-
-        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
-        {
-            foreach (IMEPackage pcc in packagesInTools)
-            {
-                if (pcc.FilePath == filePath)
-                {
-                    foreach (GenericWindow window in pcc.Tools)
-                    {
-                        if (window.tool.type == typeof(T))
-                        {
-                            tool = (T)window.WPF;
-                            tool.RestoreAndBringToFront();
-                            return true;
-                        }
-                    }
-                }
-            }
-            tool = null;
-            return false;
         }
     }
 }

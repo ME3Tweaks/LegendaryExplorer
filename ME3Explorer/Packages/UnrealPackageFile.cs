@@ -5,10 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer.Packages
@@ -250,7 +247,7 @@ namespace ME3Explorer.Packages
                 return imports[-uindex - 1];
             return null;
         }
-        public bool IsEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (uindex < 0 && -uindex <= ImportCount);
+        public bool IsEntry(int uindex) => IsUExport(uindex) || IsImport(uindex);
         public bool TryGetEntry(int uIndex, out IEntry entry)
         {
             if (IsEntry(uIndex))
@@ -417,56 +414,44 @@ namespace ME3Explorer.Packages
         }
 
         #region packageHandler stuff
-        public ObservableCollection<GenericWindow> Tools { get; } = new ObservableCollection<GenericWindow>();
+        public ObservableCollection<IPackageUser> Users { get; } = new ObservableCollection<IPackageUser>();
 
-        public void RegisterTool(GenericWindow gen)
+        public void RegisterTool(IPackageUser user)
         {
             RefCount++;
-            Tools.Add(gen);
-            gen.RegisterClosed(() =>
+            Users.Add(user);
+            user.RegisterClosed(() =>
             {
-                ReleaseGenericWindow(gen);
+                ReleaseUser(user);
                 Dispose();
             });
         }
 
-        public void Release(Window wpfWindow = null, Form winForm = null)
+        public void Release(IPackageUser user = null)
         {
-            if (wpfWindow != null)
+            if (user != null)
             {
-                GenericWindow gen = Tools.FirstOrDefault(x => x == wpfWindow);
-                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                user = Users.FirstOrDefault(x => x == user);
+                if (user != null) 
                 {
-                    ReleaseGenericWindow(gen);
+                    ReleaseUser(user);
                 }
                 else
                 {
-                    Debug.WriteLine("Releasing package that isn't in use by any window");
-                }
-            }
-            else if (winForm != null)
-            {
-                GenericWindow gen = Tools.FirstOrDefault(x => x == winForm);
-                if (gen is GenericWindow) //can't use != due to ambiguity apparently
-                {
-                    ReleaseGenericWindow(gen);
-                }
-                else
-                {
-                    Debug.WriteLine("Releasing package that isn't in use by any window");
+                    Debug.WriteLine("Releasing package that isn't in use by any user");
                 }
             }
             Dispose();
         }
 
-        private void ReleaseGenericWindow(GenericWindow gen)
+        private void ReleaseUser(IPackageUser user)
         {
-            Tools.Remove(gen);
-            if (Tools.Count == 0)
+            Users.Remove(user);
+            if (Users.Count == 0)
             {
                 noLongerOpenInTools?.Invoke(this);
             }
-            gen.Dispose();
+            user.ReleaseUse();
         }
 
         public delegate void MEPackageEventHandler(UnrealPackageFile sender);
@@ -504,7 +489,7 @@ namespace ME3Explorer.Packages
         const int queuingDelay = 50;
         protected void updateTools(PackageChange change, int index)
         {
-            if (Tools.Count == 0)
+            if (Users.Count == 0)
             {
                 return;
             }
@@ -568,7 +553,7 @@ namespace ME3Explorer.Packages
                                     break;
                             }
                         }
-                        foreach (var item in Tools)
+                        foreach (var item in Users)
                         {
                             item.handleUpdate(pendingUpdatesList);
                         }

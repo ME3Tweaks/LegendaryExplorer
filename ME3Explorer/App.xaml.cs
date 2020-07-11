@@ -140,6 +140,7 @@ namespace ME3Explorer
             //static class setup
             Tools.Initialize();
             MEPackageHandler.Initialize();
+            PackageSaver.Initialize();
 
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using Gammtek.Conduit.IO;
 using ME3Explorer.Unreal;

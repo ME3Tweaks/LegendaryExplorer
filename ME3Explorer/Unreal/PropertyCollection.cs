@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ME3Explorer.Packages;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Reflection;
 using Gammtek.Conduit.IO;
-using ME3Explorer.SharedUI;
 using StreamHelpers;
-using PropertyInfo = ME3Explorer.Packages.PropertyInfo;
 
 namespace ME3Explorer.Unreal
 {
-    public class PropertyCollection : ObservableCollectionExtended<UProperty>
+    public class PropertyCollection : ObservableCollection<UProperty>
     {
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
@@ -946,14 +942,9 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        public IEntry? ResolveToEntry(IMEPackage package)
+        public IEntry ResolveToEntry(IMEPackage package)
         {
-            if (Value != 0 && package.IsEntry(Value))
-            {
-                return package.GetEntry(Value);
-            }
-
-            return null;
+            return package.IsEntry(Value) ? package.GetEntry(Value) : null;
         }
         public override PropertyType PropType => PropertyType.ObjectProperty;
 

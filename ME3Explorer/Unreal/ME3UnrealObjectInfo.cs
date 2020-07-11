@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using Gammtek.Conduit.IO;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;

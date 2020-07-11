@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
-using ME3Explorer.GameInterop;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
-using Newtonsoft.Json;
 using StreamHelpers;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -82,7 +79,7 @@ namespace ME3Explorer.Packages
         /// <summary>
         /// Indicates what type of package file this is. 0 is normal, 1 is TESTPATCH patch package.
         /// </summary>
-        public int PackageTypeId { get; private set; }
+        public int PackageTypeId { get; }
 
         /// <summary>
         /// This is not useful for modding but we should not be changing the format of the package file.
@@ -90,9 +87,9 @@ namespace ME3Explorer.Packages
         public List<string> AdditionalPackagesToCook = new List<string>();
 
 
-        public Endian Endian { get; private set; }
+        public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
-        public GamePlatform Platform { get; private set; }
+        public GamePlatform Platform { get; }
 
         public enum GamePlatform
         {
@@ -102,17 +99,7 @@ namespace ME3Explorer.Packages
             WiiU
         }
 
-        public MELocalization Localization { get; private set; }
-        public bool CanReconstruct => canReconstruct(FilePath);
-
-        private bool canReconstruct(string path) =>
-            Game == MEGame.ME3 ||
-            Game == MEGame.ME2 ||
-            Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
-
-        private List<string> _me1TextureFiles;
-        public List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json")));
-
+        public MELocalization Localization { get; }
 
         public byte[] getHeader()
         {
@@ -134,22 +121,21 @@ namespace ME3Explorer.Packages
         private int unknown6;
         #endregion
 
-        static bool isInitialized;
-        public static Func<string, MEGame, MEPackage> Initialize()
+        static bool isLoaderRegistered;
+
+        public static Func<string, MEGame, MEPackage> RegisterLoader()
         {
-            if (isInitialized)
+            if (isLoaderRegistered)
             {
                 throw new Exception(nameof(MEPackage) + " can only be initialized once");
             }
 
-            isInitialized = true;
+            isLoaderRegistered = true;
             return (f, g) => new MEPackage(f, g);
         }
 
         private MEPackage(string filePath, MEGame forceGame = MEGame.Unknown) : base(Path.GetFullPath(filePath))
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(this));
-
             if (forceGame != MEGame.Unknown)
             {
                 //new Package
@@ -438,75 +424,25 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void Save()
-        {
-            Save(FilePath);
-        }
+        public static Action<MEPackage, string, bool> RegisterSaver() => saveByReconstructing;
 
-        public void Save(string path)
+        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs)
         {
-            bool isSaveAs = path != FilePath;
-            int originalLength = -1;
-            if (Game == MEGame.ME3 && !isSaveAs && FilePath.StartsWith(ME3Directory.BIOGamePath) && GameController.TryGetME3Process(out _))
-            {
-                try
-                {
-                    originalLength = (int)new FileInfo(FilePath).Length;
-                }
-                catch
-                {
-                    originalLength = -1;
-                }
-            }
-            bool compressed = IsCompressed;
-            Flags &= ~EPackageFlags.Compressed;
-            try
-            {
-                if (canReconstruct(path))
-                {
-                    saveByReconstructing(path, isSaveAs);
-                }
-                else
-                {
-                    MessageBox.Show($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {App.BugReportURL}", "Can't Save!",
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            finally
-            {
-                //If we're doing save as, reset compressed flag to reflect file on disk
-                if (isSaveAs && compressed)
-                {
-                    Flags |= EPackageFlags.Compressed;
-                }
-            }
-
-            if (originalLength > 0)
-            {
-                string relativePath = Path.GetFullPath(FilePath).Substring(Path.GetFullPath(ME3Directory.gamePath).Length);
-                var bin = new MemoryStream();
-                bin.WriteInt32(originalLength);
-                bin.WriteStringASCIINull(relativePath);
-                File.WriteAllBytes(Path.Combine(ME3Directory.BinariesPath, "tocupdate"), bin.ToArray());
-                GameController.SendTOCUpdateMessage();
-            }
-        }
-
-        private void saveByReconstructing(string path, bool isSaveAs)
-        {
+            bool compressed = mePackage.IsCompressed;
+            mePackage.Flags &= ~EPackageFlags.Compressed;
             try
             {
                 var ms = new MemoryStream();
 
                 //just for positioning. We write over this later when the header values have been updated
-                WriteHeader(ms);
+                mePackage.WriteHeader(ms);
 
                 //name table
-                NameOffset = (int)ms.Position;
-                NameCount = Gen0NameCount = names.Count;
-                foreach (string name in names)
+                mePackage.NameOffset = (int)ms.Position;
+                mePackage.NameCount = mePackage.Gen0NameCount = mePackage.names.Count;
+                foreach (string name in mePackage.names)
                 {
-                    switch (Game)
+                    switch (mePackage.Game)
                     {
                         case MEGame.ME1:
                             ms.WriteUnrealStringASCII(name);
@@ -524,30 +460,30 @@ namespace ME3Explorer.Packages
                 }
 
                 //import table
-                ImportOffset = (int)ms.Position;
-                ImportCount = imports.Count;
-                foreach (ImportEntry e in imports)
+                mePackage.ImportOffset = (int)ms.Position;
+                mePackage.ImportCount = mePackage.imports.Count;
+                foreach (ImportEntry e in mePackage.imports)
                 {
                     ms.WriteFromBuffer(e.Header);
                 }
 
                 //export table
-                ExportOffset = (int)ms.Position;
-                ExportCount = Gen0ExportCount = exports.Count;
-                foreach (ExportEntry e in exports)
+                mePackage.ExportOffset = (int)ms.Position;
+                mePackage.ExportCount = mePackage.Gen0ExportCount = mePackage.exports.Count;
+                foreach (ExportEntry e in mePackage.exports)
                 {
                     e.HeaderOffset = (uint)ms.Position;
                     ms.WriteFromBuffer(e.Header);
                 }
 
-                DependencyTableOffset = (int)ms.Position;
+                mePackage.DependencyTableOffset = (int)ms.Position;
                 ms.WriteInt32(0);//zero-count DependencyTable
-                FullHeaderSize = ImportExportGuidsOffset = (int)ms.Position;
+                mePackage.FullHeaderSize = mePackage.ImportExportGuidsOffset = (int)ms.Position;
 
                 //export data
-                foreach (ExportEntry e in exports)
+                foreach (ExportEntry e in mePackage.exports)
                 {
-                    switch (Game)
+                    switch (mePackage.Game)
                     {
                         case MEGame.ME1:
                             UpdateME1Offsets(e, (int)ms.Position);
@@ -574,18 +510,22 @@ namespace ME3Explorer.Packages
 
                 //re-write header with updated values
                 ms.JumpTo(0);
-                WriteHeader(ms);
+                mePackage.WriteHeader(ms);
 
 
                 File.WriteAllBytes(path, ms.ToArray());
                 if (!isSaveAs)
                 {
-                    AfterSave();
+                    mePackage.AfterSave();
                 }
             }
-            catch (Exception ex) when (!App.IsDebug)
+            finally
             {
-                MessageBox.Show($"Error saving {FilePath}:\n{ex.FlattenException()}");
+                //If we're doing save as, reset compressed flag to reflect file on disk
+                if (isSaveAs && compressed)
+                {
+                    mePackage.Flags |= EPackageFlags.Compressed;
+                }
             }
         }
 

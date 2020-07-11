@@ -110,7 +110,7 @@ namespace ME3Explorer
 
         private bool CanReplaceTexture()
         {
-            return CurrentLoadedExport != null && CurrentLoadedExport.FileRef.CanReconstruct && !ViewerModeOnly;
+            return CurrentLoadedExport != null && CurrentLoadedExport.FileRef.CanReconstruct() && !ViewerModeOnly;
         }
 
         private void ReplaceFromFile()

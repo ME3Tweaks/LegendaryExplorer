@@ -2,13 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Windows;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
-using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using static ME3Explorer.Unreal.UnrealFlags;
 using StreamHelpers;
@@ -54,19 +49,21 @@ namespace ME3Explorer.Packages
         private List<Thumbnail> ThumbnailTable = new List<Thumbnail>();
         #endregion
 
-        static bool isInitialized;
-        internal static Func<string, bool, UDKPackage> Initialize()
+        static bool isLoaderRegistered;
+        internal static Func<string, bool, UDKPackage> RegisterLoader()
         {
-            if (isInitialized)
+            if (isLoaderRegistered)
             {
                 throw new Exception(nameof(UDKPackage) + " can only be initialized once");
             }
             else
             {
-                isInitialized = true;
+                isLoaderRegistered = true;
                 return (fileName, shouldCreate) => new UDKPackage(fileName, shouldCreate);
             }
         }
+
+        public static Action<UDKPackage, string, bool> RegisterSaver() => saveByReconstructing;
 
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
@@ -75,8 +72,6 @@ namespace ME3Explorer.Packages
         /// <param name="create">Create a file instead of reading from disk</param>
         private UDKPackage(string UDKPackagePath, bool create = false) : base(Path.GetFullPath(UDKPackagePath))
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(UDKPackagePath)}", new WeakReference(this));
-
             if (create)
             {
                 folderName = "None";
@@ -182,146 +177,126 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void Save()
+        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
         {
-            Save(FilePath);
-        }
-
-        /// <summary>
-        ///     Not supported for UDK files
-        /// </summary>
-        /// <param name="path">full path + file name.</param>
-        public void Save(string path)
-        {
-            bool isSaveAs = path != FilePath;
-            saveByReconstructing(path, isSaveAs);
-        }
-        private void saveByReconstructing(string path, bool isSaveAs)
-        {
-            try
+            if (udkPackage.exports.Any(exp => exp.ClassName == "Level"))
             {
-                if (exports.Any(exp => exp.ClassName == "Level"))
+                udkPackage.Flags |= EPackageFlags.Map;
+            }
+
+            //UDK does not like it when exports have the forced export flag, which is common in ME files
+            foreach (ExportEntry export in udkPackage.exports)
+            {
+                //if (export.ClassName != "Package")
                 {
-                    Flags |= EPackageFlags.Map;
-                }
-
-                //UDK does not like it when exports have the forced export flag, which is common in ME files
-                foreach (ExportEntry export in exports)
-                {
-                    //if (export.ClassName != "Package")
-                    {
-                        export.ExportFlags &= ~EExportFlags.ForcedExport;
-                    }
-                }
-
-                var ms = new MemoryStream();
-
-                //just for positioning. We write over this later when the header values have been updated
-                WriteHeader(ms);
-
-                //name table
-                NameOffset = (int)ms.Position;
-                NameCount = Gen0NameCount = names.Count;
-                foreach (string name in names)
-                {
-                    ms.WriteUnrealStringASCII(name);
-                    ms.WriteInt32(0);
-                    ms.WriteInt32(458768);
-                }
-
-                //import table
-                ImportOffset = (int)ms.Position;
-                ImportCount = imports.Count;
-                foreach (ImportEntry e in imports)
-                {
-                    ms.WriteFromBuffer(e.Header);
-                }
-
-                //export table
-                ExportOffset = (int)ms.Position;
-                ExportCount = Gen0NetworkedObjectCount = Gen0ExportCount = exports.Count;
-                foreach (ExportEntry e in exports)
-                {
-                    e.HeaderOffset = (uint)ms.Position;
-                    ms.WriteFromBuffer(e.Header);
-                }
-
-                //dependency table
-                DependencyTableOffset = (int)ms.Position;
-                ms.WriteZeros(4 * ExportCount);
-
-                importExportGuidsOffset = (int)ms.Position;
-                importGuidsCount = exportGuidsCount = 0;
-
-                //generate thumbnails
-                ThumbnailTable.Clear();
-                foreach (ExportEntry export in exports)
-                {
-                    if (export.IsTexture())
-                    {
-                        var tex = new Texture2D(export);
-                        var mip = tex.GetTopMip();
-                        ThumbnailTable.Add(new Thumbnail
-                        {
-                            ClassName = export.ClassName,
-                            PathName = export.InstancedFullPath,
-                            Width = mip.width,
-                            Height = mip.height,
-                            Data = tex.GetPNG(mip)
-                        });
-                    }
-                }
-
-                //write thumbnails
-                foreach (Thumbnail thumbnail in ThumbnailTable)
-                {
-                    thumbnail.Offset = (int)ms.Position;
-                    ms.WriteInt32(thumbnail.Width);
-                    ms.WriteInt32(thumbnail.Height);
-                    ms.WriteInt32(thumbnail.Data.Length);
-                    ms.WriteFromBuffer(thumbnail.Data);
-                    //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
-                }
-                thumbnailTableOffset = (int)ms.Position;
-                ms.WriteInt32(ThumbnailTable.Count);
-                foreach (Thumbnail thumbnail in ThumbnailTable)
-                {
-                    ms.WriteUnrealStringASCII(thumbnail.ClassName);
-                    ms.WriteUnrealStringASCII(thumbnail.PathName);
-                    ms.WriteInt32(thumbnail.Offset);
-                }
-
-                FullHeaderSize = (int)ms.Position;
-
-                //export data
-                foreach (ExportEntry e in exports)
-                {
-                    UpdateUDKOffsets(e, (int)ms.Position);
-                    e.DataOffset = (int)ms.Position;
-
-                    ms.WriteFromBuffer(e.Data);
-                    //update size and offset in already-written header
-                    long pos = ms.Position;
-                    ms.JumpTo(e.HeaderOffset + 32);
-                    ms.WriteInt32(e.DataSize); //DataSize might have been changed by UpdateOffsets
-                    ms.WriteInt32(e.DataOffset);
-                    ms.JumpTo(pos);
-                }
-
-                //re-write header with updated values
-                ms.JumpTo(0);
-                WriteHeader(ms);
-
-
-                File.WriteAllBytes(path, ms.ToArray());
-                if (!isSaveAs)
-                {
-                    AfterSave();
+                    export.ExportFlags &= ~EExportFlags.ForcedExport;
                 }
             }
-            catch (Exception ex) when (!App.IsDebug)
+
+            var ms = new MemoryStream();
+
+            //just for positioning. We write over this later when the header values have been updated
+            udkPackage.WriteHeader(ms);
+
+            //name table
+            udkPackage.NameOffset = (int)ms.Position;
+            udkPackage.NameCount = udkPackage.Gen0NameCount = udkPackage.names.Count;
+            foreach (string name in udkPackage.names)
             {
-                MessageBox.Show($"Error saving {FilePath}:\n{ex.FlattenException()}");
+                ms.WriteUnrealStringASCII(name);
+                ms.WriteInt32(0);
+                ms.WriteInt32(458768);
+            }
+
+            //import table
+            udkPackage.ImportOffset = (int)ms.Position;
+            udkPackage.ImportCount = udkPackage.imports.Count;
+            foreach (ImportEntry e in udkPackage.imports)
+            {
+                ms.WriteFromBuffer(e.Header);
+            }
+
+            //export table
+            udkPackage.ExportOffset = (int)ms.Position;
+            udkPackage.ExportCount = udkPackage.Gen0NetworkedObjectCount = udkPackage.Gen0ExportCount = udkPackage.exports.Count;
+            foreach (ExportEntry e in udkPackage.exports)
+            {
+                e.HeaderOffset = (uint)ms.Position;
+                ms.WriteFromBuffer(e.Header);
+            }
+
+            //dependency table
+            udkPackage.DependencyTableOffset = (int)ms.Position;
+            ms.WriteZeros(4 * udkPackage.ExportCount);
+
+            udkPackage.importExportGuidsOffset = (int)ms.Position;
+            udkPackage.importGuidsCount = udkPackage.exportGuidsCount = 0;
+
+            //generate thumbnails
+            udkPackage.ThumbnailTable.Clear();
+            foreach (ExportEntry export in udkPackage.exports)
+            {
+                if (export.IsTexture())
+                {
+                    var tex = new Texture2D(export);
+                    var mip = tex.GetTopMip();
+                    udkPackage.ThumbnailTable.Add(new Thumbnail
+                    {
+                        ClassName = export.ClassName,
+                        PathName = export.InstancedFullPath,
+                        Width = mip.width,
+                        Height = mip.height,
+                        Data = tex.GetPNG(mip)
+                    });
+                }
+            }
+
+            //write thumbnails
+            foreach (Thumbnail thumbnail in udkPackage.ThumbnailTable)
+            {
+                thumbnail.Offset = (int)ms.Position;
+                ms.WriteInt32(thumbnail.Width);
+                ms.WriteInt32(thumbnail.Height);
+                ms.WriteInt32(thumbnail.Data.Length);
+                ms.WriteFromBuffer(thumbnail.Data);
+                //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
+            }
+
+            udkPackage.thumbnailTableOffset = (int)ms.Position;
+            ms.WriteInt32(udkPackage.ThumbnailTable.Count);
+            foreach (Thumbnail thumbnail in udkPackage.ThumbnailTable)
+            {
+                ms.WriteUnrealStringASCII(thumbnail.ClassName);
+                ms.WriteUnrealStringASCII(thumbnail.PathName);
+                ms.WriteInt32(thumbnail.Offset);
+            }
+
+            udkPackage.FullHeaderSize = (int)ms.Position;
+
+            //export data
+            foreach (ExportEntry e in udkPackage.exports)
+            {
+                UpdateUDKOffsets(e, (int)ms.Position);
+                e.DataOffset = (int)ms.Position;
+
+                ms.WriteFromBuffer(e.Data);
+                //update size and offset in already-written header
+                long pos = ms.Position;
+                ms.JumpTo(e.HeaderOffset + 32);
+                ms.WriteInt32(e.DataSize); //DataSize might have been changed by UpdateOffsets
+                ms.WriteInt32(e.DataOffset);
+                ms.JumpTo(pos);
+            }
+
+            //re-write header with updated values
+            ms.JumpTo(0);
+            udkPackage.WriteHeader(ms);
+
+
+            File.WriteAllBytes(path, ms.ToArray());
+            if (!isSaveAs)
+            {
+                udkPackage.AfterSave();
             }
         }
 

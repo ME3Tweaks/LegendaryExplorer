@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public abstract class WPFBase : NotifyPropertyChangedWindowBase
+    public abstract class WPFBase : NotifyPropertyChangedWindowBase, IPackageUser
     {
         private IMEPackage pcc;
         /// <summary>
@@ -30,7 +27,7 @@ namespace ME3Explorer
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
-            if (pcc != null && pcc.IsModified && pcc.Tools.Count == 1 &&
+            if (pcc != null && pcc.IsModified && pcc.Users.Count == 1 &&
                 MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo))
             {
                 e.Cancel = true;
@@ -44,15 +41,49 @@ namespace ME3Explorer
         public void LoadMEPackage(string s)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
+            Pcc = MEPackageHandler.OpenMEPackage(s, this);
         }
 
         protected void UnLoadMEPackage()
         {
-            pcc?.Release(wpfWindow: this);
+            pcc?.Release(this);
             Pcc = null;
         }
 
         public abstract void handleUpdate(List<PackageUpdate> updates);
+
+        EventHandler wpfClosed;
+        public void RegisterClosed(Action handler)
+        {
+            wpfClosed = (obj, args) =>
+            {
+                handler();
+            };
+            Closed += wpfClosed;
+        }
+
+        public void ReleaseUse()
+        {
+            Closed -= wpfClosed;
+            wpfClosed = null;
+        }
+
+        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
+        {
+            foreach (IMEPackage pcc in MEPackageHandler.packagesInTools)
+            {
+                if (pcc.FilePath == filePath)
+                {
+                    foreach (var user in pcc.Users.OfType<T>())
+                    {
+                        tool = user;
+                        tool.RestoreAndBringToFront();
+                        return true;
+                    }
+                }
+            }
+            tool = null;
+            return false;
+        }
     }
 }
