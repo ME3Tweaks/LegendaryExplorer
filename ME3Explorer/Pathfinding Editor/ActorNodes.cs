@@ -59,6 +59,11 @@ namespace ME3Explorer.ActorNodes
             this.Pickable = true;
             Bounds = new RectangleF(0, 0, 50, 50);
             SetShape(drawAsPolygon, drawAsCylinder);
+            if (drawAsPolygon && export.GetProperty<StructProperty>("PrePivot") is StructProperty pivotvector)
+            {
+                x = x - pivotvector.Properties.GetProp<FloatProperty>("X");
+                y = y - pivotvector.Properties.GetProp<FloatProperty>("Y");
+            }
             TranslateBy(x, y);
         }
 
@@ -812,6 +817,7 @@ namespace ME3Explorer.ActorNodes
                 }
                 comment.Text = commentText;
             }
+
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
