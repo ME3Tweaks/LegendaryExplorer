@@ -235,11 +235,8 @@ namespace ME3Explorer
                             {
                                 var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
                                 FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
-                                if (fs.HasFlag("Exec"))
-                                {
-                                    _subtext = "Exec - console command";
-                                }
-                                else if (fs.HasFlag("Native"))
+                                _subtext = "";
+                                if (fs.HasFlag("Native"))
                                 {
                                     _subtext = "Native";
                                     var nativeIndex = EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
@@ -248,6 +245,13 @@ namespace ME3Explorer
                                         _subtext += ", index " + nativeIndex;
                                     }
                                 }
+                                if (fs.HasFlag("Exec"))
+                                {
+                                    if (_subtext != "") _subtext += " ";
+                                    _subtext += "Exec - console command";
+                                }
+
+                                if (_subtext == "") _subtext = null;
                             }
                             else
                             {

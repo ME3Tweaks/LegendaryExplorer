@@ -78,17 +78,6 @@ namespace ME3Explorer
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
-
-            if (exportEntry.ClassName == "Function")
-            {
-                StartOffset_Changer.Value = 32;
-                StartOffset_Changer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                StartOffset_Changer.Visibility = Visibility.Visible;
-            }
-
             StartFunctionScan(CurrentLoadedExport.Data);
         }
 
@@ -146,35 +135,35 @@ namespace ME3Explorer
                                                 .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
                                                 .Select(tup => tup.position).ToList();
                 int calculatedLength = diskSize + 4 * objRefPositions.Count;
+                DiskToMemPosMap = func.DiskToMemPosMap;
+                //DiskToMemPosMap = new int[diskSize];
+                //int iDisk = 0;
+                //int iMem = 0;
+                //foreach (int objRefPosition in objRefPositions)
+                //{
+                //    while (iDisk < objRefPosition + 4)
+                //    {
+                //        DiskToMemPosMap[iDisk] = iMem;
+                //        iDisk++;
+                //        iMem++;
+                //    }
+                //    iMem += 4;
+                //}
+                //while (iDisk < diskSize)
+                //{
+                //    DiskToMemPosMap[iDisk] = iMem;
+                //    iDisk++;
+                //    iMem++;
+                //}
 
-                DiskToMemPosMap = new int[diskSize];
-                int iDisk = 0;
-                int iMem = 0;
-                foreach (int objRefPosition in objRefPositions)
-                {
-                    while (iDisk < objRefPosition + 4)
-                    {
-                        DiskToMemPosMap[iDisk] = iMem;
-                        iDisk++;
-                        iMem++;
-                    }
-                    iMem += 4;
-                }
-                while (iDisk < diskSize)
-                {
-                    DiskToMemPosMap[iDisk] = iMem;
-                    iDisk++;
-                    iMem++;
-                }
-
-                foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
-                {
-                    var diskPos = t.pos - 32;
-                    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
-                    {
-                        t.memPos = DiskToMemPosMap[diskPos];
-                    }
-                }
+                //foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
+                //{
+                //    var diskPos = t.pos - 32;
+                //    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                //    {
+                //        t.memPos = DiskToMemPosMap[diskPos];
+                //    }
+                //}
 
 
                 DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
@@ -393,7 +382,7 @@ namespace ME3Explorer
                             s += $"End=0x{(start + len - 1):X8}";
                         }
 
-                        int diskPos = start - (CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+                        int diskPos = start - 32;
                         if (Pcc.Game == MEGame.ME3 && diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
                         {
                             s += $" | MemoryPos=0x{DiskToMemPosMap[diskPos]:X4}";

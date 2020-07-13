@@ -5375,5 +5375,10 @@ namespace ME3Explorer
         {
             PackageEditorExperiments.TintAllNormalizedAverageColors(Pcc);
         }
+
+        private void DumpAllExecFunctionSignatures_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.DumpAllExecFunctionsFromGame();
+        }
     }
 }

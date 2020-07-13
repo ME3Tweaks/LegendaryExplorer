@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using Gammtek.Conduit.Extensions.IO;
 using ImageMagick;
 using MassEffectModder.Images;
@@ -344,6 +345,71 @@ namespace ME3Explorer.PackageEditor
             export.SetBinaryData(mem.ToArray());
         }
 
+        public static void DumpAllExecFunctionsFromGame()
+        {
+            Dictionary<string, string> exportNameSignatureMapping = new Dictionary<string, string>();
+            string gameDir = @"Z:\ME3-Backup\BioGame";
+
+            var packages = Directory.GetFiles(gameDir, "*.pcc", SearchOption.AllDirectories);
+            var sfars = Directory.GetFiles(gameDir + "\\DLC", "Default.sfar", SearchOption.AllDirectories).ToList();
+            sfars.Insert(0, gameDir + "\\Patches\\PCConsole\\Patch_001.sfar");
+            foreach (var sfar in sfars)
+            {
+                Debug.WriteLine("Loading " + sfar);
+                DLCPackage dlc = new DLCPackage(sfar);
+                foreach (var f in dlc.Files)
+                {
+                    if (f.isActualFile && Path.GetExtension(f.FileName) == ".pcc")
+                    {
+                        Debug.WriteLine(" >> Reading " + f.FileName);
+                        var packageStream = dlc.DecompressEntry(f);
+                        packageStream.Position = 0;
+                        var package = MEPackageHandler.OpenMEPackageFromStream(packageStream, Path.GetFileName(f.FileName));
+                        foreach (var exp in package.Exports.Where(x => x.ClassName == "Function"))
+                        {
+                            Function func = new Function(exp.Data, exp);
+                            if (func.HasFlag("Exec") && !exportNameSignatureMapping.ContainsKey(exp.FullPath))
+                            {
+                                func.ParseFunction();
+                                StringWriter sw = new StringWriter();
+                                sw.WriteLine(func.GetSignature());
+                                foreach (var v in func.ScriptBlocks)
+                                {
+                                    sw.WriteLine($"(MemPos 0x{v.memPosStr}) {v.text}");
+                                }
+                                exportNameSignatureMapping[exp.FullPath] = sw.ToString();
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var file in packages)
+            {
+                Debug.WriteLine(" >> Reading " + file);
+                using var package = MEPackageHandler.OpenMEPackage(file);
+                foreach (var exp in package.Exports.Where(x => x.ClassName == "Function"))
+                {
+                    Function func = new Function(exp.Data, exp);
+                    if (func.HasFlag("Exec") && !exportNameSignatureMapping.ContainsKey(exp.FullPath))
+                    {
+                        func.ParseFunction();
+                        StringWriter sw = new StringWriter();
+                        sw.WriteLine(func.GetSignature());
+                        foreach (var v in func.ScriptBlocks)
+                        {
+                            sw.WriteLine($"(MemPos 0x{v.memPosStr}) {v.text}");
+                        }
+                        exportNameSignatureMapping[exp.FullPath] = sw.ToString();
+                    }
+                }
+            }
+
+            var lines = exportNameSignatureMapping.Select(x => $"{x.Key}============================================================\n{x.Value}");
+            File.WriteAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "fullfunctionsignatures.txt"), lines);
+        }
+
+
         /// <summary>
         /// Extracts all NoramlizedAverateColors, tints them, and then reinstalls them to the export they came from
         /// </summary>
@@ -366,7 +432,7 @@ namespace ME3Explorer.PackageEditor
                     //image.Colorize(tintColor, new Percentage(80), new Percentage(5), new Percentage(5) );
                     //image.Settings.FillColor = tintColor;
                     //image.Tint("30%", tintColor);
-                    image.Modulate(new Percentage(82), new Percentage(100),new Percentage(0));
+                    image.Modulate(new Percentage(82), new Percentage(100), new Percentage(0));
                     //image.Colorize(tintColor, new Percentage(100), new Percentage(0), new Percentage(0) );
                     image.Write(outStream, MagickFormat.Png32);
                 }

@@ -17,13 +17,72 @@ namespace ME3Explorer.Packages
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
+        static Func<Stream, string, MEGame, MEPackage> MEStreamConstructorDelegate;
 
         public static void Initialize()
         {
             UDKConstructorDelegate = UDKPackage.RegisterLoader();
             MEConstructorDelegate = MEPackage.RegisterLoader();
+            MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
         }
 
+        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null)
+        {
+            IMEPackage package;
+            package = LoadPackage(inStream);
+            IMEPackage LoadPackage(Stream stream, string filePath = null)
+            {
+                ushort version = 0;
+                ushort licenseVersion = 0;
+                bool fullyCompressed = false;
+
+                EndianReader er = new EndianReader(stream);
+                if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+
+                // This is stored as integer by cooker as it is flipped by size word in big endian
+                uint versionLicenseePacked = er.ReadUInt32();
+                // don't check for fully compressed. We don't support it from stream
+
+                if (!fullyCompressed)
+                {
+                    version = (ushort)(versionLicenseePacked & 0xFFFF);
+                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                }
+
+
+
+                IMEPackage pkg;
+                if ((version == MEPackage.ME3UnrealVersion && (licenseVersion == MEPackage.ME3LicenseeVersion || licenseVersion == MEPackage.ME3Xenon2011DemoLicenseeVersion)) ||
+                    version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
+                    version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
+                    version == MEPackage.ME2PS3UnrealVersion && licenseVersion == MEPackage.ME2PS3LicenseeVersion ||
+                    version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
+                    version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
+                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
+                {
+                    stream.Position -= 8; //reset to where we started for delegate
+                    pkg = MEStreamConstructorDelegate(stream, filePath, MEGame.Unknown);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
+                }
+                else if (version == 868 && licenseVersion == 0)
+                {
+                    //UDK
+                    throw new Exception("Cannot load UDK packages from streams at this time.");
+                    //pkg = UDKConstructorDelegate(filePath, false);
+                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("UDKPackage (Stream)", new WeakReference(pkg));
+                }
+                else
+                {
+                    throw new FormatException("Not an ME1, ME2, ME3, or UDK package stream.");
+                }
+
+                return pkg;
+            }
+
+            // is this useful for stream versions since they can't be shared?
+            // package.RegisterUse();
+            return package;
+        }
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
@@ -31,42 +90,46 @@ namespace ME3Explorer.Packages
             IMEPackage package;
             if (forceLoadFromDisk)
             {
-                package = LoadPackage(pathToFile);
+                using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                package = LoadPackage(fs, pathToFile);
             }
             else
             {
-                package = openPackages.GetOrAdd(pathToFile, LoadPackage);
+                package = openPackages.GetOrAdd(pathToFile, fpath =>
+                {
+                    using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                    return LoadPackage(fs, fpath);
+                });
             }
 
-            IMEPackage LoadPackage(string filePath)
+            IMEPackage LoadPackage(Stream stream, string filePath = null)
             {
                 ushort version = 0;
                 ushort licenseVersion = 0;
                 bool fullyCompressed = false;
-                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+
+                EndianReader er = new EndianReader(stream);
+                if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+
+                // This is stored as integer by cooker as it is flipped by size word in big endian
+                uint versionLicenseePacked = er.ReadUInt32();
+                if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us files has
                 {
-                    EndianReader er = new EndianReader(fs);
-                    if (fs.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
-
-                    // This is stored as integer by cooker as it is flipped by size word in big endian
-                    uint versionLicenseePacked = er.ReadUInt32();
-                    if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little)
+                    //block size - this is a fully compressed file. we must decompress it
+                    //for some reason fully compressed files use a little endian package tag
+                    var usfile = filePath + ".us";
+                    if (File.Exists(usfile))
                     {
-                        //block size - this is a fully compressed file. we must decompress it
-                        //for some reason fully compressed files use a little endian package tag
-                        var usfile = filePath + ".us";
-                        if (File.Exists(usfile))
-                        {
-                            fullyCompressed = true;
-                        }
-                    }
-
-                    if (!fullyCompressed)
-                    {
-                        version = (ushort)(versionLicenseePacked & 0xFFFF);
-                        licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                        fullyCompressed = true;
                     }
                 }
+
+                if (!fullyCompressed)
+                {
+                    version = (ushort)(versionLicenseePacked & 0xFFFF);
+                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                }
+
 
                 IMEPackage pkg;
                 if (fullyCompressed ||

@@ -99,7 +99,7 @@ namespace ME3Explorer.Packages
             WiiU
         }
 
-        public MELocalization Localization { get; }
+        public MELocalization Localization { get; } = MELocalization.None;
 
         public byte[] getHeader()
         {
@@ -122,6 +122,7 @@ namespace ME3Explorer.Packages
         #endregion
 
         static bool isLoaderRegistered;
+        static bool isStreamLoaderRegistered;
 
         public static Func<string, MEGame, MEPackage> RegisterLoader()
         {
@@ -131,10 +132,28 @@ namespace ME3Explorer.Packages
             }
 
             isLoaderRegistered = true;
-            return (f, g) => new MEPackage(f, g);
+            return (f, g) => new MEPackage(new MemoryStream(File.ReadAllBytes(f)), f, g);
         }
 
-        private MEPackage(string filePath, MEGame forceGame = MEGame.Unknown) : base(Path.GetFullPath(filePath))
+        public static Func<Stream, string, MEGame, MEPackage> RegisterStreamLoader()
+        {
+            if (isStreamLoaderRegistered)
+            {
+                throw new Exception(nameof(MEPackage) + "streamloader can only be initialized once");
+            }
+
+            isStreamLoaderRegistered = true;
+            return (s, associatedFilePath, g) => new MEPackage(s, associatedFilePath, g);
+        }
+
+
+        /// <summary>
+        /// Opens an ME package from the stream. If this file is from a disk, the filePath should be set to support saving and other lookups.
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="filePath"></param>
+        /// <param name="forceGame"></param>
+        private MEPackage(Stream fs, string filePath = null, MEGame forceGame = MEGame.Unknown) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             if (forceGame != MEGame.Unknown)
             {
@@ -145,7 +164,7 @@ namespace ME3Explorer.Packages
                 return;
             }
 
-            MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
+            //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
 
             #region Header
 
@@ -313,7 +332,7 @@ namespace ME3Explorer.Packages
             var savedPos = packageReader.Position;
             packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
 
-            
+
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
             if ((Game == MEGame.ME2 || Game == MEGame.ME1) && Platform != GamePlatform.PS3)
@@ -389,38 +408,43 @@ namespace ME3Explorer.Packages
                 ReadLocalTLKs();
             }
 
-            string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
-            if (localizationName.Length > 8)
-                localizationName = localizationName.Substring(localizationName.Length - 8, 8);
-            switch (localizationName)
+
+            if (filePath != null)
             {
-                case "_LOC_DEU":
-                    Localization = MELocalization.DEU;
-                    break;
-                case "_LOC_ESN":
-                    Localization = MELocalization.ESN;
-                    break;
-                case "_LOC_FRA":
-                    Localization = MELocalization.FRA;
-                    break;
-                case "_LOC_INT":
-                    Localization = MELocalization.INT;
-                    break;
-                case "_LOC_ITA":
-                    Localization = MELocalization.ITA;
-                    break;
-                case "_LOC_JPN":
-                    Localization = MELocalization.JPN;
-                    break;
-                case "_LOC_POL":
-                    Localization = MELocalization.POL;
-                    break;
-                case "_LOC_RUS":
-                    Localization = MELocalization.RUS;
-                    break;
-                default:
-                    Localization = MELocalization.None;
-                    break;
+
+                string localizationName = Path.GetFileNameWithoutExtension(filePath).ToUpper();
+                if (localizationName.Length > 8)
+                    localizationName = localizationName.Substring(localizationName.Length - 8, 8);
+                switch (localizationName)
+                {
+                    case "_LOC_DEU":
+                        Localization = MELocalization.DEU;
+                        break;
+                    case "_LOC_ESN":
+                        Localization = MELocalization.ESN;
+                        break;
+                    case "_LOC_FRA":
+                        Localization = MELocalization.FRA;
+                        break;
+                    case "_LOC_INT":
+                        Localization = MELocalization.INT;
+                        break;
+                    case "_LOC_ITA":
+                        Localization = MELocalization.ITA;
+                        break;
+                    case "_LOC_JPN":
+                        Localization = MELocalization.JPN;
+                        break;
+                    case "_LOC_POL":
+                        Localization = MELocalization.POL;
+                        break;
+                    case "_LOC_RUS":
+                        Localization = MELocalization.RUS;
+                        break;
+                    default:
+                        Localization = MELocalization.None;
+                        break;
+                }
             }
         }
 

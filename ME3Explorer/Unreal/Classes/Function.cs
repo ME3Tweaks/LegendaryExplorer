@@ -15,10 +15,11 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public byte[] script;
         public int memsize;
-        public int child;
-        public int unk1;
-        public int unk2;
-        public int size;
+        public int NextItemInLoadingChain;
+        public int FunctionSuperclass;
+        public int ChildProbeStart;
+        public int DiskSize;
+        public int MemorySize;
         public int flagint;
         private FlagValues flags;
         public int nativeindex;
@@ -191,29 +192,79 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadHeader()
         {
-            int pos = 16;
-            child = BitConverter.ToInt32(memory, pos) - 1;
+            int pos = 12;
+            FunctionSuperclass = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
-            unk1 = BitConverter.ToInt32(memory, pos) - 1;
+            NextItemInLoadingChain = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
-            unk2 = BitConverter.ToInt32(memory, pos);
+            ChildProbeStart = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
-            size = BitConverter.ToInt32(memory, pos);
+            DiskSize = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            pos += 4;
+            MemorySize = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
             pos += 4;
         }
 
         public void ParseFunction()
         {
             HeaderText = "";
-            HeaderText += "Childindex : " + child + "\n";
-            HeaderText += "Unknown1 : " + unk1 + "\n";
-            HeaderText += "Unknown2 : " + unk2 + "\n";
-            HeaderText += "Script Size : " + size + "\n";
-            HeaderText += GetFlags() + "\n";
-            HeaderText += "Native Index: " + nativeindex;
+            if (export.FileRef.TryGetEntry(FunctionSuperclass, out var _fs))
+            {
+                HeaderText += $"Function Superclass: {_fs.UIndex} {_fs.InstancedFullPath}\n";
+            }
+            if (export.FileRef.TryGetEntry(NextItemInLoadingChain, out var _ni))
+            {
+                HeaderText += $"Next Item in loading chain: {_ni.UIndex} {_ni.InstancedFullPath}\n";
+            }
+            if (export.FileRef.TryGetEntry(ChildProbeStart, out var _cps)){
+                HeaderText += $"Child Probe Start: {_cps.UIndex} {_cps.InstancedFullPath}\n";
+            }
+            HeaderText += $"Script Disk Size: {DiskSize}\n";
+            HeaderText += $"Script Memory Size: {MemorySize}\n";
+            HeaderText += $"Native Index: {nativeindex}\n";
+            HeaderText += GetSignature();
+            HeaderText += "\n";
+
             var parsedData = Bytecode.ParseBytecode(script, export);
             ScriptBlocks = parsedData.Item1;
             SingularTokenList = parsedData.Item2;
+
+            // Calculate memory offsets
+            List<int> objRefPositions = ScriptBlocks.SelectMany(tok => tok.inPackageReferences)
+                .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                .Select(tup => tup.position).ToList();
+            int calculatedLength = DiskSize + 4 * objRefPositions.Count;
+
+            DiskToMemPosMap = new int[DiskSize];
+            int iDisk = 0;
+            int iMem = 0;
+            foreach (int objRefPosition in objRefPositions)
+            {
+                while (iDisk < objRefPosition + 4)
+                {
+                    DiskToMemPosMap[iDisk] = iMem;
+                    iDisk++;
+                    iMem++;
+                }
+                iMem += 4;
+            }
+            while (iDisk < DiskSize)
+            {
+                DiskToMemPosMap[iDisk] = iMem;
+                iDisk++;
+                iMem++;
+            }
+
+            foreach (Token t in ScriptBlocks)
+            {
+                var diskPos = t.pos - 32;
+                if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                {
+                    t.memPos = DiskToMemPosMap[diskPos];
+                }
+            }
         }
+
+        public int[] DiskToMemPosMap { get; set; }
     }
 }
