@@ -137,6 +137,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<UTexture2D>(export);
                 case "GuidCache":
                     return From<GuidCache>(export);
+                case "FaceFXAnimSet":
+                    return From<FaceFXAnimSet>(export);
                 default:
                     return null;
             }

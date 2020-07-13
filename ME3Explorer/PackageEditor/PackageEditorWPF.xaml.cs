@@ -1,19 +1,4 @@
-﻿using ByteSizeLib;
-using GongSolutions.Wpf.DragDrop;
-using ME1Explorer.Unreal;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.PackageEditorWPFControls;
-using ME3Explorer.Packages;
-using ME3Explorer.Pathfinding_Editor;
-using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
-using StreamHelpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -27,8 +12,18 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Gammtek.Conduit.Extensions.IO;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using ME3Explorer.ME1.Unreal.UnhoodBytecode;
+using ME3Explorer.PackageEditorWPFControls;
+using ME3Explorer.Packages;
+using ME3Explorer.Pathfinding_Editor;
+using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
+using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
+using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
 using ME3Explorer.ME3Tweaks;
@@ -36,11 +31,16 @@ using ME3Explorer.Meshplorer;
 using ME3Explorer.PackageEditor;
 using ME3Explorer.StaticLighting;
 using ME3Explorer.Unreal.BinaryConverters;
+using Gammtek.Conduit.IO;
+using ByteSizeLib;
+using GongSolutions.Wpf.DragDrop;
+using Newtonsoft.Json;
+using StreamHelpers;
+using Gammtek.Conduit.Extensions.IO;
 using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
-using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
@@ -4200,8 +4200,8 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
-                                                                       //var filePaths = MELoadedFiles.GetAllFiles(game);
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
@@ -4223,9 +4223,9 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    //if (findClass(filePath, "WwiseBank", true)) break;
+                    if (findClass(filePath, "FaceFXAnimSet", true)) break;
                     //findClassesWithBinary(filePath);
-                    ScanScripts(filePath);
+                    //ScanScripts(filePath);
                     //if (interestingExports.Count > 0)
                     //{
                     //    break;
@@ -4235,51 +4235,6 @@ namespace ME3Explorer
                 return;
             }).ContinueWithOnUIThread(prevTask =>
             {
-                using (var fs = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OpcodesInfo.txt"), FileMode.Create))
-                using (var writer = new CodeWriter(fs))
-                {
-                    foreach ((int opCode, OpcodeInfo info) in unkOpcodesInfo)
-                    {
-                        writer.WriteLine($"OpCode: 0x{opCode:X}");
-                        writer.IncreaseIndent();
-                        writer.WriteLine($"NumUsages: {info.Usages.Count}");
-                        writer.WriteLine(nameof(info.PropTypes));
-                        writer.IncreaseIndent();
-                        foreach (var propType in info.PropTypes)
-                        {
-                            writer.WriteLine(propType);
-                        }
-                        writer.DecreaseIndent();
-                        writer.WriteLine(nameof(info.PropLocations));
-                        writer.IncreaseIndent();
-                        foreach (var location in info.PropLocations)
-                        {
-                            writer.WriteLine(location);
-                        }
-                        writer.DecreaseIndent();
-                        writer.DecreaseIndent();
-                    }
-                    //writer.WriteLine();
-                    //writer.WriteLine();
-                    //writer.WriteLine("================================================================");
-                    //writer.WriteLine("                           USAGES");
-                    //writer.WriteLine("================================================================");
-                    //writer.WriteLine();
-                    //writer.WriteLine();
-                    //foreach ((int opCode, OpcodeInfo info) in unkOpcodesInfo)
-                    //{
-                    //    writer.WriteLine();
-                    //    writer.WriteLine();
-                    //    writer.WriteLine($"OpCode: 0x{opCode:X}");
-                    //    writer.IncreaseIndent();
-                    //    foreach ((string filePath, int uIndex, int position) in info.Usages)
-                    //    {
-                    //        writer.WriteLine($"0x{position,-5:X} #{uIndex,-10} {filePath}");
-                    //    }
-                    //    writer.DecreaseIndent();
-                    //}
-                }
-
                 IsBusy = false;
                 var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this);
                 listDlg.Show();
@@ -4303,7 +4258,7 @@ namespace ME3Explorer
                             var newData = exp.Data;
                             if (!originalData.SequenceEqual(newData))
                             {
-                                interestingExports.Add($"#{exp.UIndex,5} : {filePath}");
+                                interestingExports.Add($"#{exp.UIndex,-5} : {filePath}");
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), newData);
                                 return true;

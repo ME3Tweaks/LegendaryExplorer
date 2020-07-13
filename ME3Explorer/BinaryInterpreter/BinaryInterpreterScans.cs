@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Media;
-using DocumentFormat.OpenXml.Drawing;
 using Gammtek.Conduit.Extensions;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
-using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Unreal.ME3Enums;
 using SharpDX;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using DocumentFormat.OpenXml.Presentation;
 
 namespace ME3Explorer
 {
@@ -3622,7 +3616,7 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
                 bin.Skip(4);
                 subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"Version?: {bin.ReadInt32():X8}") { Length = 4 });
                 if (Pcc.Game == MEGame.ME3)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
@@ -3678,7 +3672,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Names: {nameCount} items")
                 {
                     //ME2 different to ME3/1
-                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
+                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{i}: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
@@ -3737,7 +3731,7 @@ namespace ME3Explorer
                             animNodes.Add(MakeInt32Node(bin, "Unknown"));
                             animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
-                        animNodes.Add(MakeInt32Node(bin, "Index"));
+                        animNodes.Add(MakeInt32Node(bin, "Name"));
                         animNodes.Add(MakeInt32Node(bin, "Unknown"));
                         if (Pcc.Game == MEGame.ME2)
                         {
