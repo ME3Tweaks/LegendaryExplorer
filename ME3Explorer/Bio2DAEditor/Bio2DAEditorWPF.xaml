@@ -95,8 +95,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellCoordinates_TextBlock" Grid.Row="0" Grid.Column="0" Text="Selected cell coordinates: " VerticalAlignment="Top"/>

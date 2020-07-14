@@ -517,7 +517,7 @@ namespace ME3Explorer.FaceFX
                 SelectedLine.NumKeys[i] = keptPoints;
             }
             SelectedLine.Points = newPoints;
-            SaveChanges();
+            CurrentLoadedExport?.SetBinaryData(FaceFX);
             updateAnimListBox();
         }
 
@@ -587,7 +587,7 @@ namespace ME3Explorer.FaceFX
                     }
                 }
                 SelectedLine.Points = newPoints;
-                SaveChanges();
+                CurrentLoadedExport?.SetBinaryData(FaceFX);
                 updateAnimListBox();
             }
         }
@@ -659,7 +659,7 @@ namespace ME3Explorer.FaceFX
                     SelectedLine.Points[i] = tmp;
                 }
             }
-            SaveChanges();
+            CurrentLoadedExport?.SetBinaryData(FaceFX);
             updateAnimListBox();
         }
 

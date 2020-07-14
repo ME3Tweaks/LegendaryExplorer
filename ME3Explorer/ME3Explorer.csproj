@@ -304,6 +304,7 @@
     <Compile Include="PackageSaver.cs" />
     <Compile Include="Packages\IPackageUser.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
+    <Compile Include="Unreal\BinaryConverters\Bio2DABinary.cs" />
     <Compile Include="Unreal\BinaryConverters\FaceFXAnimSet.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>

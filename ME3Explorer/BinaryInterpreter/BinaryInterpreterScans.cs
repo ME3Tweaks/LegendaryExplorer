@@ -4999,25 +4999,6 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var rowNames = new List<string>();
-                if (CurrentLoadedExport.ClassName == "Bio2DA")
-                {
-                    const string rowLabelsVar = "m_sRowLabel";
-                    var props = CurrentLoadedExport.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
-                    if (props != null)
-                    {
-                        rowNames.AddRange(props.Select(n => n.ToString()));
-                    }
-                }
-                else
-                {
-                    var props = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("m_lstRowNumbers");//Bio2DANumberedRows
-                    if (props != null)
-                    {
-                        rowNames.AddRange(props.Select(n => n.Value.ToString()));
-                    }
-                }
-
                 var bin = new EndianReader(data, Pcc.Endian);
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
@@ -5034,7 +5015,7 @@ namespace ME3Explorer
                 for (int i = 0; i < cellCount; i++)
                 {
                     Bio2DACell.Bio2DADataType type;
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Cell {bin.ReadInt32()}", NodeType.StructLeafInt)
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Cell {(isIndexed ? bin.ReadInt32() : i)}", NodeType.StructLeafInt)
                     {
                         Items =
                         {
@@ -5059,7 +5040,7 @@ namespace ME3Explorer
 
                 for (int i = 0; i < columnCount; i++)
                 {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}: {bin.ReadInt32()}", NodeType.StructLeafInt));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc)}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12});
                 }
             }
             catch (Exception ex)

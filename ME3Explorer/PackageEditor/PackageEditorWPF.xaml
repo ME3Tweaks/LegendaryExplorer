@@ -505,7 +505,7 @@
                     </TabItem>
                     <TabItem Name="Bio2DAViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Bio2DA" ToolTip="View (someday, edit) Bio2DA tables"/>
+                            <TextBlock Text="Bio2DA" ToolTip="View and Edit Bio2DA tables"/>
                         </TabItem.Header>
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>

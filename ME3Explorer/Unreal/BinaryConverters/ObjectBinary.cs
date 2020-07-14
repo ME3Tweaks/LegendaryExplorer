@@ -139,6 +139,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<GuidCache>(export);
                 case "FaceFXAnimSet":
                     return From<FaceFXAnimSet>(export);
+                case "Bio2DA":
+                case "Bio2DANumberedRows":
+                    return From<Bio2DABinary>(export);
                 default:
                     return null;
             }
