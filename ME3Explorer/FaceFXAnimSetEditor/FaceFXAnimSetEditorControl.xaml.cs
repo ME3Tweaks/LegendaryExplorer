@@ -429,13 +429,13 @@ namespace ME3Explorer.FaceFX
                     }
 
                     break;
-                case 4://Path
+                case 3://Path
                     SelectedLine.Path = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Path, true);
                     break;
-                case 5://ID
+                case 4://ID
                     SelectedLine.ID = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true);
                     break;
-                case 6://index
+                case 5://index
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Index.ToString(), true);
                     if (int.TryParse(result, out i))
                     {

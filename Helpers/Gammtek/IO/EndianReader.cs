@@ -72,6 +72,19 @@ namespace Gammtek.Conduit.IO
         {
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="EndianReader" /> class
+        ///     using byte array <paramref name="input" />.
+        /// </summary>
+        public EndianReader(byte[] input, Endian endian = null)
+            : this(new MemoryStream(input), Encoding.UTF8)
+        {
+            if (endian != null)
+            {
+                Endian = endian;
+            }
+        }
+
         private Endian _endian;
         /// <summary>
         ///     The Endian setting of the stream.

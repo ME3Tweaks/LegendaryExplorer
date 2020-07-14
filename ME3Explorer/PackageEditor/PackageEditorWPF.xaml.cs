@@ -4200,7 +4200,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4223,13 +4223,13 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "FaceFXAnimSet", true)) break;
+                    //if (findClass(filePath, "FaceFXAnimSet", true)) break;
                     //findClassesWithBinary(filePath);
-                    //ScanScripts(filePath);
-                    //if (interestingExports.Count > 0)
-                    //{
-                    //    break;
-                    //}
+                    ScanScripts(filePath);
+                    if (interestingExports.Count > 0)
+                    {
+                        break;
+                    }
                 }
 
                 return;
@@ -4398,12 +4398,16 @@ namespace ME3Explorer
                 {
                     try
                     {
-                        if (exp.ClassName == "Function" && ObjectBinary.From(exp) is UStruct uStruct)
+                        if ((exp.ClassName == "State" || exp.ClassName == "Function") && ObjectBinary.From(exp) is UStruct uStruct)
                         {
                             byte[] data = exp.Data;
                             (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
                             foreach (var token in tokens)
                             {
+                                if (token.CurrentStack.Contains("UNKNOWN") || token.OpCodeString.Contains("UNKNOWN"))
+                                {
+                                    interestingExports.Add($"{exp.UIndex}: {filePath,-5}");
+                                }
                                 if (unkOpcodes.Contains(token.OpCode))
                                 {
                                     var info = unkOpcodesInfo[token.OpCode];

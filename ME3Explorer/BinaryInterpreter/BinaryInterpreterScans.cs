@@ -3394,8 +3394,6 @@ namespace ME3Explorer
 
             #endregion
 
-            #region Mass Effect
-
             try
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
@@ -3596,8 +3594,6 @@ namespace ME3Explorer
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
-
-            #endregion
             return subnodes;
 
             static float getW(float x, float y, float z)
@@ -4881,104 +4877,6 @@ namespace ME3Explorer
             }
         }
 
-        private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
-        {
-            var subnodes = new List<ITreeItem>();
-            try
-            {
-                int pos = CurrentLoadedExport.propsEnd();
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    pos += CurrentLoadedExport.ClassName == "WwiseBank" ? 8 : 32;
-                }
-
-                int unk1 = BitConverter.ToInt32(data, pos);
-                int DataSize = BitConverter.ToInt32(data, pos + 4);
-                int DataSize2 = BitConverter.ToInt32(data, pos + 8);
-                int DataOffset = BitConverter.ToInt32(data, pos + 0xC);
-
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} Unknown: {unk1}",
-                    Name = "_" + pos,
-                });
-                pos += 4;
-                string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{ pos:X4} {dataset1type}: {DataSize2} (0x{ DataSize2:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "Bank offset";
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-
-                if (CurrentLoadedExport.ClassName == "WwiseBank")
-                {
-                    //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
-                    //{
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = "Click here to jump to the calculated end offset of wwisebank in this export",
-                        Name = "_" + (DataSize2 + pos),
-                        Tag = NodeType.Unknown
-                    });
-                    //}
-                }
-
-                switch (CurrentLoadedExport.ClassName)
-                {
-                    case "WwiseStream" when pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null:
-                        {
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.",
-                                Name = "_" + pos,
-                                Tag = NodeType.Unknown
-                            });
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = "The stream offset to this data will be automatically updated when this file is saved.",
-                                Tag = NodeType.Unknown
-                            });
-                            break;
-                        }
-                    case "WwiseBank":
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"{pos:X4} Embedded soundbank. Use Soundplorer WPF to view data.",
-                            Name = "_" + pos,
-                            Tag = NodeType.Unknown
-                        });
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = "The bank offset to this data will be automatically updated when this file is saved.",
-                            Tag = NodeType.Unknown
-                        });
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
-
         private List<ITreeItem> Scan_WwiseEvent(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -5088,6 +4986,81 @@ namespace ME3Explorer
                     return subnodes;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> Scan_Bio2DA(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var rowNames = new List<string>();
+                if (CurrentLoadedExport.ClassName == "Bio2DA")
+                {
+                    const string rowLabelsVar = "m_sRowLabel";
+                    var props = CurrentLoadedExport.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
+                    if (props != null)
+                    {
+                        rowNames.AddRange(props.Select(n => n.ToString()));
+                    }
+                }
+                else
+                {
+                    var props = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("m_lstRowNumbers");//Bio2DANumberedRows
+                    if (props != null)
+                    {
+                        rowNames.AddRange(props.Select(n => n.Value.ToString()));
+                    }
+                }
+
+                var bin = new EndianReader(data, Pcc.Endian);
+                bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+                bool isIndexed = !bin.ReadBoolInt();
+                bin.Skip(-4);
+                if (isIndexed)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Zero"));
+                }
+
+                int cellCount;
+                subnodes.Add(new BinInterpNode(bin.Position, $"Populated Cell Count: {cellCount = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 });
+
+                for (int i = 0; i < cellCount; i++)
+                {
+                    Bio2DACell.Bio2DADataType type;
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Cell {bin.ReadInt32()}", NodeType.StructLeafInt)
+                    {
+                        Items =
+                        {
+                            new BinInterpNode(bin.Position, $"Type: {type = (Bio2DACell.Bio2DADataType)bin.ReadByte()}") { Length = 1 },
+                            type switch
+                            {
+                                Bio2DACell.Bio2DADataType.TYPE_INT => MakeInt32Node(bin, "Value"),
+                                Bio2DACell.Bio2DADataType.TYPE_NAME => MakeNameNode(bin, "Value"),
+                                Bio2DACell.Bio2DADataType.TYPE_FLOAT => MakeFloatNode(bin, "Value")
+                            }
+                        }
+                    });
+                }
+
+                if (!isIndexed)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Zero"));
+                }
+
+                int columnCount;
+                subnodes.Add(new BinInterpNode(bin.Position, $"Column Count: {columnCount = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 });
+
+                for (int i = 0; i < columnCount; i++)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}: {bin.ReadInt32()}", NodeType.StructLeafInt));
+                }
             }
             catch (Exception ex)
             {
