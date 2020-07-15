@@ -67,29 +67,27 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
             if (dataOverride == null) dataOverride = export.Data;
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride)))
+            using BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride));
+            reader.ReadBytes(12); //netindex?, none
+            int super = reader.ReadInt32();
+            int nextCompilingChainItem = reader.ReadInt32();
+            reader.ReadBytes(12);
+            int line = reader.ReadInt32(); //??
+            int textPos = reader.ReadInt32(); //??
+            int scriptSize = reader.ReadInt32();
+            byte[] bytecode = reader.ReadBytes(scriptSize);
+            int nativeIndex = reader.ReadInt16();
+            int operatorPrecedence = reader.ReadByte();
+            int functionFlags = reader.ReadInt32();
+            if ((functionFlags & _flagSet.GetMask("Net")) != 0)
             {
-                reader.ReadBytes(12); //netindex?, none
-                int super = reader.ReadInt32();
-                int nextCompilingChainItem = reader.ReadInt32();
-                reader.ReadBytes(12);
-                int line = reader.ReadInt32(); //??
-                int textPos = reader.ReadInt32(); //??
-                int scriptSize = reader.ReadInt32();
-                byte[] bytecode = reader.ReadBytes(scriptSize);
-                int nativeIndex = reader.ReadInt16();
-                int operatorPrecedence = reader.ReadByte();
-                int functionFlags = reader.ReadInt32();
-                if ((functionFlags & _flagSet.GetMask("Net")) != 0)
-                {
-                    reader.ReadInt16(); // repOffset
-                }
-
-                int friendlyNameIndex = reader.ReadInt32();
-                reader.ReadInt32();
-                return new UnFunction(export, export.FileRef.GetNameEntry(friendlyNameIndex),
-                    new FlagValues(functionFlags, _flagSet), bytecode, nativeIndex, operatorPrecedence);
+                reader.ReadInt16(); // repOffset
             }
+
+            int friendlyNameIndex = reader.ReadInt32();
+            reader.ReadInt32();
+            return new UnFunction(export, export.FileRef.GetNameEntry(friendlyNameIndex),
+                                  new FlagValues(functionFlags, _flagSet), bytecode, nativeIndex, operatorPrecedence);
         }
     }
 }

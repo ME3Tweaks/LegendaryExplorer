@@ -65,7 +65,7 @@
                                                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
-                                                                <TextBlock Text="{Binding Path=Name.Instanced}" Foreground="Black" Margin="5,0,0,0"/>
+                                                                <TextBlock Text="{Binding Path=Name}" Foreground="Black" Margin="5,0,0,0"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ComboBox.Resources>
@@ -102,9 +102,10 @@
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellCoordinates_TextBlock" Grid.Row="0" Grid.Column="0" Text="Selected cell coordinates: " VerticalAlignment="Top"/>
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellDataOffset_TextBlock" Grid.Row="1" Grid.Column="0" Text="Selected cell data offset: " VerticalAlignment="Top"/>
             <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellDataType_TextBlock" Grid.Row="2"  Grid.Column="0" Text="Selected cell data type: " VerticalAlignment="Top"/>
+            <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellData_TextBlock" Grid.Row="3"  Grid.Column="0" Text="Selected cell data: " VerticalAlignment="Top"/>
 
             <TextBlock FontWeight="Bold" Grid.Row="0"  Grid.Column="1" Text="Value as TLK reference:"/>
-            <TextBlock Margin="5,0,0,0" Name="Bio2DAInfo_CellDataAsStrRef_TextBlock" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" TextWrapping="Wrap" Text="Select a cell to preview TLK value"/>
+            <TextBlock Margin="5,0,0,0" Name="Bio2DAInfo_CellDataAsStrRef_TextBlock" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="3" TextWrapping="Wrap" Text="Select a cell to preview TLK value"/>
         </Grid>
 
         <Grid  DockPanel.Dock="Top">

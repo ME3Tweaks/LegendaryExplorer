@@ -22,7 +22,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             }
             else
             {
-                //If there are no cells, make sure that IsIndexed is true, since there is no way to differentiate between 
+                //If there are no cells, IsIndexed has to be true, since there is no way to differentiate between 
                 //a cell count of zero and the extra zero that is present when IsIndexed is true.
                 IsIndexed |= Cells.IsEmpty();
             }
