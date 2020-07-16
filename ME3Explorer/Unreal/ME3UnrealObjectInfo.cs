@@ -198,6 +198,7 @@ namespace ME3Explorer.Unreal
             PropertyInfo p = null;
             switch (game)
             {
+                // todo: Add checks for PS3 Platform (ME3)
                 case MEGame.ME1:
                     p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
@@ -588,7 +589,8 @@ namespace ME3Explorer.Unreal
                     {
                         if ((p.Type == PropertyType.StructProperty || p.Type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo);
+                            reSearch = false;
+                            PropertyInfo val = getPropertyInfo(p.Reference, propName, true, nonVanillaClassInfo, reSearch);
                             if (val != null)
                             {
                                 return val;
@@ -1140,6 +1142,7 @@ namespace ME3Explorer.Unreal
                     break;
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
+                    // 44 is not correct on other platforms besides PC
                     PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.Data, 44, entry.FileRef.Endian)));
                     if (arrayTypeProp != null)
                     {
