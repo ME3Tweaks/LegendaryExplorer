@@ -391,63 +391,76 @@ namespace ME3Explorer.FaceFX
             var t = treeView.SelectedNode;
             if (t == null)
                 return;
-            string result; int i; float f;
+            string result;
+            float f;
             int subidx = t.Index;
             switch (subidx)
             {
                 case 0://Name
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
-                    if (result == string.Empty)
+                    if (result == string.Empty || result is null)
                     {
-                        break;
+                        return;
                     }
                     if (FaceFX.Names.Contains(result))
                     {
                         SelectedLine.NameIndex = FaceFX.Names.IndexOf(result);
                         SelectedLine.NameAsString = result;
+                        break;
                     }
                     else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
                     {
                         FaceFX.Names.Add(result);
                         SelectedLine.NameIndex = FaceFX.Names.Count - 1;
                         SelectedLine.NameAsString = result;
+                        break;
                     }
-                    break;
+                    return;
                 case 1://FadeInTime
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeInTime.ToString(), true);
                     if (float.TryParse(result, out f))
                     {
                         SelectedLine.FadeInTime = f;
+                        break;
                     }
-
-                    break;
+                    return;
                 case 2://FadeInTime
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeOutTime.ToString(), true);
                     if (float.TryParse(result, out f))
                     {
                         SelectedLine.FadeOutTime = f;
+                        break;
                     }
-
-                    break;
+                    return;
                 case 3://Path
-                    SelectedLine.Path = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Path, true);
-                    break;
+                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Path, true) is string path)
+                    {
+                        SelectedLine.Path = path;
+                        break;
+                    }
+                    return;
                 case 4://ID
-                    SelectedLine.ID = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true);
-                    break;
+                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true) is string id)
+                    {
+                        SelectedLine.ID = id;
+                        break;
+                    }
+                    return;
                 case 5://index
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Index.ToString(), true);
-                    if (int.TryParse(result, out i))
+                    if (int.TryParse(result, out int i))
                     {
                         SelectedLine.Index = i;
+                        break;
                     }
-
-                    break;
+                    return;
                 default:
                     return;
             }
             treeView.Nodes.Clear();
             treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLine));
+            linesListBox.Focus();
+            SaveChanges();
         }
 
         static System.Windows.Forms.TreeNode[] DataToTree2(FaceFXAnimSet animSet, FaceFXLine d) =>

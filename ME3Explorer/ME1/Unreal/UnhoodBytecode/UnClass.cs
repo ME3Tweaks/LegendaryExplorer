@@ -76,7 +76,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public void DecompileBytecode(StatementList statements, TextBuilder result, bool createControlStatements)
         {
             var labelTableStatement = statements.Find(s => s.Token is LabelTableToken);
-            var labelTable = labelTableStatement != null ? (LabelTableToken)labelTableStatement.Token : null;
+            var labelTable = (LabelTableToken)labelTableStatement?.Token;
             result.HasErrors = statements.HasErrors();
             if (createControlStatements)
             {

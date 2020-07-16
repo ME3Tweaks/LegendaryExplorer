@@ -1,20 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Be.Windows.Forms;
 using Gammtek.Conduit.IO;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
@@ -23,7 +11,6 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
-using static ME3Explorer.Unreal.Bytecode;
 
 namespace ME3Explorer
 {
@@ -100,7 +87,7 @@ namespace ME3Explorer
             DecompiledScriptBoxTitle = "Decompiled Script";
             if (Pcc.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, 32);
+                var func = new Unreal.Classes.Function(data, CurrentLoadedExport, 32);
 
 
                 func.ParseFunction();

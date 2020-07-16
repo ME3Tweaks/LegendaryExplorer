@@ -115,7 +115,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class UncondJumpToken : JumpToken
     {
-        public UncondJumpToken(int targetOffset, int offset) : base("jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
+        public UncondJumpToken(int targetOffset, int offset) : base($"jump to 0x{targetOffset:X}", targetOffset, offset)
         {
         }
     }
@@ -125,7 +125,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly BytecodeToken _condition;
 
         public JumpIfNotToken(int targetOffset, BytecodeToken condition, int offset)
-            : base("if (!" + condition + ") jump to 0x" + targetOffset.ToString("X"), targetOffset, offset)
+            : base($"if (!{condition}) jump to 0x{targetOffset:X}", targetOffset, offset)
         {
             _condition = condition;
         }
@@ -169,12 +169,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     class ForeachToken : JumpToken
     {
-        internal ForeachToken(int targetOffset, BytecodeToken expr, int offset) : this(targetOffset, expr, null, offset)
+        internal ForeachToken(int targetOffset, BytecodeToken expr, int offset) : base($"foreach ({expr}) end {targetOffset:X}", targetOffset, offset)
         {
+            Expr = expr;
         }
 
         internal ForeachToken(int targetOffset, BytecodeToken expr, BytecodeToken iteratorExpr, int offset)
-            : base("foreach (" + expr + ") end " + targetOffset, targetOffset, offset)
+            : base($"foreach ({iteratorExpr} in {expr}) end {targetOffset:X}", targetOffset, offset)
         {
             Expr = expr;
             IteratorExpr = iteratorExpr;
@@ -310,7 +311,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             EX_GlobalFunction = 0x37,
             EX_PrimitiveCast = 0x38,
             EX_DynArrayInsert = 0x39,
-            EX_ReturnNothing = 0x3A,        // EX_ReturnNothing = 0x3A
+            EX_ReturnNothing = 0x3A,
             EX_EqualEqual_DelDel = 0x3B,
             EX_NotEqual_DelDel = 0x3C,
             EX_EqualEqual_DelFunc = 0x3D,
