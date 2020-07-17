@@ -32,6 +32,15 @@ using System.Diagnostics;
 
 namespace MassEffectModder.Images
 {
+    // For passing to another project.
+    public enum GamePlatform
+    {
+        PC,
+        Xenon,
+        PS3,
+        WiiU
+    }
+
     public enum PixelFormat
     {
         Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8
