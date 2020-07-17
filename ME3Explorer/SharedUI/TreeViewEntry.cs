@@ -15,6 +15,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.TlkManagerNS;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer
 {
@@ -185,102 +186,109 @@ namespace ME3Explorer
                     if (loadedSubtext) return _subtext;
                     if (Entry == null) return null;
                     var ee = Entry as ExportEntry;
-                    if (Entry.ClassName == "WwiseEvent")
-                    {
-                        //parse out tlk id?
-                        if (Entry.ObjectName.Name.StartsWith("VO_"))
-                        {
-                            var parsing = Entry.ObjectName.Name.Substring(3);
-                            var nextUnderScore = parsing.IndexOf("_");
-                            if (nextUnderScore > 0)
-                            {
-                                parsing = parsing.Substring(0, nextUnderScore);
-                                if (int.TryParse(parsing, out var parsedInt))
-                                {
-                                    //Lookup TLK
-                                    var data = TLKManagerWPF.GlobalFindStrRefbyID(parsedInt, Entry.FileRef);
-                                    if (data != "No Data")
-                                    {
-                                        _subtext = data;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (Entry.ClassName == "WwiseStream")
-                    {
-                        //parse out tlk id?
-                        var splits = Entry.ObjectName.Name.Split('_');
-                        for (int i = splits.Length - 1; i > 0; i--)
-                        {
-                            //backwards is faster
-                            if (int.TryParse(splits[i], out var parsed))
-                            {
-                                //Lookup TLK
-                                var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
-                                if (data != "No Data")
-                                {
-                                    _subtext = data;
-                                }
-                            }
-                        }
-                    }
-                    else if (ee != null)
-                    {
-                        if (Entry.ClassName == "Function" && ee != null)
-                        {
-                            //check if exec
-                            var data = ee.Data;
-                            if (Entry.FileRef.Game == MEGame.ME3 || Entry.FileRef.Platform == MEPackage.GamePlatform.PS3)
-                            {
-                                var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
-                                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
-                                if (fs.HasFlag("Exec"))
-                                {
-                                    _subtext = "Exec - console command";
-                                }
-                                else if (fs.HasFlag("Native"))
-                                {
-                                    _subtext = "Native";
-                                    var nativeIndex = EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
-                                    if (nativeIndex > 0)
-                                    {
-                                        _subtext += ", index " + nativeIndex;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
-                                var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
-                                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
-                                if (fs.HasFlag("Exec"))
-                                {
-                                    _subtext = "Exec - console command";
-                                }
-                                else if (fs.HasFlag("Native"))
-                                {
-                                    var nativeIndex = EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
-                                    _subtext = "Native, index "+nativeIndex;
-                                }
-                            }
 
+                    if (ee != null)
+                    {
+                        //Parse as export
+                        switch (ee.ClassName)
+                        {
+                            case "Function":
+                                {
+                                    //check if exec
+                                    var data = ee.Data;
+                                    if (Entry.FileRef.Game == MEGame.ME3 ||
+                                        Entry.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                                    {
+                                        var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
+                                        FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                        _subtext = "";
+                                        if (fs.HasFlag("Native"))
+                                        {
+                                            _subtext = "Native";
+                                            var nativeIndex =
+                                                EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                            if (nativeIndex > 0)
+                                            {
+                                                _subtext += ", index " + nativeIndex;
+                                            }
+                                        }
+
+                                        if (fs.HasFlag("Exec"))
+                                        {
+                                            if (_subtext != "") _subtext += " ";
+                                            _subtext += "Exec - console command";
+                                        }
+
+                                        if (_subtext == "") _subtext = null;
+                                    }
+                                    else
+                                    {
+                                        //This could be -14 if it's defined as Net... we would have to decompile the whole function to know though...
+                                        var flags = EndianReader.ToInt32(data, data.Length - 12, ee.FileRef.Endian);
+                                        FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                                        if (fs.HasFlag("Exec"))
+                                        {
+                                            _subtext = "Exec - console command";
+                                        }
+                                        else if (fs.HasFlag("Native"))
+                                        {
+                                            var nativeIndex =
+                                                EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                            _subtext = "Native, index " + nativeIndex;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            case "Const":
+                                {
+                                    var data = ee.Data;
+                                    //This is kind of a hack. 
+                                    var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
+                                    _subtext = "Value: " + value;
+                                    break;
+                                }
+                            case "ByteProperty":
+                            case "StructProperty":
+                            case "ObjectProperty":
+                            case "ComponentProperty":
+                                {
+                                    // Objects of this type
+                                    var typeRef = EndianReader.ToInt32(ee.Data, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
+                                    if (ee.FileRef.TryGetEntry(typeRef, out var type))
+                                    {
+                                        _subtext = type.ObjectName;
+                                    }
+
+                                    break;
+                                }
+                            case "ClassProperty":
+                                {
+                                    var typeRef = EndianReader.ToInt32(ee.Data, 0x30, ee.FileRef.Endian);
+                                    if (ee.FileRef.TryGetEntry(typeRef, out var type))
+                                    {
+                                        _subtext = $"Class: {type.ObjectName}";
+                                    }
+                                    break;
+                                }
                         }
-                        else if (Entry.ClassName == "Const")
+
+                        if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
                         {
                             var data = ee.Data;
                             //This is kind of a hack. 
-                            var value = EndianReader.ReadUnrealString(data, 0x14, ee.FileRef.Endian);
-                            _subtext = "Value: " + value;
-                        }
-                        else if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
-                        {
-                            var data = ee.Data;
-                            //This is kind of a hack. 
-                            UnrealFlags.EPropertyFlags objectFlags = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(data, 0x18, ee.FileRef.Endian);
+                            UnrealFlags.EPropertyFlags objectFlags =
+                                (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(data, 0x18, ee.FileRef.Endian);
                             if ((objectFlags & UnrealFlags.EPropertyFlags.Config) != 0)
                             {
-                                _subtext = "Config";
+                                if (_subtext != null)
+                                {
+                                    _subtext = "Config, " + _subtext;
+                                }
+                                else
+                                {
+                                    _subtext = "Config";
+                                }
                             }
                         }
                         else
@@ -293,11 +301,66 @@ namespace ME3Explorer
                         }
                     }
 
+                    if (_subtext == null)
+                    {
+
+                        // Parse if export or import
+                        switch (Entry.ClassName)
+                        {
+                            case "WwiseEvent":
+                                {
+                                    //parse out tlk id?
+                                    if (Entry.ObjectName.Name.StartsWith("VO_"))
+                                    {
+                                        var parsing = Entry.ObjectName.Name.Substring(3);
+                                        var nextUnderScore = parsing.IndexOf("_");
+                                        if (nextUnderScore > 0)
+                                        {
+                                            parsing = parsing.Substring(0, nextUnderScore);
+                                            if (int.TryParse(parsing, out var parsedInt))
+                                            {
+                                                //Lookup TLK
+                                                var data = TLKManagerWPF.GlobalFindStrRefbyID(parsedInt, Entry.FileRef);
+                                                if (data != "No Data")
+                                                {
+                                                    _subtext = data;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            case "WwiseStream":
+                                {
+                                    //parse out tlk id?
+                                    var splits = Entry.ObjectName.Name.Split('_');
+                                    for (int i = splits.Length - 1; i > 0; i--)
+                                    {
+                                        //backwards is faster
+                                        if (int.TryParse(splits[i], out var parsed))
+                                        {
+                                            //Lookup TLK
+                                            var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Entry.FileRef);
+                                            if (data != "No Data")
+                                            {
+                                                _subtext = data;
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                }
+                        }
+                    }
+
                     loadedSubtext = true;
                     return _subtext;
                 }
                 catch (Exception)
                 {
+                    loadedSubtext = true;
+                    _subtext = "ERROR GETTING SUBTEXT!";
                     return "ERROR GETTING SUBTEXT!";
                 }
             }

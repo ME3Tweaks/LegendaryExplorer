@@ -72,7 +72,6 @@ namespace ME3Explorer
                 else
                 {
                     Console.WriteLine("Unable to find row names property!");
-                    Debugger.Break();
                     return;
                 }
             }
@@ -89,7 +88,6 @@ namespace ME3Explorer
                 else
                 {
                     Debug.WriteLine("Unable to find row names property (m_lstRowNumbers)!");
-                    //Debugger.Break();
                     return;
                 }
             }
@@ -296,7 +294,6 @@ namespace ME3Explorer
                             else
                             {
                                 Debug.WriteLine("THIS SHOULDN'T OCCUR!");
-                                Debugger.Break();
                                 throw new Exception("A non-indexed Bio2DA cannot have null cells.");
                             }
                         }

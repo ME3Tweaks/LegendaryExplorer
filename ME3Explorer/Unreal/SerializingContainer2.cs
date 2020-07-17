@@ -53,6 +53,11 @@ namespace ME3Explorer
                 sc.ms.Writer.WriteInt32(val);
         }
 
+        public static void SerializeConstInt(this SerializingContainer2 sc, int val)
+        {
+            sc.Serialize(ref val);
+        }
+
         public static void Serialize(this SerializingContainer2 sc, ref uint val)
         {
             if (sc.IsLoading)
@@ -67,6 +72,11 @@ namespace ME3Explorer
                 val = sc.ms.ReadInt16();
             else
                 sc.ms.Writer.WriteInt16(val);
+        }
+
+        public static void SerializeConstShort(this SerializingContainer2 sc, short val)
+        {
+            sc.Serialize(ref val);
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref ushort val)

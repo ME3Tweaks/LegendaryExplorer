@@ -328,6 +328,8 @@ namespace ME3Explorer
             "WwiseBank",
             "WwiseEvent",
             "WwiseStream",
+            "Bio2DANumberedRows",
+            "Bio2DA",
         };
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -550,6 +552,10 @@ namespace ME3Explorer
                         break;
                     case "WwiseEvent":
                         subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));
+                        break;
+                    case "Bio2DA":
+                    case "Bio2DANumberedRows":
+                        subNodes.AddRange(Scan_Bio2DA(data));
                         break;
                     case "BioStage":
                         subNodes.AddRange(StartBioStageScan(data, ref binarystart));
@@ -1032,14 +1038,14 @@ namespace ME3Explorer
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 2)
                     {
-                        ushort val = BitConverter.ToUInt16(currentData, start);
+                        ushort val = EndianReader.ToUInt16(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", UShort: {val}";
                     }
                     if (start <= currentData.Length - 4)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
+                        int val = EndianReader.ToInt32(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Int: {val}";
-                        float fval = BitConverter.ToSingle(currentData, start);
+                        float fval = EndianReader.ToSingle(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Float: {fval}";
                         if (CurrentLoadedExport.FileRef.IsName(val))
                         {

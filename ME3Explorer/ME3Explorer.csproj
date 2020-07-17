@@ -301,6 +301,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
+    <Compile Include="PackageSaver.cs" />
+    <Compile Include="Packages\IPackageUser.cs" />
+    <Compile Include="Packages\MEPackageHandler.cs" />
+    <Compile Include="Unreal\BinaryConverters\Bio2DABinary.cs" />
+    <Compile Include="Unreal\BinaryConverters\FaceFXAnimSet.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -514,7 +519,6 @@
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditorControl.xaml.cs">
       <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="FileHexViewer\FileHexViewerWPF.xaml.cs">
       <DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
     </Compile>
@@ -560,8 +564,6 @@
     <Compile Include="CoalesceTool\Xml\CoalesceIncludeTarget.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceAsset.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceFile.cs" />
-    <Compile Include="FaceFXAnimSetEditor\IFaceFXAnimSet.cs" />
-    <Compile Include="GenericWindow.cs" />
     <Compile Include="Interpreter\InterpreterWPF.xaml.cs">
       <DependentUpon>InterpreterWPF.xaml</DependentUpon>
     </Compile>
@@ -602,7 +604,6 @@
     <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
-    <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
@@ -984,7 +985,6 @@
     <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
-    <Compile Include="FaceFXAnimSetEditor\ME3FaceFXAnimSet.cs" />
     <Compile Include="Unreal\Classes\Function.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
@@ -994,7 +994,6 @@
     <Compile Include="Unreal\DLCPackage.cs" />
     <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
-    <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Unreal\PropertyReader.cs" />
     <Compile Include="Unreal\PropertyCollection.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />

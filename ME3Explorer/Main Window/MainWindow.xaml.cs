@@ -349,13 +349,10 @@ namespace ME3Explorer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var tools = new List<GenericWindow>();
+            var tools = new List<WPFBase>();
             foreach (var package in MEPackageHandler.packagesInTools)
             {
-                foreach (var tool in package.Tools)
-                {
-                    tools.Add(tool);
-                }
+                tools.AddRange(package.Users.OfType<WPFBase>());
             }
             foreach (var tool in tools)
             {
@@ -730,9 +727,9 @@ namespace ME3Explorer
             taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
-        private void taskPanePanel_ToolMouseOver(object sender, GenericWindow e)
+        private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
         {
-            taskPaneInfoPanel.setTool(e);
+            taskPaneInfoPanel.setTool(e.wpf);
             if (!TaskPaneInfoPanelOpen)
             {
                 TaskPaneInfoPanelOpen = true;

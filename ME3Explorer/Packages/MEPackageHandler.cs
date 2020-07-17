@@ -1,9 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using Gammtek.Conduit.IO;
 using StreamHelpers;
 
@@ -12,61 +13,123 @@ namespace ME3Explorer.Packages
     public static class MEPackageHandler
     {
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
-        private static object _openPackagesLock = new Object();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
+        static Func<Stream, string, MEGame, MEPackage> MEStreamConstructorDelegate;
 
         public static void Initialize()
         {
-            UDKConstructorDelegate = UDKPackage.Initialize();
-            MEConstructorDelegate = MEPackage.Initialize();
+            UDKConstructorDelegate = UDKPackage.RegisterLoader();
+            MEConstructorDelegate = MEPackage.RegisterLoader();
+            MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
         }
 
-        public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null)
+        {
+            IMEPackage package;
+            package = LoadPackage(inStream);
+            IMEPackage LoadPackage(Stream stream, string filePath = null)
+            {
+                ushort version = 0;
+                ushort licenseVersion = 0;
+                bool fullyCompressed = false;
+
+                EndianReader er = new EndianReader(stream);
+                if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+
+                // This is stored as integer by cooker as it is flipped by size word in big endian
+                uint versionLicenseePacked = er.ReadUInt32();
+                // don't check for fully compressed. We don't support it from stream
+
+                if (!fullyCompressed)
+                {
+                    version = (ushort)(versionLicenseePacked & 0xFFFF);
+                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                }
+
+
+
+                IMEPackage pkg;
+                if ((version == MEPackage.ME3UnrealVersion && (licenseVersion == MEPackage.ME3LicenseeVersion || licenseVersion == MEPackage.ME3Xenon2011DemoLicenseeVersion)) ||
+                    version == MEPackage.ME3WiiUUnrealVersion && licenseVersion == MEPackage.ME3LicenseeVersion ||
+                    version == MEPackage.ME2UnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
+                    version == MEPackage.ME2PS3UnrealVersion && licenseVersion == MEPackage.ME2PS3LicenseeVersion ||
+                    version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
+                    version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
+                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
+                {
+                    stream.Position -= 8; //reset to where we started for delegate
+                    pkg = MEStreamConstructorDelegate(stream, filePath, MEGame.Unknown);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
+                }
+                else if (version == 868 && licenseVersion == 0)
+                {
+                    //UDK
+                    throw new Exception("Cannot load UDK packages from streams at this time.");
+                    //pkg = UDKConstructorDelegate(filePath, false);
+                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("UDKPackage (Stream)", new WeakReference(pkg));
+                }
+                else
+                {
+                    throw new FormatException("Not an ME1, ME2, ME3, or UDK package stream.");
+                }
+
+                return pkg;
+            }
+
+            // is this useful for stream versions since they can't be shared?
+            // package.RegisterUse();
+            return package;
+        }
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
 
             IMEPackage package;
             if (forceLoadFromDisk)
             {
-                package = LoadPackage(pathToFile);
+                using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                package = LoadPackage(fs, pathToFile);
             }
             else
             {
-                package = openPackages.GetOrAdd(pathToFile, LoadPackage);
+                package = openPackages.GetOrAdd(pathToFile, fpath =>
+                {
+                    using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+                    return LoadPackage(fs, fpath);
+                });
             }
 
-            IMEPackage LoadPackage(string filePath)
+            IMEPackage LoadPackage(Stream stream, string filePath = null)
             {
                 ushort version = 0;
                 ushort licenseVersion = 0;
                 bool fullyCompressed = false;
-                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+
+                EndianReader er = new EndianReader(stream);
+                if (stream.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
+
+                // This is stored as integer by cooker as it is flipped by size word in big endian
+                uint versionLicenseePacked = er.ReadUInt32();
+                if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us files has
                 {
-                    EndianReader er = new EndianReader(fs);
-                    if (fs.ReadUInt32() == UnrealPackageFile.packageTagBigEndian) er.Endian = Endian.Big;
-
-                    // This is stored as integer by cooker as it is flipped by size word in big endian
-                    uint versionLicenseePacked = er.ReadUInt32();
-                    if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little)
+                    //block size - this is a fully compressed file. we must decompress it
+                    //for some reason fully compressed files use a little endian package tag
+                    var usfile = filePath + ".us";
+                    if (File.Exists(usfile))
                     {
-                        //block size - this is a fully compressed file. we must decompress it
-                        //for some reason fully compressed files use a little endian package tag
-                        var usfile = filePath + ".us";
-                        if (File.Exists(usfile))
-                        {
-                            fullyCompressed = true;
-                        }
-                    }
-
-                    if (!fullyCompressed)
-                    {
-                        version = (ushort)(versionLicenseePacked & 0xFFFF);
-                        licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                        fullyCompressed = true;
                     }
                 }
+
+                if (!fullyCompressed)
+                {
+                    version = (ushort)(versionLicenseePacked & 0xFFFF);
+                    licenseVersion = (ushort)(versionLicenseePacked >> 16);
+                }
+
 
                 IMEPackage pkg;
                 if (fullyCompressed ||
@@ -79,11 +142,13 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
                 {
                     pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
                     pkg = UDKConstructorDelegate(filePath, false);
+                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else
                 {
@@ -98,14 +163,9 @@ namespace ME3Explorer.Packages
                 return pkg;
             }
 
-            if (wpfWindow != null)
+            if (user != null)
             {
-                package.RegisterTool(new GenericWindow(wpfWindow, Path.GetFileName(pathToFile)));
-                addToPackagesInTools(package);
-            }
-            else if (winForm != null)
-            {
-                package.RegisterTool(new GenericWindow(winForm, Path.GetFileName(pathToFile)));
+                package.RegisterTool(user);
                 addToPackagesInTools(package);
             }
             else
@@ -154,51 +214,51 @@ namespace ME3Explorer.Packages
 
         }
 
-        public static IMEPackage OpenUDKPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenUDKPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.UDK)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not a UDK package file.");
         }
 
-        public static IMEPackage OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME3Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME3)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME3 package file.");
         }
 
-        public static IMEPackage OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME2Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME2)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME2 package file.");
         }
 
-        public static IMEPackage OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenME1Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm, forceLoadFromDisk);
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
             if (pck.Game == MEGame.ME1)
             {
                 return pck;
             }
 
-            pck.Release(wpfWindow, winForm);
+            pck.Release(user);
             throw new FormatException("Not an ME1 package file.");
         }
 
@@ -211,27 +271,6 @@ namespace ME3Explorer.Packages
             {
                 Debug.WriteLine(package.Key);
             }
-        }
-
-        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
-        {
-            foreach (IMEPackage pcc in packagesInTools)
-            {
-                if (pcc.FilePath == filePath)
-                {
-                    foreach (GenericWindow window in pcc.Tools)
-                    {
-                        if (window.tool.type == typeof(T))
-                        {
-                            tool = (T)window.WPF;
-                            tool.RestoreAndBringToFront();
-                            return true;
-                        }
-                    }
-                }
-            }
-            tool = null;
-            return false;
         }
     }
 }

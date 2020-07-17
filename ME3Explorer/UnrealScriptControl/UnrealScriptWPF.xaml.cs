@@ -1,20 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Be.Windows.Forms;
 using Gammtek.Conduit.IO;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
@@ -23,7 +11,6 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
-using static ME3Explorer.Unreal.Bytecode;
 
 namespace ME3Explorer
 {
@@ -78,17 +65,6 @@ namespace ME3Explorer
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
-
-            if (exportEntry.ClassName == "Function")
-            {
-                StartOffset_Changer.Value = 32;
-                StartOffset_Changer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                StartOffset_Changer.Visibility = Visibility.Visible;
-            }
-
             StartFunctionScan(CurrentLoadedExport.Data);
         }
 
@@ -111,7 +87,7 @@ namespace ME3Explorer
             DecompiledScriptBoxTitle = "Decompiled Script";
             if (Pcc.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, 32);
+                var func = new Unreal.Classes.Function(data, CurrentLoadedExport, 32);
 
 
                 func.ParseFunction();
@@ -146,35 +122,35 @@ namespace ME3Explorer
                                                 .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
                                                 .Select(tup => tup.position).ToList();
                 int calculatedLength = diskSize + 4 * objRefPositions.Count;
+                DiskToMemPosMap = func.DiskToMemPosMap;
+                //DiskToMemPosMap = new int[diskSize];
+                //int iDisk = 0;
+                //int iMem = 0;
+                //foreach (int objRefPosition in objRefPositions)
+                //{
+                //    while (iDisk < objRefPosition + 4)
+                //    {
+                //        DiskToMemPosMap[iDisk] = iMem;
+                //        iDisk++;
+                //        iMem++;
+                //    }
+                //    iMem += 4;
+                //}
+                //while (iDisk < diskSize)
+                //{
+                //    DiskToMemPosMap[iDisk] = iMem;
+                //    iDisk++;
+                //    iMem++;
+                //}
 
-                DiskToMemPosMap = new int[diskSize];
-                int iDisk = 0;
-                int iMem = 0;
-                foreach (int objRefPosition in objRefPositions)
-                {
-                    while (iDisk < objRefPosition + 4)
-                    {
-                        DiskToMemPosMap[iDisk] = iMem;
-                        iDisk++;
-                        iMem++;
-                    }
-                    iMem += 4;
-                }
-                while (iDisk < diskSize)
-                {
-                    DiskToMemPosMap[iDisk] = iMem;
-                    iDisk++;
-                    iMem++;
-                }
-
-                foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
-                {
-                    var diskPos = t.pos - 32;
-                    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
-                    {
-                        t.memPos = DiskToMemPosMap[diskPos];
-                    }
-                }
+                //foreach (Token t in DecompiledScriptBlocks.OfType<Token>())
+                //{
+                //    var diskPos = t.pos - 32;
+                //    if (diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
+                //    {
+                //        t.memPos = DiskToMemPosMap[diskPos];
+                //    }
+                //}
 
 
                 DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
@@ -393,7 +369,7 @@ namespace ME3Explorer
                             s += $"End=0x{(start + len - 1):X8}";
                         }
 
-                        int diskPos = start - (CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+                        int diskPos = start - 32;
                         if (Pcc.Game == MEGame.ME3 && diskPos >= 0 && diskPos < DiskToMemPosMap.Length)
                         {
                             s += $" | MemoryPos=0x{DiskToMemPosMap[diskPos]:X4}";

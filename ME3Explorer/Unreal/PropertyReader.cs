@@ -3,7 +3,6 @@ using System.IO;
 using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using Newtonsoft.Json;
-using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {

@@ -272,7 +272,7 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                ExportInformationList.Add($"{wemName} - No RIFF header");
+                                ExportInformationList.Add($"{wemName} - No RIFF header ({wemHeader})");
                             }
 
                             AllWems.Add(wem);
@@ -1654,7 +1654,7 @@ namespace ME3Explorer
             }
         }
 
-        public event Action<uint> HIRCObjectSelected; 
+        public event Action<uint> HIRCObjectSelected;
 
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

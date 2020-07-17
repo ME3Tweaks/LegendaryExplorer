@@ -113,7 +113,9 @@ namespace ME3Explorer.Unreal.BinaryConverters
         {
             while (sc.ms.Position < sc.ms.Length)
             {
-                string chunkID = sc.ms.ReadEndianASCIIString(4);
+                // It looks like on consoles this is not endian
+                string chunkID = sc.ms.BaseStream.ReadStringASCII(4);
+                
                 int chunkSize = sc.ms.ReadInt32();
                 switch (chunkID)
                 {
@@ -189,7 +191,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         int numFiles = chunkSize / 12;
                         var infoPos = sc.ms.Position;
                         sc.ms.Skip(chunkSize);
-                        if (sc.ms.ReadUInt32() != data)
+                        if (sc.ms.BaseStream.ReadUInt32() != data) //not endian swapped
                         {
                             throw new Exception("DIDX chunk is not followed by DATA chunk in WwiseBank!");
                         }

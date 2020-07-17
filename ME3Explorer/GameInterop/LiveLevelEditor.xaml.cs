@@ -138,7 +138,7 @@ namespace ME3Explorer.GameInterop
         {
             if (MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue(fileName, out string filePath))
             {
-                if (MEPackageHandler.TryOpenInExisting(filePath, out PackageEditorWPF packEd))
+                if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWPF packEd))
                 {
                     packEd.GoToNumber(uIndex);
                 }

@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Media;
-using DocumentFormat.OpenXml.Drawing;
 using Gammtek.Conduit.Extensions;
 using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
-using ME3Explorer.Scene3D;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Unreal.ME3Enums;
 using SharpDX;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using DocumentFormat.OpenXml.Presentation;
 
 namespace ME3Explorer
 {
@@ -3400,8 +3394,6 @@ namespace ME3Explorer
 
             #endregion
 
-            #region Mass Effect
-
             try
             {
                 var TrackOffsets = CurrentLoadedExport.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
@@ -3602,8 +3594,6 @@ namespace ME3Explorer
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
-
-            #endregion
             return subnodes;
 
             static float getW(float x, float y, float z)
@@ -3622,7 +3612,7 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
                 bin.Skip(4);
                 subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"Version?: {bin.ReadInt32():X8}") { Length = 4 });
                 if (Pcc.Game == MEGame.ME3)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
@@ -3678,7 +3668,7 @@ namespace ME3Explorer
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Names: {nameCount} items")
                 {
                     //ME2 different to ME3/1
-                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
+                    Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{i}: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"))
                 });
 
                 subnodes.Add(MakeInt32Node(bin, "Unknown"));
@@ -3737,7 +3727,7 @@ namespace ME3Explorer
                             animNodes.Add(MakeInt32Node(bin, "Unknown"));
                             animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
-                        animNodes.Add(MakeInt32Node(bin, "Index"));
+                        animNodes.Add(MakeInt32Node(bin, "Name"));
                         animNodes.Add(MakeInt32Node(bin, "Unknown"));
                         if (Pcc.Game == MEGame.ME2)
                         {
@@ -4406,8 +4396,14 @@ namespace ME3Explorer
                     }
                 }
 
-                subnodes.Add(MakeNameNode(bin, "Category"));
-                subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PC)
+                {
+                    // This seems missing on Xenon 2011. Not sure about others
+                    subnodes.Add(MakeNameNode(bin, "Category"));
+                    subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+
+                }
+
                 if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Net))
                 {
                     subnodes.Add(MakeUInt16Node(bin, "ReplicationOffset"));
@@ -4887,104 +4883,6 @@ namespace ME3Explorer
             }
         }
 
-        private List<ITreeItem> Scan_WwiseStreamBank(byte[] data)
-        {
-            var subnodes = new List<ITreeItem>();
-            try
-            {
-                int pos = CurrentLoadedExport.propsEnd();
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    pos += CurrentLoadedExport.ClassName == "WwiseBank" ? 8 : 32;
-                }
-
-                int unk1 = BitConverter.ToInt32(data, pos);
-                int DataSize = BitConverter.ToInt32(data, pos + 4);
-                int DataSize2 = BitConverter.ToInt32(data, pos + 8);
-                int DataOffset = BitConverter.ToInt32(data, pos + 0xC);
-
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} Unknown: {unk1}",
-                    Name = "_" + pos,
-                });
-                pos += 4;
-                string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{ pos:X4} {dataset1type}: {DataSize2} (0x{ DataSize2:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-                string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "Bank offset";
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
-                    Name = "_" + pos,
-                    Tag = NodeType.StructLeafInt
-                });
-                pos += 4;
-
-                if (CurrentLoadedExport.ClassName == "WwiseBank")
-                {
-                    //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
-                    //{
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Header = "Click here to jump to the calculated end offset of wwisebank in this export",
-                        Name = "_" + (DataSize2 + pos),
-                        Tag = NodeType.Unknown
-                    });
-                    //}
-                }
-
-                switch (CurrentLoadedExport.ClassName)
-                {
-                    case "WwiseStream" when pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null:
-                        {
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = $"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.",
-                                Name = "_" + pos,
-                                Tag = NodeType.Unknown
-                            });
-                            subnodes.Add(new BinInterpNode
-                            {
-                                Header = "The stream offset to this data will be automatically updated when this file is saved.",
-                                Tag = NodeType.Unknown
-                            });
-                            break;
-                        }
-                    case "WwiseBank":
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = $"{pos:X4} Embedded soundbank. Use Soundplorer WPF to view data.",
-                            Name = "_" + pos,
-                            Tag = NodeType.Unknown
-                        });
-                        subnodes.Add(new BinInterpNode
-                        {
-                            Header = "The bank offset to this data will be automatically updated when this file is saved.",
-                            Tag = NodeType.Unknown
-                        });
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
-
         private List<ITreeItem> Scan_WwiseEvent(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -5102,6 +5000,62 @@ namespace ME3Explorer
             return subnodes;
         }
 
+        private List<ITreeItem> Scan_Bio2DA(byte[] data)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(data, Pcc.Endian);
+                bin.JumpTo(CurrentLoadedExport.propsEnd());
+
+                bool isIndexed = !bin.ReadBoolInt();
+                bin.Skip(-4);
+                if (isIndexed)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Zero"));
+                }
+
+                int cellCount;
+                subnodes.Add(new BinInterpNode(bin.Position, $"Populated Cell Count: {cellCount = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 });
+
+                for (int i = 0; i < cellCount; i++)
+                {
+                    Bio2DACell.Bio2DADataType type;
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Cell {(isIndexed ? bin.ReadInt32() : i)}", NodeType.StructLeafInt)
+                    {
+                        Items =
+                        {
+                            new BinInterpNode(bin.Position, $"Type: {type = (Bio2DACell.Bio2DADataType)bin.ReadByte()}") { Length = 1 },
+                            type switch
+                            {
+                                Bio2DACell.Bio2DADataType.TYPE_INT => MakeInt32Node(bin, "Value"),
+                                Bio2DACell.Bio2DADataType.TYPE_NAME => MakeNameNode(bin, "Value"),
+                                Bio2DACell.Bio2DADataType.TYPE_FLOAT => MakeFloatNode(bin, "Value")
+                            }
+                        }
+                    });
+                }
+
+                if (!isIndexed)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Zero"));
+                }
+
+                int columnCount;
+                subnodes.Add(new BinInterpNode(bin.Position, $"Column Count: {columnCount = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 });
+
+                for (int i = 0; i < columnCount; i++)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc)}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12});
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
         private List<ITreeItem> StartBioDynamicAnimSetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -5109,7 +5063,7 @@ namespace ME3Explorer
             try
             {
                 int binarypos = binarystart;
-                int count = BitConverter.ToInt32(data, binarypos);
+                int count = EndianReader.ToInt32(data, binarypos, CurrentLoadedExport.FileRef.Endian);
                 subnodes.Add(new BinInterpNode
                 {
                     Header = $"0x{binarypos:X4} Count: {count.ToString()}"
@@ -5117,9 +5071,9 @@ namespace ME3Explorer
                 binarypos += 4; //+ int
                 for (int i = 0; i < count; i++)
                 {
-                    int nameIndex = BitConverter.ToInt32(data, binarypos);
-                    int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
-                    int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
+                    int nameIndex = EndianReader.ToInt32(data, binarypos, CurrentLoadedExport.FileRef.Endian);
+                    int nameIndexNum = EndianReader.ToInt32(data, binarypos + 4, CurrentLoadedExport.FileRef.Endian);
+                    int shouldBe1 = EndianReader.ToInt32(data, binarypos + 8, CurrentLoadedExport.FileRef.Endian);
 
                     var name = CurrentLoadedExport.FileRef.GetNameEntry(nameIndex);
                     string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";

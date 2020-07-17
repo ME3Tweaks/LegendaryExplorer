@@ -123,7 +123,6 @@ namespace ME3Explorer.Packages
     {
         EPackageFlags Flags { get; }
         bool IsCompressed { get; }
-        bool CanReconstruct { get; }
         bool IsModified { get; }
         int NameCount { get; }
         int ExportCount { get; }
@@ -204,13 +203,10 @@ namespace ME3Explorer.Packages
         /// </summary>
         void RemoveTrailingTrash();
 
-        //saving
-        void Save();
-        void Save(string path);
         byte[] getHeader();
-        ObservableCollection<GenericWindow> Tools { get; }
-        void RegisterTool(GenericWindow tool);
-        void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
+        ObservableCollection<IPackageUser> Users { get; }
+        void RegisterTool(IPackageUser user);
+        void Release(IPackageUser user = null);
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;

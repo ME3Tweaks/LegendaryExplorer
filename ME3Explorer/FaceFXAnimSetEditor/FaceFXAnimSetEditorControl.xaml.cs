@@ -18,6 +18,7 @@ using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -70,11 +71,11 @@ namespace ME3Explorer.FaceFX
             DataContext = this;
         }
 
-        public IFaceFXAnimSet FaceFX;
+        public FaceFXAnimSet FaceFX;
 
-        ME3FaceFXLine _selectedLine;
+        FaceFXLine _selectedLine;
 
-        public ME3FaceFXLine SelectedLine
+        public FaceFXLine SelectedLine
         {
             get => _selectedLine;
             set
@@ -89,7 +90,7 @@ namespace ME3Explorer.FaceFX
                         lineText.Text = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
                     }
                     treeView.Nodes.Clear();
-                    treeView.Nodes.AddRange(FaceFX.DataToTree2(SelectedLine));
+                    treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLine));
                 }
             }
         }
@@ -150,21 +151,9 @@ namespace ME3Explorer.FaceFX
 
         private void loadFaceFXAnimset()
         {
-            switch (Pcc.Game)
-            {
-                case MEGame.ME1:
-                    FaceFX = new ME1FaceFXAnimSet(Pcc, CurrentLoadedExport);
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                    break;
-                case MEGame.ME2:
-                    FaceFX = new ME2FaceFXAnimSet(Pcc, CurrentLoadedExport);
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                    break;
-                case MEGame.ME3:
-                    FaceFX = new ME3FaceFXAnimSet(Pcc, CurrentLoadedExport);
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                    break;
-            }
+            FaceFX = CurrentLoadedExport.GetBinaryData<FaceFXAnimSet>();
+            linesListBox.ItemsSource = null;
+            linesListBox.ItemsSource = FaceFX.Lines;
             treeView.Nodes.Clear();
             graph.Clear();
         }
@@ -187,16 +176,16 @@ namespace ME3Explorer.FaceFX
 
         private void updateAnimListBox()
         {
-            List<CurvePoint> points = SelectedLine.points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
+            List<CurvePoint> points = SelectedLine.Points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
 
             var anims = new List<Animation>();
             int pos = 0;
-            for (int i = 0; i < SelectedLine.animations.Length; i++)
+            for (int i = 0; i < SelectedLine.AnimationNames.Count; i++)
             {
-                int animLength = SelectedLine.numKeys[i];
+                int animLength = SelectedLine.NumKeys[i];
                 anims.Add(new Animation
                 {
-                    Name = FaceFX.Header.Names[SelectedLine.animations[i].index],
+                    Name = FaceFX.Names[SelectedLine.AnimationNames[i]],
                     points = new LinkedList<CurvePoint>(points.Skip(pos).Take(animLength))
                 });
                 pos += animLength;
@@ -211,45 +200,31 @@ namespace ME3Explorer.FaceFX
             {
                 var curvePoints = new List<CurvePoint>();
                 var numKeys = new List<int>();
-                if (Pcc.Game == MEGame.ME3)
+                var animations = new List<int>();
+                foreach (Animation anim in animationListBox.ItemsSource)
                 {
-                    var animations = new List<ME3NameRef>();
-                    foreach (Animation anim in animationListBox.ItemsSource)
-                    {
-                        animations.Add(new ME3NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0 });
-                        curvePoints.AddRange(anim.points);
-                        numKeys.Add(anim.points.Count);
-                    }
-                    SelectedLine.animations = animations.ToArray();
+                    animations.Add(FaceFX.Names.IndexOf(anim.Name));
+                    curvePoints.AddRange(anim.points);
+                    numKeys.Add(anim.points.Count);
                 }
-                else
-                {
-                    var animations = new List<ME2NameRef>();
-                    foreach (Animation anim in animationListBox.ItemsSource)
-                    {
-                        animations.Add(new ME2NameRef { index = FaceFX.Header.Names.IndexOf(anim.Name), unk2 = 0, unk1 = 1 });
-                        curvePoints.AddRange(anim.points);
-                        numKeys.Add(anim.points.Count);
-                    }
-                    SelectedLine.animations = animations.ToArray();
-                }
-                SelectedLine.points = curvePoints.Select(x => new ControlPoint
+                SelectedLine.AnimationNames = animations;
+                SelectedLine.Points = curvePoints.Select(x => new FaceFXControlPoint
                 {
                     time = x.InVal,
                     weight = x.OutVal,
                     inTangent = x.ArriveTangent,
                     leaveTangent = x.LeaveTangent
-                }).ToArray();
-                SelectedLine.numKeys = numKeys.ToArray();
+                }).ToList();
+                SelectedLine.NumKeys = numKeys;
             }
-            FaceFX?.Save();
+            CurrentLoadedExport?.SetBinaryData(FaceFX);
         }
 
         public void SelectLineByName(string name)
         {
             if (FaceFX != null)
             {
-                foreach (ME3FaceFXLine line in FaceFX.Data.Data)
+                foreach (var line in FaceFX.Lines)
                 {
                     if (line.NameAsString == name)
                     {
@@ -266,7 +241,7 @@ namespace ME3Explorer.FaceFX
         #region Line dragging
         private struct FaceFXLineDragDropObject
         {
-            public ME3FaceFXLine line;
+            public FaceFXLine line;
             public string[] sourceNames;
         }
 
@@ -285,14 +260,14 @@ namespace ME3Explorer.FaceFX
         {
             if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0, 0)) && dragEnabled)
             {
-                System.Windows.Vector diff = dragStart - e.GetPosition(linesListBox);
+                Vector diff = dragStart - e.GetPosition(linesListBox);
                 if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     dragStart = new Point(0, 0);
                     if (!(e.OriginalSource is ScrollViewer) && SelectedLine != null)
                     {
-                        ME3FaceFXLine d = SelectedLine.Clone();
-                        DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new FaceFXLineDragDropObject{ line = d, sourceNames = FaceFX.Header.Names }), DragDropEffects.Copy);
+                        FaceFXLine d = SelectedLine.Clone();
+                        DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXLine", new FaceFXLineDragDropObject{ line = d, sourceNames = FaceFX.Names.ToArray() }), DragDropEffects.Copy);
                     }
                 }
             }
@@ -310,50 +285,18 @@ namespace ME3Explorer.FaceFX
         private void linesListBox_Drop(object sender, DragEventArgs e)
         {
             Window.GetWindow(this).RestoreAndBringToFront();
-            if (e.Data.GetDataPresent("FaceFXLine"))
+            if (e.Data.GetDataPresent("FaceFXLine") && e.Data.GetData("FaceFXLine") is FaceFXLineDragDropObject d)
             {
-                FaceFXLineDragDropObject d = (FaceFXLineDragDropObject)e.Data.GetData("FaceFXLine");
                 string[] sourceNames = d.sourceNames;
-                List<string> names = FaceFX.Header.Names.ToList();
-                ME3FaceFXLine line = d.line;
-                line.Name = names.FindOrAdd(sourceNames[line.Name]);
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    ((ME3FaceFXAnimSet)FaceFX).FixNodeTable();
-                    line.animations = line.animations.Select(x => new ME3NameRef
-                    {
-                        index = names.FindOrAdd(sourceNames[x.index]),
-                        unk2 = x.unk2
-                    }).ToArray();
-                    FaceFX.Data.Data = FaceFX.Data.Data.Append(line).ToArray();
-                    FaceFX.Header.Names = names.ToArray();
-                    linesListBox.ItemsSource = FaceFX.Data.Data;
-                }
-                else
-                {
-                    if (!(line is ME2FaceFXLine))
-                    {
-                        var result = MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. " +
-                                                     "If you require this feature, please make an issue on the project's Github page. Would you like to go the Github page now?",
-                                                     "Feature Not Implemented", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start(App.BugReportURL);
-                        }
-                        return;
-                    }
-                    line.animations = line.animations.Select(x => new ME2NameRef
-                    {
-                        index = names.FindOrAdd(sourceNames[x.index]),
-                        unk2 = x.unk2
-                    }).ToArray();
-                    ME2DataAnimSetStruct me2DataAnimSetStruct = (ME2DataAnimSetStruct)FaceFX.Data;
-                    me2DataAnimSetStruct.Data = me2DataAnimSetStruct.Data.Append((ME2FaceFXLine)line).ToArray();
-                    FaceFX.Header.Names = names.ToArray();
-                    linesListBox.ItemsSource = me2DataAnimSetStruct.Data;
-                }
+                FaceFXLine line = d.line;
+                line.NameIndex = FaceFX.Names.FindOrAdd(sourceNames[line.NameIndex]);
+                FaceFX.FixNodeTable();
+                line.AnimationNames = line.AnimationNames.Select(idx => FaceFX.Names.FindOrAdd(sourceNames[idx])).ToList();
+                FaceFX.Lines.Add(line);
+                linesListBox.ItemsSource = null;
+                linesListBox.ItemsSource = FaceFX.Lines;
+                SaveChanges();
             }
-            SaveChanges();
         }
 
         #endregion
@@ -375,7 +318,7 @@ namespace ME3Explorer.FaceFX
         {
             if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(default))
             {
-                System.Windows.Vector diff = dragStart - e.GetPosition(null);
+                Vector diff = dragStart - e.GetPosition(null);
                 if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     try
@@ -384,7 +327,7 @@ namespace ME3Explorer.FaceFX
                         if (!(e.OriginalSource is ScrollViewer) && animationListBox.SelectedItem != null)
                         {
                             Animation a = (Animation)animationListBox.SelectedItem;
-                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new FaceFXAnimDragDropObject {anim = a, group = SelectedLine.numKeys[animationListBox.SelectedIndex]}), DragDropEffects.Copy);
+                            DragDrop.DoDragDrop(linesListBox, new DataObject("FaceFXAnim", new FaceFXAnimDragDropObject {anim = a, group = SelectedLine.NumKeys[animationListBox.SelectedIndex]}), DragDropEffects.Copy);
                         }
                     }
                     catch
@@ -406,29 +349,19 @@ namespace ME3Explorer.FaceFX
         private void animationListBox_Drop(object sender, DragEventArgs e)
         {
             Window.GetWindow(this).RestoreAndBringToFront();
-            if (e.Data.GetDataPresent("FaceFXAnim"))
+            if (e.Data.GetDataPresent("FaceFXAnim") && e.Data.GetData("FaceFXAnim") is FaceFXAnimDragDropObject d)
             {
-                FaceFXAnimDragDropObject d = (FaceFXAnimDragDropObject)e.Data.GetData("FaceFXAnim");
                 int group = d.group;
                 Animation a = d.anim;
-                List<string> names = FaceFX.Header.Names.ToList();
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    SelectedLine.animations = SelectedLine.animations.Append(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
-                }
-                else
-                {
-                    SelectedLine.animations = SelectedLine.animations.Append(new ME2NameRef { index = names.FindOrAdd(a.Name), unk1 = 1 }).ToArray();
-                }
-                FaceFX.Header.Names = names.ToArray();
-                SelectedLine.points = SelectedLine.points.Concat(a.points.Select(x => new ControlPoint
+                SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(a.Name));
+                SelectedLine.Points.AddRange(a.points.Select(x => new FaceFXControlPoint
                 {
                     time = x.InVal,
                     weight = x.OutVal,
                     inTangent = x.ArriveTangent,
                     leaveTangent = x.LeaveTangent
-                })).ToArray();
-                SelectedLine.numKeys = SelectedLine.numKeys.Append(group).ToArray();
+                }));
+                SelectedLine.NumKeys.Add(group);
                 updateAnimListBox();
             }
             SaveChanges();
@@ -446,10 +379,9 @@ namespace ME3Explorer.FaceFX
 
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
-            List<ME3FaceFXLine> lines = FaceFX.Data.Data.ToList();
-            lines.Remove(SelectedLine);
-            FaceFX.Data.Data = lines.ToArray();
-            linesListBox.ItemsSource = FaceFX.Data.Data;
+            FaceFX.Lines.Remove(SelectedLine);
+            linesListBox.ItemsSource = null;
+            linesListBox.ItemsSource = FaceFX.Lines;
             SaveChanges();
         }
 
@@ -459,58 +391,88 @@ namespace ME3Explorer.FaceFX
             var t = treeView.SelectedNode;
             if (t == null)
                 return;
-            string result; int i; float f;
+            string result;
+            float f;
             int subidx = t.Index;
             switch (subidx)
             {
                 case 0://Name
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", FaceFX.Header.Names.ElementAtOrDefault(SelectedLine.Name), true);
-                    if (result == string.Empty)
+                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", FaceFX.Names.ElementAtOrDefault(SelectedLine.NameIndex), true);
+                    if (result == string.Empty || result is null)
                     {
-                        break;
+                        return;
                     }
-                    if (FaceFX.Header.Names.Contains(result))
+                    if (FaceFX.Names.Contains(result))
                     {
-                        SelectedLine.Name = FaceFX.Header.Names.IndexOf(result);
+                        SelectedLine.NameIndex = FaceFX.Names.IndexOf(result);
+                        SelectedLine.NameAsString = result;
+                        break;
                     }
                     else if (MessageBoxResult.Yes == MessageBox.Show($"The names list does not contain the name \"{result}\", do you want to add it?", "", MessageBoxButton.YesNo))
                     {
-                        FaceFX.Header.Names = FaceFX.Header.Names.Append(result).ToArray();
-                        SelectedLine.Name = FaceFX.Header.Names.Length - 1;
+                        FaceFX.Names.Add(result);
+                        SelectedLine.NameIndex = FaceFX.Names.Count - 1;
+                        SelectedLine.NameAsString = result;
+                        break;
                     }
-                    break;
+                    return;
                 case 1://FadeInTime
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeInTime.ToString(), true);
                     if (float.TryParse(result, out f))
+                    {
                         SelectedLine.FadeInTime = f;
-                    break;
+                        break;
+                    }
+                    return;
                 case 2://FadeInTime
                     result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.FadeOutTime.ToString(), true);
                     if (float.TryParse(result, out f))
+                    {
                         SelectedLine.FadeOutTime = f;
-                    break;
-                case 3://unk2
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.unk2.ToString(), true);
-                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                        SelectedLine.unk2 = i;
-                    break;
-                case 4://Path
-                    SelectedLine.path = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.path, true);
-                    break;
-                case 5://ID
-                    SelectedLine.ID = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true);
-                    break;
-                case 6://unk3
-                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.index.ToString(), true);
-                    if (int.TryParse(result, out i) && i >= 0 && i < FaceFX.Header.Names.Length)
-                        SelectedLine.index = i;
-                    break;
+                        break;
+                    }
+                    return;
+                case 3://Path
+                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Path, true) is string path)
+                    {
+                        SelectedLine.Path = path;
+                        break;
+                    }
+                    return;
+                case 4://ID
+                    if (PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.ID, true) is string id)
+                    {
+                        SelectedLine.ID = id;
+                        break;
+                    }
+                    return;
+                case 5://index
+                    result = PromptDialog.Prompt(this, "Please enter new value", "ME3Explorer", SelectedLine.Index.ToString(), true);
+                    if (int.TryParse(result, out int i))
+                    {
+                        SelectedLine.Index = i;
+                        break;
+                    }
+                    return;
                 default:
                     return;
             }
             treeView.Nodes.Clear();
-            treeView.Nodes.AddRange(FaceFX.DataToTree2(SelectedLine));
+            treeView.Nodes.AddRange(DataToTree2(FaceFX, SelectedLine));
+            linesListBox.Focus();
+            SaveChanges();
         }
+
+        static System.Windows.Forms.TreeNode[] DataToTree2(FaceFXAnimSet animSet, FaceFXLine d) =>
+            new[]
+            {
+                new System.Windows.Forms.TreeNode($"Name : 0x{d.NameIndex:X8} \"{animSet.Names[d.NameIndex].Trim()}\""),
+                new System.Windows.Forms.TreeNode($"FadeInTime : {d.FadeInTime}"),
+                new System.Windows.Forms.TreeNode($"FadeOutTime : {d.FadeOutTime}"),
+                new System.Windows.Forms.TreeNode($"Path : {d.Path}"),
+                new System.Windows.Forms.TreeNode($"ID : {d.ID}"),
+                new System.Windows.Forms.TreeNode($"Index : 0x{d.Index:X8}")
+            };
 
         private void Graph_KeyDown(object sender, KeyEventArgs e)
         {
@@ -545,13 +507,13 @@ namespace ME3Explorer.FaceFX
             {
                 return;
             }
-            var newPoints = new List<ControlPoint>();
-            for (int i = 0, j = 0; i < SelectedLine.numKeys.Length; i++)
+            var newPoints = new List<FaceFXControlPoint>();
+            for (int i = 0, j = 0; i < SelectedLine.NumKeys.Count; i++)
             {
                 int keptPoints = 0;
-                for (int k = 0; k < SelectedLine.numKeys[i]; k++)
+                for (int k = 0; k < SelectedLine.NumKeys[i]; k++)
                 {
-                    ControlPoint tmp = SelectedLine.points[j + k];
+                    FaceFXControlPoint tmp = SelectedLine.Points[j + k];
                     if (tmp.time < start)
                     {
                         newPoints.Add(tmp);
@@ -564,18 +526,18 @@ namespace ME3Explorer.FaceFX
                         keptPoints++;
                     }
                 }
-                j += SelectedLine.numKeys[i];
-                SelectedLine.numKeys[i] = keptPoints;
+                j += SelectedLine.NumKeys[i];
+                SelectedLine.NumKeys[i] = keptPoints;
             }
-            SelectedLine.points = newPoints.ToArray();
-            FaceFX.Save();
+            SelectedLine.Points = newPoints;
+            CurrentLoadedExport?.SetBinaryData(FaceFX);
             updateAnimListBox();
         }
 
         private struct LineSection
         {
             public float span;
-            public Dictionary<string, List<ControlPoint>> animSecs;
+            public Dictionary<string, List<FaceFXControlPoint>> animSecs;
         }
 
         private void ImpLineSec_Click(object sender, RoutedEventArgs e)
@@ -594,15 +556,15 @@ namespace ME3Explorer.FaceFX
             if (ofd.ShowDialog() == true)
             {
                 var lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
-                var newPoints = new List<ControlPoint>();
-                for (int i = 0, j = 0; i < SelectedLine.animations.Length; i++)
+                var newPoints = new List<FaceFXControlPoint>();
+                for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
                 {
                     int k = 0;
                     int newNumPoints = 0;
-                    ControlPoint tmp;
-                    for (; k < SelectedLine.numKeys[i]; k++)
+                    FaceFXControlPoint tmp;
+                    for (; k < SelectedLine.NumKeys[i]; k++)
                     {
-                        tmp = SelectedLine.points[j + k];
+                        tmp = SelectedLine.Points[j + k];
                         if (tmp.time >= start)
                         {
                             break;
@@ -610,43 +572,35 @@ namespace ME3Explorer.FaceFX
                         newPoints.Add(tmp);
                         newNumPoints++;
                     }
-                    string animName = FaceFX.Header.Names[SelectedLine.animations[i].index];
-                    if (lineSec.animSecs.TryGetValue(animName, out List<ControlPoint> points))
+                    string animName = FaceFX.Names[SelectedLine.AnimationNames[i]];
+                    if (lineSec.animSecs.TryGetValue(animName, out List<FaceFXControlPoint> points))
                     {
                         newPoints.AddRange(points.Select(p => { p.time += start; return p; }));
                         newNumPoints += points.Count;
                         lineSec.animSecs.Remove(animName);
                     }
-                    for (; k < SelectedLine.numKeys[i]; k++)
+                    for (; k < SelectedLine.NumKeys[i]; k++)
                     {
-                        tmp = SelectedLine.points[j + k];
+                        tmp = SelectedLine.Points[j + k];
                         tmp.time += lineSec.span;
                         newPoints.Add(tmp);
                         newNumPoints++;
                     }
-                    j += SelectedLine.numKeys[i];
-                    SelectedLine.numKeys[i] = newNumPoints;
+                    j += SelectedLine.NumKeys[i];
+                    SelectedLine.NumKeys[i] = newNumPoints;
                 }
                 //if the line we are importing from had more animations than this one, we need to add some animations
                 if (lineSec.animSecs.Count > 0)
                 {
-                    List<int> newNumKeys = SelectedLine.numKeys.ToList();
-                    List<ME3NameRef> newAnims = SelectedLine.animations.ToList();
-                    List<string> names = FaceFX.Header.Names.ToList();
-                    foreach ((string name, List<ControlPoint> points) in lineSec.animSecs)
+                    foreach ((string name, List<FaceFXControlPoint> points) in lineSec.animSecs)
                     {
-                        newAnims.Add(Pcc.Game == MEGame.ME3
-                                         ? new ME3NameRef { index = names.FindOrAdd(name), unk2 = 0 }
-                                         : new ME2NameRef { index = names.FindOrAdd(name), unk1 = 1 });
-                        newNumKeys.Add(points.Count);
+                        SelectedLine.AnimationNames.Add(FaceFX.Names.FindOrAdd(name));
+                        SelectedLine.NumKeys.Add(points.Count);
                         newPoints.AddRange(points.Select(p => { p.time += start; return p; }));
                     }
-                    SelectedLine.animations = newAnims.ToArray();
-                    SelectedLine.numKeys = newNumKeys.ToArray();
-                    FaceFX.Header.Names = names.ToArray();
                 }
-                SelectedLine.points = newPoints.ToArray();
-                FaceFX.Save();
+                SelectedLine.Points = newPoints;
+                CurrentLoadedExport?.SetBinaryData(FaceFX);
                 updateAnimListBox();
             }
         }
@@ -658,21 +612,21 @@ namespace ME3Explorer.FaceFX
             {
                 return;
             }
-            var animSecs = new Dictionary<string, List<ControlPoint>>();
-            for (int i = 0, j = 0; i < SelectedLine.animations.Length; i++)
+            var animSecs = new Dictionary<string, List<FaceFXControlPoint>>();
+            for (int i = 0, j = 0; i < SelectedLine.AnimationNames.Count; i++)
             {
-                var points = new List<ControlPoint>();
-                for (int k = 0; k < SelectedLine.numKeys[i]; k++)
+                var points = new List<FaceFXControlPoint>();
+                for (int k = 0; k < SelectedLine.NumKeys[i]; k++)
                 {
-                    ControlPoint tmp = SelectedLine.points[j + k];
+                    FaceFXControlPoint tmp = SelectedLine.Points[j + k];
                     if (tmp.time >= start && tmp.time <= end)
                     {
                         tmp.time -= start;
                         points.Add(tmp);
                     }
                 }
-                j += SelectedLine.numKeys[i];
-                animSecs.Add(FaceFX.Header.Names[SelectedLine.animations[i].index], points);
+                j += SelectedLine.NumKeys[i];
+                animSecs.Add(FaceFX.Names[SelectedLine.AnimationNames[i]], points);
             }
             string output = JsonConvert.SerializeObject(new LineSection { span = span + 0.01f, animSecs = animSecs });
             var sfd = new SaveFileDialog
@@ -695,11 +649,11 @@ namespace ME3Explorer.FaceFX
                 MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
                 return;
             }
-            for (int i = 0, j = 0; i < SelectedLine.numKeys.Length; i++)
+            for (int i = 0, j = 0; i < SelectedLine.NumKeys.Count; i++)
             {
-                for (int k = 0; k < SelectedLine.numKeys[i]; k++)
+                for (int k = 0; k < SelectedLine.NumKeys[i]; k++)
                 {
-                    if (k > 0 && (SelectedLine.points[j + k].time + offset <= SelectedLine.points[j + k - 1].time))
+                    if (k > 0 && (SelectedLine.Points[j + k].time + offset <= SelectedLine.Points[j + k - 1].time))
                     {
                         MessageBox.Show($"Offsetting every key after {start} by {offset} would lead to reordering in at least one animation",
                                         "Cannot Reorder keys", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -707,16 +661,18 @@ namespace ME3Explorer.FaceFX
                     }
                 }
 
-                j += SelectedLine.numKeys[i];
+                j += SelectedLine.NumKeys[i];
             }
-            for (int i = 0; i < SelectedLine.points.Length; i++)
+            for (int i = 0; i < SelectedLine.Points.Count; i++)
             {
-                if (SelectedLine.points[i].time >= start)
+                if (SelectedLine.Points[i].time >= start)
                 {
-                    SelectedLine.points[i].time += offset;
+                    var tmp = SelectedLine.Points[i];
+                    tmp.time += offset;
+                    SelectedLine.Points[i] = tmp;
                 }
             }
-            FaceFX.Save();
+            CurrentLoadedExport?.SetBinaryData(FaceFX);
             updateAnimListBox();
         }
 

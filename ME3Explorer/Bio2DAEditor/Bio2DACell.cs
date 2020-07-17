@@ -24,9 +24,8 @@ namespace ME3Explorer
 
 
 
-        public enum Bio2DADataType
+        public enum Bio2DADataType : byte
         {
-            TYPE_UNDEFINED = -1,
             TYPE_INT = 0,
             TYPE_NAME = 1,
             TYPE_FLOAT = 2

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:packages="clr-namespace:ME3Explorer.Packages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="650">
     <UserControl.Resources>
@@ -27,7 +28,7 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="local:PackageViewModel">
                                 <Grid MinHeight="175" Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="416"/>
@@ -47,7 +48,7 @@
                                                    Source="{Binding Game, Converter={StaticResource gameToIconConverter}, Mode=OneWay}"/>
                                         </Grid>
                                         <Rectangle Fill="#A3FBFBFB" Height="2" Margin="7,0"/>
-                                        <ItemsControl x:Name="ToolList" ItemsSource="{Binding Tools, Mode=OneWay}">
+                                        <ItemsControl x:Name="ToolList" ItemsSource="{Binding Users, Mode=OneWay}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate >
                                                     <WrapPanel Margin="8,10,0,8"/>
@@ -60,11 +61,11 @@
                                                             Click="Button_Click" MouseEnter="Button_MouseEnter" Width="204"
                                                             MouseRightButtonDown="Button_MouseRightButtonDown">
                                                             <StackPanel Orientation="Horizontal" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Button}}">
-                                                                <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding tool.icon}" Opacity="0.85">
+                                                                <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding Icon}" Opacity="0.85">
                                                                 </Image>
                                                                 <StackPanel Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                                     <Viewbox StretchDirection="DownOnly" Width="162" HorizontalAlignment="Left">
-                                                                        <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding tool.name}"
+                                                                        <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding ToolName}"
                                                                                FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18"/>
                                                                     </Viewbox>
                                                                     <Rectangle x:Name="highlightUnderline" Height="3" Width="{Binding ActualWidth, ElementName=toolName}"
@@ -82,10 +83,6 @@
                                             <TextBlock Text="Location:" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="19" Foreground="#FFFDFDFD" VerticalAlignment="Center" Margin="0,-10,0,0"/>
                                             <TextBlock Text="{Binding FilePath, Converter={StaticResource pathToLocationConverter}, Mode=OneWay}" Foreground="#FFF9F9F9"
                                                        FontSize="16" FontFamily="{StaticResource TitilliumWeb-Light}" Margin="0,-5,0,0"/>
-                                            <TextBlock FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15" Foreground="#FFFDFDFD" Margin="10,0,0,0">
-                                                Open In: <Run Text="{Binding Tools.Count, Mode=OneWay, Converter={StaticResource countToStringConverter}, ConverterParameter=tool}" 
-                                                              Foreground="#CCF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}"/>
-                                            </TextBlock>
                                             <TextBlock FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="15" Foreground="#FFFDFDFD" Margin="10,0,0,0">
                                                 Last Saved: <Run Foreground="#FFF9F9F9" FontFamily="{StaticResource TitilliumWeb-Light}">
                                                     <Run.Text>
