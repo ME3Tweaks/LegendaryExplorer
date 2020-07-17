@@ -328,7 +328,7 @@ namespace ME3Explorer
             if (mipToLoad.width == 1 && mipToLoad.height == 1)
             {
                 TextureImage.Source = null;
-                CannotShowTextureText = "Selected mip too small to display";
+                CannotShowTextureText = "Selected mip too small to display"; // This will crash the toolset if we show it
                 CannotShowTextureTextVisibility = Visibility.Visible;
                 return;
             }
@@ -338,7 +338,7 @@ namespace ME3Explorer
                 var imagebytes = Texture2D.GetTextureData(mipToLoad);
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
                 var fmt = DDSImage.convertFormat(CurrentLoadedFormat);
-                var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height);
+                var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
                 using (MemoryStream memory = new MemoryStream())
                 {
                     bitmap.Save(memory, ImageFormat.Bmp);
