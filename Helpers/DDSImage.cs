@@ -40,12 +40,23 @@ using StreamHelpers;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using Gammtek.Conduit.IO;
+using Gammtek.Conduit.IO.Converters;
+using MassEffectModder.Images;
+using PixelFormat = MassEffectModder.Images.PixelFormat;
 
 namespace AmaroK86.ImageFormat
 {
     public enum DDSFormat
     {
-        DXT1, DXT3, DXT5, V8U8, ATI2, G8, ARGB, RGB
+        DXT1,
+        DXT3,
+        DXT5,
+        V8U8,
+        ATI2,
+        G8,
+        ARGB,
+        RGB
     }
 
     public enum ATI2BitCodes : ulong
@@ -71,19 +82,19 @@ namespace AmaroK86.ImageFormat
             public int origHeight;
             public DDSFormat ddsFormat { get; private set; }
             private byte[] _data;
+
             public byte[] data
             {
-                get
-                {
-                    return _data;
-                }
+                get { return _data; }
                 set
                 {
                     _data = value;
                     _bitmap = null;
                 }
             }
+
             private Bitmap _bitmap;
+
             public Bitmap bitmap
             {
                 get
@@ -92,6 +103,7 @@ namespace AmaroK86.ImageFormat
                     {
                         _bitmap = ToBitmap(data, ddsFormat, width, height);
                     }
+
                     return _bitmap;
                 }
             }
@@ -223,6 +235,7 @@ namespace AmaroK86.ImageFormat
                         w = (w < 4) ? 4 : w;
                         h = (h < 4) ? 4 : h;
                     }
+
                     int mipMapBytes = (int)(w * h * bytePerPixel);
                     byte[] data = r.ReadBytes(mipMapBytes);
                     mipMaps.Add(new MipMap(data, ddsFormat, origW, origH));
@@ -245,6 +258,7 @@ namespace AmaroK86.ImageFormat
                     width /= 2;
                     height /= 2;
                 }
+
                 return true;
             }
             else
@@ -263,51 +277,57 @@ namespace AmaroK86.ImageFormat
                             hasAlpha = true;
                         return DDSFormat.DXT1;
                     }
-                case FOURCC_DXT3: hasAlpha = true; return DDSFormat.DXT3;
-                case FOURCC_DXT5: hasAlpha = true; return DDSFormat.DXT5;
+                case FOURCC_DXT3:
+                    hasAlpha = true;
+                    return DDSFormat.DXT3;
+                case FOURCC_DXT5:
+                    hasAlpha = true;
+                    return DDSFormat.DXT5;
                 case FOURCC_ATI2: return DDSFormat.ATI2;
                 case 0:
                     if (header.ddspf.dwRGBBitCount == 0x10 &&
-                           header.ddspf.dwRBitMask == 0xFF &&
-                           header.ddspf.dwGBitMask == 0xFF00 &&
-                           header.ddspf.dwBBitMask == 0x00 &&
-                           header.ddspf.dwABitMask == 0x00)
+                        header.ddspf.dwRBitMask == 0xFF &&
+                        header.ddspf.dwGBitMask == 0xFF00 &&
+                        header.ddspf.dwBBitMask == 0x00 &&
+                        header.ddspf.dwABitMask == 0x00)
                         return DDSFormat.V8U8;
                     if (header.ddspf.dwRGBBitCount == 0x8 &&
-                           header.ddspf.dwRBitMask == 0xFF &&
-                           header.ddspf.dwGBitMask == 0x00 &&
-                           header.ddspf.dwBBitMask == 0x00 &&
-                           header.ddspf.dwABitMask == 0x00)
+                        header.ddspf.dwRBitMask == 0xFF &&
+                        header.ddspf.dwGBitMask == 0x00 &&
+                        header.ddspf.dwBBitMask == 0x00 &&
+                        header.ddspf.dwABitMask == 0x00)
                         return DDSFormat.G8;
                     if (header.ddspf.dwRGBBitCount == 0x20 &&
-                           header.ddspf.dwRBitMask == 0xFF0000 &&
-                           header.ddspf.dwGBitMask == 0xFF00 &&
-                           header.ddspf.dwBBitMask == 0xFF &&
-                           header.ddspf.dwABitMask == 0xFF000000)
+                        header.ddspf.dwRBitMask == 0xFF0000 &&
+                        header.ddspf.dwGBitMask == 0xFF00 &&
+                        header.ddspf.dwBBitMask == 0xFF &&
+                        header.ddspf.dwABitMask == 0xFF000000)
                     {
                         hasAlpha = true;
                         return DDSFormat.ARGB;
                     }
+
                     if (header.ddspf.dwRGBBitCount == 0x18 &&
-                           header.ddspf.dwRBitMask == 0xFF0000 &&
-                           header.ddspf.dwGBitMask == 0xFF00 &&
-                           header.ddspf.dwBBitMask == 0xFF &&
-                           header.ddspf.dwABitMask == 0x00)
+                        header.ddspf.dwRBitMask == 0xFF0000 &&
+                        header.ddspf.dwGBitMask == 0xFF00 &&
+                        header.ddspf.dwBBitMask == 0xFF &&
+                        header.ddspf.dwABitMask == 0x00)
                         return DDSFormat.RGB;
                     break;
                 case 60:
-                        return DDSFormat.V8U8;
+                    return DDSFormat.V8U8;
                 case 50:
-                        return DDSFormat.G8;
+                    return DDSFormat.G8;
                 case 21:
                     {
                         hasAlpha = true;
                         return DDSFormat.ARGB;
                     }
                 case 20:
-                        return DDSFormat.RGB;
+                    return DDSFormat.RGB;
                 default: break;
             }
+
             throw new Exception("invalid texture format");
         }
 
@@ -370,6 +390,7 @@ namespace AmaroK86.ImageFormat
                 default:
                     throw new Exception("invalid texture format " + ddsFormat);
             }
+
             return pixelFormat;
         }
 
@@ -449,8 +470,12 @@ namespace AmaroK86.ImageFormat
             }
         }
 
-        public static Bitmap ToBitmap(byte[] imgData, DDSFormat ddsFormat, int w, int h)
+
+
+        public static Bitmap ToBitmap(byte[] imgData, DDSFormat ddsFormat, int w, int h, string gamePlatform = "PC")
         {
+            GamePlatform platform = (GamePlatform)Enum.Parse(typeof(GamePlatform), gamePlatform);
+
             switch (ddsFormat)
             {
                 case DDSFormat.DXT1: return DXT1ToBitmap(imgData, w, h);
@@ -459,7 +484,7 @@ namespace AmaroK86.ImageFormat
                 case DDSFormat.ATI2: return ATI2ToBitmap(imgData, w, h);
                 case DDSFormat.V8U8: return V8U8ToBitmap(imgData, w, h);
                 case DDSFormat.G8: return G8ToBitmap(imgData, w, h);
-                case DDSFormat.ARGB: return ARGBToBitmap(imgData, w, h);
+                case DDSFormat.ARGB: return ARGBToBitmap(imgData, w, h, platform);
                 case DDSFormat.RGB: return RGBToBitmap(imgData, w, h);
                 default:
                     throw new Exception("invalid texture format " + ddsFormat);
@@ -484,26 +509,33 @@ namespace AmaroK86.ImageFormat
         }
 
         #region DXT1
+
         private static byte[] DXT1ToARGB(byte[] imgData, int w, int h)
         {
             return UncompressDXT1(imgData, w, h);
         }
 
-        private static Bitmap DXT1ToBitmap(byte[] imgData, int w, int h)
+        private static Bitmap DXT1ToBitmap(byte[] imgData, int w, int h, GamePlatform platform = GamePlatform.PC)
         {
             byte[] imageData = UncompressDXT1(imgData, w, h, true);
-            var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            if (platform == GamePlatform.PC)
             {
-                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                                                    bmp.Width,
-                                                    bmp.Height),
-                                      ImageLockMode.WriteOnly,
-                                      bmp.PixelFormat);
+                var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                {
+                    BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
+                            bmp.Width,
+                            bmp.Height),
+                        ImageLockMode.WriteOnly,
+                        bmp.PixelFormat);
 
-                Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
-                bmp.UnlockBits(bmpData);
+                    Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
+                    bmp.UnlockBits(bmpData);
+                }
+                return bmp;
             }
-            return bmp;
+
+            return DecodeXboxTexture(imageData, w, h, PixelFormat.DXT1);
+
         }
 
         private static PngBitmapEncoder DXT1ToPng(byte[] imgData, int w, int h)
@@ -608,8 +640,11 @@ namespace AmaroK86.ImageFormat
                 return bitmapStream.ToArray();
             }
         }
+
         #endregion
+
         #region DXT3
+
         private static byte[] DXT3ToARGB(byte[] imgData, int w, int h)
         {
             return UncompressDXT3(imgData, w, h);
@@ -621,10 +656,10 @@ namespace AmaroK86.ImageFormat
             var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             {
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                                                    bmp.Width,
-                                                    bmp.Height),
-                                      ImageLockMode.WriteOnly,
-                                      bmp.PixelFormat);
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.WriteOnly,
+                    bmp.PixelFormat);
 
                 Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
                 bmp.UnlockBits(bmpData);
@@ -718,28 +753,35 @@ namespace AmaroK86.ImageFormat
                 }
             }
         }
+
         #endregion
+
         #region DXT5
+
         private static byte[] DXT5ToARGB(byte[] imgData, int w, int h)
         {
             return UncompressDXT5(imgData, w, h);
         }
 
-        private static Bitmap DXT5ToBitmap(byte[] imgData, int w, int h)
+        private static Bitmap DXT5ToBitmap(byte[] imgData, int w, int h, GamePlatform platform = GamePlatform.PC)
         {
-            byte[] imageData = UncompressDXT5(imgData, w, h, true);
-            var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            if (platform == GamePlatform.PC)
             {
-                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                                                    bmp.Width,
-                                                    bmp.Height),
-                                      ImageLockMode.WriteOnly,
-                                      bmp.PixelFormat);
+                byte[] imageData = UncompressDXT5(imgData, w, h, true);
+                var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                {
+                    BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
+                            bmp.Width,
+                            bmp.Height),
+                        ImageLockMode.WriteOnly,
+                        bmp.PixelFormat);
 
-                Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
-                bmp.UnlockBits(bmpData);
+                    Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
+                    bmp.UnlockBits(bmpData);
+                }
+                return bmp;
             }
-            return bmp;
+            return DecodeXboxTexture(imgData, w, h, PixelFormat.DXT5);
         }
 
         private static PngBitmapEncoder DXT5ToPng(byte[] imgData, int w, int h)
@@ -874,8 +916,11 @@ namespace AmaroK86.ImageFormat
                 }
             }
         }
+
         #endregion
+
         #region V8U8
+
         private static byte[] V8U8ToARGB(byte[] imgData, int w, int h)
         {
             return UncompressV8U8(imgData, w, h);
@@ -887,10 +932,10 @@ namespace AmaroK86.ImageFormat
             var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             {
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                                                    bmp.Width,
-                                                    bmp.Height),
-                                      ImageLockMode.WriteOnly,
-                                      bmp.PixelFormat);
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.WriteOnly,
+                    bmp.PixelFormat);
 
                 Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
                 bmp.UnlockBits(bmpData);
@@ -931,8 +976,11 @@ namespace AmaroK86.ImageFormat
                 }
             }
         }
+
         #endregion
+
         #region ATI2
+
         private static byte[] ATI2ToARGB(byte[] imgData, int w, int h)
         {
             const int bytesPerPixel = 4;
@@ -978,7 +1026,9 @@ namespace AmaroK86.ImageFormat
                     {
                         Buffer.BlockCopy(imgData, ptr, blockStorage, 0, bufferSize);
                         ptr += bufferSize;
+
                         #region Block Decompression Loop
+
                         byte[][] rgbVals = new byte[3][];
                         byte[] blueVals = new byte[bufferSize];
                         for (int j = 1; j >= 0; j--)
@@ -1046,11 +1096,14 @@ namespace AmaroK86.ImageFormat
                                 {
                                     throw new FormatException("Unknown bit value found. This shouldn't be possible...");
                                 }
+
                                 longRep <<= 3;
                             }
+
                             int index = (j == 0) ? 0 : 1;
                             rgbVals[index] = colVals;
                         }
+
                         for (int j = 0; j < bufferSize; j++)
                         {
                             if (rgbVals[0][j] <= 20 && rgbVals[1][j] <= 20)
@@ -1058,7 +1111,9 @@ namespace AmaroK86.ImageFormat
                             else
                                 blueVals[j] = 255;
                         }
+
                         rgbVals[2] = blueVals;
+
                         #endregion
 
                         for (int i = 0; i < 4; i++)
@@ -1078,17 +1133,112 @@ namespace AmaroK86.ImageFormat
                 return bitmapStream.ToArray();
             }
         }
+
         #endregion
+
         #region A8R8G8B8
-        private static Bitmap ARGBToBitmap(byte[] imgData, int w, int h)
+
+        private static Dictionary<PixelFormat, (int blocksizeX, int blocksizeY, int bytesPerBlock, int alignX, int alignY)> xboxAlignmentValues = new Dictionary<PixelFormat, (int blocksizeX, int blocksizeY, int bytesPerBlock, int alignX, int alignY)>()
+        {
+            {PixelFormat.DXT1, (4,4,8,128, 128)},
+            {PixelFormat.DXT3, (4,4,16,128, 128)},
+            {PixelFormat.DXT5, (4,4,16,128, 128)},
+            {PixelFormat.ARGB, (1,1,4,32, 32)},
+            {PixelFormat.V8U8, (1,1,2,64, 32)}
+        };
+        private static Bitmap ARGBToBitmap(byte[] imgData, int w, int h, GamePlatform platform = GamePlatform.PC)
         {
             if (imgData.Length != (w * h * 4))
                 throw new ArgumentException("Input array is not correct size");
-            var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
-            Marshal.Copy(imgData, 0, bmpData.Scan0, imgData.Length);
-            bmp.UnlockBits(bmpData);
-            return bmp;
+            if (platform == GamePlatform.PC)
+            {
+                var bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+                Marshal.Copy(imgData, 0, bmpData.Scan0, imgData.Length);
+                bmp.UnlockBits(bmpData);
+                return bmp;
+            }
+
+            return DecodeXboxTexture(imgData, w, h, PixelFormat.ARGB);
+        }
+
+        private static Bitmap DecodeXboxTexture(byte[] imgData, int w, int h, PixelFormat format)
+        {
+            // Xbox
+            byte[] bitmapData = new byte[w * h * 4]; //Return in ARGB
+            var formatInfo = xboxAlignmentValues[format];
+            int USize1 = Align(w, formatInfo.alignX);
+            int VSize1 = Align(h, formatInfo.alignY);
+            int UBlockSize = USize1 / formatInfo.blocksizeX;
+            int VBlockSize = VSize1 / formatInfo.alignY;
+            int TotalBlocks = imgData.Length / formatInfo.bytesPerBlock;
+
+            float bpp = (float)imgData.Length / (USize1 * VSize1) * formatInfo.blocksizeX * formatInfo.blocksizeY;  // used for validation only
+
+            /*
+             * #if BIOSHOCK
+	// some verification
+	float rate = bpp / Info.BytesPerBlock;
+	if (ObjectGame == GAME_Bioshock && (rate >= 1 && rate < 1.5f))	// allow placing of mipmaps into this buffer
+		bpp = Info.BytesPerBlock;
+#endif // BIOSHOCK
+
+	if (fabs(bpp - Info.BytesPerBlock) > 0.001f)
+	{
+		// Some XBox360 games (Lollipop Chainsaw, ...) has lower mip level (16x16) with half or 1/4 of data size - allow that.
+		// TODO: review this code, perhaps useless due to recent changes in lower mipmap levels support. At least, check
+		// 'bpp * 2' and 'bpp * 4' cases.
+		if ( (Mip.VSize >= 32) || ( (bpp * 2 != Info.BytesPerBlock) && (bpp * 4 != Info.BytesPerBlock) ) )
+		{
+			appSprintf(ARRAY_ARG(ErrorMessage), "bytesPerBlock: got %g, need %d", bpp, Info.BytesPerBlock);
+			goto error;
+		
+             */
+            // untile and unalign
+            byte[] untiled = UntileCompressedXbox360Texture(imgData, USize1, w, VSize1, h, formatInfo.blocksizeX, formatInfo.blocksizeY, formatInfo.bytesPerBlock);
+
+            // swap bytes
+            if (format == PixelFormat.ARGB)
+            {
+                // Swap dwords for 32-bit formats
+                EndianConverter.ReverseBytes(untiled, 0, imgData.Length / 4, 4);
+            }
+            else if (formatInfo.bytesPerBlock > 0)
+            {
+                // Swap words 16bit)
+                EndianConverter.ReverseBytes(untiled, 0, imgData.Length / 2, 2);
+            }
+
+            switch (format)
+            {
+                case PixelFormat.DXT1:
+                    untiled = DXT1ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.DXT3:
+                    untiled = DXT3ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.DXT5:
+                    untiled = DXT5ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.ATI2:
+                    untiled = ATI2ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.V8U8:
+                    untiled = V8U8ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.G8:
+                    untiled = G8ToARGB(imgData, w, h);
+                    break;
+                case PixelFormat.RGB:
+                    untiled = RGBToARGB(imgData, w, h);
+                    break;
+            }
+
+            var bmpX = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            BitmapData bmpDataX = bmpX.LockBits(new Rectangle(0, 0, bmpX.Width, bmpX.Height), ImageLockMode.WriteOnly, bmpX.PixelFormat);
+            Marshal.Copy(untiled, 0, bmpDataX.Scan0, imgData.Length);
+            bmpX.UnlockBits(bmpDataX);
+            return bmpX;
         }
 
         private static PngBitmapEncoder RGBAToPng(byte[] imgData, int w, int h)
@@ -1102,7 +1252,9 @@ namespace AmaroK86.ImageFormat
         }
 
         #endregion
+
         #region R8G8B8
+
         private static byte[] RGBToARGB(byte[] imgData, int w, int h)
         {
             if (imgData.Length != (w * h * 3))
@@ -1115,6 +1267,7 @@ namespace AmaroK86.ImageFormat
                 buff[(4 * i) + 2] = imgData[(3 * i) + 2];
                 buff[(4 * i) + 3] = 255;
             }
+
             return buff;
         }
 
@@ -1138,8 +1291,11 @@ namespace AmaroK86.ImageFormat
             png.Frames.Add(BitmapFrame.Create(image));
             return png;
         }
+
         #endregion
+
         #region G8
+
         private static byte[] G8ToARGB(byte[] imgData, int w, int h)
         {
             if (imgData.Length != (w * h))
@@ -1151,6 +1307,7 @@ namespace AmaroK86.ImageFormat
                 {
                     buff[(4 * i) + j] = imgData[i];
                 }
+
                 buff[(4 * i) + 3] = 0;
             }
 
@@ -1185,11 +1342,13 @@ namespace AmaroK86.ImageFormat
                 for (int j = 0; j < 3; j++)
                     buff[(3 * i) + j] = imgData[i];
             }
+
             PngBitmapEncoder png = new PngBitmapEncoder();
             BitmapSource image = BitmapSource.Create(w, h, 96, 96, PixelFormats.Rgb24, null, buff, w * 3);
             png.Frames.Add(BitmapFrame.Create(image));
             return png;
         }
+
         #endregion
 
         private void Read_DDS_HEADER(DDS_HEADER h, BinaryReader r)
@@ -1205,6 +1364,7 @@ namespace AmaroK86.ImageFormat
             {
                 h.dwReserved1[i] = r.ReadInt32();
             }
+
             Read_DDS_PIXELFORMAT(h.ddspf, r);
             h.dwCaps = r.ReadInt32();
             h.dwCaps2 = r.ReadInt32();
@@ -1255,6 +1415,108 @@ namespace AmaroK86.ImageFormat
             s.WriteUInt32(fmt.dwBBitMask);
             s.WriteUInt32(fmt.dwABitMask);
         }
+
+
+        #region Xbox 360 Deswizzler/Untiler
+
+        public static int appLog2(int n)
+        {
+            int r;
+            for (r = -1; n > 0; n >>= 1, r++)
+            {
+                /*empty*/
+            }
+
+            return r;
+        }
+
+        public static byte[] UntileCompressedXbox360Texture(byte[] sourceData, int tiledWidth, int originalWidth, int tiledHeight, int originalHeight, int blockSizeX, int blockSizeY, int bytesPerBlock)
+        {
+            int tiledBlockWidth = tiledWidth / blockSizeX; // width of image in blocks
+            int originalBlockWidth = originalWidth / blockSizeX; // width of image in blocks
+            int tiledBlockHeight = tiledHeight / blockSizeY; // height of image in blocks
+            int originalBlockHeight = originalHeight / blockSizeY; // height of image in blocks
+            int logBpp = appLog2(bytesPerBlock);
+
+            // XBox360 has packed multiple lower mip levels into a single tile - should use special code
+            // to unpack it.
+            // Packing looks like this:
+            // ....CCCCBBBBBBBBAAAAAAAAAAAAAAAA
+            // ....CCCCBBBBBBBBAAAAAAAAAAAAAAAA
+            // E.......BBBBBBBBAAAAAAAAAAAAAAAA
+            // ........BBBBBBBBAAAAAAAAAAAAAAAA
+            // DD..............AAAAAAAAAAAAAAAA
+            // ................AAAAAAAAAAAAAAAA
+            // ................AAAAAAAAAAAAAAAA
+            // ................AAAAAAAAAAAAAAAA
+            // (Where mips are A,B,C,D,E - E is 1x1, D is 2x2 etc)
+            // Force sxOffset=0 and enable DEBUG_MIPS in UnRender.cpp to visualize this layout.
+            // So we should offset X coordinate when unpacking to the width of mip level.
+            // Note: this doesn't work with non-square textures.
+            int sxOffset = 0;
+            if ((tiledBlockWidth >= originalBlockWidth * 2) && (originalWidth == 16))
+            {
+                sxOffset = originalBlockWidth;
+                //#if DEBUG_PLATFORM_TEX
+                //		appPrintf("sxOffset=%d\n", sxOffset);
+                //#endif
+            }
+
+            int numImageBlocks = tiledBlockWidth * tiledBlockHeight; // used for verification
+
+            byte[] result = new byte[originalWidth * originalHeight * 4];
+            // Iterate over image blocks
+            for (int dy = 0; dy < originalBlockHeight; dy++)
+            {
+                for (int dx = 0; dx < originalBlockWidth; dx++)
+                {
+                    int swzAddr = GetXbox360TiledOffset(dx + sxOffset, dy, tiledBlockWidth, logBpp); // do once for whole block
+                    //assert(swzAddr < numImageBlocks);
+                    int sy = swzAddr / tiledBlockWidth;
+                    int sx = swzAddr % tiledBlockWidth;
+
+                    int offsetToWriteTo = (dy * originalBlockWidth + dx) * bytesPerBlock;
+                    int sourceOffset = (sy * tiledBlockWidth + sx) * bytesPerBlock;
+                    //memcpy(pDst, pSrc, bytesPerBlock); //Copy bytesPerBlock from pSrc (offset in c#) to pDst (offset in c#)
+                    Buffer.BlockCopy(sourceData, sourceOffset, result, offsetToWriteTo, bytesPerBlock);
+                }
+            }
+
+            return result;
+        }
+
+        // Input:
+        //		x/y		coordinate of block
+        //		width	width of image in blocks
+        //		logBpb	log2(bytesPerBlock)
+        // Reference:
+        //		XGAddress2DTiledOffset() from XDK
+        private static int GetXbox360TiledOffset(int x, int y, int width, int logBpb)
+        {
+
+            int alignedWidth = Align(width, 32);
+            // top bits of coordinates
+            int macro = ((x >> 5) + (y >> 5) * (alignedWidth >> 5)) << (logBpb + 7);
+            // lower bits of coordinates (result is 6-bit value)
+            int micro = ((x & 7) + ((y & 0xE) << 2)) << logBpb;
+            // mix micro/macro + add few remaining x/y bits
+            int offset = macro + ((micro & ~0xF) << 1) + (micro & 0xF) + ((y & 1) << 4);
+            // mix bits again
+            return (((offset & ~0x1FF) << 3) + // upper bits (offset bits [*-9])
+                    ((y & 16) << 7) + // next 1 bit
+                    ((offset & 0x1C0) << 2) + // next 3 bits (offset bits [8-6])
+                    (((((y & 8) >> 2) + (x >> 3)) & 3) << 6) + // next 2 bits
+                    (offset & 0x3F) // lower 6 bits (offset bits [5-0])
+                ) >> logBpb;
+        }
+
+        // Align integer or pointer of any type
+        private static int Align(int input, int alignment)
+        {
+            // Not sure this is ported correctly...
+            return (input + alignment - 1) & ~(alignment - 1);
+        }
+        #endregion
     }
 
     public class DDS_HEADER

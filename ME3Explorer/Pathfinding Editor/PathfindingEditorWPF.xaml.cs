@@ -4467,7 +4467,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
             }
 
-            MessageBox.Show($"{n} LightComponents adjusted.\n\nReclalculating static lightmaps.");
+            MessageBox.Show($"{n} LightComponents adjusted.\n\nRecalculating static lightmaps.");
 
             List<ExportEntry> AllStaticMeshComponents = AllComponents.Where(x => x.ClassName == "StaticMeshComponent").ToList();
             HashSet<int> TextureMaps = new HashSet<int>();

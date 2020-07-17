@@ -252,6 +252,7 @@
                         <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
                         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
                         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
+                        <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
                         <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
 
                     </MenuItem>

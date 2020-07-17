@@ -1042,14 +1042,14 @@ namespace ME3Explorer
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 2)
                     {
-                        ushort val = BitConverter.ToUInt16(currentData, start);
+                        ushort val = EndianReader.ToUInt16(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", UShort: {val}";
                     }
                     if (start <= currentData.Length - 4)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
+                        int val = EndianReader.ToInt32(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Int: {val}";
-                        float fval = BitConverter.ToSingle(currentData, start);
+                        float fval = EndianReader.ToSingle(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Float: {fval}";
                         if (CurrentLoadedExport.FileRef.IsName(val))
                         {

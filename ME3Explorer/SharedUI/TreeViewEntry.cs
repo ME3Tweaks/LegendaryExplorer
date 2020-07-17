@@ -254,7 +254,7 @@ namespace ME3Explorer
                             case "ComponentProperty":
                                 {
                                     // Objects of this type
-                                    var typeRef = EndianReader.ToInt32(ee.Data, 0x2C, ee.FileRef.Endian);
+                                    var typeRef = EndianReader.ToInt32(ee.Data, Entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 0x2C : 0x20, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {
                                         _subtext = type.ObjectName;
@@ -359,6 +359,8 @@ namespace ME3Explorer
                 }
                 catch (Exception)
                 {
+                    loadedSubtext = true;
+                    _subtext = "ERROR GETTING SUBTEXT!";
                     return "ERROR GETTING SUBTEXT!";
                 }
             }

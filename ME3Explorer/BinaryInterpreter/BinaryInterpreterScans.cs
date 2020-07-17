@@ -4451,8 +4451,14 @@ namespace ME3Explorer
                     }
                 }
 
-                subnodes.Add(MakeNameNode(bin, "Category"));
-                subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PC)
+                {
+                    // This seems missing on Xenon 2011. Not sure about others
+                    subnodes.Add(MakeNameNode(bin, "Category"));
+                    subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+
+                }
+
                 if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Net))
                 {
                     subnodes.Add(MakeUInt16Node(bin, "ReplicationOffset"));
@@ -5112,7 +5118,7 @@ namespace ME3Explorer
             try
             {
                 int binarypos = binarystart;
-                int count = BitConverter.ToInt32(data, binarypos);
+                int count = EndianReader.ToInt32(data, binarypos, CurrentLoadedExport.FileRef.Endian);
                 subnodes.Add(new BinInterpNode
                 {
                     Header = $"0x{binarypos:X4} Count: {count.ToString()}"
@@ -5120,9 +5126,9 @@ namespace ME3Explorer
                 binarypos += 4; //+ int
                 for (int i = 0; i < count; i++)
                 {
-                    int nameIndex = BitConverter.ToInt32(data, binarypos);
-                    int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
-                    int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
+                    int nameIndex = EndianReader.ToInt32(data, binarypos, CurrentLoadedExport.FileRef.Endian);
+                    int nameIndexNum = EndianReader.ToInt32(data, binarypos + 4, CurrentLoadedExport.FileRef.Endian);
+                    int shouldBe1 = EndianReader.ToInt32(data, binarypos + 8, CurrentLoadedExport.FileRef.Endian);
 
                     var name = CurrentLoadedExport.FileRef.GetNameEntry(nameIndex);
                     string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";

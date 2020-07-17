@@ -21,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.ME3Enums;
@@ -130,7 +131,7 @@ namespace ME3Explorer.Pathfinding_Editor
             int numRecalculated = 0;
             foreach (ExportEntry splineActor in mePackage.Exports.Where(exp => exp.ClassName == "SplineActor"))
             {
-                if (splineActor.GetProperty<ArrayProperty<StructProperty>>("Connections") is {} connections && connections.Any())
+                if (splineActor.GetProperty<ArrayProperty<StructProperty>>("Connections") is { } connections && connections.Any())
                 {
                     Vector3 location = CommonStructs.GetVector3(splineActor, "location", Vector3.Zero);
                     Vector3 splineActorTangent = CommonStructs.GetVector3(splineActor, "SplineActorTangent", new Vector3(300f, 0f, 0f));
@@ -426,7 +427,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         if (exportEntry.NetIndex >= 0)
                         {
-                            Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath+" from "+exportEntry.NetIndex);
+                            Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
                             exportEntry.NetIndex = nextNetIndex++;
                         }
                     }
@@ -452,6 +453,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         exportEntry.Data = exportData;
                     }
 
+                    // probably shouldn't do this...
                     if (exportEntry.NetIndex >= 0)
                     {
                         Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
@@ -466,88 +468,79 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void relinkPathfindingChain(ListBoxTask task = null)
         {
-            var pathfindingChain = new List<ExportEntry>();
-
-            byte[] data = PersistentLevel.GetBinaryData();
-            int start = 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
-
-            start += 8;
-            int itemcount = 2; //Skip bioworldinfo and Class
-
-            //Get all nav items.
-            while (itemcount <= numberofitems)
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
-                //get header.
-                int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.IsUExport(itemexportid))
+                Level level = ObjectBinary.From<Level>(levelExport);
+                List<ExportEntry> validNodesInLevel = new List<ExportEntry>();
+                List<ExportEntry> validCoverlinksInLevel = new List<ExportEntry>();
+                foreach (var item in level.Actors)
                 {
-                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
-                    StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
-                    if (navGuid != null)
+                    if (Pcc.IsUExport(item.value))
                     {
-                        pathfindingChain.Add(exportEntry);
+                        ExportEntry exportEntry = Pcc.GetUExport(item.value);
+                        StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
+                        if (navGuid != null)
+                        {
+                            if (exportEntry.ClassName == "CoverLink")
+                            {
+                                validCoverlinksInLevel.Add(exportEntry);
+                            }
+                            else
+                            {
+                                validNodesInLevel.Add(exportEntry);
+                            }
+                        }
                     }
-
-                    start += 4;
-                    itemcount++;
-                }
-                else
-                {
-                    start += 4;
-                    itemcount++;
-                }
-            }
-
-            //Filter so it only has nextNavigationPoint. This will drop the end node
-            var nextNavigationPointChain = new List<ExportEntry>();
-            foreach (ExportEntry exportEntry in pathfindingChain)
-            {
-                ObjectProperty nextNavigationPointProp = exportEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                if (nextNavigationPointProp == null)
-                {
-                    //don't add this as its not part of this chain
-                    continue;
-                }
-                nextNavigationPointChain.Add(exportEntry);
-            }
-
-            if (nextNavigationPointChain.Count > 0)
-            {
-                //Follow chain to end to find end node
-                ExportEntry nodeEntry = nextNavigationPointChain[0];
-                ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                while (nextNavPoint != null)
-                {
-                    nodeEntry = Pcc.GetUExport(nextNavPoint.Value);
-                    nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
                 }
 
-                //rebuild chain
-                for (int i = 0; i < nextNavigationPointChain.Count; i++)
+                // NavChain
+                if (validNodesInLevel.Any())
                 {
-                    ExportEntry chainItem = nextNavigationPointChain[i];
-                    ExportEntry nextchainItem;
-                    if (i < nextNavigationPointChain.Count - 1)
+                    // has nav chain
+
+                    // not sure this should be done...
+                    level.NavListStart = validNodesInLevel.First().UIndex;
+                    level.NavListEnd = validNodesInLevel.Last().UIndex;
+
+                    for (int i = 0; i < validNodesInLevel.Count; i++)
                     {
-                        nextchainItem = nextNavigationPointChain[i + 1];
+                        ExportEntry parsingExp = validNodesInLevel[i];
+                        if (i != validNodesInLevel.Count - 1)
+                        {
+                            ObjectProperty nextNavigationPointProp = new ObjectProperty(validNodesInLevel[i + 1].UIndex, "nextNavigationPoint");
+                            parsingExp.WriteProperty(nextNavigationPointProp);
+                        }
+                        else
+                        {
+                            parsingExp.RemoveProperty("nextNavigationPoint");
+                        }
                     }
-                    else
-                    {
-                        nextchainItem = nodeEntry;
-                    }
-
-                    ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                    byte[] expData = chainItem.Data;
-                    expData.OverwriteRange((int) nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
-                    chainItem.Data = expData;
-                    //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
                 }
 
+                //Coverlink Chain
+                // Disable until we can figure out why this breaks MP cover
+                //if (validCoverlinksInLevel.Any())
+                //{
+                //    // not sure how this is handled with 1
+                //    level.CoverListStart = validCoverlinksInLevel.First().UIndex;
+                //    level.CoverListEnd = validCoverlinksInLevel.Last().UIndex;
+
+                //    for (int i = 0; i < validCoverlinksInLevel.Count ; i++)
+                //    {
+                //        ExportEntry parsingExp = validCoverlinksInLevel[i];
+                //        if (i != validCoverlinksInLevel.Count - 1)
+                //        {
+                //            ObjectProperty nextCoverlink = new ObjectProperty(validCoverlinksInLevel[i + 1].UIndex, "NextCoverLink");
+                //            parsingExp.WriteProperty(nextCoverlink);
+                //        }
+                //        else
+                //        {
+                //            parsingExp.RemoveProperty("NextCoverLink");
+                //        }
+                //    }
+                //}
+
+                levelExport.SetBinaryData(level);
                 task?.Complete("NavigationPoint chain has been updated");
             }
             else

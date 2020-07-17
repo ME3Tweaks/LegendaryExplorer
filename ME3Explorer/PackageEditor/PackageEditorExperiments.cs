@@ -277,6 +277,73 @@ namespace ME3Explorer.PackageEditor
         }
 
         /// <summary>
+        /// Rebuilds all netindexes based on the AdditionalPackageToCook list in the listed file's header
+        /// </summary>
+        public static void RebuildFullLevelNetindexes()
+        {
+            string pccPath = @"X:\SteamLibrary\steamapps\common\Mass Effect 3\BIOGame\CookedPCConsole\BioP_MPTowr.pcc";
+            //string pccPath = @"X:\m3modlibrary\ME3\Redemption\DLC_MOD_MPMapPack - NetIndexing\CookedPCConsole\BioP_MPCron2.pcc";
+            string[] subFiles =
+            {
+                "BioA_Cat004_000Global",
+                "BioA_Cat004_100HangarBay",
+                "BioD_Cat004_050Landing",
+                "BioD_Cat004_100HangarBay",
+                "BioD_MPCron_SubMaster",
+                "BioSnd_MPCron"
+
+            };
+            Dictionary<int, List<string>> indices = new Dictionary<int, List<string>>();
+            using var package = (MEPackage)MEPackageHandler.OpenMEPackage(pccPath);
+            //package.AdditionalPackagesToCook = subFiles.ToList();
+            //package.Save();
+            //return;
+            int currentNetIndex = 1;
+
+            var netIndexedObjects = package.Exports.Where(x => x.NetIndex >= 0).OrderBy(x => x.NetIndex).ToList();
+
+            foreach (var v in netIndexedObjects)
+            {
+                List<string> usages = null;
+                if (!indices.TryGetValue(v.NetIndex, out usages))
+                {
+                    usages = new List<string>();
+                    indices[v.NetIndex] = usages;
+                }
+
+                usages.Add($"{Path.GetFileNameWithoutExtension(v.FileRef.FilePath)} {v.InstancedFullPath}");
+            }
+
+            foreach (var f in package.AdditionalPackagesToCook)
+            {
+                var packPath = Path.Combine(Path.GetDirectoryName(pccPath), f + ".pcc");
+                using var sPackage = (MEPackage)MEPackageHandler.OpenMEPackage(packPath);
+
+                netIndexedObjects = sPackage.Exports.Where(x => x.NetIndex >= 0).OrderBy(x => x.NetIndex).ToList();
+                foreach (var v in netIndexedObjects)
+                {
+                    List<string> usages = null;
+                    if (!indices.TryGetValue(v.NetIndex, out usages))
+                    {
+                        usages = new List<string>();
+                        indices[v.NetIndex] = usages;
+                    }
+
+                    usages.Add($"{Path.GetFileNameWithoutExtension(v.FileRef.FilePath)} {v.InstancedFullPath}");
+                }
+            }
+
+            foreach (var i in indices)
+            {
+                Debug.WriteLine($"NetIndex {i.Key}");
+                foreach (var s in i.Value)
+                {
+                    Debug.WriteLine("   " + s);
+                }
+            }
+        }
+
+        /// <summary>
         /// Shifts an ME1 AnimCutscene by specified X Y Z values. Only supports 96NoW (3 32-bit float) animations
         /// By Mgamerz 
         /// </summary>

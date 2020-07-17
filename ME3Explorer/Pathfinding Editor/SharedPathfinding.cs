@@ -655,6 +655,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public const int MOOK_HEIGHT = 90;
         public const int MINIBOSS_RADIUS = 105;
         public const int MINIBOSS_HEIGHT = 145;
+        public const int BRUTE_RADIUS = 115;
+        // No height. Just use miniboss for brute
         public const int BOSS_RADIUS = 140;
         public const int BOSS_HEIGHT = 195;
         public const int BANSHEE_RADIUS = 50;

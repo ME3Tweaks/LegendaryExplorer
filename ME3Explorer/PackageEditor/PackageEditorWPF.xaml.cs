@@ -954,6 +954,36 @@ namespace ME3Explorer
                 UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Package Compression Type: {compressionType.ToString()}");
 
+                int numChunks = ms.ReadInt32();
+                items.Add($"0x{ms.Position - 4:X2} Number of compressed chunks: {numChunks.ToString()}");
+
+                //read package source
+                //var savedPos = ms.Position;
+                ms.Skip(numChunks * 16); //skip chunk table so we can find package tag
+
+
+                var packageSource = ms.ReadUInt32(); //this needs to be read in so it can be properly written back out.
+                items.Add($"0x{ms.Position - 4:X4} Package Source: {packageSource:X8}");
+
+                if ((Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME1) && Pcc.Platform != MEPackage.GamePlatform.PS3)
+                {
+                    var alwaysZero1 = ms.ReadUInt32(); //this needs to be read in so it can be properly written back out.
+                    items.Add($"0x{ms.Position - 4:X4} Always zero: {alwaysZero1}");
+                }
+
+                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
+                {
+                    int additionalPackagesToCookCount = ms.ReadInt32();
+                    items.Add($"0x{ms.Position - 4:X4} Number of additional packages to cook: {additionalPackagesToCookCount}");
+                    //var additionalPackagesToCook = new string[additionalPackagesToCookCount];
+                    for (int i = 0; i < additionalPackagesToCookCount; i++)
+                    {
+                        var pos = ms.Position;
+                        var packageStr = ms.ReadUnrealString();
+                        items.Add($"0x{pos:X4} Additional package to cook: {packageStr}");
+
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -5383,6 +5413,11 @@ namespace ME3Explorer
         private void DumpAllExecFunctionSignatures_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperiments.DumpAllExecFunctionsFromGame();
+        }
+
+        private void RebuildLevelNetindexing_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.RebuildFullLevelNetindexes();
         }
     }
 }
