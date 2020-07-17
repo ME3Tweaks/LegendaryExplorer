@@ -453,6 +453,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         exportEntry.Data = exportData;
                     }
 
+                    // probably shouldn't do this...
                     if (exportEntry.NetIndex >= 0)
                     {
                         Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
@@ -497,7 +498,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     // has nav chain
 
-                    // not sure how this is handled with 1
+                    // not sure this should be done...
                     level.NavListStart = validNodesInLevel.First().UIndex;
                     level.NavListEnd = validNodesInLevel.Last().UIndex;
 
@@ -517,26 +518,27 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
 
                 //Coverlink Chain
-                if (validCoverlinksInLevel.Any())
-                {
-                    // not sure how this is handled with 1
-                    level.CoverListStart = validCoverlinksInLevel.First().UIndex;
-                    level.CoverListEnd = validCoverlinksInLevel.Last().UIndex;
+                // Disable until we can figure out why this breaks MP cover
+                //if (validCoverlinksInLevel.Any())
+                //{
+                //    // not sure how this is handled with 1
+                //    level.CoverListStart = validCoverlinksInLevel.First().UIndex;
+                //    level.CoverListEnd = validCoverlinksInLevel.Last().UIndex;
 
-                    for (int i = 0; i < validCoverlinksInLevel.Count ; i++)
-                    {
-                        ExportEntry parsingExp = validCoverlinksInLevel[i];
-                        if (i != validCoverlinksInLevel.Count - 1)
-                        {
-                            ObjectProperty nextCoverlink = new ObjectProperty(validCoverlinksInLevel[i + 1].UIndex, "NextCoverLink");
-                            parsingExp.WriteProperty(nextCoverlink);
-                        }
-                        else
-                        {
-                            parsingExp.RemoveProperty("NextCoverLink");
-                        }
-                    }
-                }
+                //    for (int i = 0; i < validCoverlinksInLevel.Count ; i++)
+                //    {
+                //        ExportEntry parsingExp = validCoverlinksInLevel[i];
+                //        if (i != validCoverlinksInLevel.Count - 1)
+                //        {
+                //            ObjectProperty nextCoverlink = new ObjectProperty(validCoverlinksInLevel[i + 1].UIndex, "NextCoverLink");
+                //            parsingExp.WriteProperty(nextCoverlink);
+                //        }
+                //        else
+                //        {
+                //            parsingExp.RemoveProperty("NextCoverLink");
+                //        }
+                //    }
+                //}
 
                 levelExport.SetBinaryData(level);
                 task?.Complete("NavigationPoint chain has been updated");
