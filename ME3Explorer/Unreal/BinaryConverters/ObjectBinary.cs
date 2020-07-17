@@ -142,6 +142,23 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "Bio2DA":
                 case "Bio2DANumberedRows":
                     return From<Bio2DABinary>(export);
+                case "BioMorphFace":
+                    return From<BioMorphFace>(export);
+                case "MorphTarget":
+                    return From<MorphTarget>(export);
+                case "SFXMorphFaceFrontEndDataSource":
+                    return From<SFXMorphFaceFrontEndDataSource>(export);
+                case "PhysicsAssetInstance":
+                    return From<PhysicsAssetInstance>(export);
+                case "DirectionalLightComponent":
+                case "PointLightComponent":
+                case "SkyLightComponent":
+                case "SphericalHarmonicLightComponent":
+                case "SpotLightComponent":
+                case "DominantSpotLightComponent":
+                case "DominantPointLightComponent":
+                case "DominantDirectionalLightComponent":
+                    return From<LightComponent>(export);
                 default:
                     return null;
             }
@@ -185,7 +202,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             data = sc.ms.BaseStream.ReadFully();
         }
 
-        public override void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset)
+        public override void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {
             ms.WriteFromBuffer(data);
         }

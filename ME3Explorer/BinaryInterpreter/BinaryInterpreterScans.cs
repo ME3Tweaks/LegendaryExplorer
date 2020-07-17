@@ -950,7 +950,7 @@ namespace ME3Explorer
                         {
                             MakeInt32Node(bin, "BodyAIndex"),
                             MakeInt32Node(bin, "BodyBIndex"),
-                            new BinInterpNode(bin.Position, $"false: {bin.ReadBoolInt()}")
+                            MakeBoolIntNode(bin, "False")
                         }
                     })
                 });
@@ -1023,6 +1023,44 @@ namespace ME3Explorer
                         MakeInt32Node(bin, "NumBaseMeshVerts")
                     }
                 }));
+                subnodes.Add(MakeArrayNode(bin, "BoneOffsets", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    Items =
+                    {
+                        MakeVectorNode(bin, "Offset"),
+                        MakeNameNode(bin, "Bone")
+                    }
+                }));
+
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartSFXMorphFaceFrontEndDataSourceScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeArrayNode(bin, "DefaultSettingsNames", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        MakeStringNode(bin, "Name"),
+                        MakeInt32Node(bin, "Index")
+                    }
+                }, true));
+
 
                 binarystart = (int)bin.Position;
             }
@@ -2508,8 +2546,7 @@ namespace ME3Explorer
                         offset += 4;
 
                         int tFinish = BitConverter.ToInt32(data, offset); //Primary Codex
-                        bool bFinish = false;
-                        if (tFinish == 1) { bFinish = true; }
+                        bool bFinish = tFinish == 1;
                         nTaskIDs.Items.Add(new BinInterpNode
                         {
                             Header = $"0x{offset:X5} Task Finishes Quest: {tFinish}  { bFinish }",
@@ -3889,20 +3926,38 @@ namespace ME3Explorer
                     tableItems.Add(MakeFloatNode(bin, "X"));
                     tableItems.Add(MakeFloatNode(bin, "Y"));
                     tableItems.Add(MakeFloatNode(bin, "Z"));
-                    while (true)
-                    {
-                        var item = bin.ReadInt32();
-                        if (item == 2147483647)
-                        {
-                            tableItems.Add(new BinInterpNode(bin.Position - 4, $"End Marker: FF FF FF 7F") { Length = 4 });
-                            tableItems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                            break;
-                        }
 
-                        bin.Skip(-4);
-                        tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
 
-                    }
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+
+                    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+                    //while (true)
+                    //{
+                    //    var item = bin.ReadInt32();
+                    //    if (item == 2147483647)
+                    //    {
+                    //        tableItems.Add(new BinInterpNode(bin.Position - 4, $"End Marker: FF FF FF 7F") { Length = 4 });
+                    //        tableItems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
+                    //        break;
+                    //    }
+
+                    //    bin.Skip(-4);
+                    //    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
+
+                    //}
                     //Name list to Bones and other facefx?
                     var unkNameList1 = new List<ITreeItem>();
                     var countUk1 = bin.ReadInt32();
@@ -4003,7 +4058,7 @@ namespace ME3Explorer
                                         unkNameList2items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                                     }
                                 }
-                                if (firstval != 6)
+                                if (firstval != 6 && firstval != 8)
                                 {
                                     unkListBitems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
                                 }
@@ -4030,8 +4085,8 @@ namespace ME3Explorer
                     {
                         Items = unkListCitems
                     });
-                    int name = bin.ReadInt32();
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name} {nameTable[name]}") { Length = 4 });
+                    int name;
+                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name = bin.ReadInt32()} {nameTable[name]}") { Length = 4 });
                     unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {stringCount}") { Length = 4 });
@@ -4056,7 +4111,7 @@ namespace ME3Explorer
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 }
 
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"unknown: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"unknown: {bin.ReadInt32()}"));
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
                 int lineCount;
@@ -7655,13 +7710,13 @@ namespace ME3Explorer
                 {
                     Items =
                     {
-                        MakeInt32Node(bin, "Unknown (version?)"),
+                        MakeInt32Node(bin, "Size of Vector"),
                         MakeArrayNode(bin, $"LOD {k} Vertex Positional Data", n => new BinInterpNode(bin.Position, $"{n}")
                         {
                             Items =
-                                    {
-                                        MakeVectorNode(bin, "Position"),
-                                    }
+                            {
+                                MakeVectorNode(bin, "Position"),
+                            }
                         }),
                     }
                 }, true));
@@ -7669,7 +7724,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }

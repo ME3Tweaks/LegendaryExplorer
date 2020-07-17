@@ -4223,7 +4223,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "Bio2DA", true)) break;
+                    if (findClass(filePath, "LightComponent", true)) break;
                     //findClassesWithBinary(filePath);
                     //ScanScripts(filePath);
                     //if (interestingExports.Count > 0)
@@ -4239,6 +4239,8 @@ namespace ME3Explorer
                 var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this);
                 listDlg.Show();
             });
+
+            #region extra scanning functions
 
             bool findClass(string filePath, string className, bool withBinary = false)
             {
@@ -4275,8 +4277,6 @@ namespace ME3Explorer
 
                 return false;
             }
-
-            #region extra scanning functions
 
             void findClassesWithBinary(string filePath)
             {

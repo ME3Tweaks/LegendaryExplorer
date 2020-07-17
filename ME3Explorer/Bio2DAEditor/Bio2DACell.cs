@@ -6,14 +6,19 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
     public class Bio2DACell : NotifyPropertyChangedBase
     {
-        public byte[] Data { get; set; }
-        public int Offset { get; private set; }
-        public IMEPackage Pcc { get; set; }
+        public int IntValue;
+
+        public float FloatValue;
+
+        public NameReference NameValue;
+        public int Offset { get; }
+        private readonly IMEPackage Pcc;
         private bool _isModified;
 
         public bool IsModified
@@ -31,62 +36,42 @@ namespace ME3Explorer
             TYPE_FLOAT = 2
         }
 
-        public Bio2DADataType Type { get; set; }
+        public Bio2DADataType Type { get; }
 
-        public Bio2DACell(IMEPackage pcc, int offset, byte type, byte[] data)
+        private Bio2DACell(Bio2DADataType type, int offset, IMEPackage pcc = null)
         {
             Offset = offset;
             Pcc = pcc;
-            Type = (Bio2DADataType)type;
-            Data = data;
-        }
-
-        public Bio2DACell()
-        {
-
-        }
-
-        public Bio2DACell(Bio2DADataType type, byte[] data)
-        {
             Type = type;
-            Data = data;
         }
 
-        //public string GetDisplayableValue()
-        //{
-        //    switch (Type)
-        //    {
-        //        case Bio2DADataType.TYPE_INT:
-        //            return BitConverter.ToInt32(Data, 0).ToString();
-        //        case Bio2DADataType.TYPE_NAME:
-        //            int name = BitConverter.ToInt32(Data, 0);
-        //            var nameVal = Pcc.getNameEntry(name);
-        //            int index = BitConverter.ToInt32(Data, 4);
-        //            if (index > 0)
-        //            {
-        //                nameVal += "_" + index;
-        //            }
+        public Bio2DACell(int intValue, int offset = 0) : this(Bio2DADataType.TYPE_INT, offset)
+        {
+            IntValue = intValue;
+        }
 
-        //            return nameVal;
-        //        case Bio2DADataType.TYPE_FLOAT:
-        //            return BitConverter.ToSingle(Data, 0).ToString();
-        //    }
+        public Bio2DACell(float floatValue, int offset = 0) : this(Bio2DADataType.TYPE_FLOAT, offset)
+        {
+            FloatValue = floatValue;
+        }
 
-        //    return "Unknown type " + Type;
-        //}
+        public Bio2DACell(NameReference nameValue, IMEPackage pcc, int offset = 0) : this(Bio2DADataType.TYPE_NAME, offset, pcc)
+        {
+            NameValue = nameValue;
+        }
 
         /// <summary>
         /// This is a string because that's what the UI passes here
         /// </summary>
         public string NameIndex
         {
-            get => Type != Bio2DADataType.TYPE_NAME ? "-1" : BitConverter.ToInt32(Data, 4).ToString();
+            get => Type != Bio2DADataType.TYPE_NAME ? "-1" : NameValue.Number.ToString();
             set
             {
                 if (Type != Bio2DADataType.TYPE_NAME) return;
                 if (int.TryParse(value, out int parsed) && parsed >= 0)
                 {
-                    BitConverter.GetBytes(parsed).CopyTo(Data, 4);
+                    NameValue = new NameReference(NameValue.Name, parsed);
                     IsModified = true;
                     OnPropertyChanged(nameof(DisplayableValue));
                 }
@@ -95,83 +80,53 @@ namespace ME3Explorer
 
         public string DisplayableValue
         {
-            get
-            {
-                switch (Type)
+            get =>
+                Type switch
                 {
-                    case Bio2DADataType.TYPE_INT:
-                        return BitConverter.ToInt32(Data, 0).ToString();
-                    case Bio2DADataType.TYPE_NAME:
-                        int name = BitConverter.ToInt32(Data, 0);
-                        var nameVal = Pcc.GetNameEntry(name);
-                        int index = BitConverter.ToInt32(Data, 4);
-                        if (index > 0)
-                        {
-                            nameVal += "_" + index;
-                        }
-
-                        return nameVal;
-                    case Bio2DADataType.TYPE_FLOAT:
-                        return BitConverter.ToSingle(Data, 0).ToString();
-                }
-                return "Unknown type " + Type;
-            }
+                    Bio2DADataType.TYPE_INT => IntValue.ToString(),
+                    Bio2DADataType.TYPE_NAME => NameValue.Instanced,
+                    Bio2DADataType.TYPE_FLOAT => FloatValue.ToString(),
+                    _ => "Unknown type " + Type
+                };
             set
             {
                 switch (Type)
                 {
                     case Bio2DADataType.TYPE_INT:
                         {
-                            if (int.TryParse(value, out int parsed) && !Data.SequenceEqual(BitConverter.GetBytes(parsed)))
+                            if (int.TryParse(value, out int parsed) && parsed != IntValue)
                             {
-                                Data = BitConverter.GetBytes(parsed);
-                                IsModified = true;
-                            }
-                        }
-                        break;
-                    case Bio2DADataType.TYPE_NAME:
-                        {
-                            if (Data == null)
-                            {
-                                Data = new byte[8];
-                            }
-                            if (int.TryParse(value, out int parsed) && Pcc.IsName(parsed) && !Data.SequenceEqual(BitConverter.GetBytes((long)parsed))) //has to be cast as long as 4 vs 8 bytes will never be equal
-                            {
-
-                                BitConverter.GetBytes(parsed).CopyTo(Data, 0);
+                                IntValue = parsed;
                                 IsModified = true;
                             }
                         }
                         break;
                     case Bio2DADataType.TYPE_FLOAT:
                         {
-                            if (float.TryParse(value, out float parsed) && !Data.SequenceEqual(BitConverter.GetBytes(parsed)))
+                            if (float.TryParse(value, out float parsed) && parsed != FloatValue)
                             {
-                                Data = BitConverter.GetBytes(parsed);
+                                FloatValue = parsed;
                                 IsModified = true;
                             }
                         }
                         break;
+                    case Bio2DADataType.TYPE_NAME: //This is set through ValueAsName
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
 
         public override string ToString() => DisplayableValue;
 
-        public int GetIntValue()
-        {
-            return BitConverter.ToInt32(Data, 0);
-        }
-
         public int ValueAsName
         {
-            get => GetIntValue();
+            get => Pcc.findName(NameValue.Name);
             set
             {
-                var oldval = GetIntValue();
-                if (oldval != value)
+                if (value != ValueAsName)
                 {
-                    Data = BitConverter.GetBytes((long)value);
+                    NameValue = Pcc.GetNameEntry(value);
                     IsModified = true;
                     OnPropertyChanged(nameof(ValueAsName));
                 }
@@ -179,24 +134,13 @@ namespace ME3Explorer
 
         }
 
-        public float GetFloatValue()
-        {
-            return BitConverter.ToSingle(Data, 0);
-        }
-
-        internal string GetTypeString()
-        {
-            switch (Type)
+        internal string GetTypeString() =>
+            Type switch
             {
-                case Bio2DADataType.TYPE_FLOAT:
-                    return "Float";
-                case Bio2DADataType.TYPE_NAME:
-                    return "Name";
-                case Bio2DADataType.TYPE_INT:
-                    return "Integer";
-                default:
-                    return "Unknown type";
-            }
-        }
+                Bio2DADataType.TYPE_FLOAT => "Float",
+                Bio2DADataType.TYPE_NAME => "Name",
+                Bio2DADataType.TYPE_INT => "Integer",
+                _ => "Unknown type"
+            };
     }
 }

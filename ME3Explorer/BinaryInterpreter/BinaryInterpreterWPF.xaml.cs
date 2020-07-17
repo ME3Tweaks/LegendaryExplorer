@@ -299,6 +299,7 @@ namespace ME3Explorer
             "PrefabInstance",
             "RB_BodySetup",
             "SFXNav_LargeMantleNode",
+            "SFXMorphFaceFrontEndDataSource",
             "ScriptStruct",
             "ShaderCache",
             "ShadowMap1D",
@@ -723,6 +724,9 @@ namespace ME3Explorer
                         break;
                     case "BioMorphFace":
                         subNodes.AddRange(StartBioMorphFaceScan(data, ref binarystart));
+                        break;
+                    case "SFXMorphFaceFrontEndDataSource":
+                        subNodes.AddRange(StartSFXMorphFaceFrontEndDataSourceScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)

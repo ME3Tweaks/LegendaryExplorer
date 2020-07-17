@@ -527,6 +527,12 @@ namespace ME3Explorer.Packages
 
             return false;
         }
+        public static void WritePropertAndBinary(this ExportEntry export, UProperty prop, ObjectBinary binary)
+        {
+            var props = export.GetProperties();
+            props.AddOrReplaceProp(prop);
+            export.WritePropertiesAndBinary(props, binary);
+        }
     }
 
     public static class IEntryExtensions

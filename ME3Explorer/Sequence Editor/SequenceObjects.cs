@@ -297,7 +297,7 @@ namespace ME3Explorer.SequenceObjects
                 switch (type)
                 {
                     case VarTypes.Int:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerInt")
+                        if (export.ClassName == "BioSeqVar_StoryManagerInt")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -314,7 +314,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "0";
                     case VarTypes.Float:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerFloat")
+                        if (export.ClassName == "BioSeqVar_StoryManagerFloat")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -329,9 +329,15 @@ namespace ME3Explorer.SequenceObjects
                         {
                             return floatValue.Value.ToString();
                         }
+
+                        if (export.ClassName == "SeqVar_RandomFloat" && props.GetProp<FloatProperty>("Min") is FloatProperty minVal &&
+                            props.GetProp<FloatProperty>("Max") is FloatProperty maxVal)
+                        {
+                            return $"{minVal.Value}\nto\n{maxVal.Value}";
+                        }
                         return "0.00";
                     case VarTypes.Bool:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerBool")
+                        if (export.ClassName == "BioSeqVar_StoryManagerBool")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -348,7 +354,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "False";
                     case VarTypes.Object:
-                        if (export.ObjectName == "SeqVar_Player")
+                        if (export.ClassName == "SeqVar_Player")
                             return "Player";
                         foreach (var prop in props)
                         {

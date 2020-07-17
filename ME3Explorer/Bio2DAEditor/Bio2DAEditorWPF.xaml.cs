@@ -75,7 +75,7 @@ namespace ME3Explorer
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = $"Selected cell data offset: 0x{item.Offset:X6}";
                     if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
                     {
-                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.GetIntValue(), CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
+                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.IntValue, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                     }
                     else
                     {

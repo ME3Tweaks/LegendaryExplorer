@@ -70,6 +70,13 @@ namespace Gammtek.Conduit.IO
         public EndianReader(Stream input)
             : this(input, Encoding.UTF8)
         {
+        }/// <summary>
+        ///     Initializes a new instance of the <see cref="EndianReader" /> class
+        ///     using a MemoryStream.
+        /// </summary>
+        public EndianReader()
+            : this(new MemoryStream(), Encoding.UTF8)
+        {
         }
 
         /// <summary>

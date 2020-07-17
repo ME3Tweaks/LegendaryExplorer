@@ -38,7 +38,7 @@ namespace ME3Explorer.Packages
             DataOffset = 0;
             ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit; //sensible defaults?
 
-            var ms = new EndianReader(new MemoryStream()) { Endian = Endian.Native };
+            var ms = new EndianReader { Endian = file.Endian };
             prePropBinary ??= new byte[4];
             ms.Writer.WriteFromBuffer(prePropBinary);
             if (!isClass)
@@ -582,7 +582,7 @@ namespace ME3Explorer.Packages
 
         public void WriteProperties(PropertyCollection props)
         {
-            EndianReader m = new EndianReader(new MemoryStream()) { Endian = FileRef.Endian };
+            var m = new EndianReader { Endian = FileRef.Endian };
             props.WriteTo(m.Writer, FileRef);
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
@@ -666,6 +666,15 @@ namespace ME3Explorer.Packages
         public void SetBinaryData(byte[] binaryData)
         {
             Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
+        }
+
+        public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)
+        {
+            var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.Write(_data, 0, GetPropertyStart());
+            props.WriteTo(m.Writer, FileRef);
+            binary.WriteTo(m.Writer, FileRef, DataOffset);
+            Data = m.ToArray();
         }
 
         public ExportEntry Clone()
