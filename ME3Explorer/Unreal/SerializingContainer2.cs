@@ -202,7 +202,7 @@ namespace ME3Explorer
             {
                 arr = sc.ms.ReadBytes(count);
             }
-            else
+            else if (count > 0)
             {
                 sc.ms.Writer.WriteBytes(arr);
             }
@@ -259,7 +259,7 @@ namespace ME3Explorer
             {
                 arr = sc.ms.ReadBytes(count);
             }
-            else
+            else if (count > 0)
             {
                 sc.ms.Writer.WriteBytes(arr);
             }
