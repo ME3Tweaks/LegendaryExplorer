@@ -699,34 +699,16 @@ namespace ME3Explorer.Packages
         private void ReadLocalTLKs()
         {
             LocalTalkFiles.Clear();
-            List<ExportEntry> tlkFileSets = Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).ToList();
             var exportsToLoad = new List<ExportEntry>();
-            foreach (var tlkFileSet in tlkFileSets)
+            foreach (var tlkFileSet in Exports.Where(x => x.ClassName == "BioTlkFileSet" && !x.IsDefaultObject).Select(exp => exp.GetBinaryData<BioTlkFileSet>()))
             {
-                EndianReader r = new EndianReader(new MemoryStream(tlkFileSet.Data))
+                foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
                 {
-                    Position = tlkFileSet.propsEnd(),
-                    Endian = Endian
-                };
-                int count = r.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    int langRef = r.ReadInt32();
-                    r.ReadInt32(); //second half of name
-                    string lang = GetNameEntry(langRef);
-                    int numTlksForLang = r.ReadInt32(); //I believe this is always 2. Hopefully I am not wrong.
-                    int maleTlk = r.ReadInt32();
-                    int femaleTlk = r.ReadInt32();
-
                     if (Properties.Settings.Default.TLKLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        exportsToLoad.Add(GetUExport(Properties.Settings.Default.TLKGender_IsMale ? maleTlk : femaleTlk));
+                        exportsToLoad.Add(GetUExport(Properties.Settings.Default.TLKGender_IsMale ? bioTlkSet.Male : bioTlkSet.Female));
                         break;
                     }
-
-                    //r.ReadInt64();
-                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, index));
-                    //talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, index));
                 }
             }
 

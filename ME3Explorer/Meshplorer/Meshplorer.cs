@@ -185,9 +185,7 @@ namespace ME3Explorer.Meshplorer
                 //treeView1.Nodes[0].Expand();
                 treeView1.EndUpdate();
                 MaterialBox.Visible = false;
-                MaterialApplyButton.Visible = false;
                 MaterialIndexBox.Visible = false;
-                MaterialIndexApplyButton.Visible = false;
             }
             catch (Exception e)
             {
@@ -225,9 +223,7 @@ namespace ME3Explorer.Meshplorer
                 if (skm.LODModels.Count > 3)
                     lOD3ToolStripMenuItem.Enabled = true;
                 MaterialBox.Visible = false;
-                MaterialApplyButton.Visible = false;
                 MaterialIndexBox.Visible = false;
-                MaterialIndexApplyButton.Visible = false;
             }
             catch (Exception e)
             {
@@ -276,52 +272,6 @@ namespace ME3Explorer.Meshplorer
             if (lOD2ToolStripMenuItem.Checked) res = 2;
             if (lOD3ToolStripMenuItem.Checked) res = 3;
             return res;
-        }
-
-        private void serializeToFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
-            }
-            else if (skm != null)
-            {
-                n = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-            if (Pcc.GetUExport(n).ClassName == "StaticMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.GetUExport(n).ObjectName.Instanced + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    //DISABLED TEMP
-                    //stm.SerializeToFile(d.FileName);
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
-            if (Pcc.GetUExport(n).ClassName == "SkeletalMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = Pcc.GetUExport(n).ObjectName.Instanced + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    SerializingContainer c = new SerializingContainer();
-                    c.Memory = new EndianReader(new MemoryStream());
-                    c.isLoading = false;
-                    skm.Serialize(c);
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    fs.Write(c.Memory.ToArray(), 0, (int)c.Memory.Length);
-                    fs.Close();
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
         }
 
         private void lOD0ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -418,9 +368,7 @@ namespace ME3Explorer.Meshplorer
             preview?.Dispose();
             preview = null;
             MaterialBox.Visible = false;
-            MaterialApplyButton.Visible = false;
             MaterialIndexBox.Visible = false;
-            MaterialIndexApplyButton.Visible = false;
             if (Pcc.GetUExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
             if (Pcc.GetUExport(n).ClassName == "SkeletalMesh")
@@ -431,15 +379,12 @@ namespace ME3Explorer.Meshplorer
         {
             TreeNode t = e.Node;
             MaterialBox.Visible = false;
-            MaterialApplyButton.Visible = false;
             MaterialIndexBox.Visible = false;
-            MaterialIndexApplyButton.Visible = false;
             if (skm != null)
             {
                 if (t.Parent != null && t.Parent.Text == "Materials")
                 {
                     MaterialBox.Visible = true;
-                    MaterialApplyButton.Visible = true;
                     try
                     {
                         string s = t.Text.Split(' ')[0].Trim('#');
@@ -456,7 +401,6 @@ namespace ME3Explorer.Meshplorer
                 if (t.Parent != null && t.Parent.Text == "Sections")
                 {
                     MaterialIndexBox.Visible = true;
-                    MaterialIndexApplyButton.Visible = true;
                     try
                     {
                         int m = skm.LODModels[t.Parent.Parent.Index].Sections[t.Index].MaterialIndex;
@@ -473,7 +417,6 @@ namespace ME3Explorer.Meshplorer
                 if (t.Parent != null && t.Parent.Text == "Sections")
                 {
                     MaterialBox.Visible = true;
-                    MaterialApplyButton.Visible = true;
                     // HACK: assume that all static meshes have only 1 LOD. This has been true in my experience.
                     int section = t.Index;
                     //DISABLED TEMP
@@ -531,75 +474,6 @@ namespace ME3Explorer.Meshplorer
 
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
-            }
-        }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            int n = MaterialBox.SelectedIndex;
-            TreeNode t = treeView1.SelectedNode;
-            if (n == -1 || Pcc == null || t == null || t.Parent == null)
-                return;
-
-            if (stm != null && t.Parent.Text == "Sections")
-            {
-                //DISABLED TEMP
-
-                //stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
-
-
-                //SerializingCont
-                //                MemoryStream ms = new MemoryStream();
-                //              Pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
-
-
-                //DISABLED TEMP
-                //stm.Export.Data = stm.SerializeToBuffer(); //hope this works
-                // Update treeview
-
-                // Update preview
-                preview.Dispose();
-                preview = new ModelPreview(view.Context.Device, stm, 0, view.Context.TextureCache);
-            }
-            else if (skm != null && t.Parent.Text == "Materials")
-            {
-                skm.Materials[t.Index] = Materials[n] + 1;
-                SerializingContainer con = new SerializingContainer();
-                con.Memory = new EndianReader(new MemoryStream());
-                con.isLoading = false;
-                skm.Serialize(con);
-                skm.Export.SetBinaryData(con.Memory.ToArray());
-
-                //Old binary setting code
-                //int end = skm.GetPropertyEnd();
-                //MemoryStream mem = new MemoryStream();
-                //mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
-                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                //Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
-            }
-        }
-
-        private void MaterialIndexApplyButton_Click(object sender, EventArgs e)
-        {
-            TreeNode t = treeView1.SelectedNode;
-            if (skm != null && t != null && t.Parent != null && t.Parent.Parent != null && t.Parent.Text == "Sections")
-            {
-                SkeletalMesh.SectionStruct section = skm.LODModels[t.Parent.Parent.Index].Sections[t.Index];
-                section.MaterialIndex = (short)MaterialIndexBox.SelectedIndex;
-                skm.LODModels[t.Parent.Parent.Index].Sections[t.Index] = section;
-
-                SerializingContainer con = new SerializingContainer();
-                con.Memory = new EndianReader(new MemoryStream());
-                con.isLoading = false;
-                skm.Serialize(con);
-                skm.Export.SetBinaryData(con.Memory.ToArray());
-
-                //Old binary setting code
-                //int end = skm.GetPropertyEnd();
-                //MemoryStream mem = new MemoryStream();
-                //mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
-                //mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                //Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
             }
         }
 

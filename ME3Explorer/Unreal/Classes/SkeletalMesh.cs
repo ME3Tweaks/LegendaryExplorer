@@ -12,6 +12,7 @@ using Gammtek.Conduit.IO;
 
 namespace ME3Explorer.Unreal.Classes
 {
+    [Obsolete("Use ME3Explorer.Unreal.BinaryConverters.SkeletalMesh instead")]
     public class SkeletalMesh
     {
         public struct BoundingStruct

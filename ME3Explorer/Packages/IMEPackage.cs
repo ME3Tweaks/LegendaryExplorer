@@ -186,7 +186,6 @@ namespace ME3Explorer.Packages
 
         NameReference GetNextIndexedName(string name);
         //editing
-        void addName(string name);
         int FindNameOrAdd(string name);
         void replaceName(int index, string newName);
         void AddExport(ExportEntry exportEntry);

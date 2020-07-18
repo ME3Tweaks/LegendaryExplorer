@@ -66,7 +66,7 @@
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
             <MenuItem Header="Go to Archetype" ToolTip="Go to this object's archetype" Command="{Binding GoToArchetypecommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-            <MenuItem Header="Package utilities">
+            <MenuItem Header="Package utilities" Command="{Binding PackageExportIsSelectedCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             </MenuItem>
@@ -160,6 +160,7 @@
                                   Command="{Binding CompactShaderCacheCommand}"/>
                         <MenuItem Header="Search and Replace Names" ToolTip="Replaces every instance or part of a Name selected with new text"
                                   Command="{Binding ReplaceNamesCommand}"/>
+                        <MenuItem Header="Reindex all duplicate indexes" Command="{Binding ReindexDuplicateIndexesCommand}"/>
                     </MenuItem>
 
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">

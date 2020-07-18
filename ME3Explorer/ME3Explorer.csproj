@@ -306,11 +306,15 @@
     <Compile Include="Packages\MEPackageHandler.cs" />
     <Compile Include="Unreal\BinaryConverters\Bio2DABinary.cs" />
     <Compile Include="Unreal\BinaryConverters\BioMorphFace.cs" />
+    <Compile Include="Unreal\BinaryConverters\BioTlkFileSet.cs" />
+    <Compile Include="Unreal\BinaryConverters\BrushComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\FaceFXAnimSet.cs" />
     <Compile Include="Unreal\BinaryConverters\LightComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\MorphTarget.cs" />
     <Compile Include="Unreal\BinaryConverters\PhysicsAssetInstance.cs" />
+    <Compile Include="Unreal\BinaryConverters\RB_BodySetup.cs" />
     <Compile Include="Unreal\BinaryConverters\SFXMorphFaceFrontEndDataSource.cs" />
+    <Compile Include="Unreal\BinaryConverters\ShadowMap1D.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1302,7 +1306,6 @@
   <ItemGroup>
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
-    <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
     <Compile Include="Packages\CompressionHelper.cs" />

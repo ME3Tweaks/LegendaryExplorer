@@ -194,6 +194,20 @@ namespace ME3Explorer
             }
         }
 
+        public static void Serialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize)
+        {
+            int count = arr?.Length ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                arr = sc.ms.ReadBytes(count);
+            }
+            else
+            {
+                sc.ms.Writer.WriteBytes(arr);
+            }
+        }
+
         public static void Serialize<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
         {
             int count = arr?.Length ?? 0;
@@ -235,6 +249,20 @@ namespace ME3Explorer
                 }
             }
 
+        }
+        public static void BulkSerialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize, int elementSize)
+        {
+            sc.Serialize(ref elementSize);
+            int count = arr?.Length ?? 0;
+            sc.Serialize(ref count);
+            if (sc.IsLoading)
+            {
+                arr = sc.ms.ReadBytes(count);
+            }
+            else
+            {
+                sc.ms.Writer.WriteBytes(arr);
+            }
         }
         public static void BulkSerialize<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize, int elementSize)
         {

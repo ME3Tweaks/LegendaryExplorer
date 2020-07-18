@@ -238,6 +238,8 @@ namespace ME3Explorer
         public ICommand ReplaceNamesCommand { get; set; }
         public ICommand NavigateToEntryCommand { get; set; }
         public ICommand ResolveImportCommand { get; set; }
+        public ICommand PackageExportIsSelectedCommand { get; set; }
+        public ICommand ReindexDuplicateIndexesCommand { get; set; }
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -263,6 +265,7 @@ namespace ME3Explorer
             SetIndicesInTreeToZeroCommand = new GenericCommand(SetIndicesInTreeToZero, TreeEntryIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
+            PackageExportIsSelectedCommand = new RequirementCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
@@ -270,6 +273,7 @@ namespace ME3Explorer
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
             GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
             ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
+            ReindexDuplicateIndexesCommand = new GenericCommand(ReindexDuplicateIndexes, PackageIsLoaded);
 
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
@@ -1643,6 +1647,39 @@ namespace ME3Explorer
             else
             {
                 MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
+            }
+        }
+        private void ReindexDuplicateIndexes()
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            if (MessageBox.Show($"This will reindex all objects that have duplicate indexing. Objects this will affect can be seen via `Debugging > Check for duplicate indexes`\n" +
+                                "If you don't understand what this does, do not do it!\n\n" +
+                                "Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
+                                "Confirm Reindexing",
+                                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var duplicatesPackagePathIndexMapping = new Dictionary<string, List<ExportEntry>>();
+                foreach (ExportEntry exp in Pcc.Exports)
+                {
+                    string key = exp.InstancedFullPath;
+                    if (key.StartsWith(UnrealPackageFile.TrashPackageName)) continue; //Do not report these as requiring re-indexing.
+                    if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<ExportEntry> indexList))
+                    {
+                        indexList = new List<ExportEntry>();
+                        duplicatesPackagePathIndexMapping[key] = indexList;
+                    }
+
+                    indexList.Add(exp);
+                }
+
+                foreach (ExportEntry exp in duplicatesPackagePathIndexMapping.Values.Where(list => list.Count > 1).Select(list => list.First()))
+                {
+                    ReindexObjectsByName(exp, false);
+                }
             }
         }
 
@@ -4253,7 +4290,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "LightComponent", true)) break;
+                    if (findClass(filePath, "BrushComponent", true)) break;
                     //findClassesWithBinary(filePath);
                     //ScanScripts(filePath);
                     //if (interestingExports.Count > 0)

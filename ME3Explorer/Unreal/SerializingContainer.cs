@@ -7,6 +7,7 @@ using Gammtek.Conduit.IO;
 
 namespace ME3Explorer
 {
+    [Obsolete("Use SerializingContainer2 instead")]
     public struct SerializingContainer
     {
         public bool isLoading;

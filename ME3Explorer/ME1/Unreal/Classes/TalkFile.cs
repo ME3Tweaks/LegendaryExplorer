@@ -205,13 +205,10 @@ namespace ME1Explorer.Unreal.Classes
         #region Load Data
         public void LoadTlkData(EndianReader r = null)
         {
-            if (r == null)
+            r ??= new EndianReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode)
             {
-                r = new EndianReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode)
-                {
-                    Endian = pcc.Endian
-                };
-            }
+                Endian = pcc.Endian
+            };
             //hashtable
             int entryCount = r.ReadInt32();
             StringRefs = new TLKStringRef[entryCount];
@@ -256,11 +253,11 @@ namespace ME1Explorer.Unreal.Classes
             }
 
             //associate StringIDs with strings
-            for (int i = 0; i < StringRefs.Length; i++)
+            foreach (TLKStringRef strRef in StringRefs)
             {
-                if (StringRefs[i].Flags == 1)
+                if (strRef.Flags == 1)
                 {
-                    StringRefs[i].Data = rawStrings[StringRefs[i].Index];
+                    strRef.Data = rawStrings[strRef.Index];
                 }
             }
         }

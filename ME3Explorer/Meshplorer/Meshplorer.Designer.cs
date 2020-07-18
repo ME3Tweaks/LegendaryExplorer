@@ -39,7 +39,6 @@
             this.lOD3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.serializeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,9 +53,7 @@
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.MaterialBox = new System.Windows.Forms.ToolStripComboBox();
-            this.MaterialApplyButton = new System.Windows.Forms.ToolStripButton();
             this.MaterialIndexBox = new System.Windows.Forms.ToolStripComboBox();
-            this.MaterialIndexApplyButton = new System.Windows.Forms.ToolStripButton();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -175,7 +172,6 @@
             // 
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportToOBJToolStripMenuItem,
-            this.serializeToFileToolStripMenuItem,
             this.importFromOBJToolStripMenuItem,
             this.toolStripMenuItem1,});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
@@ -188,13 +184,6 @@
             this.exportToOBJToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exportToOBJToolStripMenuItem.Text = "Export to OBJ";
             this.exportToOBJToolStripMenuItem.Click += new System.EventHandler(this.exportToOBJToolStripMenuItem_Click);
-            // 
-            // serializeToFileToolStripMenuItem
-            // 
-            this.serializeToFileToolStripMenuItem.Name = "serializeToFileToolStripMenuItem";
-            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.serializeToFileToolStripMenuItem.Text = "Serialize to file";
-            this.serializeToFileToolStripMenuItem.Click += new System.EventHandler(this.serializeToFileToolStripMenuItem_Click);
             // 
             // importFromOBJToolStripMenuItem
             // 
@@ -293,9 +282,7 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MaterialBox,
-            this.MaterialApplyButton,
-            this.MaterialIndexBox,
-            this.MaterialIndexApplyButton});
+            this.MaterialIndexBox});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1184, 25);
@@ -310,17 +297,6 @@
             this.MaterialBox.Size = new System.Drawing.Size(500, 23);
             this.MaterialBox.Visible = false;
             // 
-            // MaterialApplyButton
-            // 
-            this.MaterialApplyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MaterialApplyButton.Image = ((System.Drawing.Image)(resources.GetObject("MaterialApplyButton.Image")));
-            this.MaterialApplyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.MaterialApplyButton.Name = "MaterialApplyButton";
-            this.MaterialApplyButton.Size = new System.Drawing.Size(87, 22);
-            this.MaterialApplyButton.Text = "Set as material";
-            this.MaterialApplyButton.Visible = false;
-            this.MaterialApplyButton.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
             // MaterialIndexBox
             // 
             this.MaterialIndexBox.AutoSize = false;
@@ -328,17 +304,6 @@
             this.MaterialIndexBox.Name = "MaterialIndexBox";
             this.MaterialIndexBox.Size = new System.Drawing.Size(400, 23);
             this.MaterialIndexBox.Visible = false;
-            // 
-            // MaterialIndexApplyButton
-            // 
-            this.MaterialIndexApplyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MaterialIndexApplyButton.Image = ((System.Drawing.Image)(resources.GetObject("MaterialIndexApplyButton.Image")));
-            this.MaterialIndexApplyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.MaterialIndexApplyButton.Name = "MaterialIndexApplyButton";
-            this.MaterialIndexApplyButton.Size = new System.Drawing.Size(104, 22);
-            this.MaterialIndexApplyButton.Text = "Set material index";
-            this.MaterialIndexApplyButton.Visible = false;
-            this.MaterialIndexApplyButton.Click += new System.EventHandler(this.MaterialIndexApplyButton_Click);
             // 
             // timer1
             // 
@@ -481,7 +446,6 @@
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.Timer timer1;
         public System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem serializeToFileToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lODToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD0ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD1ToolStripMenuItem;
@@ -500,7 +464,6 @@
         public System.Windows.Forms.RichTextBox rtb1;
         public System.Windows.Forms.ToolStripMenuItem dumpBinaryToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox MaterialBox;
-        private System.Windows.Forms.ToolStripButton MaterialApplyButton;
         private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;
         private Scene3D.SceneRenderControl view;
         private System.Windows.Forms.ToolStripMenuItem wireframeToolStripMenuItem;
@@ -508,7 +471,6 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripMenuItem firstPersonToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox MaterialIndexBox;
-        private System.Windows.Forms.ToolStripButton MaterialIndexApplyButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToOBJToolStripMenuItem;

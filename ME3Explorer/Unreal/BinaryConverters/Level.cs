@@ -304,10 +304,7 @@ namespace ME3Explorer
             {
                 convDataElem = new KCachedConvexDataElement();
             }
-
-            int byteSize = 1;
-            sc.Serialize(ref byteSize);
-            sc.Serialize(ref convDataElem.ConvexElementData, Serialize);
+            sc.BulkSerialize(ref convDataElem.ConvexElementData, Serialize, 1);
         }
         public static void Serialize(this SerializingContainer2 sc, ref KCachedPerTriData triData)
         {

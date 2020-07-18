@@ -159,6 +159,14 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "DominantPointLightComponent":
                 case "DominantDirectionalLightComponent":
                     return From<LightComponent>(export);
+                case "ShadowMap1D":
+                    return From<ShadowMap1D>(export);
+                case "BioTlkFileSet":
+                    return From<BioTlkFileSet>(export);
+                case "RB_BodySetup":
+                    return From<RB_BodySetup>(export);
+                case "BrushComponent":
+                    return From<BrushComponent>(export);
                 default:
                     return null;
             }

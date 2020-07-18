@@ -61,7 +61,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (names[i] == name)
+                if (string.Equals(names[i], name, StringComparison.OrdinalIgnoreCase))
                     return i;
             }
 
@@ -69,13 +69,13 @@ namespace ME3Explorer.Packages
             return names.Count - 1;
         }
 
-        public void addName(string name)
+        protected void addName(string name)
         {
             if (name == null)
             {
                 throw new Exception("Cannot add a null name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
             }
-            if (!names.Contains(name))
+            if (!names.Contains(name, StringComparer.OrdinalIgnoreCase))
             {
                 names.Add(name);
                 namesAdded++;
@@ -105,7 +105,7 @@ namespace ME3Explorer.Packages
         {
             for (int i = 0; i < names.Count; i++)
             {
-                if (string.Compare(nameToFind, GetNameEntry(i)) == 0)
+                if (string.Equals(nameToFind, names[i], StringComparison.OrdinalIgnoreCase))
                     return i;
             }
             return -1;
