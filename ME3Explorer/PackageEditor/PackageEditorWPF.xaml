@@ -271,9 +271,11 @@
                         <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                         <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
                     </MenuItem>
-                    
-                    
-                    
+                    <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
+                        <MenuItem Header="Replace all references to selection" Click="ReplaceReferenceLinks"/>
+                    </MenuItem>
+
+
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

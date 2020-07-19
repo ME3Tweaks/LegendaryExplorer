@@ -41,6 +41,7 @@ using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
+using Gammtek.Conduit.Extensions;
 
 namespace ME3Explorer
 {
@@ -5455,6 +5456,94 @@ namespace ME3Explorer
         private void RebuildLevelNetindexing_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperiments.RebuildFullLevelNetindexes();
+        }
+
+        private void ReplaceReferenceLinks(object sender, RoutedEventArgs e)
+        {
+            if (TryGetSelectedEntry(out IEntry entry))
+            {
+                var replacement = EntrySelector.GetEntry<IEntry>(this, Pcc, "Select replacement reference");
+                if (replacement == null || replacement.UIndex == 0)
+                    return;
+
+                int rcount = 0;
+                BusyText = "Replacing references...";
+                IsBusy = true;
+                Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
+                {
+                    foreach (var link in prevTask.Result)
+                    {
+                        foreach (var l in link.Value)
+                        {
+                            var exp = link.Key as ExportEntry;
+                            if (l.StartsWith("Property:") && exp != null)
+                            {
+                                var newprops = replacePropertyReferences(exp.GetProperties(), entry, replacement);
+                                exp.WriteProperties(newprops);
+                                rcount++;
+                            }
+                            else if (l.StartsWith("(Binary prop:"))
+                            {
+                                //rcount++;
+                            }
+                        }
+                    }
+
+                    IsBusy = false;
+                    MessageBox.Show($"Replaced {rcount} reference links. (Total links {prevTask.Result.Count})");
+                });
+
+            }
+
+            PropertyCollection replacePropertyReferences(PropertyCollection props, IEntry entry, IEntry replacement)
+            {
+                var targetUIndex = entry.UIndex;
+                var replaceUIndex = replacement.UIndex;
+                var newprops = new PropertyCollection();
+                foreach (UProperty prop in props)
+                {
+                    switch (prop)
+                    {
+                        case ObjectProperty objectProperty:
+                            if (objectProperty.Value == targetUIndex)
+                            {
+                                objectProperty.Value = replaceUIndex;
+                            }
+                            break;
+                        case DelegateProperty delegateProperty:
+                            if (delegateProperty.Value.Object == targetUIndex)
+                            {
+                                delegateProperty.Value = new ScriptDelegate(replaceUIndex, delegateProperty.Value.FunctionName);
+                            }
+                            break;
+                        case StructProperty structProperty:
+                            structProperty.Properties = replacePropertyReferences(structProperty.Properties, entry, replacement);
+                            break;
+                        case ArrayProperty<ObjectProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                ObjectProperty objProp = arrayProperty[i];
+                                if (objProp.Value == targetUIndex)
+                                {
+                                    objProp.Value = replaceUIndex;
+                                }
+                            }
+                            break;
+                        case ArrayProperty<StructProperty> arrayProperty:
+                            for (int i = 0; i < arrayProperty.Count; i++)
+                            {
+                                StructProperty structProp = arrayProperty[i];
+                                structProp.Properties = replacePropertyReferences(structProp.Properties, entry, replacement);
+                                arrayProperty[i] = structProp;
+                            }
+                            break;
+                    }
+                    newprops.AddOrReplaceProp(prop);
+                }
+
+                return newprops;
+            }
+
         }
     }
 }
