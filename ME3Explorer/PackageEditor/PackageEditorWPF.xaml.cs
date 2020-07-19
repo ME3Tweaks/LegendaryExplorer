@@ -5482,9 +5482,22 @@ namespace ME3Explorer
                                 exp.WriteProperties(newprops);
                                 rcount++;
                             }
-                            else if (l.StartsWith("(Binary prop:"))
+                            else if (l.StartsWith("(Binary prop:") && exp != null)
                             {
-                                //rcount++;
+                                if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                                {
+                                    List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
+                                    for (int b = 0; b < indices.Count; b++)
+                                    {
+                                        (UIndex uIndex, string propName) = indices[b];
+                                        if (uIndex == entry.UIndex)
+                                        {
+                                            uIndex.value = replacement.UIndex;
+                                            rcount++;
+                                        }
+                                    }
+                                    exp.SetBinaryData(objBin);
+                                }
                             }
                         }
                     }
