@@ -17,7 +17,7 @@ namespace ME3Explorer.Packages
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
-        static Func<Stream, string, MEGame, MEPackage> MEStreamConstructorDelegate;
+        static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
 
         public static void Initialize()
         {
@@ -61,7 +61,7 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
                 {
                     stream.Position -= 8; //reset to where we started for delegate
-                    pkg = MEStreamConstructorDelegate(stream, filePath, MEGame.Unknown);
+                    pkg = MEStreamConstructorDelegate(stream, filePath);
                     ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)

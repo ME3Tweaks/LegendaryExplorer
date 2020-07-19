@@ -132,10 +132,17 @@ namespace ME3Explorer.Packages
             }
 
             isLoaderRegistered = true;
-            return (f, g) => new MEPackage(new MemoryStream(File.ReadAllBytes(f)), f, g);
+            return (f, g) =>
+            {
+                if (g != MEGame.Unknown)
+                {
+                    return new MEPackage(g, f);
+                }
+                return new MEPackage(new MemoryStream(File.ReadAllBytes(f)), f);
+            };
         }
 
-        public static Func<Stream, string, MEGame, MEPackage> RegisterStreamLoader()
+        public static Func<Stream, string, MEPackage> RegisterStreamLoader()
         {
             if (isStreamLoaderRegistered)
             {
@@ -143,27 +150,26 @@ namespace ME3Explorer.Packages
             }
 
             isStreamLoaderRegistered = true;
-            return (s, associatedFilePath, g) => new MEPackage(s, associatedFilePath, g);
+            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath);
         }
 
+
+        private MEPackage(MEGame game, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        {
+            //new Package
+            Game = game;
+            //reasonable defaults?
+            Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
+            return;
+        }
 
         /// <summary>
         /// Opens an ME package from the stream. If this file is from a disk, the filePath should be set to support saving and other lookups.
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
-        /// <param name="forceGame"></param>
-        private MEPackage(Stream fs, string filePath = null, MEGame forceGame = MEGame.Unknown) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
-            if (forceGame != MEGame.Unknown)
-            {
-                //new Package
-                Game = forceGame;
-                //reasonable defaults?
-                Flags = EPackageFlags.Cooked | EPackageFlags.AllowDownload | EPackageFlags.DisallowLazyLoading | EPackageFlags.RequireImportsAlreadyLoaded;
-                return;
-            }
-
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
 
             #region Header

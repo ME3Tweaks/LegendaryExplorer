@@ -2742,19 +2742,19 @@ namespace ME3Explorer
                         continue;
                     }
 
-                    if (update.Index > NamesList.Count - 1) //names are 0 indexed
+                    if (update.Change == PackageChange.NameAdd) //names are 0 indexed
                     {
                         NameReference nr = Pcc.Names[update.Index];
                         NamesList.Add(new IndexedName(update.Index, nr));
                         LeftSideList_ItemsSource.Add(new IndexedName(update.Index, nr));
                     }
-                    else
+                    else if (update.Change == PackageChange.NameEdit)
                     {
                         IndexedName indexed = new IndexedName(update.Index, Pcc.Names[update.Index]);
                         NamesList[update.Index] = indexed;
                         if (CurrentView == CurrentViewMode.Names)
                         {
-                            LeftSideList_ItemsSource[update.Index] = indexed;
+                            LeftSideList_ItemsSource.ReplaceAll(NamesList);
                         }
                     }
                 }
