@@ -309,12 +309,15 @@
     <Compile Include="Unreal\BinaryConverters\BioTlkFileSet.cs" />
     <Compile Include="Unreal\BinaryConverters\BrushComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\FaceFXAnimSet.cs" />
+    <Compile Include="Unreal\BinaryConverters\ForceFeedbackWaveform.cs" />
     <Compile Include="Unreal\BinaryConverters\LightComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\MorphTarget.cs" />
     <Compile Include="Unreal\BinaryConverters\PhysicsAssetInstance.cs" />
     <Compile Include="Unreal\BinaryConverters\RB_BodySetup.cs" />
     <Compile Include="Unreal\BinaryConverters\SFXMorphFaceFrontEndDataSource.cs" />
     <Compile Include="Unreal\BinaryConverters\ShadowMap1D.cs" />
+    <Compile Include="Unreal\BinaryConverters\SoundCue.cs" />
+    <Compile Include="Unreal\BinaryConverters\SoundNodeWave.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>

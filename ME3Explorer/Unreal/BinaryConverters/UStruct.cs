@@ -59,19 +59,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 {
                     try
                     {
-                        //var func = UE3FunctionReader.ReadFunction(Export);
-                        //func.Decompile(new TextBuilder(), false); //parse bytecode
-                        //var entryRefs = func.EntryReferences;
-                        //uIndices.AddRange(entryRefs.Select(x =>
-                        //    (new UIndex(x.Value.UIndex), "Reference inside of function")));
-
                         (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
                         foreach (var t in tokens)
                         {
                             {
-                                var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY)
-                                    .Select(x => x.value);
-                                uIndices.AddRange(refs.Select(x => (new UIndex(x), "Reference inside of function")));
+                                var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY);
+                                uIndices.AddRange(refs.Select(x => (new UIndex(x.value), $"Reference inside of function at{x.position}")));
                             }
                         }
                     }
@@ -88,7 +81,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                         func.Decompile(new TextBuilder(), false); //parse bytecode
                         var entryRefs = func.EntryReferences;
                         uIndices.AddRange(entryRefs.Select(x =>
-                            (new UIndex(x.Value.UIndex), "Reference inside of function")));
+                            (new UIndex(x.Value.UIndex), $"Reference inside of function at 0x{x.Key:X}")));
                     }
                     catch (Exception e)
                     {

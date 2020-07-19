@@ -167,6 +167,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<RB_BodySetup>(export);
                 case "BrushComponent":
                     return From<BrushComponent>(export);
+                case "ForceFeedbackWaveform":
+                    return From<ForceFeedbackWaveform>(export);
+                case "SoundCue":
+                    return From<SoundCue>(export);
+                case "SoundNodeWave":
+                    return From<SoundNodeWave>(export);
                 default:
                     return null;
             }

@@ -155,33 +155,10 @@ namespace ME3Explorer
                 {
                     switch (relinkingExport.ClassName)
                     {
-                        case "DominantDirectionalLightComponent":
-                        case "SphericalHarmonicLightComponent":
-                        case "DominantPointLightComponent":
-                        case "StaticLightCollectionActor":
-                        case "DominantSpotLightComponent":
-                        case "DirectionalLightComponent":
-                        case "StaticMeshCollectionActor":
-                        case "TerrainWeightMapTexture":
-                        case "PhysicsAssetInstance":
-                        case "PointLightComponent":
-                        case "ShadowMapTexture2D":
-                        case "SpotLightComponent":
-                        case "LightMapTexture2D":
-                        case "SkyLightComponent":
-                        case "TextureFlipBook":
-                        case "BrushComponent":
                         case "FaceFXAnimSet":
                         case "TextureMovie":
-                        case "AnimSequence":
-                        case "RB_BodySetup":
                         case "TextureCube":
                         case "FaceFXAsset":
-                        case "MorphTarget":
-                        case "ShadowMap1D":
-                        case "WwiseStream":
-                        case "WwiseBank":
-                        case "Texture2D":
                         case "ForceFeedbackWaveform":
                             //these classes have binary but do not need relinking
                             break;

@@ -174,9 +174,11 @@ namespace ME3Explorer.Soundplorer
                                 BankEntries.Add(isbEntry);
                             }
 
-                            isbEntry = new ISBankEntry();
-                            isbEntry.FileEndianness = ms.Endian;
-                            isbEntry.FullData = new byte[riffSize + 8];
+                            isbEntry = new ISBankEntry
+                            {
+                                FileEndianness = ms.Endian,
+                                FullData = new byte[riffSize + 8]
+                            };
                             pos = ms.BaseStream.Position;
                             ms.BaseStream.Position = ms.BaseStream.Position - 16;
                             ms.Read(isbEntry.FullData, 0, (int)riffSize + 8);

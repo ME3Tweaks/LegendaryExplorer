@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer
 {
@@ -46,8 +45,6 @@ namespace ME3Explorer
                     entry.FileRef.AddImport(import);
                     //Imports are not relinked when cloning
                     break;
-                default:
-                    throw new Exception();//will never happen, but stops compiler complaining
             }
 
             return (T)newEntry;

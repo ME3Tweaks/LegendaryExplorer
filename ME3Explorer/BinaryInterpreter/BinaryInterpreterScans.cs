@@ -428,32 +428,33 @@ namespace ME3Explorer
         private List<ITreeItem> StartForceFeedbackWaveformScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
-            try
+            if (CurrentLoadedExport.Game < MEGame.ME3)
             {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                bin.JumpTo(binarystart);
-                bool? bIsLooping = CurrentLoadedExport.GetProperty<BoolProperty>("bIsLooping")?.Value;
-                var samples = CurrentLoadedExport.GetProperty<ArrayProperty<StructProperty>>("Samples");
-
-                subnodes.Add(MakeInt32Node(bin, "bIsLooping or Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown or bIsLooping"));
-                int sampleNum = 0;
-                foreach (var s in samples)
+                try
                 {
-                    var iNode = new BinInterpNode(bin.Position, $"Sample #{sampleNum}");
-                    subnodes.Add(iNode);
-                    iNode.Items.Add(MakeByteNode(bin, "Left amplitude"));
-                    iNode.Items.Add(MakeByteNode(bin, "Right amplitude"));
-                    iNode.Items.Add(MakeByteNode(bin, "Left function"));
-                    iNode.Items.Add(MakeByteNode(bin, "Right function"));
-                    iNode.Items.Add(MakeFloatNode(bin, "Duration"));
-                }
+                    var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
+                    bin.JumpTo(binarystart);
 
-                binarystart = (int)bin.Position;
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+                    subnodes.Add(MakeBoolIntNode(bin, "bIsLooping"));
+                    subnodes.Add(MakeArrayNode(bin, "Samples", i => new BinInterpNode(bin.Position, $"Sample #{i}")
+                    {
+                        IsExpanded = true,
+                        Items =
+                        {
+                            MakeByteNode(bin, "Left amplitude"),
+                            MakeByteNode(bin, "Right amplitude"),
+                            MakeByteNode(bin, "Left function"),
+                            MakeByteNode(bin, "Right function"),
+                            MakeFloatNode(bin, "Duration")
+                        }
+                    }, true));
+
+                    binarystart = (int)bin.Position;
+                }
+                catch (Exception ex)
+                {
+                    subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+                }
             }
 
             return subnodes;
@@ -1558,7 +1559,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
 
                 string nodeString;
                 subnodes.Add(new BinInterpNode(bin.Position, "Stack")
@@ -1734,60 +1735,40 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = binarystart;
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
 
+                int count;
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "RawData") { Length = count });
+                bin.Skip(count);
 
-                int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X8} Item1: {classObjTree} (0x{classObjTree:X8})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "CompressedPCData") { Length = count });
+                bin.Skip(count);
 
-                classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "CompressedXbox360Data") { Length = count });
+                bin.Skip(count);
 
-                classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-
-                classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
-                {
-                    Header = $"0x{offset:X8} Item4: {classObjTree} (0x{classObjTree:X8})",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-                /*
-                offset = binarystart + 0x18;
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
-
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
-                {
-                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
-                }*/
+                subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+                subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -4221,29 +4202,19 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                int offset = binarystart;
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.Skip(binarystart);
 
-
-                int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinInterpNode
+                subnodes.Add(MakeArrayNode(bin, "EditorData", i => new BinInterpNode(bin.Position, $"{i}")
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafObject
-                });
-                offset += 4;
-                /*
-                offset = binarystart + 0x18;
-
-                MemoryStream ms = new MemoryStream(data);
-                ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
-
-                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
-                {
-                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
-                }*/
+                    IsExpanded = true,
+                    Items =
+                    {
+                        MakeEntryNode(bin, "SoundNode"),
+                        MakeInt32Node(bin, "NodePosX"),
+                        MakeInt32Node(bin, "NodePosY")
+                    }
+                }, true));
             }
             catch (Exception ex)
             {
@@ -4257,7 +4228,7 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(data) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.Skip(binarystart);
                 subnodes.AddRange(MakeUStructNodes(bin));
 

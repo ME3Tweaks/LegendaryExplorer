@@ -1,17 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ME3Explorer.Packages;
-using System.Diagnostics;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Pathfinding_Editor;
-using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal
 {
-    public static class Bytecode
+    public class Bytecode
     {
         public static readonly Dictionary<short, string> byteOpnameMap = new Dictionary<short, string>
         {
@@ -320,8 +315,6 @@ namespace ME3Explorer.Unreal
              { 0x0222, "NATIVE_UpdateURL" }
 
         };
-        public static byte[] memory;
-        public static int memsize;
         #region NormalToken
         private const int EX_LocalVariable = 0x00;
         private const int EX_InstanceVariable = 0x01;
@@ -423,8 +416,6 @@ namespace ME3Explorer.Unreal
 
 
 
-        static List<BytecodeSingularToken> _debug;
-        static int DebugCounter;
 
         #endregion
 
@@ -686,20 +677,12 @@ namespace ME3Explorer.Unreal
 
         public static (List<Token>, List<BytecodeSingularToken>) ParseBytecode(byte[] raw, ExportEntry export, int pos = 0x20)
         {
+            var parser = new Bytecode(raw);
 
-            string s = "";
-            memory = raw;
-            memsize = raw.Length;
-            DebugCounter = 0;
-            _debug = new List<BytecodeSingularToken>();
-            List<Token> tokens = ReadAll(0, export);
+            List<Token> tokens = parser.ReadAll(0, export);
 
             //calculate padding width.
-            int totalLength = 32;
-            foreach (Token tok in tokens)
-            {
-                totalLength += tok.raw.Length;
-            }
+            int totalLength = 32 + tokens.Sum(tok => tok.raw.Length);
 
             //calculate block position and assign paddingwidth.
             int paddingSize = totalLength.ToString().Length;
@@ -709,28 +692,24 @@ namespace ME3Explorer.Unreal
                 tok.paddingSize = paddingSize;
                 pos += tok.raw.Length;
             }
-            _debug.Sort();
-            return (tokens, _debug);
+            parser.SingularTokens.Sort();
+            return (tokens, parser.SingularTokens);
         }
 
-        private static void SortDbgMsg()
+        private Bytecode(byte[] mem)
         {
-            bool done = false;
-            while (!done)
-            {
-                done = true;
-                for (int i = 0; i < _debug.Count - 1; i++)
-                    if (_debug[i].TokenIndex > _debug[i + 1].TokenIndex)
-                    {
-                        BytecodeSingularToken t = _debug[i];
-                        _debug[i] = _debug[i + 1];
-                        _debug[i + 1] = t;
-                        done = false;
-                    }
-            }
+            memory = mem;
+            memsize = memory.Length;
+            DebugCounter = 0;
+            SingularTokens = new List<BytecodeSingularToken>();
         }
 
-        public static List<Token> ReadAll(int start, ExportEntry export)
+        private readonly byte[] memory;
+        private readonly int memsize;
+        private readonly List<BytecodeSingularToken> SingularTokens;
+        private int DebugCounter;
+
+        private List<Token> ReadAll(int start, ExportEntry export)
         {
             var res = new List<Token>();
             int pos = start;
@@ -757,7 +736,7 @@ namespace ME3Explorer.Unreal
             return res;
         }
 
-        public static Token ReadToken(int start, ExportEntry export)
+        private Token ReadToken(int start, ExportEntry export)
         {
             int thiscount = DebugCounter;
             DebugCounter++;
@@ -1316,16 +1295,11 @@ namespace ME3Explorer.Unreal
             msg.CurrentStack = data;
             msg.TokenIndex = thiscount;
             msg.StartPos = start + 0x20; //start of script data in ME3
-            _debug.Add(msg);
+            SingularTokens.Add(msg);
             return res;
         }
 
-        private static Token ReadGoToLabel(int start, ExportEntry export)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static Token ReadNative(int start, ExportEntry export)
+        private Token ReadNative(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = null, b = null, c = null;
@@ -3483,27 +3457,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        //private static Token ReadClassContext(int start, ExportEntry export)
-        //{
-        //    Token t = new Token();
-        //    Token a = ReadToken(start + 2);
-        //    int pos = start + a.raw.Length + 2;
-        //    EndianReader.IsLittleEndian = true;
-        //    //int index = EndianReader.ToInt32(memory, pos);
-        //    //string s = export.FileRef.getObjectName(index);
-        //    //pos += 4;
-        //    Token b = ReadToken(pos, export);
-        //    pos += b.raw.Length;
-        //    int len = pos - start;
-        //    t.text = a.text + "." + b.text;
-        //    t.raw = new byte[len];
-        //    if (start + len <= memsize)
-        //        for (int i = 0; i < len; i++)
-        //            t.raw[i] = memory[start + i];
-        //    return t;
-        //
-
-        private static Token ReadFilterEditorOnly(int start, ExportEntry export)
+        private Token ReadFilterEditorOnly(int start, ExportEntry export)
         {
             Token t = new Token();
             int offset = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
@@ -3516,7 +3470,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGoWVal(int start, ExportEntry export)
+        private Token ReadGoWVal(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 2;
@@ -3531,7 +3485,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStringRefConst(int start, ExportEntry export)
+        private Token ReadStringRefConst(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -3545,7 +3499,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAdd(int start, ExportEntry export)
+        private Token ReadAdd(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3574,7 +3528,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel(int start, string arg, ExportEntry export)
+        private Token ReadCompareDel(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3594,7 +3548,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel2(int start, string arg, ExportEntry export)
+        private Token ReadCompareDel2(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3612,7 +3566,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelFunc(int start, ExportEntry export)
+        private Token ReadDelFunc(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3649,7 +3603,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadGlobalFunc(int start, ExportEntry export)
+        private Token ReadGlobalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -3681,7 +3635,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareStructs(int start, string s, ExportEntry export)
+        private Token ReadCompareStructs(int start, string s, ExportEntry export)
         {
             Token t = new Token();
             int structType = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -3703,7 +3657,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadAssert(int start, ExportEntry export)
+        private Token ReadAssert(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 4;
@@ -3720,7 +3674,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInterfaceContext(int start, ExportEntry export)
+        private Token ReadInterfaceContext(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3737,7 +3691,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNew(int start, ExportEntry export)
+        private Token ReadNew(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3763,7 +3717,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg2(int start, string arg, bool skip2byte, ExportEntry export)
+        private Token ReadArrayArg2(int start, string arg, bool skip2byte, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3789,7 +3743,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg(int start, string arg, ExportEntry export)
+        private Token ReadArrayArg(int start, string arg, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3813,7 +3767,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCase(int start, ExportEntry export)
+        private Token ReadCase(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3840,7 +3794,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadMetacast(int start, ExportEntry export)
+        private Token ReadMetacast(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3860,7 +3814,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVectorConst(int start, ExportEntry export)
+        private Token ReadVectorConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3877,7 +3831,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadRotatorConst(int start, ExportEntry export)
+        private Token ReadRotatorConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3894,7 +3848,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadConditional(int start, ExportEntry export)
+        private Token ReadConditional(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3923,7 +3877,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEatReturn(int start, ExportEntry export)
+        private Token ReadEatReturn(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -3939,7 +3893,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadObjectConditionalJump(int start, ExportEntry export)
+        private Token ReadObjectConditionalJump(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -3966,7 +3920,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntOne(int start, ExportEntry export)
+        private Token ReadIntOne(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "1";
@@ -3975,7 +3929,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyDel(int start, ExportEntry export)
+        private Token ReadEmptyDel(int start, ExportEntry export)
         {
             Token t = new Token
             {
@@ -3987,7 +3941,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStruct(int start, ExportEntry export)
+        private Token ReadStruct(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4011,7 +3965,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadPrimitiveCast(int start, ExportEntry export)
+        private Token ReadPrimitiveCast(int start, ExportEntry export)
         {
             Token t = new Token();
             ECastToken conversionType = (ECastToken)memory[start + 1];
@@ -4036,7 +3990,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSkip(int start, ExportEntry export)
+        private Token ReadSkip(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a;
@@ -4065,7 +4019,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNamedFunction(int start, ExportEntry export)
+        private Token ReadNamedFunction(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -4101,7 +4055,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadExtNative(int start, ExportEntry export)
+        private Token ReadExtNative(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4117,7 +4071,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayElement(int start, ExportEntry export)
+        private Token ReadDynArrayElement(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4137,7 +4091,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelLet(int start, ExportEntry export)
+        private Token ReadDelLet(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 2, export);
@@ -4153,7 +4107,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterNext(int start, ExportEntry export)
+        private Token ReadIterNext(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\Next";
@@ -4162,7 +4116,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterPop(int start, ExportEntry export)
+        private Token ReadIterPop(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4177,7 +4131,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIterator(int start, ExportEntry export)
+        private Token ReadIterator(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4197,7 +4151,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStringConst(int start, ExportEntry export)
+        private Token ReadStringConst(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4213,7 +4167,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynCast(int start, ExportEntry export)
+        private Token ReadDynCast(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4232,7 +4186,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn4(int start, ExportEntry export)
+        private Token ReadUnkn4(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4247,7 +4201,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayItr(int start, ExportEntry export)
+        private Token ReadDynArrayItr(int start, ExportEntry export)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -4278,7 +4232,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadBoolExp(int start, ExportEntry export)
+        private Token ReadBoolExp(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4293,7 +4247,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocOutVar(int start, ExportEntry export)
+        private Token ReadLocOutVar(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4308,7 +4262,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDynArrayLen(int start, ExportEntry export)
+        private Token ReadDynArrayLen(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4323,7 +4277,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadByteConst(int start, ExportEntry export)
+        private Token ReadByteConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4335,7 +4289,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadIntConst(int start, ExportEntry export)
+        private Token ReadIntConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4347,7 +4301,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEmptyParm(int start, ExportEntry export)
+        private Token ReadEmptyParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "null"; //normally ""
@@ -4356,7 +4310,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDelegateProp(int start, ExportEntry export)
+        private Token ReadDelegateProp(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4372,7 +4326,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInstDelegate(int start, ExportEntry export)
+        private Token ReadInstDelegate(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4386,7 +4340,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadObjectConst(int start, ExportEntry export)
+        private Token ReadObjectConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4404,7 +4358,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadFinalFunc(int start, ExportEntry export)
+        private Token ReadFinalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4446,7 +4400,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnkn1(int start, ExportEntry export)
+        private Token ReadUnkn1(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4460,7 +4414,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNameConst(int start, ExportEntry export)
+        private Token ReadNameConst(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4475,7 +4429,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNone(int start, ExportEntry export)
+        private Token ReadNone(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "None";
@@ -4484,7 +4438,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadZero(int start, ExportEntry export)
+        private Token ReadZero(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "0";
@@ -4493,7 +4447,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadVirtualFunc(int start, ExportEntry export)
+        private Token ReadVirtualFunc(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -4525,7 +4479,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSelf(int start, ExportEntry export)
+        private Token ReadSelf(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "this";
@@ -4534,7 +4488,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadReturnNothing(int start, ExportEntry export)
+        private Token ReadReturnNothing(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4548,7 +4502,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadStatFloat(int start, ExportEntry export)
+        private Token ReadStatFloat(int start, ExportEntry export)
         {
             Token t = new Token();
             float f = EndianReader.ToSingle(memory, start + 1, export.FileRef.Endian);
@@ -4559,7 +4513,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndParmVal(int start, ExportEntry export)
+        private Token ReadEndParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "//EndParmVal";
@@ -4568,7 +4522,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndFuncParm(int start, ExportEntry export)
+        private Token ReadEndFuncParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4578,7 +4532,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadTrue(int start, ExportEntry export)
+        private Token ReadTrue(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "True";
@@ -4587,7 +4541,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadFalse(int start, ExportEntry export)
+        private Token ReadFalse(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "False";
@@ -4596,7 +4550,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadContext(int start, ExportEntry export)
+        private Token ReadContext(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4621,7 +4575,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadDefaultParmVal(int start, ExportEntry export)
+        private Token ReadDefaultParmVal(int start, ExportEntry export)
         {
             Token t = new Token();
             int size = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
@@ -4639,7 +4593,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEqual(int start, ExportEntry export)
+        private Token ReadEqual(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4657,7 +4611,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadSwitch(int start, ExportEntry export)
+        private Token ReadSwitch(int start, ExportEntry export)
         {
             Token t = new Token();
             int uIndex = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -4673,7 +4627,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJumpIfNot(int start, ExportEntry export)
+        private Token ReadJumpIfNot(int start, ExportEntry export)
         {
             Token t = new Token();
             int offset = EndianReader.ToInt16(memory, start + 1, export.FileRef.Endian);
@@ -4690,7 +4644,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLet(int start, ExportEntry export)
+        private Token ReadLet(int start, ExportEntry export)
         {
             Token t = new Token();
             Token a = ReadToken(start + 1, export);
@@ -4713,7 +4667,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadReturn(int start, ExportEntry export)
+        private Token ReadReturn(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "Return (";
@@ -4728,7 +4682,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNativeParm(int start, ExportEntry export)
+        private Token ReadNativeParm(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4756,7 +4710,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLocalVar(int start, ExportEntry export)
+        private Token ReadLocalVar(int start, ExportEntry export)
         {
             Token t = new Token();
 
@@ -4773,7 +4727,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadInstanceVar(int start, ExportEntry export)
+        private Token ReadInstanceVar(int start, ExportEntry export)
         {
             Token t = new Token();
             int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
@@ -4787,7 +4741,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadJump(int start, ExportEntry export)
+        private Token ReadJump(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "Goto(0x";
@@ -4800,7 +4754,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadLableTable(int start, ExportEntry export)
+        private Token ReadLableTable(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "Label Table:\n";
@@ -4858,7 +4812,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadUnknown(int start, ExportEntry export)
+        private Token ReadUnknown(int start, ExportEntry export)
         {
             Token t = new Token();
             t.raw = new byte[1];
@@ -4867,7 +4821,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadNothing(int start, ExportEntry export)
+        private Token ReadNothing(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "";
@@ -4875,7 +4829,7 @@ namespace ME3Explorer.Unreal
             t.raw[0] = memory[start];
             return t;
         }
-        private static Token ReadStopToken(int start, ExportEntry export)
+        private Token ReadStopToken(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\Stop?";
@@ -4884,7 +4838,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadEndOfScript(int start, ExportEntry export)
+        private Token ReadEndOfScript(int start, ExportEntry export)
         {
             Token t = new Token();
             t.text = "\\\\End of Script";
@@ -4943,8 +4897,4 @@ namespace ME3Explorer.Unreal
     }
 
 
-}            //for (int i = 0; i < t.Count; i++)
-             //{
-             //    s += "0x" + pos.ToString("X" + paddingSize) + " : " + t[i].text + "\n";
-             //    pos += t[i].raw.Length;
-             //}
+}

@@ -281,13 +281,11 @@ namespace ME3Explorer
         }
         public static void SerializeBulkData<T>(this SerializingContainer2 sc, ref T[] arr, SerializeDelegate<T> serialize)
         {
-            int bulkdataflags = 0;
-            sc.Serialize(ref bulkdataflags);
+            sc.SerializeConstInt(0);//bulkdataflags
             int elementCount = arr?.Length ?? 0;
             sc.Serialize(ref elementCount);
-            int sizeOnDisk = 0;
             long sizeOnDiskPosition = sc.ms.Position;
-            sc.Serialize(ref sizeOnDisk); //when saving, come back and rewrite this after writing arr
+            sc.SerializeConstInt(0); //when saving, come back and rewrite this after writing arr
             sc.SerializeFileOffset();
             if (sc.IsLoading)
             {
@@ -305,6 +303,22 @@ namespace ME3Explorer
                 sc.ms.JumpTo(sizeOnDiskPosition);
                 sc.ms.Writer.WriteInt32((int)(curPos - (sizeOnDiskPosition + 8)));
                 sc.ms.JumpTo(curPos);
+            }
+        }
+        public static void SerializeBulkData(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize)
+        {
+            sc.SerializeConstInt(0);//bulkdataflags
+            int elementCount = arr?.Length ?? 0;
+            sc.Serialize(ref elementCount);
+            sc.Serialize(ref elementCount); //sizeondisk, which is equal to elementcount for a byte array
+            sc.SerializeFileOffset();
+            if (sc.IsLoading)
+            {
+                arr = sc.ms.ReadBytes(elementCount);
+            }
+            else if (elementCount > 0)
+            {
+                sc.ms.Writer.WriteBytes(arr);
             }
         }
 

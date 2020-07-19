@@ -42,6 +42,7 @@ using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
 using Gammtek.Conduit.Extensions;
+using Gammtek.Conduit.IO.Converters;
 
 namespace ME3Explorer
 {
@@ -4291,7 +4292,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "BrushComponent", true)) break;
+                    if (findClass(filePath, "SoundNodeWave", true)) break;
                     //findClassesWithBinary(filePath);
                     //ScanScripts(filePath);
                     //if (interestingExports.Count > 0)
@@ -5460,42 +5461,79 @@ namespace ME3Explorer
 
         private void ReplaceReferenceLinks(object sender, RoutedEventArgs e)
         {
-            if (TryGetSelectedEntry(out IEntry entry))
+            if (TryGetSelectedEntry(out IEntry selectedEntry))
             {
                 var replacement = EntrySelector.GetEntry<IEntry>(this, Pcc, "Select replacement reference");
-                if (replacement == null || replacement.UIndex == 0)
+                int selectedEntryUIndex = selectedEntry.UIndex;
+                int replacementUIndex = replacement?.UIndex ?? 0;
+                if (replacement == null || replacementUIndex == 0)
                     return;
 
                 int rcount = 0;
                 BusyText = "Replacing references...";
                 IsBusy = true;
-                Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
+
+                Task.Run(() => selectedEntry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
                 {
-                    foreach (var link in prevTask.Result)
+                    foreach ((IEntry entry, List<string> propsList) in prevTask.Result)
                     {
-                        foreach (var l in link.Value)
+                        if (entry is ExportEntry exp)
                         {
-                            var exp = link.Key as ExportEntry;
-                            if (l.StartsWith("Property:") && exp != null)
+                            if (propsList.Any(l => l.StartsWith("Property:")))
                             {
-                                var newprops = replacePropertyReferences(exp.GetProperties(), entry, replacement);
+                                var newprops = replacePropertyReferences(exp.GetProperties(), selectedEntryUIndex, replacementUIndex, ref rcount);
                                 exp.WriteProperties(newprops);
-                                rcount++;
                             }
-                            else if (l.StartsWith("(Binary prop:") && exp != null)
+                            else
                             {
-                                if (!exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
+                                if (propsList.Any(l => l.StartsWith("(Binary prop:")) && !exp.IsDefaultObject && ObjectBinary.From(exp) is ObjectBinary objBin)
                                 {
                                     List<(UIndex, string)> indices = objBin.GetUIndexes(exp.FileRef.Game);
-                                    for (int b = 0; b < indices.Count; b++)
+                                    foreach ((UIndex uIndex, _) in indices)
                                     {
-                                        (UIndex uIndex, string propName) = indices[b];
-                                        if (uIndex == entry.UIndex)
+                                        if (uIndex.value == selectedEntryUIndex)
                                         {
-                                            uIndex.value = replacement.UIndex;
+                                            uIndex.value = replacementUIndex;
                                             rcount++;
                                         }
                                     }
+
+                                    //script relinking is not covered by standard binary relinking
+                                    if (objBin is UStruct uStruct && uStruct.ScriptBytes.Length > 0)
+                                    {
+                                        if (exp.Game == MEGame.ME3)
+                                        {
+                                            (List<Token> tokens, _) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
+                                            foreach (Token token in tokens)
+                                            {
+                                                foreach ((int pos, int type, int value) in token.inPackageReferences)
+                                                {
+                                                    switch (type)
+                                                    {
+                                                        case Token.INPACKAGEREFTYPE_ENTRY when value == selectedEntryUIndex:
+                                                            uStruct.ScriptBytes.OverwriteRange(pos, BitConverter.GetBytes(replacementUIndex));
+                                                            rcount++;
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var func = entry.ClassName == "State" ? UE3FunctionReader.ReadState(exp) : UE3FunctionReader.ReadFunction(exp);
+                                            func.Decompile(new TextBuilder(), false);
+
+                                            foreach ((long position, IEntry ent) in func.EntryReferences)
+                                            {
+                                                if (ent.UIndex == selectedEntryUIndex && position < uStruct.ScriptBytes.Length)
+                                                {
+                                                    uStruct.ScriptBytes.OverwriteRange((int)position, BitConverter.GetBytes(replacementUIndex));
+                                                    rcount++;
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     exp.SetBinaryData(objBin);
                                 }
                             }
@@ -5503,15 +5541,13 @@ namespace ME3Explorer
                     }
 
                     IsBusy = false;
-                    MessageBox.Show($"Replaced {rcount} reference links. (Total links {prevTask.Result.Count})");
+                    MessageBox.Show($"Replaced {rcount} reference links.");
                 });
 
             }
 
-            PropertyCollection replacePropertyReferences(PropertyCollection props, IEntry entry, IEntry replacement)
+            static PropertyCollection replacePropertyReferences(PropertyCollection props, int targetUIndex, int replaceUIndex, ref int replacementCount)
             {
-                var targetUIndex = entry.UIndex;
-                var replaceUIndex = replacement.UIndex;
                 var newprops = new PropertyCollection();
                 foreach (UProperty prop in props)
                 {
@@ -5521,33 +5557,33 @@ namespace ME3Explorer
                             if (objectProperty.Value == targetUIndex)
                             {
                                 objectProperty.Value = replaceUIndex;
+                                replacementCount++;
                             }
                             break;
                         case DelegateProperty delegateProperty:
                             if (delegateProperty.Value.Object == targetUIndex)
                             {
                                 delegateProperty.Value = new ScriptDelegate(replaceUIndex, delegateProperty.Value.FunctionName);
+                                replacementCount++;
                             }
                             break;
                         case StructProperty structProperty:
-                            structProperty.Properties = replacePropertyReferences(structProperty.Properties, entry, replacement);
+                            structProperty.Properties = replacePropertyReferences(structProperty.Properties, targetUIndex, replaceUIndex, ref replacementCount);
                             break;
                         case ArrayProperty<ObjectProperty> arrayProperty:
-                            for (int i = 0; i < arrayProperty.Count; i++)
+                            foreach (ObjectProperty objProp in arrayProperty)
                             {
-                                ObjectProperty objProp = arrayProperty[i];
                                 if (objProp.Value == targetUIndex)
                                 {
                                     objProp.Value = replaceUIndex;
+                                    replacementCount++;
                                 }
                             }
                             break;
                         case ArrayProperty<StructProperty> arrayProperty:
-                            for (int i = 0; i < arrayProperty.Count; i++)
+                            foreach (StructProperty structProp in arrayProperty)
                             {
-                                StructProperty structProp = arrayProperty[i];
-                                structProp.Properties = replacePropertyReferences(structProp.Properties, entry, replacement);
-                                arrayProperty[i] = structProp;
+                                structProp.Properties = replacePropertyReferences(structProp.Properties, targetUIndex, replaceUIndex, ref replacementCount);
                             }
                             break;
                     }
