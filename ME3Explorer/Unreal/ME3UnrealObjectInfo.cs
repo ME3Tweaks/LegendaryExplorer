@@ -21,7 +21,7 @@ namespace ME3Explorer.Unreal
             GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsA(info.ClassName, baseClassName, game)).ToList();
 
         public static bool IsImmutable(string structType, MEGame game) =>
-            game switch 
+            game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.ME2 => ME2UnrealObjectInfo.IsImmutableStruct(structType),
@@ -673,7 +673,7 @@ namespace ME3Explorer.Unreal
                         Structs.TryGetValue(info.baseClass, out info);
                     }
                     props.Add(new NoneProperty());
-                    
+
                     return props;
                 }
                 catch
@@ -1143,7 +1143,7 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty":
                     type = PropertyType.ArrayProperty;
                     // 44 is not correct on other platforms besides PC
-                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.Data, 44, entry.FileRef.Endian)));
+                    PropertyInfo arrayTypeProp = getProperty(pcc.GetUExport(EndianReader.ToInt32(entry.Data, entry.FileRef.Platform == MEPackage.GamePlatform.PC ? 44 : 32, entry.FileRef.Endian)));
                     if (arrayTypeProp != null)
                     {
                         switch (arrayTypeProp.Type)

@@ -21,6 +21,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
+            if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
             byte platform = 0;
             sc.Serialize(ref platform);
             sc.Serialize(ref ShaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
