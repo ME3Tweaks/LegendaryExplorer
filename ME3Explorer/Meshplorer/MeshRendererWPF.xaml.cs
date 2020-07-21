@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ME3Explorer.Packages;
@@ -21,7 +20,6 @@ using SharpDX;
 using SlavaGu.ConsoleAppLauncher;
 using Matrix = SharpDX.Matrix;
 using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
-using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -30,7 +28,7 @@ namespace ME3Explorer.Meshplorer
     /// </summary>
     public partial class MeshRendererWPF : ExportLoaderControl
     {
-        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh" };
+        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh", "BioSocketSupermodel" };
 
         #region 3D
 
@@ -353,7 +351,7 @@ namespace ME3Explorer.Meshplorer
                     return pmd;
                 };
             }
-            else if (CurrentLoadedExport.ClassName == "SkeletalMesh")
+            else if (CurrentLoadedExport.IsA("SkeletalMesh"))
             {
                 IsSkeletalMesh = true;
                 //var sm = new Unreal.Classes.SkeletalMesh(CurrentLoadedExport);

@@ -202,17 +202,15 @@ namespace ME3Explorer
                     {
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
-                        foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(CurrentExport.Game))
+                        foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
                         {
                             uIndex.value = 0;
                         }
-                        CurrentExport.SetBinaryData(objBin.ToBytes(CurrentExport.FileRef));
-                        CurrentExport.WriteProperties(new PropertyCollection());
+                        CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
-                                                             out IEntry newEntry);
+                                                             out IEntry _);
                         CurrentExport.Data = dataBackup;
-                        ExportEntry newExport = (ExportEntry)newEntry;
 
                         upk.Save();
                     }
@@ -238,155 +236,153 @@ namespace ME3Explorer
             {
                 try
                 {
-                    using (IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName))
+                    using IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName);
+                    string className = CurrentExport.ClassName;
+                    if (EntrySelector.GetEntry<ExportEntry>(this, udk, $"Select {className} to import:", exp => exp.ClassName == className) is ExportEntry meshExport)
                     {
-                        string className = CurrentExport.ClassName;
-                        if (EntrySelector.GetEntry<ExportEntry>(this, udk, $"Select {className} to import:", exp => exp.ClassName == className) is ExportEntry meshExport)
+                        if (className == "SkeletalMesh")
                         {
-                            if (className == "SkeletalMesh")
+                            SkeletalMesh newMesh = ObjectBinary.From<SkeletalMesh>(meshExport);
+                            SkeletalMesh originalMesh = ObjectBinary.From<SkeletalMesh>(CurrentExport);
+
+                            if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
                             {
-                                SkeletalMesh newMesh = ObjectBinary.From<SkeletalMesh>(meshExport);
-                                SkeletalMesh originalMesh = ObjectBinary.From<SkeletalMesh>(CurrentExport);
+                                MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
+                                return;
+                            }
 
-                                if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
+                            if (newMesh.RotOrigin.Pitch != originalMesh.RotOrigin.Pitch ||
+                                newMesh.RotOrigin.Yaw != originalMesh.RotOrigin.Yaw ||
+                                newMesh.RotOrigin.Roll != originalMesh.RotOrigin.Roll)
+                            {
+                                MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
+                                                $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
+                                                "The new value is:\n" +
+                                                $"Pitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
+                                                "These values may need to be adjusted to be accurate.");
+                            }
+
+
+                            newMesh.Materials = originalMesh.Materials.TypedClone();
+
+                            var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
+                            if (!lodOnly)
+                            {
+                                CurrentExport.SetBinaryData(newMesh);
+
+                                //Check LODs count
+                                if (lods != null)
                                 {
-                                    MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
-                                    return;
+                                    if (lods.Count != originalMesh.LODModels.Length)
+                                    {
+                                        MessageBox.Show("ASSERT: The amount of items in the LODInfo array (in the export properties) doesn't match the amount of LODs in the original mesh! You need to correct this. LODInfo count should match the amount of LODModels in the binary.");
+                                    }
                                 }
 
-                                if (newMesh.RotOrigin.Pitch != originalMesh.RotOrigin.Pitch ||
-                                    newMesh.RotOrigin.Yaw != originalMesh.RotOrigin.Yaw ||
-                                    newMesh.RotOrigin.Roll != originalMesh.RotOrigin.Roll)
+                                if (newMesh.LODModels.Length < originalMesh.LODModels.Length)
                                 {
-                                    MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
-                                                    $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
-                                                    "The new value is:\n" +
-                                                    $"Pitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
-                                                    "These values may need to be adjusted to be accurate.");
+                                    // we need to update the LOD models
+                                    var newlods = lods.Take(newMesh.LODModels.Length).ToList();
+                                    lods.Clear();
+                                    lods.AddRange(newlods);
+                                    CurrentExport.WriteProperty(lods);
                                 }
 
-
-                                newMesh.Materials = originalMesh.Materials.TypedClone();
-
-                                var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
-                                if (!lodOnly)
+                                if (newMesh.LODModels.Length > originalMesh.LODModels.Length)
                                 {
-                                    CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
-
-                                    //Check LODs count
-                                    if (lods != null)
-                                    {
-                                        if (lods.Count != originalMesh.LODModels.Length)
-                                        {
-                                            MessageBox.Show("ASSERT: The amount of items in the LODInfo array (in the export properties) doesn't match the amount of LODs in the original mesh! You need to correct this. LODInfo count should match the amount of LODModels in the binary.");
-                                        }
-                                    }
-
-                                    if (newMesh.LODModels.Length < originalMesh.LODModels.Length)
-                                    {
-                                        // we need to update the LOD models
-                                        var newlods = lods.Take(newMesh.LODModels.Length).ToList();
-                                        lods.Clear();
-                                        lods.AddRange(newlods);
-                                        CurrentExport.WriteProperty(lods);
-                                    }
-
-                                    if (newMesh.LODModels.Length > originalMesh.LODModels.Length)
-                                    {
-                                        MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
-                                    }
-
-
+                                    MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
                                 }
-                                else
-                                {
-                                    //Transfer the top LOD in. This is due to some weird shit going on in UDK that makes it blow up.
 
-                                    //Build map of new bone names to old bone names so we can translate them
-                                    List<int> newToOldBoneListIndexMapping = new List<int>(); //Maps old index to new index. This is WV code... but seems to work in a roundabout way
-                                    Dictionary<string, string> incomingToExistingBoneMapping = new Dictionary<string, string>();
-                                    for (int i = 0; i < originalMesh.RefSkeleton.Length; i++)
-                                    {
-                                        var incomingName = newMesh.RefSkeleton[i].Name.Name;
-                                        //var existingName = originalMesh.RefSkeleton[i].Name.Name;
-                                        //incomingToExistingBoneMapping[incomingName] = existingName;
-                                        var mappedIndex = originalMesh.RefSkeleton.FindIndex(x => x.Name.Name == incomingName);
-                                        if (mappedIndex < 0) Debug.WriteLine("Could not map bone! Name: " + incomingName);
-                                        newToOldBoneListIndexMapping.Add(mappedIndex);
-                                    }
-
-                                    var incomingLOD = newMesh.LODModels[0];
-
-                                    //Map ActiveBoneIndexes
-                                    for (int i = 0; i < incomingLOD.ActiveBoneIndices.Length; i++)
-                                    {
-                                        var existingId = incomingLOD.ActiveBoneIndices[i];
-                                        var mappedId = newToOldBoneListIndexMapping[existingId];
-                                        incomingLOD.ActiveBoneIndices[i] = (ushort)mappedId;
-                                    }
-
-                                    foreach (var chunk in incomingLOD.Chunks)
-                                    {
-                                        //Map the BoneMap to the existing map
-                                        for (int i = 0; i < chunk.BoneMap.Length; i++)
-                                        {
-                                            var existingId = chunk.BoneMap[i];
-                                            var mappedId = newToOldBoneListIndexMapping[existingId];
-                                            chunk.BoneMap[i] = (ushort)mappedId;
-                                        }
-                                    }
-                                    //Remove the other LODs, otherwise this could look really weird when it tries to change lods. I don't know anyone who is adding LOD levels
-                                    originalMesh.LODModels = new[] { incomingLOD };
-
-                                    //write it out
-                                    CurrentExport.SetBinaryData(originalMesh.ToBytes(Pcc)); //used to be NEW MESH
-                                    if (lods.Count > 1)
-                                    {
-                                        // we need to update the LOD models
-                                        var newlods = lods.Take(1).ToList();
-                                        lods.Clear();
-                                        lods.AddRange(newlods);
-                                        CurrentExport.WriteProperty(lods);
-                                    }
-                                }
 
                             }
                             else
                             {
-                                StaticMesh newMesh;
-                                StaticMesh originalMesh;
-                                if (className == "FracturedStaticMesh")
+                                //Transfer the top LOD in. This is due to some weird shit going on in UDK that makes it blow up.
+
+                                //Build map of new bone names to old bone names so we can translate them
+                                List<int> newToOldBoneListIndexMapping = new List<int>(); //Maps old index to new index. This is WV code... but seems to work in a roundabout way
+                                Dictionary<string, string> incomingToExistingBoneMapping = new Dictionary<string, string>();
+                                for (int i = 0; i < originalMesh.RefSkeleton.Length; i++)
                                 {
-                                    newMesh = ObjectBinary.From<FracturedStaticMesh>(meshExport);
-                                    originalMesh = ObjectBinary.From<FracturedStaticMesh>(CurrentExport);
-                                }
-                                else
-                                {
-                                    newMesh = ObjectBinary.From<StaticMesh>(meshExport);
-                                    originalMesh = ObjectBinary.From<StaticMesh>(CurrentExport);
+                                    var incomingName = newMesh.RefSkeleton[i].Name.Name;
+                                    //var existingName = originalMesh.RefSkeleton[i].Name.Name;
+                                    //incomingToExistingBoneMapping[incomingName] = existingName;
+                                    var mappedIndex = originalMesh.RefSkeleton.FindIndex(x => x.Name.Name == incomingName);
+                                    if (mappedIndex < 0) Debug.WriteLine("Could not map bone! Name: " + incomingName);
+                                    newToOldBoneListIndexMapping.Add(mappedIndex);
                                 }
 
-                                newMesh.BodySetup = 0;
-                                if (originalMesh.LODModels.Any())
+                                var incomingLOD = newMesh.LODModels[0];
+
+                                //Map ActiveBoneIndexes
+                                for (int i = 0; i < incomingLOD.ActiveBoneIndices.Length; i++)
                                 {
-                                    UIndex[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
-                                    foreach (StaticMeshRenderData lodModel in newMesh.LODModels)
+                                    var existingId = incomingLOD.ActiveBoneIndices[i];
+                                    var mappedId = newToOldBoneListIndexMapping[existingId];
+                                    incomingLOD.ActiveBoneIndices[i] = (ushort)mappedId;
+                                }
+
+                                foreach (var chunk in incomingLOD.Chunks)
+                                {
+                                    //Map the BoneMap to the existing map
+                                    for (int i = 0; i < chunk.BoneMap.Length; i++)
                                     {
-                                        for (int i = 0; i < lodModel.Elements.Length; i++)
-                                        {
-                                            UIndex matIndex = 0;
-                                            if (i < mats.Length)
-                                            {
-                                                matIndex = mats[i];
-                                            }
-                                            lodModel.Elements[i].Material = matIndex;
-                                        }
+                                        var existingId = chunk.BoneMap[i];
+                                        var mappedId = newToOldBoneListIndexMapping[existingId];
+                                        chunk.BoneMap[i] = (ushort)mappedId;
                                     }
                                 }
-                                CurrentExport.SetBinaryData(newMesh.ToBytes(Pcc));
+                                //Remove the other LODs, otherwise this could look really weird when it tries to change lods. I don't know anyone who is adding LOD levels
+                                originalMesh.LODModels = new[] { incomingLOD };
+
+                                //write it out
+                                CurrentExport.SetBinaryData(originalMesh); //used to be NEW MESH
+                                if (lods.Count > 1)
+                                {
+                                    // we need to update the LOD models
+                                    var newlods = lods.Take(1).ToList();
+                                    lods.Clear();
+                                    lods.AddRange(newlods);
+                                    CurrentExport.WriteProperty(lods);
+                                }
                             }
-                            MessageBox.Show(this, "Done!");
+
                         }
+                        else
+                        {
+                            StaticMesh newMesh;
+                            StaticMesh originalMesh;
+                            if (className == "FracturedStaticMesh")
+                            {
+                                newMesh = ObjectBinary.From<FracturedStaticMesh>(meshExport);
+                                originalMesh = ObjectBinary.From<FracturedStaticMesh>(CurrentExport);
+                            }
+                            else
+                            {
+                                newMesh = ObjectBinary.From<StaticMesh>(meshExport);
+                                originalMesh = ObjectBinary.From<StaticMesh>(CurrentExport);
+                            }
+
+                            newMesh.BodySetup = 0;
+                            if (originalMesh.LODModels.Any())
+                            {
+                                UIndex[] mats = originalMesh.LODModels[0].Elements.Select(el => el.Material).ToArray();
+                                foreach (StaticMeshRenderData lodModel in newMesh.LODModels)
+                                {
+                                    for (int i = 0; i < lodModel.Elements.Length; i++)
+                                    {
+                                        UIndex matIndex = 0;
+                                        if (i < mats.Length)
+                                        {
+                                            matIndex = mats[i];
+                                        }
+                                        lodModel.Elements[i].Material = matIndex;
+                                    }
+                                }
+                            }
+                            CurrentExport.SetBinaryData(newMesh);
+                        }
+                        MessageBox.Show(this, "Done!");
                     }
                 }
                 catch (Exception e)
@@ -403,31 +399,28 @@ namespace ME3Explorer
             {
                 try
                 {
-                    using (IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName))
+                    using IMEPackage udk = MEPackageHandler.OpenUDKPackage(d.FileName);
+                    string[] meshClasses = { "StaticMesh", "FracturedStaticMesh", "SkeletalMesh" };
+                    if (EntrySelector.GetEntry<ExportEntry>(this, udk, "Select mesh to import:", exp => meshClasses.Contains(exp.ClassName)) is ExportEntry meshExport)
                     {
-                        string[] meshClasses = { "StaticMesh", "FracturedStaticMesh", "SkeletalMesh" };
-                        if (EntrySelector.GetEntry<ExportEntry>(this, udk, "Select mesh to import:", exp => meshClasses.Contains(exp.ClassName)) is ExportEntry meshExport)
+                        ObjectBinary objBin = ObjectBinary.From(meshExport);
+                        foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(MEGame.UDK))
                         {
-                            ObjectBinary objBin = ObjectBinary.From(meshExport);
-                            foreach ((UIndex uIndex, var _) in objBin.GetUIndexes(MEGame.UDK))
-                            {
-                                uIndex.value = 0;
-                            }
-                            meshExport.SetBinaryData(objBin.ToBytes(udk));
-                            meshExport.WriteProperties(new PropertyCollection());
-                            var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
-                                                                               null, true, out _);
-                            if (results.Any())
-                            {
-                                ListDialog ld = new ListDialog(results, "Relink report",
-                                                               "The following items failed to relink.(This does not mean the import was unsuccessful, " +
-                                                               "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
-                                ld.Show();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Mesh has been imported with no reported issues.");
-                            }
+                            uIndex.value = 0;
+                        }
+                        meshExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
+                        var results = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, meshExport, Pcc,
+                                                                           null, true, out _);
+                        if (results.Any())
+                        {
+                            ListDialog ld = new ListDialog(results, "Relink report",
+                                                           "The following items failed to relink.(This does not mean the import was unsuccessful, " +
+                                                           "just that the listed values will have to be corrected in the Interpreter and BinaryInterpreter)", this);
+                            ld.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Mesh has been imported with no reported issues.");
                         }
                     }
                 }
@@ -447,14 +440,13 @@ namespace ME3Explorer
         {
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
-                StaticMesh stm = ObjectBinary.From<SkeletalMesh>(CurrentExport).ConvertToME3StaticMesh();
-                CurrentExport.WriteProperties(new PropertyCollection
+                StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3StaticMesh();
+                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
+                CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
                     new BoolProperty(true, "UseSimpleBoxCollision"),
                     new NoneProperty()
-                });
-                CurrentExport.SetBinaryData(stm.ToBytes(Pcc));
-                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
+                }, stm);
             }
         }
 

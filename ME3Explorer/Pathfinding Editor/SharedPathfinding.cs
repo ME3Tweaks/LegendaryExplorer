@@ -6,6 +6,7 @@ using System.Linq;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpDX;
@@ -488,39 +489,13 @@ namespace ME3Explorer.Pathfinding_Editor
             return new Point3D(0, 0, 0);
         }
 
-        public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor, List<ExportEntry> CollectionItems = null)
+        public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor)
         {
             if (!collectionactor.ClassName.Contains("CollectionActor"))
                 return null;
 
-            if (CollectionItems == null)
-            {
-                CollectionItems = new List<ExportEntry>();
-                CollectionItems.AddRange(GetCollectionItems(collectionactor));
-            }
-
-            byte[] smacData = collectionactor.Data;
-            int binarypos = collectionactor.propsEnd();
-            var positions = new List<Point3D>();
-            foreach (var item in CollectionItems)
-            {
-                if (item != null)
-                {
-                    //Read location and put in position map
-                    int offset = binarypos + 12 * 4;
-                    float x = BitConverter.ToSingle(smacData, offset);
-                    float y = BitConverter.ToSingle(smacData, offset + 4);
-                    float z = BitConverter.ToSingle(smacData, offset + 8);
-                    //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                    positions.Add(new Point3D(x, y, z));
-                }
-                else
-                {
-                    positions.Add(new Point3D(float.MinValue, float.MinValue, float.MinValue));
-                }
-                binarypos += 64;
-            }
-            return positions;
+            return ((StaticCollectionActor)ObjectBinary.From(collectionactor)).LocalToWorldTransforms
+                                                                              .Select(localToWorldTransform => (Point3D)localToWorldTransform.TranslationVector).ToList();
         }
 
         public static List<ExportEntry> GetCollectionItems(ExportEntry smac)
@@ -576,23 +551,20 @@ namespace ME3Explorer.Pathfinding_Editor
                 collectionactor = (ExportEntry)component.Parent;
             }
 
-            if (collectionitems == null)
-            {
-                collectionitems = GetCollectionItems(collectionactor);
-            }
+            collectionitems ??= GetCollectionItems(collectionactor);
 
-            if (!(collectionitems?.IsEmpty() ?? true))
+            if (collectionitems?.Count > 0)
             {
                 var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
                 if (idx >= 0)
                 {
-                    byte[] colldata = collectionactor.GetBinaryData();
-                    int offset = idx * 64 + 12 * 4;
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
 
-                    colldata.OverwriteRange(offset, BitConverter.GetBytes(x));
-                    colldata.OverwriteRange(offset + 4, BitConverter.GetBytes(y));
-                    colldata.OverwriteRange(offset + 8, BitConverter.GetBytes(z));
-                    collectionactor.SetBinaryData(colldata);
+                    Matrix m = binData.LocalToWorldTransforms[idx];
+                    m.TranslationVector = new Vector3(x, y, z);
+                    binData.LocalToWorldTransforms[idx] = m;
+
+                    collectionactor.SetBinaryData(binData);
                 }
             }
         }
@@ -779,5 +751,7 @@ namespace ME3Explorer.Pathfinding_Editor
             double deltaZ = Z + other.Z;
             return new Point3D(deltaX, deltaY, deltaZ);
         }
+
+        public static implicit operator Point3D(Vector3 vec) =>  new Point3D(vec.X, vec.Y, vec.Z);
     }
 }

@@ -214,7 +214,7 @@ namespace ME3Explorer
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            Export.WritePropertAndBinary(rowsProp, binary);
+            Export.WritePropertyAndBinary(rowsProp, binary);
         }
 
         public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)

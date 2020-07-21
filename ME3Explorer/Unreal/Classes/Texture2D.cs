@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using Gammtek.Conduit.IO;
 using MassEffectModder.Images;
 using ME3Explorer.PackageEditor.TextureViewer;
+using ME3Explorer.Unreal.BinaryConverters;
 using StreamHelpers;
 using Buffer = System.Buffer;
 
@@ -398,13 +399,13 @@ namespace ME3Explorer.Unreal.Classes
                     if (mipmap.storageType == StorageTypes.pccLZO ||
                         mipmap.storageType == StorageTypes.pccZlib)
                     {
-                        mipmap.newDataForSerializing = compressedMips[m];
-                        mipmap.compressedSize = mipmap.newDataForSerializing.Length;
+                        mipmap.Mip = compressedMips[m];
+                        mipmap.compressedSize = mipmap.Mip.Length;
                     }
                     else if (mipmap.storageType == StorageTypes.pccUnc)
                     {
                         mipmap.compressedSize = mipmap.uncompressedSize;
-                        mipmap.newDataForSerializing = image.mipMaps[m].data;
+                        mipmap.Mip = image.mipMaps[m].data;
                     }
                     else
                     {
@@ -418,8 +419,8 @@ namespace ME3Explorer.Unreal.Classes
                     {
                         if (compressedMips.Count != image.mipMaps.Count())
                             throw new Exception("Amount of compressed mips does not match number of mips of incoming image!");
-                        mipmap.newDataForSerializing = compressedMips[m];
-                        mipmap.compressedSize = mipmap.newDataForSerializing.Length;
+                        mipmap.Mip = compressedMips[m];
+                        mipmap.compressedSize = mipmap.Mip.Length;
                     }
 
 
@@ -427,13 +428,13 @@ namespace ME3Explorer.Unreal.Classes
                         mipmap.storageType == StorageTypes.extUnc)
                     {
                         mipmap.compressedSize = mipmap.uncompressedSize;
-                        mipmap.newDataForSerializing = image.mipMaps[m].data;
+                        mipmap.Mip = image.mipMaps[m].data;
                     }
 
                     if (mipmap.storageType == StorageTypes.pccLZO || mipmap.storageType == StorageTypes.pccZlib)
                     {
-                        mipmap.newDataForSerializing = compressedMips[m];
-                        mipmap.compressedSize = mipmap.newDataForSerializing.Length;
+                        mipmap.Mip = compressedMips[m];
+                        mipmap.compressedSize = mipmap.Mip.Length;
                     }
 
                     if (mipmap.storageType == StorageTypes.extZlib ||
@@ -454,7 +455,7 @@ namespace ME3Explorer.Unreal.Classes
                                         tfcGuid = fs.ReadGuid();
                                         fs.Seek(0, SeekOrigin.End);
                                         mipmap.externalOffset = (int)fs.Position;
-                                        fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                        fs.Write(mipmap.Mip, 0, mipmap.compressedSize);
                                     }
                                 }
                                 catch (Exception e)
@@ -475,7 +476,7 @@ namespace ME3Explorer.Unreal.Classes
                                         tfcGuid = fs.ReadGuid();
                                         fs.Seek(0, SeekOrigin.End);
                                         mipmap.externalOffset = (int)fs.Position;
-                                        fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                        fs.Write(mipmap.Mip, 0, mipmap.compressedSize);
                                     }
                                 }
                                 catch (Exception e)
@@ -493,7 +494,7 @@ namespace ME3Explorer.Unreal.Classes
                                 {
                                     fs.WriteGuid(tfcGuid);
                                     mipmap.externalOffset = (int)fs.Position;
-                                    fs.Write(mipmap.newDataForSerializing, 0, mipmap.compressedSize);
+                                    fs.Write(mipmap.Mip, 0, mipmap.compressedSize);
                                 }
                             }
                             catch (Exception e)
@@ -799,45 +800,25 @@ namespace ME3Explorer.Unreal.Classes
 
         public static List<Texture2DMipInfo> GetTexture2DMipInfos(ExportEntry exportEntry, string cacheName)
         {
-            EndianReader ms = new EndianReader(new MemoryStream(exportEntry.Data)) { Endian = exportEntry.FileRef.Endian };
-            ms.Seek(exportEntry.propsEnd(), SeekOrigin.Begin);
-            if (exportEntry.FileRef.Game != MEGame.ME3)
-            {
-                ms.Skip(4);//BulkDataFlags
-                ms.Skip(4);//ElementCount
-                int bulkDataSize = ms.ReadInt32();
-                ms.Seek(4, SeekOrigin.Current); // position in the package
-                ms.Skip(bulkDataSize); //skips over thumbnail png, if it exists
-            }
-
+            UTexture2D texBin = exportEntry.GetBinaryData<UTexture2D>();
             var mips = new List<Texture2DMipInfo>();
-            int numMipMaps = ms.ReadInt32();
-            for (int l = 0; l < numMipMaps; l++)
+            for (int i = 0; i < texBin.Mips.Count; i++)
             {
+                UTexture2D.Texture2DMipMap binMip = texBin.Mips[i];
                 Texture2DMipInfo mip = new Texture2DMipInfo
                 {
                     Export = exportEntry,
-                    index = l,
-                    storageType = (StorageTypes)ms.ReadInt32(),
-                    uncompressedSize = ms.ReadInt32(),
-                    compressedSize = ms.ReadInt32(),
-                    externalOffset = ms.ReadInt32(),
-                    localExportOffset = (int)ms.Position,
-                    TextureCacheName = cacheName //If this is ME1, this will simply be ignored in the setter
+                    index = i,
+                    storageType = binMip.StorageType,
+                    uncompressedSize = binMip.UncompressedSize,
+                    compressedSize = binMip.CompressedSize,
+                    externalOffset = binMip.DataOffset,
+                    Mip = binMip.Mip,
+                    TextureCacheName = cacheName, //If this is ME1, this will simply be ignored in the setter
+                    width = binMip.SizeX,
+                    height = binMip.SizeY
                 };
-                switch (mip.storageType)
-                {
-                    case StorageTypes.pccUnc:
-                        ms.Seek(mip.uncompressedSize, SeekOrigin.Current);
-                        break;
-                    case StorageTypes.pccLZO:
-                    case StorageTypes.pccZlib:
-                        ms.Seek(mip.compressedSize, SeekOrigin.Current);
-                        break;
-                }
 
-                mip.width = ms.ReadInt32();
-                mip.height = ms.ReadInt32();
                 if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
                     mip.width = mips.Last().width / 2;
                 if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
@@ -898,7 +879,7 @@ namespace ME3Explorer.Unreal.Classes
                     mip.storageType == StorageTypes.pccLZO ||
                     mip.storageType == StorageTypes.pccZlib)
                 {
-                    ms.Write(mip.newDataForSerializing, 0, mip.newDataForSerializing.Length);
+                    ms.Write(mip.Mip, 0, mip.Mip.Length);
                 }
                 ms.WriteInt32(mip.width);
                 ms.WriteInt32(mip.height);
@@ -940,7 +921,7 @@ namespace ME3Explorer.Unreal.Classes
             //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
-                Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.uncompressedSize);
+                Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.uncompressedSize);
             }
             else if (mipToLoad.storageType == StorageTypes.pccLZO || mipToLoad.storageType == StorageTypes.pccZlib)
             {
@@ -949,7 +930,7 @@ namespace ME3Explorer.Unreal.Classes
                     try
                     {
                         TextureCompression.DecompressTexture(imagebytes,
-                                                             new MemoryStream(mipToLoad.Export.Data, mipToLoad.localExportOffset, mipToLoad.compressedSize),
+                                                             new MemoryStream(mipToLoad.Mip),
                                                              mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
                     }
                     catch (Exception e)
@@ -959,7 +940,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 else
                 {
-                    Buffer.BlockCopy(mipToLoad.Export.Data, mipToLoad.localExportOffset, imagebytes, 0, mipToLoad.compressedSize);
+                    Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
                 }
             }
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
@@ -1079,10 +1060,9 @@ namespace ME3Explorer.Unreal.Classes
         public int width;
         public int height;
         public int externalOffset;
-        public int localExportOffset;
         public StorageTypes storageType;
         private string _textureCacheName;
-        public byte[] newDataForSerializing;
+        public byte[] Mip;
 
         public string TextureCacheName
         {

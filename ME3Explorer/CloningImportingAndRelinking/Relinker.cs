@@ -144,8 +144,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-
-                    relinkingExport.SetBinaryData(objBin.ToBytes(relinkingExport.FileRef, relinkingExport.DataOffset + relinkingExport.propsEnd()));
+                    relinkingExport.SetBinaryData(objBin);
                     return relinkFailedReport;
                 }
 

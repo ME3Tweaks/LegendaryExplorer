@@ -312,12 +312,14 @@
     <Compile Include="Unreal\BinaryConverters\ForceFeedbackWaveform.cs" />
     <Compile Include="Unreal\BinaryConverters\LightComponent.cs" />
     <Compile Include="Unreal\BinaryConverters\MorphTarget.cs" />
+    <Compile Include="Unreal\BinaryConverters\ObjectRedirector.cs" />
     <Compile Include="Unreal\BinaryConverters\PhysicsAssetInstance.cs" />
     <Compile Include="Unreal\BinaryConverters\RB_BodySetup.cs" />
     <Compile Include="Unreal\BinaryConverters\SFXMorphFaceFrontEndDataSource.cs" />
     <Compile Include="Unreal\BinaryConverters\ShadowMap1D.cs" />
     <Compile Include="Unreal\BinaryConverters\SoundCue.cs" />
     <Compile Include="Unreal\BinaryConverters\SoundNodeWave.cs" />
+    <Compile Include="Unreal\BinaryConverters\TextureMovie.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>

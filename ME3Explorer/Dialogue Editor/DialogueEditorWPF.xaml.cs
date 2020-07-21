@@ -26,6 +26,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
@@ -1320,18 +1321,13 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
                     {
-                        byte[] data = Pcc.GetUExport(wwevents[0].Value).GetBinaryData();
-                        int binarypos = 4;
-                        int count = BitConverter.ToInt32(data, binarypos);
-                        if (count > 0)
+                        var wwiseEvent = Pcc.GetUExport(wwevents[0].Value).GetBinaryData<WwiseEvent>();
+                        foreach (var link in wwiseEvent.Links)
                         {
-                            binarypos += 4;
-                            int bnkcount = BitConverter.ToInt32(data, binarypos);
-                            if (bnkcount > 0)
+                            if (link.WwiseBanks.FirstOrDefault() is UIndex bankIdx)
                             {
-                                binarypos += 4;
-                                int bank = BitConverter.ToInt32(data, binarypos);
-                                conv.WwiseBank = Pcc.GetUExport(bank);
+                                conv.WwiseBank = Pcc.GetUExport(bankIdx);
+                                break;
                             }
                         }
                     }

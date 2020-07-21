@@ -14,6 +14,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using SharpDX;
 
 namespace ME3Explorer.PackageEditor
 {
@@ -350,66 +351,26 @@ namespace ME3Explorer.PackageEditor
         /// <param name="export"></param>
         public static void ShiftME1AnimCutscene(ExportEntry export)
         {
-            var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X offset", "Offset X", "0", true));
-            var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y offset", "Offset Y", "0", true));
-            var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z offset", "Offset Z", "0", true));
-            var numFrames = export.GetProperty<IntProperty>("NumFrames");
-            var TrackOffsets = export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets");
-            var bin = export.GetBinaryData();
-            var mem = new MemoryStream(bin);
-            var len = mem.ReadInt32();
-            var animBinStart = mem.Position;
-            for (int i = 0; i < TrackOffsets.Count; i++)
+            if (ObjectBinary.From(export) is AnimSequence animSeq)
             {
-                var bonePosOffset = TrackOffsets[i].Value;
-                i++;
-                var bonePosCount = TrackOffsets[i].Value;
-                //var BoneID = new BinInterpNode
-                //{
-                //    Header = $"0x{offset:X5} Bone: {bone} {boneList[bone].Value}",
-                //    Name = "_" + offset,
-                //    Tag = NodeType.Unknown
-                //};
-                //subnodes.Add(BoneID);
+                var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X offset", "Offset X", "0", true));
+                var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y offset", "Offset Y", "0", true));
+                var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z offset", "Offset Z", "0", true));
+                var offsetVec = new Vector3(offsetX, offsetY, offsetZ);
 
-                for (int j = 0; j < bonePosCount; j++)
+                animSeq.DecompressAnimationData();
+                foreach (AnimTrack track in animSeq.RawAnimationData)
                 {
-                    var offset = mem.Position;
-
-                    var posX = mem.ReadSingle();
-                    mem.Position -= 4;
-                    mem.WriteSingle(posX + offsetX);
-
-                    var posY = mem.ReadSingle();
-                    mem.Position -= 4;
-                    mem.WriteSingle(posY + offsetY);
-
-                    var posZ = mem.ReadSingle();
-                    mem.Position -= 4;
-                    mem.WriteSingle(posZ + offsetZ);
-
-                    Debug.WriteLine($"PosKey {j}: X={posX},Y={posY},Z={posZ}");
+                    for (int i = 0; i < track.Positions.Count; i++)
+                    {
+                        track.Positions[i] = Vector3.Add(track.Positions[i], offsetVec);
+                    }
                 }
 
-                //rotation
-                i++;
-                var boneRotOffset = TrackOffsets[i].Value;
-                i++;
-                var boneRotCount = TrackOffsets[i].Value;
-
-                //only support 96NoW
-                mem.Position = boneRotOffset + animBinStart;
-                for (int j = 0; j < boneRotCount; j++)
-                {
-                    var offset = mem.Position;
-                    var rotX = mem.ReadSingle();
-                    var rotY = mem.ReadSingle();
-                    var rotZ = mem.ReadSingle();
-                    Debug.WriteLine($"RotKey {j}: X={rotX},Y={rotY},Z={rotZ}");
-                }
+                PropertyCollection props = export.GetProperties();
+                animSeq.UpdateProps(props, export.Game);
+                export.WritePropertiesAndBinary(props, animSeq);
             }
-
-            export.SetBinaryData(mem.ToArray());
         }
 
         public static void DumpAllExecFunctionsFromGame()

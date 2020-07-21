@@ -194,7 +194,7 @@ namespace ME3Explorer
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize)
+        public static void Serialize(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize = null)
         {
             int count = arr?.Length ?? 0;
             sc.Serialize(ref count);
@@ -305,7 +305,7 @@ namespace ME3Explorer
                 sc.ms.JumpTo(curPos);
             }
         }
-        public static void SerializeBulkData(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize)
+        public static void SerializeBulkData(this SerializingContainer2 sc, ref byte[] arr, SerializeDelegate<byte> serialize = null)
         {
             sc.SerializeConstInt(0);//bulkdataflags
             int elementCount = arr?.Length ?? 0;

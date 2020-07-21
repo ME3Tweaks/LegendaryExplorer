@@ -48,7 +48,6 @@
             this.firstPersonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dumpBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -242,8 +241,7 @@
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportTreeToolStripMenuItem,
-            this.dumpBinaryToolStripMenuItem});
+            this.exportTreeToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -254,13 +252,6 @@
             this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.exportTreeToolStripMenuItem.Text = "Export Tree";
             this.exportTreeToolStripMenuItem.Click += new System.EventHandler(this.exportTreeToolStripMenuItem_Click);
-            // 
-            // dumpBinaryToolStripMenuItem
-            // 
-            this.dumpBinaryToolStripMenuItem.Name = "dumpBinaryToolStripMenuItem";
-            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.dumpBinaryToolStripMenuItem.Text = "Dump Binary";
-            this.dumpBinaryToolStripMenuItem.Click += new System.EventHandler(this.dumpBinaryToolStripMenuItem_Click_1);
             // 
             // statusStrip1
             // 
@@ -462,7 +453,6 @@
         public System.Windows.Forms.ListBox listBox1;
         public System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.RichTextBox rtb1;
-        public System.Windows.Forms.ToolStripMenuItem dumpBinaryToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox MaterialBox;
         private System.Windows.Forms.ToolStripMenuItem savePCCToolStripMenuItem;
         private Scene3D.SceneRenderControl view;

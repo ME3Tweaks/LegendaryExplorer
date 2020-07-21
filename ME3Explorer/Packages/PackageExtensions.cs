@@ -100,7 +100,7 @@ namespace ME3Explorer.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.SetBinaryData(level.ToBytes(pcc));
+                levelExport.SetBinaryData(level);
             }
 
             return added;
@@ -113,7 +113,7 @@ namespace ME3Explorer.Packages
                 Level level = ObjectBinary.From<Level>(levelExport);
                 if (level.Actors.Remove(actor.UIndex))
                 {
-                    levelExport.SetBinaryData(level.ToBytes(pcc));
+                    levelExport.SetBinaryData(level);
                     return true;
                 }
             }
@@ -527,7 +527,7 @@ namespace ME3Explorer.Packages
 
             return false;
         }
-        public static void WritePropertAndBinary(this ExportEntry export, UProperty prop, ObjectBinary binary)
+        public static void WritePropertyAndBinary(this ExportEntry export, UProperty prop, ObjectBinary binary)
         {
             var props = export.GetProperties();
             props.AddOrReplaceProp(prop);
@@ -742,8 +742,6 @@ namespace ME3Explorer.Packages
                 archetypeEntry = archetype.Archetype;
             }
         }
-
-        public static void SetBinaryData(this ExportEntry export, ObjectBinary bin) => export.SetBinaryData(bin.ToBytes(export.FileRef, export.DataOffset + export.propsEnd()));
 
         public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);
     }

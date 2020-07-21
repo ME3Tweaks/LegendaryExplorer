@@ -583,11 +583,10 @@ namespace ME3Explorer.Packages
         public void WriteProperties(PropertyCollection props)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.Write(_data, 0, GetPropertyStart());
             props.WriteTo(m.Writer, FileRef);
-            int propStart = GetPropertyStart();
-            int propEnd = propsEnd();
-            byte[] propData = m.ToArray();
-            Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
+            m.Writer.WriteBytes(GetBinaryData());
+            Data = m.ToArray();
         }
 
         public int GetPropertyStart()
@@ -649,23 +648,30 @@ namespace ME3Explorer.Packages
         private int? propsEndOffset;
         public int propsEnd()
         {
-            if (propsEndOffset.HasValue)
-            {
-                return propsEndOffset.Value;
-            }
-            var props = GetProperties(true, true);
-            propsEndOffset = props.endOffset;
+            propsEndOffset ??= GetProperties(true, true).endOffset;
             return propsEndOffset.Value;
         }
 
         public byte[] GetBinaryData()
         {
-            return _data.Skip(propsEnd()).ToArray();
+            int start = propsEnd();
+            return _data.Slice(start, _data.Length - start);
         }
 
         public void SetBinaryData(byte[] binaryData)
         {
-            Data = _data.Take(propsEnd()).Concat(binaryData).ToArray();
+            var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.Write(_data, 0, propsEnd());
+            m.Writer.WriteBytes(binaryData);
+            Data = m.ToArray();
+        }
+
+        public void SetBinaryData(ObjectBinary bin)
+        {
+            var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.Write(_data, 0, propsEnd());
+            bin.WriteTo(m.Writer, FileRef, DataOffset);
+            Data = m.ToArray();
         }
 
         public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)

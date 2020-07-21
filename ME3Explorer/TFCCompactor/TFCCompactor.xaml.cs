@@ -13,6 +13,7 @@ using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -413,8 +414,8 @@ namespace ME3Explorer.TFCCompactor
                             {
                                 if (TFCsToPullFrom.Contains<string>(tfcNameProperty.Value))
                                 {
-                                    byte[] binary = movietexture.GetBinaryData();
-                                    int offset = BitConverter.ToInt32(binary, 12);
+                                    var binary = movietexture.GetBinaryData<TextureMovie>();
+                                    int offset = binary.DataOffset;
                                     string bikfile = $"{tfcNameProperty.Value}_{offset}";
                                     ExportsToBeReplaced.Add((file, movietexture.UIndex, bikfile));
                                     if (!MoviesToBeReplaced.ContainsKey(bikfile))
@@ -443,31 +444,29 @@ namespace ME3Explorer.TFCCompactor
                         fs.Flush();
                     }
                     //Import biks to cache
-                    CurrentOperationText = $"Compiling biks to cache...";
+                    CurrentOperationText = "Compiling biks to cache...";
                     foreach (var bik in MoviesToBeReplaced)
                     {
                         var addedmovie = ImportBiktoCache(Path.Combine(StagingDirectory, $"{bik.Key}.bik"), outputTFC);
                         MoviesWrittenToNewTFC.Add(bik.Key, addedmovie);
                     }
                     //Replace references in files
-                    CurrentOperationText = $"Replacing file references...";
+                    CurrentOperationText = "Replacing file references...";
                     foreach ((string fileName, int uIndex, string moviecacheOffset) in ExportsToBeReplaced)
                     {
                         using IMEPackage package = MEPackageHandler.OpenMEPackage(fileName);
                         var expTexMov = package.GetUExport(uIndex);
                         (int newLength, int newOffset) = MoviesWrittenToNewTFC[moviecacheOffset];
 
-                        byte[] binData = expTexMov.GetBinaryData();
-                        binData.OverwriteRange(0, BitConverter.GetBytes(1));
-                        binData.OverwriteRange(4, BitConverter.GetBytes(newLength));
-                        binData.OverwriteRange(8, BitConverter.GetBytes(newLength));
-                        binData.OverwriteRange(12, BitConverter.GetBytes(newOffset));
-                        expTexMov.SetBinaryData(binData);
-
                         var props = expTexMov.GetProperties();
                         props.AddOrReplaceProp(new NameProperty(tfcName, "TextureFileCacheName"));
                         props.AddOrReplaceProp(tfcGuid.ToGuidStructProp("TFCFileGuid"));
-                        expTexMov.WriteProperties(props);
+                        expTexMov.WritePropertiesAndBinary(props, new TextureMovie
+                        {
+                            IsExternal = true,
+                            DataSize = newLength,
+                            DataOffset = newOffset
+                        });
 
                         package.Save();
                     }
@@ -984,9 +983,9 @@ namespace ME3Explorer.TFCCompactor
         private void ExtractBikToFile(ExportEntry export, string destination)
         {
             MemoryStream bikMovie;
-            var binary = export.GetBinaryData();
-            int length = BitConverter.ToInt32(binary, 4);
-            int offset = BitConverter.ToInt32(binary, 12);
+            var binary = export.GetBinaryData<TextureMovie>();
+            int length = binary.DataSize;
+            int offset = binary.DataOffset;
             var tfcprop = export.GetProperty<NameProperty>("TextureFileCacheName");
             string tfcname = $"{tfcprop.Value}.tfc";
             string filePath = Path.Combine(StagingDirectory, tfcname);

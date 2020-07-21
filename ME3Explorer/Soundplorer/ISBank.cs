@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
+using StreamHelpers;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -20,10 +21,11 @@ namespace ME3Explorer.Soundplorer
             ParseBank(new EndianReader(new MemoryStream(File.ReadAllBytes(isbPath))), false);
         }
 
-        public ISBank(byte[] binData, bool isEmbedded)
+        public ISBank(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ParseBank(new EndianReader(ms), isEmbedded);
+            ms.Skip(4);
+            ParseBank(new EndianReader(ms), true);
         }
 
         private void ParseBank(EndianReader ms, bool isEmbedded)
@@ -150,7 +152,7 @@ namespace ME3Explorer.Soundplorer
                         break;
                     case "FFIR":
                     case "RIFF":
-                        if (blockName == "FFIR" && ms.BaseStream.Position == 0x4)
+                        if (blockName == "FFIR")
                         {
                             ms.Endian = Endian.Big;
                         }

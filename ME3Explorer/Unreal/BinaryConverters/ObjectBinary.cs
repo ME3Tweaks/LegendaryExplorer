@@ -60,6 +60,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "StaticMesh":
                     return From<StaticMesh>(export);
                 case "SkeletalMesh":
+                case "BioSocketSupermodel":
                     return From<SkeletalMesh>(export);
                 case "CoverMeshComponent":
                 case "InteractiveFoliageComponent":
@@ -173,6 +174,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<SoundCue>(export);
                 case "SoundNodeWave":
                     return From<SoundNodeWave>(export);
+                case "ObjectRedirector":
+                    return From<ObjectRedirector>(export);
+                case "TextureMovie":
+                    return From<TextureMovie>(export);
                 default:
                     return null;
             }

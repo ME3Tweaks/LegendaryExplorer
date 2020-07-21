@@ -28,6 +28,8 @@ using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
+using SharpDX;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -2691,7 +2693,7 @@ namespace ME3Explorer.Pathfinding_Editor
             /// <returns></returns>
             public List<Point3D> GetLocationData()
             {
-                return SharedPathfinding.GetCollectionLocationData(export, CollectionItems);
+                return SharedPathfinding.GetCollectionLocationData(export);
             }
 
             /// <summary>
@@ -3418,25 +3420,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry selectedEntry)
             {
 
-                if (!AllLevelObjects.Contains(selectedEntry))
+                if (Pcc.AddToLevelActorsIfNotThere(selectedEntry))
                 {
-                    byte[] leveldata = PersistentLevelExport.Data;
-                    int start = PersistentLevelExport.propsEnd();
-                    //Console.WriteLine("Found start of binary at {start.ToString("X8"));
-
-                    uint exportid = EndianReader.ToUInt32(leveldata, start, Pcc.Endian);
-                    start += 4;
-                    uint numberofitems = EndianReader.ToUInt32(leveldata, start, Pcc.Endian);
-                    numberofitems++;
-                    leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems));
-
-                    //Debug.WriteLine("Size before: {memory.Length);
-                    //memory = RemoveIndices(memory, offset, size);
-                    int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
-                    List<byte> memList = leveldata.ToList();
-                    memList.InsertRange(offset, BitConverter.GetBytes(selectedEntry.UIndex));
-                    leveldata = memList.ToArray();
-                    PersistentLevelExport.Data = leveldata;
                     RefreshGraph();
                 }
                 else
@@ -3763,10 +3748,8 @@ namespace ME3Explorer.Pathfinding_Editor
                         {
                             SharedPathfinding.CreateReachSpec(previousNode, true, newNode, "Engine.ReachSpec", new ReachSpecSize(null, ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
                         }
-                        if (firstNode == null)
-                        {
-                            firstNode = newNode;
-                        }
+
+                        firstNode ??= newNode;
                         previousNode = newNode;
                     }
                 }
@@ -3788,80 +3771,45 @@ namespace ME3Explorer.Pathfinding_Editor
                 switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
+                    {
+                        var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
+                        foreach (UIndex uIndex in smca.Components)
                         {
-                            //This is going to get ugly.
-
-                            byte[] data = exp.Data;
-                            //get a list of staticmesh stuff from the props.
-                            int listsize = EndianReader.ToInt32(data, 28, Pcc.Endian);
-                            var smacitems = new List<ExportEntry>();
-                            for (int i = 0; i < listsize; i++)
+                            if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
                             {
-                                int offset = 32 + i * 4;
-                                //fetch exports
-                                int entryval = EndianReader.ToInt32(data, offset, Pcc.Endian);
-                                if (entryval > 0 && entryval < Pcc.ExportCount)
-                                {
-                                    ExportEntry export = (ExportEntry)Pcc.GetEntry(entryval);
-                                    smacitems.Add(export);
-                                }
-                                else if (entryval == 0)
-                                {
-                                    smacitems.Add(null);
-                                }
+                                InvertScalingOnExport(smComponent, "Scale3D");
                             }
+                        }
 
-                            //find start of class binary (end of props)
-                            int start = exp.propsEnd();
+                        for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
+                        {
+                            Matrix m = smca.LocalToWorldTransforms[i];
+                            m.TranslationVector *= -1;
+                            smca.LocalToWorldTransforms[i] = m;
+                        }
+                        exp.SetBinaryData(smca);
+                        break;
+                    }
+                    default:
+                    {
+                        var props = exp.GetProperties();
+                        StructProperty locationProp = props.GetProp<StructProperty>("location");
+                        if (locationProp != null)
+                        {
+                            FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                            FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                            FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                            Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                            if (data.Length - start < 4)
-                            {
-                                return;
-                            }
+                            xProp.Value *= -1;
+                            yProp.Value *= -1;
+                            zProp.Value *= -1;
 
-                            //Lets make sure this binary is divisible by 64.
-                            if ((data.Length - start) % 64 != 0)
-                            {
-                                return;
-                            }
-
-                            int smcaindex = 0;
-                            while (start < data.Length && smcaindex < listsize - 1)
-                            {
-                                float x = EndianReader.ToSingle(data, start + smcaindex * 64 + (12 * 4), Pcc.Endian);
-                                float y = EndianReader.ToSingle(data, start + smcaindex * 64 + (13 * 4), Pcc.Endian);
-                                float z = EndianReader.ToSingle(data, start + smcaindex * 64 + (14 * 4), Pcc.Endian);
-                                data.OverwriteRange(start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
-                                data.OverwriteRange(start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
-                                data.OverwriteRange(start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
-
-                                InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
-                                smcaindex++;
-                                Debug.WriteLine($"{exp.UIndex} {smcaindex} SMAC Flipping {x},{y},{z}");
-                            }
-                            exp.Data = data;
+                            exp.WriteProperty(locationProp);
+                            InvertScalingOnExport(exp, "DrawScale3D");
                         }
                         break;
-                    default:
-                        {
-                            var props = exp.GetProperties();
-                            StructProperty locationProp = props.GetProp<StructProperty>("location");
-                            if (locationProp != null)
-                            {
-                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
-                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
-                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
-
-                                xProp.Value *= -1;
-                                yProp.Value *= -1;
-                                zProp.Value *= -1;
-
-                                exp.WriteProperty(locationProp);
-                                InvertScalingOnExport(exp, "DrawScale3D");
-                            }
-                            break;
-                        }
+                    }
                 }
             }
             MessageBox.Show("Items flipped.", "Flipping complete");
@@ -3870,32 +3818,15 @@ namespace ME3Explorer.Pathfinding_Editor
         private static void InvertScalingOnExport(ExportEntry exp, string propname)
         {
             var drawScale3D = exp.GetProperty<StructProperty>(propname);
-            bool hasDrawScale = drawScale3D != null;
             if (drawScale3D == null)
             {
-
-                //What in god's name is this still doing here
-                drawScale3D = new StructProperty("Vector", new PropertyCollection
-                {
-                    new FloatProperty(0, "X"),
-                    new FloatProperty(0, "Y"),
-                    new FloatProperty(0, "Z")
-                }, "DrawScale3D", true);
-            }
-            var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
-            var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
-            var drawScaleZ = drawScale3D.GetProp<FloatProperty>("Z");
-            if (!hasDrawScale)
-            {
-                drawScaleX.Value = -1;
-                drawScaleY.Value = -1;
-                drawScaleZ.Value = -1;
+                drawScale3D = CommonStructs.Vector3Prop(-1, -1, -1, propname);
             }
             else
             {
-                drawScaleX.Value = -drawScaleX.Value;
-                drawScaleY.Value = -drawScaleY.Value;
-                drawScaleZ.Value = -drawScaleZ.Value;
+                drawScale3D.GetProp<FloatProperty>("X").Value *= -1;
+                drawScale3D.GetProp<FloatProperty>("Y").Value *= -1;
+                drawScale3D.GetProp<FloatProperty>("Z").Value *= -1;
             }
             exp.WriteProperty(drawScale3D);
         }

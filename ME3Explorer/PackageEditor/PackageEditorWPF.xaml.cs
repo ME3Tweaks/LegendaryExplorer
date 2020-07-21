@@ -3700,7 +3700,7 @@ namespace ME3Explorer
                     level.Actors.Add(actorExport.UIndex);
                 }
 
-                targetPersistentLevel.SetBinaryData(level.ToBytes(targetPersistentLevel.FileRef));
+                targetPersistentLevel.SetBinaryData(level);
             }
 
 
@@ -4269,7 +4269,7 @@ namespace ME3Explorer
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
             MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<string>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4292,7 +4292,7 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "SoundNodeWave", true)) break;
+                    if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
                     //ScanScripts(filePath);
                     //if (interestingExports.Count > 0)
@@ -4668,15 +4668,14 @@ namespace ME3Explorer
             ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
             if (terrain != null)
             {
-                byte[] binarydata = terrain.GetBinaryData();
-                uint numheights = BitConverter.ToUInt32(binarydata, 0);
                 Random r = new Random();
-                for (uint i = 0; i < numheights; i++)
-                {
-                    binarydata.OverwriteRange((int)(4 + i * 2), BitConverter.GetBytes((short)(r.Next(2000) + 13000)));
-                }
 
-                terrain.SetBinaryData(binarydata);
+                var terrainBin = terrain.GetBinaryData<Terrain>();
+                for (int i = 0; i < terrainBin.Heights.Length; i++)
+                {
+                    terrainBin.Heights[i] = (ushort)(r.Next(2000) + 13000);
+                }
+                terrain.SetBinaryData(terrainBin);
             }
         }
 
@@ -4865,7 +4864,7 @@ namespace ME3Explorer
                     };
                     tempPcc.AddExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
-                    levelExport.SetBinaryData(level.ToBytes(tempPcc));
+                    levelExport.SetBinaryData(level);
                 }
 
                 tempPcc.Save();

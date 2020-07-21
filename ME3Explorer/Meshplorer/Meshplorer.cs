@@ -429,54 +429,6 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void dumpBinaryToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            int n;
-            if (stm != null)
-            {
-                n = stm.Export.UIndex; //TODO: CHANGE FOR UINDEXING
-            }
-            else if (skm != null)
-            {
-                n = skm.Export.UIndex;
-            }
-            else
-            {
-                return;
-            }
-
-            ExportEntry export = Pcc.GetUExport(n);
-            if (export.ClassName == "StaticMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = export.ObjectName.Instanced + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    fs.WriteFromBuffer(export.GetBinaryData());
-                    fs.Close();
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
-            if (export.ClassName == "SkeletalMesh")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "*.bin|*.bin";
-                d.FileName = export.ObjectName.Instanced + ".bin";
-                if (d.ShowDialog() == DialogResult.OK)
-                {
-                    using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))
-                    {
-                        var data = export.GetBinaryData();
-                        fs.Write(data, 0, data.Length);
-                    }
-
-                    MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
-            }
-        }
-
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
