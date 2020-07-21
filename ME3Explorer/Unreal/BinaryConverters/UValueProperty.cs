@@ -23,8 +23,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref ArraySize);
             sc.Serialize(ref PropertyFlags);
-            sc.Serialize(ref Category);
-            sc.Serialize(ref ArraySizeEnum);
+            if (sc.Pcc.Platform == MEPackage.GamePlatform.PC)
+            {
+                sc.Serialize(ref Category);
+                sc.Serialize(ref ArraySizeEnum);
+            }
+
             if (PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Net))
             {
                 sc.Serialize(ref ReplicationOffset);
