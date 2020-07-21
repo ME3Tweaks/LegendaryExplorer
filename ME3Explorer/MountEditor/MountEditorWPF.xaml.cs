@@ -135,7 +135,8 @@ namespace ME3Explorer.MountEditor
                     Title = "Select Mount.dlc file save destination",
                     DefaultExtension = "dlc",
                     AlwaysAppendDefaultExtension = true,
-                    DefaultFileName = "mount.dlc"
+                    DefaultFileName = "mount.dlc",
+                    InitialDirectory = (!string.IsNullOrEmpty(CurrentMountFileText) && File.Exists(CurrentMountFileText) ? Path.GetDirectoryName(CurrentMountFileText) : null)
                 };
                 m.Filters.Add(new CommonFileDialogFilter("Mount files", ".dlc"));
                 if (m.ShowDialog() == CommonFileDialogResult.Ok)
