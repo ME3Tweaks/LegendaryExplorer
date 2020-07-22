@@ -9,6 +9,7 @@ using LZO2Helper;
 using SevenZipHelper;
 using StreamHelpers;
 using ZlibHelper;
+using LZXHelper;
 
 namespace ME3Explorer.Packages
 {
@@ -445,34 +446,35 @@ namespace ME3Explorer.Packages
 
 
             MemoryStream outStream = new MemoryStream();
+            List<(int blockCompressedSize, int blockDecompressedSize)> blockTable = new List<(int blockCompressedSize, int blockDecompressedSize)>();
 
-            // Decompression loop for block header
+            // Read Block Table
             int i = 0;
             while (i < blockCount)
             {
-                var blockCompressedSize = raw.ReadInt32();
-                var blockDecompressedSize = raw.ReadInt32();
+                blockTable.Add((raw.ReadInt32(), raw.ReadInt32()));
+                i++;
+            }
 
+            foreach (var btInfo in blockTable)
+            {
                 // Decompress
-                var datain = raw.ReadToBuffer(blockCompressedSize);
-                var dataout = new byte[blockDecompressedSize];
+                Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
+                var datain = raw.ReadToBuffer(btInfo.blockCompressedSize);
+                var dataout = new byte[btInfo.blockDecompressedSize];
                 switch (compressionType)
                 {
                     case UnrealPackageFile.CompressionType.LZO:
-                        {
-                            if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != blockDecompressedSize)
-                                throw new Exception("LZO decompression failed!");
-                            break;
-                        }
+                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            throw new Exception("LZO decompression failed!");
+                        break;
                     case UnrealPackageFile.CompressionType.Zlib:
-                        {
-                            if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != blockDecompressedSize)
-                                throw new Exception("Zlib decompression failed!");
-                            break;
-                        }
+                        if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            throw new Exception("Zlib decompression failed!");
+                        break;
                     case UnrealPackageFile.CompressionType.LZMA:
-                        dataout = LZMA.Decompress(datain, (uint)blockDecompressedSize);
-                        if (dataout.Length != blockDecompressedSize)
+                        dataout = LZMA.Decompress(datain, (uint)btInfo.blockDecompressedSize);
+                        if (dataout.Length != btInfo.blockDecompressedSize)
                             throw new Exception("LZMA decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZX:
@@ -484,7 +486,6 @@ namespace ME3Explorer.Packages
                 }
 
                 outStream.WriteFromBuffer(dataout);
-                i++;
             }
 
             outStream.Position = 0;
@@ -523,6 +524,7 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < Chunks.Count; i++)
             {
                 Chunk c = Chunks[i];
+                Debug.WriteLine($"Compressed offset at {c.compressedOffset:X8}");
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 raw.Read(c.Compressed, 0, c.compressedSize);
 
@@ -558,11 +560,8 @@ namespace ME3Explorer.Packages
                     throw new FormatException("Chunk magic number incorrect");
                 //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
                 int pos = 16;
-                int blockCount = (h.uncompressedsize % h.blocksize == 0)
-                    ?
-                    h.uncompressedsize / h.blocksize
-                    :
-                    h.uncompressedsize / h.blocksize + 1;
+                int blockCount = h.uncompressedsize / h.blocksize;
+                if (h.uncompressedsize % h.blocksize != 0) blockCount++;
                 var BlockList = new List<Block>();
                 //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
                 for (int j = 0; j < blockCount; j++)
@@ -584,9 +583,9 @@ namespace ME3Explorer.Packages
                     //Debug.WriteLine("Decompressing block " + blocknum);
                     var datain = new byte[b.compressedsize];
                     var dataout = new byte[b.uncompressedsize];
-                    //Buffer.BlockCopy(c.Compressed, pos, datain, 0, b.compressedsize);
-                                        for (int j = 0; j < b.compressedsize ; j++)
-                                          datain[j] = c.Compressed[pos + j];
+                    Buffer.BlockCopy(c.Compressed, pos, datain, 0, b.compressedsize);
+                    //for (int j = 0; j < b.compressedsize; j++)
+                    //    datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
                     switch (compressionType)

@@ -1,7 +1,7 @@
 /*
- * LZO2 Helper
+ * LZX Helper
  *
- * Copyright (C) 2014-2018 Pawel Kolodziejski
+ * Decompresion helper for Xbox LZX compression
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,19 +19,15 @@
  *
  */
 
- /*
-  * This code use lzo2wrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
-  *
-  * The dll is created using LZO2 library and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
-  *
-  */
+/*
+ * The dll is created using code from UEViewer:
+ * https://github.com/gildor2/UEViewer
+ */
 
 using System;
 using System.Runtime.InteropServices;
 
-namespace LZO2Helper
+namespace LZXHelper
 {
     public static class LZX
     {

@@ -196,36 +196,38 @@ namespace ME3Explorer.Packages
             {
                 //block size - this is a fully compressed file. we must decompress it
                 // these files are little endian package tag for some reason
-                var usfile = filePath + ".us";
-                var ucsfile = filePath + ".UNCOMPRESSED_SIZE";
-                if (File.Exists(usfile) || File.Exists(ucsfile))
+                //var usfile = filePath + ".us";
+                //var ucsfile = filePath + ".UNCOMPRESSED_SIZE";
+                //if (File.Exists(usfile) || File.Exists(ucsfile))
+                //{
+                //packageReader.Position = 0xC;
+                //var uncompSize = packageReader.ReadInt32();
+                ////calculate number of chunks
+                //int chunkCoumt = (uncompSize % 0x00020000 == 0)
+                //    ?
+                //    uncompSize / 0x00020000
+                //    :
+                //    uncompSize / 0x00020000 + 1; //round up
+
+                //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
+                if (versionLicenseePacked == 0x20000)
                 {
-                    //packageReader.Position = 0xC;
-                    //var uncompSize = packageReader.ReadInt32();
-                    ////calculate number of chunks
-                    //int chunkCoumt = (uncompSize % 0x00020000 == 0)
-                    //    ?
-                    //    uncompSize / 0x00020000
-                    //    :
-                    //    uncompSize / 0x00020000 + 1; //round up
-
-                    //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
-                    if (versionLicenseePacked == 0x20000)
-                    {
-                        //Xbox? LZX
-                        fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZX);
-                    }
-                    else if (versionLicenseePacked == 0x10000)
-                    {
-                        //PS3? LZMA
-                        fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZO);
-
-                    }
-                    packageReader = EndianReader.SetupForPackageReading(fs);
-                    packageReader.SkipInt32(); //skip magic as we have already read it
-                    Endian = packageReader.Endian;
-                    versionLicenseePacked = packageReader.ReadUInt32();
+                    //Xbox? LZX
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZX);
                 }
+                else if (versionLicenseePacked == 0x10000)
+                {
+                    //PS3? LZMA
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
+                } else
+                {
+                    // ??????
+                }
+                packageReader = EndianReader.SetupForPackageReading(fs);
+                packageReader.SkipInt32(); //skip magic as we have already read it
+                Endian = packageReader.Endian;
+                versionLicenseePacked = packageReader.ReadUInt32();
+                //}
             }
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
