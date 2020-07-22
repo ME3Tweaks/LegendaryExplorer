@@ -58,6 +58,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(IntegerLiteral node);
         bool VisitNode(NameLiteral node);
         bool VisitNode(StringLiteral node);
+        bool VisitNode(StringRefLiteral node);
 
         bool VisitNode(ConditionalExpression node);
         bool VisitNode(CastExpression node);

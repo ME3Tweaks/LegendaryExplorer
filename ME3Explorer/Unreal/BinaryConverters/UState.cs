@@ -53,6 +53,12 @@ namespace ME3Explorer.Unreal.BinaryConverters
         Auto = 2,
         Simulated = 4,
     }
+
+    public struct LabelTableEntry
+    {
+        public NameReference NameRef;
+        public uint Offset; // standard bytescript MemOffs
+    }
 }
 
 namespace ME3Explorer

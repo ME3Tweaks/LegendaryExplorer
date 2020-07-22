@@ -1,4 +1,4 @@
-﻿<global:ExportLoaderControl x:Class="ME3Explorer.UnrealScriptWPF"
+﻿<global:ExportLoaderControl x:Class="ME3Explorer.BytecodeEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

@@ -1,6 +1,4 @@
-﻿using ME3Data.DataTypes;
-using ME3Data.Utility;
-using ME3Script.Analysis.Visitors;
+﻿using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -8,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Decompiling
 {
@@ -15,8 +15,8 @@ namespace ME3Script.Decompiling
     {
         public Statement DecompileStatement()
         {
-            StartPositions.Push((UInt16)Position);
-            var token = CurrentByte;
+            StartPositions.Push((ushort)Position);
+            var token = PeekByte;
 
             switch (token)
             {
@@ -126,17 +126,17 @@ namespace ME3Script.Decompiling
         private void DecompileLabelTable()
         {
             PopByte();
-            var name = ReadNameRef();
+            var name = ReadNameReference();
             var ofs = ReadUInt32();
             while (ofs != 0x0000FFFF) // ends with non-ref + max-offset
             {
-                var entry = new LabelTableEntry();
-                entry.NameRef = name;
-                entry.Name = PCC.GetName(name);
-                entry.Offset = ofs;
-                LabelTable.Add(entry);
+                LabelTable.Add(new LabelTableEntry
+                {
+                    NameRef = name,
+                    Offset = ofs
+                });
 
-                name = ReadNameRef();
+                name = ReadNameReference();
                 ofs = ReadUInt32();
             }
         }
@@ -304,11 +304,15 @@ namespace ME3Script.Decompiling
             CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size)
             {
-                if (CurrentIs(StandardByteCodes.IteratorNext) && PeekByte == (byte)StandardByteCodes.IteratorPop)
+                if (CurrentIs(StandardByteCodes.IteratorNext))
                 {
                     PopByte(); // IteratorNext
-                    PopByte(); // IteratorPop
-                    break;
+                    if (PeekByte == (byte)StandardByteCodes.IteratorPop)
+                    {
+                        PopByte(); // IteratorPop
+                        break;
+                    }
+                    Position--;
                 }
 
                 var current = DecompileStatement();

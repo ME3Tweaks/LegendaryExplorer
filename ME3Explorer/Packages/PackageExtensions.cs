@@ -218,7 +218,7 @@ namespace ME3Explorer.Packages
 
             void findPropertyReferences(PropertyCollection props, ExportEntry exp, bool isInImmutable = false, string prefix = "")
             {
-                foreach (UProperty prop in props)
+                foreach (Property prop in props)
                 {
                     if (!isInImmutable && prop.Name.Name == name)
                     {
@@ -448,7 +448,7 @@ namespace ME3Explorer.Packages
             void findPropertyReferences(PropertyCollection props, ExportEntry exp)
             {
 
-                foreach (UProperty prop in props)
+                foreach (Property prop in props)
                 {
                     switch (prop)
                     {
@@ -492,12 +492,12 @@ namespace ME3Explorer.Packages
     public static class ExportEntryExtensions
     {
 
-        public static T GetProperty<T>(this ExportEntry export, string name) where T : UProperty
+        public static T GetProperty<T>(this ExportEntry export, string name) where T : Property
         {
             return export.GetProperties().GetProp<T>(name);
         }
 
-        public static void WriteProperty(this ExportEntry export, UProperty prop)
+        public static void WriteProperty(this ExportEntry export, Property prop)
         {
             var props = export.GetProperties();
             props.AddOrReplaceProp(prop);
@@ -507,8 +507,8 @@ namespace ME3Explorer.Packages
         public static bool RemoveProperty(this ExportEntry export, string propname)
         {
             var props = export.GetProperties();
-            UProperty propToRemove = null;
-            foreach (UProperty prop in props)
+            Property propToRemove = null;
+            foreach (Property prop in props)
             {
                 if (prop.Name == propname)
                 {
@@ -527,7 +527,7 @@ namespace ME3Explorer.Packages
 
             return false;
         }
-        public static void WritePropertyAndBinary(this ExportEntry export, UProperty prop, ObjectBinary binary)
+        public static void WritePropertyAndBinary(this ExportEntry export, Property prop, ObjectBinary binary)
         {
             var props = export.GetProperties();
             props.AddOrReplaceProp(prop);
@@ -678,7 +678,7 @@ namespace ME3Explorer.Packages
 
             void findPropertyReferences(PropertyCollection props, ExportEntry exp, string prefix = "")
             {
-                foreach (UProperty prop in props)
+                foreach (Property prop in props)
                 {
                     switch (prop)
                     {
@@ -731,7 +731,7 @@ namespace ME3Explorer.Packages
             while (archetypeEntry is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
-                foreach (UProperty prop in archProps)
+                foreach (Property prop in archProps)
                 {
                     if (!export.GetProperties().ContainsNamedProp(prop.Name))
                     {

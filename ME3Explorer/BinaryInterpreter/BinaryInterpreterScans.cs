@@ -4284,7 +4284,7 @@ namespace ME3Explorer
                 var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
+                foreach (Property prop in scriptStructProperties)
                 {
                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                 }
@@ -5231,7 +5231,7 @@ namespace ME3Explorer
                                 var props = PropertyCollection.ReadProps(CurrentLoadedExport, stream, "BioStageCamera", includeNoneProperty: true);
 
                                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                foreach (UProperty prop in props)
+                                foreach (Property prop in props)
                                 {
                                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                                 }

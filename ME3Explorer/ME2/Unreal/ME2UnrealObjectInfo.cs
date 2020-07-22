@@ -293,7 +293,7 @@ namespace ME2Explorer.Unreal
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is UProperty uProp)
+                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
                             {
                                 structProps.Add(uProp);
                             }
@@ -337,7 +337,7 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {

@@ -363,7 +363,7 @@ namespace ME3Explorer.Unreal
             };
         }
 
-        public static UProperty getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(MEGame game, string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
             switch (game)
             {
@@ -642,7 +642,7 @@ namespace ME3Explorer.Unreal
                             {
                                 continue;
                             }
-                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is UProperty uProp)
+                            if (getDefaultProperty(propName, propInfo, stripTransients, isImmutable) is Property uProp)
                             {
                                 props.Add(uProp);
                             }
@@ -684,7 +684,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static UProperty getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
+        public static Property getDefaultProperty(string propName, PropertyInfo propInfo, bool stripTransients = true, bool isImmutable = false)
         {
             switch (propInfo.Type)
             {

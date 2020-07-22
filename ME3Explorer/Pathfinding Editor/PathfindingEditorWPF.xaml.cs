@@ -27,7 +27,6 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
-using Gammtek.Conduit.IO;
 using SharpDX;
 using RectangleF = System.Drawing.RectangleF;
 
@@ -2008,7 +2007,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (exportTypeInfo != null)
             {
-                var ensuredProperties = new List<UProperty>();
+                var ensuredProperties = new List<Property>();
                 foreach (var ensuredProp in exportTypeInfo.ensuredproperties)
                 {
                     switch (ensuredProp.type)
@@ -2041,7 +2040,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
 
                 //Add ensured properties
-                foreach (UProperty prop in ensuredProperties)
+                foreach (Property prop in ensuredProperties)
                 {
                     if (!nodeProperties.ContainsNamedProp(prop.Name))
                     {

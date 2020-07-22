@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
 
 namespace ME3Script.Decompiling
 {
@@ -79,7 +80,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
 
-            var value = PCC.GetName(ReadNameRef());
+            var value = ReadNameReference();
 
             StartPositions.Pop();
             return new NameLiteral(value, null, null);

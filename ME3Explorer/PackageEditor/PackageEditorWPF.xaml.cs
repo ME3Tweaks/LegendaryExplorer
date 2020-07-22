@@ -37,12 +37,13 @@ using GongSolutions.Wpf.DragDrop;
 using Newtonsoft.Json;
 using StreamHelpers;
 using Gammtek.Conduit.Extensions.IO;
+using ME3Script.Analysis.Visitors;
+using ME3Script.Decompiling;
+using ME3Script.Language.Tree;
 using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3Explorer.Unreal.UnrealFlags;
 using Guid = System.Guid;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.IO.Converters;
 
 namespace ME3Explorer
 {
@@ -1455,7 +1456,7 @@ namespace ME3Explorer
 
             var badReferences = new List<ListDialog.EntryItem>();
 
-            void recursiveCheckProperty(IEntry entry, UProperty property)
+            void recursiveCheckProperty(IEntry entry, Property property)
             {
                 if (property is ObjectProperty op)
                 {
@@ -2116,7 +2117,8 @@ namespace ME3Explorer
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             ExportLoaders[FaceFXTab_Editor] = FaceFXAnimSet_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
-            ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
+            ExportLoaders[BytecodeTab_BytecodeEditor] = Bytecode_Tab;
+            ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
             ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
@@ -2825,9 +2827,9 @@ namespace ME3Explorer
                         BinaryInterpreter_Tab.IsSelected = true;
                     }
 
-                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Script_Tab.IsVisible)
+                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Bytecode_Tab.IsVisible)
                     {
-                        Script_Tab.IsSelected = true;
+                        Bytecode_Tab.IsSelected = true;
                     }
                 }
                 else if (selectedEntry is ImportEntry importEntry)
@@ -5548,7 +5550,7 @@ namespace ME3Explorer
             static PropertyCollection replacePropertyReferences(PropertyCollection props, int targetUIndex, int replaceUIndex, ref int replacementCount)
             {
                 var newprops = new PropertyCollection();
-                foreach (UProperty prop in props)
+                foreach (Property prop in props)
                 {
                     switch (prop)
                     {
@@ -5592,6 +5594,50 @@ namespace ME3Explorer
                 return newprops;
             }
 
+        }
+
+        private void DecompileObject_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (PackageIsLoaded() && Pcc.Game == MEGame.ME3 && TryGetSelectedExport(out ExportEntry export))
+            {
+                ASTNode ast;
+                switch (export.ClassName)
+                {
+                    case "Class":
+                        ast = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
+                        break;
+                    case "Function":
+                        ast = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>());
+                        break;
+                    case "State":
+                        ast = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>());
+                        break;
+                    case "Enum":
+                        ast = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
+                        break;
+                    case "ScriptStruct":
+                        ast = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
+                        break;
+                    default:
+                        if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
+                        {
+                            ast = ME3ObjectToASTConverter.ConvertVariable(uProp);
+                        }
+                        else
+                        {
+                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export.GetProperties(), Pcc);
+                        }
+                        break;
+                }
+
+                if (ast != null)
+                {
+                    var codeBuilder = new CodeBuilderVisitor();
+                    ast.AcceptVisitor(codeBuilder);
+                    var dlg = new ListDialog(codeBuilder.GetCodeLines(), $"{export.ClassName} {export.ObjectName} Decompilation", "", this);
+                    dlg.Show();
+                }
+            }
         }
     }
 }

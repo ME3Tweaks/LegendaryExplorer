@@ -12,7 +12,7 @@ using ME3Explorer.Properties;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(UProperty), typeof(Visibility))]
+    [ValueConversion(typeof(Property), typeof(Visibility))]
     public class UPropertyColorPickerVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

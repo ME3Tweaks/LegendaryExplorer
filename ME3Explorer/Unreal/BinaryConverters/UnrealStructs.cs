@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ME3Explorer.Packages;
 using SharpDX;
 using StreamHelpers;
 
@@ -22,6 +23,8 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static implicit operator UIndex(Packages.ExportEntry exp) => new UIndex(exp.UIndex);
 
         public static implicit operator UIndex(Packages.ImportEntry imp) => new UIndex(imp.UIndex);
+
+        public IEntry GetEntry(IMEPackage pcc) => pcc.GetEntry(value);
 
         #region IEquatable
 

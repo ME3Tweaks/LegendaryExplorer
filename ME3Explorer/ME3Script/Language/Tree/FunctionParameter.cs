@@ -10,6 +10,8 @@ namespace ME3Script.Language.Tree
 {
     public class FunctionParameter : Variable
     {
+        public bool IsOptional;
+
         public FunctionParameter(VariableType type, List<Specifier> specs,
             VariableIdentifier variable, SourcePosition start, SourcePosition end)
             : base(specs, variable, type, start, end)

@@ -638,7 +638,7 @@ namespace ME3Explorer.PackageDumper
                                     {
                                         stringoutput.WriteLine("==============Properties==============");
                                         UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                        foreach (UProperty prop in props)
+                                        foreach (Property prop in props)
                                         {
                                             InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
                                         }

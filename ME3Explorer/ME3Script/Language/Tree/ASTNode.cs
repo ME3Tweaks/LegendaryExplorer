@@ -55,6 +55,7 @@ namespace ME3Script.Language.Tree
         StringLiteral,
         NameLiteral,
         BooleanLiteral,
+        StringRefLiteral,
 
         ConditionalExpression,
         CastExpression,
@@ -70,13 +71,14 @@ namespace ME3Script.Language.Tree
 
         public ASTNode Outer;
 
-        public SourcePosition StartPos { get; private set; }
-        public SourcePosition EndPos { get; private set; }
+        public SourcePosition StartPos { get; }
+        public SourcePosition EndPos { get; }
 
-        public ASTNode(ASTNodeType type, SourcePosition start, SourcePosition end)
+        protected ASTNode(ASTNodeType type, SourcePosition start, SourcePosition end)
         {
             Type = type;
-            StartPos = start; EndPos = end;
+            StartPos = start; 
+            EndPos = end;
         }
 
         public abstract bool AcceptVisitor(IASTVisitor visitor);

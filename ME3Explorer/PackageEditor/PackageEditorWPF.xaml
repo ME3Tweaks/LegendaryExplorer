@@ -24,6 +24,7 @@
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
         xmlns:particleSystems="clr-namespace:ME3Explorer.ParticleSystems"
+        xmlns:me3Script="clr-namespace:ME3Explorer.ME3Script"
         Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -269,6 +270,7 @@
                         <MenuItem Header="UDKify" Click="UDKifyTest"/>
                         <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                         <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
+                        <MenuItem Header="Decompile Object (ME3 Only!)" Click="DecompileObject_OnClick" />
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Replace all references to selection" Click="ReplaceReferenceLinks"/>
@@ -530,11 +532,17 @@
                         </TabItem.Header>
                         <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
                     </TabItem>
+                    <TabItem Name="Bytecode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>
+                        </TabItem.Header>
+                        <global:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
+                    </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Script" ToolTip="View and edit UnrealScript functions"/>
+                            <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
                         </TabItem.Header>
-                        <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
+                        <me3Script:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

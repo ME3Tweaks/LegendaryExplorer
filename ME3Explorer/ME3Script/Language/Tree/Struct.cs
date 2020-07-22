@@ -15,7 +15,7 @@ namespace ME3Script.Language.Tree
         public List<VariableDeclaration> Members;
         public DefaultPropertiesBlock DefaultProperties;
 
-        public Struct(String name, List<Specifier> specs,
+        public Struct(string name, List<Specifier> specs,
             List<VariableDeclaration> members,
             SourcePosition start, SourcePosition end, VariableType parent = null)
             : base(name, start, end)
@@ -31,10 +31,10 @@ namespace ME3Script.Language.Tree
             return visitor.VisitNode(this);
         }
 
-        public bool SameOrSubStruct(String name)
+        public bool SameOrSubStruct(string name)
         {
-            String nodeName = this.Name.ToLower();
-            String inputName = name.ToLower();
+            string nodeName = this.Name.ToLower();
+            string inputName = name.ToLower();
             if (nodeName == inputName)
                 return true;
             Struct current = this;

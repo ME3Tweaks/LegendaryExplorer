@@ -432,7 +432,7 @@ namespace ME3Explorer
             }
         }
 
-        private void SortArrayPropertyValue(UProperty property, bool ascending)
+        private void SortArrayPropertyValue(Property property, bool ascending)
         {
             switch (property)
             {
@@ -449,7 +449,7 @@ namespace ME3Explorer
             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
         }
 
-        private void SortArrayPropertyParsed(UProperty property, bool ascending)
+        private void SortArrayPropertyParsed(Property property, bool ascending)
         {
             switch (property)
             {
@@ -554,7 +554,7 @@ namespace ME3Explorer
             }
 
             var props = new List<string>();
-            foreach (UProperty cProp in CurrentLoadedProperties)
+            foreach (Property cProp in CurrentLoadedProperties)
             {
                 //build a list we are going to the add dialog
                 props.Add(cProp.Name);
@@ -564,7 +564,7 @@ namespace ME3Explorer
 
             if (prop.HasValue)
             {
-                UProperty newProperty = null;
+                Property newProperty = null;
                 (string propName, PropertyInfo propInfo) = prop.Value;
                 //Todo: Maybe lookup the default value?
                 switch (propInfo.Type)
@@ -659,7 +659,7 @@ namespace ME3Explorer
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is StructProperty sp)
             {
                 PropertyCollection defaultProps = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
-                foreach (UProperty prop in sp.Properties)
+                foreach (Property prop in sp.Properties)
                 {
                     defaultProps.AddOrReplaceProp(prop);
                 }
@@ -784,7 +784,7 @@ namespace ME3Explorer
                 try
                 {
                     CurrentLoadedProperties = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
-                    foreach (UProperty prop in CurrentLoadedProperties)
+                    foreach (Property prop in CurrentLoadedProperties)
                     {
                         GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
                     }
@@ -834,7 +834,7 @@ namespace ME3Explorer
 
 
         #region Static tree generating code (shared with BinaryInterpreterWPF)
-        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, ExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
+        public static void GenerateUPropertyTreeForProperty(Property prop, UPropertyTreeViewEntry parent, ExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, export, displayPrefix, PropertyChangedHandler);
             switch (prop)
@@ -856,7 +856,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            foreach (UProperty listProp in arrayProp.Properties)
+                            foreach (Property listProp in arrayProp.Properties)
                             {
                                 GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
                             }
@@ -879,7 +879,7 @@ namespace ME3Explorer
             ParentNameList = namesList;
         }
 
-        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, ExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
+        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(Property prop, UPropertyTreeViewEntry parent, ExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             string displayName = displayPrefix;
             if (!(parent.Property is ArrayPropertyBase))
@@ -1816,7 +1816,7 @@ namespace ME3Explorer
             bool updated = false;
             if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null)
             {
-                UProperty property = tvi.Property;
+                Property property = tvi.Property;
                 switch (property)
                 {
                     case IntProperty ip:
@@ -2315,13 +2315,13 @@ namespace ME3Explorer
         /// <summary>
         /// The UProperty object from the export's properties that this node represents
         /// </summary>
-        public UProperty Property { get; set; }
+        public Property Property { get; set; }
         /// <summary>
         /// List of children properties that link to this node.
         /// Only Struct and ArrayProperties will have this populated.
         /// </summary>
         public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; set; }
-        public UPropertyTreeViewEntry(UProperty property, string displayName = null)
+        public UPropertyTreeViewEntry(Property property, string displayName = null)
         {
             Property = property;
             DisplayName = displayName;

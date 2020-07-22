@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
 {
     public abstract class Expression : ASTNode
     {
-        public Expression(ASTNodeType type, SourcePosition start, SourcePosition end) 
+        protected Expression(ASTNodeType type, SourcePosition start, SourcePosition end) 
             : base(type, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

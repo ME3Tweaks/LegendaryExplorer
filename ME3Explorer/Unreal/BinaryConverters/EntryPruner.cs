@@ -120,7 +120,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             var infoProps = UnrealObjectInfo.GetAllProperties(newGame, typeName);
 
             var newProps = new PropertyCollection();
-            foreach (UProperty prop in props)
+            foreach (Property prop in props)
             {
                 if (infoProps.ContainsKey(prop.Name))
                 {

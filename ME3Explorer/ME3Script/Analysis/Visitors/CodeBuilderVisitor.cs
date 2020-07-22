@@ -13,7 +13,7 @@ namespace ME3Script.Analysis.Visitors
 {
     public class CodeBuilderVisitor : IASTVisitor
     {
-        private List<String> Lines;
+        private List<string> Lines;
         private int NestingLevel;
         private Stack<int> ExpressionPrescedence;
 
@@ -21,32 +21,32 @@ namespace ME3Script.Analysis.Visitors
 
         public CodeBuilderVisitor()
         {
-            Lines = new List<String>();
+            Lines = new List<string>();
             NestingLevel = 0;
             ExpressionPrescedence = new Stack<int>();
             ExpressionPrescedence.Push(NOPRESCEDENCE);
         }
 
-        public IList<String> GetCodeLines()
+        public IList<string> GetCodeLines()
         {
             return Lines.AsReadOnly();
         }
 
-        public String GetCodeString()
+        public string GetCodeString()
         {
-            return String.Join("\n", Lines.ToArray());
+            return string.Join("\n", Lines);
         }
 
-        private void Write(String text, params object[] args)
+        private void Write(string text, params object[] args)
         {
-            Lines.Add(new String('\t', NestingLevel) + (args.Length > 0 ? String.Format(text, args) : text));
+            Lines.Add(new string('\t', NestingLevel) + (args.Length > 0 ? string.Format(text, args) : text));
         }
 
-        private void Append(String text, params object[] args)
+        private void Append(string text, params object[] args)
         {
             if (Lines.Count == 0)
                 Lines.Add("");
-            Lines[Lines.Count - 1] += args.Length > 0 ? String.Format(text, args) : text;
+            Lines[Lines.Count - 1] += args.Length > 0 ? string.Format(text, args) : text;
         }
 
         public bool VisitNode(Class node)
@@ -56,7 +56,7 @@ namespace ME3Script.Analysis.Visitors
             if (node.OuterClass.Name != node.Parent.Name)
                 Append("within {0} ", node.OuterClass.Name);
             if (node.Specifiers.Count > 0)
-                Append("{0}", String.Join(" ", node.Specifiers.Select(x => x.Value)));
+                Append("{0}", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             Append(";");
 
             // print the rest of the class, according to the standard "anatomy of an unrealscript" article.
@@ -115,7 +115,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Variable node)
         {
-            String type = "ERROR";
+            string type = "ERROR";
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
                 type = "var";
             else if (node.Outer.Type == ASTNodeType.Function)
@@ -124,8 +124,8 @@ namespace ME3Script.Analysis.Visitors
             // var|local [specifiers] variabletype variablename[[staticarraysize]];
             Write("{0} ", type);
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
-            String staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
+            string staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
             Append("{0} {1};", node.VarType.Name, node.Name + staticarray);
             
             return true;
@@ -142,7 +142,7 @@ namespace ME3Script.Analysis.Visitors
             // struct [specifiers] structname [extends parentstruct] { \n contents \n };
             Write("struct ");
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             Append("{0} ", node.Name);
             if (node.Parent != null)
                 Append("extends {0} ", node.Parent.Name);
@@ -178,7 +178,7 @@ namespace ME3Script.Analysis.Visitors
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
             Write("");
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             Append("function {0}{1}( ", (node.ReturnType != null ? node.ReturnType.Name + " " : ""), node.Name);
             foreach (FunctionParameter p in node.Parameters)
             {
@@ -208,8 +208,8 @@ namespace ME3Script.Analysis.Visitors
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
-            String staticarray = node.Variables[0].Size != -1 ? "[" + node.Variables[0].Size + "]" : "";
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
+            string staticarray = node.Variables[0].Size != -1 ? "[" + node.Variables[0].Size + "]" : "";
             Append("{0} {1}{2}", node.VarType.Name, node.Name, staticarray);
 
             return true;
@@ -220,7 +220,7 @@ namespace ME3Script.Analysis.Visitors
             // [specifiers] state statename [extends parentstruct] { \n contents \n };
             Write("");
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             Append("state {0} ", node.Name);
             if (node.Parent != null)
                 Append("extends {0} ", node.Parent.Name);
@@ -228,7 +228,7 @@ namespace ME3Script.Analysis.Visitors
             NestingLevel++;
 
             if (node.Ignores.Count > 0)
-                Write("ignores {0};", String.Join(", ", node.Ignores.Select(x => x.Name)));
+                Write("ignores {0};", string.Join(", ", node.Ignores.Select(x => x.Name)));
 
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
@@ -252,7 +252,7 @@ namespace ME3Script.Analysis.Visitors
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
             Write("");
             if (node.Specifiers.Count > 0)
-                Append("{0} ", String.Join(" ", node.Specifiers.Select(x => x.Value)));
+                Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             
             if (node.Type == ASTNodeType.InfixOperator)
             {
@@ -657,6 +657,12 @@ namespace ME3Script.Analysis.Visitors
         {
             // "string"
             Append("\"{0}\"", node.Value);
+            return true;
+        }
+
+        public bool VisitNode(StringRefLiteral node)
+        {
+            Append("${0}", node.Value);
             return true;
         }
 

@@ -1,6 +1,4 @@
-﻿using ME3Data.DataTypes;
-using ME3Data.DataTypes.ScriptTypes;
-using ME3Script.Analysis.Visitors;
+﻿using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
@@ -8,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
+using ME3Explorer.Packages;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Decompiling
 {
@@ -16,8 +17,8 @@ namespace ME3Script.Decompiling
 
         public Expression DecompileExpression()
         {
-            StartPositions.Push((UInt16)Position);
-            var token = CurrentByte;
+            StartPositions.Push((ushort)Position);
+            var token = PeekByte;
 
             if (token >= 0x80) // native table
             {
@@ -28,7 +29,7 @@ namespace ME3Script.Decompiling
                 var higher = ReadByte() & 0x0F;
                 var lower = ReadByte();
                 int index = (higher << 8) + lower;
-                return DecompileNativeFunction((UInt16)index);
+                return DecompileNativeFunction((ushort)index);
             }
             else switch (token)
             {
@@ -395,7 +396,7 @@ namespace ME3Script.Decompiling
             return value; // TODO: is this correct? should we contain it?
         }
 
-        public Expression DecompileInOpNaive(String opName, bool useEndOfParms = false, bool isStruct = false)
+        public Expression DecompileInOpNaive(string opName, bool useEndOfParms = false, bool isStruct = false)
         {
             // TODO: ugly, wrong.
             PopByte();
@@ -443,7 +444,7 @@ namespace ME3Script.Decompiling
             return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
         }
 
-        public Expression DecompileNativeFunction(UInt16 index)
+        public Expression DecompileNativeFunction(ushort index)
         {
             var parameters = new List<Expression>();
             while (!CurrentIs(StandardByteCodes.EndFunctionParms))
@@ -494,7 +495,7 @@ namespace ME3Script.Decompiling
             if (expr == null)
                 return null; // ERROR
 
-            String type = objRef.ObjectName;
+            string type = objRef.ObjectName;
             if (meta)
                 type = "class<" + type + ">";
 
@@ -512,7 +513,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             // TODO: map this out, possibly most are implicit?
-            String type = PrimitiveCastTable[typeToken];
+            string type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
             return new CastExpression(new VariableType(type, null, null), expr, null, null);
@@ -521,23 +522,32 @@ namespace ME3Script.Decompiling
         public Expression DecompileFunctionCall(bool byName = false, bool withUnknShort = false, bool global = false)
         {
             PopByte();
-            String funcName;
+            string funcName;
             if (byName)
             {
-                funcName = PCC.GetName(ReadNameRef());
+                funcName = ReadNameReference();
             }
             else
             {
                 var funcObj = ReadObject();
                 funcName = funcObj.ObjectName;
                 
-                if (funcName == DataContainer.Name && !isInClassContext) // If we're calling ourself, it's a super call
+                if (funcName == DataContainer.Export.ObjectName && !isInClassContext) // If we're calling ourself, it's a super call
                 {
                     var str = "super";
-
-                    var currentClass = DataContainer.ExportEntry.GetOuterOfType("Class").Object as ME3Class;
-                    var funcOuterClass = funcObj.GetOuterOfType("Class").ObjectName;
-                    if (currentClass != null && currentClass.SuperField != null && currentClass.SuperField.Name == funcOuterClass)
+                    var classExp = DataContainer.Export.Parent;
+                    while (classExp != null && classExp.ClassName != "Class")
+                    {
+                        classExp = classExp.Parent;
+                    }
+                    var currentClass = (classExp as ExportEntry).GetBinaryData<UClass>();
+                    classExp = funcObj;
+                    while (classExp != null && classExp.ClassName != "Class")
+                    {
+                        classExp = classExp.Parent;
+                    }
+                    var funcOuterClass = classExp.ObjectName;
+                    if (currentClass != null && currentClass.SuperClass != 0 && currentClass.SuperClass.GetEntry(PCC).ObjectName == funcOuterClass)
                         funcName = str + "." + funcName;
                     else
                         funcName = str + "(" + funcOuterClass + ")." + funcName;
@@ -633,12 +643,12 @@ namespace ME3Script.Decompiling
         public Expression DecompileDelegateProperty() // TODO: is this proper? Is it even used in ME3?
         {
             PopByte();
-            var name = PCC.GetName(ReadNameRef());
+            var name = ReadNameReference();
             var obj = ReadObject(); // probably the delegate
 
             StartPositions.Pop();
-            var objName = obj != null ? obj.ObjectName : "None";
-            return new SymbolReference(null, null, null, name + "(" + objName + ")");
+            var objName = obj != null ? obj.ObjectName.Instanced : "None";
+            return new SymbolReference(null, null, null, $"{name}({objName})");
         }
 
 #endregion
@@ -684,7 +694,7 @@ namespace ME3Script.Decompiling
         public Expression Decompile4F()
         {
             PopByte();
-            var index = ReadIndex(); // Unknown
+            var index = ReadInt32(); // Unknown
             /*var expr = DecompileExpression();
 
             StartPositions.Pop();
@@ -699,7 +709,7 @@ namespace ME3Script.Decompiling
         public Expression DecompileInstanceDelegate() // TODO: check code, seems ok?
         {
             PopByte();
-            var name = PCC.GetName(ReadNameRef());
+            var name = ReadNameReference();
 
             StartPositions.Pop();
             return new SymbolReference(null, null, null, "UNSUPPORTED: InstanceDelegate: " + name);

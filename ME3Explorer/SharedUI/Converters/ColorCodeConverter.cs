@@ -13,7 +13,7 @@ using Xceed.Wpf.Toolkit;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(UProperty), typeof(Color))]
+    [ValueConversion(typeof(Property), typeof(Color))]
     public class ColorCodeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
