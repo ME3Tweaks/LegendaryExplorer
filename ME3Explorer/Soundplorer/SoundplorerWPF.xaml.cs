@@ -475,7 +475,7 @@ namespace ME3Explorer.Soundplorer
             if (exportsToReload == null)
             {
                 BindedItemsList.Clear();
-                BindedItemsList.AddRange(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)));
+                BindedItemsList.AddRange(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream" || e.ClassName == "SoundNodeWave").Select(x => new SoundplorerExport(x)));
                 //SoundExports_ListBox.ItemsSource = BindedExportsList; //todo: figure out why this is required and data is not binding
             }
             else
@@ -1694,39 +1694,48 @@ namespace ME3Explorer.Soundplorer
 
         public void LoadData()
         {
-            if (Export.ClassName == "WwiseStream")
+            switch (Export.ClassName)
             {
-                WwiseStream w = Export.GetBinaryData<WwiseStream>();
-                string afcPath = w.GetPathToAFC();
-                if (afcPath == "")
+                case "WwiseStream":
                 {
-                    SubText = "Could not find AFC";
-                }
-                else
-                {
-                    TimeSpan? time = w.GetSoundLength();
-                    if (time != null)
+                    WwiseStream w = Export.GetBinaryData<WwiseStream>();
+                    string afcPath = w.GetPathToAFC();
+                    if (afcPath == "")
                     {
-                        //here backslash must be present to tell that parser colon is
-                        //not the part of format, it just a character that we want in output
-                        SubText = time.Value.ToString(@"mm\:ss\:fff");
+                        SubText = "Could not find AFC";
                     }
                     else
                     {
-                        SubText = "Error getting length, may be unsupported";
+                        TimeSpan? time = w.GetSoundLength();
+                        if (time != null)
+                        {
+                            //here backslash must be present to tell that parser colon is
+                            //not the part of format, it just a character that we want in output
+                            SubText = time.Value.ToString(@"mm\:ss\:fff");
+                        }
+                        else
+                        {
+                            SubText = "Error getting length, may be unsupported";
+                        }
                     }
+                    NeedsLoading = false;
+                    Icon = EFontAwesomeIcon.Solid_VolumeUp;
+                    break;
                 }
-                NeedsLoading = false;
-                Icon = EFontAwesomeIcon.Solid_VolumeUp;
+                case "WwiseBank":
+                {
+                    var bank = Export.GetBinaryData<WwiseBank>();
+                    SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
+                    NeedsLoading = false;
+                    Icon = EFontAwesomeIcon.Solid_University;
+                    break;
+                }
+                case "SoundNodeWave":
+                    SubText = "";
+                    NeedsLoading = false;
+                    Icon = EFontAwesomeIcon.Solid_VolumeUp;
+                    break;
             }
-            if (Export.ClassName == "WwiseBank")
-            {
-                var bank = Export.GetBinaryData<WwiseBank>();
-                SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
-                NeedsLoading = false;
-                Icon = EFontAwesomeIcon.Solid_University;
-            }
-
         }
     }
 }

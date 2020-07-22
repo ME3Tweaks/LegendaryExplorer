@@ -15,9 +15,9 @@ using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 namespace ME3Explorer
 {
     /// <summary>
-    /// Interaction logic for UnrealScriptWPF.xaml
+    /// Interaction logic for BytecodeEditor.xaml
     /// </summary>
-    public partial class UnrealScriptWPF : ExportLoaderControl
+    public partial class BytecodeEditor : ExportLoaderControl
     {
         private HexBox ScriptEditor_Hexbox;
         private bool ControlLoaded;
@@ -49,7 +49,7 @@ namespace ME3Explorer
 
         public bool HexBoxSelectionChanging { get; private set; }
 
-        public UnrealScriptWPF()
+        public BytecodeEditor()
         {
             InitializeComponent();
         }
@@ -72,8 +72,10 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new UnrealScriptWPF(), CurrentLoadedExport);
-                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
+                {
+                    Title = $"Bytcode Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
                 elhw.Show();
             }
         }

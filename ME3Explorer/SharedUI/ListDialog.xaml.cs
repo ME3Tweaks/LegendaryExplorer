@@ -47,13 +47,13 @@ namespace ME3Explorer.SharedUI
         }
 
 
-        public ListDialog(List<EntryItem> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        public ListDialog(IEnumerable<EntryItem> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);
             TopText = message;
         }
 
-        public ListDialog(List<string> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        public ListDialog(IEnumerable<string> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);
             TopText = message;

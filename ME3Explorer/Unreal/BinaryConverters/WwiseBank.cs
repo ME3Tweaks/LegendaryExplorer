@@ -18,8 +18,6 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint Unk2;//ME2
         public uint Unk3;
 
-        private uint DataOffset;
-
         private uint[] bkhdUnks;
         public uint Version; //If 0, this Bank is serialized empty. When creating a bank, make sure to set this!
         public uint ID;
@@ -64,8 +62,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             int dataSize = 0;
             sc.Serialize(ref dataSize);
             sc.Serialize(ref dataSize);
-            sc.Serialize(ref DataOffset);
-            //sc.SerializeFileOffset();
+            sc.SerializeFileOffset();
             if (sc.IsLoading && dataSize == 0 || sc.IsSaving && Version == 0)
             {
                 return;

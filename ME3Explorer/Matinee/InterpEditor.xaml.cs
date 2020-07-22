@@ -320,6 +320,11 @@ namespace ME3Explorer.Matinee
                     // subcontrol, 
                     timelineControl.RefreshInterpData(changedExport);
                 }
+
+                if (Properties_InterpreterWPF.CurrentLoadedExport == changedExport)
+                {
+                    Properties_InterpreterWPF.LoadExport(changedExport);
+                }
             }
         }
 

@@ -555,47 +555,13 @@ namespace ME3Explorer.Pathfinding_Editor
             var navGuidLists = new Dictionary<string, List<UnrealGUID>>();
             var duplicateGuids = new List<UnrealGUID>();
 
-            int start = PersistentLevel.propsEnd();
-            //Read persistent level binary
-            byte[] data = PersistentLevel.Data;
-
-            uint exportid = BitConverter.ToUInt32(data, start);
-            start += 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
-            int itemcount = 2;
-            start += 8;
-            while (itemcount < numberofitems)
+            foreach (UIndex itemexportid in PersistentLevel.GetBinaryData<Level>().Actors)
             {
-                //get header.
-                int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.IsUExport(itemexportid) && itemexportid > 0)
+                if (Pcc.TryGetUExport(itemexportid, out ExportEntry exportEntry) 
+                 && exportEntry.GetProperty<StructProperty>("NavGuid") is StructProperty navGuid)
                 {
-                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
-                    StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
-                    if (navguid != null)
-                    {
-                        UnrealGUID nav = new UnrealGUID(navguid);
-
-                        if (navGuidLists.TryGetValue(nav.ToString(), out List<UnrealGUID> list))
-                        {
-                            list.Add(nav);
-                        }
-                        else
-                        {
-                            list = new List<UnrealGUID>();
-                            navGuidLists[nav.ToString()] = list;
-                            list.Add(nav);
-                        }
-                    }
-                    start += 4;
-                    itemcount++;
-                }
-                else
-                {
-                    //INVALID or empty item encountered. We don't care right now though.
-                    start += 4;
-                    itemcount++;
+                    UnrealGUID nav = new UnrealGUID(navGuid);
+                    navGuidLists.AddToListAt(nav.ToString(), nav);
                 }
             }
 
@@ -611,18 +577,17 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
                         duplicateGuids.Add(guid);
-                        ListBoxTask v = new ListBoxTask
+                        ValidationTasks.Add(new ListBoxTask
                         {
-                            Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName.Instanced}",
+                            Header = $"Duplicate GUID found on export {guid.export.UIndex} {guid.export.ObjectName.Instanced}",
                             Icon = EFontAwesomeIcon.Solid_Times,
                             Spinning = false,
                             Foreground = Brushes.Red
-                        };
-                        ValidationTasks.Add(v);
+                        });
                     }
                 }
             }
-            task?.Complete(numduplicates + " duplicate GUID" + (numduplicates != 1 ? "s" : "") + " were found");
+            task?.Complete($"{numduplicates} duplicate GUID{(numduplicates != 1 ? "s were" : " was")} found");
         }
     }
 }

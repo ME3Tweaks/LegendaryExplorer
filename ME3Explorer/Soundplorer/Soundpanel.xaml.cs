@@ -310,13 +310,10 @@ namespace ME3Explorer
 
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
-                    int dataSizeOffset = exportEntry.propsEnd() + 4;
-                    int dataLength = BitConverter.ToInt32(exportEntry.Data, dataSizeOffset);
-                    if (dataLength > 0)
+                    var soundNodeWave = exportEntry.GetBinaryData<SoundNodeWave>();
+                    if (soundNodeWave.RawData.Length > 0)
                     {
-                        byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
-                        ISBank isb = new ISBank(binData, true);
-                        List<ISBankEntry> audios = isb.BankEntries;
+                        ISBank isb = new ISBank(soundNodeWave.RawData);
                         foreach (ISBankEntry isbe in isb.BankEntries)
                         {
                             if (isbe.DataAsStored != null)

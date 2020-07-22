@@ -12,6 +12,7 @@ using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Vlc.DotNet.Forms;
@@ -253,9 +254,12 @@ namespace ME3Explorer.PackageEditor
             CurrentLoadedExport = exportEntry;
             AvailableTFCNames.ClearEx();
             AvailableTFCNames.Add(STORE_LOCAL_STRING);
-            AvailableTFCNames.Add(NEW_TFC_STRING);
-            AvailableTFCNames.Add(ADD_TFC_STRING);
-            AvailableTFCNames.AddRange(exportEntry.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_") || x.StartsWith("Movies_DLC_")));
+            if (CurrentLoadedExport.Game == MEGame.ME3)
+            {
+                AvailableTFCNames.Add(NEW_TFC_STRING);
+                AvailableTFCNames.Add(ADD_TFC_STRING);
+                AvailableTFCNames.AddRange(exportEntry.FileRef.Names.Where(x => x.StartsWith("Textures_DLC_") || x.StartsWith("Movies_DLC_")));
+            }
 
             GetBikProps();
             if (AvailableTFCNames.All(x => x != TfcName))
@@ -318,8 +322,12 @@ namespace ME3Explorer.PackageEditor
                 var tfcprop = props.GetProp<NameProperty>("TextureFileCacheName");
                 if (tfcprop == null)
                 {
+                    if (CurrentLoadedExport.Game == MEGame.ME3)
+                    {
+
+                        AvailableTFCNames.Insert(0, MOVE_TO_EXTERNAL_STRING);
+                    }
                     IsLocallyCached = true;
-                    AvailableTFCNames.Insert(0, MOVE_TO_EXTERNAL_STRING);
                     TfcName = STORE_LOCAL_STRING;
                     return;
                 }
@@ -431,15 +439,7 @@ namespace ME3Explorer.PackageEditor
                 }
                 else
                 {
-                    byte[] binary = CurrentLoadedExport.GetBinaryData();
-                    int length = BitConverter.ToInt32(binary, 4);
-                    int offset = BitConverter.ToInt32(binary, 12);
-                    if (CurrentLoadedExport.Game != MEGame.ME3)
-                    {
-                        length = BitConverter.ToInt32(binary, 20);
-                        offset = BitConverter.ToInt32(binary, 28);
-                    }
-
+                    var binary = CurrentLoadedExport.GetBinaryData<TextureMovie>();
                     if (IsExternallyCached)
                     {
                         var tfcprop = CurrentLoadedExport.GetProperty<NameProperty>("TextureFileCacheName");
@@ -458,8 +458,11 @@ namespace ME3Explorer.PackageEditor
                             return null;
                         }
 
+                        int length = binary.DataSize;
+                        int offset = binary.DataOffset;
+
                         using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                        fs.Seek((long)offset, SeekOrigin.Begin);
+                        fs.Seek(offset, SeekOrigin.Begin);
                         int bikend = offset + length;
 
                         if (bikend > fs.Length)
@@ -477,8 +480,7 @@ namespace ME3Explorer.PackageEditor
                     }
                     else if (IsLocallyCached) //is locally contained
                     {
-                        int slicePos = CurrentLoadedExport.Game == MEGame.ME3 ? 16 : 32;
-                        byte[] bikBytes = binary.Slice(slicePos, length).ToArray();
+                        byte[] bikBytes = binary.EmbeddedData;
                         if (bikBytes.Length == 0)
                         {
                             MessageBox.Show($"Embedded texture movie has not been found.");
@@ -591,48 +593,25 @@ namespace ME3Explorer.PackageEditor
             bikMovie.Seek(0, SeekOrigin.Begin);
             if (IsLocallyCached) //Append to local object
             {
-
-                byte[] binData;
-
-                if (!int.TryParse(bikMovie.Length.ToString(), out int biklength))
+                if (bikMovie.Length > int.MaxValue)
                 {
                     MessageBox.Show($"{Path.GetFileName(bikfile)} is too large to attach to an object. Aborting.", "Warning", MessageBoxButton.OK);
                     bikcontrols_Panel.IsEnabled = true;
                     return false;
                 }
 
-                int fileBinaryOffset = CurrentLoadedExport.DataOffset + CurrentLoadedExport.propsEnd();
-                if (CurrentLoadedExport.Game == MEGame.ME3)
-                {
-                    binData = new byte[16 + biklength];
-                    binData.OverwriteRange(0, BitConverter.GetBytes(0));
-                    binData.OverwriteRange(4, BitConverter.GetBytes(biklength));
-                    binData.OverwriteRange(8, BitConverter.GetBytes(biklength));
-                    binData.OverwriteRange(12, BitConverter.GetBytes(fileBinaryOffset + 16));
-                    binData.OverwriteRange(16, bikMovie.ToArray());
-                }
-                else
-                {
-                    binData = new byte[32 + biklength];
-                    binData.OverwriteRange(0, BitConverter.GetBytes(0));
-                    binData.OverwriteRange(4, BitConverter.GetBytes(0));
-                    binData.OverwriteRange(8, BitConverter.GetBytes(0));
-                    binData.OverwriteRange(12, BitConverter.GetBytes(fileBinaryOffset + 16));
-                    binData.OverwriteRange(16, BitConverter.GetBytes(0));
-                    binData.OverwriteRange(20, BitConverter.GetBytes(biklength));
-                    binData.OverwriteRange(24, BitConverter.GetBytes(biklength));
-                    binData.OverwriteRange(28, BitConverter.GetBytes(fileBinaryOffset + 28));
-                    binData.OverwriteRange(32, bikMovie.ToArray());
-                }
-
-                CurrentLoadedExport.SetBinaryData(binData);
                 var props = CurrentLoadedExport.GetProperties();
                 props.AddOrReplaceProp(new IntProperty(SizeX, "SizeX"));
                 props.AddOrReplaceProp(new IntProperty(SizeY, "SizeY"));
                 props.RemoveNamedProperty("TextureFileCacheName");
                 props.RemoveNamedProperty("TFCFileGuid");
                 props.AddOrReplaceProp(new EnumProperty("MovieStream_Memory", "EMovieStreamSource", CurrentLoadedExport.Game, "MovieStreamSource"));
-                CurrentLoadedExport.WriteProperties(props);
+
+                CurrentLoadedExport.WritePropertiesAndBinary(props, new TextureMovie
+                {
+                    IsExternal = false,
+                    EmbeddedData = bikMovie.ToArray()
+                });
             }
             else if (IsExternallyCached) //Append to tfc  NOT ME2/ME1
             {
@@ -684,8 +663,8 @@ namespace ME3Explorer.PackageEditor
 
                 Guid tfcGuid;
                 byte[] bikarray = bikMovie.ToArray();
-                int biklength = (int)bikarray.Length;
-                int bikoffset = 0;
+                int biklength = bikarray.Length;
+                int bikoffset;
                 using (FileStream fs = new FileStream(tfcPath, FileMode.Open, FileAccess.ReadWrite))
                 {
                     tfcGuid = fs.ReadGuid();
@@ -694,20 +673,19 @@ namespace ME3Explorer.PackageEditor
                     fs.Write(bikarray, 0, biklength);
                 }
 
-                byte[] binData = CurrentLoadedExport.GetBinaryData();
-                binData.OverwriteRange(0, BitConverter.GetBytes(1));
-                binData.OverwriteRange(4, BitConverter.GetBytes(biklength));
-                binData.OverwriteRange(8, BitConverter.GetBytes(biklength));
-                binData.OverwriteRange(12, BitConverter.GetBytes(bikoffset));
-                CurrentLoadedExport.SetBinaryData(binData);
-
                 var props = CurrentLoadedExport.GetProperties();
                 props.AddOrReplaceProp(new IntProperty(SizeX, "SizeX"));
                 props.AddOrReplaceProp(new IntProperty(SizeY, "SizeY"));
                 props.AddOrReplaceProp(new NameProperty(TfcName, "TextureFileCacheName"));
                 props.AddOrReplaceProp(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                 props.AddOrReplaceProp(new EnumProperty("MovieStream_File", "EMovieStreamSource", CurrentLoadedExport.Game, "MovieStreamSource"));
-                CurrentLoadedExport.WriteProperties(props);
+
+                CurrentLoadedExport.WritePropertiesAndBinary(props, new TextureMovie
+                {
+                    IsExternal = true,
+                    DataSize = biklength,
+                    DataOffset = bikoffset
+                });
             }
 
             bikcontrols_Panel.IsEnabled = true; //unlock play
@@ -879,8 +857,6 @@ namespace ME3Explorer.PackageEditor
                         CurrentLoadedExport.WriteProperty(new NameProperty(newSelection, "TextureFileCacheName"));
                         IsLocallyCached = false;
                         IsExternallyCached = true;
-                        byte[] binary = new byte[16];
-                        CurrentLoadedExport.SetBinaryData(binary);
                     }
                     else //is in existing tfc
                     {
@@ -983,9 +959,6 @@ namespace ME3Explorer.PackageEditor
 
             IsLocallyCached = false;
             IsExternallyCached = true;
-
-            byte[] binary = new byte[16];
-            CurrentLoadedExport.SetBinaryData(binary);
 
             finished = ImportBiktoCache(tempfilepath, tfcPath);
 

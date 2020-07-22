@@ -975,17 +975,17 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 int count;
-                subnodes.Add(new BinInterpNode(bin.Position, $"UnknownMap ({count = bin.ReadInt32()})")
+                subnodes.Add(new BinInterpNode(bin.Position, $"Global Mip Data? ({count = bin.ReadInt32()})")
                 {
                     IsExpanded = true,
                     Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.BaseStream.ReadStringASCIINull(bin.ReadInt32())}")
                     {
                         Items =
                         {
-                            MakeInt32Node(bin, "Unknown 1"),
-                            MakeInt32Node(bin, "Unknown 2"),
-                            MakeInt32Node(bin, "Unknown 3"),
-                            MakeInt32Node(bin, "Unknown 4"),
+                            new BinInterpNode(bin.Position, $"Storage Type: {(StorageTypes)bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 },
+                            MakeInt32Node(bin, "Uncompressed Size"),
+                            MakeInt32Node(bin, "Offset"),
+                            MakeInt32Node(bin, "Compressed Size"),
                         }
                     })
                 });
@@ -1059,6 +1059,35 @@ namespace ME3Explorer
                     {
                         MakeStringNode(bin, "Name"),
                         MakeInt32Node(bin, "Index")
+                    }
+                }, true));
+
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartBioCreatureSoundSetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+
+                subnodes.Add(MakeArrayNode(bin, "UnkToCueMap?", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    IsExpanded = true,
+                    Items =
+                    {
+                        MakeByteNode(bin, "Unknown byte"),
+                        MakeInt32Node(bin, "index into m_aAllCues?")
                     }
                 }, true));
 
@@ -1801,7 +1830,7 @@ namespace ME3Explorer
                 var clickToGotoOffset = new BinInterpNode
                 {
                     Header = $"0x{offset:X5} Click to go to referenced offset 0x{nextFileOffset:X5}",
-                    Name = "_" + nextFileOffset
+                    Name = "_" + (nextFileOffset + offset)
                 };
                 node.Items.Add(clickToGotoOffset);
 
@@ -4255,7 +4284,7 @@ namespace ME3Explorer
                 var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                foreach (UProperty prop in scriptStructProperties)
+                foreach (Property prop in scriptStructProperties)
                 {
                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                 }
@@ -4384,7 +4413,7 @@ namespace ME3Explorer
             subnodes.Add(new BinInterpNode
             {
                 Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.GetEntry(redirnum).InstancedFullPath}",
-                Name = "_" + binarystart.ToString()
+                Name = "_" + binarystart
             });
             return subnodes;
         }
@@ -5202,7 +5231,7 @@ namespace ME3Explorer
                                 var props = PropertyCollection.ReadProps(CurrentLoadedExport, stream, "BioStageCamera", includeNoneProperty: true);
 
                                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                foreach (UProperty prop in props)
+                                foreach (Property prop in props)
                                 {
                                     InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
                                 }

@@ -12,7 +12,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal
 {
-    public class PropertyCollection : ObservableCollection<UProperty>
+    public class PropertyCollection : ObservableCollection<Property>
     {
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
         static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
@@ -33,7 +33,7 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty or null if not found</returns>
-        public T GetProp<T>(NameReference name) where T : UProperty
+        public T GetProp<T>(NameReference name) where T : Property
         {
             foreach (var prop in this)
             {
@@ -52,7 +52,7 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty</returns>
-        public T GetPropOrDefault<T>(string name) where T : UProperty
+        public T GetPropOrDefault<T>(string name) where T : Property
         {
             foreach (var prop in this)
             {
@@ -89,7 +89,7 @@ namespace ME3Explorer.Unreal
             throw new ArgumentException($"Property \"{name}\" does not exist on {TypeName}", nameof(name));
         }
 
-        public bool TryReplaceProp(UProperty prop)
+        public bool TryReplaceProp(Property prop)
         {
             for (int i = 0; i < this.Count; i++)
             {
@@ -102,7 +102,7 @@ namespace ME3Explorer.Unreal
             return false;
         }
 
-        public void AddOrReplaceProp(UProperty prop)
+        public void AddOrReplaceProp(Property prop)
         {
             if (!TryReplaceProp(prop))
             {
@@ -189,7 +189,7 @@ namespace ME3Explorer.Unreal
                         type = PropertyType.Unknown;
                     }
 
-                    UProperty prop = null;
+                    Property prop = null;
                     switch (type)
                     {
                         case PropertyType.StructProperty:
@@ -400,27 +400,27 @@ namespace ME3Explorer.Unreal
 
             foreach (var prop in defaultProps)
             {
-                UProperty uProperty;
+                Property property;
                 if (prop is StructProperty defaultStructProperty)
                 {
                     //Set correct struct type
-                    uProperty = ReadImmutableStructProp(export, stream, prop, structType, defaultStructProperty.StructType);
+                    property = ReadImmutableStructProp(export, stream, prop, structType, defaultStructProperty.StructType);
                 }
                 else
                 {
-                    uProperty = ReadImmutableStructProp(export, stream, prop, structType);
+                    property = ReadImmutableStructProp(export, stream, prop, structType);
                 }
 
-                if (uProperty.PropType != PropertyType.None)
+                if (property.PropType != PropertyType.None)
                 {
-                    props.Add(uProperty);
+                    props.Add(property);
                 }
             }
             return props;
         }
 
         //Nested struct type is for structs in structs
-        static UProperty ReadImmutableStructProp(ExportEntry export, EndianReader stream, UProperty template, string structType, string nestedStructType = null)
+        static Property ReadImmutableStructProp(ExportEntry export, EndianReader stream, Property template, string structType, string nestedStructType = null)
         {
             IMEPackage pcc = export.FileRef;
             if (stream.Position + 1 >= stream.Length)
@@ -478,7 +478,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static UProperty ReadArrayProperty(EndianReader stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
+        public static Property ReadArrayProperty(EndianReader stream, ExportEntry export, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
         {
             IMEPackage pcc = export.FileRef;
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
@@ -662,7 +662,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public abstract class UProperty : NotifyPropertyChangedBase
+    public abstract class Property : NotifyPropertyChangedBase
     {
         public abstract PropertyType PropType { get; }
         private NameReference _name;
@@ -683,12 +683,12 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _name, value);
         }
 
-        protected UProperty(NameReference? name)
+        protected Property(NameReference? name)
         {
             _name = name ?? new NameReference();
         }
 
-        protected UProperty()
+        protected Property()
         {
             _name = new NameReference();
         }
@@ -711,7 +711,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("NoneProperty")]
-    public class NoneProperty : UProperty
+    public class NoneProperty : Property
     {
         public override PropertyType PropType => PropertyType.None;
 
@@ -732,7 +732,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("StructProperty | {Name.Name} - {StructType}")]
-    public class StructProperty : UProperty
+    public class StructProperty : Property
     {
         public override PropertyType PropType => PropertyType.StructProperty;
 
@@ -764,7 +764,7 @@ namespace ME3Explorer.Unreal
             IsImmutable = isImmutable;
         }
 
-        public StructProperty(string structType, bool isImmutable, params UProperty[] props) : base(null)
+        public StructProperty(string structType, bool isImmutable, params Property[] props) : base(null)
         {
             StructType = structType;
             Properties = new PropertyCollection();
@@ -775,12 +775,12 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public T GetProp<T>(string name) where T : UProperty
+        public T GetProp<T>(string name) where T : Property
         {
             return Properties.GetProp<T>(name);
         }
 
-        public T GetPropOrDefault<T>(string name) where T : UProperty
+        public T GetPropOrDefault<T>(string name) where T : Property
         {
             return Properties.GetPropOrDefault<T>(name);
         }
@@ -804,7 +804,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
-    public class IntProperty : UProperty, IComparable
+    public class IntProperty : Property, IComparable
     {
         public override PropertyType PropType => PropertyType.IntProperty;
 
@@ -865,7 +865,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
-    public class FloatProperty : UProperty, IComparable
+    public class FloatProperty : Property, IComparable
     {
         public override PropertyType PropType => PropertyType.FloatProperty;
 
@@ -935,7 +935,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
-    public class ObjectProperty : UProperty, IComparable
+    public class ObjectProperty : Property, IComparable
     {
         /// <summary>
         /// Resolves this object property to its corresponding entry from the package parameter
@@ -1031,7 +1031,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("NameProperty | {Name} = {Value}")]
-    public class NameProperty : UProperty
+    public class NameProperty : Property
     {
         public override PropertyType PropType => PropertyType.NameProperty;
 
@@ -1112,7 +1112,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
-    public class BoolProperty : UProperty
+    public class BoolProperty : Property
     {
         public override PropertyType PropType => PropertyType.BoolProperty;
 
@@ -1178,7 +1178,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
-    public class ByteProperty : UProperty
+    public class ByteProperty : Property
     {
         public override PropertyType PropType => PropertyType.ByteProperty;
 
@@ -1213,7 +1213,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public class BioMask4Property : UProperty
+    public class BioMask4Property : Property
     {
         public override PropertyType PropType => PropertyType.BioMask4Property;
 
@@ -1246,7 +1246,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("EnumProperty | {Name} = {Value.Name}")]
-    public class EnumProperty : UProperty
+    public class EnumProperty : Property
     {
         public override PropertyType PropType => PropertyType.ByteProperty;
 
@@ -1310,13 +1310,13 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public abstract class ArrayPropertyBase : UProperty, IEnumerable
+    public abstract class ArrayPropertyBase : Property, IEnumerable
     {
         public string Reference;
 
         public override PropertyType PropType => PropertyType.ArrayProperty;
 
-        public abstract IReadOnlyList<UProperty> Properties { get; }
+        public abstract IReadOnlyList<Property> Properties { get; }
         public abstract int Count { get; }
         public bool IsReadOnly => true;
 
@@ -1330,7 +1330,7 @@ namespace ME3Explorer.Unreal
 
         public abstract void RemoveAt(int index);
 
-        public UProperty this[int index] => Properties[index];
+        public Property this[int index] => Properties[index];
 
         public abstract void SwapElements(int i, int j);
     }
@@ -1371,7 +1371,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public override IReadOnlyList<UProperty> Properties => new List<UProperty>();
+        public override IReadOnlyList<Property> Properties => new List<Property>();
         public override int Count => bytes.Length;
         public override void Clear()
         {
@@ -1388,10 +1388,10 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("ArrayProperty<{typeof(T).Name,nq}> | {Name}, Length = {Values.Count}")]
-    public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
+    public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : Property
     {
         public List<T> Values { get; set; }
-        public override IReadOnlyList<UProperty> Properties => Values;
+        public override IReadOnlyList<Property> Properties => Values;
 
         public ArrayProperty(long startOffset, List<T> values, NameReference name) : this(values, name)
         {
@@ -1515,7 +1515,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("StrProperty | {Name} = {Value}")]
-    public class StrProperty : UProperty
+    public class StrProperty : Property
     {
         public override PropertyType PropType => PropertyType.StrProperty;
 
@@ -1602,7 +1602,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("StringRefProperty | {Name} = {Value}")]
-    public class StringRefProperty : UProperty
+    public class StringRefProperty : Property
     {
         public override PropertyType PropType => PropertyType.StringRefProperty;
 
@@ -1643,7 +1643,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public class DelegateProperty : UProperty
+    public class DelegateProperty : Property
     {
         public override PropertyType PropType => PropertyType.DelegateProperty;
 
@@ -1680,7 +1680,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    public class UnknownProperty : UProperty
+    public class UnknownProperty : Property
     {
         public override PropertyType PropType => PropertyType.Unknown;
 

@@ -39,7 +39,7 @@
                 <Image Source="bink.jpg" MaxWidth="320" Cursor="Hand" Height="28" Width="28" Margin="10" MouseLeftButtonUp="DownloadRad_MouseUp" ToolTip="Click logo to go to RadTools site for download" IsEnabled="{Binding RADNotInstalled}"/>
                 <Button Content="Playback in RadTools" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding OpenFileInRADCommand}" Padding="7" Margin="5,0,0,0" ToolTip="Open the file externally in Rad Tools"/>
                 <Button Content="Extract bik to file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ExtractBikCommand}" Padding="7" Margin="5,0,0,0" ToolTip="Save as new .bik file"/>
-                <Button Content="Import saved file" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportBikFileCommand}" Margin="5,0,0,0" Padding="7" ToolTip="Import new .bik file"/>
+                <Button Content="Import bik" FontWeight="Bold" HorizontalAlignment="Left" Command="{Binding ImportBikFileCommand}" Margin="5,0,0,0" Padding="7" ToolTip="Import new .bik file"/>
             </StackPanel>
             <TextBlock Foreground="Red" Text="RadTools is not installed. Click the image above to download it." Visibility="{Binding RADNotInstalled, Converter={StaticResource BoolToVisibilityConverter}}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
         </StackPanel>

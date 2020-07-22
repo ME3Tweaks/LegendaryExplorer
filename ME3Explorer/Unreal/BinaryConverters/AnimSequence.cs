@@ -58,7 +58,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 NumFrames = Export.GetProperty<IntProperty>("NumFrames")?.Value ?? 0;
                 RateScale = Export.GetProperty<FloatProperty>("RateScale")?.Value ?? 1f;
                 SequenceLength = Export.GetProperty<FloatProperty>("SequenceLength")?.Value ?? 0;
-                Name = Export.GetProperty<NameProperty>("SeqName")?.Value ?? Export.ObjectName;
+                Name = Export.GetProperty<NameProperty>("SequenceName")?.Value ?? Export.ObjectName;
                 TrackOffsets = Export.GetProperty<ArrayProperty<IntProperty>>("CompressedTrackOffsets").Select(i => i.Value).ToArray();
                 if (compressedDataSource == MEGame.UDK)
                 {
@@ -94,7 +94,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 props.AddOrReplaceProp(new IntProperty(NumFrames, "NumFrames"));
                 props.AddOrReplaceProp(new FloatProperty(RateScale, "RateScale"));
                 props.AddOrReplaceProp(new FloatProperty(SequenceLength, "SequenceLength"));
-                props.AddOrReplaceProp(new NameProperty(Name, "SeqName"));
+                props.AddOrReplaceProp(new NameProperty(Name, "SequenceName"));
             }
         }
 
@@ -349,7 +349,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                                 ms.WriteFloat(track.Positions[j].Z);
                                 break;
                             default:
-                                throw new NotImplementedException($"Translation keys in format {compressionFormat} cannot be read yet!");
+                                throw new NotImplementedException($"Translation keys in format {compressionFormat} cannot be written yet!");
                         }
                     }
                     PadTo4();
@@ -476,7 +476,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                             case AnimationCompressionFormat.ACF_Fixed32NoW:
                             case AnimationCompressionFormat.ACF_Float32NoW:
                             default:
-                                throw new NotImplementedException($"Rotation keys in format {compressionFormat} cannot be read!");
+                                throw new NotImplementedException($"Rotation keys in format {compressionFormat} cannot be written yet!");
                         }
                     }
                     PadTo4();

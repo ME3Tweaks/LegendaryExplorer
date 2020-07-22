@@ -10,7 +10,7 @@ using StreamHelpers;
 
 namespace ME3Explorer.Unreal.BinaryConverters
 {
-    public class UValueProperty : UField
+    public abstract class UProperty : UField
     {
         public int ArraySize;//If this is not 0, this property is a static array, of ArraySize length
         public UnrealFlags.EPropertyFlags PropertyFlags;
@@ -51,11 +51,29 @@ namespace ME3Explorer.Unreal.BinaryConverters
             return names;
         }
     }
+
+    public class UIntProperty : UProperty
+    {
+    }
+    public class UBoolProperty : UProperty
+    {
+    }
+    public class UFloatProperty : UProperty
+    {
+    }
+    public class UNameProperty : UProperty
+    {
+    }
+    public class UStrProperty : UProperty
+    {
+    }
+    public class UStringRefProperty : UProperty
+    {
+    }
 }
 
 namespace ME3Explorer
 {
-    using Unreal.BinaryConverters;
     public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref UnrealFlags.EPropertyFlags flags)

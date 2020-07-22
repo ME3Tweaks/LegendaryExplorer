@@ -49,7 +49,7 @@ namespace ME3Explorer.StaticLighting
                 {
                     rbBodySetup.RemoveProperty("PhysMaterial");
                 }
-                mesh.SetBinaryData(stm.ToBytes(pcc));
+                mesh.SetBinaryData(stm);
                 IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, out IEntry ent, relinkMap);
                 ExportEntry portedMesh = (ExportEntry)ent;
@@ -61,7 +61,7 @@ namespace ME3Explorer.StaticLighting
                         meshElement.Material = mats.Dequeue();
                     }
                 }
-                portedMesh.SetBinaryData(stm.ToBytes(meshPackage));
+                portedMesh.SetBinaryData(stm);
             }
 
             #endregion
@@ -200,7 +200,7 @@ namespace ME3Explorer.StaticLighting
 
                 #region StaticMeshActors
                 {
-                    var emptySMCBin = new byte[4];
+                    var emptySMCBin = new StaticMeshComponent();
                     IEntry staticMeshActorClass = udkPackage.getEntryOrAddImport("Engine.StaticMeshActor");
                     udkPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor", "StaticMeshActor", "Engine");
                     IEntry staticMeshComponentArchetype = udkPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor.StaticMeshComponent0",

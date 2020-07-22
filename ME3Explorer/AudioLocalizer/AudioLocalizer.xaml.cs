@@ -17,6 +17,7 @@ using Gammtek.Conduit.Extensions;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -93,11 +94,10 @@ namespace ME3Explorer
             return exists && any;
         }
 
-        class wwisestreaminfo
+        class Wwisestreaminfo
         {
             public string FileName;
-            public int Size1;
-            public int Size2;
+            public int Size;
             public int Offset;
         }
 
@@ -109,8 +109,8 @@ namespace ME3Explorer
             Task.Run(() =>
             {
                 string resultsBasePath = Path.Combine(LocalizedFilesPath, "AudioLocalizerResults");
-                Dictionary<string, Dictionary<string, wwisestreaminfo>> infoDicts = GetLocalizationInfo();
-                foreach ((string langCode, Dictionary<string, wwisestreaminfo> infoDict) in infoDicts)
+                Dictionary<string, Dictionary<string, Wwisestreaminfo>> infoDicts = GetLocalizationInfo();
+                foreach ((string langCode, Dictionary<string, Wwisestreaminfo> infoDict) in infoDicts)
                 {
                     string resultsdir = Path.Combine(resultsBasePath, langCode);
                     Directory.CreateDirectory(resultsdir);
@@ -127,15 +127,12 @@ namespace ME3Explorer
                             foreach (ExportEntry wwisestream in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                             {
                                 string[] nameSections = wwisestream.ObjectName.Name.Split(',');
-                                if (nameSections.Length == 4 && convNames.Contains(fileName + nameSections[2]) && infoDict.TryGetValue(nameSections[3], out wwisestreaminfo info))
+                                if (nameSections.Length == 4 && convNames.Contains(fileName + nameSections[2]) && infoDict.TryGetValue(nameSections[3], out Wwisestreaminfo info))
                                 {
-                                    wwisestream.WriteProperty(new NameProperty(info.FileName, "Filename"));
-                                    byte[] binData = wwisestream.GetBinaryData();
-                                    int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
-                                    binData.OverwriteRange(pos, BitConverter.GetBytes(info.Size1));
-                                    binData.OverwriteRange(pos + 4, BitConverter.GetBytes(info.Size2));
-                                    binData.OverwriteRange(pos + 8, BitConverter.GetBytes(info.Offset));
-                                    wwisestream.SetBinaryData(binData);
+                                    var wwiseStreamBinary = wwisestream.GetBinaryData<WwiseStream>();
+                                    wwiseStreamBinary.DataSize = info.Size;
+                                    wwiseStreamBinary.DataOffset = info.Offset;
+                                    wwisestream.WritePropertyAndBinary(new NameProperty(info.FileName, "Filename"), wwiseStreamBinary);
                                 }
                             }
                             pcc.Save(Path.Combine(resultsdir, localizedFileName));
@@ -158,7 +155,7 @@ namespace ME3Explorer
             });
         }
 
-        private Dictionary<string, Dictionary<string, wwisestreaminfo>> GetLocalizationInfo()
+        private Dictionary<string, Dictionary<string, Wwisestreaminfo>> GetLocalizationInfo()
         {
             var task = new ListBoxTask("Searching for localized files");
             LocalizationTasks.Add(task);
@@ -178,34 +175,31 @@ namespace ME3Explorer
 
             task.Complete($"Found {langFiles.Keys.Count} localization(s): {string.Join(", ", langFiles.Keys)}");
 
-            var infoDicts = new Dictionary<string, Dictionary<string, wwisestreaminfo>>();
+            var infoDicts = new Dictionary<string, Dictionary<string, Wwisestreaminfo>>();
 
             foreach ((string langCode, List<string> files) in langFiles)
             {
                 var langTask = new ListBoxTask($"Proccessing {langCode} files");
                 LocalizationTasks.Add(langTask);
 
-                var infoDict = new Dictionary<string, wwisestreaminfo>();
+                var infoDict = new Dictionary<string, Wwisestreaminfo>();
 
                 foreach (string file in files)
                 {
-                    using (var pcc = MEPackageHandler.OpenMEPackage(file))
+                    using var pcc = MEPackageHandler.OpenMEPackage(file);
+                    foreach (ExportEntry wwisestream in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                     {
-                        foreach (ExportEntry wwisestream in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
+                        string[] nameSections = wwisestream.ObjectName.Name.Split(',');
+                        if (nameSections.Length == 4 && wwisestream.GetProperty<NameProperty>("Filename")?.Value is NameReference fileName)
                         {
-                            string[] nameSections = wwisestream.ObjectName.Name.Split(',');
-                            if (nameSections.Length == 4 && wwisestream.GetProperty<NameProperty>("Filename")?.Value is NameReference fileName)
+                            var wsBin = wwisestream.GetBinaryData<WwiseStream>();
+                            int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
+                            infoDict[nameSections[3]] = new Wwisestreaminfo
                             {
-                                byte[] binData = wwisestream.GetBinaryData();
-                                int pos = pcc.Game == MEGame.ME3 ? 4 : 12;
-                                infoDict[nameSections[3]] = new wwisestreaminfo
-                                {
-                                    FileName = fileName,
-                                    Size1 = BitConverter.ToInt32(binData, pos),
-                                    Size2 = BitConverter.ToInt32(binData, pos + 4),
-                                    Offset = BitConverter.ToInt32(binData, pos + 8)
-                                };
-                            }
+                                FileName = fileName,
+                                Size = wsBin.DataSize,
+                                Offset = wsBin.DataOffset
+                            };
                         }
                     }
                 }

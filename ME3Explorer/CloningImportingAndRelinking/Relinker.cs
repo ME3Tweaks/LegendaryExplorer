@@ -144,8 +144,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-
-                    relinkingExport.SetBinaryData(objBin.ToBytes(relinkingExport.FileRef, relinkingExport.DataOffset + relinkingExport.propsEnd()));
+                    relinkingExport.SetBinaryData(objBin);
                     return relinkFailedReport;
                 }
 
@@ -187,7 +186,7 @@ namespace ME3Explorer
                                                               bool importExportDependencies = false)
         {
             var relinkResults = new List<ListDialog.EntryItem>();
-            foreach (UProperty prop in transplantProps)
+            foreach (Property prop in transplantProps)
             {
                 //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
                 if (prop is StructProperty structProperty)

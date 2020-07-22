@@ -60,6 +60,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "StaticMesh":
                     return From<StaticMesh>(export);
                 case "SkeletalMesh":
+                case "BioSocketSupermodel":
                     return From<SkeletalMesh>(export);
                 case "CoverMeshComponent":
                 case "InteractiveFoliageComponent":
@@ -96,24 +97,37 @@ namespace ME3Explorer.Unreal.BinaryConverters
                 case "ScriptStruct":
                     return From<UScriptStruct>(export);
                 case "IntProperty":
+                    return From<UIntProperty>(export);
                 case "BoolProperty":
+                    return From<UBoolProperty>(export);
                 case "FloatProperty":
+                    return From<UFloatProperty>(export);
                 case "NameProperty":
+                    return From<UNameProperty>(export);
                 case "StrProperty":
+                    return From<UStrProperty>(export);
                 case "StringRefProperty":
-                    return From<UValueProperty>(export);
+                    return From<UStringRefProperty>(export);
                 case "ByteProperty":
+                    return From<UByteProperty>(export);
                 case "ObjectProperty":
+                    return From<UObjectProperty>(export);
                 case "ComponentProperty":
+                    return From<UComponentProperty>(export);
                 case "InterfaceProperty":
+                    return From<UInterfaceProperty>(export);
                 case "ArrayProperty":
+                    return From<UArrayProperty>(export);
                 case "StructProperty":
+                    return From<UStructProperty>(export);
                 case "BioMask4Property":
-                    return From<UReferenceProperty>(export);
+                    return From<UBioMask4Property>(export);
                 case "MapProperty":
+                    return From<UMapProperty>(export);
                 case "ClassProperty":
+                    return From<UClassProperty>(export);
                 case "DelegateProperty":
-                    return From<UTwoReferenceProperty>(export);
+                    return From<UDelegateProperty>(export);
                 case "ShaderCache":
                     return From<ShaderCache>(export);
                 case "StaticMeshCollectionActor":
@@ -173,6 +187,10 @@ namespace ME3Explorer.Unreal.BinaryConverters
                     return From<SoundCue>(export);
                 case "SoundNodeWave":
                     return From<SoundNodeWave>(export);
+                case "ObjectRedirector":
+                    return From<ObjectRedirector>(export);
+                case "TextureMovie":
+                    return From<TextureMovie>(export);
                 default:
                     return null;
             }

@@ -207,14 +207,14 @@ namespace ME3Explorer
                 }
             }
 
-            UProperty rowsProp = Export.ClassName switch
+            Property rowsProp = Export.ClassName switch
             {
                 "Bio2DA" => new ArrayProperty<NameProperty>(RowNames.Select(n => new NameProperty(n)), "m_sRowLabel"),
                 "Bio2DANumberedRows" => new ArrayProperty<IntProperty>(RowNames.Select(n => new IntProperty(int.Parse(n))), "m_lstRowNumbers"),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            Export.WritePropertAndBinary(rowsProp, binary);
+            Export.WritePropertyAndBinary(rowsProp, binary);
         }
 
         public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)

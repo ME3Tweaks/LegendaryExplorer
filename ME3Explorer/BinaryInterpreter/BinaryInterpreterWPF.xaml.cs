@@ -242,12 +242,14 @@ namespace ME3Explorer
             "ArrayProperty",
             "BioCodexMap",
             "BioConsequenceMap",
+            "BioCreatureSoundSet",
             "BioDynamicAnimSet",
             "BioGestureRuntimeData",
             "BioMorphFace",
             "BioOutcomeMap",
             "BioPawn",
             "BioQuestMap",
+            "BioSocketSupermodel",
             "BioSoundNodeWaveStreamingData",
             "BioStage",
             "BioStateEventMap",
@@ -603,6 +605,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartPrefabInstanceScan(data, ref binarystart));
                         break;
                     case "SkeletalMesh":
+                    case "BioSocketSupermodel":
                         subNodes.AddRange(StartSkeletalMeshScan(data, ref binarystart));
                         break;
                     case "StaticMeshCollectionActor":
@@ -727,6 +730,9 @@ namespace ME3Explorer
                         break;
                     case "SFXMorphFaceFrontEndDataSource":
                         subNodes.AddRange(StartSFXMorphFaceFrontEndDataSourceScan(data, ref binarystart));
+                        break;
+                    case "BioCreatureSoundSet":
+                        subNodes.AddRange(StartBioCreatureSoundSetScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
