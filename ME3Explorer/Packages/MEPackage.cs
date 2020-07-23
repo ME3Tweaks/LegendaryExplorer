@@ -390,7 +390,7 @@ namespace ME3Explorer.Packages
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
             {
-                inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition);
+                inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition, game: Game, platform: Platform);
             }
 
 

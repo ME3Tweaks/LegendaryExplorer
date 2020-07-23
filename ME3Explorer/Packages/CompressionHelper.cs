@@ -10,6 +10,7 @@ using SevenZipHelper;
 using StreamHelpers;
 using ZlibHelper;
 using LZXHelper;
+using static ME3Explorer.Packages.MEPackage;
 
 namespace ME3Explorer.Packages
 {
@@ -492,7 +493,7 @@ namespace ME3Explorer.Packages
             return outStream;
         }
 
-        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0)
+        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0, MEGame game = MEGame.Unknown, GamePlatform platform = GamePlatform.PC)
         {
             raw.BaseStream.JumpTo(compressionInfoOffset);
             if (compressionType == UnrealPackageFile.CompressionType.None)
@@ -531,7 +532,8 @@ namespace ME3Explorer.Packages
                 ChunkHeader h = new ChunkHeader
                 {
                     magic = EndianReader.ToInt32(c.Compressed, 0, raw.Endian),
-                    blocksize = EndianReader.ToInt32(c.Compressed, 4, raw.Endian),
+                    // must force block size for ME1 xbox cause in place of block size it seems to list package tag again which breaks loads of things
+                    blocksize = (platform == GamePlatform.Xenon && game == MEGame.ME1) ? 0x20000 : EndianReader.ToInt32(c.Compressed, 4, raw.Endian),
                     compressedsize = EndianReader.ToInt32(c.Compressed, 8, raw.Endian),
                     uncompressedsize = EndianReader.ToInt32(c.Compressed, 12, raw.Endian)
                 };
