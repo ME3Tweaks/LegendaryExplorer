@@ -69,20 +69,20 @@ namespace ME3Explorer.Packages
                     {
 
                         long start = stream.Position;
-                        Debug.WriteLine($"Export header pos {start:X8}");
+                        //Debug.WriteLine($"Export header pos {start:X8}");
                         stream.Seek(0x28, SeekOrigin.Current);
                         int componentMapCount = stream.ReadInt32();
-                        Debug.WriteLine("Component count: " + componentMapCount);
+                        //Debug.WriteLine("Component count: " + componentMapCount);
                         stream.Seek(4 + componentMapCount * 12, SeekOrigin.Current);
                         int generationsNetObjectsCount = stream.ReadInt32();
-                        Debug.WriteLine("GenObjs count: " + generationsNetObjectsCount);
+                        //Debug.WriteLine("GenObjs count: " + generationsNetObjectsCount);
 
                         stream.Seek(16, SeekOrigin.Current); // skip guid size
                         stream.Seek( generationsNetObjectsCount * 4, SeekOrigin.Current);
                         long end = stream.Position;
                         stream.Seek(start, SeekOrigin.Begin);
                         var len = (end - start);
-                        Debug.WriteLine($"Len: {len:X2}");
+                        //Debug.WriteLine($"Len: {len:X2}");
                         //read header
                         _header = stream.ReadBytes((int)len);
                         break;
