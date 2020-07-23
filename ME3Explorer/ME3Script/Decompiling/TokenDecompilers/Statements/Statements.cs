@@ -97,15 +97,19 @@ namespace ME3Script.Decompiling
                     StartPositions.Pop();
                     return DecompileStatement();
 
-                #region unsupported
-
                 case (byte)StandardByteCodes.OptIfLocal: // TODO: verify, handle syntax
                     return DecompileConditionalJump(isOpt: true);
 
                 case (byte)StandardByteCodes.OptIfInstance: // TODO: verify, handle syntax
                     return DecompileConditionalJump(isOpt: true);
 
-                #endregion
+                case (byte)StandardByteCodes.FilterEditorOnly:
+                    return DecompileConditionalJump(isEditorFilter: true);
+
+                case (byte)StandardByteCodes.EatReturnValue:
+                    PopByte();
+                    StartPositions.Pop();
+                    return DecompileStatement();
 
                 default:
                     var expr = DecompileExpression();
@@ -170,7 +174,7 @@ namespace ME3Script.Decompiling
             return statement;
         }
 
-        public Statement DecompileConditionalJump(bool isOpt = false) // TODO: guess for loop, probably requires a large restructure
+        public Statement DecompileConditionalJump(bool isOpt = false, bool isEditorFilter = false) // TODO: guess for loop, probably requires a large restructure
         {
             PopByte();
             var scopeStartOffset = StartPositions.Pop();
@@ -178,17 +182,23 @@ namespace ME3Script.Decompiling
             bool hasElse = false;
             var scopeStatements = new List<Statement>();
 
-            UInt16 scopeEndJmpOffset = 0;
-            UInt16 afterScopeOffset = 0;
-            Expression conditional = null;
+            ushort scopeEndJmpOffset = 0;
+            ushort afterScopeOffset;
+            Expression conditional;
 
-            if (isOpt)
+            if (isEditorFilter)
+            {
+
+                afterScopeOffset = ReadUInt16();
+                conditional = new SymbolReference(null, null, null, "__IN_EDITOR");
+            }
+            else if (isOpt)
             {
                 var obj = ReadObject();
                 var optCheck = Convert.ToBoolean(ReadByte());
                 afterScopeOffset = ReadUInt16();
 
-                String special = (optCheck ? "" : "!") + obj.ObjectName;
+                string special = (optCheck ? "" : "!") + obj.ObjectName;
                 conditional = new SymbolReference(null, null, null, special);
             }
             else
@@ -218,7 +228,7 @@ namespace ME3Script.Decompiling
             {
                 if (CurrentIs(StandardByteCodes.Jump))
                 {
-                    var contPos = (UInt16)Position;
+                    var contPos = (ushort)Position;
                     PopByte();
                     scopeEndJmpOffset = ReadUInt16();
                     if (scopeEndJmpOffset == scopeStartOffset)
@@ -255,7 +265,7 @@ namespace ME3Script.Decompiling
             CurrentScope.Pop();
 
 
-            List<Statement> elseStatements = new List<Statement>();
+            var elseStatements = new List<Statement>();
             if (hasElse)
             {
                 var endElseOffset = scopeEndJmpOffset;
@@ -272,8 +282,8 @@ namespace ME3Script.Decompiling
                 CurrentScope.Pop();
             }
 
-            statement = statement ?? new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
-                        null, null, elseStatements.Count != 0 ? new CodeBody(elseStatements, null, null) : null);
+            statement ??= new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
+                                          null, null, elseStatements.Count != 0 ? new CodeBody(elseStatements, null, null) : null);
             StatementLocations.Add(scopeStartOffset, statement);
             return statement;
         }
@@ -345,7 +355,7 @@ namespace ME3Script.Decompiling
             var unknByte = ReadByte();
             var expr = DecompileExpression();
             var scopeStatements = new List<Statement>();
-            UInt16 endOffset = 0xFFFF; // set it at max to begin with, so we can begin looping
+            ushort endOffset = 0xFFFF; // set it at max to begin with, so we can begin looping
 
             Scopes.Add(scopeStatements);
             CurrentScope.Push(Scopes.Count - 1);
@@ -353,7 +363,7 @@ namespace ME3Script.Decompiling
             {
                 if (CurrentIs(StandardByteCodes.Jump)) // break detected, save the endOffset
                 {                                    // executes for all occurences, to handle them all.
-                    StartPositions.Push((UInt16)Position);
+                    StartPositions.Push((ushort)Position);
                     PopByte();
                     endOffset = ReadUInt16();
                     var breakStatement = new BreakStatement(null, null);
@@ -383,7 +393,7 @@ namespace ME3Script.Decompiling
             var offs = ReadUInt16(); // MemOff
             Statement statement = null;
 
-            if (offs == (UInt16)0xFFFF)
+            if (offs == (ushort)0xFFFF)
             {
                 statement = new DefaultStatement(null, null);
             }
@@ -405,7 +415,7 @@ namespace ME3Script.Decompiling
             PopByte();
 
             var left = DecompileExpression();
-            if (left == null || !typeof(SymbolReference).IsAssignableFrom(left.GetType()))
+            if (!(left is SymbolReference))
                 return null; //ERROR ?
 
             var right = DecompileExpression();

@@ -9,7 +9,7 @@ namespace ME3Script.Compiling.Errors
 {
     public class LineError : PositionedMessage
     {
-        public LineError(String msg, SourcePosition start, SourcePosition end)
+        public LineError(string msg, SourcePosition start, SourcePosition end)
             : base(msg, start, end) { }
 
         public override string ToString()

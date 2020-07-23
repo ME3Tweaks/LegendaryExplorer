@@ -10,9 +10,9 @@ namespace ME3Script.Language.Tree
 {
     public class NameLiteral : Expression
     {
-        public String Value;
+        public string Value;
 
-        public NameLiteral(String val, SourcePosition start, SourcePosition end)
+        public NameLiteral(string val, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.NameLiteral, start, end)
         {
             Value = val;

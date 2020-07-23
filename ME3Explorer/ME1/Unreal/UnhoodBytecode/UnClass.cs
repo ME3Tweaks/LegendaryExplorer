@@ -214,7 +214,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             result.Append("replication\n{\n").PushIndent();
             for (int i = 0; i < statementList.Count; i++)
             {
-                List<String> names = FindReplicatedProperties(statementList[i].StartOffset);
+                List<string> names = FindReplicatedProperties(statementList[i].StartOffset);
                 if (names.Count > 0)
                 {
                     result.Indent().Append("if (").Append(statementList[i].Token.ToString()).Append(")").NewLine();

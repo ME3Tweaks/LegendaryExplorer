@@ -15,6 +15,8 @@ namespace ME3Script.Analysis.Visitors
     {
         private List<string> Lines;
         private int NestingLevel;
+        private int ForcedAlignment;
+        private bool ForceNoNewLines;
         private Stack<int> ExpressionPrescedence;
 
         private static int NOPRESCEDENCE = int.MaxValue;
@@ -39,7 +41,14 @@ namespace ME3Script.Analysis.Visitors
 
         private void Write(string text, params object[] args)
         {
-            Lines.Add(new string('\t', NestingLevel) + (args.Length > 0 ? string.Format(text, args) : text));
+            if (ForceNoNewLines)
+            {
+                Append(text, args);
+            }
+            else
+            {
+                Lines.Add(new string(' ', ForcedAlignment + NestingLevel * 4) + (args.Length > 0 ? string.Format(text, args) : text));
+            }
         }
 
         private void Append(string text, params object[] args)
@@ -55,8 +64,12 @@ namespace ME3Script.Analysis.Visitors
             Write("class {0} extends {1} ", node.Name, node.Parent.Name);
             if (node.OuterClass.Name != node.Parent.Name)
                 Append("within {0} ", node.OuterClass.Name);
-            if (node.Specifiers.Count > 0)
-                Append("{0}", string.Join(" ", node.Specifiers.Select(x => x.Value)));
+            NestingLevel++;
+            foreach (Specifier specifier in node.Specifiers)
+            {
+                Write("{0}", specifier.Value);
+            }
+            NestingLevel--;
             Append(";");
 
             // print the rest of the class, according to the standard "anatomy of an unrealscript" article.
@@ -101,8 +114,7 @@ namespace ME3Script.Analysis.Visitors
             }
 
             Write("");
-            if (node.DefaultProperties != null)
-                node.DefaultProperties.AcceptVisitor(this);
+            node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
         }
@@ -117,7 +129,13 @@ namespace ME3Script.Analysis.Visitors
         {
             string type = "ERROR";
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
+            {
                 type = "var";
+                if (!string.IsNullOrEmpty(node.Category))
+                {
+                    type += $"({node.Category})";
+                }
+            }
             else if (node.Outer.Type == ASTNodeType.Function)
                 type = "local";
 
@@ -173,6 +191,13 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(Const node)
+        {
+            Write("const {0}={1};", node.Name, node.Value);
+
+            return true;
+        }
+
         public bool VisitNode(Function node)
         {
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
@@ -209,7 +234,7 @@ namespace ME3Script.Analysis.Visitors
             // [specifiers] parametertype parametername[[staticarraysize]]
             if (node.Specifiers.Count > 0)
                 Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
-            string staticarray = node.Variables[0].Size != -1 ? "[" + node.Variables[0].Size + "]" : "";
+            string staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
             Append("{0} {1}{2}", node.VarType.Name, node.Name, staticarray);
 
             return true;
@@ -318,6 +343,20 @@ namespace ME3Script.Analysis.Visitors
             NestingLevel--;
             Write("{0}", "}");
 
+            return true;
+        }
+
+        public bool VisitNode(Subobject node)
+        {
+            Write("");
+            Write("Begin Object Class={0} Name={1}", node.Class, node.Name);
+            NestingLevel++;
+            foreach (Statement s in node.Statements)
+            {
+                s.AcceptVisitor(this);
+            }
+            NestingLevel--;
+            Write("End Object");
             return true;
         }
 
@@ -648,8 +687,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(NameLiteral node)
         {
-            // 'name'
-            Append("'{0}'", node.Value);
+            Append(node.Outer is StructLiteral ? "\"{0}\"" : "'{0}'", node.Value);
             return true;
         }
 
@@ -663,6 +701,85 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StringRefLiteral node)
         {
             Append("${0}", node.Value);
+            return true;
+        }
+        public bool VisitNode(StructLiteral node)
+        {
+            bool multiLine = !ForceNoNewLines && (node.Statements.Count > 5 || node.Statements.Any(stmnt => (stmnt as AssignStatement)?.Value is StructLiteral || (stmnt as AssignStatement)?.Value is DynamicArrayLiteral));
+
+            bool oldForceNoNewLines = ForceNoNewLines;
+            int oldForcedAlignment = ForcedAlignment;
+            if (multiLine)
+            {
+                Append("{(");
+                ForcedAlignment = Lines.Last().Length - NestingLevel * 4;
+            }
+            else
+            {
+                ForceNoNewLines = true;
+                Append("(");
+            }
+            for (int i = 0; i < node.Statements.Count; i++)
+            {
+                if (i > 0)
+                {
+                    Append(", ");
+                }
+                node.Statements[i].AcceptVisitor(this);
+            }
+
+            if (multiLine)
+            {
+                ForcedAlignment -= 2;
+                Write(")}");
+                ForcedAlignment = oldForcedAlignment;
+            }
+            else
+            {
+                Append(")");
+                ForceNoNewLines = oldForceNoNewLines;
+            }
+            return true;
+        }
+
+        public bool VisitNode(DynamicArrayLiteral node)
+        {
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral || expr is DynamicArrayLiteral));
+
+            bool oldForceNoNewLines = ForceNoNewLines;
+            int oldForcedAlignment = ForcedAlignment;
+            Append("(");
+            if (multiLine)
+            {
+                ForcedAlignment = Lines.Last().Length - NestingLevel * 4;
+            }
+            else
+            {
+                ForceNoNewLines = true;
+            }
+            for (int i = 0; i < node.Values.Count; i++)
+            {
+                if (i > 0)
+                {
+                    Append(", ");
+                    if (multiLine)
+                    {
+                        Write("");
+                    }
+                }
+                node.Values[i].AcceptVisitor(this);
+            }
+            if (multiLine)
+            {
+                ForcedAlignment -= 1;
+                Write(")");
+                ForcedAlignment = oldForcedAlignment;
+            }
+            else
+            {
+                Append(")");
+                ForceNoNewLines = oldForceNoNewLines;
+            }
             return true;
         }
 

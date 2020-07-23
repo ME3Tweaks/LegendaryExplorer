@@ -24,14 +24,16 @@ namespace ME3Script.Decompiling
             {
                 return DecompileNativeFunction(PopByte());
             }
-            else if (token >= 0x71) // extended native table, 0x70 is unused
+
+            if (token >= 0x71) // extended native table, 0x70 is unused
             {
                 var higher = ReadByte() & 0x0F;
                 var lower = ReadByte();
                 int index = (higher << 8) + lower;
                 return DecompileNativeFunction((ushort)index);
             }
-            else switch (token)
+
+            switch (token)
             {
                 // variable lookups
                 case (byte)StandardByteCodes.LocalVariable:
@@ -262,6 +264,8 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.DelegateProperty:
                     return DecompileDelegateProperty();
 
+                case (byte)StandardByteCodes.NamedFunction:
+                    return DecompileFunctionCall(byName: true, withFuncListIdx: true);
 
 
 
@@ -270,31 +274,26 @@ namespace ME3Script.Decompiling
                  * */
                 #region Unsupported
 
-                case (byte)StandardByteCodes.EatReturnValue:
-                    return DecompileEatReturn();
-
                 case (byte)StandardByteCodes.NativeParm: // is this even present anywhere?
                     return DecompileNativeParm();
 
                 case (byte)StandardByteCodes.GoW_DefaultValue:
                     return DecompileGoW_DefaultValue();
 
-                case (byte)StandardByteCodes.Unkn_4F:
-                    return Decompile4F();
+                case (byte)StandardByteCodes.StringRefConst:
+                    return DecompileStringRefConst();
 
                 case (byte)StandardByteCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
-                case (byte)StandardByteCodes.Unkn_65: // TODO, seems to be func call by name
-                    return DecompileFunctionCall(byName: true, withUnknShort: true);
 
                 case (byte)StandardByteCodes.Assert:
                     return DecompileAssert();
 
                 #endregion
 
+
                 // TODO: 41, debugInfo
-                // TODO: 0x5A, FilterEditorOnly?
 
                 // TODO: 0x3B - 0x3E native calls
 
@@ -519,7 +518,7 @@ namespace ME3Script.Decompiling
             return new CastExpression(new VariableType(type, null, null), expr, null, null);
         }
 
-        public Expression DecompileFunctionCall(bool byName = false, bool withUnknShort = false, bool global = false)
+        public Expression DecompileFunctionCall(bool byName = false, bool withFuncListIdx = false, bool global = false)
         {
             PopByte();
             string funcName;
@@ -557,8 +556,8 @@ namespace ME3Script.Decompiling
             if (global)
                 funcName = "global." + funcName;
 
-            if (withUnknShort)
-                ReadInt16(); // TODO: related to unkn65, split out? Possibly jump?
+            if (withFuncListIdx)
+                ReadInt16(); // TODO: store this 
 
             var parameters = new List<Expression>();
             while (!CurrentIs(StandardByteCodes.EndFunctionParms))
@@ -656,19 +655,7 @@ namespace ME3Script.Decompiling
         /*
          * TODO: All of these need verification and changes
          * */
-        #region UnsuportedDecompilers 
-
-        public Expression DecompileEatReturn()  // TODO: only skips one object? see code.
-        {
-            PopByte();
-            var obj = ReadObject();
-            var expr = DecompileExpression();
-
-            StartPositions.Pop();
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: EatReturnValue: " + obj.ObjectName + "|" + obj.ClassName + " -");
-            return new InOpReference(op, objRef, expr, null, null);
-        }
+        #region UnsuportedDecompilers
 
         public Expression DecompileGoW_DefaultValue()
         {
@@ -689,21 +676,6 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             return new SymbolReference(null, null, null, "UNSUPPORTED: NativeParm: " + obj.ObjectName + " : " + obj.ClassName);
-        }
-
-        public Expression Decompile4F()
-        {
-            PopByte();
-            var index = ReadInt32(); // Unknown
-            /*var expr = DecompileExpression();
-
-            StartPositions.Pop();
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
-            var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + index.ToString("X8") + "| ");
-            return new InOpReference(op, objRef, expr, null, null); */
-
-            StartPositions.Pop();
-            return new SymbolReference(null, null, null, "UNSUPPORTED: 4F (ME3Ex:add?): " + index.ToString("X8"));
         }
 
         public Expression DecompileInstanceDelegate() // TODO: check code, seems ok?

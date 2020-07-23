@@ -643,8 +643,8 @@ namespace ME3Explorer.PlotVarDB
             {
                 int a = 0;
                 int b = 0;
-                bool aresult = Int32.TryParse(e.CellValue1.ToString(), out a);
-                bool bresult = Int32.TryParse(e.CellValue2.ToString(), out b);
+                bool aresult = int.TryParse(e.CellValue1.ToString(), out a);
+                bool bresult = int.TryParse(e.CellValue2.ToString(), out b);
                 if (!aresult && !bresult)
                 {
                     //two empty values being compared

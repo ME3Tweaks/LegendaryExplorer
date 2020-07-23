@@ -48,7 +48,7 @@ namespace ME3Explorer.FileHexViewer
         private void GotoOffset_Click(object sender, RoutedEventArgs e)
         {
             var result = PromptDialog.Prompt(this, "Enter file offset - hex only, no 0x or anything.", "Enter offset");
-            if (result != "" && UInt32.TryParse(result, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out uint offset))
+            if (result != "" && uint.TryParse(result, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out uint offset))
             {
                 Interpreter_Hexbox.SelectionStart = offset;
                 Interpreter_Hexbox.SelectionLength = 1;

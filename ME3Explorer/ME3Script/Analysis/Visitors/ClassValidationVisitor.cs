@@ -24,7 +24,7 @@ namespace ME3Script.Analysis.Visitors
             Success = true;
         }
 
-        private bool Error(String msg, SourcePosition start = null, SourcePosition end = null)
+        private bool Error(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             Log.LogError(msg, start, end);
             Success = false;
@@ -237,6 +237,21 @@ namespace ME3Script.Analysis.Visitors
             // Add enum values at the class scope so they can be used without being explicitly qualified.
             foreach (VariableIdentifier enumVal in node.Values)
                 Symbols.AddSymbol(enumVal.Name, enumVal);
+
+            node.Declaration = node;
+
+            return Success;
+        }
+
+        public bool VisitNode(Const node)
+        {
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
+
+            Symbols.AddSymbol(node.Name, node);
+            // TODO: add in package / global namespace.
+            // If a symbol with that name exists, overwrite it with this symbol from now on.
+            // damn this language...
 
             node.Declaration = node;
 
@@ -494,6 +509,10 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(StringRefLiteral node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(StructLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(DynamicArrayLiteral node)
+        { throw new NotImplementedException(); }
 
         public bool VisitNode(ConditionalExpression node)
         { throw new NotImplementedException(); }
@@ -501,6 +520,8 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
 
         public bool VisitNode(DefaultPropertiesBlock node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(Subobject node)
         { throw new NotImplementedException(); }
         #endregion
     }

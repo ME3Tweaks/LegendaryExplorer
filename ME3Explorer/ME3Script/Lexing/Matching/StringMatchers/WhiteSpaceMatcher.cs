@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
-    public class WhiteSpaceMatcher : TokenMatcherBase<String>
+    public class WhiteSpaceMatcher : TokenMatcherBase<string>
     {
-        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos, MessageLog log)
+        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             bool whiteSpace = false;
             int newlines = 0;
             int column = streamPos.Column;
-            while (!data.AtEnd() && String.IsNullOrWhiteSpace(data.CurrentItem))
+            while (!data.AtEnd() && string.IsNullOrWhiteSpace(data.CurrentItem))
             {
                 whiteSpace = true;
                 if (data.CurrentItem == "\n")
@@ -34,7 +34,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             {
                 streamPos = new SourcePosition(start.Line + newlines, column, data.CurrentIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<String>(TokenType.WhiteSpace, null, start, end);
+                return new Token<string>(TokenType.WhiteSpace, null, start, end);
             }
             return null;
         }

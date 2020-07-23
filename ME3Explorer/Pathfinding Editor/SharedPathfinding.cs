@@ -279,7 +279,7 @@ namespace ME3Explorer.Pathfinding_Editor
             while (upstreamCount > 0)
             {
                 upstreamCount--;
-                string fullobjectname = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
+                string fullobjectname = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 Dictionary<string, string> importdbinfo = ImportClassDB[fullobjectname];
 
                 var downstreamName = importParts[importParts.Length - upstreamCount - 1];

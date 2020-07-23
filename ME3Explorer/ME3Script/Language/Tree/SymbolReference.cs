@@ -11,9 +11,9 @@ namespace ME3Script.Language.Tree
     public class SymbolReference : Expression
     {
         public ASTNode Node;
-        public String Name;
+        public string Name;
 
-        public SymbolReference(ASTNode symbol, SourcePosition start, SourcePosition end, String name = "") 
+        public SymbolReference(ASTNode symbol, SourcePosition start, SourcePosition end, string name = "") 
             : base(ASTNodeType.SymbolReference, start, end)
         {
             Node = symbol;
@@ -27,13 +27,13 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            if (Node is Variable)
-                return (Node as Variable).VarType;
-            if (Node is FunctionParameter)
-                return (Node as FunctionParameter).VarType;
-            if (Node is Function)
-                return (Node as Function).ReturnType;
-            return (Node as Expression).ResolveType();
+            return Node switch
+            {
+                FunctionParameter functionParameter => functionParameter.VarType,
+                Variable variable => variable.VarType,
+                Function function => function.ReturnType,
+                _ => (Node as Expression).ResolveType()
+            };
         }
     }
 }

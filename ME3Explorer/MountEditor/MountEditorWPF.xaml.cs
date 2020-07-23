@@ -167,7 +167,7 @@ namespace ME3Explorer.MountEditor
 
             if (!int.TryParse(TLKID_TextBox.Text, out int valuex) || valuex <= 0)
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("TLK ID must be between 1 and " + (UInt32.MaxValue / 2) + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show("TLK ID must be between 1 and " + (uint.MaxValue / 2) + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 

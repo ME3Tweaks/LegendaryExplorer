@@ -80,43 +80,43 @@ namespace ME3Explorer.AssetDatabase
         /// <summary>
         /// Dictionary that stores generated classes
         /// </summary>
-        public ConcurrentDictionary<String, ClassRecord> GeneratedClasses = new ConcurrentDictionary<String, ClassRecord>();
+        public ConcurrentDictionary<string, ClassRecord> GeneratedClasses = new ConcurrentDictionary<string, ClassRecord>();
         /// <summary>
         /// Dictionary that stores generated Animations
         /// </summary>
-        public ConcurrentDictionary<String, Animation> GeneratedAnims = new ConcurrentDictionary<String, Animation>();
+        public ConcurrentDictionary<string, Animation> GeneratedAnims = new ConcurrentDictionary<string, Animation>();
         /// <summary>
         /// Dictionary that stores generated Materials
         /// </summary>
-        public ConcurrentDictionary<String, Material> GeneratedMats = new ConcurrentDictionary<String, Material>();
+        public ConcurrentDictionary<string, Material> GeneratedMats = new ConcurrentDictionary<string, Material>();
         /// <summary>
         /// Dictionary that stores generated Meshes
         /// </summary>
-        public ConcurrentDictionary<String, MeshRecord> GeneratedMeshes = new ConcurrentDictionary<String, MeshRecord>();
+        public ConcurrentDictionary<string, MeshRecord> GeneratedMeshes = new ConcurrentDictionary<string, MeshRecord>();
         /// <summary>
         /// Dictionary that stores generated Particle Systems
         /// </summary>
-        public ConcurrentDictionary<String, ParticleSys> GeneratedPS = new ConcurrentDictionary<String, ParticleSys>();
+        public ConcurrentDictionary<string, ParticleSys> GeneratedPS = new ConcurrentDictionary<string, ParticleSys>();
         /// <summary>
         /// Dictionary that stores generated Textures
         /// </summary>
-        public ConcurrentDictionary<String, TextureRecord> GeneratedText = new ConcurrentDictionary<String, TextureRecord>();
+        public ConcurrentDictionary<string, TextureRecord> GeneratedText = new ConcurrentDictionary<string, TextureRecord>();
         /// <summary>
         /// Dictionary that stores generated GFXMovies
         /// </summary>
-        public ConcurrentDictionary<String, GUIElement> GeneratedGUI = new ConcurrentDictionary<String, GUIElement>();
+        public ConcurrentDictionary<string, GUIElement> GeneratedGUI = new ConcurrentDictionary<string, GUIElement>();
         /// <summary>
         /// Dictionary that stores generated convos
         /// </summary>
-        public ConcurrentDictionary<String, Conversation> GeneratedConvo = new ConcurrentDictionary<String, Conversation>();
+        public ConcurrentDictionary<string, Conversation> GeneratedConvo = new ConcurrentDictionary<string, Conversation>();
         /// <summary>
         /// Dictionary that stores generated lines
         /// </summary>
-        public ConcurrentDictionary<String, ConvoLine> GeneratedLines = new ConcurrentDictionary<String, ConvoLine>();
+        public ConcurrentDictionary<string, ConvoLine> GeneratedLines = new ConcurrentDictionary<string, ConvoLine>();
         /// <summary>
         /// Used to check if values generated are unique.
         /// </summary>
-        public ConcurrentDictionary<String, Boolean> GeneratedValueChecker = new ConcurrentDictionary<String, Boolean>();
+        public ConcurrentDictionary<string, bool> GeneratedValueChecker = new ConcurrentDictionary<string, bool>();
 
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -1545,7 +1545,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var cr = d as ClassRecord;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && cr != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && cr != null)
             {
                 showthis = cr.Class.ToLower().Contains(FilterBox.Text.ToLower());
             }
@@ -1567,7 +1567,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var mr = d as Material;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && mr != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && mr != null)
             {
                 showthis = mr.MaterialName.ToLower().Contains(FilterBox.Text.ToLower());
                 if(!showthis)
@@ -1633,7 +1633,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var mr = d as MeshRecord;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && mr != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && mr != null)
             {
                 showthis = mr.MeshName.ToLower().Contains(FilterBox.Text.ToLower());
             }
@@ -1655,7 +1655,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var ar = d as Animation;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && ar != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && ar != null)
             {
                 showthis = ar.AnimSequence.ToLower().Contains(FilterBox.Text.ToLower());
             }
@@ -1677,7 +1677,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var ps = d as ParticleSys;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && ps != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && ps != null)
             {
                 showthis = ps.PSName.ToLower().Contains(FilterBox.Text.ToLower());
             }
@@ -1699,7 +1699,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var tr = d as TextureRecord;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && tr != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && tr != null)
             {
                 showthis = tr.TextureName.ToLower().Contains(FilterBox.Text.ToLower());
                 if (!showthis)
@@ -1845,7 +1845,7 @@ namespace ME3Explorer.AssetDatabase
         {
             var sf = d as GUIElement;
             bool showthis = true;
-            if (!String.IsNullOrEmpty(FilterBox.Text) && sf != null)
+            if (!string.IsNullOrEmpty(FilterBox.Text) && sf != null)
             {
                 showthis = sf.GUIName.ToLower().Contains(FilterBox.Text.ToLower());
             }
@@ -1863,7 +1863,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 showthis = line.Speaker.ToLower() == cmbbx_filterSpkrs.SelectedItem.ToString().ToLower();
             }
-            if (showthis && !String.IsNullOrEmpty(FilterBox.Text) && line != null)
+            if (showthis && !string.IsNullOrEmpty(FilterBox.Text) && line != null)
             {
                 showthis = line.StrRef.ToString().Contains(FilterBox.Text.ToLower());
                 if(!showthis)
@@ -1883,7 +1883,7 @@ namespace ME3Explorer.AssetDatabase
             bool showthis = true;
             var f = (Tuple<string, string>)d;
             var t = FilterBox.Text;
-            if (!String.IsNullOrEmpty(t))
+            if (!string.IsNullOrEmpty(t))
             {
                 showthis = f.Item1.ToLower().Contains(t.ToLower());
                 if (!showthis)
@@ -2340,7 +2340,7 @@ namespace ME3Explorer.AssetDatabase
                     nameslist.Add(name);
                 }
 
-                var cdlg = MessageBox.Show($"Replace current list with these names:\n{String.Join("\n",nameslist)}", "Asset Database", MessageBoxButton.YesNo);
+                var cdlg = MessageBox.Show($"Replace current list with these names:\n{string.Join("\n",nameslist)}", "Asset Database", MessageBoxButton.YesNo);
                 if (cdlg == MessageBoxResult.No)
                     return;
                 CustomFileList.Clear();
@@ -3157,13 +3157,13 @@ namespace ME3Explorer.AssetDatabase
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            int fileindex = (Int32)values[0];
+            int fileindex = (int)values[0];
             var listofFiles = values[1] as ObservableCollectionExtended<Tuple<string, string>>;
             if (listofFiles == null || fileindex == 0 || listofFiles.Count == 0)
             {
                 return $"Error file name not found";
             }
-            var export = (Int32)values[2];
+            var export = (int)values[2];
             var file = listofFiles[fileindex];
             return $"{file.Item1}  # {export}   {file.Item2} " ;
         }
@@ -3612,11 +3612,11 @@ namespace ME3Explorer.AssetDatabase
                                     {
                                         var formp = exp.GetProperty<EnumProperty>("Format");
                                         pformat = formp?.Value.Name ?? "n/a";
-                                        pformat = pformat.Replace("PF_", String.Empty);
+                                        pformat = pformat.Replace("PF_", string.Empty);
                                         var tgrp = exp.GetProperty<EnumProperty>("LODGroup");
                                         texgrp = tgrp?.Value.Instanced ?? "n/a";
-                                        texgrp = texgrp.Replace("TEXTUREGROUP_",String.Empty);
-                                        texgrp = texgrp.Replace("_", String.Empty);
+                                        texgrp = texgrp.Replace("TEXTUREGROUP_", string.Empty);
+                                        texgrp = texgrp.Replace("_", string.Empty);
                                         if (ScanCRC)
                                         {
                                             cRC = Texture2D.GetTextureCRC(exp).ToString("X8");

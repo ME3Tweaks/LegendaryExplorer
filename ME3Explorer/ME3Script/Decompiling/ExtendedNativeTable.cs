@@ -17,7 +17,7 @@ namespace ME3Script.Decompiling
 
     public struct NativeTableEntry
     {
-        public String Name;
+        public string Name;
         public NativeType Type;
         public int Precedence;
     }
@@ -232,7 +232,7 @@ namespace ME3Script.Decompiling
         };
 
 
-        public Dictionary<int, String> PrimitiveCastTable = new Dictionary<int, String>()
+        public Dictionary<int, string> PrimitiveCastTable = new Dictionary<int, string>()
         {
             { 0x36, "bool" }, // InterfaceToBool
             { 0x37, "string" }, // InterfaceToString

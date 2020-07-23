@@ -12,7 +12,7 @@ namespace ME3Script.Language.Tree
     {
         public FunctionParameter Operand;
 
-        public PostOpDeclaration(String keyword,
+        public PostOpDeclaration(string keyword,
             bool delim, CodeBody body, VariableType returnType,
             FunctionParameter operand, List<Specifier> specs,
             SourcePosition start, SourcePosition end)

@@ -3561,7 +3561,7 @@ namespace ME3Explorer
                 Name = name;
             }
 
-            public override bool Equals(Object obj)
+            public override bool Equals(object obj)
             {
                 //Check for null and compare run-time types.
                 if ((obj == null) || GetType() != obj.GetType())
@@ -5625,7 +5625,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export.GetProperties(), Pcc);
+                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
                         }
                         break;
                 }

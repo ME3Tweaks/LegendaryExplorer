@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
-    public class NameLiteralMatcher : TokenMatcherBase<String>
+    public class NameLiteralMatcher : TokenMatcherBase<string>
     {
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
-            String value = null;
+            string value = null;
             Regex regex = new Regex("[0-9a-zA-Z_]");
             if (data.CurrentItem == "'")
             {
@@ -29,8 +29,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 if (data.CurrentItem == "'")
                 {
                     data.Advance();
-                    if (value == null)
-                        value = "";
+                    value ??= "";
                 }
                 else
                 {
@@ -44,7 +43,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<String>(TokenType.Name, value, start, end);
+                return new Token<string>(TokenType.Name, value, start, end);
             }
             return null;
         }

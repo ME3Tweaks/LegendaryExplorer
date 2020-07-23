@@ -9,12 +9,12 @@ namespace ME3Script.Analysis.Symbols
 {
     public class SymbolTable
     {
-        private Dictionary<String, Dictionary<String, ASTNode>> Cache;
-        private LinkedList<Dictionary<String, ASTNode>> Scopes;
-        private LinkedList<String> ScopeNames;
-        private Dictionary<String, OperatorDeclaration> Operators;
+        private Dictionary<string, Dictionary<string, ASTNode>> Cache;
+        private LinkedList<Dictionary<string, ASTNode>> Scopes;
+        private LinkedList<string> ScopeNames;
+        private Dictionary<string, OperatorDeclaration> Operators;
 
-        public String CurrentScopeName
+        public string CurrentScopeName
         {
             get
             {
@@ -26,19 +26,19 @@ namespace ME3Script.Analysis.Symbols
 
         public SymbolTable()
         {
-            ScopeNames = new LinkedList<String>();
-            Scopes = new LinkedList<Dictionary<String, ASTNode>>();
-            Cache = new Dictionary<String, Dictionary<String, ASTNode>>();
-            Operators = new Dictionary<String, OperatorDeclaration>();
+            ScopeNames = new LinkedList<string>();
+            Scopes = new LinkedList<Dictionary<string, ASTNode>>();
+            Cache = new Dictionary<string, Dictionary<string, ASTNode>>();
+            Operators = new Dictionary<string, OperatorDeclaration>();
         }
 
-        public void PushScope(String name)
+        public void PushScope(string name)
         {
-            String fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name.ToLower();
-            Dictionary<String, ASTNode> scope;
+            string fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name.ToLower();
+            Dictionary<string, ASTNode> scope;
             bool cached = Cache.TryGetValue(fullName, out scope);
             if (!cached)
-                scope = new Dictionary<String, ASTNode>();
+                scope = new Dictionary<string, ASTNode>();
 
             Scopes.AddLast(scope);
             ScopeNames.AddLast(fullName);
@@ -56,37 +56,37 @@ namespace ME3Script.Analysis.Symbols
             ScopeNames.RemoveLast();
         }
 
-        public bool TryGetSymbol(String symbol, out ASTNode node, String outerScope)
+        public bool TryGetSymbol(string symbol, out ASTNode node, string outerScope)
         {
             return TryGetSymbolInternal(symbol, out node, Scopes) ||
                 TryGetSymbolInScopeStack(symbol, out node, outerScope);
         }
 
-        public bool SymbolExists(String symbol, String outerScope)
+        public bool SymbolExists(string symbol, string outerScope)
         {   
             ASTNode dummy;
             return TryGetSymbol(symbol, out dummy, outerScope);
         }
 
-        public bool TryGetSymbolInScopeStack(String symbol, out ASTNode node, String lowestScope)
+        public bool TryGetSymbolInScopeStack(string symbol, out ASTNode node, string lowestScope)
         {
             node = null;
-            String scope = lowestScope.ToLower();
+            string scope = lowestScope.ToLower();
             if (scope == "object") //As all classes inherit from object this is already checked.
                 return false;
 
-            LinkedList<Dictionary<String, ASTNode>> stack;
+            LinkedList<Dictionary<string, ASTNode>> stack;
             if (!TryBuildSpecificScope(scope, out stack))
                 return false;
 
             return TryGetSymbolInternal(symbol, out node, stack);
         }
 
-        private bool TryBuildSpecificScope(String lowestScope, out LinkedList<Dictionary<String, ASTNode>> stack)
+        private bool TryBuildSpecificScope(string lowestScope, out LinkedList<Dictionary<string, ASTNode>> stack)
         {
             var names = lowestScope.Split('.');
-            stack = new LinkedList<Dictionary<String, ASTNode>>();
-            Dictionary<String, ASTNode> currentScope;
+            stack = new LinkedList<Dictionary<string, ASTNode>>();
+            Dictionary<string, ASTNode> currentScope;
             foreach (string scopeName in names)
             {
                 if (Cache.TryGetValue(scopeName, out currentScope))
@@ -97,10 +97,10 @@ namespace ME3Script.Analysis.Symbols
             return stack.Count > 0;
         }
 
-        private bool TryGetSymbolInternal(String symbol, out ASTNode node, LinkedList<Dictionary<String, ASTNode>> stack)
+        private bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<Dictionary<string, ASTNode>> stack)
         {
-            String name = symbol.ToLower();
-            LinkedListNode<Dictionary<String, ASTNode>> it;
+            string name = symbol.ToLower();
+            LinkedListNode<Dictionary<string, ASTNode>> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
                 if (it.Value.TryGetValue(name, out node))
@@ -110,30 +110,30 @@ namespace ME3Script.Analysis.Symbols
             return false;
         }
 
-        public bool SymbolExistsInCurrentScope(String symbol)
+        public bool SymbolExistsInCurrentScope(string symbol)
         {
             return Scopes.Last().ContainsKey(symbol.ToLower());
         }
 
-        public bool TryGetSymbolFromCurrentScope(String symbol, out ASTNode node)
+        public bool TryGetSymbolFromCurrentScope(string symbol, out ASTNode node)
         {
             return Scopes.Last().TryGetValue(symbol.ToLower(), out node);
         }
 
-        public bool TryGetSymbolFromSpecificScope(String symbol, out ASTNode node, String specificScope)
+        public bool TryGetSymbolFromSpecificScope(string symbol, out ASTNode node, string specificScope)
         {
             node = null;
-            Dictionary<String, ASTNode> scope;
+            Dictionary<string, ASTNode> scope;
             return Cache.TryGetValue(specificScope.ToLower(), out scope) &&
                 scope.TryGetValue(symbol.ToLower(), out node);
         }
 
-        public void AddSymbol(String symbol, ASTNode node)
+        public void AddSymbol(string symbol, ASTNode node)
         {
             Scopes.Last().Add(symbol.ToLower(), node);
         }
 
-        public bool TryAddSymbol(String symbol, ASTNode node)
+        public bool TryAddSymbol(string symbol, ASTNode node)
         {
             if (!SymbolExistsInCurrentScope(symbol.ToLower()))
             {
@@ -143,9 +143,9 @@ namespace ME3Script.Analysis.Symbols
             return false;
         }
 
-        public bool GoDirectlyToStack(String lowestScope)
+        public bool GoDirectlyToStack(string lowestScope)
         {
-            String scope = lowestScope.ToLower();
+            string scope = lowestScope.ToLower();
             // TODO: 5 AM coding.. REVISIT THIS!
             if (CurrentScopeName != "object")
                 throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
@@ -196,13 +196,13 @@ namespace ME3Script.Analysis.Symbols
             return null;
         }
 
-        public bool GetInOperator(out InOpDeclaration op, String name, VariableType lhs, VariableType rhs)
+        public bool GetInOperator(out InOpDeclaration op, string name, VariableType lhs, VariableType rhs)
         {
             op = null;
             var lookup = Operators.FirstOrDefault(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && opdecl.Value.OperatorKeyword == name
                 && (opdecl.Value as InOpDeclaration).LeftOperand.VarType.Name.ToLower() == lhs.Name.ToLower()
                 && (opdecl.Value as InOpDeclaration).RightOperand.VarType.Name.ToLower() == rhs.Name.ToLower());
-            if (lookup.Equals(new KeyValuePair<String, OperatorDeclaration>()))
+            if (lookup.Equals(new KeyValuePair<string, OperatorDeclaration>()))
                 return false;
 
             op = lookup.Value as InOpDeclaration;

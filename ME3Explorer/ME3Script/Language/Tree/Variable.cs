@@ -10,33 +10,17 @@ namespace ME3Script.Language.Tree
 {
     public class Variable : VariableDeclaration
     {
-        public String Name
-        {
-            get
-            {
-                return Variables.First().Name;
-            }
-        }
+        public string Name => Variables.First().Name;
 
-        public int Size
-        {
-            get
-            {
-                return Variables.First().Size;
-            }
-        }
+        public int Size => Variables.First().Size;
 
-        public bool IsStaticArray
-        {
-            get
-            {
-                return Variables.First().Size != -1;
-            }
-        }
+        public bool IsStaticArray => Variables.First().Size > 1;
+
+
 
         public Variable(List<Specifier> specs, VariableIdentifier name,
-            VariableType type, SourcePosition start, SourcePosition end)
-            : base(type, specs, new List<VariableIdentifier> { name }, start, end)
+                        VariableType type, SourcePosition start, SourcePosition end)
+            : base(type, specs, new List<VariableIdentifier> { name }, null, start, end)
         {
             Type = ASTNodeType.Variable;
         }

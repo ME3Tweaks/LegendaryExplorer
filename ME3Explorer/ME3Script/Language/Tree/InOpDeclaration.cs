@@ -14,7 +14,7 @@ namespace ME3Script.Language.Tree
         public FunctionParameter RightOperand;
         public int Precedence;
 
-        public InOpDeclaration(String keyword, int precedence,
+        public InOpDeclaration(string keyword, int precedence,
         bool delim, CodeBody body, VariableType returnType,
         FunctionParameter leftOp, FunctionParameter rightOp,
         List<Specifier> specs, SourcePosition start, SourcePosition end)

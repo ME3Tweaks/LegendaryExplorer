@@ -324,7 +324,7 @@ namespace ME3Explorer.PackageDumper
         /// Writes a line to the console if verbose mode is turned on
         /// </summary>
         /// <param name="message">Verbose message to write</param>
-        public void writeVerboseLine(String message)
+        public void writeVerboseLine(string message)
         {
             if (verbose)
             {

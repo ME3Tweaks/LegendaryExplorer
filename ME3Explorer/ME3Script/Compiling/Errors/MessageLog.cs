@@ -54,7 +54,7 @@ namespace ME3Script.Compiling.Errors
             content.Add(msg);
         }
 
-        public void LogMessage(String msg, SourcePosition start = null, SourcePosition end = null)
+        public void LogMessage(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             if (start == null && end == null)
                 content.Add(new LogMessage(msg));
@@ -62,7 +62,7 @@ namespace ME3Script.Compiling.Errors
                 content.Add(new PositionedMessage(msg, start, end));
         }
 
-        public void LogError(String msg, SourcePosition start = null, SourcePosition end = null)
+        public void LogError(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             if (start == null && end == null)
                 content.Add(new Error(msg));
@@ -70,7 +70,7 @@ namespace ME3Script.Compiling.Errors
                 content.Add(new LineError(msg, start, end));
         }
 
-        public void LogWarning(String msg, SourcePosition start = null, SourcePosition end = null)
+        public void LogWarning(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             if (start == null && end == null)
                 content.Add(new Warning(msg));

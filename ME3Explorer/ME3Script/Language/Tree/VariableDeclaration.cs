@@ -16,13 +16,16 @@ namespace ME3Script.Language.Tree
         // Can reference an existing type, or declare a new struct/enum type
         public VariableType VarType;
 
+        public string Category;
+
         public VariableDeclaration(VariableType type, List<Specifier> specs,
-            List<VariableIdentifier> names, SourcePosition start, SourcePosition end)
+                                   List<VariableIdentifier> names, string category, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Specifiers = specs;
             VarType = type;
             Variables = names;
+            Category = category;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

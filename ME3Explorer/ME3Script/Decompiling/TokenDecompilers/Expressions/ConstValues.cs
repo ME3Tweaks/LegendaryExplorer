@@ -19,6 +19,15 @@ namespace ME3Script.Decompiling
             StartPositions.Pop();
             return new IntegerLiteral(value, null, null);
         }
+        public StringRefLiteral DecompileStringRefConst()
+        {
+            PopByte();
+
+            var value = ReadInt32();
+
+            StartPositions.Pop();
+            return new StringRefLiteral(value, null, null);
+        }
 
         public FloatLiteral DecompileFloatConst()
         {

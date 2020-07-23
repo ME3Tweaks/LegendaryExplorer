@@ -8,9 +8,9 @@ namespace ME3Script.Compiling.Errors
 {
     public class LogMessage
     {
-        public String Message;
+        public string Message;
 
-        public LogMessage(String msg)
+        public LogMessage(string msg)
         {
             Message = msg;
         }

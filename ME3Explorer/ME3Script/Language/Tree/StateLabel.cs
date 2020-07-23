@@ -11,9 +11,9 @@ namespace ME3Script.Language.Tree
     public class StateLabel : Statement
     {
         public int StartOffset;
-        public String Name;
+        public string Name;
 
-        public StateLabel(String name, int offset, SourcePosition start, SourcePosition end)
+        public StateLabel(string name, int offset, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.StateLabel, start, end)
         {
             StartOffset = offset;

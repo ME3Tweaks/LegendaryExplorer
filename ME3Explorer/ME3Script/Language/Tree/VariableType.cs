@@ -10,11 +10,11 @@ namespace ME3Script.Language.Tree
 {
     public class VariableType : ASTNode
     {
-        public String Name;
+        public string Name;
         public ASTNode Declaration;
         public ASTNodeType NodeType { get { return Declaration == null ? ASTNodeType.INVALID : Declaration.Type; } }
 
-        public VariableType(String name, SourcePosition start, SourcePosition end)
+        public VariableType(string name, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.VariableType, start, end) 
         {
             Name = name;

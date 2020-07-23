@@ -78,7 +78,7 @@ namespace ME3Explorer.ME3Script
                         }
                         else
                         {
-                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export.GetProperties(), Pcc);
+                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
                         }
                         break;
                 }

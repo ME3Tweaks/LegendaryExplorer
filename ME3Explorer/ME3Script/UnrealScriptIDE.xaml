@@ -9,6 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
-        <TextBox IsReadOnly="True" Text="{Binding ScriptText}"></TextBox>
+        <TextBox IsReadOnly="True" Text="{Binding ScriptText}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 FontFamily="Consolas"/>
     </Grid>
 </me3Explorer:ExportLoaderControl>

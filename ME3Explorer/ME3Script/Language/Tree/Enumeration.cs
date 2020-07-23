@@ -11,7 +11,7 @@ namespace ME3Script.Language.Tree
     public class Enumeration : VariableType
     {
         public List<VariableIdentifier> Values;
-        public Enumeration(String name, List<VariableIdentifier> values,
+        public Enumeration(string name, List<VariableIdentifier> values,
             SourcePosition start, SourcePosition end)
             : base(name, start, end)
         {

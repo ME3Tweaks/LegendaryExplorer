@@ -11,14 +11,14 @@ namespace ME3Script.Language.Tree
 {
     public class Function : ASTNode, IContainsLocals
     {
-        public String Name;
+        public string Name;
         public CodeBody Body;
         public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
         public List<Specifier> Specifiers;
         public List<FunctionParameter> Parameters;
 
-        public Function(String name, VariableType returntype, CodeBody body,
+        public Function(string name, VariableType returntype, CodeBody body,
             List<Specifier> specs, List<FunctionParameter> parameters,
             SourcePosition start, SourcePosition end)
             : base(ASTNodeType.Function, start, end)

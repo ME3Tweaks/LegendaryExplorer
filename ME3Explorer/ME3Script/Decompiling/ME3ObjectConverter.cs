@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gammtek.Conduit.Extensions;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
@@ -24,7 +26,6 @@ namespace ME3Script.Decompiling
             // TODO: specifiers
             // TODO: operators
             // TODO: components
-            // TODO: constants
             // TODO: interfaces
 
 
@@ -42,7 +43,7 @@ namespace ME3Script.Decompiling
                 switch (objBin)
                 {
                     case UConst uConst:
-                        //TODO
+                        Types.Add(new Const(uConst.Export.ObjectName, uConst.Value, null, null));
                         nextItem = uConst.Next;
                         break;
                     case UEnum uEnum:
@@ -71,8 +72,33 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            Class AST = new Class(uClass.Export.ObjectName, new List<Specifier>(), Vars, Types, Funcs, 
-                States, parent, outer, new List<OperatorDeclaration>(), null, null);
+            var specifiers = new List<Specifier>();
+            foreach (UnrealFlags.EClassFlags classFlag in uClass.ClassFlags.MaskToList())
+            {
+                switch (classFlag)
+                {
+                    case UnrealFlags.EClassFlags.Abstract:
+                        specifiers.Add(new Specifier("abstract"));
+                        break;
+                    case UnrealFlags.EClassFlags.Config when uClass.ClassConfigName != "None":
+                        specifiers.Add(new Specifier($"config({uClass.ClassConfigName})"));
+                        break;
+                    case UnrealFlags.EClassFlags.Config:
+                        specifiers.Add(new Specifier("config"));
+                        break;
+                    case UnrealFlags.EClassFlags.NoExport:
+                        specifiers.Add(new Specifier("noexport"));
+                        break;
+                    case UnrealFlags.EClassFlags.Placeable:
+                        specifiers.Add(new Specifier("placeable"));
+                        break;
+                    case UnrealFlags.EClassFlags.NativeReplication:
+                        specifiers.Add(new Specifier("nativereplication"));
+                        break;
+                }
+            }
+            Class AST = new Class(uClass.Export.ObjectName, specifiers, Vars, Types, Funcs, 
+                                  States, parent, outer, new List<OperatorDeclaration>(), null, null);
 
             // Ugly quick fix:
             foreach (var member in Types)
@@ -85,15 +111,14 @@ namespace ME3Script.Decompiling
                 member.Outer = AST;
 
             var propObject = pcc.GetUExport(uClass.Defaults);
-            if (propObject != null && propObject.GetProperties() is PropertyCollection props && props.Count != 0)
-                AST.DefaultProperties = ConvertDefaultProperties(props, pcc);
+            AST.DefaultProperties = ConvertDefaultProperties(propObject);
 
             return AST;
         }
 
         public static State ConvertState(UState obj)
         {
-            // TODO: ignores and body/labels
+            // TODO: labels
 
             State parent = null;
             if (obj.SuperClass != 0)
@@ -127,7 +152,20 @@ namespace ME3Script.Decompiling
             var ByteCode = new ME3ByteCodeDecompiler(obj, new List<FunctionParameter>());
             var body = ByteCode.Decompile();
 
-            return new State(obj.Export.ObjectName, body, new List<Specifier>(), (State)parent, Funcs, new List<Function>(), new List<StateLabel>(), null, null);
+            var specifiers = new List<Specifier>();
+            foreach (StateFlags flag in obj.StateFlags.MaskToList())
+            {
+                switch (flag)
+                {
+                    case StateFlags.Auto:
+                        specifiers.Add(new Specifier("auto"));
+                        break;
+                    case StateFlags.Simulated:
+                        specifiers.Add(new Specifier("simulated"));
+                        break;
+                }
+            }
+            return new State(obj.Export.ObjectName, body, specifiers, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
         }
 
         public static Struct ConvertStruct(UScriptStruct obj)
@@ -153,7 +191,26 @@ namespace ME3Script.Decompiling
             VariableType parent = obj.SuperClass != 0 
                 ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName, null, null) : null;
 
-            var node = new Struct(obj.Export.ObjectName, new List<Specifier>(), Vars, null, null, parent);
+            var specifiers = new List<Specifier>();
+            foreach (ScriptStructFlags flag in obj.StructFlags.MaskToList())
+            {
+                switch (flag)
+                {
+                    case ScriptStructFlags.Immutable:
+                        specifiers.Add(new Specifier("immutable"));
+                        break;
+                    case ScriptStructFlags.ImmutableWhenCooked:
+                        specifiers.Add(new Specifier("immutablewhencooked"));
+                        break;
+                    case ScriptStructFlags.Native:
+                        specifiers.Add(new Specifier("native"));
+                        break;
+                    case ScriptStructFlags.Transient:
+                        specifiers.Add(new Specifier("transient"));
+                        break;
+                }
+            }
+            var node = new Struct(obj.Export.ObjectName, specifiers, Vars, null, null, parent);
 
             foreach (var member in Vars)
                 member.Outer = node;
@@ -165,7 +222,9 @@ namespace ME3Script.Decompiling
         {
             var vals = new List<VariableIdentifier>();
             foreach (var val in obj.Names)
+            {
                 vals.Add(new VariableIdentifier(val, null, null));
+            }
 
             var node = new Enumeration(obj.Export.ObjectName, vals, null, null);
 
@@ -177,10 +236,50 @@ namespace ME3Script.Decompiling
 
         public static Variable ConvertVariable(UProperty obj)
         {
-            int size = -1;
-            return new Variable(new List<Specifier>(), 
-                new VariableIdentifier(obj.Export.ObjectName, null, null, size), 
-                new VariableType(GetPropertyType(obj), null, null), null, null);
+            int size = obj.ArraySize;
+            var specifiers = new List<Specifier>();
+            foreach (UnrealFlags.EPropertyFlags propFlag in obj.PropertyFlags.MaskToList())
+            {
+                switch (propFlag)
+                {
+                    case UnrealFlags.EPropertyFlags.Native:
+                        specifiers.Add(new Specifier("native"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.Transient:
+                        specifiers.Add(new Specifier("transient"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.EditConst:
+                        specifiers.Add(new Specifier("editconst"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.Const:
+                        specifiers.Add(new Specifier("const"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.Interp:
+                        specifiers.Add(new Specifier("interp"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.EditorOnly:
+                        specifiers.Add(new Specifier("editoronly"));
+                        break;
+                    //parm flags
+                    case UnrealFlags.EPropertyFlags.OptionalParm:
+                        specifiers.Add(new Specifier("optional"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.OutParm:
+                        specifiers.Add(new Specifier("out"));
+                        break;
+                    case UnrealFlags.EPropertyFlags.CoerceParm:
+                        specifiers.Add(new Specifier("coerce"));
+                        break;
+                }
+            }
+
+            var variable = new Variable(specifiers, new VariableIdentifier(obj.Export.ObjectName, null, null, size), 
+                                                    new VariableType(GetPropertyType(obj), null, null), null, null);
+            if (obj.Category != "None")
+            {
+                variable.Category = obj.Category;
+            }
+            return variable;
         }
 
         private static string GetPropertyType(UProperty obj)
@@ -275,8 +374,63 @@ namespace ME3Script.Decompiling
             var ByteCode = new ME3ByteCodeDecompiler(obj, parameters);
             var body = ByteCode.Decompile();
 
+            var specifiers = new List<Specifier>();
+            foreach (FunctionFlags funcFlag in obj.FunctionFlags.MaskToList())
+            {
+                switch (funcFlag)
+                {
+                    case FunctionFlags.Native when obj.NativeIndex > 0:
+                        specifiers.Add(new Specifier($"native({obj.NativeIndex})"));
+                        break;
+                    case FunctionFlags.Native:
+                        specifiers.Add(new Specifier("native"));
+                        break;
+                    case FunctionFlags.Static:
+                        specifiers.Add(new Specifier("static"));
+                        break;
+                    case FunctionFlags.Simulated:
+                        specifiers.Add(new Specifier("simulated"));
+                        break;
+                    case FunctionFlags.Net when !obj.FunctionFlags.Has(FunctionFlags.NetReliable):
+                        specifiers.Add(new Specifier("unreliable"));
+                        break;
+                    case FunctionFlags.NetReliable:
+                        specifiers.Add(new Specifier("reliable"));
+                        break;
+                    case FunctionFlags.NetServer:
+                        specifiers.Add(new Specifier("server"));
+                        break;
+                    case FunctionFlags.NetClient:
+                        specifiers.Add(new Specifier("client"));
+                        break;
+                    case FunctionFlags.Final:
+                        specifiers.Add(new Specifier("final"));
+                        break;
+                    case FunctionFlags.PreOperator:
+                        specifiers.Add(new Specifier("preoperator"));
+                        break;
+                    case FunctionFlags.Operator:
+                        specifiers.Add(new Specifier("operator"));
+                        break;
+                    case FunctionFlags.Iterator:
+                        specifiers.Add(new Specifier("iterator"));
+                        break;
+                    case FunctionFlags.Latent:
+                        specifiers.Add(new Specifier("latent"));
+                        break;
+                    case FunctionFlags.Exec:
+                        specifiers.Add(new Specifier("exec"));
+                        break;
+                    case FunctionFlags.Event:
+                        specifiers.Add(new Specifier("event"));
+                        break;
+                    case FunctionFlags.Const:
+                        specifiers.Add(new Specifier("const"));
+                        break;
+                }
+            }
             var func = new Function(obj.Export.ObjectName, returnType, body,
-                new List<Specifier>(), parameters, null, null);
+                                    specifiers, parameters, null, null);
 
             foreach (var local in locals)
             {
@@ -286,53 +440,92 @@ namespace ME3Script.Decompiling
             return func;
         }
 
-        public static DefaultPropertiesBlock ConvertDefaultProperties(PropertyCollection properties, IMEPackage pcc)
+        public static DefaultPropertiesBlock ConvertDefaultProperties(ExportEntry defaultsExport)
         {
-            var defaults = new List<Statement>();
+            List<Statement> defaults = ConvertProperties(defaultsExport.GetProperties(), defaultsExport);
+
+            return new DefaultPropertiesBlock(new List<Statement>(defaults), null, null);
+        }
+
+        private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry containingExport)
+        {
+            var statements = new List<Statement>();
             foreach (var prop in properties)
             {
                 var name = new SymbolReference(null, null, null, prop.Name);
-                var value = ConvertPropertyValue(prop, pcc);
-                defaults.Add(new AssignStatement(name, value, null, null));
+                var value = ConvertPropertyValue(prop);
+                if (value is StructLiteral structLiteral)
+                {
+                    var subObjectsToAdd = new List<Subobject>();
+                    foreach (Subobject subobject in structLiteral.Statements.OfType<Subobject>())
+                    {
+                        if (statements.All(stmnt => (stmnt as Subobject)?.Name != subobject.Name))
+                        {
+                            subObjectsToAdd.Add(subobject);
+                        }
+                    }
+                    statements.AddRange(subObjectsToAdd);
+                    structLiteral.Statements = structLiteral.Statements.Where(stmnt => stmnt is AssignStatement).ToList();
+                }
+                statements.Add(new AssignStatement(name, value, null, null));
             }
 
-            return new DefaultPropertiesBlock(defaults, null, null);
-        }
 
-        public static Expression ConvertPropertyValue(Property prop, IMEPackage pcc)
-        {
-            switch (prop)
+
+            return statements;
+
+            Expression ConvertPropertyValue(Property prop)
             {
-                case BoolProperty boolProperty:
-                    return new BooleanLiteral(boolProperty.Value, null, null);
-                case ByteProperty byteProperty:
-                    return new IntegerLiteral(byteProperty.Value, null, null);
-                case DelegateProperty delegateProperty:
-                    return new SymbolReference(null, null, null, delegateProperty.Value.FunctionName);
-                case EnumProperty enumProperty:
-                    return new SymbolReference(null, null, null, $"{enumProperty.EnumType.Instanced}.{enumProperty.Value.Instanced}");
-                case FloatProperty floatProperty:
-                    return new FloatLiteral(floatProperty.Value, null, null);
-                case IntProperty intProperty:
-                    return new IntegerLiteral(intProperty.Value, null, null);
-                case NameProperty nameProperty:
-                    return new NameLiteral(nameProperty.Name, null, null);
-                case ObjectProperty objectProperty:
-                    var objRef = objectProperty.Value;
-                    if (objRef == 0)
-                        return new SymbolReference(null, null, null, "None");
-                    var objEntry = pcc.GetEntry(objRef);
-                    var objStr = $"{objEntry.ClassName}'{objEntry.InstancedFullPath}'";
-                    return new SymbolReference(null, null, null, objStr);
-                case StringRefProperty stringRefProperty:
-                    return new StringRefLiteral(stringRefProperty.Value, null, null);
-                case StrProperty strProperty:
-                    return new StringLiteral(strProperty.Value, null, null);
-                case ArrayPropertyBase arrayPropertyBase:
-                case StructProperty structProperty:
-                default:
-                    return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.PropType); //TODO
+                switch (prop)
+                {
+                    case BoolProperty boolProperty:
+                        return new BooleanLiteral(boolProperty.Value, null, null);
+                    case ByteProperty byteProperty:
+                        return new IntegerLiteral(byteProperty.Value, null, null);
+                    case BioMask4Property bioMask4Property:
+                        return new IntegerLiteral(bioMask4Property.Value, null, null);
+                    case DelegateProperty delegateProperty:
+                        return new SymbolReference(null, null, null, delegateProperty.Value.FunctionName);
+                    case EnumProperty enumProperty:
+                        return new SymbolReference(null, null, null, $"{enumProperty.EnumType.Instanced}.{enumProperty.Value.Instanced}");
+                    case FloatProperty floatProperty:
+                        return new FloatLiteral(floatProperty.Value, null, null);
+                    case IntProperty intProperty:
+                        return new IntegerLiteral(intProperty.Value, null, null);
+                    case NameProperty nameProperty:
+                        return new NameLiteral(nameProperty.Value, null, null);
+                    case ObjectProperty objectProperty:
+                        var objRef = objectProperty.Value;
+                        if (objRef == 0)
+                            return new SymbolReference(null, null, null, "None");
+                        var objEntry = containingExport.FileRef.GetEntry(objRef);
+                        string objStr;
+                        if (objEntry is ExportEntry objExp && objExp.Parent == containingExport)
+                        {
+                            string name = objExp.ObjectName.Instanced;
+                            objStr = $"{name}";
+                            if (statements.All(stmnt => (stmnt as Subobject)?.Name != name))
+                            {
+                                statements.Add(new Subobject(name, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp)));
+                            }
+                        }
+                        else
+                        {
+                            objStr = $"{objEntry.ClassName}'{objEntry.InstancedFullPath}'";
+                        }
+                        return new SymbolReference(null, null, null, objStr);
+                    case StringRefProperty stringRefProperty:
+                        return new StringRefLiteral(stringRefProperty.Value, null, null);
+                    case StrProperty strProperty:
+                        return new StringLiteral(strProperty.Value, null, null);
+                    case StructProperty structProperty:
+                        return new StructLiteral(structProperty.StructType, ConvertProperties(structProperty.Properties, containingExport));
+                    case ArrayPropertyBase arrayPropertyBase:
+                        return new DynamicArrayLiteral(arrayPropertyBase.Reference, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
+                    default:
+                        return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.PropType);
 
+                }
             }
         }
     }

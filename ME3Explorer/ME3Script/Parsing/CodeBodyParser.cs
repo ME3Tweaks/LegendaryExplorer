@@ -16,7 +16,7 @@ namespace ME3Script.Parsing
     public class CodeBodyParser : StringParserBase
     {
         private SymbolTable Symbols;
-        private String OuterClassScope;
+        private string OuterClassScope;
         private IContainsLocals NodeVariables;
         private ASTNode Node;
         private CodeBody Body;
@@ -37,7 +37,7 @@ namespace ME3Script.Parsing
         private int _switchCount;
         private bool InSwitch { get { return _switchCount > 0; } }
 
-        public CodeBodyParser(TokenStream<String> tokens, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
+        public CodeBodyParser(TokenStream<string> tokens, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
         {
             Log = log ?? new MessageLog();
             Symbols = symbols;
@@ -212,8 +212,8 @@ namespace ME3Script.Parsing
                     NodeVariables.Locals.Add(variable);
                     variable.Outer = Node;
                 }
-
-                return new VariableDeclaration(type as VariableType, null, vars, vars.First().StartPos, vars.Last().EndPos);
+                //TODO: parse category
+                return new VariableDeclaration(type as VariableType, null, vars, null, vars.First().StartPos, vars.Last().EndPos);
             };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
@@ -895,7 +895,7 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                return new IntegerLiteral(Int32.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
+                return new IntegerLiteral(int.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
             };
             return (IntegerLiteral)Tokens.TryGetTree(intParser);
         }
@@ -908,7 +908,7 @@ namespace ME3Script.Parsing
                     return null;
 
                 var token = Tokens.ConsumeToken(CurrentTokenType);
-                return new BooleanLiteral(Boolean.Parse(token.Value), token.StartPosition, token.EndPosition);
+                return new BooleanLiteral(bool.Parse(token.Value), token.StartPosition, token.EndPosition);
             };
             return (BooleanLiteral)Tokens.TryGetTree(boolParser);
         }
@@ -921,7 +921,7 @@ namespace ME3Script.Parsing
                 if (token == null)
                     return null;
 
-                return new FloatLiteral(Single.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
+                return new FloatLiteral(float.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
             };
             return (FloatLiteral)Tokens.TryGetTree(floatParser);
         }

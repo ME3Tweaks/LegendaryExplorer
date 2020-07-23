@@ -16,7 +16,7 @@ namespace ME3Script.Parsing
 {
     public class ClassOutlineParser : StringParserBase
     {
-        public ClassOutlineParser(TokenStream<String> tokens, MessageLog log = null)
+        public ClassOutlineParser(TokenStream<string> tokens, MessageLog log = null)
         {
             Log = log ?? new MessageLog();
             Tokens = tokens;
@@ -130,8 +130,8 @@ namespace ME3Script.Parsing
 
                     if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
                         return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                    return new VariableDeclaration(type, specs, vars, vars.First().StartPos, vars.Last().EndPos);
+                    //TODO: parse category
+                    return new VariableDeclaration(type, specs, vars, null, vars.First().StartPos, vars.Last().EndPos);
                 };
             return (VariableDeclaration)Tokens.TryGetTree(declarationParser);
         }
@@ -216,7 +216,7 @@ namespace ME3Script.Parsing
                     if (Tokens.ConsumeToken(TokenType.Function) == null)
                         return null;
 
-                    Token<String> returnType = null, name = null;
+                    Token<string> returnType = null, name = null;
 
                     var firstString = Tokens.ConsumeToken(TokenType.Word);
                     if (firstString == null)
@@ -335,12 +335,12 @@ namespace ME3Script.Parsing
                 var token = Tokens.ConsumeToken(TokenType.Operator) ??
                     Tokens.ConsumeToken(TokenType.PreOperator) ??
                     Tokens.ConsumeToken(TokenType.PostOperator) ??
-                    new Token<String>(TokenType.INVALID);
+                    new Token<string>(TokenType.INVALID);
 
                 if (token.Type == TokenType.INVALID)
                     return null;
 
-                Token<String> precedence = null;
+                Token<string> precedence = null;
                 if (token.Type == TokenType.Operator)
                 {
                     if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
@@ -355,7 +355,7 @@ namespace ME3Script.Parsing
 
                 }
 
-                Token<String> returnType = null, name = null;
+                Token<string> returnType = null, name = null;
                 var firstString = TryParseOperatorIdentifier();
                 if (firstString == null)
                     return Error("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -413,7 +413,7 @@ namespace ME3Script.Parsing
                 else if (token.Type == TokenType.PostOperator)
                     return new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), specs, name.StartPosition, name.EndPosition);
                 else
-                    return new InOpDeclaration(name.Value, Int32.Parse(precedence.Value), false, body, retVarType, 
+                    return new InOpDeclaration(name.Value, int.Parse(precedence.Value), false, body, retVarType, 
                         operands.First(), operands.Last(), specs, name.StartPosition, name.EndPosition);
             };
             return (OperatorDeclaration)Tokens.TryGetTree(operatorParser);
@@ -496,7 +496,7 @@ namespace ME3Script.Parsing
         #endregion
         #region Helpers
 
-        public Token<String> TryParseOperatorIdentifier()
+        public Token<string> TryParseOperatorIdentifier()
         {
             if (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType)
                 || CurrentTokenType == TokenType.Word)
@@ -507,7 +507,7 @@ namespace ME3Script.Parsing
 
         public List<Specifier> ParseSpecifiers(List<TokenType> specifierCategory)
         {
-            List<Specifier> specs = new List<Specifier>();
+            var specs = new List<Specifier>();
             Specifier spec = TryParseSpecifier(specifierCategory);
             while (spec != null)
             {
@@ -518,12 +518,12 @@ namespace ME3Script.Parsing
         }
 
         //TODO: unused?
-        private List<Token<String>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
+        private List<Token<string>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
         {
-            var scopedTokens = new List<Token<String>>();
+            var scopedTokens = new List<Token<string>>();
             if (Tokens.ConsumeToken(scopeStart) == null)
             {
-                Log.LogError("Expected '" + scopeStart.ToString() + "'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 return null;
             }
 

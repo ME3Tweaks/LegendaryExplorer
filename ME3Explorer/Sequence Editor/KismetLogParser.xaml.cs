@@ -75,7 +75,7 @@ namespace ME3Explorer.Sequence_Editor
                 string packageName = args[1].Trim('(', ')').ToLower();
                 if (Pcc == null || Path.GetFileNameWithoutExtension(Pcc.FilePath).ToLower() == packageName)
                 {
-                    if (Int32.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
+                    if (int.TryParse(nameAndIndex.Substring(nameAndIndex.LastIndexOf('_') + 1), out int nameIndex))
                     {
                         var newInfo = new LoggerInfo
                         {

@@ -373,7 +373,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    return System.BitConverter.ToInt16(value.Reverse().ToArray(), value.Length - sizeof(Int16) - startIndex);
+                    return System.BitConverter.ToInt16(value.Reverse().ToArray(), value.Length - sizeof(short) - startIndex);
                 }
             }
             else
@@ -415,7 +415,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToInt32(value.Reverse().ToArray(), value.Length - sizeof(Int32) - startIndex);
+                return System.BitConverter.ToInt32(value.Reverse().ToArray(), value.Length - sizeof(int) - startIndex);
             }
         }
         ///
@@ -635,7 +635,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToUInt16(value.Reverse().ToArray(), value.Length - sizeof(UInt16) - startIndex);
+                return System.BitConverter.ToUInt16(value.Reverse().ToArray(), value.Length - sizeof(ushort) - startIndex);
             }
         }
         ///
@@ -672,7 +672,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToUInt32(value.Reverse().ToArray(), value.Length - sizeof(UInt32) - startIndex);
+                return System.BitConverter.ToUInt32(value.Reverse().ToArray(), value.Length - sizeof(uint) - startIndex);
             }
         }
         ///
@@ -709,7 +709,7 @@ namespace ME3Explorer
             }
             else
             {
-                return System.BitConverter.ToUInt64(value.Reverse().ToArray(), value.Length - sizeof(UInt64) - startIndex);
+                return System.BitConverter.ToUInt64(value.Reverse().ToArray(), value.Length - sizeof(ulong) - startIndex);
             }
         }
     }

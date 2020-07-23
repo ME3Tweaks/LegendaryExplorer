@@ -7,9 +7,9 @@ using System.Globalization;
 
 namespace ME3Script.Lexing.Tokenizing
 {
-    public class StringTokenizer : TokenizableDataStream<String>
+    public class StringTokenizer : TokenizableDataStream<string>
     {
-        public StringTokenizer(String data) : base(
+        public StringTokenizer(string data) : base(
             () => data.ToCharArray()
                 .Select(i => i.ToString(CultureInfo.InvariantCulture))
                 .ToList())

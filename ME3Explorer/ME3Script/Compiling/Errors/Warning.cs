@@ -8,7 +8,7 @@ namespace ME3Script.Compiling.Errors
 {
     public class Warning : LogMessage
     {
-        public Warning(String msg) : base(msg) { }
+        public Warning(string msg) : base(msg) { }
 
         public override string ToString()
         {

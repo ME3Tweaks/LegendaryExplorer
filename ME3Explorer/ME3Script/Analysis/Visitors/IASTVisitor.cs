@@ -14,6 +14,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(VariableType node);
         bool VisitNode(Struct node);
         bool VisitNode(Enumeration node);
+        bool VisitNode(Const node);
         bool VisitNode(Function node);
         bool VisitNode(State node);
         bool VisitNode(OperatorDeclaration node);
@@ -59,10 +60,14 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(NameLiteral node);
         bool VisitNode(StringLiteral node);
         bool VisitNode(StringRefLiteral node);
+        bool VisitNode(StructLiteral node);
+        bool VisitNode(DynamicArrayLiteral node);
 
         bool VisitNode(ConditionalExpression node);
         bool VisitNode(CastExpression node);
 
         bool VisitNode(DefaultPropertiesBlock node);
+
+        bool VisitNode(Subobject node);
     }
 }

@@ -22,7 +22,7 @@ namespace ME3Script.Language.ByteCode
         Nothing = 0x0B,
         LabelTable = 0x0C,
         GotoLabel = 0x0D,
-        EatReturnValue = 0x0E, // TODO: wrong?? weird?? function / operator return value discarded?
+        EatReturnValue = 0x0E,
         Let = 0x0F,
         DynArrayElement = 0x10,
         New = 0x11,
@@ -85,7 +85,7 @@ namespace ME3Script.Language.ByteCode
         EmptyParmValue = 0x4A,
         InstanceDelegate = 0x4B,
         // 0x4C - 0x4E are unknown, probably invalid, throws assert failure by the looks of it, not defined in GNatives
-        Unkn_4F = 0x4F,
+        StringRefConst = 0x4F,
         GoW_DefaultValue = 0x50,
         InterfaceContext = 0x51,
         InterfaceCast = 0x52,
@@ -96,7 +96,7 @@ namespace ME3Script.Language.ByteCode
         DynArrayInsertItem = 0x57,
         DynArrayIterator = 0x58,
         DynArraySort = 0x59,
-        Unkn_5A = 0x5A, // FilterEditorOnly?
+        FilterEditorOnly = 0x5A, // FilterEditorOnly?
         Unkn_5B = 0x5B, // 0-2 , 48, 5B-62, all share the same behavior
         Unkn_5C = 0x5C, // presumably variable related?
         Unkn_5D = 0x5D,
@@ -107,7 +107,7 @@ namespace ME3Script.Language.ByteCode
         Unkn_62 = 0x62,
         OptIfLocal = 0x63,
         OptIfInstance = 0x64,
-        Unkn_65 = 0x65,
+        NamedFunction = 0x65,
         // 66-6F are unknown, probably invalid, throws assert failure by the looks of it
         // none of them are defined in GNatives
 

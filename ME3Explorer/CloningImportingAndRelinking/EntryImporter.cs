@@ -346,7 +346,7 @@ namespace ME3Explorer
         public static IEntry GetOrAddCrossImportOrPackage(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC,
                                                           bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null)
         {
-            if (String.IsNullOrEmpty(importFullName))
+            if (string.IsNullOrEmpty(importFullName))
             {
                 return null;
             }
@@ -391,7 +391,7 @@ namespace ME3Explorer
             string[] importParts = importFullName.Split('.');
 
             //recursively ensure parent exists. when importParts.Length == 1, this will return null
-            IEntry parent = GetOrAddCrossImportOrPackage(String.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
+            IEntry parent = GetOrAddCrossImportOrPackage(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC,
                                                          importNonPackageExportsToo, objectMapping);
 
 
@@ -438,7 +438,7 @@ namespace ME3Explorer
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<ListDialog.EntryItem> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
-            if (String.IsNullOrEmpty(importFullName))
+            if (string.IsNullOrEmpty(importFullName))
             {
                 return destinationPCC.getEntryOrAddImport(packageName, "Package");
             }
@@ -466,7 +466,7 @@ namespace ME3Explorer
             string[] importParts = importFullName.Split('.');
 
             //recursively ensure parent exists
-            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(String.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
+            IEntry parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join(".", importParts.Take(importParts.Length - 1)), sourcePcc, destinationPCC, objectMapping, doubleClickCallback);
 
 
             foreach (ImportEntry sourceImport in sourcePcc.Imports)
@@ -772,7 +772,7 @@ namespace ME3Explorer
                 if (packageParts.Count > 1 && packName == packageParts[0])
                 {
                     packageParts.RemoveAt(0);
-                    entryFullPath = String.Join(".", packageParts);
+                    entryFullPath = string.Join(".", packageParts);
                 }
                 else if (packName == packageParts[0])
                 {

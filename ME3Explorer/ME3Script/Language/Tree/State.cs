@@ -11,7 +11,7 @@ namespace ME3Script.Language.Tree
 {
     public class State : ASTNode, IContainsLocals
     {
-        public String Name;
+        public string Name;
         public CodeBody Body;
         public List<Specifier> Specifiers;
         public State Parent;
@@ -20,7 +20,7 @@ namespace ME3Script.Language.Tree
         public List<VariableDeclaration> Locals { get; set; }
         public List<StateLabel> Labels;
 
-        public State(String name, CodeBody body, List<Specifier> specs,
+        public State(string name, CodeBody body, List<Specifier> specs,
             State parent, List<Function> funcs, List<Function> ignores,
             List<StateLabel> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)

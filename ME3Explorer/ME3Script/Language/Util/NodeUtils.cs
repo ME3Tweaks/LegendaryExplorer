@@ -9,7 +9,7 @@ namespace ME3Script.Language.Util
 {
     public static class NodeUtils
     {
-        public static String GetOuterClassScope(ASTNode node)
+        public static string GetOuterClassScope(ASTNode node)
         {
             var outer = node.Outer;
             while (outer.Type != ASTNodeType.Class)

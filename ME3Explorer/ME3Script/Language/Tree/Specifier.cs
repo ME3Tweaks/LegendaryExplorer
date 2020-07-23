@@ -10,8 +10,8 @@ namespace ME3Script.Language.Tree
 {
     public class Specifier : ASTNode
     {
-        public String Value;
-        public Specifier(String value, SourcePosition start, SourcePosition end)
+        public string Value;
+        public Specifier(string value, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.Specifier, start, end) 
         {
             Value = value;

@@ -22,7 +22,7 @@ namespace ME3Script.Decompiling
             return new CompositeSymbolRef(arr, new SymbolReference(null, null, null, "Length"), null, null);
         }
 
-        public Expression DecompileDynArrFunction(String name, bool secondArg = false, bool withoutMemOffs = false, bool withoutTrailingByte = false)
+        public Expression DecompileDynArrFunction(string name, bool secondArg = false, bool withoutMemOffs = false, bool withoutTrailingByte = false)
         {
             PopByte();
             var arr = DecompileExpression();

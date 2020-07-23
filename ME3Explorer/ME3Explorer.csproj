@@ -331,10 +331,12 @@
     <Compile Include="ME3Script\Language\Tree\CodeBody.cs" />
     <Compile Include="ME3Script\Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\ConditionalExpression.cs" />
+    <Compile Include="ME3Script\Language\Tree\Const.cs" />
     <Compile Include="ME3Script\Language\Tree\ContinueStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DefaultPropertiesBlock.cs" />
     <Compile Include="ME3Script\Language\Tree\DefaultStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DoUntilLoop.cs" />
+    <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
     <Compile Include="ME3Script\Language\Tree\Expression.cs" />
     <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
@@ -363,6 +365,8 @@
     <Compile Include="ME3Script\Language\Tree\StringLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\StringRefLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\Struct.cs" />
+    <Compile Include="ME3Script\Language\Tree\StructLiteral.cs" />
+    <Compile Include="ME3Script\Language\Tree\Subobject.cs" />
     <Compile Include="ME3Script\Language\Tree\SwitchStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\SymbolReference.cs" />
     <Compile Include="ME3Script\Language\Tree\Variable.cs" />

@@ -445,10 +445,10 @@ namespace ME3Explorer.Unreal.Classes
                 return res;
             }
 
-            private float HalfToFloat(UInt16 val)
+            private float HalfToFloat(ushort val)
             {
 
-                UInt16 u = val;
+                ushort u = val;
                 int sign = (u >> 15) & 0x00000001;
                 int exp = (u >> 10) & 0x0000001F;
                 int mant = u & 0x000003FF;
@@ -1222,10 +1222,10 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        private float HalfToFloat(UInt16 val)
+        private float HalfToFloat(ushort val)
         {
 
-            UInt16 u = val;
+            ushort u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;

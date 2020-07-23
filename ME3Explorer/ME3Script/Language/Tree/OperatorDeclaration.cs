@@ -11,14 +11,14 @@ namespace ME3Script.Language.Tree
 {
     public abstract class OperatorDeclaration : ASTNode, IContainsLocals
     {
-        public String OperatorKeyword;
+        public string OperatorKeyword;
         public bool isDelimiter;
         public CodeBody Body;
         public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
         public List<Specifier> Specifiers;
 
-        public OperatorDeclaration(ASTNodeType type, String keyword, 
+        public OperatorDeclaration(ASTNodeType type, string keyword, 
             bool delim, CodeBody body, VariableType returnType,
             List<Specifier> specs, SourcePosition start, SourcePosition end) 
             : base(type, start, end)

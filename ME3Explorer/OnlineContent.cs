@@ -41,7 +41,7 @@ namespace ME3Explorer
 
 
 
-                    var syncObject = new Object();
+                    var syncObject = new object();
                     lock (syncObject)
                     {
                         wc.DownloadFileAsync(new Uri(fullURL), staticExecutable, syncObject);
@@ -91,7 +91,7 @@ namespace ME3Explorer
                         }
                     };
                     var fullURL = App.StaticFilesBaseURL + staticZipName;
-                    var syncObject = new Object();
+                    var syncObject = new object();
                     lock (syncObject)
                     {
                         Debug.WriteLine("Fetching zip via " + fullURL);

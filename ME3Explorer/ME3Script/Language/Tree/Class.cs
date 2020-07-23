@@ -20,7 +20,7 @@ namespace ME3Script.Language.Tree
         public List<OperatorDeclaration> Operators;
         public DefaultPropertiesBlock DefaultProperties;
 
-        public Class(String name, List<Specifier> specs, 
+        public Class(string name, List<Specifier> specs, 
             List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
             List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
             SourcePosition start, SourcePosition end)
@@ -44,10 +44,10 @@ namespace ME3Script.Language.Tree
 
         #region Helpers
 
-        public bool SameOrSubClass(String name)
+        public bool SameOrSubClass(string name)
         {
-            String nodeName = this.Name.ToLower();
-            String inputName = name.ToLower();
+            string nodeName = this.Name.ToLower();
+            string inputName = name.ToLower();
             if (nodeName == inputName)
                 return true;
             Class current = this;
@@ -60,9 +60,9 @@ namespace ME3Script.Language.Tree
             return false;
         }
 
-        public String GetInheritanceString()
+        public string GetInheritanceString()
         {
-            String str = this.Name;
+            string str = this.Name;
             Class current = this;
             while (current.Parent != null)
             {

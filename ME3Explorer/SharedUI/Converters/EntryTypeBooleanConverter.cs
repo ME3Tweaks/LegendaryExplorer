@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(IEntry), typeof(Boolean))]
+    [ValueConversion(typeof(IEntry), typeof(bool))]
     public class EntryTypeBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

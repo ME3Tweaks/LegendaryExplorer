@@ -4264,7 +4264,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 var errorlist = new List<string>();
                 foreach (var i in xplist)
                 {
-                    if (Int32.TryParse(i, out int uid) && uid < Pcc.ExportCount && uid > 0)
+                    if (int.TryParse(i, out int uid) && uid < Pcc.ExportCount && uid > 0)
                     {
                         var actor = Pcc.GetUExport(uid);
                         if (actor != null && (actor.IsA("Actor") || actor.Parent.ClassName.Contains("CollectionActor")))
@@ -4709,14 +4709,14 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Write props
                     var newx = (float)calcX;
                     var newy = (float)calcY;
-                    var newYaw = (Int32)oldYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
+                    var newYaw = (int)oldYaw + ((float)rotateyawdegrees).DegreesToUnrealRotationUnits();
 
                     locationprop.Properties.AddOrReplaceProp(new FloatProperty(newx, "X"));
                     locationprop.Properties.AddOrReplaceProp(new FloatProperty(newy, "Y"));
                     locationprop.Properties.AddOrReplaceProp(new FloatProperty(oldz, "Z")); //as purely 2d rotation
                     actor.WriteProperty(locationprop);
 
-                    var newRot = new Rotator((Int32)oldPitch, newYaw, (Int32)oldRoll);
+                    var newRot = new Rotator((int)oldPitch, newYaw, (int)oldRoll);
                     rotationprop = CommonStructs.RotatorProp(newRot, "Rotation");
                     actor.WriteProperty(rotationprop);
                 }

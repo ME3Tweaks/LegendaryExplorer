@@ -27,6 +27,7 @@ namespace ME3Script.Language.Tree
         Variable,
         Struct,
         Enumeration,
+        Const,
         Class,
         Function,
         State,
@@ -56,11 +57,14 @@ namespace ME3Script.Language.Tree
         NameLiteral,
         BooleanLiteral,
         StringRefLiteral,
+        StructLiteral,
+        DynamicArrayLiteral,
 
         ConditionalExpression,
         CastExpression,
 
         DefaultPropertiesBlock,
+        Subobject,
 
         INVALID
     }

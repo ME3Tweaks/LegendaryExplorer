@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
-    public class StringLiteralMatcher : TokenMatcherBase<String>
+    public class StringLiteralMatcher : TokenMatcherBase<string>
     {
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
-            String value = null;
+            string value = null;
             if (data.CurrentItem == "\"")
             {
                 data.Advance();
-                String prev = "";
+                string prev = "";
                 while (!data.AtEnd())
                 {
                     if (data.CurrentItem == "\"" && prev != "\\")
@@ -54,7 +54,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<String>(TokenType.String, value, start, end);
+                return new Token<string>(TokenType.String, value, start, end);
             }
             return null;
         }

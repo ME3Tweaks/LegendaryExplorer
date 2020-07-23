@@ -13,7 +13,7 @@ namespace ME3Script.Parsing
     public abstract class StringParserBase
     {
         protected MessageLog Log;
-        protected TokenStream<String> Tokens;
+        protected TokenStream<string> Tokens;
         protected TokenType CurrentTokenType
         { get { return Tokens.CurrentItem.Type; } }
         protected SourcePosition CurrentPosition
@@ -36,7 +36,7 @@ namespace ME3Script.Parsing
             ASTNodeType.Enumeration
         };
 
-        protected ASTNode Error(String msg, SourcePosition start = null, SourcePosition end = null)
+        protected ASTNode Error(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             Log.LogError(msg, start, end);
             return null;
@@ -82,7 +82,7 @@ namespace ME3Script.Parsing
                     }
 
                     return new VariableIdentifier(name.Value,
-                        name.StartPosition, name.EndPosition, Int32.Parse(size.Value));
+                        name.StartPosition, name.EndPosition, int.Parse(size.Value));
                 }
 
                 return new VariableIdentifier(name.Value, name.StartPosition, name.EndPosition);

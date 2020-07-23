@@ -584,12 +584,12 @@ namespace ME3Explorer.Scene3D
         /// <summary>
         /// Internal method for decoding UV values.
         /// </summary>
-        /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
-        /// <returns>The decoded <see cref="Single"/>.</returns>
+        /// <param name="val">The <see cref="float"/> encoded as a <see cref="ushort"/>.</param>
+        /// <returns>The decoded <see cref="float"/>.</returns>
         public static float HalfToFloat(ushort val)
         {
 
-            UInt16 u = val;
+            ushort u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;

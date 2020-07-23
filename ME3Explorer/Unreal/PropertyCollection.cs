@@ -495,7 +495,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new ObjectProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<ObjectProperty>(arrayOffset, props, name) { Reference = "Object" }; //TODO: set reference to specific object type?
                     }
                 case ArrayType.Name:
                     {
@@ -505,7 +505,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new NameProperty(stream, pcc) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<NameProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<NameProperty>(arrayOffset, props, name) { Reference = "Name" };
                     }
                 case ArrayType.Enum:
                     {
@@ -605,7 +605,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new BoolProperty(stream, pcc, isArrayContained: true) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name) { Reference = "Bool" }; ;
                     }
                 case ArrayType.String:
                     {
@@ -615,7 +615,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new StrProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<StrProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<StrProperty>(arrayOffset, props, name) { Reference = "String" }; ;
                     }
                 case ArrayType.Float:
                     {
@@ -625,10 +625,10 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new FloatProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name) { Reference = "Float" }; ;
                     }
                 case ArrayType.Byte:
-                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name);
+                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name) { Reference = "Byte" }; ;
                 case ArrayType.Int:
                 default:
                     {
@@ -638,7 +638,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new IntProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<IntProperty>(arrayOffset, props, name);
+                        return new ArrayProperty<IntProperty>(arrayOffset, props, name) { Reference = "Int" }; ;
                     }
             }
         }

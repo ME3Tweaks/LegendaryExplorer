@@ -657,8 +657,8 @@ namespace ME3Explorer
                 MemoryStream m = new MemoryStream();
                 m.Write(BitConverter.GetBytes((uint)0x434F4E44), 0, 4);
                 m.Write(BitConverter.GetBytes(1), 0, 4);
-                m.Write(BitConverter.GetBytes((Int16)UnknownInt16), 0, 2);
-                m.Write(BitConverter.GetBytes((Int16)Entry.Count), 0, 2);
+                m.Write(BitConverter.GetBytes((short)UnknownInt16), 0, 2);
+                m.Write(BitConverter.GetBytes((short)Entry.Count), 0, 2);
                 for (int i = 0; i < Entry.Count; i++)
                 {
                     Entries en = Entry[i];

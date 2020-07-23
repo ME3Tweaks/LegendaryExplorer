@@ -11,19 +11,19 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Lexing
 {
-    public class StringLexer : LexerBase<String>
+    public class StringLexer : LexerBase<string>
     {
         private SourcePosition StreamPosition;
         private MessageLog Log;
 
-        public StringLexer(String code, MessageLog log = null, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
+        public StringLexer(string code, MessageLog log = null, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
             : base(new StringTokenizer(code))
         {
             delimiters = delimiters ?? GlobalLists.Delimiters;
             keywords = keywords ?? GlobalLists.Keywords;
             Log = log ?? new MessageLog();
 
-            TokenMatchers = new List<ITokenMatcher<String>>();
+            TokenMatchers = new List<ITokenMatcher<string>>();
 
             TokenMatchers.Add(new StringLiteralMatcher());
             TokenMatchers.Add(new NameLiteralMatcher());
@@ -36,14 +36,14 @@ namespace ME3Script.Lexing
             StreamPosition = new SourcePosition(0, 0, 0);
         }
 
-        public override Token<String> GetNextToken()
+        public override Token<string> GetNextToken()
         {
             if (Data.AtEnd())
             {
-                return new Token<String>(TokenType.EOF);
+                return new Token<string>(TokenType.EOF);
             }
 
-            Token<String> result =
+            Token<string> result =
                 (from matcher in TokenMatchers
                  let token = matcher.MatchNext(Data, ref StreamPosition, Log)
                  where token != null
@@ -54,7 +54,7 @@ namespace ME3Script.Lexing
                 Log.LogError("Could not lex '" + Data.CurrentItem + "'",
                     StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
                 Data.Advance();
-                return new Token<String>(TokenType.INVALID);
+                return new Token<string>(TokenType.INVALID);
             }
             return result;
         }

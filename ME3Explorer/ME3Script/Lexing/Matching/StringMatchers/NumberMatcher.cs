@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
-    public class NumberMatcher : TokenMatcherBase<String>
+    public class NumberMatcher : TokenMatcherBase<string>
     {
         private List<KeywordMatcher> Delimiters;
 
@@ -18,12 +18,12 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos, MessageLog log)
+        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             TokenType type;
-            String value;
-            String first = SubNumber(data, new Regex("[0-9]"));
+            string value;
+            string first = SubNumber(data, new Regex("[0-9]"));
             if (first == null)
                 return null;
             
@@ -33,7 +33,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                     return null;
 
                 data.Advance();
-                String hex = SubNumber(data, new Regex("[0-9a-fA-F]"));
+                string hex = SubNumber(data, new Regex("[0-9a-fA-F]"));
                 if (hex == null || data.CurrentItem == "." || data.CurrentItem == "x")
                     return null;
 
@@ -44,7 +44,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             else if (data.CurrentItem == ".")
             {
                 data.Advance();
-                String second = SubNumber(data, new Regex("[0-9]"));
+                string second = SubNumber(data, new Regex("[0-9]"));
                 if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
                     return null;
 
@@ -59,13 +59,13 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 
             streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
             SourcePosition end = new SourcePosition(streamPos);
-            return new Token<String>(type, value, start, end);
+            return new Token<string>(type, value, start, end);
         }
 
-        private String SubNumber(TokenizableDataStream<String> data, Regex regex)
+        private string SubNumber(TokenizableDataStream<string> data, Regex regex)
         {
-            String number = null;
-            String peek = data.CurrentItem;
+            string number = null;
+            string peek = data.CurrentItem;
             
             while (!data.AtEnd() && regex.IsMatch(peek))
             {
@@ -75,7 +75,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             }
 
             peek = data.CurrentItem;
-            bool hasDelimiter = String.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek)
+            bool hasDelimiter = string.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek)
                 || peek == "x" || peek == ".";
             return number != null && hasDelimiter ? number : null;
         }

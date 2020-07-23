@@ -243,7 +243,7 @@ namespace ME3Explorer
                 if (s.BitOffset < 0)
                 {
                     xr.WriteStartAttribute("calculatedID");
-                    xr.WriteValue(-(Int32.MinValue - s.StringID));
+                    xr.WriteValue(-(int.MinValue - s.StringID));
                     xr.WriteEndAttribute();
 
                     xr.WriteString("-1");

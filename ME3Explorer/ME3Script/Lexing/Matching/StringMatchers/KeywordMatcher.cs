@@ -10,38 +10,38 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
-    public class KeywordMatcher : TokenMatcherBase<String>
+    public class KeywordMatcher : TokenMatcherBase<string>
     {
-        public String Keyword { get; private set; }
+        public string Keyword { get; private set; }
         private TokenType Type;
         private List<KeywordMatcher> Delimiters;
         private bool SubString;
 
-        public KeywordMatcher(String keyword, TokenType type, List<KeywordMatcher> delims, bool allowSubString = true)
+        public KeywordMatcher(string keyword, TokenType type, List<KeywordMatcher> delims, bool allowSubString = true)
         {
             Type = type;
             Keyword = keyword;
-            Delimiters = delims == null ? new List<KeywordMatcher>() : delims;
+            Delimiters = delims ?? new List<KeywordMatcher>();
             SubString = allowSubString;
         }
 
-        protected override Token<String> Match(TokenizableDataStream<String> data, ref SourcePosition streamPos, MessageLog log)
+        protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             foreach (char c in Keyword)
             {
-                if (data.CurrentItem.ToLower() != c.ToString(CultureInfo.InvariantCulture).ToLower())
+                if (!string.Equals(data.CurrentItem, c.ToString(CultureInfo.InvariantCulture), StringComparison.CurrentCultureIgnoreCase))
                     return null;
                 data.Advance();
             }
 
-            String peek = data.CurrentItem;
-            bool hasDelimiter = String.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek);
+            string peek = data.CurrentItem;
+            bool hasDelimiter = string.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek);
             if (SubString || (!SubString && hasDelimiter))
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<String>(Type, Keyword, start, end);
+                return new Token<string>(Type, Keyword, start, end);
             }
             return null;
         }
