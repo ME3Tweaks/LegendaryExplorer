@@ -31,5 +31,12 @@ namespace ME3Script.Language.Tree
             return base.IdenticalSignature(other)
                 && this.Operand.VarType.Name.ToLower() == other.Operand.VarType.Name.ToLower();
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Operand;
+            }
+        }
     }
 }

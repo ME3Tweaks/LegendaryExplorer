@@ -5,11 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.ME3Script"
              xmlns:me3Explorer="clr-namespace:ME3Explorer"
+             xmlns:tree="clr-namespace:ME3Script.Language.Tree"
+             xmlns:errors="clr-namespace:ME3Script.Compiling.Errors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Grid>
-        <TextBox IsReadOnly="True" Text="{Binding ScriptText}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                 FontFamily="Consolas"/>
-    </Grid>
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Visibility="{x:Static me3Explorer:App.IsDebugVisibility}">
+            <StackPanel Orientation="Vertical">
+                <Button Content="Decompile" Click="Decompile_OnClick" />
+                <Button Content="Compile to AST" Click="CompileAST_OnClick" />
+            </StackPanel>
+            <ListBox Name="outputListBox" SelectionChanged="outputListBox_SelectionChanged">
+                <!--<ListBox.Resources>
+                    <DataTemplate DataType="errors:LineError">
+                        <TextBlock Text="{Binding Line}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.Resources>-->
+            </ListBox>
+        </StackPanel>
+        <TextBox Name="scriptTextBox" IsReadOnly="False" Text="{Binding ScriptText}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" IsInactiveSelectionHighlightEnabled="True"/>
+        <TreeView DockPanel.Dock="Right" Visibility="{x:Static me3Explorer:App.IsDebugVisibility}" ItemsSource="{Binding RootNode.ChildNodes}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type tree:ASTNode}" ItemsSource="{Binding ChildNodes}">
+                    <TextBlock Text="{Binding Type, Mode=OneTime}"/>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type tree:Function}" ItemsSource="{Binding ChildNodes}">
+                    <TextBlock Text="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </DockPanel>
 </me3Explorer:ExportLoaderControl>

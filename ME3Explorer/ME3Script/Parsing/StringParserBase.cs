@@ -14,10 +14,9 @@ namespace ME3Script.Parsing
     {
         protected MessageLog Log;
         protected TokenStream<string> Tokens;
-        protected TokenType CurrentTokenType
-        { get { return Tokens.CurrentItem.Type; } }
-        protected SourcePosition CurrentPosition
-        { get { return Tokens.CurrentItem.StartPosition ?? new SourcePosition(-1, -1, -1); } }
+        protected TokenType CurrentTokenType => Tokens.CurrentItem.Type;
+
+        protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPosition ?? new SourcePosition(-1, -1, -1);
 
         protected List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
         {
@@ -42,68 +41,77 @@ namespace ME3Script.Parsing
             return null;
         }
 
-        public List<VariableIdentifier> ParseVariableNames()
+        public VariableIdentifier ParseVariableName()
         {
-            List<VariableIdentifier> vars = new List<VariableIdentifier>();
-            do
+            VariableIdentifier var = TryParseVariable();
+            if (var == null)
             {
-                VariableIdentifier variable = TryParseVariable();
-                if (variable == null)
-                {
-                    Log.LogError("Expected at least one variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
-                }
-                vars.Add(variable);
-            } while (Tokens.ConsumeToken(TokenType.Comma) != null);
-            // TODO: This allows a trailing comma before semicolon, intended?
-            return vars;
+                Log.LogError("Expected a variable name!", CurrentPosition);
+                return null;
+            }
+            return var;
         }
 
         public VariableIdentifier TryParseVariable()
         {
-            Func<ASTNode> variableParser = () =>
+            return (VariableIdentifier)Tokens.TryGetTree(VariableParser);
+            ASTNode VariableParser()
             {
                 var name = Tokens.ConsumeToken(TokenType.Word);
-                if (name == null)
-                    return null;
+                if (name == null) return null;
 
                 if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) != null)
                 {
                     var size = Tokens.ConsumeToken(TokenType.IntegerNumber);
                     if (size == null)
                     {
-                        Log.LogError("Expected an integer number for size!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
-                    }
-                    if (Tokens.ConsumeToken(TokenType.RightSqrBracket) == null)
-                    {
-                        Log.LogError("Expected ']'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                        return null;
+                        return Error("Expected an integer number for size!", CurrentPosition);
                     }
 
-                    return new VariableIdentifier(name.Value,
-                        name.StartPosition, name.EndPosition, int.Parse(size.Value));
+                    if (Tokens.ConsumeToken(TokenType.RightSqrBracket) == null)
+                    {
+                        return Error("Expected ']'!", CurrentPosition);
+                    }
+
+                    return new VariableIdentifier(name.Value, name.StartPosition, name.EndPosition, int.Parse(size.Value));
                 }
 
                 return new VariableIdentifier(name.Value, name.StartPosition, name.EndPosition);
-            };
-            return (VariableIdentifier)Tokens.TryGetTree(variableParser);
+            }
         }
 
         public VariableType TryParseType()
         {
-            Func<ASTNode> typeParser = () =>
+            return (VariableType)Tokens.TryGetTree(TypeParser);
+            ASTNode TypeParser()
             {
+                if (Tokens.ConsumeToken(TokenType.Array) != null)
+                {
+                    if (Tokens.ConsumeToken(TokenType.LeftArrow) == null)
+                    {
+                        return Error("Expected '<' after 'array'!", CurrentPosition);
+                    }
+                    Token<string> arrayType = Tokens.ConsumeToken(TokenType.Word);
+                    if (arrayType == null)
+                    {
+                        return Error("Expected type name for array!", CurrentPosition);
+                    }
+                    if (Tokens.ConsumeToken(TokenType.RightArrow) == null)
+                    {
+                        return Error("Expected '>' after array type!", CurrentPosition);
+                    }
+                    return new VariableType($"array<{arrayType.Value}>");//TODO: do this better. ArrayVariableType?
+                }
                 // TODO: word or basic datatype? (int float etc)
-                var type = Tokens.ConsumeToken(TokenType.Word);
+                Token<string> type = Tokens.ConsumeToken(TokenType.Word);
                 if (type == null)
                 {
-                    Log.LogError("Expected type name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    return null;
+                    return Error("Expected type name!", CurrentPosition);
                 }
+
                 return new VariableType(type.Value, type.StartPosition, type.EndPosition);
-            };
-            return (VariableType)Tokens.TryGetTree(typeParser);
+            }
+
         }
     }
 }

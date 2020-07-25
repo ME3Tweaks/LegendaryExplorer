@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class FunctionParameter : Variable
+    public class FunctionParameter : VariableDeclaration
     {
         public bool IsOptional;
 
         public FunctionParameter(VariableType type, List<Specifier> specs,
             VariableIdentifier variable, SourcePosition start, SourcePosition end)
-            : base(specs, variable, type, start, end)
+            : base(type, specs, variable, null, start, end)
         {
             Type = ASTNodeType.FunctionParameter;
         }

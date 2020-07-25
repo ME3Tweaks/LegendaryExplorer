@@ -28,5 +28,6 @@ namespace ME3Script.Language.Tree
         {
             return new VariableType(ElementType, null, null);
         }
+        public override IEnumerable<ASTNode> ChildNodes => Values;
     }
 }

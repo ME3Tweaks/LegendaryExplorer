@@ -9,14 +9,12 @@ namespace ME3Script.Lexing.Tokenizing
     public class TokenizableDataStream<D> where D : class
     {
         #region Members
-        private List<D> Data;
-        private Stack<int> Snapshots;
+        private readonly List<D> Data;
+        private readonly Stack<int> Snapshots;
         public int CurrentIndex { get; protected set; }
 
-        public virtual D CurrentItem
-        {
-            get { return EndOfStream() ? null : Data[CurrentIndex]; }
-        }
+        public virtual D CurrentItem => EndOfStream() ? null : Data[CurrentIndex];
+
         #endregion
 
         #region Public Methods
@@ -61,7 +59,7 @@ namespace ME3Script.Lexing.Tokenizing
         #region Private Methods
         private bool EndOfStream(int ahead = 0)
         {
-            return CurrentIndex + ahead >= Data.Count ? true : false;
+            return CurrentIndex + ahead >= Data.Count;
         }
 
         #endregion

@@ -29,5 +29,13 @@ namespace ME3Script.Language.Tree
         {
             return Operator.ReturnType;
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Operand;
+                yield return Operator;
+            }
+        }
     }
 }

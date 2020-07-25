@@ -331,6 +331,7 @@
     <Compile Include="ME3Script\Language\Tree\CodeBody.cs" />
     <Compile Include="ME3Script\Language\Tree\CompositeSymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\ConditionalExpression.cs" />
+    <Compile Include="ME3Script\Language\Tree\ConfigSpecifier.cs" />
     <Compile Include="ME3Script\Language\Tree\Const.cs" />
     <Compile Include="ME3Script\Language\Tree\ContinueStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DefaultPropertiesBlock.cs" />
@@ -369,7 +370,6 @@
     <Compile Include="ME3Script\Language\Tree\Subobject.cs" />
     <Compile Include="ME3Script\Language\Tree\SwitchStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\SymbolReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\Variable.cs" />
     <Compile Include="ME3Script\Language\Tree\VariableDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\VariableIdentifier.cs" />
     <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
@@ -381,6 +381,7 @@
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\KeywordMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NumberMatcher.cs" />
+    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\SingleLineCommentMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WhiteSpaceMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WordMatcher.cs" />

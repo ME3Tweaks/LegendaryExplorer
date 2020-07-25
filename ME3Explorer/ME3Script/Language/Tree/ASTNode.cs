@@ -71,7 +71,7 @@ namespace ME3Script.Language.Tree
 
     public abstract class ASTNode : IAcceptASTVisitor
     {
-        public ASTNodeType Type;
+        public ASTNodeType Type { get; protected set; }
 
         public ASTNode Outer;
 
@@ -86,5 +86,6 @@ namespace ME3Script.Language.Tree
         }
 
         public abstract bool AcceptVisitor(IASTVisitor visitor);
+        public virtual IEnumerable<ASTNode> ChildNodes => Enumerable.Empty<ASTNode>();
     }
 }

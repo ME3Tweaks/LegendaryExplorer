@@ -37,6 +37,7 @@ using GongSolutions.Wpf.DragDrop;
 using Newtonsoft.Json;
 using StreamHelpers;
 using Gammtek.Conduit.Extensions.IO;
+using ME3Explorer.ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
@@ -5596,47 +5597,25 @@ namespace ME3Explorer
 
         }
 
-        private void DecompileObject_OnClick(object sender, RoutedEventArgs e)
+        private void DecompileAll_OnClick(object sender, RoutedEventArgs e)
         {
-            if (PackageIsLoaded() && Pcc.Game == MEGame.ME3 && TryGetSelectedExport(out ExportEntry export))
+            if (PackageIsLoaded() && Pcc.Game == MEGame.ME3)
             {
-                ASTNode ast;
-                switch (export.ClassName)
+                var exportsWithDecompilationErrors = new List<ListDialog.EntryItem>();
+                foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    case "Class":
-                        ast = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
-                        break;
-                    case "Function":
-                        ast = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>());
-                        break;
-                    case "State":
-                        ast = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>());
-                        break;
-                    case "Enum":
-                        ast = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
-                        break;
-                    case "ScriptStruct":
-                        ast = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
-                        break;
-                    default:
-                        if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
-                        {
-                            ast = ME3ObjectToASTConverter.ConvertVariable(uProp);
-                        }
-                        else
-                        {
-                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
-                        }
-                        break;
+                    (ASTNode ast, string script) = UnrealScriptIDE.DecompileExport(export);
+                    if (ast == null)
+                    {
+                        exportsWithDecompilationErrors.Add(new ListDialog.EntryItem(export, "Decompilation Error!"));
+                    }
                 }
 
-                if (ast != null)
+                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Decompilation errors", "", this)
                 {
-                    var codeBuilder = new CodeBuilderVisitor();
-                    ast.AcceptVisitor(codeBuilder);
-                    var dlg = new ListDialog(codeBuilder.GetCodeLines(), $"{export.ClassName} {export.ObjectName} Decompilation", "", this);
-                    dlg.Show();
-                }
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                dlg.Show();
             }
         }
     }

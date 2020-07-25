@@ -11,11 +11,11 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 {
     public class WordMatcher : TokenMatcherBase<string>
     {
-        private List<KeywordMatcher> Delimiters;
+        private readonly List<KeywordMatcher> Delimiters;
 
         public WordMatcher(List<KeywordMatcher> delimiters)
         {
-            Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
+            Delimiters = delimiters ?? new List<KeywordMatcher>();
         }
 
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)

@@ -29,5 +29,13 @@ namespace ME3Script.Language.Tree
         {
             return (Function.Node as Function).ReturnType;
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Function;
+                foreach (Expression expression in Parameters) yield return expression;
+            }
+        }
     }
 }

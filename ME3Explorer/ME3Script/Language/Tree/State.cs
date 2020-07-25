@@ -39,5 +39,16 @@ namespace ME3Script.Language.Tree
         {
             return visitor.VisitNode(this);
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                if(Specifiers != null) foreach (Specifier specifier in Specifiers) yield return specifier;
+                yield return Parent;
+                if (Functions != null) foreach (Function function in Functions) yield return function;
+                yield return Body;
+                if (Ignores != null) foreach (Function function in Ignores) yield return function;
+            }
+        }
     }
 }

@@ -164,6 +164,7 @@ namespace ME3Script.Lexing.Tokenizing
         PerObjectConfigSpecifier,
         PerObjectLocalizedSpecifier,
         NonTransientSpecifier,
+        PlaceableSpecifier,
 
         // Struct Specifiers:
         ImmutableSpecifier,
@@ -188,8 +189,9 @@ namespace ME3Script.Lexing.Tokenizing
         Event,
         Delegate,
         Operator,
+        DefaultProperties,
         // Unrealengine types:
-        Name,
+        NameLiteral,
         //Object,
         //Actor,
         //Vector,
@@ -261,6 +263,10 @@ namespace ME3Script.Lexing.Tokenizing
         GoTo,
         GoToState,
         Stop,
+
+        //comments
+        SingleLineComment,
+        MultiLineComment,
 
         INVALID
     }

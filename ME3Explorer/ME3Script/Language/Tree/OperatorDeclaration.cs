@@ -46,5 +46,15 @@ namespace ME3Script.Language.Tree
             return this.OperatorKeyword == other.OperatorKeyword
                 && this.ReturnType.Name.ToLower() == other.ReturnType.Name.ToLower();
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                foreach (Specifier specifier in Specifiers) yield return specifier;
+                yield return ReturnType;
+                foreach (VariableDeclaration variableDeclaration in Locals) yield return variableDeclaration;
+                yield return Body;
+            }
+        }
     }
 }

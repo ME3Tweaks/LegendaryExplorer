@@ -108,6 +108,7 @@ namespace ME3Script.Decompiling
 
                 case (byte)StandardByteCodes.EatReturnValue:
                     PopByte();
+                    ReadObject();
                     StartPositions.Pop();
                     return DecompileStatement();
 

@@ -126,38 +126,18 @@ namespace ME3Script.Analysis.Visitors
             {
                 return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
-            else if (!typeof(VariableType).IsAssignableFrom(nodeType.GetType()))
+            else if (!(nodeType is VariableType))
             {
                 return Error("Invalid variable type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
             }
 
-            if (node.Outer.Type == ASTNodeType.Class)
+            if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
             {
-                int index = NodeUtils.GetContainingClass(node).VariableDeclarations.IndexOf(node);
-                foreach (VariableIdentifier ident in node.Variables)
+                if (Symbols.SymbolExistsInCurrentScope(node.Name))
                 {
-                    if (Symbols.SymbolExistsInCurrentScope(ident.Name))
-                        return Error("A member named '" + ident.Name + "' already exists in this class!", ident.StartPos, ident.EndPos);
-                    Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
-                    variable.Outer = node.Outer;
-                    Symbols.AddSymbol(variable.Name, variable);
-                    NodeUtils.GetContainingClass(node).VariableDeclarations.Insert(index++, variable);
+                    return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.Variable.StartPos, node.Variable.EndPos);
                 }
-                NodeUtils.GetContainingClass(node).VariableDeclarations.Remove(node);
-            } 
-            else if (node.Outer.Type == ASTNodeType.Struct)
-            {
-                int index = (node.Outer as Struct).Members.IndexOf(node);
-                foreach (VariableIdentifier ident in node.Variables)
-                {
-                    if (Symbols.SymbolExistsInCurrentScope(ident.Name))
-                        return Error("A member named '" + ident.Name + "' already exists in this struct!", ident.StartPos, ident.EndPos);
-                    Variable variable = new Variable(node.Specifiers, ident, nodeType as VariableType, ident.StartPos, ident.EndPos);
-                    variable.Outer = node.Outer;
-                    Symbols.AddSymbol(variable.Name, variable);
-                    (node.Outer as Struct).Members.Insert(index++, variable);
-                }
-                (node.Outer as Struct).Members.Remove(node);
+                Symbols.AddSymbol(node.Name, node);
             }
 
             return Success;
@@ -311,22 +291,23 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(FunctionParameter node)
         {
-            ASTNode paramType;
-            if (!Symbols.TryGetSymbol(node.VarType.Name, out paramType, NodeUtils.GetOuterClassScope(node)))
+            if (!Symbols.TryGetSymbol(node.VarType.Name, out ASTNode paramType, NodeUtils.GetOuterClassScope(node)))
             {
-                return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
+                return Error($"No type named '{node.VarType.Name}' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
-            else if (!typeof(VariableType).IsAssignableFrom(paramType.GetType()))
+            else if (!(paramType is VariableType))
             {
                 return Error("Invalid parameter type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
             }
-            node.VarType = paramType as VariableType;
+            node.VarType = (VariableType)paramType;
 
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("A parameter named '" + node.Name + "' already exists in this function!", 
-                    node.Variables.First().StartPos, node.Variables.First().EndPos);
+            {
+                return Error($"A parameter named '{node.Name}' already exists in this function!", 
+                             node.Variable.StartPos, node.Variable.EndPos);
+            }
 
-            Symbols.AddSymbol(node.Variables.First().Name, node);
+            Symbols.AddSymbol(node.Name, node);
             return Success;
         }
 
@@ -335,17 +316,15 @@ namespace ME3Script.Analysis.Visitors
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
                 return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
 
-            ASTNode overrideState;
-            bool overrides = Symbols.TryGetSymbol(node.Name, out overrideState, NodeUtils.GetOuterClassScope(node))
-                && overrideState.Type == ASTNodeType.State;
+            bool overrides = Symbols.TryGetSymbol(node.Name, out ASTNode overrideState, NodeUtils.GetOuterClassScope(node))
+                          && overrideState.Type == ASTNodeType.State;
 
             if (node.Parent != null)
             {
                 if (overrides)
                     return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
 
-                ASTNode parent;
-                if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out parent))
+                if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out ASTNode parent))
                     Error("No parent state named '" + node.Parent.Name + "' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
                 if (parent != null)
                 {
@@ -360,11 +339,10 @@ namespace ME3Script.Analysis.Visitors
             Symbols.PushScope(node.Name);
             foreach (Function ignore in node.Ignores)
             {
-                ASTNode original;
-                if (!Symbols.TryGetSymbol(ignore.Name, out original, "") || original.Type != ASTNodeType.Function)
+                if (!Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") || original.Type != ASTNodeType.Function)
                     return Error("No function to ignore named '" + ignore.Name + "' found!", ignore.StartPos, ignore.EndPos);
                 Function header = original as Function;
-                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Specifiers, header.Parameters, ignore.StartPos, ignore.EndPos);
+                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Specifiers, header.Parameters, false, ignore.StartPos, ignore.EndPos);
                 node.Functions.Add(emptyOverride);
                 Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
             }
@@ -443,8 +421,6 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StateLabel node)
         { throw new NotImplementedException(); }
 
-        public bool VisitNode(Variable node)
-        { throw new NotImplementedException(); }
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
 

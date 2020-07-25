@@ -36,5 +36,13 @@ namespace ME3Script.Language.Tree
                 && this.LeftOperand.VarType.Name.ToLower() == other.LeftOperand.VarType.Name.ToLower()
                 && this.RightOperand.VarType.Name.ToLower() == other.RightOperand.VarType.Name.ToLower();
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return LeftOperand;
+                yield return RightOperand;
+            }
+        }
     }
 }

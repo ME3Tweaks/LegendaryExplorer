@@ -24,5 +24,13 @@ namespace ME3Script.Language.Tree
         {
             return visitor.VisitNode(this);
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return IteratorCall;
+                yield return Body;
+            }
+        }
     }
 }

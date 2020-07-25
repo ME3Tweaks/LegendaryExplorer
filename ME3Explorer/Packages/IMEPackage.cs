@@ -42,9 +42,10 @@ namespace ME3Explorer.Packages
         Float,
         Int,
         Byte,
+        StringRef
     }
 
-    [DebuggerDisplay("PropertyInfo | {Type} , parent: {Reference}, transient: {Transient}")]
+    [DebuggerDisplay("PropertyInfo | {Type} , reference: {Reference}, transient: {Transient}")]
     public class PropertyInfo : IEquatable<PropertyInfo>
     {
         //DO NOT CHANGE THE NAME OF ANY OF THESE fields/properties. THIS WILL BREAK JSON PARSING!

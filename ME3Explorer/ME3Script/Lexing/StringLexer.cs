@@ -14,17 +14,18 @@ namespace ME3Script.Lexing
     public class StringLexer : LexerBase<string>
     {
         private SourcePosition StreamPosition;
-        private MessageLog Log;
+        private readonly MessageLog Log;
 
         public StringLexer(string code, MessageLog log = null, List<KeywordMatcher> delimiters = null, List<KeywordMatcher> keywords = null) 
             : base(new StringTokenizer(code))
         {
-            delimiters = delimiters ?? GlobalLists.Delimiters;
-            keywords = keywords ?? GlobalLists.Keywords;
+            delimiters ??= GlobalLists.Delimiters;
+            keywords ??= GlobalLists.Keywords;
             Log = log ?? new MessageLog();
 
             TokenMatchers = new List<ITokenMatcher<string>>();
 
+            TokenMatchers.Add(new SingleLineCommentMatcher());
             TokenMatchers.Add(new StringLiteralMatcher());
             TokenMatchers.Add(new NameLiteralMatcher());
             TokenMatchers.AddRange(delimiters);
@@ -43,11 +44,16 @@ namespace ME3Script.Lexing
                 return new Token<string>(TokenType.EOF);
             }
 
-            Token<string> result =
-                (from matcher in TokenMatchers
-                 let token = matcher.MatchNext(Data, ref StreamPosition, Log)
-                 where token != null
-                 select token).FirstOrDefault();
+            Token<string> result = null;
+            foreach (ITokenMatcher<string> matcher in TokenMatchers)
+            {
+                Token<string> token = matcher.MatchNext(Data, ref StreamPosition, Log);
+                if (token != null)
+                {
+                    result = token;
+                    break;
+                }
+            }
 
             if (result == null)
             {
@@ -65,7 +71,9 @@ namespace ME3Script.Lexing
             var token = GetNextToken();
             while (token.Type != TokenType.EOF)
             {
-                if (token.Type != TokenType.WhiteSpace)
+                if (token.Type != TokenType.WhiteSpace 
+                 && token.Type != TokenType.SingleLineComment 
+                 && token.Type != TokenType.MultiLineComment)
                     yield return token;
 
                 token = GetNextToken();

@@ -39,8 +39,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 if (data.CurrentItem == "\"")
                 {
                     data.Advance();
-                    if (value == null)
-                        value = "";
+                    value ??= "";
                 }
                 else
                 {

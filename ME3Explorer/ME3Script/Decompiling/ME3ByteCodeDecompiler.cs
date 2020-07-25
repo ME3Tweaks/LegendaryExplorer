@@ -154,7 +154,7 @@ namespace ME3Script.Decompiling
                     if (OptionalParams.Count != 0)
                     {
                         var parm = OptionalParams.Pop();
-                        parm.Variables.First().Name += " = " + builder.GetCodeString();
+                        parm.Variable.Name += " = " + builder.GetCodeString();
                         StartPositions.Pop();
                     }
                     else

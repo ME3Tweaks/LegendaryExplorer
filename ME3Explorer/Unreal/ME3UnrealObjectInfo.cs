@@ -546,6 +546,10 @@ namespace ME3Explorer.Unreal
                 {
                     return ArrayType.Int;
                 }
+                if (p.Reference == "StringRefProperty")
+                {
+                    return ArrayType.StringRef;
+                }
 
                 if (Structs.ContainsKey(p.Reference))
                 {

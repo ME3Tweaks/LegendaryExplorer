@@ -31,5 +31,14 @@ namespace ME3Script.Language.Tree
         {
             return TrueExpression.ResolveType();
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Condition;
+                yield return TrueExpression;
+                yield return FalseExpression;
+            }
+        }
     }
 }

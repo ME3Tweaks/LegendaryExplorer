@@ -19,7 +19,7 @@ namespace ME3Script.Parsing
     public class TokenStream<T> : TokenizableDataStream<Token<T>> 
         where T : class
     {
-        private Dictionary<int, ASTCacheEntry> Cache;
+        private readonly Dictionary<int, ASTCacheEntry> Cache;
 
         public TokenStream(LexerBase<T> lexer) : base (() => lexer.LexData().ToList())
         {

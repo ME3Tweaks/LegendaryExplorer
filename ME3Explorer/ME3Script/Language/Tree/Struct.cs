@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class Struct : VariableType
+    public sealed class Struct : VariableType
     {
         public List<Specifier> Specifiers;
         public VariableType Parent;
@@ -24,6 +24,11 @@ namespace ME3Script.Language.Tree
             Specifiers = specs;
             Members = members;
             Parent = parent;
+            
+            foreach (ASTNode node in ChildNodes)
+            {
+                node.Outer = this;
+            }
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -45,6 +50,16 @@ namespace ME3Script.Language.Tree
                 current = (Struct)current.Parent;
             }
             return false;
+        }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                foreach (Specifier specifier in Specifiers) yield return specifier;
+                if (Parent != null) yield return Parent;
+                foreach (VariableDeclaration variableDeclaration in Members) yield return variableDeclaration;
+                if (DefaultProperties != null) yield return DefaultProperties;
+            }
         }
     }
 }

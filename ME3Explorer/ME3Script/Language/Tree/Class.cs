@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ME3Script.Language.Tree
 {
-    public class Class : VariableType
+    public sealed class Class : VariableType
     {
         public VariableType Parent;
         public VariableType OuterClass;
@@ -20,10 +20,11 @@ namespace ME3Script.Language.Tree
         public List<OperatorDeclaration> Operators;
         public DefaultPropertiesBlock DefaultProperties;
 
-        public Class(string name, List<Specifier> specs, 
-            List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
-            List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
-            SourcePosition start, SourcePosition end)
+        public Class(string name, List<Specifier> specs,
+                     List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
+                     List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
+                     DefaultPropertiesBlock defaultProperties,
+                     SourcePosition start, SourcePosition end)
             : base(name, start, end)
         {
             Parent = parent;
@@ -34,7 +35,13 @@ namespace ME3Script.Language.Tree
             Functions = funcs;
             States = states;
             Operators = ops;
+            DefaultProperties = defaultProperties;
             Type = ASTNodeType.Class;
+
+            foreach (ASTNode node in ChildNodes)
+            {
+                node.Outer = this;
+            }
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -73,5 +80,20 @@ namespace ME3Script.Language.Tree
         }
 
         #endregion
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Parent;
+                yield return OuterClass;
+                foreach (Specifier specifier in Specifiers) yield return specifier;
+                foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
+                foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
+                foreach (Function function in Functions) yield return function;
+                foreach (State state in States) yield return state;
+                foreach (OperatorDeclaration operatorDeclaration in Operators) yield return operatorDeclaration;
+                yield return DefaultProperties;
+            }
+        }
     }
 }

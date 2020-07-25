@@ -66,6 +66,8 @@ namespace ME3Script.Compiling.Errors
         {
             if (start == null && end == null)
                 content.Add(new Error(msg));
+            else if (start != null && end == null)
+                content.Add(new LineError(msg, start, start.GetModifiedPosition(0, 1, 1)));
             else
                 content.Add(new LineError(msg, start, end));
         }
@@ -76,6 +78,11 @@ namespace ME3Script.Compiling.Errors
                 content.Add(new Warning(msg));
             else
                 content.Add(new LineWarning(msg, start, end));
+        }
+
+        public override string ToString()
+        {
+            return string.Join("\n", content);
         }
     }
 }

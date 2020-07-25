@@ -30,5 +30,13 @@ namespace ME3Script.Language.Tree
         {
             return InnerSymbol.ResolveType();
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return OuterSymbol;
+                yield return InnerSymbol;
+            }
+        }
     }
 }

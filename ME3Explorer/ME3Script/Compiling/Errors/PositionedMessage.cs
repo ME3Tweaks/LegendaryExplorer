@@ -11,7 +11,7 @@ namespace ME3Script.Compiling.Errors
     {
         public SourcePosition Start;
         public SourcePosition End;
-        public int Line { get { return Start.Line; } }
+        public int Line => Start.Line;
 
         public PositionedMessage(string msg, SourcePosition start, SourcePosition end) : base(msg)
         {

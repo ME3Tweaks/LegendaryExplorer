@@ -961,7 +961,7 @@ namespace ME3Explorer
                 case ArrayPropertyBase ap:
                     {
                         ArrayType at = UnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
-                        editableValue = $"{at.ToString()} array";
+                        editableValue = $"{at} array";
                     }
                     break;
                 case NameProperty np:
@@ -1689,7 +1689,15 @@ namespace ME3Explorer
                                 break;
                             }
                         case StringRefProperty srefp:
-                            Interpreter_Hexbox.Highlight(srefp.StartOffset, srefp.GetLength(Pcc));
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
+                                 || newSelectedItem.Parent.Property is ArrayProperty<StringRefProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(srefp.ValueOffset, 4);
+                                    return;
+                                }
+                                Interpreter_Hexbox.Highlight(srefp.StartOffset, srefp.GetLength(Pcc));
+                            }
                             break;
                         case NoneProperty nonep:
                             Interpreter_Hexbox.Highlight(nonep.StartOffset, 8);

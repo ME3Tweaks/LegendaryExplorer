@@ -12,9 +12,9 @@ namespace ME3Script.Language.Tree
     {
         public string Name;
         public ASTNode Declaration;
-        public ASTNodeType NodeType { get { return Declaration == null ? ASTNodeType.INVALID : Declaration.Type; } }
+        public ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
-        public VariableType(string name, SourcePosition start, SourcePosition end)
+        public VariableType(string name, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.VariableType, start, end) 
         {
             Name = name;
@@ -23,6 +23,13 @@ namespace ME3Script.Language.Tree
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
             return visitor.VisitNode(this);
+        }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return Declaration;
+            }
         }
     }
 }

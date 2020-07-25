@@ -13,13 +13,13 @@ namespace ME3Script.Analysis.Visitors
 {
     public class CodeBuilderVisitor : IASTVisitor
     {
-        private List<string> Lines;
+        private readonly List<string> Lines;
         private int NestingLevel;
         private int ForcedAlignment;
         private bool ForceNoNewLines;
-        private Stack<int> ExpressionPrescedence;
+        private readonly Stack<int> ExpressionPrescedence;
 
-        private static int NOPRESCEDENCE = int.MaxValue;
+        private const int NOPRESCEDENCE = int.MaxValue;
 
         public CodeBuilderVisitor()
         {
@@ -65,9 +65,16 @@ namespace ME3Script.Analysis.Visitors
             if (node.OuterClass.Name != node.Parent.Name)
                 Append("within {0} ", node.OuterClass.Name);
             NestingLevel++;
-            foreach (Specifier specifier in node.Specifiers)
+            foreach (Specifier specifier in node.Specifiers) //TODO: write visitor for Specifier?
             {
-                Write("{0}", specifier.Value);
+                if (specifier is ConfigSpecifier conf)
+                {
+                    Write("{0}({1})", conf.Value, conf.Category);
+                }
+                else
+                {
+                    Write("{0}", specifier.Value);
+                }
             }
             NestingLevel--;
             Append(";");
@@ -122,11 +129,6 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            return true;
-        }
-
-        public bool VisitNode(Variable node)
-        {
             string type = "ERROR";
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
             {
@@ -167,7 +169,7 @@ namespace ME3Script.Analysis.Visitors
             Append("{0}", "{");
             NestingLevel++;
 
-            foreach (Variable member in node.Members)
+            foreach (VariableDeclaration member in node.Members)
                 member.AcceptVisitor(this);
 
             NestingLevel--;
@@ -204,7 +206,7 @@ namespace ME3Script.Analysis.Visitors
             Write("");
             if (node.Specifiers.Count > 0)
                 Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
-            Append("function {0}{1}( ", (node.ReturnType != null ? node.ReturnType.Name + " " : ""), node.Name);
+            Append("{0} {1}{2}( ", node.IsEvent ? "event" : "function", (node.ReturnType != null ? node.ReturnType.Name + " " : ""), node.Name);
             foreach (FunctionParameter p in node.Parameters)
             {
                 p.AcceptVisitor(this);
@@ -217,7 +219,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 Write("{0}", "{");
                 NestingLevel++;
-                foreach (Variable v in node.Locals)
+                foreach (VariableDeclaration v in node.Locals)
                     v.AcceptVisitor(this);
                 node.Body.AcceptVisitor(this);
                 NestingLevel--;
@@ -309,7 +311,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 Write("{0}", "{");
                 NestingLevel++;
-                foreach (Variable v in node.Locals)
+                foreach (VariableDeclaration v in node.Locals)
                     v.AcceptVisitor(this);
                 node.Body.AcceptVisitor(this);
                 NestingLevel--;
@@ -687,7 +689,9 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(NameLiteral node)
         {
-            Append(node.Outer is StructLiteral ? "\"{0}\"" : "'{0}'", node.Value);
+            //unrealscript compliant version, but harder to parse
+            //Append(node.Outer is StructLiteral ? "\"{0}\"" : "'{0}'", node.Value);
+            Append( "'{0}'", node.Value);
             return true;
         }
 

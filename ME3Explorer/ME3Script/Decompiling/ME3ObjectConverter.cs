@@ -80,11 +80,8 @@ namespace ME3Script.Decompiling
                     case UnrealFlags.EClassFlags.Abstract:
                         specifiers.Add(new Specifier("abstract"));
                         break;
-                    case UnrealFlags.EClassFlags.Config when uClass.ClassConfigName != "None":
-                        specifiers.Add(new Specifier($"config({uClass.ClassConfigName})"));
-                        break;
                     case UnrealFlags.EClassFlags.Config:
-                        specifiers.Add(new Specifier("config"));
+                        specifiers.Add(new ConfigSpecifier(uClass.ClassConfigName));
                         break;
                     case UnrealFlags.EClassFlags.NoExport:
                         specifiers.Add(new Specifier("noexport"));
@@ -97,8 +94,11 @@ namespace ME3Script.Decompiling
                         break;
                 }
             }
+            var propObject = pcc.GetUExport(uClass.Defaults);
+            var defaultProperties = ConvertDefaultProperties(propObject);
+
             Class AST = new Class(uClass.Export.ObjectName, specifiers, Vars, Types, Funcs, 
-                                  States, parent, outer, new List<OperatorDeclaration>(), null, null);
+                                  States, parent, outer, new List<OperatorDeclaration>(), defaultProperties, null, null);
 
             // Ugly quick fix:
             foreach (var member in Types)
@@ -110,8 +110,6 @@ namespace ME3Script.Decompiling
             foreach (var member in States)
                 member.Outer = AST;
 
-            var propObject = pcc.GetUExport(uClass.Defaults);
-            AST.DefaultProperties = ConvertDefaultProperties(propObject);
 
             return AST;
         }
@@ -137,7 +135,7 @@ namespace ME3Script.Decompiling
                         nextItem = uFunction.Next;
                         break;
                     case UFunction uFunction:
-                        Ignores.Add(new Function(uFunction.Export.ObjectName, null, null, null, null, null, null));
+                        Ignores.Add(new Function(uFunction.Export.ObjectName, null, null, null, null, false, null, null));
                         /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
                          * They are defined though, each being its own proper object with simply a return nothing for bytecode.
                          * */
@@ -234,7 +232,7 @@ namespace ME3Script.Decompiling
             return node;
         }
 
-        public static Variable ConvertVariable(UProperty obj)
+        public static VariableDeclaration ConvertVariable(UProperty obj)
         {
             int size = obj.ArraySize;
             var specifiers = new List<Specifier>();
@@ -273,22 +271,21 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var variable = new Variable(specifiers, new VariableIdentifier(obj.Export.ObjectName, null, null, size), 
-                                                    new VariableType(GetPropertyType(obj), null, null), null, null);
-            if (obj.Category != "None")
-            {
-                variable.Category = obj.Category;
-            }
-            return variable;
+            return new VariableDeclaration(GetPropertyType(obj), specifiers,
+                                           new VariableIdentifier(obj.Export.ObjectName, null, null, size),
+                                           obj.Category != "None" ? obj.Category : null, null, null);
         }
 
-        private static string GetPropertyType(UProperty obj)
+        private static VariableType GetPropertyType(UProperty obj)
         {
             string typeStr = "UNKNOWN";
             switch (obj)
             {
-                case UArrayProperty arrayProperty:
-                    typeStr = "array< " + GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty) + " >";
+                case UArrayProperty arrayProperty: //TODO: create ArrayVariableType?
+                    typeStr = "array< " + GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty).Name + " >";
+                    break;
+                case UBioMask4Property _:
+                    typeStr = "biomask4";
                     break;
                 case UBoolProperty _:
                     typeStr = "bool";
@@ -317,6 +314,9 @@ namespace ME3Script.Decompiling
                 case UNameProperty _:
                     typeStr = "Name"; // ?
                     break;
+                case UStringRefProperty _:
+                    typeStr = "stringref";
+                    break;
                 case UStrProperty _:
                     typeStr = "string";
                     break;
@@ -331,7 +331,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            return typeStr;
+            return new VariableType(typeStr);
         }
 
         public static Function ConvertFunction(UFunction obj)
@@ -354,7 +354,7 @@ namespace ME3Script.Decompiling
                         else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Specifiers, convert.Variables.First(), null, null)
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Specifiers, convert.Variable, null, null)
                             {
                                 IsOptional = uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm)
                             });
@@ -375,6 +375,7 @@ namespace ME3Script.Decompiling
             var body = ByteCode.Decompile();
 
             var specifiers = new List<Specifier>();
+            bool isEvent = false;
             foreach (FunctionFlags funcFlag in obj.FunctionFlags.MaskToList())
             {
                 switch (funcFlag)
@@ -422,7 +423,7 @@ namespace ME3Script.Decompiling
                         specifiers.Add(new Specifier("exec"));
                         break;
                     case FunctionFlags.Event:
-                        specifiers.Add(new Specifier("event"));
+                        isEvent = true;
                         break;
                     case FunctionFlags.Const:
                         specifiers.Add(new Specifier("const"));
@@ -430,7 +431,7 @@ namespace ME3Script.Decompiling
                 }
             }
             var func = new Function(obj.Export.ObjectName, returnType, body,
-                                    specifiers, parameters, null, null);
+                                    specifiers, parameters, isEvent, null, null);
 
             foreach (var local in locals)
             {

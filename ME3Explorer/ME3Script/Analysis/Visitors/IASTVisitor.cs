@@ -22,8 +22,6 @@ namespace ME3Script.Analysis.Visitors
 
         bool VisitNode(CodeBody node);
         bool VisitNode(StateLabel node);
-
-        bool VisitNode(Variable node);
         bool VisitNode(VariableIdentifier node);
 
         bool VisitNode(DoUntilLoop node);

@@ -13,9 +13,9 @@ namespace ME3Script.Lexing.Matching.StringMatchers
     public class KeywordMatcher : TokenMatcherBase<string>
     {
         public string Keyword { get; private set; }
-        private TokenType Type;
-        private List<KeywordMatcher> Delimiters;
-        private bool SubString;
+        private readonly TokenType Type;
+        private readonly List<KeywordMatcher> Delimiters;
+        private readonly bool SubString;
 
         public KeywordMatcher(string keyword, TokenType type, List<KeywordMatcher> delims, bool allowSubString = true)
         {

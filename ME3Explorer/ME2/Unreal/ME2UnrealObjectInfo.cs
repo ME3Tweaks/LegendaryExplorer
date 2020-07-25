@@ -177,6 +177,10 @@ namespace ME2Explorer.Unreal
                 {
                     return ArrayType.Int;
                 }
+                if (p.Reference == "StringRefProperty")
+                {
+                    return ArrayType.StringRef;
+                }
                 if (Structs.ContainsKey(p.Reference))
                 {
                     return ArrayType.Struct;

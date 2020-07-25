@@ -13,7 +13,7 @@ namespace ME3Script.Lexing
         protected List<ITokenMatcher<T>> TokenMatchers;
         protected TokenizableDataStream<T> Data;
 
-        public LexerBase(TokenizableDataStream<T> data)
+        protected LexerBase(TokenizableDataStream<T> data)
         {
             Data = data;
         }

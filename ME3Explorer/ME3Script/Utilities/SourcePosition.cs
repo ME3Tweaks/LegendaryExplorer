@@ -8,9 +8,9 @@ namespace ME3Script.Utilities
 {
     public class SourcePosition
     {
-        public int Line { get; private set; }
-        public int Column { get; private set; }
-        public int CharIndex { get; private set; }
+        public int Line { get; }
+        public int Column { get; }
+        public int CharIndex { get; }
 
         public SourcePosition(int ln, int col, int index)
         {
@@ -33,19 +33,18 @@ namespace ME3Script.Utilities
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
+            if (obj is SourcePosition p)
+            {
+                return (Line == p.Line) && (Column == p.Column) && (CharIndex == p.CharIndex);
+            }
 
-            SourcePosition p = obj as SourcePosition;
-            if ((object)p == null)
-                return false;
+            return false;
 
-            return (Line == p.Line) && (Column == p.Column) && (CharIndex == p.CharIndex);
         }
 
         public bool Equals(SourcePosition p)
         {
-            if ((object)p == null)
+            if (p == null)
                 return false;
 
             return (Line == p.Line) && (Column == p.Column) && (CharIndex == p.CharIndex);

@@ -16,7 +16,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
         {
             SourcePosition start = new SourcePosition(streamPos);
             string value = null;
-            Regex regex = new Regex("[0-9a-zA-Z_]");
+            Regex regex = new Regex(@"[0-9a-zA-Z_\.]");
             if (data.CurrentItem == "'")
             {
                 data.Advance();
@@ -43,7 +43,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             {
                 streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                 SourcePosition end = new SourcePosition(streamPos);
-                return new Token<string>(TokenType.Name, value, start, end);
+                return new Token<string>(TokenType.NameLiteral, value, start, end);
             }
             return null;
         }

@@ -605,7 +605,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new BoolProperty(stream, pcc, isArrayContained: true) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name) { Reference = "Bool" }; ;
+                        return new ArrayProperty<BoolProperty>(arrayOffset, props, name) { Reference = "Bool" };
                     }
                 case ArrayType.String:
                     {
@@ -615,7 +615,7 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new StrProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<StrProperty>(arrayOffset, props, name) { Reference = "String" }; ;
+                        return new ArrayProperty<StrProperty>(arrayOffset, props, name) { Reference = "String" };
                     }
                 case ArrayType.Float:
                     {
@@ -625,10 +625,20 @@ namespace ME3Explorer.Unreal
                             long startPos = stream.Position;
                             props.Add(new FloatProperty(stream) { StartOffset = startPos });
                         }
-                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name) { Reference = "Float" }; ;
+                        return new ArrayProperty<FloatProperty>(arrayOffset, props, name) { Reference = "Float" };
                     }
                 case ArrayType.Byte:
-                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name) { Reference = "Byte" }; ;
+                    return new ImmutableByteArrayProperty(arrayOffset, count, stream, name) { Reference = "Byte" };
+                case ArrayType.StringRef:
+                {
+                    var props = new List<StringRefProperty>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        long startPos = stream.Position;
+                        props.Add(new StringRefProperty(stream) { StartOffset = startPos });
+                    }
+                    return new ArrayProperty<StringRefProperty>(arrayOffset, props, name) { Reference = "StringRef" };
+                }
                 case ArrayType.Int:
                 default:
                     {

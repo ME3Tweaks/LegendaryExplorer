@@ -30,9 +30,9 @@ namespace ME3Script.Language.Tree
             return Node switch
             {
                 FunctionParameter functionParameter => functionParameter.VarType,
-                Variable variable => variable.VarType,
+                VariableDeclaration variable => variable.VarType,
                 Function function => function.ReturnType,
-                _ => (Node as Expression).ResolveType()
+                _ => (Node as Expression)?.ResolveType()
             };
         }
     }

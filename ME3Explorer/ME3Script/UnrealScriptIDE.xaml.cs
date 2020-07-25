@@ -16,8 +16,11 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Script.Analysis.Visitors;
+using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
+using ME3Script.Lexing;
+using ME3Script.Parsing;
 
 namespace ME3Explorer.ME3Script
 {
@@ -33,6 +36,14 @@ namespace ME3Explorer.ME3Script
             set => SetProperty(ref _scriptText, value);
         }
 
+        private ASTNode _rootNode;
+
+        public ASTNode RootNode
+        {
+            get => _rootNode;
+            set => SetProperty(ref _rootNode, value);
+        }
+
         public UnrealScriptIDE()
         {
             InitializeComponent();
@@ -40,66 +51,75 @@ namespace ME3Explorer.ME3Script
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.ClassName switch
+            exportEntry.Game == MEGame.ME3 && (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,
                 "Function" => true,
                 _ => false
-            };
+            } || exportEntry.IsDefaultObject);
 
         public override void LoadExport(ExportEntry export)
         {
             CurrentLoadedExport = export;
+            (RootNode, ScriptText) = DecompileExport(CurrentLoadedExport);
+        }
+
+        public static (ASTNode node, string text) DecompileExport(ExportEntry export)
+        {
             try
             {
-                ASTNode ast;
+                ASTNode astNode = null;
                 switch (export.ClassName)
                 {
                     case "Class":
-                        ast = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
+                        astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
                         break;
                     case "Function":
-                        ast = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>());
+                        astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>());
                         break;
                     case "State":
-                        ast = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>());
+                        astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>());
                         break;
                     case "Enum":
-                        ast = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
+                        astNode = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
                         break;
                     case "ScriptStruct":
-                        ast = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
+                        astNode = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
                         break;
                     default:
                         if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
                         {
-                            ast = ME3ObjectToASTConverter.ConvertVariable(uProp);
+                            astNode = ME3ObjectToASTConverter.ConvertVariable(uProp);
                         }
                         else
                         {
-                            ast = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
+                            astNode = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
                         }
+
                         break;
                 }
 
-                if (ast != null)
+                if (astNode != null)
                 {
                     var codeBuilder = new CodeBuilderVisitor();
-                    ast.AcceptVisitor(codeBuilder);
-                    ScriptText = codeBuilder.GetCodeString();
+                    astNode.AcceptVisitor(codeBuilder);
+                    return (astNode, codeBuilder.GetCodeString());
                 }
             }
             catch (Exception e)
             {
-                ScriptText = $"Error occured while decompiling {export.InstancedFullPath}:\n\n{e.FlattenException()}";
+                return (null, $"Error occured while decompiling {export?.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
+
+            return (null, "Could not decompile!");
         }
 
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
             ScriptText = string.Empty;
+            RootNode = null;
         }
 
         public override void PopOut()
@@ -117,6 +137,59 @@ namespace ME3Explorer.ME3Script
         public override void Dispose()
         {
             //
+        }
+
+        private void Decompile_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentLoadedExport != null)
+            {
+                (RootNode, ScriptText) = DecompileExport(CurrentLoadedExport);
+            }
+        }
+
+        private void CompileAST_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ScriptText != null)
+            {
+                MessageLog log;
+                (RootNode, log) = CompileAST(ScriptText);
+
+                if (RootNode != null)
+                {
+                    var codeBuilder = new CodeBuilderVisitor();
+                    RootNode.AcceptVisitor(codeBuilder);
+                    ScriptText = codeBuilder.GetCodeString();
+                }
+
+                outputListBox.ItemsSource = log.Content;
+            }
+        }
+
+        public static (ASTNode ast, MessageLog log) CompileAST(string script)
+        {
+            var log = new MessageLog();
+            var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(script)), log);
+            ASTNode ast = parser.ParseDocument();
+
+            if (ast != null)
+            {
+                log.LogMessage("Parsed!");
+            }
+            else
+            {
+                log.LogMessage("Parse failed!");
+            }
+
+            return (ast, log);
+        }
+
+        private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems?.Count == 1 && e.AddedItems[0] is PositionedMessage msg)
+            {
+                scriptTextBox.Focus();
+                scriptTextBox.Select(msg.Start.CharIndex, msg.End.CharIndex - msg.Start.CharIndex);
+            }
         }
     }
 }

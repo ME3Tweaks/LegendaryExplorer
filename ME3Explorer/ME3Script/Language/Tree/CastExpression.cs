@@ -29,5 +29,13 @@ namespace ME3Script.Language.Tree
         {
             return CastType;
         }
+        public override IEnumerable<ASTNode> ChildNodes
+        {
+            get
+            {
+                yield return CastType;
+                yield return CastTarget;
+            }
+        }
     }
 }

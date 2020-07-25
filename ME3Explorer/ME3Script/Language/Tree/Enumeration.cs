@@ -23,5 +23,6 @@ namespace ME3Script.Language.Tree
         {
             return visitor.VisitNode(this);
         }
+        public override IEnumerable<ASTNode> ChildNodes => Values;
     }
 }
