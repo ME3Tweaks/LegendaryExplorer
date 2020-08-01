@@ -518,23 +518,68 @@ namespace ME3Explorer.PackageEditor
 
         /// <summary>
         /// Copy ME2 Static art and collision into an ME3 file.
-        /// By KK
+        /// By Kinkojiro
         /// </summary>
         /// <param name="ME2Source"></param>
         /// <param name="ME3File"></param>
-        private void CopyME2ArtToME3(IMEPackage ME2Source, IMEPackage ME3File)
+        public static bool CopyME2ArtToME3(IMEPackage ME2Source, IMEPackage ME3File)
         {
             if(ME2Source.Game != MEGame.ME2 || ME3File.Game != MEGame.ME3)
             {
                 MessageBox.Show("Currently art can only be copied from ME2 to ME3");
-                return;
+                return false;
             }
 
             var cdlg = MessageBox.Show("This is a highly experimental method to copy the staticn art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
             if (cdlg == MessageBoxResult.Cancel)
-                return;
+                return false;
+
+            if (ME2Source.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry me2levelexp && ME3File.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry me3levelexp)
+            {
+                Level me2level = ObjectBinary.From<Level>(me2levelexp);
+                foreach (var actint in me2level.Actors)
+                {
+                    var actor = ME2Source.GetUExport(actint);
+                    switch(actor.ClassName)
+                    {
+                        case "BlockingVolume":  
+                        case "BioBlockingVolume": //All blocking volumes should be copied as BlockingVolume class
+                            ME3File.AddToLevelActorsIfNotThere(actor);
+                            break;
+                        case "SpotLight":
+
+                            break;
+                        case "SpotLightToggleable":
+
+                            break;
+                        case "PointLight":
+
+                            break;
+                        case "PointLightToggleable":
+
+                            break;
+                        case "SkyLight":
+
+                            break;
+                        case "HeightFog":
+
+                            break;
+                        case "LenseFlareSource":
+
+                            break;
+                        case "StaticMeshActor":
+
+                            break;
+                        default:  //All other actors should be skipped
+                            break;
 
 
+                    }
+                }
+
+            }
+
+            return true;
         }
     }
 }

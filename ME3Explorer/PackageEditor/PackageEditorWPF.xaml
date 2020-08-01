@@ -274,6 +274,7 @@
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Replace all references to selection" Click="ReplaceReferenceLinks"/>
+                        <MenuItem Header="Copy ME2 level's art to this package (ME3 only)" Click="CopyME2LeveltoME3"/>
                     </MenuItem>
 
 

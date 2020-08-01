@@ -5635,5 +5635,26 @@ namespace ME3Explorer
                 dlg.Show();
             }
         }
+
+        private void CopyME2LeveltoME3(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog me2oDlg = new CommonOpenFileDialog
+            {
+                DefaultDirectory = ME2Directory.gamePath,
+                EnsurePathExists = true,
+                Title = "Select ME2 file to import"
+                
+            };
+            if (me2oDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
+                IMEPackage me2source = MEPackageHandler.OpenMEPackage(me2oDlg.FileName);
+                var done = PackageEditorExperiments.CopyME2ArtToME3(me2source, Pcc);
+                if (done)
+                    MessageBox.Show("Done", "Art Transfer");
+
+            }
+        }
+
+
     }
 }
