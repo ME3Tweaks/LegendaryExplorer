@@ -678,7 +678,16 @@ namespace ME3Explorer.Packages
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
-            props.WriteTo(m.Writer, FileRef);
+            props?.WriteTo(m.Writer, FileRef);//props could be null if this is a class
+            binary.WriteTo(m.Writer, FileRef, DataOffset);
+            Data = m.ToArray();
+        }
+
+        public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary)
+        {
+            var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.WriteBytes(preProps);
+            props?.WriteTo(m.Writer, FileRef);//props could be null if this is a class
             binary.WriteTo(m.Writer, FileRef, DataOffset);
             Data = m.ToArray();
         }

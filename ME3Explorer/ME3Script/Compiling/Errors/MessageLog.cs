@@ -66,7 +66,7 @@ namespace ME3Script.Compiling.Errors
         {
             if (start == null && end == null)
                 content.Add(new Error(msg));
-            else if (start != null && end == null)
+            else if (end == null)
                 content.Add(new LineError(msg, start, start.GetModifiedPosition(0, 1, 1)));
             else
                 content.Add(new LineError(msg, start, end));

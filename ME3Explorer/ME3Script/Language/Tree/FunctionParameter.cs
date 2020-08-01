@@ -11,6 +11,7 @@ namespace ME3Script.Language.Tree
     public class FunctionParameter : VariableDeclaration
     {
         public bool IsOptional;
+        public Expression DefaultParameter;
 
         public FunctionParameter(VariableType type, List<Specifier> specs,
             VariableIdentifier variable, SourcePosition start, SourcePosition end)

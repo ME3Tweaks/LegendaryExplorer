@@ -264,7 +264,10 @@ namespace ME3Explorer.Unreal
 
         public static OrderedMultiValueDictionary<string, PropertyInfo> GetAllProperties(MEGame game, string typeName)
         {
-            var props = new OrderedMultiValueDictionary<string, PropertyInfo>();
+            var props = new OrderedMultiValueDictionary<string, PropertyInfo>
+            {
+                KeyComparer = StringComparer.OrdinalIgnoreCase
+            };
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)
             {

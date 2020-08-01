@@ -8,7 +8,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
@@ -270,7 +269,7 @@
                         <MenuItem Header="UDKify" Click="UDKifyTest"/>
                         <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                         <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
-                        <MenuItem Header="Decompile All classes (ME3 Only!)" Click="DecompileAll_OnClick" />
+                        <MenuItem Header="Recompile All classes (ME3 Only!)" Click="RecompileAll_OnClick" />
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Replace all references to selection" Click="ReplaceReferenceLinks"/>

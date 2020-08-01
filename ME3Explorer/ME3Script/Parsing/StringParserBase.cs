@@ -103,7 +103,7 @@ namespace ME3Script.Parsing
                     return new VariableType($"array<{arrayType.Value}>");//TODO: do this better. ArrayVariableType?
                 }
                 // TODO: word or basic datatype? (int float etc)
-                Token<string> type = Tokens.ConsumeToken(TokenType.Word);
+                Token<string> type = Tokens.ConsumeToken(TokenType.Word) ?? Tokens.ConsumeToken(TokenType.Class); //class is a valid type, in addition to being a keyword
                 if (type == null)
                 {
                     return Error("Expected type name!", CurrentPosition);

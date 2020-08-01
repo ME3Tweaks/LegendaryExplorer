@@ -85,7 +85,7 @@ namespace ME3Script.Language.Tree
             get
             {
                 yield return Parent;
-                yield return OuterClass;
+                if (OuterClass != null) yield return OuterClass;
                 foreach (Specifier specifier in Specifiers) yield return specifier;
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;

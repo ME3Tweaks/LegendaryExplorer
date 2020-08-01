@@ -39,6 +39,7 @@ using StreamHelpers;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.ME3Script;
 using ME3Script.Analysis.Visitors;
+using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
 using Microsoft.AppCenter.Analytics;
@@ -4271,10 +4272,9 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            MEGame game = MEGame.ME1;
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
-            var interestingExports = new List<string>();
+            var interestingExports = new List<ListDialog.EntryItem>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
 
@@ -4295,20 +4295,30 @@ namespace ME3Explorer
                     //ScanStaticMeshComponents(filePath);
                     //ScanLightComponents(filePath);
                     //ScanLevel(filePath);
-                    if (findClass(filePath, "ShaderCache", true)) break;
+                    //if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
-                    //ScanScripts(filePath);
-                    //if (interestingExports.Count > 0)
-                    //{
-                    //    break;
-                    //}
+                    ScanScripts2(filePath);
+                    if (interestingExports.Count > 0)
+                    {
+                        break;
+                    }
                 }
-
-                return;
             }).ContinueWithOnUIThread(prevTask =>
             {
                 IsBusy = false;
-                var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this);
+                var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this)
+                {
+                    DoubleClickEntryHandler = entryItem =>
+                    {
+                        if (entryItem?.ReferencedEntry is IEntry entryToSelect)
+                        {
+                            PackageEditorWPF p = new PackageEditorWPF();
+                            p.Show();
+                            p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
+                            p.Activate();
+                        }
+                    }
+                };
                 listDlg.Show();
             });
 
@@ -4332,7 +4342,7 @@ namespace ME3Explorer
                             var newData = exp.Data;
                             if (!originalData.SequenceEqual(newData))
                             {
-                                interestingExports.Add($"#{exp.UIndex,-5} : {filePath}");
+                                interestingExports.Add(exp);
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
                                 File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), newData);
                                 return true;
@@ -4341,7 +4351,7 @@ namespace ME3Explorer
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add($"#{exp.UIndex,5} : {filePath}\n{exception}");
+                            interestingExports.Add(new ListDialog.EntryItem(exp, $"{exception}"));
                             return true;
                         }
                     }
@@ -4367,14 +4377,14 @@ namespace ME3Explorer
                                 else if (exp.GetBinaryData().Any(b => b != 0))
                                 {
                                     foundClasses.Add(exp.ClassName);
-                                    interestingExports.Add($"{exp.ClassName,30} #{exp.UIndex}: {filePath}");
+                                    interestingExports.Add(exp);
                                 }
                             }
                         }
                         catch (Exception exception)
                         {
                             Console.WriteLine(exception);
-                            interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                            interestingExports.Add(new ListDialog.EntryItem(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                         }
                     }
                 }
@@ -4407,7 +4417,7 @@ namespace ME3Explorer
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add($"{binData.Position - 4}: {filePath}");
+                                interestingExports.Add(new ListDialog.EntryItem(null, $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
 
@@ -4437,7 +4447,7 @@ namespace ME3Explorer
                             int normalParams = binData.ReadInt32();
                             if (normalParams != 0)
                             {
-                                interestingExports.Add($"{i}: {filePath}");
+                                interestingExports.Add(new ListDialog.EntryItem(null, $"{i}: {filePath}"));
                                 return;
                             }
 
@@ -4447,7 +4457,7 @@ namespace ME3Explorer
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add($"{binData.Position - 8}: {filePath}");
+                                interestingExports.Add(new ListDialog.EntryItem(null, $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
 
@@ -4458,7 +4468,7 @@ namespace ME3Explorer
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add($"{filePath}\n{exception}");
+                        interestingExports.Add(new ListDialog.EntryItem(null, $"{filePath}\n{exception}"));
                     }
                 }
             }
@@ -4478,7 +4488,7 @@ namespace ME3Explorer
                             {
                                 if (token.CurrentStack.Contains("UNKNOWN") || token.OpCodeString.Contains("UNKNOWN"))
                                 {
-                                    interestingExports.Add($"{exp.UIndex}: {filePath,-5}");
+                                    interestingExports.Add(exp);
                                 }
                                 if (unkOpcodes.Contains(token.OpCode))
                                 {
@@ -4523,7 +4533,31 @@ namespace ME3Explorer
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
-                        interestingExports.Add($"{exp.UIndex}: {filePath}\n{exception}");
+                        interestingExports.Add(new ListDialog.EntryItem(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                    }
+                }
+            }
+
+            void ScanScripts2(string filePath)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsClass && exp.GetBinaryData<UClass>().Defaults >= 0))
+                {
+                    try
+                    {
+                        (_, string script) = UnrealScriptIDE.DecompileExport(exp);
+                        (ASTNode ast, MessageLog log) = UnrealScriptIDE.CompileAST(script);
+                        if (ast == null)
+                        {
+                            interestingExports.Add(exp);
+                            return;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        interestingExports.Add(new ListDialog.EntryItem(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
+                        return;
                     }
                 }
             }
@@ -5597,21 +5631,23 @@ namespace ME3Explorer
 
         }
 
-        private void DecompileAll_OnClick(object sender, RoutedEventArgs e)
+        private void RecompileAll_OnClick(object sender, RoutedEventArgs e)
         {
             if (PackageIsLoaded() && Pcc.Game == MEGame.ME3)
             {
                 var exportsWithDecompilationErrors = new List<ListDialog.EntryItem>();
                 foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    (ASTNode ast, string script) = UnrealScriptIDE.DecompileExport(export);
+                    (_, string script) = UnrealScriptIDE.DecompileExport(export);
+                    (ASTNode ast, MessageLog log) = UnrealScriptIDE.CompileAST(script);
                     if (ast == null)
                     {
-                        exportsWithDecompilationErrors.Add(new ListDialog.EntryItem(export, "Decompilation Error!"));
+                        exportsWithDecompilationErrors.Add(new ListDialog.EntryItem(export, "Compilation Error!"));
+                        break;
                     }
                 }
 
-                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Decompilation errors", "", this)
+                var dlg = new ListDialog(exportsWithDecompilationErrors, $"Compilation errors", "", this)
                 {
                     DoubleClickEntryHandler = entryDoubleClick
                 };

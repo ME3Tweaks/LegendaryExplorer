@@ -238,6 +238,11 @@ namespace ME3Script.Analysis.Visitors
                 Append("{0} ", string.Join(" ", node.Specifiers.Select(x => x.Value)));
             string staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
             Append("{0} {1}{2}", node.VarType.Name, node.Name, staticarray);
+            if (node.DefaultParameter != null)
+            {
+                Append(" = ");
+                node.DefaultParameter.AcceptVisitor(this);
+            }
 
             return true;
         }

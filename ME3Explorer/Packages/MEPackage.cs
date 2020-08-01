@@ -933,15 +933,7 @@ namespace ME3Explorer.Packages
 
             for (int i = 0; i < exports.Count; i++)
             {
-                var newData = new EndianReader(new MemoryStream()) { Endian = Endian.Native }; //only can make new packages for x86
-                newData.Writer.Write(prePropBinary[i]);
-                //write back properties in new format
-                propCollections[i]?.WriteTo(newData.Writer, this);
-
-                postPropBinary[i].WriteTo(newData.Writer, this, exports[i].DataOffset + exports[i].propsEnd()); //should do this again during Save to get offsets correct
-                                                                                                                //might not matter though
-
-                exports[i].Data = newData.BaseStream.ReadFully();
+                exports[i].WritePrePropsAndPropertiesAndBinary(prePropBinary[i], propCollections[i], postPropBinary[i]);
             }
 
             if (newGame == MEGame.ME3)
@@ -1035,6 +1027,22 @@ namespace ME3Explorer.Packages
                     texport.SetBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, Game, offsets, StorageTypes.extZlib));
                     texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
                     texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
+                }
+            }
+            if (oldGame == MEGame.ME3 && newGame != MEGame.ME3)
+            {
+                int idx = names.IndexOf("location");
+                if (idx >= 0)
+                {
+                    names[idx] = "Location";
+                }
+            }
+            else if (newGame == MEGame.ME3)
+            {
+                int idx = names.IndexOf("Location");
+                if (idx >= 0)
+                {
+                    names[idx] = "location";
                 }
             }
         }

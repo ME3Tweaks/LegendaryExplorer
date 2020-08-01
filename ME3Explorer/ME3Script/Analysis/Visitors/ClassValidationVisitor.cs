@@ -251,7 +251,7 @@ namespace ME3Script.Analysis.Visitors
                 {
                     return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
-                else if (!typeof(VariableType).IsAssignableFrom(returnType.GetType()))
+                else if (!(returnType is VariableType))
                 {
                     return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
@@ -268,9 +268,8 @@ namespace ME3Script.Analysis.Visitors
             if (Success == false)
                 return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
-            ASTNode func;
-            if (Symbols.TryGetSymbol(node.Name, out func, "") // override functions in parent classes only (or current class if its a state)
-                && func.Type == ASTNodeType.Function)
+            if (Symbols.TryGetSymbol(node.Name, out ASTNode func, "") // override functions in parent classes only (or current class if its a state)
+             && func.Type == ASTNodeType.Function)
             {   // If there is a function with this name that we should override, validate the new functions declaration
                 Function original = func as Function;
                 if (original.Specifiers.Contains(new Specifier("final", null, null)))

@@ -118,7 +118,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public static PropertyCollection RemoveIncompatibleProperties(IMEPackage sourcePcc, PropertyCollection props, string typeName, MEGame newGame)
         {
             var infoProps = UnrealObjectInfo.GetAllProperties(newGame, typeName);
-
+            infoProps.KeyComparer = StringComparer.OrdinalIgnoreCase;
             var newProps = new PropertyCollection();
             foreach (Property prop in props)
             {

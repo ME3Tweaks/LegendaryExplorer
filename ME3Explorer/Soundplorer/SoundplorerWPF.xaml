@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:ME3Explorer.Soundplorer"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        

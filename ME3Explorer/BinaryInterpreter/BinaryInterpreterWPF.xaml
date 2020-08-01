@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"

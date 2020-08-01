@@ -90,6 +90,11 @@ namespace ME3Explorer.SharedUI
             }
 
             public override string ToString() => Message;
+
+            public static implicit operator EntryItem(ExportEntry entry)
+            {
+                return new EntryItem(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+            }
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)

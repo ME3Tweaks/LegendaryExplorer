@@ -685,7 +685,6 @@
     <Compile Include="Interpreter\InterpreterWPF.xaml.cs">
       <DependentUpon>InterpreterWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interpreter\InterpreterWPFCommands.cs" />
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>

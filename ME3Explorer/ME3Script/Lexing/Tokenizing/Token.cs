@@ -142,6 +142,7 @@ namespace ME3Script.Lexing.Tokenizing
         DuplicateTransientSpecifier,
         NoImportSpecifier,
         NativeSpecifier,
+        NativeReplicationSpecifier,
         ExportSpecifier,
         NoExportSpecifier,
         NonTransactionalSpecifier,

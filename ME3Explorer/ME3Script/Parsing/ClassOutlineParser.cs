@@ -55,7 +55,7 @@ namespace ME3Script.Parsing
 
                 var variables = new List<VariableDeclaration>();
                 var types = new List<VariableType>();
-                while (CurrentTokenType == TokenType.InstanceVariable || CurrentTokenType == TokenType.Struct || CurrentTokenType == TokenType.Enumeration)
+                while (CurrentTokenType == TokenType.InstanceVariable || CurrentTokenType == TokenType.Struct || CurrentTokenType == TokenType.Enumeration || CurrentTokenType == TokenType.Constant)
                 {
                     if (CurrentTokenType == TokenType.InstanceVariable)
                     {
@@ -65,7 +65,7 @@ namespace ME3Script.Parsing
                     }
                     else
                     {
-                        var type = TryParseEnum() ?? TryParseStruct() ?? new VariableType("INVALID", null, null);
+                        var type = TryParseEnum() ?? TryParseStruct() ?? TryParseConstant() ?? new VariableType("INVALID", null, null);
                         if (type.Name == "INVALID") return Error("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                         types.Add(type);
@@ -107,6 +107,42 @@ namespace ME3Script.Parsing
 
                 // TODO: should AST-nodes accept null values? should they make sure they dont present any?
                 return new Class(name.Value, specs, variables, types, funcs, states, parentClass, outerClass, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition);
+            }
+        }
+
+        private Const TryParseConstant()
+        {
+            return (Const)Tokens.TryGetTree(ConstantParser);
+            ASTNode ConstantParser()
+            {
+                var startPos = CurrentPosition;
+                if (Tokens.ConsumeToken(TokenType.Constant) == null) return null;
+                if (Tokens.ConsumeToken(TokenType.Word) is Token<string> constName)
+                {
+                    if (Tokens.ConsumeToken(TokenType.Assign) == null)
+                    {
+                        return Error("Expected '=' after constant name!", CurrentPosition);
+                    }
+
+                    string constValue = null;
+                    while (CurrentTokenType != TokenType.SemiColon)
+                    {
+                        if (CurrentTokenType == TokenType.NewLine)
+                        {
+                            return Error("Expected ';' after constant value!", CurrentPosition);
+                        }
+
+                        constValue += Tokens.CurrentItem.Value;
+                        Tokens.Advance();
+                    }
+                    if (constValue == null)
+                    {
+                        return Error($"Expected a value for the constant '{constName.Value}'!");
+                    }
+                    return new Const(constName.Value, constValue, startPos, CurrentPosition);
+                }
+
+                return Error("Expected name for constant!", CurrentPosition);
             }
         }
 
@@ -437,7 +473,19 @@ namespace ME3Script.Parsing
                 var variable = TryParseVariable();
                 if (variable == null) return Error("Expected parameter name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new FunctionParameter(type, paramSpecs, variable, variable.StartPos, variable.EndPos);
+                var funcParam = new FunctionParameter(type, paramSpecs, variable, variable.StartPos, variable.EndPos);
+                if (paramSpecs.Any(spec => spec.Value == "optional"))
+                {
+                    funcParam.IsOptional = true;
+                }
+
+                if (CurrentTokenType == TokenType.Assign)
+                {
+                    Tokens.Advance();
+                    //TODO: parse default values!
+                }
+
+                return funcParam;
             }
         }
 

@@ -16,6 +16,8 @@ namespace ME3Explorer
     [JsonArray]
     public class OrderedMultiValueDictionary<TKey, TValue> : List<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
     {
+        public IEqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
+
         public OrderedMultiValueDictionary() { }
         public OrderedMultiValueDictionary(int capacity) : base(capacity) { }
         public OrderedMultiValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : base(collection) { }
@@ -24,7 +26,7 @@ namespace ME3Explorer
         {
             foreach (var kvp in this)
             {
-                if (EqualityComparer<TKey>.Default.Equals(kvp.Key, key))
+                if (KeyComparer.Equals(kvp.Key, key))
                 {
                     return true;
                 }

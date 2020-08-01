@@ -548,22 +548,20 @@ namespace ME3Script.Parsing
 
         public Expression TryParseExpression()
         {
-            Func<ASTNode> exprParser = () =>
+            return (Expression)Tokens.TryGetTree(ExprParser);
+            ASTNode ExprParser()
             {
                 var expr = TryParseAtomicExpression();
-                if (expr == null)
-                    return null;
+                if (expr == null) return null;
 
                 while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
                 {
                     expr = TryParseIfExpression(expr) ?? TryParseInOperator(expr) ?? (Expression)null;
-                    if (expr == null)
-                        return Error("Could not parse expression/operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (expr == null) return Error("Could not parse expression/operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return expr;
-            };
-            return (Expression)Tokens.TryGetTree(exprParser);
+            }
         }
 
         public Expression TryParseScopedExpression()
@@ -595,11 +593,11 @@ namespace ME3Script.Parsing
 
         public Expression TryParseAtomicExpression()
         {
-            Func<ASTNode> atomParser = () =>
+            return (Expression)Tokens.TryGetTree(AtomParser);
+            ASTNode AtomParser()
             {
                 return TryParsePreOperator() ?? TryParsePostOperator() ?? TryParseScopedExpression() ?? TryParseExpressionLeaf() ?? (Expression)null;
-            };
-            return (Expression)Tokens.TryGetTree(atomParser);
+            }
         }
 
         public Expression TryParseInOperator(Expression expr)

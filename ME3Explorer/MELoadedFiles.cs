@@ -70,6 +70,17 @@ namespace ME3Explorer
             return loadedFiles;
         }
 
+        public static IEnumerable<string> GetDLCFiles(MEGame game, string dlcName)
+        {
+            string dlcPath = Path.Combine(MEDirectories.DLCPath(game), dlcName);
+            if (Directory.Exists(dlcPath))
+            {
+                return GetCookedFiles(game, dlcPath);
+            }
+
+            return Enumerable.Empty<string>();
+        }
+
         public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
         public static IEnumerable<string> GetOfficialFiles(MEGame game) => GetOfficialDLCFiles(game).Prepend(MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
 

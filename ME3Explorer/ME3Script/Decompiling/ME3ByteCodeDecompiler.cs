@@ -148,17 +148,17 @@ namespace ME3Script.Decompiling
                     var value = DecompileExpression();
                     PopByte(); // end of value
 
-                    var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
-                    value.AcceptVisitor(builder);
 
                     if (OptionalParams.Count != 0)
                     {
                         var parm = OptionalParams.Pop();
-                        parm.Variable.Name += " = " + builder.GetCodeString();
+                        parm.DefaultParameter = value;
                         StartPositions.Pop();
                     }
                     else
                     {       // TODO: weird, research how to deal with this
+                        var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
+                        value.AcceptVisitor(builder);
                         var comment = new SymbolReference(null, null, null, "// Orphaned Default Parm: " + builder.GetCodeString());
                         var statement = new ExpressionOnlyStatement(null, null, comment);
                         StatementLocations.Add(StartPositions.Pop(), statement);
