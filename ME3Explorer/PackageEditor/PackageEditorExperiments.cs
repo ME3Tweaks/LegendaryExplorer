@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Gammtek.Conduit.Extensions.Collections.Generic;
 using Gammtek.Conduit.Extensions.IO;
 using ImageMagick;
@@ -512,6 +513,28 @@ namespace ME3Explorer.PackageEditor
                     Debug.WriteLine($"Item missing from NavPoints list: {v.UIndex} {v.InstancedFullPath}");
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Copy ME2 Static art and collision into an ME3 file.
+        /// By KK
+        /// </summary>
+        /// <param name="ME2Source"></param>
+        /// <param name="ME3File"></param>
+        private void CopyME2ArtToME3(IMEPackage ME2Source, IMEPackage ME3File)
+        {
+            if(ME2Source.Game != MEGame.ME2 || ME3File.Game != MEGame.ME3)
+            {
+                MessageBox.Show("Currently art can only be copied from ME2 to ME3");
+                return;
+            }
+
+            var cdlg = MessageBox.Show("This is a highly experimental method to copy the staticn art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
+            if (cdlg == MessageBoxResult.Cancel)
+                return;
+
+
         }
     }
 }

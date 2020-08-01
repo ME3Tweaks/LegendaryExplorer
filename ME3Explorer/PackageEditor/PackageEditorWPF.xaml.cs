@@ -726,14 +726,31 @@ namespace ME3Explorer
                 Filter = "*.pcc|*.pcc",
                 OverwritePrompt = true
             };
+
             if (dlg.ShowDialog() == true)
             {
                 if (File.Exists(dlg.FileName))
                 {
                     File.Delete(dlg.FileName);
                 }
+
+
                 File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), dlg.FileName);
                 LoadFile(dlg.FileName);
+                for (int i = 0; i < Pcc.Names.Count; i++)
+                {
+                    string name = Pcc.Names[i];
+                    if (name.Equals("ME3EmptyLevel"))
+                    {
+                        var newName = name.Replace("ME3EmptyLevel", Path.GetFileNameWithoutExtension(dlg.FileName));
+                        Pcc.replaceName(i, newName);
+                    }
+                }
+                var packguid = Guid.NewGuid();
+                var package = Pcc.GetUExport(1);
+                package.PackageGUID = packguid;
+                Pcc.PackageGuid = packguid;
+                SaveFile();
                 AddRecent(dlg.FileName, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
