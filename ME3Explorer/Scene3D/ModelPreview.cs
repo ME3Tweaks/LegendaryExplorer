@@ -271,6 +271,9 @@ namespace ME3Explorer.Scene3D
         /// <param name="texcache">The texture cache for loading textures.</param>
         public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
+            if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
+                return;
+
             // STEP 1: MESH
             var lodModel = m.LODModels[selectedLOD];
             List<Triangle> triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
