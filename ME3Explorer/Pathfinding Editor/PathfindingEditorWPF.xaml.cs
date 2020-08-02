@@ -4778,7 +4778,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return new SharpDX.Vector3(groupX / actorcount, groupY / actorcount, groupZ / actorcount);
         }
 
-        private async void RecookPersistantLevel()  //TO DO MAKE THIS MULTI-THREADED
+        public async void RecookPersistantLevel() 
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
                          $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +

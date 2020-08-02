@@ -15,6 +15,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
 
 namespace ME3Explorer.PackageEditor
@@ -520,66 +521,100 @@ namespace ME3Explorer.PackageEditor
         /// Copy ME2 Static art and collision into an ME3 file.
         /// By Kinkojiro
         /// </summary>
-        /// <param name="ME2Source"></param>
-        /// <param name="ME3File"></param>
-        public static bool CopyME2ArtToME3(IMEPackage ME2Source, IMEPackage ME3File)
+        /// <param name="ME2Source">Source BioP</param>
+        /// <param name="BioArtsToCopy">List of level source file locations</param>
+        /// <param name="me3Outputfolder">OutputFolder</param>
+        /// <param name="ActorsToMove">List of Actors, filename</param>
+        /// <param name="AssetsToMove">Dictionary of AssetInstancedPath, filename</param>
+        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, List<string> BioArtsToCopy = null, string me3Outputfolder = null, List<(string,string)> ActorsToMove = null, Dictionary<string,string> AssetsToMove = null)
         {
-            if(ME2Source.Game != MEGame.ME2 || ME3File.Game != MEGame.ME3)
+            //VARIABLES / VALIDATION
+            var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor" };
+            var actorclassesToSubstitue = new List<(string, string)>() { ("BioBlockingVolume", "BlockingVolume") };
+
+
+            if (ME2Source.Game != MEGame.ME2 || ME2Directory.gamePath == null)
             {
                 MessageBox.Show("Currently art can only be copied from ME2 to ME3");
                 return false;
             }
 
-            var cdlg = MessageBox.Show("This is a highly experimental method to copy the staticn art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
+            var cdlg = MessageBox.Show("This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
             if (cdlg == MessageBoxResult.Cancel)
                 return false;
 
-            if (ME2Source.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry me2levelexp && ME3File.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry me3levelexp)
+            if(me3Outputfolder == null)
             {
-                Level me2level = ObjectBinary.From<Level>(me2levelexp);
-                foreach (var actint in me2level.Actors)
+                CommonOpenFileDialog o = new CommonOpenFileDialog
                 {
-                    var actor = ME2Source.GetUExport(actint);
-                    switch(actor.ClassName)
-                    {
-                        case "BlockingVolume":  
-                        case "BioBlockingVolume": //All blocking volumes should be copied as BlockingVolume class
-                            ME3File.AddToLevelActorsIfNotThere(actor);
-                            break;
-                        case "SpotLight":
-
-                            break;
-                        case "SpotLightToggleable":
-
-                            break;
-                        case "PointLight":
-
-                            break;
-                        case "PointLightToggleable":
-
-                            break;
-                        case "SkyLight":
-
-                            break;
-                        case "HeightFog":
-
-                            break;
-                        case "LenseFlareSource":
-
-                            break;
-                        case "StaticMeshActor":
-
-                            break;
-                        default:  //All other actors should be skipped
-                            break;
-
-
-                    }
-                }
-
+                    IsFolderPicker = true,
+                    EnsurePathExists = true,
+                    Title = "Select output folder"
+                };
+                me3Outputfolder = o.FileName;
             }
 
+
+            //STAGE 1-A: Get filelist from BioP
+            if (BioArtsToCopy == null)
+            {
+                BioArtsToCopy = new List<string>();
+                var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
+                if (Path.GetFileName(ME2Source.FilePath).StartsWith("BioP_") && ME2Source.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo") is ExportEntry BioWorld)
+                {
+                    var lsks = BioWorld.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels").ToList();
+                    foreach (var l in lsks)
+                    {
+                        var lskexp = ME2Source.GetUExport(l.Value);
+                        var filename = lskexp.GetProperty<NameProperty>("PackageName");
+                        if ((filename?.Value.ToString().StartsWith("BioA") ?? false) || (filename?.Value.ToString().StartsWith("BioD") ?? false))
+                        {
+                            var filePath = Directory.EnumerateFiles(ME2Directory.gamePath, filename.Value, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains($"{filename.Value}.*") && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
+                            BioArtsToCopy.Add(filePath);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Requires an ME2 BioP to work with.");
+                    return false;
+                }
+            }
+
+
+            //STAGE 1-B: Check each file in List
+            if (ActorsToMove == null || AssetsToMove == null)
+            {
+                ActorsToMove = new List<(string, string)>();
+                AssetsToMove = new Dictionary<string, string>();
+                foreach (var pccref in BioArtsToCopy)
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(pccref);
+                    var sourcelevel = pcc.Exports.FirstOrDefault(l => l.ClassName == "Level");
+                    if (ObjectBinary.From(sourcelevel) is Level levelbin)
+                    {
+                        foreach (var act in levelbin.Actors)
+                        {
+                            var actor = pcc.GetUExport(act);
+                            if (actorclassesToMove.Contains(actor.ClassName))
+                            {
+                                ActorsToMove.Add((actor.InstancedFullPath, pccref));
+                                //Get asset references
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
             return true;
+
+
+
         }
+
+
     }
 }
