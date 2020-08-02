@@ -1551,7 +1551,7 @@ namespace ME3Explorer
 
                 Interpreter_Hexbox.UnhighlightAll();
 
-                if (CurrentLoadedExport.ClassName != "Class")
+                if (CurrentLoadedExport?.ClassName != "Class")
                 {
                     if (newSelectedItem.Property is StructProperty structProp)
                     {

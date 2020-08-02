@@ -5678,7 +5678,6 @@ namespace ME3Explorer
             if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
             {
 
-                string me3Outputfolder = null;
 
                 CommonOpenFileDialog o = new CommonOpenFileDialog
                 {
