@@ -5677,7 +5677,20 @@ namespace ME3Explorer
 
             if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
             {
-                PackageEditorExperiments.ConvertEntireLevelArtToME3(pcc);
+
+                string me3Outputfolder = null;
+
+                CommonOpenFileDialog o = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true,
+                    Title = "Select output folder"
+                };
+                if (o.ShowDialog(this) == CommonFileDialogResult.Ok)
+                {
+                    PackageEditorExperiments.ConvertEntireLevelArtToME3(pcc, o.FileName);
+                }
+
             }
             else
             {

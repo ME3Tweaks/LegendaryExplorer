@@ -522,16 +522,16 @@ namespace ME3Explorer.PackageEditor
         /// By Kinkojiro
         /// </summary>
         /// <param name="ME2Source">Source BioP</param>
-        /// <param name="BioArtsToCopy">List of level source file locations</param>
         /// <param name="me3Outputfolder">OutputFolder</param>
+        /// <param name="BioArtsToCopy">List of level source file locations</param>
         /// <param name="ActorsToMove">List of Actors, filename</param>
         /// <param name="AssetsToMove">Dictionary of AssetInstancedPath, filename</param>
-        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, List<string> BioArtsToCopy = null, string me3Outputfolder = null, List<(string,string)> ActorsToMove = null, Dictionary<string,string> AssetsToMove = null)
+        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, string me3Outputfolder, List<string> BioArtsToCopy = null, List<(string,string)> ActorsToMove = null, Dictionary<string,string> AssetsToMove = null)
         {
             //VARIABLES / VALIDATION
-            var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor" };
+            var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream" };
             var actorclassesToSubstitue = new List<(string, string)>() { ("BioBlockingVolume", "BlockingVolume") };
-
+            string gamelevelname = null;
 
             if (ME2Source.Game != MEGame.ME2 || ME2Directory.gamePath == null)
             {
@@ -543,33 +543,24 @@ namespace ME3Explorer.PackageEditor
             if (cdlg == MessageBoxResult.Cancel)
                 return false;
 
-            if(me3Outputfolder == null)
-            {
-                CommonOpenFileDialog o = new CommonOpenFileDialog
-                {
-                    IsFolderPicker = true,
-                    EnsurePathExists = true,
-                    Title = "Select output folder"
-                };
-                me3Outputfolder = o.FileName;
-            }
-
-
+            
             //STAGE 1-A: Get filelist from BioP
             if (BioArtsToCopy == null)
             {
                 BioArtsToCopy = new List<string>();
                 var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
-                if (Path.GetFileName(ME2Source.FilePath).StartsWith("BioP_") && ME2Source.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo") is ExportEntry BioWorld)
+                if (Path.GetFileName(ME2Source.FilePath).ToLowerInvariant().StartsWith("biop_") && ME2Source.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo") is ExportEntry BioWorld)
                 {
+                    gamelevelname = Path.GetFileNameWithoutExtension(ME2Source.FilePath);
+                    gamelevelname = gamelevelname.Substring(5, gamelevelname.Length - 5);
                     var lsks = BioWorld.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels").ToList();
                     foreach (var l in lsks)
                     {
                         var lskexp = ME2Source.GetUExport(l.Value);
                         var filename = lskexp.GetProperty<NameProperty>("PackageName");
-                        if ((filename?.Value.ToString().StartsWith("BioA") ?? false) || (filename?.Value.ToString().StartsWith("BioD") ?? false))
+                        if ((filename?.Value.ToString().ToLowerInvariant().StartsWith("bioa") ?? false) || (filename?.Value.ToString().ToLowerInvariant().StartsWith("biod") ?? false))
                         {
-                            var filePath = Directory.EnumerateFiles(ME2Directory.gamePath, filename.Value, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains($"{filename.Value}.*") && supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
+                            var filePath = Directory.GetFiles(ME2Directory.gamePath, $"{filename.Value}.pcc", SearchOption.AllDirectories).FirstOrDefault();
                             BioArtsToCopy.Add(filePath);
                         }
                     }
@@ -595,6 +586,8 @@ namespace ME3Explorer.PackageEditor
                     {
                         foreach (var act in levelbin.Actors)
                         {
+                            if (act < 1)
+                                continue;
                             var actor = pcc.GetUExport(act);
                             if (actorclassesToMove.Contains(actor.ClassName))
                             {
