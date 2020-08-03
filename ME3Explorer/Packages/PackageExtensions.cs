@@ -294,14 +294,13 @@ namespace ME3Explorer.Packages
             Stack<IEntry> entriesToEvaluate = new Stack<IEntry>();
             HashSet<IEntry> entriesEvaluated = new HashSet<IEntry>();
             HashSet<IEntry> entriesReferenced = new HashSet<IEntry>();
-            ExportEntry levelExport = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level"); 
             if (startatexport != null) //Start at object
             {
                 entriesToEvaluate.Push(startatexport);
                 entriesReferenced.Add(startatexport);
-                entriesEvaluated.Add(levelExport);  //Do not parse the level if picking up actors
+                entriesEvaluated.Add(pcc.GetUExport(startatexport.idxLink));  //Do not go up the chain if parsing an export
             }
-            else if (levelExport != null) //Evaluate level with only actors, model+components, sequences and level class being processed.
+            else if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport) //Evaluate level with only actors, model+components, sequences and level class being processed.
             {
                 level = ObjectBinary.From<Level>(levelExport);
                 entriesEvaluated.Add(null); //null stops future evaluations
@@ -390,7 +389,7 @@ namespace ME3Explorer.Packages
                     {
                         foreach (var kvp in exp.ComponentMap)
                         {
-                            theserefs.Add(pcc.GetEntry(kvp.Value));
+                            //theserefs.Add(pcc.GetEntry(kvp.Value));  //THIS IS INCORRECT SHOULD NOT BE ON UINDEX
                         }
                     }
 

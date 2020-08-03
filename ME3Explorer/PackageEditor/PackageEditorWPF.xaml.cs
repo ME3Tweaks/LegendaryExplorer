@@ -5715,7 +5715,7 @@ namespace ME3Explorer
             }
         }
 
-        private async void CopyME2LeveltoME3(object sender, RoutedEventArgs e)
+        private void CopyME2LeveltoME3(object sender, RoutedEventArgs e)
         {
 
             if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
@@ -5735,9 +5735,10 @@ namespace ME3Explorer
                 {
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.ConvertEntireLevelArtToME3(pcc, o.FileName)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.ParseLevelAssets(pcc, o.FileName)).ContinueWithOnUIThread(prevTask =>
                     {
-
+                        IsBusy = false;
+                        MessageBox.Show("Done");
                     });
                 }
 
@@ -5746,8 +5747,8 @@ namespace ME3Explorer
             {
                 MessageBox.Show(this, "Can only convert Mass Effect ME2 to ME3!");
             }
+
+
         }
-
-
     }
 }

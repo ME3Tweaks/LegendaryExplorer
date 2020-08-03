@@ -16,6 +16,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using SharpDX;
 using SQLite.Extensions;
 
@@ -527,7 +528,7 @@ namespace ME3Explorer.PackageEditor
         /// <param name="BioArtsToCopy">List of level source file locations</param>
         /// <param name="ActorsToMove">List of Actors, filename</param>
         /// <param name="AssetsToMove">Dictionary of AssetInstancedPath, filename</param>
-        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, string me3Outputfolder, List<string> BioArtsToCopy = null, List<(string,string)> ActorsToMove = null, Dictionary<string,(string, bool)> AssetsToMove = null)
+        public async static Task<bool> ParseLevelAssets(IMEPackage ME2Source, string me3Outputfolder, List<string> BioArtsToCopy = null, List<(string,string)> ActorsToMove = null, Dictionary<string,(string, bool)> AssetsToMove = null)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream" };
@@ -612,7 +613,27 @@ namespace ME3Explorer.PackageEditor
                 }
             }
 
+            //Create ME2TempAssetsFile
+            var ME2TempFileName = Path.Combine(me3Outputfolder, $"{gamelevelname}_TempAssetsME2.pcc");
+            MEPackageHandler.CreateAndSavePackage(ME2TempFileName, MEGame.ME2);
 
+            //CopyAssets
+
+
+            //Export Settings to JSON
+            var srlname = JsonConvert.SerializeObject(gamelevelname);
+            var srlfiles = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(BioArtsToCopy));
+            var srlactors = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(ActorsToMove));
+            var srlassets = Task<string>.Factory.StartNew(() => JsonConvert.SerializeObject(AssetsToMove));
+
+            await Task.WhenAll(srlfiles, srlactors, srlassets);
+            using (StreamWriter writer = File.CreateText(Path.Combine(me3Outputfolder, $"{gamelevelname}_Transfer.json")))
+            {
+                writer.Write(srlname);
+                await Task.Run(() => writer.Write(srlfiles.Result));
+                await Task.Run(() => writer.Write(srlactors.Result));
+                await Task.Run(() => writer.Write(srlassets.Result));
+            }
 
             return true;
 
