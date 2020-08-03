@@ -12,7 +12,7 @@ namespace ME3Explorer.Packages
 {
     public static class MEPackageHandler
     {
-        static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
+        static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>(StringComparer.OrdinalIgnoreCase);
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
@@ -270,6 +270,27 @@ namespace ME3Explorer.Packages
             foreach (KeyValuePair<string, IMEPackage> package in openPackages)
             {
                 Debug.WriteLine(package.Key);
+            }
+        }
+
+        //useful for scanning operations, where a common set of packages are going to be referenced repeatedly
+        public static DisposableCollection<IMEPackage> OpenMEPackages(IEnumerable<string> filePaths)
+        {
+            return new DisposableCollection<IMEPackage>(filePaths.Select(filePath => OpenMEPackage(filePath)));
+        }
+    }
+
+    public class DisposableCollection<T> : List<T>, IDisposable where T : IDisposable
+    {
+        public DisposableCollection() : base(){ }
+        public DisposableCollection(IEnumerable<T> collection) : base(collection) { }
+        public DisposableCollection(int capacity) : base(capacity) { }
+
+        public void Dispose()
+        {
+            foreach (T disposable in this)
+            {
+                disposable?.Dispose();
             }
         }
     }

@@ -64,8 +64,8 @@ namespace ME3Explorer
             }
 
             if (game == MEGame.ME1) cachedME1LoadedFiles = loadedFiles;
-            if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
-            if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
+            else if (game == MEGame.ME2) cachedME2LoadedFiles = loadedFiles;
+            else if (game == MEGame.ME3) cachedME3LoadedFiles = loadedFiles;
 
             return loadedFiles;
         }

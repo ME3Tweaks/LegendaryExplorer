@@ -4289,7 +4289,7 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).SkipWhile(path => !path.EndsWith("BioA_CineLab000.pcc")).Skip(1);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<ListDialog.EntryItem>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4301,10 +4301,16 @@ namespace ME3Explorer
             unkOpcodes.Add(1);
             var unkOpcodesInfo = unkOpcodes.ToDictionary(i => i, i => new OpcodeInfo());
 
+            var extraInfo = new HashSet<string>();
+
             IsBusy = true;
             BusyText = "Scanning";
             Task.Run(() =>
             {
+                //preload base files for faster scanning
+                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.ME3).Select(f => Path.Combine(ME3Directory.cookedPath, f)));
+                baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "BIOP_MP_COMMON.pcc")));
+
                 foreach (string filePath in filePaths)
                 {
                     //ScanShaderCache(filePath);
@@ -4314,16 +4320,18 @@ namespace ME3Explorer
                     //ScanLevel(filePath);
                     //if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
-                    ScanScripts2(filePath);
-                    if (interestingExports.Count > 0)
-                    {
-                        break;
-                    }
+                    //ScanScripts2(filePath);
+                    //if (interestingExports.Count > 0)
+                    //{
+                    //    break;
+                    //}
+                    if (resolveImports(filePath)) break;
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
                 IsBusy = false;
-                var listDlg = new ListDialog(interestingExports.ToList(), "Interesting Exports", "", this)
+                interestingExports.Add(new ListDialog.EntryItem(null, string.Join("\n", extraInfo)));
+                var listDlg = new ListDialog(interestingExports, "Interesting Exports", "", this)
                 {
                     DoubleClickEntryHandler = entryItem =>
                     {
@@ -4577,6 +4585,41 @@ namespace ME3Explorer
                         return;
                     }
                 }
+            }
+
+            bool resolveImports(string filePath)
+            {
+                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+
+                //pre-load associated files
+                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3);
+                using var associatedFiles = MEPackageHandler.OpenMEPackages(EntryImporter.GetPossibleAssociatedFiles(pcc)
+                                                                                         .Select(fileName => gameFiles.TryGetValue(fileName, out string path) ? path : null).Where(File.Exists));
+
+                var filesSafeToImportFrom = EntryImporter.FilesSafeToImportFrom(pcc.Game).Select(Path.GetFileNameWithoutExtension).ToList();
+                Debug.WriteLine(filePath);
+                foreach (ImportEntry import in pcc.Imports.Where(imp => !filesSafeToImportFrom.Contains(imp.FullPath.Split('.')[0] )))
+                {
+                    try
+                    {
+                        if (EntryImporter.ResolveImport(import) is ExportEntry exp)
+                        {
+                            extraInfo.Add(Path.GetFileName(exp.FileRef.FilePath));
+                        }
+                        else
+                        {
+                            interestingExports.Add(import);
+                            return true;
+                        }
+                        
+                    }
+                    catch (Exception exception)
+                    {
+                        interestingExports.Add(new ListDialog.EntryItem(import, $"{$"#{import.UIndex}",-9} {import.FileRef.FilePath}\n{exception}"));
+                        return true;
+                    }
+                }
+                return false;
             }
 
             #endregion

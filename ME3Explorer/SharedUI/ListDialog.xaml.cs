@@ -95,6 +95,11 @@ namespace ME3Explorer.SharedUI
             {
                 return new EntryItem(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
             }
+
+            public static implicit operator EntryItem(ImportEntry entry)
+            {
+                return new EntryItem(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+            }
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
