@@ -625,7 +625,10 @@ namespace ME3Explorer
 
         private static readonly string[] me2FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup_INT.pcc" };
 
-        private static readonly string[] me3FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup.pcc", "GFxUI.pcc", "GameFramework.pcc" };
+        private static readonly string[] me3FilesSafeToImportFrom =
+        {
+            "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup.pcc", "GFxUI.pcc", "GameFramework.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
+        };
 
         public static bool IsSafeToImportFrom(string path, MEGame game)
         {
@@ -633,7 +636,7 @@ namespace ME3Explorer
             return FilesSafeToImportFrom(game).Any(f => fileName == f);
         }
 
-        private static string[] FilesSafeToImportFrom(MEGame game) =>
+        public static string[] FilesSafeToImportFrom(MEGame game) =>
             game switch
             {
                 MEGame.ME1 => me1FilesSafeToImportFrom,
@@ -666,85 +669,17 @@ namespace ME3Explorer
             // Next, split the filename by underscores
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
             string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
-            var packagesToCheck = new List<string>();
-
-            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
-            if (isBioXfile)
-            {
-                string bioXNextFileLookup(string filename)
-                {
-                    //Lookup parents
-                    var bioType = filename[3];
-                    string[] parts = filename.Split('_');
-                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
-                    {
-                        var levelName = parts[1];
-                        switch (bioType)
-                        {
-                            case 'a' when parts.Length > 2:
-                                return $"bioa_{levelName}";
-                            case 'd' when parts.Length > 2:
-                                return $"biod_{levelName}";
-                            case 's' when parts.Length > 2:
-                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
-                            case 'a' when parts.Length == 2:
-                            case 'd' when parts.Length == 2:
-                            case 's' when parts.Length == 2:
-                                return $"biop_{levelName}";
-                        }
-                    }
-
-                    return null;
-                }
-
-                packagesToCheck.Add(filenameWithoutExtension + "_LOC_INT"); //todo: support users setting preferred language of game files
-                string nextfile = bioXNextFileLookup(filenameWithoutExtension);
-                while (nextfile != null)
-                {
-                    packagesToCheck.Add(nextfile);
-                    packagesToCheck.Add(nextfile + "_LOC_INT"); //todo: support users setting preferred language of game files
-                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
-                }
-            }
-
-            var gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
-            List<string> additionalFiles = new List<string>();
-            var startups = new List<string>();
-            if (entry.Game == MEGame.ME2)
-            {
-                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
-            }
-            else
-            {
-                startups.AddRange(gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase))); //me2 this will unfortunately include the main startup file
-            }
-            packagesToCheck.AddRange(startups.Select(x => Path.GetFileNameWithoutExtension(gameFiles[x]))); //add startup files
-
-            foreach (var fileName in FilesSafeToImportFrom(entry.Game))
-            {
-                if (gameFiles.TryGetValue(fileName, out var efPath))
-                {
-                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
-                }
-            }
-
-            if (entry.Game == MEGame.ME3)
-            {
-                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-                {
-                    packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
-                }
-            }
+            var filesToCheck = new List<string>();
+            CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
 
             // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
-            if (!packagesToCheck.Contains(entry.ObjectName) && gameFiles.TryGetValue(entry.ObjectName + ".pcc", out var efxPath)) //todo: support ME1 extensions
+            string upkOrPcc = entry.Game == MEGame.ME1 ? ".upk" : ".pcc";
+            if (gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath))
             {
-                packagesToCheck.Add(Path.GetFileNameWithoutExtension(efxPath));
+                filesToCheck.Add(Path.GetFileName(efxPath));
             }
 
-            // Finally, let's see if there is same-named top level package folder file. This is a crapshoot in ME2/3 but is how it works in ME1
-            string topLevel = null;
+            // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
             IEntry p = entry.Parent;
             if (p != null)
             {
@@ -755,17 +690,82 @@ namespace ME3Explorer
 
                 if (p.ClassName == "Package")
                 {
-                    if (!packagesToCheck.Contains(p.ObjectName) && gameFiles.TryGetValue(p.ObjectName + ".pcc", out var efPath)) //todo: support ME1 extensions
+                    if (gameFiles.TryGetValue($"{p.ObjectName}{upkOrPcc}", out var efPath) && !filesToCheck.Contains(efxPath))
                     {
-                        packagesToCheck.Add(Path.GetFileNameWithoutExtension(efPath));
+                        filesToCheck.Add(Path.GetFileName(efPath));
+                    }
+                    else if (entry.Game == MEGame.ME1)
+                    {
+                        if (gameFiles.TryGetValue(p.ObjectName + ".u", out var path) && !filesToCheck.Contains(efxPath))
+                        {
+                            filesToCheck.Add(Path.GetFileName(path));
+                        }
                     }
                 }
             }
 
+            //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
+            filesToCheck.AddRange(GetPossibleAssociatedFiles(entry.FileRef));
+
+
+            if (entry.Game == MEGame.ME3)
+            {
+                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+                {
+                    filesToCheck.Add(Path.GetFileName(efPath));
+                }
+            }
+
+
+            //add base definition files that are always loaded (Core, Engine, etc.)
+            foreach (var fileName in FilesSafeToImportFrom(entry.Game))
+            {
+                if (gameFiles.TryGetValue(fileName, out var efPath))
+                {
+                    filesToCheck.Add(Path.GetFileName(efPath));
+                }
+            }
+
+            //add startup files (always loaded)
+            IEnumerable<string> startups;
+            if (entry.Game == MEGame.ME2)
+            {
+                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
+            }
+            else
+            {
+                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
+            }
+
+            foreach (var fileName in filesToCheck.Concat(startups.Select(x => Path.GetFileName(gameFiles[x]))))
+            {
+                if (gameFiles.TryGetValue(fileName, out var fullgamepath) && File.Exists(fullgamepath))
+                {
+                    var export = containsImportedExport(fullgamepath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+
+                //Try local.
+                var localPath = Path.Combine(containingDirectory, fileName);
+                if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(localPath))
+                {
+                    var export = containsImportedExport(localPath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+                }
+            }
+            return null;
+
             //Perform check and lookup
             ExportEntry containsImportedExport(string packagePath)
             {
-                Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
+                //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
                 using var package = MEPackageHandler.OpenMEPackage(packagePath);
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
@@ -782,32 +782,53 @@ namespace ME3Explorer
 
                 return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
             }
+        }
 
-            foreach (var fname in packagesToCheck)
+        public static List<string> GetPossibleAssociatedFiles(IMEPackage package)
+        {
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
+            var associatedFiles = new List<string>();
+            string bioFileExt = package.Game == MEGame.ME1 ? ".sfm" : ".pcc";
+            associatedFiles.Add($"{filenameWithoutExtension}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+            var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
+            if (isBioXfile)
             {
-                var fullname = fname + ".pcc"; //pcc only for now.
-
-                //Try local.
-                var localPath = Path.Combine(containingDirectory, fullname);
-                if (File.Exists(localPath))
+                string bioXNextFileLookup(string filename)
                 {
-                    var export = containsImportedExport(localPath);
-                    if (export != null)
+                    //Lookup parents
+                    var bioType = filename[3];
+                    string[] parts = filename.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
                     {
-                        return export;
+                        var levelName = parts[1];
+                        switch (bioType)
+                        {
+                            case 'a' when parts.Length > 2:
+                                return $"bioa_{levelName}{bioFileExt}";
+                            case 'd' when parts.Length > 2:
+                                return $"biod_{levelName}{bioFileExt}";
+                            case 's' when parts.Length > 2:
+                                return $"bios_{levelName}{bioFileExt}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
+                            case 'a' when parts.Length == 2:
+                            case 'd' when parts.Length == 2:
+                            case 's' when parts.Length == 2:
+                                return $"biop_{levelName}{bioFileExt}";
+                        }
                     }
+
+                    return null;
                 }
 
-                if (gameFiles.TryGetValue(fullname, out var fullgamepath) && !fullgamepath.Equals(localPath, StringComparison.InvariantCultureIgnoreCase) && File.Exists(fullgamepath))
+                string nextfile = bioXNextFileLookup(filenameWithoutExtension);
+                while (nextfile != null)
                 {
-                    var export = containsImportedExport(fullgamepath);
-                    if (export != null)
-                    {
-                        return export;
-                    }
+                    associatedFiles.Add(nextfile);
+                    associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
                 }
             }
-            return null;
+
+            return associatedFiles;
         }
     }
 }
