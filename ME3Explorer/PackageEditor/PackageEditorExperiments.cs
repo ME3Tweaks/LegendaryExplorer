@@ -17,6 +17,7 @@ using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
+using SQLite.Extensions;
 
 namespace ME3Explorer.PackageEditor
 {
@@ -526,7 +527,7 @@ namespace ME3Explorer.PackageEditor
         /// <param name="BioArtsToCopy">List of level source file locations</param>
         /// <param name="ActorsToMove">List of Actors, filename</param>
         /// <param name="AssetsToMove">Dictionary of AssetInstancedPath, filename</param>
-        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, string me3Outputfolder, List<string> BioArtsToCopy = null, List<(string,string)> ActorsToMove = null, Dictionary<string,string> AssetsToMove = null)
+        public static bool ConvertEntireLevelArtToME3(IMEPackage ME2Source, string me3Outputfolder, List<string> BioArtsToCopy = null, List<(string,string)> ActorsToMove = null, Dictionary<string,(string, bool)> AssetsToMove = null)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream" };
@@ -538,10 +539,6 @@ namespace ME3Explorer.PackageEditor
                 MessageBox.Show("Currently art can only be copied from ME2 to ME3");
                 return false;
             }
-
-            var cdlg = MessageBox.Show("This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
-            if (cdlg == MessageBoxResult.Cancel)
-                return false;
 
             
             //STAGE 1-A: Get filelist from BioP
@@ -577,7 +574,7 @@ namespace ME3Explorer.PackageEditor
             if (ActorsToMove == null || AssetsToMove == null)
             {
                 ActorsToMove = new List<(string, string)>();
-                AssetsToMove = new Dictionary<string, string>();
+                AssetsToMove = new Dictionary<string, (string, bool)>();
                 foreach (var pccref in BioArtsToCopy)
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(pccref);
@@ -593,7 +590,22 @@ namespace ME3Explorer.PackageEditor
                             {
                                 ActorsToMove.Add((actor.InstancedFullPath, pccref));
                                 //Get asset references
-
+                                HashSet<int> actorrefs = pcc.GetUnReferencedEntries(true, actor);
+                                foreach(var r in actorrefs)
+                                {
+                                    var objref = pcc.GetEntry(r);
+                                    if (objref != null)
+                                    {
+                                        if (objref.InstancedFullPath.Contains("PersistentLevel"))  //remove components of actors
+                                            continue;
+                                        bool isimport = r < 0;
+                                        var added = AssetsToMove.TryAdd<string, (string, bool)>(objref.InstancedFullPath, (pcc.FilePath, isimport));
+                                        if (!added && !isimport && AssetsToMove[objref.InstancedFullPath].Item2) //Replace  imports with exports if possible
+                                        {
+                                            AssetsToMove[objref.InstancedFullPath] = (pcc.FilePath, isimport);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

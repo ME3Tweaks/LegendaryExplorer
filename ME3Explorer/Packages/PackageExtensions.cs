@@ -287,14 +287,21 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static HashSet<int> GetUnReferencedEntries(this IMEPackage pcc, bool getreferenced = false)
+        public static HashSet<int> GetUnReferencedEntries(this IMEPackage pcc, bool getreferenced = false, ExportEntry startatexport = null)
         {
             var result = new HashSet<int>();
             Level level = null;
             Stack<IEntry> entriesToEvaluate = new Stack<IEntry>();
             HashSet<IEntry> entriesEvaluated = new HashSet<IEntry>();
             HashSet<IEntry> entriesReferenced = new HashSet<IEntry>();
-            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport) //Evaluate level with only actors, model+components, sequences and level class being processed.
+            ExportEntry levelExport = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level"); 
+            if (startatexport != null) //Start at object
+            {
+                entriesToEvaluate.Push(startatexport);
+                entriesReferenced.Add(startatexport);
+                entriesEvaluated.Add(levelExport);  //Do not parse the level if picking up actors
+            }
+            else if (levelExport != null) //Evaluate level with only actors, model+components, sequences and level class being processed.
             {
                 level = ObjectBinary.From<Level>(levelExport);
                 entriesEvaluated.Add(null); //null stops future evaluations
