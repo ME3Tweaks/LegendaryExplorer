@@ -273,7 +273,8 @@
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Replace all references to selection" Click="ReplaceReferenceLinks"/>
-                        <MenuItem Header="Export ME2 game level's art to ME3 packages" Click="CopyME2LeveltoME3"/>
+                        <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
+                        <MenuItem Header="Recook a game level transfer from existing files" Click="RestartTransferFromJSON"/>
                     </MenuItem>
 
 

@@ -5715,10 +5715,10 @@ namespace ME3Explorer
             }
         }
 
-        private void CopyME2LeveltoME3(object sender, RoutedEventArgs e)
+        private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
 
-            if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
+            if (Pcc is MEPackage pcc && Path.GetFileNameWithoutExtension(pcc.FilePath).StartsWith("BioP") && pcc.Game == MEGame.ME2)
             {
                 var cdlg = MessageBox.Show("This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
                 if (cdlg == MessageBoxResult.Cancel)
@@ -5735,7 +5735,41 @@ namespace ME3Explorer
                 {
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.ParseLevelAssets(pcc, o.FileName)).ContinueWithOnUIThread(prevTask =>
+                    var success = Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName)).ContinueWithOnUIThread(prevTask =>
+                    {
+                        IsBusy = false;
+                        //if(success)
+                            MessageBox.Show("Done");
+                    });
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(this, "Load a level's BioP file to start the transfer.\nCurrently can only convert from ME2 to ME3.");
+            }
+
+
+        }
+
+        private void RestartTransferFromJSON(object sender, RoutedEventArgs e)
+        {
+
+            if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
+            {
+                CommonOpenFileDialog j = new CommonOpenFileDialog
+                {
+                    DefaultExtension = ".json",
+                    EnsurePathExists = true,
+                    Title = "Select JSON with transfer details"
+                };
+                j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
+                if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
+                {
+
+                    BusyText = "Recook level files";
+                    IsBusy = true;
+                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName)).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
                         MessageBox.Show("Done");
