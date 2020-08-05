@@ -522,6 +522,29 @@ namespace ME3Explorer.PackageEditor
             }
         }
 
+        public static void SetAllWwiseEventDurations(IMEPackage Pcc)
+        {
+            var wwevents = Pcc.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+            foreach (var wwevent in wwevents)
+            {
+                var eventbin = wwevent.GetBinaryData<WwiseEvent>();
+                if(!eventbin.Links.IsEmpty() && !eventbin.Links[0].WwiseStreams.IsEmpty())
+                {
+                    var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
+                    var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
+                    if(streambin != null)
+                    {
+                        var duration = streambin.GetSoundLength();
+                        var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
+                        if (durtnMS != null && duration != null)
+                        {
+                            durtnMS.Value = (float)duration.Value.TotalMilliseconds;
+                            wwevent.WriteProperty(durtnMS);
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Copy ME2 Static art and collision into an ME3 file.

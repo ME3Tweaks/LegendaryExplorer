@@ -5714,7 +5714,16 @@ namespace ME3Explorer
                 dlg.Show();
             }
         }
-
+        private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
+        {
+            BusyText = "Scanning audio and updating events";
+            IsBusy = true;
+            Task.Run(() => PackageEditorExperiments.SetAllWwiseEventDurations(Pcc)).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                MessageBox.Show("Wwiseevents updated.");
+            });
+        }
 
         public void AutoEnumerateClassNetIndex(object sender, RoutedEventArgs e)
         {
@@ -5730,7 +5739,7 @@ namespace ME3Explorer
 
             void EnumerateChildNetIndexes(int child)
             {
-                if (child > 1 && child <= Pcc.ExportCount)
+                if (child > 0 && child <= Pcc.ExportCount)
                 {
                     var childexp = Pcc.GetUExport(child);
                     baseindex--;
