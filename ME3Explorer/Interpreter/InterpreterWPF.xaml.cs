@@ -1543,7 +1543,7 @@ namespace ME3Explorer
 
         private void UpdateHexboxPosition(UPropertyTreeViewEntry newSelectedItem)
         {
-            if (newSelectedItem?.Property != null)
+            if (newSelectedItem?.Property != null && Interpreter_Hexbox != null)
             {
                 var hexPos = newSelectedItem.Property.ValueOffset;
                 Interpreter_Hexbox.SelectionStart = hexPos;
