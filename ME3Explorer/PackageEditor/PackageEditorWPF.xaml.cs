@@ -5760,7 +5760,10 @@ namespace ME3Explorer
                 return;
             }
         }
-
+        void SetBusyText(string s)
+        {
+            BusyText = s;
+        }
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
 
@@ -5781,7 +5784,7 @@ namespace ME3Explorer
                 {
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, BusyText)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
                         MessageBox.Show("Done");
@@ -5813,7 +5816,7 @@ namespace ME3Explorer
 
                     BusyText = "Recook level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, BusyText)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
                         MessageBox.Show("Done");

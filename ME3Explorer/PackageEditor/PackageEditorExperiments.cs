@@ -557,12 +557,12 @@ namespace ME3Explorer.PackageEditor
         /// <param name="ActorsToMove">Dicitionary: key Actors, value filename, entry uid</param>
         /// <param name="AssetsToMove">Dictionary key: AssetInstancedPath, value filename, isimport, entry uid</param>
         /// <param name="fromreload">is reloaded json</param>
-        public async static Task<bool> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string me3Outputfolder, string busytext, LevelConversionData conversionData = null, bool fromreload = false)
+        public async static Task<bool> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string me3Outputfolder, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream" };
             var actorclassesToSubstitue = new List<(string, string)>() { ("BioBlockingVolume", "BlockingVolume") };
-
+            string busytext = null;
             if (BioPSource.Game != MEGame.ME2 || ME2Directory.gamePath == null)
             {
                 MessageBox.Show("Currently art can only be copied from ME2 to ME3");
@@ -574,6 +574,7 @@ namespace ME3Explorer.PackageEditor
             if (!fromreload)
             {
                 busytext = "Collating level files...";
+                callbackAction?.Invoke(busytext);
                 conversionData = new LevelConversionData(Game, BioPSource.Game, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int)>());
                 var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
                 if (Path.GetFileName(BioPSource.FilePath).ToLowerInvariant().StartsWith("biop_") && BioPSource.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo") is ExportEntry BioWorld)
@@ -607,6 +608,7 @@ namespace ME3Explorer.PackageEditor
 
                 //STAGE 1-B: Check each file in List
                 busytext = "Collating actors and assets...";
+                callbackAction?.Invoke(busytext);
                 Parallel.ForEach(conversionData.FilesToCopy, (pccref) => {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(pccref.Value);
                     var sourcelevel = pcc.Exports.FirstOrDefault(l => l.ClassName == "Level");
@@ -659,6 +661,7 @@ namespace ME3Explorer.PackageEditor
             if (!fromreload)
             {
                 busytext = "Copying assets to temporary file...";
+                callbackAction?.Invoke(busytext);
                 //Create ME2TempAssetsFile & ME3TempAssetsFile
                 MEPackageHandler.CreateAndSavePackage(SRCTempFileName, conversionData.SourceGame);
 
@@ -678,6 +681,7 @@ namespace ME3Explorer.PackageEditor
 
                 //Export Settings to JSON
                 busytext = "Exporting settings...";
+                callbackAction?.Invoke(busytext);
                 var srldata = JsonConvert.SerializeObject(conversionData);
                 using (StreamWriter writer = File.CreateText(Path.Combine(me3Outputfolder, $"{conversionData.GameLevelName}_Transfer.json")))
                 {
@@ -687,6 +691,7 @@ namespace ME3Explorer.PackageEditor
 
             //Create cooked files and populate with actors/assets
             busytext = "Recooking actors and assets out to individual files...";
+            callbackAction?.Invoke(busytext);
             Parallel.ForEach(conversionData.FilesToCopy, (pccref) =>
             {
                 var targetfile = Path.Combine(me3Outputfolder, Path.GetFileName(pccref.Value));
@@ -731,6 +736,8 @@ namespace ME3Explorer.PackageEditor
                     var sourceactors = conversionData.ActorsToMove.Where(a => a.Value.Item1 == pccref.Key).ToList();
                     foreach(var sactor in sourceactors)
                     {
+                        //Convert actor if in conversion list.
+
                         var sactorxp = donor.GetEntry(sactor.Value.Item2);
                         if (sactorxp != null)
                         {
@@ -750,7 +757,7 @@ namespace ME3Explorer.PackageEditor
 
         }
 
-        public async static Task<bool> RecookTransferLevelsFromJSON(string jsonfile, string busytext)
+        public async static Task<bool> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction)
         {
             var OutputDir = Path.GetDirectoryName(jsonfile);
             var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int)>());
@@ -778,7 +785,7 @@ namespace ME3Explorer.PackageEditor
             }
 
 
-            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, busytext, conversionData, true);
+            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, callbackAction, conversionData, true);
         }
 
         public class LevelConversionData
