@@ -5715,6 +5715,43 @@ namespace ME3Explorer
             }
         }
 
+
+        public void AutoEnumerateClassNetIndex(object sender, RoutedEventArgs e)
+        {
+            int baseindex = 0;
+            if (SelectedItem.Entry is ExportEntry classexp && classexp.IsClass)
+            {
+                baseindex = classexp.NetIndex;
+                var classbin = classexp.GetBinaryData<UClass>();
+                ExportEntry defaultxp = Pcc.GetUExport(classbin.Defaults);
+                defaultxp.NetIndex = baseindex + 1;
+                EnumerateChildNetIndexes(classbin.Children);
+            }
+
+            void EnumerateChildNetIndexes(int child)
+            {
+                if (child > 1 && child <= Pcc.ExportCount)
+                {
+                    var childexp = Pcc.GetUExport(child);
+                    baseindex--;
+                    childexp.NetIndex = baseindex;
+                    var childbin = ObjectBinary.From(childexp);
+                    if (childbin is UFunction funcbin)
+                    {
+                        EnumerateChildNetIndexes(funcbin.Children);
+                        EnumerateChildNetIndexes(funcbin.Next);
+                    }
+                    else if (childbin is UProperty propbin)
+                    {
+
+                        EnumerateChildNetIndexes(propbin.Next);
+                    }
+                }
+
+                return;
+            }
+        }
+
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
 
@@ -5735,12 +5772,12 @@ namespace ME3Explorer
                 {
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    var success = Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, BusyText)).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
-                        //if(success)
-                            MessageBox.Show("Done");
+                        MessageBox.Show("Done");
                     });
+
                 }
 
             }
@@ -5748,8 +5785,6 @@ namespace ME3Explorer
             {
                 MessageBox.Show(this, "Load a level's BioP file to start the transfer.\nCurrently can only convert from ME2 to ME3.");
             }
-
-
         }
 
         private void RestartTransferFromJSON(object sender, RoutedEventArgs e)
@@ -5769,7 +5804,7 @@ namespace ME3Explorer
 
                     BusyText = "Recook level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, BusyText)).ContinueWithOnUIThread(prevTask =>
                     {
                         IsBusy = false;
                         MessageBox.Show("Done");
