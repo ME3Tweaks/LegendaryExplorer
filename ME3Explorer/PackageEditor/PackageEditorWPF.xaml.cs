@@ -5760,10 +5760,7 @@ namespace ME3Explorer
                 return;
             }
         }
-        void SetBusyText(string s)
-        {
-            BusyText = s;
-        }
+
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
 

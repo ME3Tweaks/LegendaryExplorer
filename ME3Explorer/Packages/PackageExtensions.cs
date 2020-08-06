@@ -287,7 +287,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public static HashSet<int> GetUnReferencedEntries(this IMEPackage pcc, bool getreferenced = false, ExportEntry startatexport = null)
+        public static HashSet<int> GetReferencedEntries(this IMEPackage pcc, bool getreferenced = true, bool getactorrefs = false, ExportEntry startatexport = null)
         {
             var result = new HashSet<int>();
             Level level = null;
@@ -356,7 +356,7 @@ namespace ME3Explorer.Packages
                 var ent = entriesToEvaluate.Pop();
                 try
                 {
-                    if (entriesEvaluated.Contains(ent) || (ent?.UIndex ?? 0) == 0)
+                    if (entriesEvaluated.Contains(ent) || (ent?.UIndex ?? 0) == 0 || (getactorrefs && !ent.InstancedFullPath.Contains("PersistentLevel")))
                     {
                         continue;
                     }

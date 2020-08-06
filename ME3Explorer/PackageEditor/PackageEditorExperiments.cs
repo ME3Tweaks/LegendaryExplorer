@@ -602,7 +602,7 @@ namespace ME3Explorer.PackageEditor
                 }
                 else
                 {
-                    MessageBox.Show("Requires an ME2 BioP to work with.");
+                    MessageBox.Show("Requires an BioP to work with.");
                     return false;
                 }
 
@@ -623,7 +623,7 @@ namespace ME3Explorer.PackageEditor
                             {
                                 conversionData.ActorsToMove.TryAdd($"{pccref.Key}.{actor.InstancedFullPath}", (pccref.Key, act));
                                 //Get asset references
-                                HashSet<int> actorrefs = pcc.GetUnReferencedEntries(true, actor);
+                                HashSet<int> actorrefs = pcc.GetReferencedEntries(true, true, actor);
                                 foreach (var r in actorrefs)
                                 {
                                     var objref = pcc.GetEntry(r);
@@ -631,7 +631,10 @@ namespace ME3Explorer.PackageEditor
                                     {
                                         if (objref.InstancedFullPath.Contains("PersistentLevel"))  //remove components of actors
                                             continue;
-                                        var added = conversionData.AssetsToMove.TryAdd<string, (string, int)>(objref.InstancedFullPath, (pccref.Key, r));
+                                        string instancedPath = objref.InstancedFullPath;
+                                        if (objref.idxLink == 0)
+                                            instancedPath = $"{pccref.Key}.{instancedPath}";
+                                        var added = conversionData.AssetsToMove.TryAdd<string, (string, int)>(instancedPath, (pccref.Key, r));
                                         if (!added && r > 0 && conversionData.AssetsToMove[objref.InstancedFullPath].Item2 < 0) //Replace  imports with exports if possible
                                         {
                                             conversionData.AssetsToMove[objref.InstancedFullPath] = (pccref.Key, r);
@@ -649,7 +652,7 @@ namespace ME3Explorer.PackageEditor
                     var biopExport = BioPSource.Exports.FirstOrDefault(x => x.InstancedFullPath == assetImport.Key);
                     if(biopExport != null)
                     {
-                        conversionData.AssetsToMove[assetImport.Key] = (BioPSource.FilePath, biopExport.UIndex);
+                        conversionData.AssetsToMove[assetImport.Key] = (conversionData.BioPSource, biopExport.UIndex);
                     }
                 }
 
@@ -664,18 +667,22 @@ namespace ME3Explorer.PackageEditor
                 callbackAction?.Invoke(busytext);
                 //Create ME2TempAssetsFile & ME3TempAssetsFile
                 MEPackageHandler.CreateAndSavePackage(SRCTempFileName, conversionData.SourceGame);
-
-                using (var me2assetfile = MEPackageHandler.OpenME2Package(SRCTempFileName))
+                using (var srcassetfile = MEPackageHandler.OpenMEPackage(SRCTempFileName))
                 {
-                    if(me2assetfile is MEPackage me2assetpack)
+                    //Copy assets to MEPackage
+                    //1. do biop => bioa => biod => then rest - Add to queue in that order.
+                    //2. any shadow/lightmaps need special handling.
+
+
+
+
+                    //ConvertAssetFiletoME3  --> how to feed back changes to AssetsToMove list - not needed as only top level links are saved
+
+                    if(srcassetfile is MEPackage srcassetpack)
                     {
-                        //CopyAssets
-
-
-                        //ConvertAssetFiletoME3  --> how to feed back changes to AssetsToMove list
                         busytext = $"Converting to {conversionData.TargetGame}...";
-                        me2assetpack.ConvertTo(conversionData.TargetGame);
-                        me2assetpack.Save(TGTTempFileName);
+                        srcassetpack.ConvertTo(conversionData.TargetGame);
+                        srcassetpack.Save(TGTTempFileName);
                     }
                 }
 

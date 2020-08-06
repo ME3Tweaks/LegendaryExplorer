@@ -4792,7 +4792,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
                 Level level = ObjectBinary.From<Level>(levelExport);
-                HashSet<int> norefsList = await Task.Run(() => Pcc.GetUnReferencedEntries());
+                HashSet<int> norefsList = await Task.Run(() => Pcc.GetReferencedEntries(false));
                 BusyText = "Recooking the Persistant Level";
                 //Get all items in the persistent level not actors
                 var references = new List<int>();
