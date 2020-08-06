@@ -4,41 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
 
 namespace ME3Script.Analysis.Symbols
 {
     public class SymbolTable
     {
-        private Dictionary<string, Dictionary<string, ASTNode>> Cache;
-        private LinkedList<Dictionary<string, ASTNode>> Scopes;
-        private LinkedList<string> ScopeNames;
-        private Dictionary<string, OperatorDeclaration> Operators;
+        private readonly CaseInsensitiveDictionary<CaseInsensitiveDictionary<ASTNode>> Cache;
+        private readonly LinkedList<CaseInsensitiveDictionary<ASTNode>> Scopes;
+        private readonly LinkedList<string> ScopeNames;
+        private readonly CaseInsensitiveDictionary<OperatorDeclaration> Operators;
 
-        public string CurrentScopeName
-        {
-            get
-            {
-                if (ScopeNames.Count == 0)
-                    return "";
-                return ScopeNames.Last();
-            }
-        }
+        public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Last();
 
         public SymbolTable()
         {
             ScopeNames = new LinkedList<string>();
-            Scopes = new LinkedList<Dictionary<string, ASTNode>>();
-            Cache = new Dictionary<string, Dictionary<string, ASTNode>>();
-            Operators = new Dictionary<string, OperatorDeclaration>();
+            Scopes = new LinkedList<CaseInsensitiveDictionary<ASTNode>>();
+            Cache = new CaseInsensitiveDictionary<CaseInsensitiveDictionary<ASTNode>>();
+            Operators = new CaseInsensitiveDictionary<OperatorDeclaration>();
         }
 
         public void PushScope(string name)
         {
-            string fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name.ToLower();
-            Dictionary<string, ASTNode> scope;
-            bool cached = Cache.TryGetValue(fullName, out scope);
+            string fullName = (CurrentScopeName == "" ? "" : CurrentScopeName + ".") + name;
+            bool cached = Cache.TryGetValue(fullName, out CaseInsensitiveDictionary<ASTNode> scope);
             if (!cached)
-                scope = new Dictionary<string, ASTNode>();
+                scope = new CaseInsensitiveDictionary<ASTNode>();
 
             Scopes.AddLast(scope);
             ScopeNames.AddLast(fullName);
@@ -63,33 +55,26 @@ namespace ME3Script.Analysis.Symbols
         }
 
         public bool SymbolExists(string symbol, string outerScope)
-        {   
-            ASTNode dummy;
-            return TryGetSymbol(symbol, out dummy, outerScope);
+        {
+            return TryGetSymbol(symbol, out _, outerScope);
         }
 
         public bool TryGetSymbolInScopeStack(string symbol, out ASTNode node, string lowestScope)
         {
             node = null;
-            string scope = lowestScope.ToLower();
-            if (scope == "object") //As all classes inherit from object this is already checked.
+            if (string.Equals(lowestScope, "object", StringComparison.OrdinalIgnoreCase)) //As all classes inherit from object this is already checked.
                 return false;
 
-            LinkedList<Dictionary<string, ASTNode>> stack;
-            if (!TryBuildSpecificScope(scope, out stack))
-                return false;
-
-            return TryGetSymbolInternal(symbol, out node, stack);
+            return TryBuildSpecificScope(lowestScope, out LinkedList<CaseInsensitiveDictionary<ASTNode>> stack) && TryGetSymbolInternal(symbol, out node, stack);
         }
 
-        private bool TryBuildSpecificScope(string lowestScope, out LinkedList<Dictionary<string, ASTNode>> stack)
+        private bool TryBuildSpecificScope(string lowestScope, out LinkedList<CaseInsensitiveDictionary<ASTNode>> stack)
         {
-            var names = lowestScope.Split('.');
-            stack = new LinkedList<Dictionary<string, ASTNode>>();
-            Dictionary<string, ASTNode> currentScope;
+            string[] names = lowestScope.Split('.');
+            stack = new LinkedList<CaseInsensitiveDictionary<ASTNode>>();
             foreach (string scopeName in names)
             {
-                if (Cache.TryGetValue(scopeName, out currentScope))
+                if (Cache.TryGetValue(scopeName, out CaseInsensitiveDictionary<ASTNode> currentScope))
                     stack.AddLast(currentScope);
                 else
                     return false;
@@ -97,13 +82,12 @@ namespace ME3Script.Analysis.Symbols
             return stack.Count > 0;
         }
 
-        private bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<Dictionary<string, ASTNode>> stack)
+        private static bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<CaseInsensitiveDictionary<ASTNode>> stack)
         {
-            string name = symbol.ToLower();
-            LinkedListNode<Dictionary<string, ASTNode>> it;
+            LinkedListNode<CaseInsensitiveDictionary<ASTNode>> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
-                if (it.Value.TryGetValue(name, out node))
+                if (it.Value.TryGetValue(symbol, out node))
                     return true;
             }
             node = null;
@@ -112,32 +96,31 @@ namespace ME3Script.Analysis.Symbols
 
         public bool SymbolExistsInCurrentScope(string symbol)
         {
-            return Scopes.Last().ContainsKey(symbol.ToLower());
+            return Scopes.Last().ContainsKey(symbol);
         }
 
         public bool TryGetSymbolFromCurrentScope(string symbol, out ASTNode node)
         {
-            return Scopes.Last().TryGetValue(symbol.ToLower(), out node);
+            return Scopes.Last().TryGetValue(symbol, out node);
         }
 
         public bool TryGetSymbolFromSpecificScope(string symbol, out ASTNode node, string specificScope)
         {
             node = null;
-            Dictionary<string, ASTNode> scope;
-            return Cache.TryGetValue(specificScope.ToLower(), out scope) &&
-                scope.TryGetValue(symbol.ToLower(), out node);
+            return Cache.TryGetValue(specificScope, out CaseInsensitiveDictionary<ASTNode> scope) &&
+                   scope.TryGetValue(symbol, out node);
         }
 
         public void AddSymbol(string symbol, ASTNode node)
         {
-            Scopes.Last().Add(symbol.ToLower(), node);
+            Scopes.Last().Add(symbol, node);
         }
 
         public bool TryAddSymbol(string symbol, ASTNode node)
         {
-            if (!SymbolExistsInCurrentScope(symbol.ToLower()))
+            if (!SymbolExistsInCurrentScope(symbol))
             {
-                AddSymbol(symbol.ToLower(), node);
+                AddSymbol(symbol, node);
                 return true;
             }
             return false;
@@ -145,14 +128,14 @@ namespace ME3Script.Analysis.Symbols
 
         public bool GoDirectlyToStack(string lowestScope)
         {
-            string scope = lowestScope.ToLower();
+            string scope = lowestScope;
             // TODO: 5 AM coding.. REVISIT THIS!
-            if (CurrentScopeName != "object")
+            if (!string.Equals(CurrentScopeName, "object", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
-            if (scope == "object")
+            if (string.Equals(scope, "object", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            var scopes = scope.Split('.');
+            string[] scopes = scope.Split('.');
             for (int n = 1; n < scopes.Length; n++) // Start after "Object."
             {
                 if (!Cache.ContainsKey(CurrentScopeName + "." + scopes[n]))
@@ -169,39 +152,37 @@ namespace ME3Script.Analysis.Symbols
                 PopScope();
         }
 
-        public bool OperatorSignatureExists(OperatorDeclaration sig)
-        {
-            if (sig.Type == ASTNodeType.InfixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature((opdecl.Value as InOpDeclaration)));
-            else if (sig.Type == ASTNodeType.PrefixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature((opdecl.Value as PreOpDeclaration)));
-            else if (sig.Type == ASTNodeType.PostfixOperator)
-                return Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature((opdecl.Value as PostOpDeclaration)));
-            return false;
-        }
+        public bool OperatorSignatureExists(OperatorDeclaration sig) =>
+            sig.Type switch
+            {
+                ASTNodeType.InfixOperator => Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature(opdecl.Value as InOpDeclaration)),
+                ASTNodeType.PrefixOperator => Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature(opdecl.Value as PreOpDeclaration)),
+                ASTNodeType.PostfixOperator => Operators.Any(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature(opdecl.Value as PostOpDeclaration)),
+                _ => false
+            };
 
         public void AddOperator(OperatorDeclaration op)
         {
-            Operators.Add(op.OperatorKeyword.ToLower(), op);
+            Operators.Add(op.OperatorKeyword, op);
         }
 
         public OperatorDeclaration GetOperator(OperatorDeclaration sig)
         {
-            if (sig.Type == ASTNodeType.InfixOperator)
-                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature((opdecl.Value as InOpDeclaration))).Value;
-            else if (sig.Type == ASTNodeType.PrefixOperator)
-                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature((opdecl.Value as PreOpDeclaration))).Value;
-            else if (sig.Type == ASTNodeType.PostfixOperator)
-                return Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature((opdecl.Value as PostOpDeclaration))).Value;
-            return null;
+            return sig.Type switch
+            {
+                ASTNodeType.InfixOperator => Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && sig.IdenticalSignature(opdecl.Value as InOpDeclaration)).Value,
+                ASTNodeType.PrefixOperator => Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PrefixOperator && sig.IdenticalSignature(opdecl.Value as PreOpDeclaration)).Value,
+                ASTNodeType.PostfixOperator => Operators.First(opdecl => opdecl.Value.Type == ASTNodeType.PostfixOperator && sig.IdenticalSignature(opdecl.Value as PostOpDeclaration)).Value,
+                _ => null
+            };
         }
 
         public bool GetInOperator(out InOpDeclaration op, string name, VariableType lhs, VariableType rhs)
         {
             op = null;
             var lookup = Operators.FirstOrDefault(opdecl => opdecl.Value.Type == ASTNodeType.InfixOperator && opdecl.Value.OperatorKeyword == name
-                && (opdecl.Value as InOpDeclaration).LeftOperand.VarType.Name.ToLower() == lhs.Name.ToLower()
-                && (opdecl.Value as InOpDeclaration).RightOperand.VarType.Name.ToLower() == rhs.Name.ToLower());
+                && string.Equals(((InOpDeclaration)opdecl.Value).LeftOperand.VarType.Name, lhs.Name, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(((InOpDeclaration)opdecl.Value).RightOperand.VarType.Name, rhs.Name, StringComparison.OrdinalIgnoreCase));
             if (lookup.Equals(new KeyValuePair<string, OperatorDeclaration>()))
                 return false;
 

@@ -831,7 +831,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void ConvertTo(MEGame newGame)
+        public void ConvertTo(MEGame newGame, string tfcPath = null)
         {
             MEGame oldGame = Game;
             var prePropBinary = new List<byte[]>(ExportCount);
@@ -1003,10 +1003,20 @@ namespace ME3Explorer.Packages
                                                                                          || mip.storageType == StorageTypes.pccZlib)))
             {
                 //ME3 can't deal with compressed textures in a pcc, so we'll need to stuff them into a tfc
-                string tfcName = Path.GetFileNameWithoutExtension(FilePath);
-                using var tfc = File.OpenWrite(Path.ChangeExtension(FilePath, "tfc"));
-                Guid tfcGuid = Guid.NewGuid();
-                tfc.WriteGuid(tfcGuid);
+                tfcPath ??= Path.ChangeExtension(FilePath, "tfc");
+                string tfcName = Path.GetFileNameWithoutExtension(tfcPath);
+                using var tfc = new FileStream(tfcPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                Guid tfcGuid;
+                if (tfc.Length >= 16)
+                {
+                    tfcGuid = tfc.ReadGuid();
+                    tfc.SeekEnd();
+                }
+                else
+                {
+                    tfcGuid = Guid.NewGuid();
+                    tfc.WriteGuid(tfcGuid);
+                }
 
                 foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
                 {

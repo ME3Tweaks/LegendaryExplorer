@@ -81,7 +81,7 @@ namespace ME3Script.Parsing
 
         private static bool TypeEquals(VariableType a, VariableType b)
         {
-            return string.Equals(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase);
+            return string.Equals(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         public CodeBody TryParseBody(bool requireBrackets = true)
@@ -224,7 +224,7 @@ namespace ME3Script.Parsing
                 if (value == null) throw Error("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 // TODO: allow built-in type convertion here!
-                if (!TypeEquals(target.ResolveType(), value.ResolveType())) throw Error("Cannot assign a value of type '" + value.ResolveType() + "' to a variable of type '" + null + "'.", assign.StartPosition, assign.EndPosition);
+                if (!TypeEquals(target.ResolveType(), value.ResolveType())) throw Error($"Cannot assign a value of type '{value.ResolveType()}' to a variable of type '{null}'.", assign.StartPosition, assign.EndPosition);
 
                 return new AssignStatement(target, value, assign.StartPosition, assign.EndPosition);
             }
@@ -443,14 +443,14 @@ namespace ME3Script.Parsing
                     var func = (Function)Node;
                     if (func.ReturnType == null) throw Error("Function should not return any value!", token.StartPosition, token.EndPosition);
 
-                    if (!TypeEquals(func.ReturnType, type)) throw Error("Cannot return a value of type '" + type.Name + "', function should return '" + func.ReturnType.Name + "'.", token.StartPosition, token.EndPosition);
+                    if (!TypeEquals(func.ReturnType, type)) throw Error($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token.StartPosition, token.EndPosition);
                 }
                 else if (IsOperator)
                 {
                     var op = (OperatorDeclaration)Node;
                     if (op.ReturnType == null) throw Error("Operator should not return any value!", token.StartPosition, token.EndPosition);
 
-                    if (!TypeEquals(op.ReturnType, type)) throw Error("Cannot return a value of type '" + type.Name + "', operator should return '" + op.ReturnType.Name + "'.", token.StartPosition, token.EndPosition);
+                    if (!TypeEquals(op.ReturnType, type)) throw Error($"Cannot return a value of type '{type.Name}', operator should return '{op.ReturnType.Name}'.", token.StartPosition, token.EndPosition);
                 }
 
                 return new ReturnStatement(token.StartPosition, token.EndPosition, value);
@@ -571,7 +571,7 @@ namespace ME3Script.Parsing
                 if (rhs == null) return null; // error?
                 rhsType = rhs.ResolveType();
 
-                if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType)) throw Error("No operator '" + opA_tok + "' with operands of types '" + lhsType.Name + "' and '" + rhsType.Name + "' was found!", opA_tok.StartPosition, opA_tok.EndPosition);
+                if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType)) throw Error($"No operator '{opA_tok}' with operands of types '{lhsType.Name}' and '{rhsType.Name}' was found!", opA_tok.StartPosition, opA_tok.EndPosition);
 
                 while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
                 {
@@ -584,7 +584,7 @@ namespace ME3Script.Parsing
 
                     Tokens.PopSnapshot();
 
-                    if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type)) throw Error("No operator '" + opB_tok + "' with operands of types '" + rhsType.Name + "' and '" + rhs2Type.Name + "' was found!", opB_tok.StartPosition, opB_tok.EndPosition);
+                    if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type)) throw Error($"No operator '{opB_tok}' with operands of types '{rhsType.Name}' and '{rhs2Type.Name}' was found!", opB_tok.StartPosition, opB_tok.EndPosition);
 
                     if (opA.Precedence <= opB.Precedence) break;
 
@@ -643,7 +643,7 @@ namespace ME3Script.Parsing
 
                 if (Consume(TokenType.LeftParenth) == null) return null;
 
-                if (funcRef.Node.Type != ASTNodeType.Function) throw Error("'" + funcRef.Name + "' is not a function!", funcRef.StartPos, funcRef.EndPos);
+                if (funcRef.Node.Type != ASTNodeType.Function) throw Error($"'{funcRef.Name}' is not a function!", funcRef.StartPos, funcRef.EndPos);
 
                 Function func = funcRef.Node as Function;
                 var parameters = new List<Expression>();
@@ -652,14 +652,14 @@ namespace ME3Script.Parsing
                 {
                     // TODO: allow automatic type conversion for compatible basic types
                     // TODO: allow optional parameters to be left out.
-                    if (currentParam == null || !TypeEquals(currentParam.ResolveType(), p.VarType)) throw Error("Expected a parameter of type '" + p.VarType.Name + "'!", currentParam.StartPos, currentParam.EndPos);
+                    if (currentParam == null || !TypeEquals(currentParam.ResolveType(), p.VarType)) throw Error($"Expected a parameter of type '{p.VarType.Name}'!", currentParam.StartPos, currentParam.EndPos);
 
                     parameters.Add(currentParam);
                     if (Consume(TokenType.Comma) == null) break;
                     currentParam = TryParseExpression();
                 }
 
-                if (parameters.Count != func.Parameters.Count) throw Error("Expected " + func.Parameters.Count + " parameters to function '" + func.Name + "'!", funcRef.StartPos, funcRef.EndPos);
+                if (parameters.Count != func.Parameters.Count) throw Error($"Expected {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef.StartPos, funcRef.EndPos);
 
                 if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
@@ -697,16 +697,16 @@ namespace ME3Script.Parsing
                 if (func != null)
                 {
                     var containingClass = NodeUtils.GetContainingClass(func.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + func.Function.Name)) throw Error("Left side has no member named '" + func.Function.Name + "'!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, $"{containingClass.GetInheritanceString()}.{func.Function.Name}")) throw Error($"Left side has no member named '{func.Function.Name}'!", token.StartPosition, token.EndPosition);
                 }
                 else if (outer != null)
                 {
                     var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + outer.ResolveType().Name)) throw Error("Left side has no member named '" + outer.Name + "'!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, $"{containingClass.GetInheritanceString()}.{outer.ResolveType().Name}")) throw Error($"Left side has no member named '{outer.Name}'!", token.StartPosition, token.EndPosition);
                 }
                 else
                 {
-                    if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node))) throw Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node))) throw Error($"No symbol named '{token.Value}' exists in the current scope!", token.StartPosition, token.EndPosition);
                 }
 
                 return new SymbolReference(symbol, token.StartPosition, token.EndPosition, token.Value);
@@ -757,10 +757,10 @@ namespace ME3Script.Parsing
                 Expression left = TryParseBasicRef() ?? TryParseFunctionCall() ?? (Expression)null;
                 if (left == null) return null;
 
-                Expression right = TryParseCompositeRecursive(left);
+                CompositeSymbolRef right = TryParseCompositeRecursive(left);
                 if (right == null) return null; //Error?
 
-                return right as CompositeSymbolRef;
+                return right;
             }
         }
 
