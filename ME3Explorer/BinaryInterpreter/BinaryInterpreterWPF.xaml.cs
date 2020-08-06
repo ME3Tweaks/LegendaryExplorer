@@ -760,7 +760,7 @@ namespace ME3Explorer
                     }
                     genericContainer.Items.AddRange(genericItems);
                 }
-                if (PreviousLoadedUIndex == CurrentLoadedExport.UIndex && PreviousSelectedTreeName != "")
+                if (PreviousLoadedUIndex == CurrentLoadedExport?.UIndex && PreviousSelectedTreeName != "")
                 {
                     var reSelected = AttemptSelectPreviousEntry(subNodes);
                     Debug.WriteLine("Reselected previous entry");

@@ -5783,8 +5783,13 @@ namespace ME3Explorer
                     IsBusy = true;
                     Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
+                        LoadFile(Pcc.FilePath);
                         IsBusy = false;
-                        MessageBox.Show("Done");
+                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                        {
+                            DoubleClickEntryHandler = entryDoubleClick
+                        };
+                        dlg.Show();
                     });
 
                 }
@@ -5815,8 +5820,13 @@ namespace ME3Explorer
                     IsBusy = true;
                     Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
+                        LoadFile(Pcc.FilePath);
                         IsBusy = false;
-                        MessageBox.Show("Done");
+                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                        {
+                            DoubleClickEntryHandler = entryDoubleClick
+                        };
+                        dlg.Show();
                     });
                 }
 

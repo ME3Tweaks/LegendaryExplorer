@@ -371,26 +371,33 @@ namespace ME3Explorer.Packages
                     }
                     var exp = pcc.GetUExport(ent.UIndex);
 
-                    //find header references
-                    if ((exp.Archetype?.UIndex ?? 0) != 0)
+                    //find header references only if doing non-actors
+                    if(!getactorrefs)
                     {
-                        theserefs.Add(exp.Archetype);
-                    }
-
-                    if ((exp.Class?.UIndex ?? 0) != 0)
-                    {
-                        theserefs.Add(exp.Class);
-                    }
-                    if ((exp.SuperClass?.UIndex ?? 0) != 0)
-                    {
-                        theserefs.Add(exp.SuperClass);
-                    }
-                    if (exp.HasComponentMap)
-                    {
-                        foreach (var kvp in exp.ComponentMap)
+                        if ((exp.Archetype?.UIndex ?? 0) != 0)
                         {
-                            //theserefs.Add(pcc.GetEntry(kvp.Value));  //THIS IS INCORRECT SHOULD NOT BE ON UINDEX
+                            theserefs.Add(exp.Archetype);
                         }
+
+                        if ((exp.Class?.UIndex ?? 0) != 0)
+                        {
+                            theserefs.Add(exp.Class);
+                        }
+                        if ((exp.SuperClass?.UIndex ?? 0) != 0)
+                        {
+                            theserefs.Add(exp.SuperClass);
+                        }
+                        if (exp.HasComponentMap)
+                        {
+                            foreach (var kvp in exp.ComponentMap)
+                            {
+                                //theserefs.Add(pcc.GetEntry(kvp.Value));  //THIS IS INCORRECT SHOULD NOT BE ON UINDEX
+                            }
+                        }
+                    }
+                    else
+                    {
+                        exp.CondenseArchetypes();
                     }
 
                     //find property references

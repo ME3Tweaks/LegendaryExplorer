@@ -552,23 +552,23 @@ namespace ME3Explorer.PackageEditor
         /// </summary>
         /// <param name="Game">Target Game</param>
         /// <param name="BioPSource">Source BioP</param>
-        /// <param name="me3Outputfolder">OutputFolder</param>
+        /// <param name="tgtOutputfolder">OutputFolder</param>
         /// <param name="BioArtsToCopy">List of level source file locations</param>
         /// <param name="ActorsToMove">Dicitionary: key Actors, value filename, entry uid</param>
         /// <param name="AssetsToMove">Dictionary key: AssetInstancedPath, value filename, isimport, entry uid</param>
         /// <param name="fromreload">is reloaded json</param>
-        public async static Task<bool> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string me3Outputfolder, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
+        public async static Task<List<string>> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string tgtOutputfolder, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream" };
             var actorclassesToSubstitue = new List<(string, string)>() { ("BioBlockingVolume", "BlockingVolume") };
+            var fails = new List<string>();
             string busytext = null;
-            if (BioPSource.Game != MEGame.ME2 || ME2Directory.gamePath == null)
+            if ((BioPSource.Game == MEGame.ME2 && ME2Directory.gamePath == null) || (BioPSource.Game == MEGame.ME1 && ME1Directory.gamePath == null) || (BioPSource.Game == MEGame.ME3 && ME3Directory.gamePath == null)  || BioPSource.Game == MEGame.UDK)
             {
-                MessageBox.Show("Currently art can only be copied from ME2 to ME3");
-                return false;
+                fails.Add("Source Game Directory not found");
+                return fails;
             }
-
                         
             //STAGE 1-A: Get filelist from BioP, Save a copy in outputdirectory
             if (!fromreload)
@@ -582,10 +582,10 @@ namespace ME3Explorer.PackageEditor
                     string biopname = Path.GetFileNameWithoutExtension(BioPSource.FilePath);
                     conversionData.GameLevelName = biopname.Substring(5, biopname.Length - 5);
                     var lsks = BioWorld.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels").ToList();
-                    if(lsks.IsEmpty())
+                    if (lsks.IsEmpty())
                     {
-                        MessageBox.Show("No files found in level.");
-                        return false;
+                        fails.Add("No files found in level.");
+                        return fails;
                     }
                     foreach (var l in lsks)
                     {
@@ -597,13 +597,14 @@ namespace ME3Explorer.PackageEditor
                             conversionData.FilesToCopy.TryAdd(filename.Value, filePath);
                         }
                     }
-                    conversionData.BioPSource = $"{biopname}_{BioPSource.Game}.pcc";
-                    BioPSource.Save(Path.Combine(me3Outputfolder, conversionData.BioPSource));
+                    conversionData.BioPSource = $"{biopname}_{BioPSource.Game}";
+                    BioPSource.Save(Path.Combine(tgtOutputfolder, $"{conversionData.BioPSource}.pcc"));
+                    BioPSource.Dispose();
                 }
                 else
                 {
-                    MessageBox.Show("Requires an BioP to work with.");
-                    return false;
+                    fails.Add("Requires an BioP to work with.");
+                    return fails;
                 }
 
                 //STAGE 1-B: Check each file in List
@@ -635,14 +636,15 @@ namespace ME3Explorer.PackageEditor
                                         if (objref.idxLink == 0)
                                             instancedPath = $"{pccref.Key}.{instancedPath}";
                                         var added = conversionData.AssetsToMove.TryAdd<string, (string, int)>(instancedPath, (pccref.Key, r));
-                                        if (!added && r > 0 && conversionData.AssetsToMove[objref.InstancedFullPath].Item2 < 0) //Replace  imports with exports if possible
+                                        if (!added && r > 0 && conversionData.AssetsToMove[instancedPath].Item2 < 0) //Replace  imports with exports if possible
                                         {
-                                            conversionData.AssetsToMove[objref.InstancedFullPath] = (pccref.Key, r);
+                                            conversionData.AssetsToMove[instancedPath] = (pccref.Key, r);
                                         }
                                     }
                                 }
                             }
                         }
+                        Debug.WriteLine($"File Scanned: {pccref.Key}");
                     }
                 });
 
@@ -655,53 +657,116 @@ namespace ME3Explorer.PackageEditor
                         conversionData.AssetsToMove[assetImport.Key] = (conversionData.BioPSource, biopExport.UIndex);
                     }
                 }
-
-
             }
 
-            var SRCTempFileName = Path.Combine(me3Outputfolder, $"{conversionData.GameLevelName}_TempAssets_{conversionData.SourceGame}.pcc");
-            var TGTTempFileName = Path.Combine(me3Outputfolder, $"{conversionData.GameLevelName}_TempAssets_{conversionData.TargetGame}.pcc");
-            if (!fromreload)
+            var SRCTempFileName = Path.Combine(tgtOutputfolder, $"{conversionData.GameLevelName}_TempAssets_{conversionData.SourceGame}.pcc");
+            var TGTTempFileName = Path.Combine(tgtOutputfolder, $"{conversionData.GameLevelName}_TempAssets_{conversionData.TargetGame}.pcc");
+            if (!fromreload)                //Create ME2TempAssetsFile & ME3TempAssetsFile
             {
                 busytext = "Copying assets to temporary file...";
                 callbackAction?.Invoke(busytext);
-                //Create ME2TempAssetsFile & ME3TempAssetsFile
                 MEPackageHandler.CreateAndSavePackage(SRCTempFileName, conversionData.SourceGame);
-                using (var srcassetfile = MEPackageHandler.OpenMEPackage(SRCTempFileName))
+                using (var srcassetfile = MEPackageHandler.OpenMEPackage(SRCTempFileName))                     //Copy assets to Source Package
                 {
-                    //Copy assets to MEPackage
-                    //1. do biop => bioa => biod => then rest - Add to queue in that order.
-                    //2. any shadow/lightmaps need special handling.
+                    var assetCloneSourceQueue = new Queue<(string, string)>(); //Queue of files to load and copy in - biop => bioa => biod => then rest - Add to queue in that order.
+                    assetCloneSourceQueue.Enqueue((conversionData.BioPSource, Path.Combine(tgtOutputfolder, $"{conversionData.BioPSource}.pcc")));
+                    string masterbioa = $"BioA_{conversionData.GameLevelName}";
+                    if (conversionData.FilesToCopy.ContainsKey(masterbioa))
+                        assetCloneSourceQueue.Enqueue((masterbioa, conversionData.FilesToCopy[masterbioa]));
+                    string masterbiod = $"BioD_{conversionData.GameLevelName}";
+                    if (conversionData.FilesToCopy.ContainsKey(masterbiod))
+                        assetCloneSourceQueue.Enqueue((masterbiod, conversionData.FilesToCopy[masterbiod]));
+                    foreach(var bioa in conversionData.FilesToCopy.Where(k => k.Key.StartsWith($"BioA_{conversionData.GameLevelName}_")))
+                    {
+                        assetCloneSourceQueue.Enqueue((bioa.Key, bioa.Value));
+                    }
+                    foreach (var biod in conversionData.FilesToCopy.Where(k => k.Key.StartsWith($"BioD_{conversionData.GameLevelName}_")))
+                    {
+                        assetCloneSourceQueue.Enqueue((biod.Key, biod.Value));
+                    }
 
+                    while(!assetCloneSourceQueue.IsEmpty())
+                    {
+                        var fileref = assetCloneSourceQueue.Dequeue();  //fileref item1 = pcc name, item2 = path
+                        var levelpkg = MEPackageHandler.OpenMEPackage(fileref.Item2);
+                        var assetsinpkg = conversionData.AssetsToMove.Where(a => a.Value.Item1 == fileref.Item1); //assets item1 = fullinstancedpath, item2 = filename, item3 = export Uindex
+                        if(!levelpkg.IsNull())
+                        {
+                            foreach(var asset in assetsinpkg)
+                            {
+                                try
+                                {
+                                    var gotentry = levelpkg.TryGetEntry(asset.Value.Item2, out IEntry assetexp);
+                                    if (asset.Key.StartsWith(fileref.Item1) && gotentry)  //fix to local package if item is in class (prevents conflicts)  - any shadow/lightmaps need special handling.
+                                    {
+                                        var localpackagexp = levelpkg.Exports.FirstOrDefault(x => x.ObjectNameString == fileref.Item1);
+                                        if (localpackagexp != null)
+                                        {
+                                            IEntry srclocalpkg = srcassetfile.Exports.FirstOrDefault(x => x.ObjectNameString == fileref.Item1);
+                                            if (srclocalpkg.IsNull())
+                                                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, localpackagexp, srcassetfile, null, false, out srclocalpkg);
+                                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, assetexp, srcassetfile, srclocalpkg, true, out IEntry targetexp);
+                                        }
+                                        else
+                                        {
+                                            fails.Add($"Local Package not found on top level transfer: {fileref.Item2} : {asset.Key}");
+                                        }
+                                    }
+                                    else if (gotentry)
+                                    {
+                                        //Clone full instance path
+                                        var srcparent = EntryImporter.GetOrAddCrossImportOrPackage(assetexp.ParentFullPath, levelpkg, srcassetfile);
+                                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, assetexp, srcassetfile, srcparent, true, out IEntry targetexp);
+                                    }
+                                    Debug.WriteLine($"Asset Cloned Inbound: {fileref.Item1} : {asset.Key}");
+                                }
+                                catch
+                                {
+                                    Debug.WriteLine($"Exception on asset {fileref.Item1} : {asset.Key}");
+                                    fails.Add($"Exception on asset {fileref.Item1} : {asset.Key}");
+                                }
+                            }
+                            levelpkg.Dispose();
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Asset Inbound Package load failure: {fileref.Item2}");
+                            fails.Add($"Asset Inbound Package load failure: {fileref.Item2}");
+                        }
+                    }
+                    srcassetfile.Save();
 
-
-
-                    //ConvertAssetFiletoME3  --> how to feed back changes to AssetsToMove list - not needed as only top level links are saved
-
-                    if(srcassetfile is MEPackage srcassetpack)
+                    if (srcassetfile is MEPackage srcassetpack)
                     {
                         busytext = $"Converting to {conversionData.TargetGame}...";
-                        srcassetpack.ConvertTo(conversionData.TargetGame);
+                        callbackAction?.Invoke(busytext);
+                        Debug.WriteLine($"Conversion started...");
+                        var tfcpath = Path.Combine(tgtOutputfolder, $"Textures_{Path.GetFileName(tgtOutputfolder)}.tfc");
+                        srcassetpack.ConvertTo(conversionData.TargetGame, tfcpath);
                         srcassetpack.Save(TGTTempFileName);
+                        srcassetpack.Dispose();
+                        Debug.WriteLine($"Conversion finished.");
                     }
+                    srcassetfile.Dispose();
                 }
 
                 //Export Settings to JSON
                 busytext = "Exporting settings...";
                 callbackAction?.Invoke(busytext);
                 var srldata = JsonConvert.SerializeObject(conversionData);
-                using (StreamWriter writer = File.CreateText(Path.Combine(me3Outputfolder, $"{conversionData.GameLevelName}_Transfer.json")))
+                using (StreamWriter writer = File.CreateText(Path.Combine(tgtOutputfolder, $"{conversionData.GameLevelName}_Transfer.json")))
                 {
                     writer.Write(srldata);
                 }
+                Debug.WriteLine($"Exported JSON");
             }
 
             //Create cooked files and populate with actors/assets
             busytext = "Recooking actors and assets out to individual files...";
             callbackAction?.Invoke(busytext);
-            Parallel.ForEach(conversionData.FilesToCopy, (pccref) =>
+            foreach(var pccref in conversionData.FilesToCopy)
             {
-                var targetfile = Path.Combine(me3Outputfolder, Path.GetFileName(pccref.Value));
+                var targetfile = Path.Combine(tgtOutputfolder, Path.GetFileName(pccref.Value));
                 if (File.Exists(targetfile))
                 {
                     File.Delete(targetfile);
@@ -713,6 +778,7 @@ namespace ME3Explorer.PackageEditor
                 using (var donor = MEPackageHandler.OpenME2Package(pccref.Value))
                 using (var assetfile = MEPackageHandler.OpenME3Package(TGTTempFileName))
                 {
+                    Debug.WriteLine($"Recooking out to {pccref.Value}");
                     for (int i = 0; i < target.Names.Count; i++)  //Setup new level file
                     {
                         string name = target.Names[i];
@@ -730,46 +796,71 @@ namespace ME3Explorer.PackageEditor
 
                     //Get list of assets for this file & Process into
                     var sourceassets = conversionData.AssetsToMove.Where(s => s.Value.Item1 == pccref.Key).ToList();
-                    foreach(var asset in sourceassets)
+                    foreach (var asset in sourceassets)
                     {
-                        var assetxp = assetfile.Exports.FirstOrDefault(x => x.InstancedFullPath == asset.Key);
-                        if(assetxp != null)
+                        try
                         {
-                            //Clone to target [Including refs as these will have to be added later anyway].
+                            var assetexp = assetfile.Exports.FirstOrDefault(i => i.InstancedFullPath == asset.Key);
+                            int assetUID = assetexp?.UIndex ?? 0;
+                            if (assetUID == 0)
+                            {
+                                var assetip = assetfile.Imports.FirstOrDefault(i => i.InstancedFullPath == asset.Key);
+                                assetUID = assetip?.UIndex ?? 0;
+                            }
+                            var gotasset = assetfile.TryGetEntry(assetUID, out IEntry assetent);
+                            if (!gotasset)
+                            {
+                                fails.Add($"Failure finding asset for out: {asset.Key}");
+                                continue;
+                            }
+                            IEntry tgtparent = null;
+                            if (!asset.Key.StartsWith(pccref.Key))  //any shadow/lightmaps need special handling.
+                            {
+                                tgtparent = EntryImporter.GetOrAddCrossImportOrPackage(assetent.ParentFullPath, assetfile, target);
+                            }
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, assetent, target, tgtparent, true, out IEntry targetexp);
                         }
-                    }
-
-                    //Get list of actors and process
-                    var sourceactors = conversionData.ActorsToMove.Where(a => a.Value.Item1 == pccref.Key).ToList();
-                    foreach(var sactor in sourceactors)
-                    {
-                        //Convert actor if in conversion list.
-
-                        var sactorxp = donor.GetEntry(sactor.Value.Item2);
-                        if (sactorxp != null)
+                        catch
                         {
-                            //Clone to target, add to level (only component tree).  Assets should already be there and relink. 
-                            //sactorxp.Clone()
+                            Debug.WriteLine($"Failure cloning out: {asset.Key}");
+                            fails.Add($"Failure cloning out: {asset.Key}");
                         }
 
-                    }
 
-                    target.Save();
+                        //Get list of actors and process
+                        var sourceactors = conversionData.ActorsToMove.Where(a => a.Value.Item1 == pccref.Key).ToList();
+                        
+                        foreach (var sactor in sourceactors)
+                        {
+                            var sactorxp = donor.GetEntry(sactor.Value.Item2);
+                            if(sactorxp is ExportEntry aexport && aexport.HasArchetype)
+                            {
+                                aexport.CondenseArchetypes(true);
+                            }
+                            if (sactorxp != null)
+                            {
+                                //Clone to target, add to level (only component tree).  Assets should already be there and relink. 
+                                //sactorxp.Clone()
+                            }
+
+                        }
+
+                        target.Save();
+                        target.Dispose();
+                        donor.Dispose();
+                    }
                 }
-            });
-
-
-
-            return true;
-
+            }
+            
+            return fails;
         }
 
-        public async static Task<bool> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction)
+        public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction)
         {
             var OutputDir = Path.GetDirectoryName(jsonfile);
             var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int)>());
             IMEPackage sourcebiop = null;
-
+            var fails = new List<string>();
             using (StreamReader file = File.OpenText(jsonfile))
             {
                 JsonSerializer serializer = new JsonSerializer();
@@ -779,18 +870,17 @@ namespace ME3Explorer.PackageEditor
             switch(conversionData.SourceGame)
             {
                 case MEGame.ME2:
-                    sourcebiop = MEPackageHandler.OpenME2Package(Path.Combine(OutputDir, conversionData.BioPSource));
+                    sourcebiop = MEPackageHandler.OpenME2Package(Path.Combine(OutputDir, $"{conversionData.BioPSource}.pcc"));
                     if(sourcebiop.IsNull())
                     {
-                        MessageBox.Show("Source BioP not found.  Aborting.");
-                        return false;
+                        fails.Add("Source BioP not found. Aborting.");
+                        return fails;
                     }
                     break;
                 default:
-                    MessageBox.Show("Currently level transfers only can be done ME2 to ME3");
-                    return false;
+                    fails.Add("Currently level transfers only can be done ME2 to ME3");
+                    return fails;
             }
-
 
             return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, callbackAction, conversionData, true);
         }
