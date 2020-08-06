@@ -15,7 +15,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 
         public NumberMatcher(List<KeywordMatcher> delimiters)
         {
-            Delimiters = delimiters == null ? new List<KeywordMatcher>() : delimiters;
+            Delimiters = delimiters ?? new List<KeywordMatcher>();
         }
 
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)

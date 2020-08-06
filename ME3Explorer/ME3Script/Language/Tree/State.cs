@@ -6,28 +6,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
     public class State : ASTNode, IContainsLocals
     {
+        public StateFlags Flags;
         public string Name;
         public CodeBody Body;
-        public List<Specifier> Specifiers;
         public State Parent;
         public List<Function> Functions;
         public List<Function> Ignores;
         public List<VariableDeclaration> Locals { get; set; }
         public List<StateLabel> Labels;
 
-        public State(string name, CodeBody body, List<Specifier> specs,
+        public State(string name, CodeBody body, StateFlags flags,
             State parent, List<Function> funcs, List<Function> ignores,
             List<StateLabel> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)
         {
+            Flags = flags;
             Name = name;
             Body = body;
-            Specifiers = specs;
             Parent = parent;
             Functions = funcs;
             Ignores = ignores;
@@ -43,7 +44,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                if(Specifiers != null) foreach (Specifier specifier in Specifiers) yield return specifier;
                 yield return Parent;
                 if (Functions != null) foreach (Function function in Functions) yield return function;
                 yield return Body;

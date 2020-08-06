@@ -489,8 +489,7 @@ namespace ME3Explorer
 
         private void Tokens_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            BytecodeSingularToken selectedToken = Tokens_ListBox.SelectedItem as BytecodeSingularToken;
-            if (selectedToken != null && !HexBoxSelectionChanging)
+            if (Tokens_ListBox.SelectedItem is BytecodeSingularToken selectedToken && !HexBoxSelectionChanging)
             {
                 TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = selectedToken.StartPos;
@@ -539,7 +538,7 @@ namespace ME3Explorer
             public ScriptHeaderItem(string id, short value, int offset)
             {
                 this.id = id;
-                this.value = $"{value} ({value.ToString("X4")})";
+                this.value = $"{value} ({value:X4})";
                 this.offset = offset;
                 length = 2;
             }

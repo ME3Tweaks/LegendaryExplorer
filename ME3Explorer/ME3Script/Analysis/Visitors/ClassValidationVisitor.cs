@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Analysis.Visitors
 {
@@ -149,6 +151,16 @@ namespace ME3Script.Analysis.Visitors
             throw new NotImplementedException();
         }
 
+        public bool VisitNode(DynamicArrayType node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DelegateType node)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool VisitNode(Struct node)
         {
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
@@ -271,8 +283,8 @@ namespace ME3Script.Analysis.Visitors
             if (Symbols.TryGetSymbol(node.Name, out ASTNode func, "") // override functions in parent classes only (or current class if its a state)
              && func.Type == ASTNodeType.Function)
             {   // If there is a function with this name that we should override, validate the new functions declaration
-                Function original = func as Function;
-                if (original.Specifiers.Contains(new Specifier("final", null, null)))
+                Function original = (Function)func;
+                if (original.Flags.Has(FunctionFlags.Final))
                     return Error("Function name overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
                 if (node.ReturnType != original.ReturnType)
                     return Error("Function name overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
@@ -281,7 +293,7 @@ namespace ME3Script.Analysis.Visitors
                 for (int n = 0; n < node.Parameters.Count; n++)
                 {
                     if (node.Parameters[n].Type != original.Parameters[n].Type)
-                        return Error("Function name overrides a function in a parent class, but the functions do not ahve the same parameter types!", node.StartPos, node.EndPos);
+                        return Error("Function name overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
                 }
             }
 
@@ -341,7 +353,7 @@ namespace ME3Script.Analysis.Visitors
                 if (!Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") || original.Type != ASTNodeType.Function)
                     return Error("No function to ignore named '" + ignore.Name + "' found!", ignore.StartPos, ignore.EndPos);
                 Function header = original as Function;
-                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Specifiers, header.Parameters, false, ignore.StartPos, ignore.EndPos);
+                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Flags, header.Parameters, ignore.StartPos, ignore.EndPos);
                 node.Functions.Add(emptyOverride);
                 Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
             }

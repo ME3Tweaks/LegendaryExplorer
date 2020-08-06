@@ -11,6 +11,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
+using static ME3Explorer.Unreal.UnrealFlags;
+using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing
 {
@@ -35,42 +39,142 @@ namespace ME3Script.Parsing
             return (Class)Tokens.TryGetTree(ClassParser);
             ASTNode ClassParser()
             {
-                if (Tokens.ConsumeToken(TokenType.Class) == null) return Error("Expected class declaration!");
+                if (!Matches(CLASS)) throw Error("Expected class declaration!");
 
-                var name = Tokens.ConsumeToken(TokenType.Word);
-                if (name == null) return Error("Expected class name!");
+                var name = Consume(TokenType.Word);
+                if (name == null) throw Error("Expected class name!");
 
                 var parentClass = TryParseParent();
                 if (parentClass == null)
                 {
-                    Log.LogMessage("No parent class specified for " + name.Value + ", interiting from Object");
-                    parentClass = new VariableType("Object", null, null);
+                    Log.LogMessage($"No parent class specified for {name.Value}, inheriting from Object");
+                    parentClass = new VariableType("Object");
                 }
 
                 var outerClass = TryParseOuter();
 
-                var specs = ParseSpecifiers(GlobalLists.ClassSpecifiers);
+                var interfaces = new List<VariableType>();
 
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null) return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                EClassFlags flags = EClassFlags.Compiled | EClassFlags.Parsed;
+                string configName = "None";
+                while (CurrentTokenType == TokenType.Word)
+                {
+                    if (Matches("nativeonly"))
+                    {
+                        flags |= EClassFlags.NativeOnly;
+                    }
+                    else if (Matches("noexport"))
+                    {
+                        flags |= EClassFlags.NoExport;
+                    }
+                    else if (Matches("editinlinenew"))
+                    {
+                        flags |= EClassFlags.EditInlineNew;
+                    }
+                    else if (Matches("placeable"))
+                    {
+                        flags |= EClassFlags.Placeable;
+                    }
+                    else if (Matches("hidedropdown"))
+                    {
+                        flags |= EClassFlags.HideDropDown2;
+                    }
+                    else if (Matches("nativereplication"))
+                    {
+                        flags |= EClassFlags.NativeReplication;
+                    }
+                    else if (Matches("perobjectconfig"))
+                    {
+                        flags |= EClassFlags.PerObjectConfig;
+                    }
+                    else if (Matches("localized"))
+                    {
+                        flags |= EClassFlags.Localized;
+                    }
+                    else if (Matches("abstract"))
+                    {
+                        flags |= EClassFlags.Abstract;
+                    }
+                    else if (Matches("deprecated"))
+                    {
+                        flags |= EClassFlags.Deprecated;
+                    }
+                    else if (Matches("transient"))
+                    {
+                        flags |= EClassFlags.Transient;
+                    }
+                    else if (Matches("config"))
+                    {
+                        flags |= EClassFlags.Config;
+                        if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
+                        {
+                            throw Error("Config specifier is missing name of config file!", CurrentPosition);
+                        }
+
+                        configName = Tokens.Prev().Value;
+                        if (Consume(TokenType.RightParenth) is null)
+                        {
+                            throw Error("Expected ')' after config file name!", CurrentPosition);
+                        }
+                    }
+                    else if (Matches("safereplace"))
+                    {
+                        flags |= EClassFlags.SafeReplace;
+                    }
+                    else if (Matches("hidden"))
+                    {
+                        flags |= EClassFlags.Hidden;
+                    }
+                    else if (Matches("collapsecategories"))
+                    {
+                        flags |= EClassFlags.CollapseCategories;
+                    }
+                    else if (Matches("implements"))
+                    {
+                        if (Consume(TokenType.LeftParenth) is null)
+                        {
+                            throw Error("'implements' specifier is missing interface list!", CurrentPosition);
+                        }
+
+                        while (Consume(TokenType.Word) is Token<string> interfaceName)
+                        {
+                            interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPosition, interfaceName.EndPosition));
+                            if (Consume(TokenType.Comma) is null)
+                            {
+                                break;
+                            }
+                        }
+                        if (Consume(TokenType.RightParenth) is null)
+                        {
+                            throw Error("Expected ')' after list of interfaces!", CurrentPosition);
+                        }
+                    }
+                    else
+                    {
+                        throw Error($"Invalid class specifier: '{CurrentToken.Value}'!", CurrentPosition);
+                    }
+                }
+
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var variables = new List<VariableDeclaration>();
                 var types = new List<VariableType>();
-                while (CurrentTokenType == TokenType.InstanceVariable || CurrentTokenType == TokenType.Struct || CurrentTokenType == TokenType.Enumeration || CurrentTokenType == TokenType.Constant)
+                while (CurrentIs(VAR, STRUCT, ENUM, CONST))
                 {
-                    if (CurrentTokenType == TokenType.InstanceVariable)
+                    if (CurrentIs(VAR))
                     {
                         var variable = TryParseVarDecl();
-                        if (variable == null) return Error("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (variable == null) throw Error("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                         variables.Add(variable);
                     }
                     else
                     {
-                        var type = TryParseEnum() ?? TryParseStruct() ?? TryParseConstant() ?? new VariableType("INVALID", null, null);
-                        if (type.Name == "INVALID") return Error("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        VariableType type = TryParseEnum() ?? TryParseStruct() ?? TryParseConstant() ?? (VariableType)null;
+                        if (type is null) throw Error("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                         types.Add(type);
 
-                        if (Tokens.ConsumeToken(TokenType.SemiColon) == null) return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     }
                 }
 
@@ -79,7 +183,7 @@ namespace ME3Script.Parsing
                 var ops = new List<OperatorDeclaration>();
                 while (!Tokens.AtEnd())
                 {
-                    ASTNode declaration = TryParseFunction() ?? TryParseOperatorDecl() ?? TryParseState() ?? (ASTNode)null;
+                    ASTNode declaration = TryParseFunction() ?? /*TryParseOperatorDecl() ??*/ TryParseState() ?? (ASTNode)null;
                     if (declaration == null)
                     {
                         break;
@@ -102,11 +206,14 @@ namespace ME3Script.Parsing
                 var defaultPropertiesBlock = TryParseDefaultProperties();
                 if (defaultPropertiesBlock == null)
                 {
-                    return Error("Expected defaultproperties block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Expected defaultproperties block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                return new Class(name.Value, specs, variables, types, funcs, states, parentClass, outerClass, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition);
+                return new Class(name.Value, interfaces, flags, variables, types, funcs, states, parentClass, outerClass, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition)
+                {
+                    ConfigName = configName
+                };
             }
         }
 
@@ -116,12 +223,12 @@ namespace ME3Script.Parsing
             ASTNode ConstantParser()
             {
                 var startPos = CurrentPosition;
-                if (Tokens.ConsumeToken(TokenType.Constant) == null) return null;
-                if (Tokens.ConsumeToken(TokenType.Word) is Token<string> constName)
+                if (!Matches(CONST)) return null;
+                if (Consume(TokenType.Word) is Token<string> constName)
                 {
-                    if (Tokens.ConsumeToken(TokenType.Assign) == null)
+                    if (Consume(TokenType.Assign) == null)
                     {
-                        return Error("Expected '=' after constant name!", CurrentPosition);
+                        throw Error("Expected '=' after constant name!", CurrentPosition);
                     }
 
                     string constValue = null;
@@ -129,7 +236,7 @@ namespace ME3Script.Parsing
                     {
                         if (CurrentTokenType == TokenType.NewLine)
                         {
-                            return Error("Expected ';' after constant value!", CurrentPosition);
+                            throw Error("Expected ';' after constant value!", CurrentPosition);
                         }
 
                         constValue += Tokens.CurrentItem.Value;
@@ -137,12 +244,12 @@ namespace ME3Script.Parsing
                     }
                     if (constValue == null)
                     {
-                        return Error($"Expected a value for the constant '{constName.Value}'!");
+                        throw Error($"Expected a value for the constant '{constName.Value}'!");
                     }
                     return new Const(constName.Value, constValue, startPos, CurrentPosition);
                 }
 
-                return Error("Expected name for constant!", CurrentPosition);
+                throw Error("Expected name for constant!", CurrentPosition);
             }
         }
 
@@ -152,39 +259,43 @@ namespace ME3Script.Parsing
             ASTNode DeclarationParser()
             {
                 var startPos = CurrentPosition;
-                if (Tokens.ConsumeToken(TokenType.InstanceVariable) == null) return null;
+                if (!Matches(VAR)) return null;
                 string category = null;
                 if (CurrentTokenType == TokenType.LeftParenth)
                 {
                     Tokens.Advance();
-                    if (Tokens.ConsumeToken(TokenType.Word) is Token<string> categoryToken)
+                    if (Consume(TokenType.Word) is Token<string> categoryToken)
                     {
                         category = categoryToken.Value;
                     }
 
-                    if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
+                    if (Consume(TokenType.RightParenth) == null)
                     {
-                        return Error("Expected ')' after category name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Expected ')' after category name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     }
                 }
 
-                var specs = ParseSpecifiers(GlobalLists.VariableSpecifiers);
+                ParseVariableSpecifiers(out EPropertyFlags flags);
+                if ((flags & (EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm)) != 0)
+                {
+                    throw Error("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
+                }
 
                 var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
-                if (type == null) return Error("Expected variable type or struct/enum type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (type == null) throw Error("Expected variable type or struct/enum type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var var = ParseVariableName();
-                if (var == null) return Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (var == null) throw Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (CurrentTokenType == TokenType.Comma)
                 {
-                    return Error("All variables must be declared on their own line!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("All variables must be declared on their own line!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
-                var semicolon = Tokens.ConsumeToken(TokenType.SemiColon);
-                if (semicolon == null) return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var semicolon = Consume(TokenType.SemiColon);
+                if (semicolon == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new VariableDeclaration(type, specs, var, category, startPos, semicolon.EndPosition);
+                return new VariableDeclaration(type, flags, var, category, startPos, semicolon.EndPosition);
             }
         }
 
@@ -193,29 +304,64 @@ namespace ME3Script.Parsing
             return (Struct)Tokens.TryGetTree(StructParser);
             ASTNode StructParser()
             {
-                if (Tokens.ConsumeToken(TokenType.Struct) == null) return null;
+                if (!Matches(STRUCT)) return null;
 
-                var specs = ParseSpecifiers(GlobalLists.StructSpecifiers);
+                ScriptStructFlags flags = 0;
+                while (CurrentTokenType == TokenType.Word)
+                {
+                    if (Matches("native"))
+                    {
+                        flags |= ScriptStructFlags.Native;
+                    }
+                    else if (Matches("export"))
+                    {
+                        flags |= ScriptStructFlags.Export;
+                    }
+                    else if (Matches("transient"))
+                    {
+                        flags |= ScriptStructFlags.Transient;
+                    }
+                    else if (Matches("atomic"))
+                    {
+                        flags |= ScriptStructFlags.Atomic;
+                    }
+                    else if (Matches("immutable"))
+                    {
+                        flags |= ScriptStructFlags.Immutable | ScriptStructFlags.Atomic;
+                    }
+                    else if (Matches("immutablewhencooked"))
+                    {
+                        flags |= ScriptStructFlags.ImmutableWhenCooked | ScriptStructFlags.AtomicWhenCooked;
+                    }
+                    else if (Matches("strictconfig"))
+                    {
+                        flags |= ScriptStructFlags.StrictConfig;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
-                var name = Tokens.ConsumeToken(TokenType.Word);
-                if (name == null) return Error("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var name = Consume(TokenType.Word);
+                if (name == null) throw Error("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var parent = TryParseParent();
 
-                if (Tokens.ConsumeToken(TokenType.LeftBracket) == null) return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var vars = new List<VariableDeclaration>();
-                do
+                while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd())
                 {
                     var variable = TryParseVarDecl();
-                    if (variable == null) return Error("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (variable == null) throw Error("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     vars.Add(variable);
-                } while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd());
+                }
 
-                if (Tokens.ConsumeToken(TokenType.RightBracket) == null) return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new Struct(name.Value, specs, vars, name.StartPosition, name.EndPosition, parent);
+                return new Struct(name.Value, flags, vars, name.StartPosition, name.EndPosition, parent);
             }
         }
 
@@ -224,24 +370,24 @@ namespace ME3Script.Parsing
             return (Enumeration)Tokens.TryGetTree(EnumParser);
             ASTNode EnumParser()
             {
-                if (Tokens.ConsumeToken(TokenType.Enumeration) == null) return null;
+                if (!Matches(ENUM)) return null;
 
-                var name = Tokens.ConsumeToken(TokenType.Word);
-                if (name == null) return Error("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var name = Consume(TokenType.Word);
+                if (name == null) throw Error("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.LeftBracket) == null) return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var identifiers = new List<VariableIdentifier>();
                 do
                 {
-                    var ident = Tokens.ConsumeToken(TokenType.Word);
-                    if (ident == null) return Error("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    var ident = Consume(TokenType.Word);
+                    if (ident == null) throw Error("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPosition, ident.EndPosition));
-                    if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) return Error("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw Error("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 } while (CurrentTokenType != TokenType.RightBracket);
 
-                if (Tokens.ConsumeToken(TokenType.RightBracket) == null) return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new Enumeration(name.Value, identifiers, name.StartPosition, name.EndPosition);
             }
@@ -252,60 +398,68 @@ namespace ME3Script.Parsing
             return (Function)Tokens.TryGetTree(StubParser);
             ASTNode StubParser()
             {
-                var specs = ParseSpecifiers(GlobalLists.FunctionSpecifiers);
+                ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags);
 
-                bool isEvent = false;
-                if (Tokens.ConsumeToken(TokenType.Event) != null)
-                {
-                    isEvent = true;
-                }
-                else if (Tokens.ConsumeToken(TokenType.Function) == null)
+                if (!Matches(FUNCTION))
                 {
                     return null;
                 }
 
-                Token<string> returnType = null, name = null;
+                Tokens.PushSnapshot();
+                var returnType = TryParseType();
+                if (returnType == null) throw Error("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                var firstString = Tokens.ConsumeToken(TokenType.Word);
-                if (firstString == null) return Error("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var secondString = Tokens.ConsumeToken(TokenType.Word);
-                if (secondString == null)
-                    name = firstString;
+                Token<string> name = Consume(TokenType.Word);
+                if (name == null)
+                {
+                    Tokens.PopSnapshot();
+                    name = Consume(TokenType.Word);
+                    returnType = null;
+                }
                 else
                 {
-                    returnType = firstString;
-                    name = secondString;
+                    Tokens.DiscardSnapshot();
                 }
 
-                VariableType retVarType = returnType != null ? new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
-
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var parameters = new List<FunctionParameter>();
+                bool hasOptionalParams = false;
                 while (CurrentTokenType != TokenType.RightParenth)
                 {
                     var param = TryParseParameter();
-                    if (param == null) return Error("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (param == null) throw Error("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (hasOptionalParams && !param.IsOptional)
+                    {
+                        throw Error("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
+                    }
 
+                    hasOptionalParams |= param.IsOptional;
                     parameters.Add(param);
-                    if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) return Error("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw Error("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (hasOptionalParams)
+                {
+                    flags |= FunctionFlags.HasOptionalParms;
+                }
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                if (Consume(TokenType.SemiColon) == null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                     {
-                        return Error("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     }
 
                     body = new CodeBody(null, bodyStart, bodyEnd);
                 }
 
-                return new Function(name.Value, retVarType, body, specs, parameters, isEvent, name.StartPosition, name.EndPosition);
+                return new Function(name.Value, returnType, body, flags, parameters, name.StartPosition, name.EndPosition)
+                {
+                    NativeIndex = nativeIndex
+                };
             }
         }
 
@@ -314,30 +468,44 @@ namespace ME3Script.Parsing
             return (State)Tokens.TryGetTree(StateSkeletonParser);
             ASTNode StateSkeletonParser()
             {
-                var startPos = CurrentPosition;
-                var specs = ParseSpecifiers(GlobalLists.StateSpecifiers);
+                StateFlags flags = StateFlags.None;
+                while (CurrentTokenType == TokenType.Word)
+                {
+                    if (Matches("simulated"))
+                    {
+                        flags |= StateFlags.Simulated;
+                    }
+                    else if (Matches("auto"))
+                    {
+                        flags |= StateFlags.Auto;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
-                if (Tokens.ConsumeToken(TokenType.State) == null) return null;
+                if (!Matches(STATE)) return null;
 
-                var name = Tokens.ConsumeToken(TokenType.Word);
-                if (name == null) return Error("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var name = Consume(TokenType.Word);
+                if (name == null) throw Error("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var parent = TryParseParent();
 
-                if (Tokens.ConsumeToken(TokenType.LeftBracket) == null) return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                List<Function> ignores = new List<Function>();
-                if (Tokens.ConsumeToken(TokenType.Ignores) != null)
+                var ignores = new List<Function>();
+                if (Matches(IGNORES))
                 {
                     do
                     {
                         VariableIdentifier variable = TryParseVariable();
-                        if (variable == null) return Error("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (variable == null) throw Error("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                        ignores.Add(new Function(variable.Name, null, null, null, null, false, variable.StartPos, variable.EndPos));
-                    } while (Tokens.ConsumeToken(TokenType.Comma) != null);
+                        ignores.Add(new Function(variable.Name, null, null, default, null, variable.StartPos, variable.EndPos));
+                    } while (Consume(TokenType.Comma) != null);
 
-                    if (Tokens.ConsumeToken(TokenType.SemiColon) == null) return Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 var funcs = new List<Function>();
@@ -351,14 +519,14 @@ namespace ME3Script.Parsing
 
                 if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, true, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                 {
-                    return Error("Malformed state body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Malformed state body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null) return Error("Expected semi-colon at end of state!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon at end of state!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd);
 
-                var parentState = parent != null ? new State(parent.Name, null, null, null, null, null, null, parent.StartPos, parent.EndPos) : null;
-                return new State(name.Value, body, specs, parentState, funcs, ignores, null, name.StartPosition, CurrentPosition);
+                var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, null, parent.StartPos, parent.EndPos) : null;
+                return new State(name.Value, body, flags, parentState, funcs, ignores, null, name.StartPosition, CurrentPosition);
             }
         }
 
@@ -367,26 +535,26 @@ namespace ME3Script.Parsing
             return (OperatorDeclaration)Tokens.TryGetTree(OperatorParser);
             ASTNode OperatorParser()
             {
-                var specs = ParseSpecifiers(GlobalLists.FunctionSpecifiers);
+                ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags);
 
-                var token = Tokens.ConsumeToken(TokenType.Operator) ?? Tokens.ConsumeToken(TokenType.PreOperator) ?? Tokens.ConsumeToken(TokenType.PostOperator) ?? new Token<string>(TokenType.INVALID);
+                var token = Matches("operator") || Matches("preoperator") || Matches("postoperator") ? Tokens.Prev() : null;
 
-                if (token.Type == TokenType.INVALID) return null;
+                if (token is null) return null;
 
-                Token<string> precedence = null;
-                if (token.Type == TokenType.Operator)
+                int precedence = 0;
+                bool isInfixOperator = token.Value.Equals("operator", StringComparison.OrdinalIgnoreCase);
+                if (isInfixOperator)
                 {
-                    if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return Error("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                    precedence = Tokens.ConsumeToken(TokenType.IntegerNumber);
-                    if (precedence == null) return Error("Expected an integer number!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                    if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.IntegerNumber) == null) throw Error("Expected an integer number!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    precedence = int.Parse(Tokens.Prev().Value);
+                    if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 Token<string> returnType = null, name = null;
                 var firstString = TryParseOperatorIdentifier();
-                if (firstString == null) return Error("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (firstString == null) throw Error("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var secondString = TryParseOperatorIdentifier();
                 if (secondString == null)
@@ -399,41 +567,45 @@ namespace ME3Script.Parsing
 
                 VariableType retVarType = returnType != null ? new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var operands = new List<FunctionParameter>();
                 while (CurrentTokenType != TokenType.RightParenth)
                 {
                     var operand = TryParseParameter();
-                    if (operand == null) return Error("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (operand == null) throw Error("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                     operands.Add(operand);
-                    if (Tokens.ConsumeToken(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) return Error("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw Error("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
-                if (token.Type == TokenType.Operator && operands.Count != 2)
-                    return Error("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (isInfixOperator && operands.Count != 2)
+                    throw Error("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                else if (token.Type != TokenType.Operator && operands.Count != 1) return Error("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                else if (isInfixOperator && operands.Count != 1) throw Error("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
-                SourcePosition bodyStart = null, bodyEnd = null;
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
+                if (Consume(TokenType.SemiColon) == null)
                 {
-                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out bodyStart, out bodyEnd)) return Error("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                    body = new CodeBody(null, bodyStart, bodyEnd);
+                    if (ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
+                    {
+                        body = new CodeBody(null, bodyStart, bodyEnd);
+                    }
+                    else
+                    {
+                        throw Error("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    }
                 }
 
-                // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
-                if (token.Type == TokenType.PreOperator)
-                    return new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), specs, name.StartPosition, name.EndPosition);
-                else if (token.Type == TokenType.PostOperator)
-                    return new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), specs, name.StartPosition, name.EndPosition);
-                else
-                    return new InOpDeclaration(name.Value, int.Parse(precedence.Value), false, body, retVarType, operands.First(), operands.Last(), specs, name.StartPosition, name.EndPosition);
+                return token.Value.ToLower() switch
+                {
+                    // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
+                    "preoperator" => new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex},
+                    "postoperator" => new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex},
+                    _ => new InOpDeclaration(name.Value, precedence, false, body, retVarType, operands.First(), operands.Last(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex}
+                };
             }
         }
 
@@ -443,11 +615,11 @@ namespace ME3Script.Parsing
             ASTNode DefaultPropertiesParser()
             {
 
-                if (Tokens.ConsumeToken(TokenType.DefaultProperties) == null) return null;
+                if (!Matches(DEFAULTPROPERTIES)) return null;
 
                 if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                 {
-                    return Error("Malformed defaultproperties body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Malformed defaultproperties body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd);
@@ -463,26 +635,61 @@ namespace ME3Script.Parsing
             return (FunctionParameter)Tokens.TryGetTree(ParamParser);
             ASTNode ParamParser()
             {
-                var paramSpecs = ParseSpecifiers(GlobalLists.ParameterSpecifiers);
-
-
-
-                var type = TryParseType();
-                if (type == null) return Error("Expected parameter type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var variable = TryParseVariable();
-                if (variable == null) return Error("Expected parameter name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var funcParam = new FunctionParameter(type, paramSpecs, variable, variable.StartPos, variable.EndPos);
-                if (paramSpecs.Any(spec => spec.Value == "optional"))
+                ParseVariableSpecifiers(out EPropertyFlags flags);
+                if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.EditInline | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
                 {
-                    funcParam.IsOptional = true;
+                    //editinline????
+                    throw Error("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'alwaysinit' and 'skip'!", CurrentPosition);
                 }
 
-                if (CurrentTokenType == TokenType.Assign)
+                flags |= EPropertyFlags.Parm;
+
+                var type = TryParseType();
+                if (type == null) throw Error("Expected parameter type!", CurrentPosition);
+
+                var variable = TryParseVariable();
+                if (variable == null) throw Error("Expected parameter name!", CurrentPosition);
+
+                var funcParam = new FunctionParameter(type, flags, variable, variable.StartPos, variable.EndPos);
+
+                if (Consume(TokenType.Assign) != null)
                 {
-                    Tokens.Advance();
-                    //TODO: parse default values!
+                    if (!funcParam.IsOptional)
+                    {
+                        throw Error("Only optional parameters can have default values!", CurrentPosition);
+                    }
+
+                    if (funcParam.IsOut)
+                    {
+                        throw Error("optional out parameters cannot have default values!", CurrentPosition);
+                    }
+
+                    var defaultValueStart = CurrentPosition;
+                    int parenNest = 0;
+                    while (CurrentTokenType != TokenType.EOF)
+                    {
+                        if (parenNest == 0 && (CurrentTokenType == TokenType.RightParenth || CurrentTokenType == TokenType.Comma))
+                        {
+                            break;
+                        }
+
+                        switch (CurrentTokenType)
+                        {
+                            case TokenType.LeftParenth:
+                                parenNest++;
+                                break;
+                            case TokenType.RightParenth:
+                                parenNest--;
+                                break;
+                        }
+                        Tokens.Advance();
+                    }
+
+                    if (CurrentPosition.Equals(defaultValueStart))
+                    {
+                        throw Error("Expected default parameter value after '='!", CurrentPosition);
+                    }
+                    funcParam.UnparsedDefaultParam = new CodeBody(null, defaultValueStart, CurrentPosition);
                 }
 
                 return funcParam;
@@ -494,8 +701,8 @@ namespace ME3Script.Parsing
             return (VariableType)Tokens.TryGetTree(ParentParser);
             ASTNode ParentParser()
             {
-                if (Tokens.ConsumeToken(TokenType.Extends) == null) return null;
-                var parentName = Tokens.ConsumeToken(TokenType.Word);
+                if (!Matches(EXTENDS)) return null;
+                var parentName = Consume(TokenType.Word);
                 if (parentName == null)
                 {
                     Log.LogError("Expected parent name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -511,8 +718,8 @@ namespace ME3Script.Parsing
             return (VariableType)Tokens.TryGetTree(OuterParser);
             ASTNode OuterParser()
             {
-                if (Tokens.ConsumeToken(TokenType.Within) == null) return null;
-                var outerName = Tokens.ConsumeToken(TokenType.Word);
+                if (!Matches(WITHIN)) return null;
+                var outerName = Consume(TokenType.Word);
                 if (outerName == null)
                 {
                     Log.LogError("Expected outer class name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -520,36 +727,6 @@ namespace ME3Script.Parsing
                 }
 
                 return new VariableType(outerName.Value, outerName.StartPosition, outerName.EndPosition);
-            }
-        }
-
-        public Specifier TryParseSpecifier(List<TokenType> category)
-        {
-            return (Specifier)Tokens.TryGetTree(SpecifierParser);
-            ASTNode SpecifierParser()
-            {
-                if (category.Contains(CurrentTokenType))
-                {
-                    if (CurrentTokenType == TokenType.ConfigSpecifier)
-                    {
-                        var specNameToken = Tokens.ConsumeToken(CurrentTokenType);
-                        if (Tokens.ConsumeToken(TokenType.LeftParenth) != null)
-                        {
-                            var categoryToken = Tokens.ConsumeToken(TokenType.Word);
-                            if (categoryToken != null && Tokens.ConsumeToken(TokenType.RightParenth) != null)
-                            {
-                                return new ConfigSpecifier(categoryToken.Value, specNameToken.StartPosition, categoryToken.EndPosition.GetModifiedPosition(0, 1, 1));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var token = Tokens.ConsumeToken(CurrentTokenType);
-                        return new Specifier(token.Value, token.StartPosition, token.EndPosition);
-                    }
-                }
-
-                return null;
             }
         }
 
@@ -561,28 +738,355 @@ namespace ME3Script.Parsing
         {
             if (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType)
                 || CurrentTokenType == TokenType.Word)
-                return Tokens.ConsumeToken(CurrentTokenType);
+                return Consume(CurrentTokenType);
 
             return null;
         }
 
-        public List<Specifier> ParseSpecifiers(List<TokenType> specifierCategory)
+        public void ParseVariableSpecifiers(out EPropertyFlags flags)
         {
-            var specs = new List<Specifier>();
-            Specifier spec = TryParseSpecifier(specifierCategory);
-            while (spec != null)
+            flags = EPropertyFlags.None;
+            while (CurrentTokenType == TokenType.Word)
             {
-                specs.Add(spec);
-                spec = TryParseSpecifier(specifierCategory);
+                if (Matches("const"))
+                {
+                    flags |= EPropertyFlags.Const;
+                }
+                else if (Matches("config"))
+                {
+                    flags |= EPropertyFlags.Config;
+                }
+                else if (Matches("globalconfig"))
+                {
+                    flags |= EPropertyFlags.GlobalConfig | EPropertyFlags.Config;
+                }
+                else if (Matches("localized"))
+                {
+                    flags |= EPropertyFlags.Localized | EPropertyFlags.Const;
+                }
+                //TODO: private, protected, and public are in ObjectFlags, not PropertyFlags 
+                else if (Matches("privatewrite"))
+                {
+                    flags |= EPropertyFlags.PrivateWrite;
+                }
+                else if (Matches("protectedwrite"))
+                {
+                    flags |= EPropertyFlags.ProtectedWrite;
+                }
+                else if (Matches("editconst"))
+                {
+                    flags |= EPropertyFlags.EditConst;
+                }
+                else if (Matches("edithide"))
+                {
+                    flags |= EPropertyFlags.EditHide;
+                }
+                else if (Matches("edittextbox"))
+                {
+                    flags |= EPropertyFlags.EditTextBox;
+                }
+                else if (Matches("input"))
+                {
+                    flags |= EPropertyFlags.Input;
+                }
+                else if (Matches("transient"))
+                {
+                    flags |= EPropertyFlags.Transient;
+                }
+                else if (Matches("native"))
+                {
+                    flags |= EPropertyFlags.Native;
+                }
+                else if (Matches("noexport"))
+                {
+                    flags |= EPropertyFlags.NoExport;
+                }
+                else if (Matches("duplicatetransient"))
+                {
+                    flags |= EPropertyFlags.DuplicateTransient;
+                }
+                else if (Matches("noimport"))
+                {
+                    flags |= EPropertyFlags.NoImport;
+                }
+                else if (Matches("out"))
+                {
+                    flags |= EPropertyFlags.OutParm;
+                }
+                else if (Matches("export"))
+                {
+                    flags |= EPropertyFlags.ExportObject;
+                }
+                else if (Matches("editinline"))
+                {
+                    flags |= EPropertyFlags.EditInline;
+                }
+                else if (Matches("editinlineuse"))
+                {
+                    flags |= EPropertyFlags.EditInlineUse | EPropertyFlags.EditInline;
+                }
+                else if (Matches("noclear"))
+                {
+                    flags |= EPropertyFlags.NoClear;
+                }
+                else if (Matches("editfixedsize"))
+                {
+                    flags |= EPropertyFlags.EditFixedSize;
+                }
+                else if (Matches("repnotify"))
+                {
+                    flags |= EPropertyFlags.RepNotify;
+                }
+                else if (Matches("repretry"))
+                {
+                    flags |= EPropertyFlags.RepRetry;
+                }
+                else if (Matches("interp"))
+                {
+                    flags |= EPropertyFlags.Interp | EPropertyFlags.Editable;
+                }
+                else if (Matches("nontransactional"))
+                {
+                    flags |= EPropertyFlags.NonTransactional;
+                }
+                else if (Matches("deprecated"))
+                {
+                    flags |= EPropertyFlags.Deprecated;
+                }
+                else if (Matches("skip"))
+                {
+                    flags |= EPropertyFlags.SkipParm;
+                }
+                else if (Matches("coerce"))
+                {
+                    flags |= EPropertyFlags.CoerceParm;
+                }
+                else if (Matches("optional"))
+                {
+                    flags |= EPropertyFlags.OptionalParm;
+                }
+                else if (Matches("alwaysinit"))
+                {
+                    flags |= EPropertyFlags.AlwaysInit;
+                }
+                else if (Matches("instanced"))
+                {
+                    flags |= EPropertyFlags.EditInline | EPropertyFlags.ExportObject;
+                }
+                else if (Matches("databinding"))
+                {
+                    flags |= EPropertyFlags.DataBinding;
+                }
+                else if (Matches("editoronly"))
+                {
+                    flags |= EPropertyFlags.EditorOnly;
+                }
+                else if (Matches("notforconsole"))
+                {
+                    flags |= EPropertyFlags.NotForConsole;
+                }
+                else if (Matches("archetype"))
+                {
+                    flags |= EPropertyFlags.Archetype;
+                }
+                else if (Matches("serializetext"))
+                {
+                    flags |= EPropertyFlags.SerializeText;
+                }
+                else if (Matches("crosslevelactive"))
+                {
+                    flags |= EPropertyFlags.CrossLevelActive;
+                }
+                else if (Matches("crosslevelpassive"))
+                {
+                    flags |= EPropertyFlags.CrossLevelPassive;
+                }
+                else
+                {
+                    break;
+                }
             }
-            return specs;
+        }
+
+        private void ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags)
+        {
+            nativeIndex = 0;
+            flags = FunctionFlags.Defined;
+            bool unreliable = false;
+            while (CurrentTokenType == TokenType.Word)
+            {
+                if (Matches("event"))
+                {
+                    flags |= FunctionFlags.Event;
+                }
+                else if (Matches("delegate"))
+                {
+                    flags |= FunctionFlags.Delegate;
+                }
+                else if (Matches("operator"))
+                {
+                    flags |= FunctionFlags.Operator;
+                }
+                else if (Matches("preoperator"))
+                {
+                    flags |= FunctionFlags.PreOperator | FunctionFlags.Operator;
+                }
+                else if (Matches("native"))
+                {
+                    flags |= FunctionFlags.Native;
+                    if (Consume(TokenType.LeftParenth) != null)
+                    {
+                        if (Consume(TokenType.IntegerNumber) == null)
+                        {
+                            {
+                                throw Error("Expected native index!", CurrentPosition);
+                            }
+                        }
+
+                        nativeIndex = int.Parse(Tokens.Prev().Value);
+
+                        if (Consume(TokenType.RightParenth) == null)
+                        {
+                            {
+                                throw Error("Expected ')' after native index!", CurrentPosition);
+                            }
+                        }
+                    }
+                }
+                else if (Matches("static"))
+                {
+                    flags |= FunctionFlags.Static;
+                }
+                else if (Matches("simulated"))
+                {
+                    flags |= FunctionFlags.Simulated;
+                }
+                else if (Matches("iterator"))
+                {
+                    flags |= FunctionFlags.Iterator;
+                }
+                else if (Matches("singular"))
+                {
+                    flags |= FunctionFlags.Singular;
+                }
+                else if (Matches("latent"))
+                {
+                    flags |= FunctionFlags.Latent;
+                }
+                else if (Matches("exec"))
+                {
+                    flags |= FunctionFlags.Exec;
+                }
+                else if (Matches("final"))
+                {
+                    flags |= FunctionFlags.Final;
+                }
+                else if (Matches("server"))
+                {
+                    flags |= FunctionFlags.NetServer | FunctionFlags.Net;
+                }
+                else if (Matches("client"))
+                {
+                    flags |= FunctionFlags.NetClient | FunctionFlags.Net | FunctionFlags.Simulated;
+                }
+                else if (Matches("reliable"))
+                {
+                    flags |= FunctionFlags.NetReliable;
+                }
+                else if (Matches("unreliable"))
+                {
+                    unreliable = true;
+                }
+                else if (Matches("private"))
+                {
+                    flags |= FunctionFlags.Private | FunctionFlags.Final;
+                }
+                else if (Matches("protected"))
+                {
+                    flags |= FunctionFlags.Protected;
+                }
+                else if (Matches("public"))
+                {
+                    flags |= FunctionFlags.Public;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            //initial flag validation
+            if (flags.Has(FunctionFlags.Native))
+            {
+                if (nativeIndex > 0 && !flags.Has(FunctionFlags.Final))
+                {
+                    {
+                        throw Error("Function with a native index must be final!", CurrentPosition);
+                    }
+                }
+            }
+            else
+            {
+                if (flags.Has(FunctionFlags.Latent))
+                {
+                    {
+                        throw Error("Only native functions may use 'latent'!", CurrentPosition);
+                    }
+                }
+                if (flags.Has(FunctionFlags.Iterator))
+                {
+                    {
+                        throw Error("Only native functions may use 'iterator'!", CurrentPosition);
+                    }
+                }
+            }
+
+            if (flags.Has(FunctionFlags.Net))
+            {
+                if (flags.Has(FunctionFlags.Exec))
+                {
+                    {
+                        throw Error("Exec functions cannot be replicated!", CurrentPosition);
+                    }
+                }
+                if (flags.Has(FunctionFlags.Static))
+                {
+                    {
+                        throw Error("Static functions can't be replicated!", CurrentPosition);
+                    }
+                }
+                if (!unreliable && !flags.Has(FunctionFlags.NetReliable))
+                {
+                    {
+                        throw Error("Replicated functions require 'reliable' or 'unreliable'!", CurrentPosition);
+                    }
+                }
+                if (unreliable && flags.Has(FunctionFlags.NetReliable))
+                {
+                    {
+                        throw Error("'reliable' and 'unreliable' are mutually exclusive!", CurrentPosition);
+                    }
+                }
+            }
+            else if (unreliable)
+            {
+                {
+                    throw Error("'unreliable' specified without 'client' or 'server'!", CurrentPosition);
+                }
+            }
+            else if (flags.Has(FunctionFlags.NetReliable))
+            {
+                {
+                    throw Error("'reliable' specified without 'client' or 'server'!", CurrentPosition);
+                }
+            }
         }
 
         //TODO: unused?
         private List<Token<string>> ParseScopedTokens(TokenType scopeStart, TokenType scopeEnd)
         {
             var scopedTokens = new List<Token<string>>();
-            if (Tokens.ConsumeToken(scopeStart) == null)
+            if (Consume(scopeStart) == null)
             {
                 Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 return null;
@@ -612,7 +1116,7 @@ namespace ME3Script.Parsing
         {
             startPos = null;
             endPos = null;
-            if (!isPartialScope && Tokens.ConsumeToken(scopeStart) == null)
+            if (!isPartialScope && Consume(scopeStart) == null)
             {
                 Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 return false;

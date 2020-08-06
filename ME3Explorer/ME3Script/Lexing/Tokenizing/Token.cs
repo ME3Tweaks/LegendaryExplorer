@@ -85,7 +85,7 @@ namespace ME3Script.Lexing.Tokenizing
         BinaryAnd,      // &
         BinaryOr,       // |
         BinaryXor,      // ^
-        RightShift,     // >>, also vector reverse rotate
+        //RightShift,     // >>, also vector reverse rotate   //will have to be matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
         LeftShift,      // <<, also vector rotate
 
         Conditional,    // ?
@@ -100,174 +100,174 @@ namespace ME3Script.Lexing.Tokenizing
 
         #endregion
 
-        #region Keywords
 
-        #region Operators
-
-        VectorCross,    // Cross
-        VectorDot,      // Dot
-
-        IsClockwiseFrom,// ClockwiseFrom
-
-        #endregion
-
-        #region Variables
-        // Variables:
-        InstanceVariable,
-        LocalVariable,
-
-        // Variable specifiers:
-        ConfigSpecifier,
-        GlobalConfigSpecifier,
-        LocalizedSpecifier,
-        ConstSpecifier,
-        PrivateSpecifier,
-        ProtectedSpecifier,
-        PrivateWriteSpecifier,
-        ProtectedWriteSpecifier,
-        RepNotifySpecifier,
-        DeprecatedSpecifier,
-        InstancedSpecifier,
-        DatabindingSpecifier,
-        EditorOnlySpecifier,
-        NotForConsoleSpecifier,
-        EditConstSpecifier,
-        EditFixedSizeSpecifier,
-        EditInlineSpecifier,
-        EditInlineUseSpecifier,
-        NoClearSpecifier,
-        InterpSpecifier,
-        InputSpecifier,
-        TransientSpecifier,
-        DuplicateTransientSpecifier,
-        NoImportSpecifier,
-        NativeSpecifier,
-        NativeReplicationSpecifier,
-        ExportSpecifier,
-        NoExportSpecifier,
-        NonTransactionalSpecifier,
-        PointerSpecifier,
-        InitSpecifier,
-        RepRetrySpecifier,
-        AllowAbstractSpecifier,
-        // Function variables only:
-        OutSpecifier,
-        CoerceSpecifier,
-        OptionalSpecifier,
-        // Operator functions only:
-        SkipSpecifier,
-
-        // Class Specifiers:
-        AbstractSpecifier,
-        DependsOnSpecifier,
-        ImplementsSpecifier,
-        ParseConfigSpecifier,
-        PerObjectConfigSpecifier,
-        PerObjectLocalizedSpecifier,
-        NonTransientSpecifier,
-        PlaceableSpecifier,
-
-        // Struct Specifiers:
-        ImmutableSpecifier,
-        ImmutableWhenCookedSpecifier,
-        AtomicSpecifier,
-        AtomicWhenCookedSpecifier,
-        StrictConfigSpecifier,
-
-        // Variable types:
-        //Byte,
-        //Int,
-        //Bool,
-        //Float,
-        String,
-        Enumeration,
-        // Aggregates:
-        Array,
-        Struct,
-        Class,
-        State,
-        Function,
-        Event,
-        Delegate,
-        Operator,
-        DefaultProperties,
-        // Unrealengine types:
+        SingleLineComment,
+        MultiLineComment,
+        StringLiteral,
         NameLiteral,
-        //Object,
-        //Actor,
-        //Vector,
-        //Rotator,
-        //Plane,
-        //Coords,
-        //Color,
-        //Region,
-        // Constants:
-        Constant,
-        None,
-        Self,
-        EnumCount,
-        ArrayCount,
-
-        #endregion
-
-        #endregion
-
         EOF,
         Word,
         IntegerNumber,
         FloatingNumber,
-        True,
-        False,
-        Scope,
-        StructMember,
-        Extends,
-        Within,
-        //Functions:
-        PublicSpecifier,
-        StaticSpecifier,
-        FinalSpecifier,
-        ExecSpecifier,
-        K2CallSpecifier,
-        K2OverrideSpecifier,
-        K2PureSpecifier,
-        SimulatedSpecifier,
-        SingularSpecifier,
-        ClientSpecifier,
-        DemoRecordingSpecifier,
-        ReliableSpecifier,
-        ServerSpecifier,
-        UnreliableSpecifier,
-        IteratorSpecifier,
-        LatentSpecifier,
-        //States
-        AutoSpecifier,
-        Ignores,
-        //Operators
-        PreOperator,
-        PostOperator,
 
-        //Flow
-        If,
-        Else,
-        While,
-        Do,
-        Until,
-        For,
-        Continue,
-        Break,
-        ForEach,
-        Return,
-        Switch,
-        Case,
-        Default,
-        // State flow
-        GoTo,
-        GoToState,
-        Stop,
+        //#region Keywords
 
-        //comments
-        SingleLineComment,
-        MultiLineComment,
+        //#region Operators
+
+        //VectorCross,    // Cross
+        //VectorDot,      // Dot
+
+        //IsClockwiseFrom,// ClockwiseFrom
+
+        //#endregion
+
+        //#region Variables
+        //// Variables:
+        //InstanceVariable,
+        //LocalVariable,
+
+        ////// Variable specifiers:
+        ////ConfigSpecifier,
+        ////GlobalConfigSpecifier,
+        ////LocalizedSpecifier,
+        ////PrivateSpecifier,
+        ////ProtectedSpecifier,
+        ////PrivateWriteSpecifier,
+        ////ProtectedWriteSpecifier,
+        ////RepNotifySpecifier,
+        ////DeprecatedSpecifier,
+        ////InstancedSpecifier,
+        ////DatabindingSpecifier,
+        ////EditorOnlySpecifier,
+        ////NotForConsoleSpecifier,
+        ////EditConstSpecifier,
+        ////EditFixedSizeSpecifier,
+        ////EditInlineSpecifier,
+        ////EditInlineUseSpecifier,
+        ////NoClearSpecifier,
+        ////InterpSpecifier,
+        ////InputSpecifier,
+        ////TransientSpecifier,
+        ////DuplicateTransientSpecifier,
+        ////NoImportSpecifier,
+        ////NativeSpecifier,
+        ////NativeReplicationSpecifier,
+        ////ExportSpecifier,
+        ////NoExportSpecifier,
+        ////NonTransactionalSpecifier,
+        ////PointerSpecifier,
+        ////RepRetrySpecifier,
+        ////AllowAbstractSpecifier,
+        ////// Function variables only:
+        ////OutSpecifier,
+        ////CoerceSpecifier,
+        ////OptionalSpecifier,
+        ////// Operator functions only:
+        ////SkipSpecifier,
+
+        ////// Class Specifiers:
+        ////AbstractSpecifier,
+        ////DependsOnSpecifier,
+        ////ImplementsSpecifier,
+        ////ParseConfigSpecifier,
+        ////PerObjectConfigSpecifier,
+        ////PerObjectLocalizedSpecifier,
+        ////NonTransientSpecifier,
+        ////PlaceableSpecifier,
+
+        ////// Struct Specifiers:
+        ////ImmutableSpecifier,
+        ////ImmutableWhenCookedSpecifier,
+        ////AtomicSpecifier,
+        ////AtomicWhenCookedSpecifier,
+        ////StrictConfigSpecifier,
+
+        //// Variable types:
+        ////Byte,
+        ////Int,
+        ////Bool,
+        ////Float,
+        //Enumeration,
+        //// Aggregates:
+        //Array,
+        //Struct,
+        //Class,
+        //State,
+        //Function,
+        ////EventSpecifier,
+        ////Delegate,
+        ////Operator,
+        //DefaultProperties,
+        //// Unrealengine types:
+        ////Object,
+        ////Actor,
+        ////Vector,
+        ////Rotator,
+        ////Plane,
+        ////Coords,
+        ////Color,
+        ////Region,
+        //// Constants:
+        //Constant,
+        //None,
+        //Self,
+        //EnumCount,
+        //ArrayCount,
+
+        //#endregion
+
+        //#endregion
+
+        //True,
+        //False,
+        //Scope,
+        //StructMember,
+        //Extends,
+        //Within,
+        //////Functions:
+        ////PublicSpecifier,
+        ////StaticSpecifier,
+        ////FinalSpecifier,
+        ////ExecSpecifier,
+        ////K2CallSpecifier,
+        ////K2OverrideSpecifier,
+        ////K2PureSpecifier,
+        ////SimulatedSpecifier,
+        ////SingularSpecifier,
+        ////ClientSpecifier,
+        ////DemoRecordingSpecifier,
+        ////ReliableSpecifier,
+        ////ServerSpecifier,
+        ////UnreliableSpecifier,
+        ////IteratorSpecifier,
+        ////LatentSpecifier,
+        //////States
+        ////AutoSpecifier,
+        //Ignores,
+        //////Operators
+        ////PreOperator,
+        ////PostOperator,
+
+        ////Flow
+        //If,
+        //Else,
+        //While,
+        //Do,
+        //Until,
+        //For,
+        //Continue,
+        //Break,
+        //ForEach,
+        //Return,
+        //Switch,
+        //Case,
+        //Default,
+        //// State flow
+        //GoTo,
+        //GoToState,
+        //Stop,
+
+        ////comments
 
         INVALID
     }

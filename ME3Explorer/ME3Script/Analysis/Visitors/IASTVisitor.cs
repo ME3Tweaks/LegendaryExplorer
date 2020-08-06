@@ -12,6 +12,8 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(Class node);
         bool VisitNode(VariableDeclaration node);
         bool VisitNode(VariableType node);
+        bool VisitNode(DynamicArrayType node);
+        bool VisitNode(DelegateType node);
         bool VisitNode(Struct node);
         bool VisitNode(Enumeration node);
         bool VisitNode(Const node);

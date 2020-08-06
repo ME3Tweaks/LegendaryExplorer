@@ -28,7 +28,7 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return Declaration;
+                if(Declaration != null) yield return Declaration;
             }
         }
     }

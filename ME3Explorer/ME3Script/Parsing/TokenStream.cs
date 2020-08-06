@@ -45,12 +45,13 @@ namespace ME3Script.Parsing
 
         public ASTNode GetTree(Func<ASTNode> nodeParser)
         {
-            ASTCacheEntry entry;
-            if (!Cache.TryGetValue(CurrentIndex, out entry))
-                return nodeParser();
+            if (Cache.TryGetValue(CurrentIndex, out ASTCacheEntry entry))
+            {
+                CurrentIndex = entry.EndIndex;
+                return entry.AST;
+            }
 
-            CurrentIndex = entry.EndIndex;
-            return entry.AST;
+            return nodeParser();
         }
 
         public ASTNode TryGetTree(Func<ASTNode> nodeParser)
@@ -71,16 +72,9 @@ namespace ME3Script.Parsing
 
         public override Token<T> LookAhead(int reach)
         {
-            var token = base.LookAhead(reach);
-            return token == null ? new Token<T>(TokenType.EOF) : token;
+            return base.LookAhead(reach) ?? new Token<T>(TokenType.EOF);
         }
 
-        public override Token<T> CurrentItem
-        {
-            get
-            {
-                return base.AtEnd() ? new Token<T>(TokenType.EOF) : base.CurrentItem;
-            }
-        }
+        public override Token<T> CurrentItem => AtEnd() ? new Token<T>(TokenType.EOF) : base.CurrentItem;
     }
 }

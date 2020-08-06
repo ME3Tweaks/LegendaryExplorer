@@ -5,23 +5,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
     public sealed class Struct : VariableType
     {
-        public List<Specifier> Specifiers;
+        public ScriptStructFlags Flags;
         public VariableType Parent;
         public List<VariableDeclaration> Members;
         public DefaultPropertiesBlock DefaultProperties;
 
-        public Struct(string name, List<Specifier> specs,
+        public Struct(string name, ScriptStructFlags flags,
             List<VariableDeclaration> members,
             SourcePosition start, SourcePosition end, VariableType parent = null)
             : base(name, start, end)
         {
             Type = ASTNodeType.Struct;
-            Specifiers = specs;
+            Flags = flags;
             Members = members;
             Parent = parent;
             
@@ -55,7 +56,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                foreach (Specifier specifier in Specifiers) yield return specifier;
                 if (Parent != null) yield return Parent;
                 foreach (VariableDeclaration variableDeclaration in Members) yield return variableDeclaration;
                 if (DefaultProperties != null) yield return DefaultProperties;

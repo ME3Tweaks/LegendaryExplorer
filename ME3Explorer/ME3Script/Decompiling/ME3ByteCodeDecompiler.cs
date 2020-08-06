@@ -31,7 +31,7 @@ namespace ME3Script.Decompiling
         private List<List<Statement>> Scopes;
         private Stack<int> CurrentScope;
 
-        private Stack<FunctionParameter> OptionalParams;
+        private Queue<FunctionParameter> OptionalParams;
         private List<FunctionParameter> Parameters;
 
         private List<LabelTableEntry> LabelTable;
@@ -116,23 +116,23 @@ namespace ME3Script.Decompiling
             {
                 var node = new StateLabel(label.NameRef, (int)label.Offset, null, null);
                 var statement = StatementLocations[(ushort)label.Offset];
-                for (int n = 0; n < Scopes.Count; n++)
+                foreach (List<Statement> stmnt in Scopes)
                 {
-                    var index = Scopes[n].IndexOf(statement);
+                    var index = stmnt.IndexOf(statement);
                     if (index != -1)
-                        Scopes[n].Insert(index, node);
+                        stmnt.Insert(index, node);
                 }
             }
         }
 
         private void DecompileDefaultParameterValues(List<Statement> statements)
         {
-            OptionalParams = new Stack<FunctionParameter>();
+            OptionalParams = new Queue<FunctionParameter>();
             if (DataContainer is UFunction func) // Gets all optional params for default value parsing
             {
                 foreach (FunctionParameter param in Parameters.Where(param => param.IsOptional))
                 {
-                    OptionalParams.Push(param);
+                    OptionalParams.Enqueue(param);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace ME3Script.Decompiling
 
                     if (OptionalParams.Count != 0)
                     {
-                        var parm = OptionalParams.Pop();
+                        var parm = OptionalParams.Dequeue();
                         parm.DefaultParameter = value;
                         StartPositions.Pop();
                     }

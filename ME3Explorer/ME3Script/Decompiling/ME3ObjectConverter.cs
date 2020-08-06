@@ -20,15 +20,17 @@ namespace ME3Script.Decompiling
         {
             IMEPackage pcc = uClass.Export.FileRef;
 
-            VariableType parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName ?? "object", null, null);
+            VariableType parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName.Instanced ?? "object");
 
-            VariableType outer = new VariableType(pcc.GetEntry(uClass.OuterClass)?.ObjectName ?? parent.Name, null, null);
-            // TODO: specifiers
+            VariableType outer = new VariableType(pcc.GetEntry(uClass.OuterClass)?.ObjectName.Instanced ?? parent.Name);
             // TODO: operators
             // TODO: components
-            // TODO: interfaces
 
-
+            var interfaces = new List<VariableType>();
+            foreach ((UIndex interfaceUIndex, UIndex vftablePointerProperty) in uClass.Interfaces)
+            {
+                interfaces.Add(new VariableType(pcc.GetEntry(interfaceUIndex)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
+            }
 
             var Types = new List<VariableType>();
             var Vars = new List<VariableDeclaration>();
@@ -43,7 +45,7 @@ namespace ME3Script.Decompiling
                 switch (objBin)
                 {
                     case UConst uConst:
-                        Types.Add(new Const(uConst.Export.ObjectName, uConst.Value, null, null));
+                        Types.Add(new Const(uConst.Export.ObjectName.Instanced, uConst.Value, null, null));
                         nextItem = uConst.Next;
                         break;
                     case UEnum uEnum:
@@ -71,35 +73,14 @@ namespace ME3Script.Decompiling
                         break;
                 }
             }
-
-            var specifiers = new List<Specifier>();
-            foreach (UnrealFlags.EClassFlags classFlag in uClass.ClassFlags.MaskToList())
-            {
-                switch (classFlag)
-                {
-                    case UnrealFlags.EClassFlags.Abstract:
-                        specifiers.Add(new Specifier("abstract"));
-                        break;
-                    case UnrealFlags.EClassFlags.Config:
-                        specifiers.Add(new ConfigSpecifier(uClass.ClassConfigName));
-                        break;
-                    case UnrealFlags.EClassFlags.NoExport:
-                        specifiers.Add(new Specifier("noexport"));
-                        break;
-                    case UnrealFlags.EClassFlags.Placeable:
-                        specifiers.Add(new Specifier("placeable"));
-                        break;
-                    case UnrealFlags.EClassFlags.NativeReplication:
-                        specifiers.Add(new Specifier("nativereplication"));
-                        break;
-                }
-            }
             var propObject = pcc.GetUExport(uClass.Defaults);
             var defaultProperties = ConvertDefaultProperties(propObject);
 
-            Class AST = new Class(uClass.Export.ObjectName, specifiers, Vars, Types, Funcs, 
-                                  States, parent, outer, new List<OperatorDeclaration>(), defaultProperties, null, null);
-
+            Class AST = new Class(uClass.Export.ObjectName.Instanced, interfaces, uClass.ClassFlags, Vars, Types, Funcs,
+                                  States, parent, outer, new List<OperatorDeclaration>(), defaultProperties, null, null)
+            {
+                ConfigName = uClass.ClassConfigName
+            };
             // Ugly quick fix:
             foreach (var member in Types)
                 member.Outer = AST;
@@ -120,7 +101,7 @@ namespace ME3Script.Decompiling
 
             State parent = null;
             if (obj.SuperClass != 0)
-                parent = new State(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName, null, null, null, null, null, null, null, null);
+                parent = new State(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced, null, default, null, null, null, null, null, null);
 
             var Funcs = new List<Function>();
             var Ignores = new List<Function>();
@@ -135,7 +116,7 @@ namespace ME3Script.Decompiling
                         nextItem = uFunction.Next;
                         break;
                     case UFunction uFunction:
-                        Ignores.Add(new Function(uFunction.Export.ObjectName, null, null, null, null, false, null, null));
+                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, null, null, default, null, null, null));
                         /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
                          * They are defined though, each being its own proper object with simply a return nothing for bytecode.
                          * */
@@ -150,20 +131,7 @@ namespace ME3Script.Decompiling
             var ByteCode = new ME3ByteCodeDecompiler(obj, new List<FunctionParameter>());
             var body = ByteCode.Decompile();
 
-            var specifiers = new List<Specifier>();
-            foreach (StateFlags flag in obj.StateFlags.MaskToList())
-            {
-                switch (flag)
-                {
-                    case StateFlags.Auto:
-                        specifiers.Add(new Specifier("auto"));
-                        break;
-                    case StateFlags.Simulated:
-                        specifiers.Add(new Specifier("simulated"));
-                        break;
-                }
-            }
-            return new State(obj.Export.ObjectName, body, specifiers, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
         }
 
         public static Struct ConvertStruct(UScriptStruct obj)
@@ -187,28 +155,9 @@ namespace ME3Script.Decompiling
             }
 
             VariableType parent = obj.SuperClass != 0 
-                ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName, null, null) : null;
+                ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced, null, null) : null;
 
-            var specifiers = new List<Specifier>();
-            foreach (ScriptStructFlags flag in obj.StructFlags.MaskToList())
-            {
-                switch (flag)
-                {
-                    case ScriptStructFlags.Immutable:
-                        specifiers.Add(new Specifier("immutable"));
-                        break;
-                    case ScriptStructFlags.ImmutableWhenCooked:
-                        specifiers.Add(new Specifier("immutablewhencooked"));
-                        break;
-                    case ScriptStructFlags.Native:
-                        specifiers.Add(new Specifier("native"));
-                        break;
-                    case ScriptStructFlags.Transient:
-                        specifiers.Add(new Specifier("transient"));
-                        break;
-                }
-            }
-            var node = new Struct(obj.Export.ObjectName, specifiers, Vars, null, null, parent);
+            var node = new Struct(obj.Export.ObjectName.Instanced, obj.StructFlags, Vars, null, null, parent);
 
             foreach (var member in Vars)
                 member.Outer = node;
@@ -224,7 +173,7 @@ namespace ME3Script.Decompiling
                 vals.Add(new VariableIdentifier(val, null, null));
             }
 
-            var node = new Enumeration(obj.Export.ObjectName, vals, null, null);
+            var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null);
 
             foreach (var member in vals)
                 member.Outer = node;
@@ -235,44 +184,9 @@ namespace ME3Script.Decompiling
         public static VariableDeclaration ConvertVariable(UProperty obj)
         {
             int size = obj.ArraySize;
-            var specifiers = new List<Specifier>();
-            foreach (UnrealFlags.EPropertyFlags propFlag in obj.PropertyFlags.MaskToList())
-            {
-                switch (propFlag)
-                {
-                    case UnrealFlags.EPropertyFlags.Native:
-                        specifiers.Add(new Specifier("native"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.Transient:
-                        specifiers.Add(new Specifier("transient"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.EditConst:
-                        specifiers.Add(new Specifier("editconst"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.Const:
-                        specifiers.Add(new Specifier("const"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.Interp:
-                        specifiers.Add(new Specifier("interp"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.EditorOnly:
-                        specifiers.Add(new Specifier("editoronly"));
-                        break;
-                    //parm flags
-                    case UnrealFlags.EPropertyFlags.OptionalParm:
-                        specifiers.Add(new Specifier("optional"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.OutParm:
-                        specifiers.Add(new Specifier("out"));
-                        break;
-                    case UnrealFlags.EPropertyFlags.CoerceParm:
-                        specifiers.Add(new Specifier("coerce"));
-                        break;
-                }
-            }
 
-            return new VariableDeclaration(GetPropertyType(obj), specifiers,
-                                           new VariableIdentifier(obj.Export.ObjectName, null, null, size),
+            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags,
+                                           new VariableIdentifier(obj.Export.ObjectName.Instanced, null, null, size),
                                            obj.Category != "None" ? obj.Category : null, null, null);
         }
 
@@ -281,9 +195,8 @@ namespace ME3Script.Decompiling
             string typeStr = "UNKNOWN";
             switch (obj)
             {
-                case UArrayProperty arrayProperty: //TODO: create ArrayVariableType?
-                    typeStr = "array< " + GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty).Name + " >";
-                    break;
+                case UArrayProperty arrayProperty:
+                    return new DynamicArrayType(GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty));
                 case UBioMask4Property _:
                     typeStr = "biomask4";
                     break;
@@ -296,17 +209,10 @@ namespace ME3Script.Decompiling
                 case UClassProperty _:
                     typeStr = "class";
                     break;
-                case UComponentProperty _:
-                    typeStr = "ActorComponent"; // TODO: is this correct at all?
-                    break;
                 case UDelegateProperty delegateProperty:
-                    typeStr = "delegate< " + delegateProperty.Function + " >";
-                    break;
+                    return new DelegateType(obj.Export.FileRef.GetEntry(delegateProperty.Function)?.ObjectName.Instanced);
                 case UFloatProperty _:
                     typeStr = "float";
-                    break;
-                case UInterfaceProperty interfaceProperty:
-                    typeStr = interfaceProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
                     break;
                 case UIntProperty _:
                     typeStr = "int";
@@ -323,10 +229,21 @@ namespace ME3Script.Decompiling
                 case UStructProperty structProperty:
                     typeStr = structProperty.Struct.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr;
                     break;
+                //if we're just getting the name of the objectref, then Interface and Component are the same as Object
+                //Leave these here in case we do something fancier
+                //case UInterfaceProperty interfaceProperty:
+                //    typeStr = interfaceProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    break;
+                //case UComponentProperty componentProperty:
+                //    typeStr = componentProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                //    break;
+                case UObjectProperty objectProperty:
+                    typeStr = objectProperty.ObjectRef.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr; // ?
+                    break;
                 default:
                 {
                     //if (obj is UObject)
-                        typeStr = "object";
+                        typeStr = "Object";
                     break;
                 }
             }
@@ -354,10 +271,7 @@ namespace ME3Script.Decompiling
                         else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Specifiers, convert.Variable, null, null)
-                            {
-                                IsOptional = uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm)
-                            });
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Variable, null, null));
                         }
                         else
                         {
@@ -374,64 +288,12 @@ namespace ME3Script.Decompiling
             var ByteCode = new ME3ByteCodeDecompiler(obj, parameters);
             var body = ByteCode.Decompile();
 
-            var specifiers = new List<Specifier>();
-            bool isEvent = false;
-            foreach (FunctionFlags funcFlag in obj.FunctionFlags.MaskToList())
+            
+            var func = new Function(obj.Export.ObjectName.Instanced, returnType, body,
+                                    obj.FunctionFlags, parameters, null, null)
             {
-                switch (funcFlag)
-                {
-                    case FunctionFlags.Native when obj.NativeIndex > 0:
-                        specifiers.Add(new Specifier($"native({obj.NativeIndex})"));
-                        break;
-                    case FunctionFlags.Native:
-                        specifiers.Add(new Specifier("native"));
-                        break;
-                    case FunctionFlags.Static:
-                        specifiers.Add(new Specifier("static"));
-                        break;
-                    case FunctionFlags.Simulated:
-                        specifiers.Add(new Specifier("simulated"));
-                        break;
-                    case FunctionFlags.Net when !obj.FunctionFlags.Has(FunctionFlags.NetReliable):
-                        specifiers.Add(new Specifier("unreliable"));
-                        break;
-                    case FunctionFlags.NetReliable:
-                        specifiers.Add(new Specifier("reliable"));
-                        break;
-                    case FunctionFlags.NetServer:
-                        specifiers.Add(new Specifier("server"));
-                        break;
-                    case FunctionFlags.NetClient:
-                        specifiers.Add(new Specifier("client"));
-                        break;
-                    case FunctionFlags.Final:
-                        specifiers.Add(new Specifier("final"));
-                        break;
-                    case FunctionFlags.PreOperator:
-                        specifiers.Add(new Specifier("preoperator"));
-                        break;
-                    case FunctionFlags.Operator:
-                        specifiers.Add(new Specifier("operator"));
-                        break;
-                    case FunctionFlags.Iterator:
-                        specifiers.Add(new Specifier("iterator"));
-                        break;
-                    case FunctionFlags.Latent:
-                        specifiers.Add(new Specifier("latent"));
-                        break;
-                    case FunctionFlags.Exec:
-                        specifiers.Add(new Specifier("exec"));
-                        break;
-                    case FunctionFlags.Event:
-                        isEvent = true;
-                        break;
-                    case FunctionFlags.Const:
-                        specifiers.Add(new Specifier("const"));
-                        break;
-                }
-            }
-            var func = new Function(obj.Export.ObjectName, returnType, body,
-                                    specifiers, parameters, isEvent, null, null);
+                NativeIndex = obj.NativeIndex
+            };
 
             foreach (var local in locals)
             {

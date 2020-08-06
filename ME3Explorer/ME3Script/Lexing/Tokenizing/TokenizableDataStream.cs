@@ -45,6 +45,11 @@ namespace ME3Script.Lexing.Tokenizing
             return EndOfStream(reach) ? null : Data[CurrentIndex + reach];
         }
 
+        public virtual D Prev()
+        {
+            return CurrentIndex <= 0 ? null : Data[CurrentIndex - 1];
+        }
+
         public void Advance(int num = 1)
         {
             CurrentIndex += num;
@@ -61,7 +66,6 @@ namespace ME3Script.Lexing.Tokenizing
         {
             return CurrentIndex + ahead >= Data.Count;
         }
-
         #endregion
     }
 }

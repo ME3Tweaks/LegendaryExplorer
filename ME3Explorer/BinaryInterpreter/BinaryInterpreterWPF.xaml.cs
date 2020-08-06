@@ -280,6 +280,7 @@ namespace ME3Explorer
             "FracturedStaticMeshComponent",
             "GuidCache",
             "InteractiveFoliageComponent",
+            "InterfaceProperty",
             "IntProperty",
             "Level",
             "LightMapTexture2D",
@@ -486,6 +487,7 @@ namespace ME3Explorer
                 case "ComponentProperty":
                 case "ObjectProperty":
                 case "DelegateProperty":
+                case "InterfaceProperty":
                     return true;
                 default:
                     return false;
@@ -536,6 +538,7 @@ namespace ME3Explorer
                     case "ObjectProperty":
                     case "DelegateProperty":
                     case "MapProperty":
+                    case "InterfaceProperty":
                         subNodes.AddRange(StartPropertyScan(data, ref binarystart));
                         break;
                     case "BioDynamicAnimSet":

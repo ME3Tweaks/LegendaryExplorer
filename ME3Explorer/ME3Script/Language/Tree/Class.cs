@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal;
 
 namespace ME3Script.Language.Tree
 {
@@ -12,7 +13,9 @@ namespace ME3Script.Language.Tree
     {
         public VariableType Parent;
         public VariableType OuterClass;
-        public List<Specifier> Specifiers;
+        public List<VariableType> Interfaces;
+        public UnrealFlags.EClassFlags Flags;
+        public string ConfigName;
         public List<VariableDeclaration> VariableDeclarations;
         public List<VariableType> TypeDeclarations;
         public List<Function> Functions;
@@ -20,7 +23,7 @@ namespace ME3Script.Language.Tree
         public List<OperatorDeclaration> Operators;
         public DefaultPropertiesBlock DefaultProperties;
 
-        public Class(string name, List<Specifier> specs,
+        public Class(string name, List<VariableType> interfaces, UnrealFlags.EClassFlags flags,
                      List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
                      List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
                      DefaultPropertiesBlock defaultProperties,
@@ -29,7 +32,8 @@ namespace ME3Script.Language.Tree
         {
             Parent = parent;
             OuterClass = outer;
-            Specifiers = specs;
+            Interfaces = interfaces;
+            Flags = flags;
             VariableDeclarations = vars;
             TypeDeclarations = types;
             Functions = funcs;
@@ -86,7 +90,7 @@ namespace ME3Script.Language.Tree
             {
                 yield return Parent;
                 if (OuterClass != null) yield return OuterClass;
-                foreach (Specifier specifier in Specifiers) yield return specifier;
+                foreach (VariableType interfaceType in Interfaces) yield return interfaceType;
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
                 foreach (Function function in Functions) yield return function;

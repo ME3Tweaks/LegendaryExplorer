@@ -169,18 +169,26 @@ namespace ME3Explorer.ME3Script
         {
             var log = new MessageLog();
             var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(script)), log);
-            ASTNode ast = parser.ParseDocument();
-
-            if (ast != null)
+            try
             {
-                log.LogMessage("Parsed!");
+                ASTNode ast = parser.ParseDocument();
+                if (ast != null)
+                {
+                    log.LogMessage("Parsed!");
+                }
+                else
+                {
+                    log.LogMessage("Parse failed!");
+                }
+
+                return (ast, log);
             }
-            else
+            catch (Exception e)
             {
                 log.LogMessage("Parse failed!");
+                return (null, log);
             }
 
-            return (ast, log);
         }
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

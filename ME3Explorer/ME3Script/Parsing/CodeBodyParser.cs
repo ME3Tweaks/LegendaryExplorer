@@ -10,16 +10,18 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal;
+using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing
 {
     public class CodeBodyParser : StringParserBase
     {
-        private SymbolTable Symbols;
-        private string OuterClassScope;
-        private IContainsLocals NodeVariables;
-        private ASTNode Node;
-        private CodeBody Body;
+        private readonly SymbolTable Symbols;
+        private readonly string OuterClassScope;
+        private readonly IContainsLocals NodeVariables;
+        private readonly ASTNode Node;
+        private readonly CodeBody Body;
 
         private bool IsFunction => Node.Type == ASTNodeType.Function;
         private bool IsState => Node.Type == ASTNodeType.State;
@@ -63,7 +65,7 @@ namespace ME3Script.Parsing
             } while (!Tokens.AtEnd());
 
             if (Tokens.AtEnd())
-                return Error("Could not find the code body for the current node, please contact the maintainers of this compiler!");
+                throw Error("Could not find the code body for the current node, please contact the maintainers of this compiler!");
 
             var body = TryParseBody(false);
             if (body == null)
@@ -71,7 +73,7 @@ namespace ME3Script.Parsing
             Body.Statements = body.Statements;
 
             if (!Tokens.CurrentItem.StartPosition.Equals(Body.EndPos))
-                return Error("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", 
+                throw Error("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", 
                     CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
             return Body;
@@ -87,20 +89,20 @@ namespace ME3Script.Parsing
             return (CodeBody)Tokens.TryGetTree(CodeParser);
             ASTNode CodeParser()
             {
-                if (requireBrackets && Tokens.ConsumeToken(TokenType.LeftBracket) == null) return Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var statements = new List<Statement>();
                 var startPos = CurrentPosition;
                 var current = TryParseInnerStatement();
                 while (current != null)
                 {
-                    if (!SemiColonExceptions.Contains(current.Type) && Tokens.ConsumeToken(TokenType.SemiColon) == null) return Error("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (!SemiColonExceptions.Contains(current.Type) && Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     statements.Add(current);
                     current = TryParseInnerStatement();
                 }
 
                 var endPos = CurrentPosition;
-                if (requireBrackets && Tokens.ConsumeToken(TokenType.RightBracket) == null) return Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (requireBrackets && Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new CodeBody(statements, startPos, endPos);
             }
@@ -128,12 +130,12 @@ namespace ME3Script.Parsing
 
                 if (body == null)
                 {
-                    if (allowEmpty && Tokens.ConsumeToken(TokenType.SemiColon) != null)
+                    if (allowEmpty && Consume(TokenType.SemiColon) != null)
                     {
                         body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
                     }
                     else
-                        return Error("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Expected a code body or single statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return body;
@@ -142,7 +144,8 @@ namespace ME3Script.Parsing
 
         public Statement TryParseInnerStatement(bool throwError = false)
         {
-            Func<ASTNode> statementParser = () =>
+            return (Statement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
                 var statement = TryParseLocalVarDecl() ??
                                 TryParseAssignStatement() ??
@@ -161,24 +164,22 @@ namespace ME3Script.Parsing
                                 (Statement)null;
 
                 if (statement == null && throwError)
-                    return Error("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Expected a valid statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return statement;
             };
-            return (Statement)Tokens.TryGetTree(statementParser);
         }
 
         public ExpressionOnlyStatement TryParseExpressionOnlyStatement()
         {
-            Func<ASTNode> expressionParser = () =>
+            return (ExpressionOnlyStatement)Tokens.TryGetTree(ExpressionParser);
+            ASTNode ExpressionParser()
             {
                 var expr = TryParseExpression();
-                if (expr == null)
-                    return null;
+                if (expr == null) return null;
 
                 return new ExpressionOnlyStatement(expr.StartPos, expr.EndPos, expr);
-            };
-            return (ExpressionOnlyStatement)Tokens.TryGetTree(expressionParser);
+            }
         }
 
         public VariableDeclaration TryParseLocalVarDecl()
@@ -186,20 +187,20 @@ namespace ME3Script.Parsing
             ASTNode DeclarationParser()
             {
                 var startPos = CurrentPosition;
-                if (Tokens.ConsumeToken(TokenType.LocalVariable) == null) return null;
+                if (!Matches(LOCAL)) return null;
 
                 ASTNode type = TryParseType();
-                if (type == null) return Error("Expected variable type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                if (!Symbols.TryGetSymbol(((VariableType)type).Name, out type, OuterClassScope)) return Error($"The type '{((VariableType)type).Name}' does not exist in the current scope!", type.StartPos, type.EndPos);
+                if (type == null) throw Error("Expected variable type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!Symbols.TryGetSymbol(((VariableType)type).Name, out type, OuterClassScope)) throw Error($"The type '{((VariableType)type).Name}' does not exist in the current scope!", type.StartPos, type.EndPos);
 
                 var var = ParseVariableName();
-                if (var == null) return Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (var == null) throw Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
 
-                if (Symbols.SymbolExistsInCurrentScope(var.Name)) return Error($"A variable named '{var.Name}' already exists in this scope!", var.StartPos, var.EndPos);
+                if (Symbols.SymbolExistsInCurrentScope(var.Name)) throw Error($"A variable named '{var.Name}' already exists in this scope!", var.StartPos, var.EndPos);
                 Symbols.AddSymbol(var.Name, var);
 
-                VariableDeclaration varDecl = new VariableDeclaration(type as VariableType, null, var, null, startPos, var.EndPos);
+                VariableDeclaration varDecl = new VariableDeclaration(type as VariableType, UnrealFlags.EPropertyFlags.None, var, null, startPos, var.EndPos);
                 NodeVariables.Locals.Add(varDecl);
                 varDecl.Outer = Node;
 
@@ -214,16 +215,16 @@ namespace ME3Script.Parsing
             ASTNode AssignParser()
             {
                 var target = TryParseReference();
-                var assign = Tokens.ConsumeToken(TokenType.Assign);
+                var assign = Consume(TokenType.Assign);
                 if (assign == null)
                     return null;
-                else if (target == null) return Error("Assignments require a variable target (LValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                else if (target == null) throw Error("Assignments require a variable target (LValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var value = TryParseExpression();
-                if (value == null) return Error("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (value == null) throw Error("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 // TODO: allow built-in type convertion here!
-                if (!TypeEquals(target.ResolveType(), value.ResolveType())) return Error("Cannot assign a value of type '" + value.ResolveType() + "' to a variable of type '" + null + "'.", assign.StartPosition, assign.EndPosition);
+                if (!TypeEquals(target.ResolveType(), value.ResolveType())) throw Error("Cannot assign a value of type '" + value.ResolveType() + "' to a variable of type '" + null + "'.", assign.StartPosition, assign.EndPosition);
 
                 return new AssignStatement(target, value, assign.StartPosition, assign.EndPosition);
             }
@@ -236,27 +237,27 @@ namespace ME3Script.Parsing
             return (IfStatement)Tokens.TryGetTree(IfParser);
             ASTNode IfParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.If);
+                var token = Consume(IF);
                 if (token == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
-                if (condition == null) return Error("Expected an expression as the if-condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition == null) throw Error("Expected an expression as the if-condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 if (condition.ResolveType().Name != "bool") // TODO: check/fix!
-                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+                    throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody thenBody = TryParseBodyOrStatement();
-                if (thenBody == null) return Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (thenBody == null) throw Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody elseBody = null;
-                var elsetoken = Tokens.ConsumeToken(TokenType.Else);
+                var elsetoken = Consume(ELSE);
                 if (elsetoken != null)
                 {
                     elseBody = TryParseBodyOrStatement();
-                    if (elseBody == null) return Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (elseBody == null) throw Error("Expected a statement or code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return new IfStatement(condition, thenBody, token.StartPosition, token.EndPosition, elseBody);
@@ -268,20 +269,20 @@ namespace ME3Script.Parsing
             return (SwitchStatement)Tokens.TryGetTree(SwitchParser);
             ASTNode SwitchParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Switch);
+                var token = Consume(SWITCH);
                 if (token == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var expression = TryParseExpression();
-                if (expression == null) return Error("Expected an expression as the switch value!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (expression == null) throw Error("Expected an expression as the switch value!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 _switchCount++;
                 CodeBody body = TryParseBodyOrStatement();
                 _switchCount--;
-                if (body == null) return Error("Expected switch code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (body == null) throw Error("Expected switch code block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new SwitchStatement(expression, body, token.StartPosition, token.EndPosition);
             }
@@ -289,257 +290,214 @@ namespace ME3Script.Parsing
 
         public WhileLoop TryParseWhile()
         {
-            Func<ASTNode> whileParser = () =>
+            return (WhileLoop)Tokens.TryGetTree(WhileParser);
+            ASTNode WhileParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.While);
-                if (token == null)
-                    return null;
+                var token = Consume(WHILE);
+                if (token == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
-                if (condition == null)
-                    return Error("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition == null) throw Error("Expected an expression as the while condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 if (condition.ResolveType().Name != "bool") // TODO: check/fix!
-                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+                    throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 _loopCount++;
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
                 _loopCount--;
-                if (body == null)
-                    return null;
+                if (body == null) return null;
 
                 return new WhileLoop(condition, body, token.StartPosition, token.EndPosition);
-            };
-            return (WhileLoop)Tokens.TryGetTree(whileParser);
+            }
         }
 
         public DoUntilLoop TryParseDoUntil()
         {
-            Func<ASTNode> untilParser = () =>
+            return (DoUntilLoop)Tokens.TryGetTree(UntilParser);
+            ASTNode UntilParser()
             {
-                var doToken = Tokens.ConsumeToken(TokenType.Do);
-                if (doToken == null)
-                    return null;
+                var doToken = Consume(DO);
+                if (doToken == null) return null;
 
                 _loopCount++;
                 CodeBody body = TryParseBodyOrStatement();
                 _loopCount--;
-                if (body == null)
-                    return null;
+                if (body == null) return null;
 
-                var untilToken = Tokens.ConsumeToken(TokenType.Until);
-                if (untilToken == null)
-                    return Error("Expected 'until'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var untilToken = Consume(UNTIL);
+                if (untilToken == null) throw Error("Expected 'until'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
-                if (condition == null)
-                    return Error("Expected an expression as the until condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition == null) throw Error("Expected an expression as the until condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 if (condition.ResolveType().Name != "bool") // TODO: check/fix!
-                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+                    throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new DoUntilLoop(condition, body, untilToken.StartPosition, untilToken.EndPosition);
-            };
-            return (DoUntilLoop)Tokens.TryGetTree(untilParser);
+            }
         }
 
         public ForLoop TryParseFor()
         {
-            Func<ASTNode> forParser = () =>
+            return (ForLoop)Tokens.TryGetTree(ForParser);
+            ASTNode ForParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.For);
-                if (token == null)
-                    return null;
+                var token = Consume(FOR);
+                if (token == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    return Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var initStatement = TryParseInnerStatement();
-                if (initStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.FunctionCall)
-                    return Error("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (initStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.FunctionCall) throw Error("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    return Error("Expected semi-colon after init statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after init statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var condition = TryParseExpression();
-                if (condition == null)
-                    return Error("Expected an expression as the for condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (condition == null) throw Error("Expected an expression as the for condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 if (condition.ResolveType().Name != "bool") // TODO: check/fix!
-                    return Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+                    throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
 
-                if (Tokens.ConsumeToken(TokenType.SemiColon) == null)
-                    return Error("Expected semi-colon after condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after condition!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var updateStatement = TryParseInnerStatement();
-                if (updateStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.Function
-                    && initStatement.Type != ASTNodeType.PrefixOperator && initStatement.Type != ASTNodeType.PostfixOperator) // TODO: what is actually supported?
-                    return Error("Init statement in a for-loop must be an assignment, in/decrement or function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (updateStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.Function && initStatement.Type != ASTNodeType.PrefixOperator && initStatement.Type != ASTNodeType.PostfixOperator) // TODO: what is actually supported?
+                    throw Error("Init statement in a for-loop must be an assignment, in/decrement or function call!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 _loopCount++;
                 CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
                 _loopCount--;
-                if (body == null)
-                    return null;
+                if (body == null) return null;
 
                 return new ForLoop(condition, body, initStatement, updateStatement, token.StartPosition, token.EndPosition);
-            };
-            return (ForLoop)Tokens.TryGetTree(forParser);
+            }
         }
 
         public BreakStatement TryParseBreak()
         {
-            Func<ASTNode> statementParser = () =>
+            return (BreakStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Break);
-                if (token == null)
-                    return null;
+                var token = Consume(BREAK);
+                if (token == null) return null;
 
-                if (!InLoop && !InSwitch)
-                    return Error("The break keyword is only valid inside loops and switch statements!", token.StartPosition, token.EndPosition);
+                if (!InLoop && !InSwitch) throw Error("The break keyword is only valid inside loops and switch statements!", token.StartPosition, token.EndPosition);
 
                 return new BreakStatement(token.StartPosition, token.EndPosition);
-            };
-            return (BreakStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         public ContinueStatement TryParseContinue()
         {
-            Func<ASTNode> statementParser = () =>
+            return (ContinueStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Continue);
-                if (token == null)
-                    return null;
+                var token = Consume(CONTINUE);
+                if (token == null) return null;
 
-                if (!InLoop)
-                    return Error("The continue keyword is only valid inside loops!", token.StartPosition, token.EndPosition);
+                if (!InLoop) throw Error("The continue keyword is only valid inside loops!", token.StartPosition, token.EndPosition);
 
                 return new ContinueStatement(token.StartPosition, token.EndPosition);
-            };
-            return (ContinueStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         public StopStatement TryParseStop()
         {
-            Func<ASTNode> statementParser = () =>
+            return (StopStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Stop);
-                if (token == null)
-                    return null;
+                var token = Consume(STOP);
+                if (token == null) return null;
 
-                if (!IsState)
-                    return Error("The stop keyword is only valid inside state code!", token.StartPosition, token.EndPosition);
+                if (!IsState) throw Error("The stop keyword is only valid inside state code!", token.StartPosition, token.EndPosition);
 
                 return new StopStatement(token.StartPosition, token.EndPosition);
-            };
-            return (StopStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         public ReturnStatement TryParseReturn()
         {
-            Func<ASTNode> statementParser = () =>
+            return (ReturnStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Return);
-                if (token == null)
-                    return null;
+                var token = Consume(RETURN);
+                if (token == null) return null;
 
-                if (!IsFunction && !IsOperator)
-                    return Error("Return statements can only exist in functions and operators!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!IsFunction && !IsOperator) throw Error("Return statements can only exist in functions and operators!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (CurrentTokenType == TokenType.SemiColon)
-                    return new ReturnStatement(token.StartPosition, token.EndPosition);
+                if (CurrentTokenType == TokenType.SemiColon) return new ReturnStatement(token.StartPosition, token.EndPosition);
 
                 var value = TryParseExpression();
-                if (value == null)
-                    return Error("Expected a return value or a semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (value == null) throw Error("Expected a return value or a semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var type = value.ResolveType();
                 if (IsFunction)
                 {
-                    var func = Node as Function;
-                    if (func.ReturnType == null)
-                        return Error("Function should not return any value!", token.StartPosition, token.EndPosition);
+                    var func = (Function)Node;
+                    if (func.ReturnType == null) throw Error("Function should not return any value!", token.StartPosition, token.EndPosition);
 
-                    if (!TypeEquals(func.ReturnType, type))
-                        return Error("Cannot return a value of type '" + type.Name + "', function should return '" + func.ReturnType.Name + "'."
-                            , token.StartPosition, token.EndPosition);
+                    if (!TypeEquals(func.ReturnType, type)) throw Error("Cannot return a value of type '" + type.Name + "', function should return '" + func.ReturnType.Name + "'.", token.StartPosition, token.EndPosition);
                 }
                 else if (IsOperator)
                 {
-                    var op = Node as OperatorDeclaration;
-                    if (op.ReturnType == null)
-                        return Error("Operator should not return any value!", token.StartPosition, token.EndPosition);
+                    var op = (OperatorDeclaration)Node;
+                    if (op.ReturnType == null) throw Error("Operator should not return any value!", token.StartPosition, token.EndPosition);
 
-                    if (!TypeEquals(op.ReturnType, type))
-                        return Error("Cannot return a value of type '" + type.Name + "', operator should return '" + op.ReturnType.Name + "'."
-                            , token.StartPosition, token.EndPosition);
+                    if (!TypeEquals(op.ReturnType, type)) throw Error("Cannot return a value of type '" + type.Name + "', operator should return '" + op.ReturnType.Name + "'.", token.StartPosition, token.EndPosition);
                 }
 
                 return new ReturnStatement(token.StartPosition, token.EndPosition, value);
-            };
-            return (ReturnStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         public CaseStatement TryParseCase()
         {
-            Func<ASTNode> statementParser = () =>
+            return (CaseStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Case);
-                if (token == null)
-                    return null;
+                var token = Consume(CASE);
+                if (token == null) return null;
 
-                if (!InSwitch)
-                    return Error("Case statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!InSwitch) throw Error("Case statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var value = TryParseExpression();
-                if (value == null)
-                    return Error("Expected an expression specifying the case value", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (value == null) throw Error("Expected an expression specifying the case value", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.Colon) == null)
-                    return Error("Expected colon after case expression!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                
+                if (Consume(TokenType.Colon) == null) throw Error("Expected colon after case expression!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+
                 /* TODO: advanced type checks here, intrinsic conversions should be allowed but other anomalies reported.
                 var type = value.ResolveType();
                 var parent = GetHashCode containing switch somehow;
                 if (!TypeEquals(parent.Expression.ResolveType(), type))
-                    return Error("Cannot use case: '" + type.Name + "', in switch of type '" + parent.Expression.ResolveType() + "'."
+                    throw Error("Cannot use case: '" + type.Name + "', in switch of type '" + parent.Expression.ResolveType() + "'."
                             , token.StartPosition, token.EndPosition);
                  * */
 
                 return new CaseStatement(value, token.StartPosition, token.EndPosition);
-            };
-            return (CaseStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         public DefaultStatement TryParseDefault()
         {
-            Func<ASTNode> statementParser = () =>
+            return (DefaultStatement)Tokens.TryGetTree(StatementParser);
+            ASTNode StatementParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Default);
-                if (token == null)
-                    return null;
+                var token = Consume(DEFAULT);
+                if (token == null) return null;
 
-                if (!InSwitch)
-                    return Error("Default statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!InSwitch) throw Error("Default statements can only exist inside switch blocks!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (Tokens.ConsumeToken(TokenType.Colon) == null)
-                    return Error("Expected colon after default statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.Colon) == null) throw Error("Expected colon after default statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 return new DefaultStatement(token.StartPosition, token.EndPosition);
-            };
-            return (DefaultStatement)Tokens.TryGetTree(statementParser);
+            }
         }
 
         #endregion
@@ -557,7 +515,7 @@ namespace ME3Script.Parsing
                 while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
                 {
                     expr = TryParseIfExpression(expr) ?? TryParseInOperator(expr) ?? (Expression)null;
-                    if (expr == null) return Error("Could not parse expression/operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (expr == null) throw Error("Could not parse expression/operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 }
 
                 return expr;
@@ -566,29 +524,26 @@ namespace ME3Script.Parsing
 
         public Expression TryParseScopedExpression()
         {
-            Func<ASTNode> exprParser = () =>
+            return (Expression)Tokens.TryGetTree(ExprParser);
+            ASTNode ExprParser()
             {
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null)
-                    return null;
+                if (Consume(TokenType.LeftParenth) == null) return null;
 
                 var expr = TryParseExpression();
-                if (expr == null)
-                    return null;
+                if (expr == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null)
-                    return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 return expr;
-            };
-            return (Expression)Tokens.TryGetTree(exprParser);
+            }
         }
 
         public Expression TryParseIfExpression(Expression expr)
         {
-            Func<ASTNode> ifexprParser = () =>
+            return (Expression)Tokens.TryGetTree(IfexprParser);
+            ASTNode IfexprParser()
             {
                 return null; // TODO
-            };
-            return (Expression)Tokens.TryGetTree(ifexprParser);
+            }
         }
 
         public Expression TryParseAtomicExpression()
@@ -602,7 +557,8 @@ namespace ME3Script.Parsing
 
         public Expression TryParseInOperator(Expression expr)
         {
-            Func<ASTNode> inopParser = () =>
+            return (Expression)Tokens.TryGetTree(InopParser);
+            ASTNode InopParser()
             {
                 Expression lhs, rhs, rhs2;
                 VariableType lhsType, rhsType, rhs2Type;
@@ -610,41 +566,33 @@ namespace ME3Script.Parsing
                 lhs = expr;
                 lhsType = lhs.ResolveType();
 
-                var opA_tok = Tokens.ConsumeToken(CurrentTokenType);
+                var opA_tok = Consume(CurrentTokenType);
                 rhs = TryParseAtomicExpression();
-                if (rhs == null)
-                    return null; // error?
+                if (rhs == null) return null; // error?
                 rhsType = rhs.ResolveType();
 
-                if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType))
-                    return Error("No operator '" + opA_tok + "' with operands of types '" + lhsType.Name + "' and '" + rhsType.Name + "' was found!",
-                        opA_tok.StartPosition, opA_tok.EndPosition);
+                if (!Symbols.GetInOperator(out opA, opA_tok.Value, lhsType, rhsType)) throw Error("No operator '" + opA_tok + "' with operands of types '" + lhsType.Name + "' and '" + rhsType.Name + "' was found!", opA_tok.StartPosition, opA_tok.EndPosition);
 
                 while (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType))
                 {
                     Tokens.PushSnapshot();
 
-                    var opB_tok = Tokens.ConsumeToken(CurrentTokenType);
+                    var opB_tok = Consume(CurrentTokenType);
                     rhs2 = TryParseAtomicExpression();
-                    if (rhs == null)
-                        return Error("Expected a valid expression as the right hand side of the operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (rhs == null) throw Error("Expected a valid expression as the right hand side of the operator!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     rhs2Type = rhs2.ResolveType();
 
                     Tokens.PopSnapshot();
 
-                    if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type))
-                        return Error("No operator '" + opB_tok + "' with operands of types '" + rhsType.Name + "' and '" + rhs2Type.Name + "' was found!",
-                            opB_tok.StartPosition, opB_tok.EndPosition);
+                    if (!Symbols.GetInOperator(out opB, opB_tok.Value, rhsType, rhs2Type)) throw Error("No operator '" + opB_tok + "' with operands of types '" + rhsType.Name + "' and '" + rhs2Type.Name + "' was found!", opB_tok.StartPosition, opB_tok.EndPosition);
 
-                    if (opA.Precedence <= opB.Precedence)
-                        break;
+                    if (opA.Precedence <= opB.Precedence) break;
 
                     rhs = TryParseInOperator(rhs);
                 }
 
                 return new InOpReference(opA, lhs, rhs, lhs.StartPos, rhs.EndPos);
-            };
-            return (Expression)Tokens.TryGetTree(inopParser);
+            }
         }
 
         public Expression TryParsePreOperator()
@@ -693,9 +641,9 @@ namespace ME3Script.Parsing
                 var funcRef = TryParseBasicRef();
                 if (funcRef == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftParenth) == null) return null;
+                if (Consume(TokenType.LeftParenth) == null) return null;
 
-                if (funcRef.Node.Type != ASTNodeType.Function) return Error("'" + funcRef.Name + "' is not a function!", funcRef.StartPos, funcRef.EndPos);
+                if (funcRef.Node.Type != ASTNodeType.Function) throw Error("'" + funcRef.Name + "' is not a function!", funcRef.StartPos, funcRef.EndPos);
 
                 Function func = funcRef.Node as Function;
                 var parameters = new List<Expression>();
@@ -704,16 +652,16 @@ namespace ME3Script.Parsing
                 {
                     // TODO: allow automatic type conversion for compatible basic types
                     // TODO: allow optional parameters to be left out.
-                    if (currentParam == null || !TypeEquals(currentParam.ResolveType(), p.VarType)) return Error("Expected a parameter of type '" + p.VarType.Name + "'!", currentParam.StartPos, currentParam.EndPos);
+                    if (currentParam == null || !TypeEquals(currentParam.ResolveType(), p.VarType)) throw Error("Expected a parameter of type '" + p.VarType.Name + "'!", currentParam.StartPos, currentParam.EndPos);
 
                     parameters.Add(currentParam);
-                    if (Tokens.ConsumeToken(TokenType.Comma) == null) break;
+                    if (Consume(TokenType.Comma) == null) break;
                     currentParam = TryParseExpression();
                 }
 
-                if (parameters.Count != func.Parameters.Count) return Error("Expected " + func.Parameters.Count + " parameters to function '" + func.Name + "'!", funcRef.StartPos, funcRef.EndPos);
+                if (parameters.Count != func.Parameters.Count) throw Error("Expected " + func.Parameters.Count + " parameters to function '" + func.Name + "'!", funcRef.StartPos, funcRef.EndPos);
 
-                if (Tokens.ConsumeToken(TokenType.RightParenth) == null) return Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 if (CurrentTokenType == TokenType.Dot)
                 {
@@ -739,7 +687,7 @@ namespace ME3Script.Parsing
             return (SymbolReference)Tokens.TryGetTree(RefParser);
             ASTNode RefParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.Word);
+                var token = Consume(TokenType.Word);
                 if (token == null) return null;
 
                 ASTNode symbol = null;
@@ -749,16 +697,16 @@ namespace ME3Script.Parsing
                 if (func != null)
                 {
                     var containingClass = NodeUtils.GetContainingClass(func.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + func.Function.Name)) return Error("Left side has no member named '" + func.Function.Name + "'!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + func.Function.Name)) throw Error("Left side has no member named '" + func.Function.Name + "'!", token.StartPosition, token.EndPosition);
                 }
                 else if (outer != null)
                 {
                     var containingClass = NodeUtils.GetContainingClass(outer.ResolveType().Declaration);
-                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + outer.ResolveType().Name)) return Error("Left side has no member named '" + outer.Name + "'!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbolFromSpecificScope(token.Value, out symbol, containingClass.GetInheritanceString() + "." + outer.ResolveType().Name)) throw Error("Left side has no member named '" + outer.Name + "'!", token.StartPosition, token.EndPosition);
                 }
                 else
                 {
-                    if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node))) return Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
+                    if (!Symbols.TryGetSymbol(token.Value, out symbol, NodeUtils.GetOuterClassScope(Node))) throw Error("No symbol named '" + token.Value + "' exists in the current scope!", token.StartPosition, token.EndPosition);
                 }
 
                 return new SymbolReference(symbol, token.StartPosition, token.EndPosition, token.Value);
@@ -773,7 +721,7 @@ namespace ME3Script.Parsing
                 Expression arrayExpr = TryParseCompositeRef() ?? TryParseFunctionCall() ?? TryParseBasicRef() ?? (Expression)null;
                 if (arrayExpr == null) return null;
 
-                if (Tokens.ConsumeToken(TokenType.LeftSqrBracket) == null) return null;
+                if (Consume(TokenType.LeftSqrBracket) == null) return null;
 
                 // TODO: possibly check for number type?
                 Expression index = TryParseExpression();
@@ -783,7 +731,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                if (Tokens.ConsumeToken(TokenType.RightSqrBracket) == null)
+                if (Consume(TokenType.RightSqrBracket) == null)
                 {
                     Log.LogError("Expected ']'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                     return null;
@@ -824,13 +772,13 @@ namespace ME3Script.Parsing
                 Expression lhs = expr;
                 VariableType lhsType = lhs.ResolveType();
 
-                var token = Tokens.ConsumeToken(TokenType.Dot);
+                var token = Consume(TokenType.Dot);
                 if (token == null) return null;
 
                 Expression rhs = TryParseBasicRef(lhs) ?? TryParseFunctionCall() ?? (Expression)null;
-                if (rhs == null) return Error("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (rhs == null) throw Error("Expected a valid member name to follow the dot!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                if (!CompositeTypes.Contains(lhsType.NodeType)) return Error("Left side symbol is not of a composite type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (!CompositeTypes.Contains(lhsType.NodeType)) throw Error("Left side symbol is not of a composite type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 while (CurrentTokenType == TokenType.Dot)
                 {
@@ -846,7 +794,7 @@ namespace ME3Script.Parsing
             return (IntegerLiteral)Tokens.TryGetTree(IntParser);
             ASTNode IntParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.IntegerNumber);
+                var token = Consume(TokenType.IntegerNumber);
                 if (token == null) return null;
 
                 return new IntegerLiteral(int.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
@@ -858,10 +806,12 @@ namespace ME3Script.Parsing
             return (BooleanLiteral)Tokens.TryGetTree(BoolParser);
             ASTNode BoolParser()
             {
-                if (CurrentTokenType != TokenType.True && CurrentTokenType != TokenType.False) return null;
-
-                var token = Tokens.ConsumeToken(CurrentTokenType);
-                return new BooleanLiteral(bool.Parse(token.Value), token.StartPosition, token.EndPosition);
+                if (CurrentIs(TRUE, FALSE))
+                {
+                    var token = Consume(CurrentTokenType);
+                    return new BooleanLiteral(bool.Parse(token.Value), token.StartPosition, token.EndPosition);
+                }
+                return null;
             }
         }
 
@@ -870,7 +820,7 @@ namespace ME3Script.Parsing
             return (FloatLiteral)Tokens.TryGetTree(FloatParser);
             ASTNode FloatParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.FloatingNumber);
+                var token = Consume(TokenType.FloatingNumber);
                 if (token == null) return null;
 
                 return new FloatLiteral(float.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
@@ -882,7 +832,7 @@ namespace ME3Script.Parsing
             return (NameLiteral)Tokens.TryGetTree(NameParser);
             ASTNode NameParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.NameLiteral);
+                var token = Consume(TokenType.NameLiteral);
                 if (token == null) return null;
 
                 return new NameLiteral(token.Value, token.StartPosition, token.EndPosition);
@@ -894,7 +844,7 @@ namespace ME3Script.Parsing
             return (StringLiteral)Tokens.TryGetTree(StringParser);
             ASTNode StringParser()
             {
-                var token = Tokens.ConsumeToken(TokenType.String);
+                var token = Consume(TokenType.StringLiteral);
                 if (token == null) return null;
 
                 return new StringLiteral(token.Value, token.StartPosition, token.EndPosition);

@@ -415,7 +415,7 @@ namespace ME3Script.Decompiling
                 PopByte();
 
             StartPositions.Pop();
-            var op = new InOpDeclaration(opName, 0, true, null, null, null, null, null, null, null);
+            var op = new InOpDeclaration(opName, 0, true, null, null, null, null, default, null, null);
             return new InOpReference(op, left, right, null, null); 
         }
 
@@ -467,17 +467,17 @@ namespace ME3Script.Decompiling
                     break;
 
                 case NativeType.Operator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
-                    var op = new InOpDeclaration(entry.Name, entry.Precedence, false, null, null, null, null, null, null, null);
+                    var op = new InOpDeclaration(entry.Name, entry.Precedence, false, null, null, null, null, default, null, null);
                     call = new InOpReference(op, parameters[0], parameters[1], null, null);
                     break;
 
                 case NativeType.PreOperator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
-                    var preOp = new PreOpDeclaration(entry.Name, false, null, null, null, null, null, null);
+                    var preOp = new PreOpDeclaration(entry.Name, false, null, null, null, default, null, null);
                     call = new PreOpReference(preOp, parameters[0], null, null);
                     break;
 
                 case NativeType.PostOperator:   // TODO: table should hold precedence, currently all have 0 and it'll be a mess.
-                    var postOp = new PostOpDeclaration(entry.Name, false, null, null, null, null, null, null);
+                    var postOp = new PostOpDeclaration(entry.Name, false, null, null, null, default, null, null);
                     call = new PostOpReference(postOp, parameters[0], null, null);
                     break;
             }
@@ -619,7 +619,7 @@ namespace ME3Script.Decompiling
 
             var second = parameters[3] ?? new SymbolReference(null, null, null, "NoClass??");
 
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, default, null, null);
             var firstHalf = new InOpReference(op, first, second, null, null);
             StartPositions.Pop();
 
@@ -664,7 +664,7 @@ namespace ME3Script.Decompiling
             var expr = DecompileExpression();
 
             StartPositions.Pop();
-            var op = new InOpDeclaration("", 0, true, null, null, null, null, null, null, null);
+            var op = new InOpDeclaration("", 0, true, null, null, null, null, default, null, null);
             var objRef = new SymbolReference(null, null, null, "UNSUPPORTED: GoW_DefaultValue: Byte:" + unkn + " - ");
             return new InOpReference(op, objRef, expr, null, null);
         }

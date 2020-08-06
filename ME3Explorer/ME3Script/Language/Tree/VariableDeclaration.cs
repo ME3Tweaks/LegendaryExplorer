@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal;
 
 namespace ME3Script.Language.Tree
 {
     public class VariableDeclaration : Statement
     {
-        public List<Specifier> Specifiers;
+        public UnrealFlags.EPropertyFlags Flags;
         // Can contain StaticArrayVariables as well
         public VariableIdentifier Variable;
         // Can reference an existing type, or declare a new struct/enum type
@@ -23,11 +24,11 @@ namespace ME3Script.Language.Tree
 
         public bool IsStaticArray => Size > 1;
 
-        public VariableDeclaration(VariableType type, List<Specifier> specs,
+        public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
                                    VariableIdentifier name, string category, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
-            Specifiers = specs;
+            Flags = flags;
             VarType = type;
             Variable = name;
             Category = category;
@@ -41,7 +42,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                foreach (Specifier specifier in Specifiers) yield return specifier;
                 yield return VarType;
                 yield return Variable;
             }

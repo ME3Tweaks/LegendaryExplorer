@@ -9,40 +9,23 @@ namespace ME3Script.Compiling.Errors
 {
     public class MessageLog
     {
-        private List<LogMessage> content;
-        public IList<LogMessage> Content { get { return content.AsReadOnly(); } }
-        public IList<LogMessage> Messages
-        {
-            get { return content.Where(m => m.GetType() == typeof(LogMessage)).ToList(); }
-        }
-        public IList<LogMessage> PositionedMessages
-        {
-            get { return content.Where(m => m.GetType() == typeof(PositionedMessage)).ToList(); }
-        }
-        public IList<LogMessage> Errors
-        {
-            get { return content.Where(m => m is Error).ToList(); }
-        }
-        public IList<LogMessage> LineErrors
-        {
-            get { return content.Where(m => m is LineError).ToList(); }
-        }
-        public IList<LogMessage> Warnings
-        {
-            get { return content.Where(m => m is Warning).ToList(); }
-        }
-        public IList<LogMessage> LineWarnings
-        {
-            get { return content.Where(m => m is LineWarning).ToList(); }
-        }
-        public IList<LogMessage> AllErrors
-        {
-            get { return content.Where(m => m is Error || m is LineError).ToList(); }
-        }
-        public IList<LogMessage> AllWarnings
-        {
-            get { return content.Where(m => m is Warning || m is LineWarning).ToList(); }
-        }
+        private readonly List<LogMessage> content;
+        public IList<LogMessage> Content => content.AsReadOnly();
+
+        public IList<LogMessage> Messages => content.Where(m => m.GetType() == typeof(LogMessage)).ToList();
+
+        public IList<LogMessage> PositionedMessages => content.Where(m => m.GetType() == typeof(PositionedMessage)).ToList();
+
+        public IList<LogMessage> Errors => content.Where(m => m is Error).ToList();
+
+        public IList<LogMessage> LineErrors => content.Where(m => m is LineError).ToList();
+
+        public IList<LogMessage> Warnings => content.Where(m => m is Warning).ToList();
+
+        public IList<LogMessage> LineWarnings => content.Where(m => m is LineWarning).ToList();
+
+        public IList<LogMessage> AllErrors => content.Where(m => m is Error || m is LineError).ToList();
+        public IList<LogMessage> AllWarnings => content.Where(m => m is Warning || m is LineWarning).ToList();
 
         public MessageLog()
         {

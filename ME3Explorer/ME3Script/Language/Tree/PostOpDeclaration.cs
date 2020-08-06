@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
@@ -14,9 +15,9 @@ namespace ME3Script.Language.Tree
 
         public PostOpDeclaration(string keyword,
             bool delim, CodeBody body, VariableType returnType,
-            FunctionParameter operand, List<Specifier> specs,
+            FunctionParameter operand, FunctionFlags flags,
             SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, specs, start, end)
+            : base(ASTNodeType.PostfixOperator, keyword, delim, body, returnType, flags, start, end)
         {
             Operand = operand;
         }

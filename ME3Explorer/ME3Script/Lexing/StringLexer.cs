@@ -20,7 +20,7 @@ namespace ME3Script.Lexing
             : base(new StringTokenizer(code))
         {
             delimiters ??= GlobalLists.Delimiters;
-            keywords ??= GlobalLists.Keywords;
+            //keywords ??= GlobalLists.Keywords;
             Log = log ?? new MessageLog();
 
             TokenMatchers = new List<ITokenMatcher<string>>();
@@ -29,7 +29,7 @@ namespace ME3Script.Lexing
             TokenMatchers.Add(new StringLiteralMatcher());
             TokenMatchers.Add(new NameLiteralMatcher());
             TokenMatchers.AddRange(delimiters);
-            TokenMatchers.AddRange(keywords);
+            //TokenMatchers.AddRange(keywords);
             TokenMatchers.Add(new WhiteSpaceMatcher());
             TokenMatchers.Add(new NumberMatcher(delimiters));
             TokenMatchers.Add(new WordMatcher(delimiters));

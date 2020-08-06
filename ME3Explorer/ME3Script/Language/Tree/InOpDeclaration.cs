@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
@@ -17,8 +18,8 @@ namespace ME3Script.Language.Tree
         public InOpDeclaration(string keyword, int precedence,
         bool delim, CodeBody body, VariableType returnType,
         FunctionParameter leftOp, FunctionParameter rightOp,
-        List<Specifier> specs, SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.InfixOperator, keyword, delim, body, returnType, specs, start, end)
+        FunctionFlags flags, SourcePosition start, SourcePosition end)
+            : base(ASTNodeType.InfixOperator, keyword, delim, body, returnType, flags, start, end)
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;

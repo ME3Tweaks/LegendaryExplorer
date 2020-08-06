@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
@@ -13,21 +14,21 @@ namespace ME3Script.Language.Tree
     {
         public string OperatorKeyword;
         public bool isDelimiter;
+        public FunctionFlags Flags;
+        public int NativeIndex;
         public CodeBody Body;
         public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
-        public List<Specifier> Specifiers;
 
-        public OperatorDeclaration(ASTNodeType type, string keyword, 
-            bool delim, CodeBody body, VariableType returnType,
-            List<Specifier> specs, SourcePosition start, SourcePosition end) 
+        protected OperatorDeclaration(ASTNodeType type, string keyword, 
+                                      bool delim, CodeBody body, VariableType returnType, FunctionFlags flags, SourcePosition start, SourcePosition end) 
             : base(type, start, end)
         {
+            Flags = flags;
             OperatorKeyword = keyword;
             isDelimiter = delim;
             Body = body;
             ReturnType = returnType;
-            Specifiers = specs;
             Locals = new List<VariableDeclaration>();
         }
 
@@ -50,7 +51,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                foreach (Specifier specifier in Specifiers) yield return specifier;
                 yield return ReturnType;
                 foreach (VariableDeclaration variableDeclaration in Locals) yield return variableDeclaration;
                 yield return Body;

@@ -4320,12 +4320,12 @@ namespace ME3Explorer
                     //ScanLevel(filePath);
                     //if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
-                    //ScanScripts2(filePath);
-                    //if (interestingExports.Count > 0)
-                    //{
-                    //    break;
-                    //}
-                    if (resolveImports(filePath)) break;
+                    ScanScripts2(filePath);
+                    if (interestingExports.Count > 0)
+                    {
+                        break;
+                    }
+                    //if (resolveImports(filePath)) break;
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -4572,7 +4572,7 @@ namespace ME3Explorer
                     {
                         (_, string script) = UnrealScriptIDE.DecompileExport(exp);
                         (ASTNode ast, MessageLog log) = UnrealScriptIDE.CompileAST(script);
-                        if (ast == null)
+                        if (ast == null || log.AllErrors.Count > 0)
                         {
                             interestingExports.Add(exp);
                             return;

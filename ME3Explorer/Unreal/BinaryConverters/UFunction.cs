@@ -44,6 +44,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         }
     }
 
+    [Flags]
     public enum FunctionFlags : uint
     {
         Final = 0x00000001,

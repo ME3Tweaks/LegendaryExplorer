@@ -4471,6 +4471,7 @@ namespace ME3Explorer
                     case "ObjectProperty":
                     case "ComponentProperty":
                     case "ArrayProperty":
+                    case "InterfaceProperty":
                         subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
                         break;
                     case "DelegateProperty":
@@ -5330,7 +5331,7 @@ namespace ME3Explorer
             yield return MakeInt32Node(bin, "State unknown 3");
             yield return MakeInt32Node(bin, "State unknown 4");
             yield return MakeInt16Node(bin, "State unknown 5");
-            yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr(bin.ReadUInt32())}") { Length = 4 };
+            yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((StateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>
                                            new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}() = {Pcc.GetEntryString(bin.ReadInt32())}"));
         }
@@ -5404,33 +5405,22 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        public enum StateFlags : uint
+        public static string getStateFlagsStr(StateFlags stateFlags)
         {
-            None = 0,
-            Editable = 0x00000001U,
-            Auto = 0x00000002U,
-            Simulated = 0x00000004U,
-        }
-
-        public static string getStateFlagsStr(uint stateFlags)
-        {
-            if (stateFlags == 0)
+            string str = null;
+            if (stateFlags.Has(StateFlags.Editable))
             {
-                return "None";
+                str += "Editable ";
             }
-            if ((stateFlags & (uint)StateFlags.Editable) != 0)
+            if (stateFlags.Has(StateFlags.Auto))
             {
-                return "Editable ";
+                str += "Auto ";
             }
-            if ((stateFlags & (uint)StateFlags.Auto) != 0)
+            if (stateFlags.Has(StateFlags.Simulated))
             {
-                return "Auto";
+                str += "Simulated ";
             }
-            if ((stateFlags & (uint)StateFlags.Editable) != 0)
-            {
-                return "Simulated";
-            }
-            return "";
+            return str ?? "None";
         }
 
         private List<ITreeItem> StartEnumScan(byte[] data, ref int binaryStart)

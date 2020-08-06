@@ -11,33 +11,6 @@ namespace Gammtek.Conduit.Extensions
 			return Enum.GetValues(value.GetType());
 		}
 
-		public static bool Has<T>(this Enum value, T check)
-		{
-			var type = value.GetType();
-
-			//determine the values
-			var parsed = new Value(check, type);
-
-			if (parsed.Signed.HasValue)
-			{
-				return (Convert.ToInt64(value) &
-						(long) parsed.Signed) == (long) parsed.Signed;
-			}
-
-			if (parsed.Unsigned.HasValue)
-			{
-				return (Convert.ToUInt64(value) &
-						(ulong) parsed.Unsigned) == (ulong) parsed.Unsigned;
-			}
-
-			return false;
-		}
-
-		public static bool Missing<T>(this Enum obj, T value)
-		{
-			return !Has(obj, value);
-		}
-
 		public static T Include<T>(this Enum value, T append)
 		{
 			return Incorporate(value, append);

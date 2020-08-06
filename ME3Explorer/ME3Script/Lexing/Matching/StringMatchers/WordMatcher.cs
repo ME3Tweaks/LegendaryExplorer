@@ -23,13 +23,26 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             SourcePosition start = new SourcePosition(streamPos);
             string peek = data.CurrentItem;
             string word = null;
+            loopStart:
             while (!data.AtEnd() && !string.IsNullOrWhiteSpace(peek) 
-                && Delimiters.All(d => d.Keyword != peek)
+                && (Delimiters.All(d => d.Keyword != peek))
                 && peek != "\"" && peek != "'")
             {
                 word += peek;
                 data.Advance();
                 peek = data.CurrentItem;
+            }
+
+            //HACK: there are variable names that include the c++ scope operator '::' for some godforsaken reason
+            if (peek == ":" && data.LookAhead(1) == ":")
+            {
+                word += peek;
+                data.Advance();
+                peek = data.CurrentItem;
+                word += peek;
+                data.Advance();
+                peek = data.CurrentItem;
+                goto loopStart;
             }
 
             if (word != null)
