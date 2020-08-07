@@ -757,7 +757,7 @@ namespace ME3Explorer.PackageEditor
                             tgttfc = $"Textures_{Path.GetFileName(tgtOutputfolder)}";
                         conversionData.TargetTFCName = tgttfc;
                         var tfcpath = Path.Combine(tgtOutputfolder, $"{tgttfc}.tfc");
-                        srcassetpack.ConvertTo(conversionData.TargetGame, tfcpath);
+                        srcassetpack.ConvertTo(conversionData.TargetGame, tfcpath, true);
                         srcassetpack.Save(TGTTempFileName);
                         srcassetpack.Dispose();
                         Debug.WriteLine($"Conversion finished.");

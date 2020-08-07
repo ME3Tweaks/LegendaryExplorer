@@ -831,7 +831,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public void ConvertTo(MEGame newGame, string tfcPath = null)
+        public void ConvertTo(MEGame newGame, string tfcPath = null, bool preserveMaterialInstances = false)
         {
             MEGame oldGame = Game;
             var prePropBinary = new List<byte[]>(ExportCount);
@@ -952,6 +952,10 @@ namespace ME3Explorer.Packages
                     else if (mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
                     {
                         textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
+                    }
+                    else if (preserveMaterialInstances)
+                    {
+                        continue;
                     }
                     else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
                     {
