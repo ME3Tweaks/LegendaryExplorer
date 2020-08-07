@@ -1504,6 +1504,10 @@ namespace ME3Explorer
                             badReferences.Add(new ListDialog.EntryItem(entry, $"[Nested property] Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                         }
                     }
+                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString()  == "Trash")
+                    {
+                        badReferences.Add(new ListDialog.EntryItem(entry, $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                    }
                 }
                 else if (property is ArrayProperty<ObjectProperty> aop)
                 {
@@ -5778,11 +5782,17 @@ namespace ME3Explorer
                 };
                 if (o.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
+                    string tfc = PromptDialog.Prompt(this, "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool", "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
+
+                    if (tfc == null || tfc == "Textures_DLC_MOD_")
+                        return;
+
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, tfc, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
-                        LoadFile(Pcc.FilePath);
+                        if (Pcc != null)
+                            LoadFile(Pcc.FilePath);
                         IsBusy = false;
                         var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
                         {
@@ -5802,40 +5812,30 @@ namespace ME3Explorer
 
         private void RestartTransferFromJSON(object sender, RoutedEventArgs e)
         {
-
-            if (Pcc is MEPackage pcc && pcc.Game == MEGame.ME2)
+            CommonOpenFileDialog j = new CommonOpenFileDialog
             {
-                CommonOpenFileDialog j = new CommonOpenFileDialog
-                {
-                    DefaultExtension = ".json",
-                    EnsurePathExists = true,
-                    Title = "Select JSON with transfer details"
-                };
-                j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
-                if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
-                {
+                DefaultExtension = ".json",
+                EnsurePathExists = true,
+                Title = "Select JSON with transfer details"
+            };
+            j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
+            if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
 
-                    BusyText = "Recook level files";
-                    IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
-                    {
+                BusyText = "Recook level files";
+                IsBusy = true;
+                Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
+                {
+                    if (Pcc != null)
                         LoadFile(Pcc.FilePath);
-                        IsBusy = false;
-                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
-                        {
-                            DoubleClickEntryHandler = entryDoubleClick
-                        };
-                        dlg.Show();
-                    });
-                }
-
+                    IsBusy = false;
+                    var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                    {
+                        DoubleClickEntryHandler = entryDoubleClick
+                    };
+                    dlg.Show();
+                });
             }
-            else
-            {
-                MessageBox.Show(this, "Can only convert Mass Effect ME2 to ME3!");
-            }
-
-
         }
     }
 }

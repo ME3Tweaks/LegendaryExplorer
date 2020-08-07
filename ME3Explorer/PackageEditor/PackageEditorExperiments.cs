@@ -557,7 +557,7 @@ namespace ME3Explorer.PackageEditor
         /// <param name="ActorsToMove">Dicitionary: key Actors, value filename, entry uid</param>
         /// <param name="AssetsToMove">Dictionary key: AssetInstancedPath, value filename, isimport, entry uid</param>
         /// <param name="fromreload">is reloaded json</param>
-        public async static Task<List<string>> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string tgtOutputfolder, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
+        public async static Task<List<string>> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string tgtOutputfolder, string tgttfc, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream", "BioBlockingVolume" };
@@ -579,7 +579,7 @@ namespace ME3Explorer.PackageEditor
             {
                 busytext = "Collating level files...";
                 callbackAction?.Invoke(busytext);
-                conversionData = new LevelConversionData(Game, BioPSource.Game, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
+                conversionData = new LevelConversionData(Game, BioPSource.Game, null, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
                 var supportedExtensions = new List<string> { ".pcc", ".u", ".upk", ".sfm" };
                 if (Path.GetFileName(BioPSource.FilePath).ToLowerInvariant().StartsWith("biop_") && BioPSource.Exports.FirstOrDefault(x => x.ClassName == "BioWorldInfo") is ExportEntry BioWorld)
                 {
@@ -753,7 +753,10 @@ namespace ME3Explorer.PackageEditor
                         busytext = $"Converting to {conversionData.TargetGame}...";
                         callbackAction?.Invoke(busytext);
                         Debug.WriteLine($"Conversion started...");
-                        var tfcpath = Path.Combine(tgtOutputfolder, $"Textures_{Path.GetFileName(tgtOutputfolder)}.tfc");
+                        if (tgttfc.IsNull())
+                            tgttfc = $"Textures_{Path.GetFileName(tgtOutputfolder)}";
+                        conversionData.TargetTFCName = tgttfc;
+                        var tfcpath = Path.Combine(tgtOutputfolder, $"{tgttfc}.tfc");
                         srcassetpack.ConvertTo(conversionData.TargetGame, tfcpath);
                         srcassetpack.Save(TGTTempFileName);
                         srcassetpack.Dispose();
@@ -894,7 +897,7 @@ namespace ME3Explorer.PackageEditor
         public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction)
         {
             var OutputDir = Path.GetDirectoryName(jsonfile);
-            var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
+            var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
             IMEPackage sourcebiop = null;
             var fails = new List<string>();
             using (StreamReader file = File.OpenText(jsonfile))
@@ -918,7 +921,7 @@ namespace ME3Explorer.PackageEditor
                     return fails;
             }
 
-            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, callbackAction, conversionData, true);
+            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, conversionData.TargetTFCName, callbackAction, conversionData, true);
         }
 
         public class LevelConversionData
@@ -927,16 +930,18 @@ namespace ME3Explorer.PackageEditor
             public MEGame SourceGame = MEGame.ME2;
             public string GameLevelName = null;
             public string BioPSource = null;
+            public string TargetTFCName = "Textures_DLC_MOD_";
             public ConcurrentDictionary<string, string> FilesToCopy = new ConcurrentDictionary<string, string>();
             public ConcurrentDictionary<string, (string, int)> ActorsToMove = new ConcurrentDictionary<string, (string, int)>();
             public ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove = new ConcurrentDictionary<string, (string, int, List<string>)>();
 
-            public LevelConversionData(MEGame TargetGame, MEGame SourceGame, string GameLevelName, string BioPSource, ConcurrentDictionary<string, string> FilesToCopy, ConcurrentDictionary<string, (string, int)> ActorsToMove, ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove)
+            public LevelConversionData(MEGame TargetGame, MEGame SourceGame, string GameLevelName, string BioPSource, string TargetTFCName, ConcurrentDictionary<string, string> FilesToCopy, ConcurrentDictionary<string, (string, int)> ActorsToMove, ConcurrentDictionary<string, (string, int, List<string>)> AssetsToMove)
             {
                 this.TargetGame = TargetGame;
                 this.SourceGame = SourceGame;
                 this.GameLevelName = GameLevelName;
                 this.BioPSource = BioPSource;
+                this.TargetTFCName = TargetTFCName;
                 this.FilesToCopy.AddRange(FilesToCopy);
                 this.ActorsToMove.AddRange(ActorsToMove);
                 this.AssetsToMove.AddRange(AssetsToMove);
