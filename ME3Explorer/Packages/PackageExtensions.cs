@@ -737,10 +737,6 @@ namespace ME3Explorer.Packages
         public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
         {
             IEntry archetypeEntry = export.Archetype;
-            if (removeArchetypeLink)
-            {
-                export.Archetype = null;
-            }
             while (archetypeEntry is ExportEntry archetype)
             {
                 var archProps = archetype.GetProperties();
@@ -754,6 +750,8 @@ namespace ME3Explorer.Packages
 
                 archetypeEntry = archetype.Archetype;
             }
+
+            export.Archetype = removeArchetypeLink ? null : archetypeEntry;
         }
 
         public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);
