@@ -5763,7 +5763,6 @@ namespace ME3Explorer
 
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
-
             if (Pcc is MEPackage pcc && Path.GetFileNameWithoutExtension(pcc.FilePath).StartsWith("BioP") && pcc.Game == MEGame.ME2)
             {
                 var cdlg = MessageBox.Show("This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
