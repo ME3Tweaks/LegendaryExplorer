@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -873,6 +874,10 @@ namespace ME3Explorer.PackageEditor
                             var oldclass = sactorxp.ClassName;
                             var newclass = actorclassesToSubstitute[oldclass];
                             sactorxp.Class = donor.getEntryOrAddImport(newclass);
+                            var stack = sactorxp.GetStack();
+                            stack.OverwriteRange(0, BitConverter.GetBytes(sactorxp.Class.UIndex));
+                            stack.OverwriteRange(4, BitConverter.GetBytes(sactorxp.Class.UIndex));
+                            sactorxp.SetStack(stack);
                             var children = sactorxp.GetChildren();
                             foreach(var c in children)
                             {
