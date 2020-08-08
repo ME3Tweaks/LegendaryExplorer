@@ -936,66 +936,7 @@ namespace ME3Explorer.Packages
                 exports[i].WritePrePropsAndPropertiesAndBinary(prePropBinary[i], propCollections[i], postPropBinary[i]);
             }
 
-            if (newGame == MEGame.ME3)
-            {
-                //change all materials to default material, but try to preserve diff and norm textures
-                using var resourcePCC = MEPackageHandler.OpenME3Package(App.CustomResourceFilePath(MEGame.ME3));
-                var normDiffMat = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
-
-                foreach (ExportEntry mat in exports.Where(exp => exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant"))
-                {
-                    UIndex[] textures = Array.Empty<UIndex>();
-                    if (mat.ClassName == "Material")
-                    {
-                        textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
-                    }
-                    else if (mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
-                    {
-                        textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
-                    }
-                    else if (preserveMaterialInstances)
-                    {
-                        continue;
-                    }
-                    else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
-                    {
-                        textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
-                    }
-                    else if (mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
-                    {
-                        textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
-                    }
-
-                    EntryImporter.ReplaceExportDataWithAnother(normDiffMat, mat);
-                    int norm = 0;
-                    int diff = 0;
-                    foreach (UIndex texture in textures)
-                    {
-                        if (GetEntry(texture) is IEntry tex)
-                        {
-                            if (diff == 0 && tex.ObjectName.Name.Contains("diff", StringComparison.OrdinalIgnoreCase))
-                            {
-                                diff = texture;
-                            }
-                            else if (norm == 0 && tex.ObjectName.Name.Contains("norm", StringComparison.OrdinalIgnoreCase))
-                            {
-                                norm = texture;
-                            }
-                        }
-                    }
-                    if (diff == 0)
-                    {
-                        diff = EntryImporter.GetOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
-                    }
-
-                    var matBin = ObjectBinary.From<Material>(mat);
-                    matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
-                    mat.SetBinaryData(matBin);
-                    mat.Class = imports.First(imp => imp.ObjectName == "Material");
-                }
-            }
-
-            if (newGame != MEGame.ME3)
+            if (newGame != MEGame.ME3)  //Fix Up Textures before Materials
             {
                 foreach (ExportEntry texport in exports.Where(exp => exp.IsTexture()))
                 {
@@ -1057,6 +998,228 @@ namespace ME3Explorer.Packages
                 if (idx >= 0)
                 {
                     names[idx] = "location";
+                }
+            }
+
+            if (newGame == MEGame.ME3) //Change all materials to use default material.  Special handling where materials have been ported between games.
+            {
+
+                //change all materials to default material, but try to preserve diff and norm textures
+                using var resourcePCC = MEPackageHandler.OpenME3Package(App.CustomResourceFilePath(MEGame.ME3));
+                var defaultmaster = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
+                var materiallist =  exports.Where(exp => exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant").ToList();
+                foreach (var mat in materiallist)
+                {
+                    Debug.WriteLine($"Fixing up {mat.FullPath}");
+                    var masterMat = defaultmaster;
+                    var hasDefaultMaster = true;
+                    UIndex[] textures = Array.Empty<UIndex>();
+                    if (mat.ClassName == "Material")
+                    {
+                        textures = ObjectBinary.From<Material>(mat).SM3MaterialResource.UniformExpressionTextures;
+                        switch (mat.FullPath)
+                        {
+                            case "BioT_Volumetric.LAG_MM_Volumetric":
+                            case "BioT_Volumetric.LAG_MM_FalloffSphere":
+                            case "BioT_LevelMaster.Materials.Opaque_MM":
+                            case "BioT_LevelMaster.Materials.GUI_Lit_MM":
+                            case "BioT_LevelMaster.Materials.Signage.MM_GUIMaster_Emissive":
+                            case "BioT_LevelMaster.Materials.Signage.MM_GUIMaster_Emissive_Fallback":
+                                masterMat = resourcePCC.Exports.First(exp => exp.FullPath == mat.FullPath);
+                                hasDefaultMaster = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (mat.GetProperty<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    {
+                        if (mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is IEntry parent && parent.ClassName == "Material")
+                        {
+                            switch (parent.FullPath)
+                            {
+                                case "BioT_LevelMaster.Materials.Opaque_MM":
+                                    masterMat = resourcePCC.Exports.First(exp => exp.FullPath == "Materials.Opaque_MM_INST");
+                                    hasDefaultMaster = false;
+                                    break;
+                                case "BIOG_APL_MASTER_MATERIAL.Placeable_MM":
+                                    masterMat = resourcePCC.Exports.First(exp => exp.FullPath == "Materials.Placeable_MM_INST");
+                                    hasDefaultMaster = false;
+                                    break;
+                                default:
+                                    textures = ObjectBinary.From<MaterialInstance>(mat).SM3StaticPermutationResource.UniformExpressionTextures;
+                                    break;
+                            }
+
+                            if (!hasDefaultMaster && mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
+                            {
+                                textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
+                            }
+
+                        }
+                    }
+                    else if (preserveMaterialInstances)
+                    {
+                        continue;
+                    }
+                    else if (mat.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> texParams)
+                    {
+                        textures = texParams.Select(structProp => new UIndex(structProp.GetProp<ObjectProperty>("ParameterValue")?.Value ?? 0)).ToArray();
+                    }
+                    else if (mat.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentProp && GetEntry(parentProp.Value) is ExportEntry parent && parent.ClassName == "Material")
+                    {
+                        textures = ObjectBinary.From<Material>(parent).SM3MaterialResource.UniformExpressionTextures;
+                    }
+
+                    if(hasDefaultMaster)
+                    {
+                        EntryImporter.ReplaceExportDataWithAnother(masterMat, mat);
+                        int norm = 0;
+                        int diff = 0;
+                        foreach (UIndex texture in textures)
+                        {
+                            if (GetEntry(texture) is IEntry tex)
+                            {
+                                if (diff == 0 && tex.ObjectName.Name.Contains("diff", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    diff = texture;
+                                }
+                                else if (norm == 0 && tex.ObjectName.Name.Contains("norm", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    norm = texture;
+                                }
+                            }
+                        }
+                        if (diff == 0)
+                        {
+                            diff = EntryImporter.GetOrAddCrossImportOrPackage("EngineMaterials.DefaultDiffuse", resourcePCC, this).UIndex;
+                        }
+
+                        var matBin = ObjectBinary.From<Material>(mat);
+                        matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
+                        mat.SetBinaryData(matBin);
+                        mat.Class = imports.First(imp => imp.ObjectName == "Material");
+                    }
+                    else if (mat.ClassName == "Material")
+                    {
+                        var mmparent = EntryImporter.GetOrAddCrossImportOrPackage(masterMat.ParentFullPath, resourcePCC, this);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, masterMat, this, mmparent, true, out IEntry targetexp);
+                        mat.ReplaceAllReferencesToThisOne(targetexp);
+                        EntryPruner.TrashEntryAndDescendants(mat);
+                    }
+                    else if (mat.ClassName == "MaterialInstanceConstant")
+                    {
+                        try
+                        {
+                            var matprops = mat.GetProperties();
+                            var parentlightguid = masterMat.GetProperty<StructProperty>("ParentLightingGuid");
+                            matprops.AddOrReplaceProp(parentlightguid);
+                            var mguid = masterMat.GetProperty<StructProperty>("m_Guid");
+                            matprops.AddOrReplaceProp(mguid);
+                            var lguid = masterMat.GetProperty<StructProperty>("LightingGuid");
+                            matprops.AddOrReplaceProp(lguid);
+                            var masterBin = ObjectBinary.From<MaterialInstance>(masterMat);
+                            var matBin = ObjectBinary.From<MaterialInstance>(mat);
+                            var staticResTextures3 = masterBin.SM3StaticPermutationResource.UniformExpressionTextures.ToList();
+                            var newtextures3 = new List<UIndex>();
+                            var staticResTextures2 = masterBin.SM2StaticPermutationResource.UniformExpressionTextures.ToList();
+                            var newtextures2 = new List<UIndex>();
+                            IEntry norm = null;
+                            IEntry diff = null;
+                            IEntry spec = null;
+                            foreach (var texref in textures)
+                            {
+                                IEntry texEnt = this.GetEntry(texref);
+                                string texName = texEnt?.ObjectName ?? "None";
+                                if (texName.ToLowerInvariant().Contains("norm"))
+                                    norm = texEnt;
+                                else if (texName.ToLowerInvariant().Contains("diff"))
+                                    diff = texEnt;
+                                else if(texName.ToLowerInvariant().Contains("spec"))
+                                    spec = texEnt;
+                                else if(texName.ToLowerInvariant().Contains("msk"))
+                                    spec = texEnt;
+                            }
+
+                            foreach (var texidx in staticResTextures2)
+                            {
+                                var masterTxt = resourcePCC.GetEntry(texidx);
+                                IEntry newTxtEnt = masterTxt;
+                                switch (masterTxt?.ObjectName)
+                                {
+                                    case "DefaultDiffuse":
+                                        if (diff != null)
+                                            newTxtEnt = diff;
+                                        break;
+                                    case "DefaultNormal":
+                                        if (norm != null)
+                                            newTxtEnt = norm;
+                                        break;
+                                    case "Gray":  //Spec
+                                        if (spec != null)
+                                            newTxtEnt = spec;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                var newtexidx = Exports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;
+                                if (newtexidx == 0)
+                                    newtexidx = Imports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;
+                                if (newTxtEnt == masterTxt && newtexidx == 0)
+                                {
+                                    var texparent = EntryImporter.GetOrAddCrossImportOrPackage(newTxtEnt.ParentFullPath, resourcePCC, this);
+                                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, newTxtEnt, this, texparent, true, out IEntry newtext);
+                                    newtextures2.Add(newtext?.UIndex ?? 0);
+                                }
+                                else
+                                {
+                                    newtextures2.Add(newtexidx);
+                                }
+                            }
+                            foreach (var texidx in staticResTextures3)
+                            {
+                                var masterTxt = resourcePCC.GetEntry(texidx);
+                                IEntry newTxtEnt = masterTxt;
+                                switch (masterTxt?.ObjectName)
+                                {
+                                    case "DefaultDiffuse":
+                                        if (diff != null)
+                                            newTxtEnt = diff;
+                                        break;
+                                    case "DefaultNormal":
+                                        if (norm != null)
+                                            newTxtEnt = norm;
+                                        break;
+                                    case "Gray":  //Spec
+                                        if (spec != null)
+                                            newTxtEnt = spec;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                var newtexidx = Exports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;
+                                if(newtexidx == 0)
+                                    newtexidx = Imports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;
+                                if (newTxtEnt == masterTxt && newtexidx == 0)
+                                {
+                                    var texparent = EntryImporter.GetOrAddCrossImportOrPackage(newTxtEnt.ParentFullPath, resourcePCC, this);
+                                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, newTxtEnt, this, texparent, true, out IEntry newtext);
+                                    newtextures3.Add(newtext?.UIndex ?? 0);
+                                }
+                                else
+                                {
+                                    newtextures3.Add(newtexidx);
+                                }
+                            }
+                            masterBin.SM2StaticPermutationResource.UniformExpressionTextures = newtextures2.ToArray();
+                            masterBin.SM3StaticPermutationResource.UniformExpressionTextures = newtextures3.ToArray();
+                            mat.WritePropertiesAndBinary(matprops, masterBin);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("MaterialInstanceConversion error");
+                        }
+                    }
                 }
             }
         }

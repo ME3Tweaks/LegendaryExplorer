@@ -563,7 +563,10 @@ namespace ME3Explorer.PackageEditor
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream", "BioBlockingVolume" };
             var actorclassesToSubstitute = new Dictionary<string, string>() 
             {
-                { "BioBlockingVolume", "BlockingVolume" },
+                { "BioBlockingVolume", "Engine.BlockingVolume" }
+            };
+            var archetypesToSubstitute = new Dictionary<string, string>()
+            {
                 { "Default__BioBlockingVolume", "Default__BlockingVolume" }
             };
             var fails = new List<string>();
@@ -867,10 +870,18 @@ namespace ME3Explorer.PackageEditor
                         var sactorxp = donor.GetUExport(sactor.Value.Item2);
                         if(actorclassesToSubstitute.ContainsKey(sactorxp.ClassName))
                         {
-                            foreach(var namekvp in actorclassesToSubstitute)
+                            var oldclass = sactorxp.ClassName;
+                            var newclass = actorclassesToSubstitute[oldclass];
+                            sactorxp.Class = donor.getEntryOrAddImport(newclass);
+                            var children = sactorxp.GetChildren();
+                            foreach(var c in children)
                             {
-                                var n = donor.FindNameOrAdd(namekvp.Key);
-                                donor.replaceName(n, namekvp.Value);
+                                if(c is ExportEntry child && archetypesToSubstitute.ContainsKey(child.Archetype?.ParentName ?? "None"))
+                                {
+                                    var oldarchlink = child.Archetype.ParentName;
+                                    var n = donor.FindNameOrAdd(oldarchlink);
+                                    donor.replaceName(n, archetypesToSubstitute[oldarchlink]);
+                                }
                             }
                         }
                         if (sactorxp?.HasArchetype ?? false)
@@ -890,7 +901,7 @@ namespace ME3Explorer.PackageEditor
                     donor.Dispose();
                 }
             });
-
+            Debug.WriteLine($"Done.");
             return fails;
         }
 
