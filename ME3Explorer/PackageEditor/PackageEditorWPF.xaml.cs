@@ -5725,7 +5725,33 @@ namespace ME3Explorer
                 });
             }
         }
+        private void RecookLevelToTestFromJSON(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog j = new CommonOpenFileDialog
+            {
+                DefaultExtension = ".json",
+                EnsurePathExists = true,
+                Title = "Select JSON with transfer details"
+            };
+        j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
+            if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
 
+            BusyText = "Recook level files";
+            IsBusy = true;
+            Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText, true)).ContinueWithOnUIThread(prevTask =>
+            {
+                if (Pcc != null)
+                    LoadFile(Pcc.FilePath);
+                IsBusy = false;
+                var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                {
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                dlg.Show();
+            });
+        }
+        }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             BusyText = "Converting files";

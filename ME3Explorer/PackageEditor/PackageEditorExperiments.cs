@@ -558,7 +558,7 @@ namespace ME3Explorer.PackageEditor
         /// <param name="ActorsToMove">Dicitionary: key Actors, value filename, entry uid</param>
         /// <param name="AssetsToMove">Dictionary key: AssetInstancedPath, value filename, isimport, entry uid</param>
         /// <param name="fromreload">is reloaded json</param>
-        public async static Task<List<string>> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string tgtOutputfolder, string tgttfc, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false)
+        public async static Task<List<string>> ConvertLevelToGame(MEGame Game, IMEPackage BioPSource, string tgtOutputfolder, string tgttfc, Action<string> callbackAction, LevelConversionData conversionData = null, bool fromreload = false, bool createtestlevel = false)
         {
             //VARIABLES / VALIDATION
             var actorclassesToMove = new List<string>() { "BlockingVolume", "SpotLight", "SpotLightToggleable", "PointLight", "PointLightToggleable", "SkyLight", "HeightFog", "LenseFlareSource", "StaticMeshActor", "BioTriggerStream", "BioBlockingVolume" };
@@ -787,31 +787,49 @@ namespace ME3Explorer.PackageEditor
             {
                 foreach (var pccref in conversionData.FilesToCopy)
                 {
+                    
                     var targetfile = Path.Combine(tgtOutputfolder, Path.GetFileName(pccref.Value));
-                    if (File.Exists(targetfile))
+                    if(createtestlevel)
                     {
-                        File.Delete(targetfile);
+                        if(pccref.Key.ToString().ToLowerInvariant().StartsWith("bioa"))
+                            targetfile = Path.Combine(tgtOutputfolder, $"BioA_{conversionData.GameLevelName}_TEST.pcc");
+                        else
+                            targetfile = Path.Combine(tgtOutputfolder, $"BioD_{conversionData.GameLevelName}_TEST.pcc");
+                        if(!File.Exists(targetfile))
+                            File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), targetfile);
+                    }
+                    else
+                    {
+                        if (File.Exists(targetfile))
+                        {
+                            File.Delete(targetfile);
+                        }
+                        File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), targetfile);
                     }
 
-                    File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), targetfile);
+
                     using (var target = MEPackageHandler.OpenME3Package(targetfile))
                     using (var donor = MEPackageHandler.OpenME2Package(pccref.Value))
                     {
-                        Debug.WriteLine($"Recooking outbound to {targetfile}");
-                        for (int i = 0; i < target.Names.Count; i++)  //Setup new level file
+                        if(!createtestlevel)
                         {
-                            string name = target.Names[i];
-                            if (name.Equals("ME3EmptyLevel"))
+                            for (int i = 0; i < target.Names.Count; i++)  //Setup new level file
                             {
-                                var newName = name.Replace("ME3EmptyLevel", Path.GetFileNameWithoutExtension(targetfile));
-                                target.replaceName(i, newName);
+                                string name = target.Names[i];
+                                if (name.Equals("ME3EmptyLevel"))
+                                {
+                                    var newName = name.Replace("ME3EmptyLevel", Path.GetFileNameWithoutExtension(targetfile));
+                                    target.replaceName(i, newName);
+                                }
                             }
+                            var packguid = Guid.NewGuid();
+                            var package = target.GetUExport(1);
+                            package.PackageGUID = packguid;
+                            target.PackageGuid = packguid;
+                            target.Save();
                         }
-                        var packguid = Guid.NewGuid();
-                        var package = target.GetUExport(1);
-                        package.PackageGUID = packguid;
-                        target.PackageGuid = packguid;
-                        target.Save();
+                        Debug.WriteLine($"Recooking outbound to {targetfile}");
+
                         var tgtlevel = target.GetUExport(target.Exports.FirstOrDefault(x => x.ClassName == "Level").UIndex);
                         //Get list of assets for this file & Process into
                         var sourceassets = conversionData.AssetsToMove.Where(s => s.Value.Item3.Contains(pccref.Key)).ToList();
@@ -910,7 +928,7 @@ namespace ME3Explorer.PackageEditor
             return fails;
         }
 
-        public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction)
+        public async static Task<List<string>> RecookTransferLevelsFromJSON(string jsonfile, Action<string> callbackAction, bool CreateTestLevel = false)
         {
             var OutputDir = Path.GetDirectoryName(jsonfile);
             var conversionData = new LevelConversionData(MEGame.ME3, MEGame.ME2, null, null, null, new ConcurrentDictionary<string, string>(), new ConcurrentDictionary<string, (string, int)>(), new ConcurrentDictionary<string, (string, int, List<string>)>());
@@ -937,7 +955,7 @@ namespace ME3Explorer.PackageEditor
                     return fails;
             }
 
-            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, conversionData.TargetTFCName, callbackAction, conversionData, true);
+            return await ConvertLevelToGame(conversionData.TargetGame, sourcebiop, OutputDir, conversionData.TargetTFCName, callbackAction, conversionData, true, CreateTestLevel);
         }
 
         public class LevelConversionData

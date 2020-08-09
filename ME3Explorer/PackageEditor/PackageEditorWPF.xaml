@@ -275,6 +275,7 @@
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
                         <MenuItem Header="Recook a game level transfer from temporary files (from JSON)" Click="RestartTransferFromJSON"/>
+                        <MenuItem Header="Recook to a singular test level (from JSON)" Click="RecookLevelToTestFromJSON"/>
                         <MenuItem Header="Convert to ME3 (retain instances)" Click="ConvertFileToME3"/>
                         <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
                         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
