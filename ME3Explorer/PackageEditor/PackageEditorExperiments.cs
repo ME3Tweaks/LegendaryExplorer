@@ -601,8 +601,8 @@ namespace ME3Explorer.PackageEditor
                         var filename = lskexp.GetProperty<NameProperty>("PackageName");
                         if ((filename?.Value.ToString().ToLowerInvariant().StartsWith("bioa") ?? false) || (filename?.Value.ToString().ToLowerInvariant().StartsWith("biod") ?? false))
                         {
-                            var filePath = Directory.GetFiles(ME2Directory.gamePath, $"{filename.Value}.pcc", SearchOption.AllDirectories).FirstOrDefault();
-                            conversionData.FilesToCopy.TryAdd(filename.Value, filePath);
+                            var filePath = Directory.GetFiles(ME2Directory.gamePath, $"{filename.Value.Instanced}.pcc", SearchOption.AllDirectories).FirstOrDefault();
+                            conversionData.FilesToCopy.TryAdd(filename.Value.Instanced, filePath);
                         }
                     }
                     conversionData.BioPSource = $"{biopname}_{BioPSource.Game}";
@@ -716,10 +716,10 @@ namespace ME3Explorer.PackageEditor
                                     var gotentry = levelpkg.TryGetEntry(asset.Value.Item2, out IEntry assetexp);
                                     if (asset.Key.StartsWith(fileref.Item1) && gotentry)  //fix to local package if item is in class (prevents conflicts)  - any shadow/lightmaps need special handling.
                                     {
-                                        var localpackagexp = levelpkg.Exports.FirstOrDefault(x => x.ObjectNameString == fileref.Item1);
+                                        var localpackagexp = levelpkg.Exports.FirstOrDefault(x => x.ObjectName.Instanced == fileref.Item1);
                                         if (localpackagexp != null)
                                         {
-                                            IEntry srclocalpkg = srcassetfile.Exports.FirstOrDefault(x => x.ObjectNameString == fileref.Item1);
+                                            IEntry srclocalpkg = srcassetfile.Exports.FirstOrDefault(x => x.ObjectName.Instanced == fileref.Item1);
                                             if (srclocalpkg.IsNull())
                                                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, localpackagexp, srcassetfile, null, false, out srclocalpkg);
                                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, assetexp, srcassetfile, srclocalpkg, true, out IEntry targetexp);

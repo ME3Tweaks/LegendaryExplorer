@@ -245,6 +245,7 @@ namespace ME3Explorer
         public ICommand ResolveImportCommand { get; set; }
         public ICommand PackageExportIsSelectedCommand { get; set; }
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
+        public ICommand ReplaceReferenceLinksCommand { get; set; }
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -279,7 +280,7 @@ namespace ME3Explorer
             GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
             ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
             ReindexDuplicateIndexesCommand = new GenericCommand(ReindexDuplicateIndexes, PackageIsLoaded);
-
+            ReplaceReferenceLinksCommand = new GenericCommand(ReplaceReferenceLinks, PackageIsLoaded);
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
             NewLevelFileCommand = new GenericCommand(NewLevelFile);
@@ -5563,7 +5564,7 @@ namespace ME3Explorer
             PackageEditorExperiments.RebuildFullLevelNetindexes();
         }
 
-        private void ReplaceReferenceLinks(object sender, RoutedEventArgs e)
+        private void ReplaceReferenceLinks()
         {
             if (TryGetSelectedEntry(out IEntry selectedEntry))
             {
