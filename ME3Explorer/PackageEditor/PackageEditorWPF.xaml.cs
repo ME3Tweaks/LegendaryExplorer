@@ -245,6 +245,7 @@ namespace ME3Explorer
         public ICommand ResolveImportCommand { get; set; }
         public ICommand PackageExportIsSelectedCommand { get; set; }
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
+        public ICommand ReplaceReferenceLinksCommand { get; set; }
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -279,7 +280,7 @@ namespace ME3Explorer
             GoToArchetypecommand = new GenericCommand(GoToArchetype, CanGoToArchetype);
             ReplaceNamesCommand = new GenericCommand(SearchReplaceNames, PackageIsLoaded);
             ReindexDuplicateIndexesCommand = new GenericCommand(ReindexDuplicateIndexes, PackageIsLoaded);
-
+            ReplaceReferenceLinksCommand = new GenericCommand(ReplaceReferenceLinks, PackageIsLoaded);
             OpenFileCommand = new GenericCommand(OpenFile);
             NewFileCommand = new GenericCommand(NewFile);
             NewLevelFileCommand = new GenericCommand(NewLevelFile);
@@ -5563,7 +5564,7 @@ namespace ME3Explorer
             PackageEditorExperiments.RebuildFullLevelNetindexes();
         }
 
-        private void ReplaceReferenceLinks(object sender, RoutedEventArgs e)
+        private void ReplaceReferenceLinks()
         {
             if (TryGetSelectedEntry(out IEntry selectedEntry))
             {
@@ -5724,7 +5725,33 @@ namespace ME3Explorer
                 });
             }
         }
+        private void RecookLevelToTestFromJSON(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog j = new CommonOpenFileDialog
+            {
+                DefaultExtension = ".json",
+                EnsurePathExists = true,
+                Title = "Select JSON with transfer details"
+            };
+        j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
+            if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
 
+            BusyText = "Recook level files";
+            IsBusy = true;
+            Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText, true)).ContinueWithOnUIThread(prevTask =>
+            {
+                if (Pcc != null)
+                    LoadFile(Pcc.FilePath);
+                IsBusy = false;
+                var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                {
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                dlg.Show();
+            });
+        }
+        }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             BusyText = "Converting files";

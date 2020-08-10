@@ -1001,7 +1001,7 @@ namespace ME3Explorer.Packages
                 }
             }
 
-            if (newGame == MEGame.ME3) //Change all materials to use default material.  Special handling where materials have been ported between games.
+            if (newGame == MEGame.ME3) //Special handling where materials have been ported between games.
             {
 
                 //change all materials to default material, but try to preserve diff and norm textures
@@ -1025,6 +1025,10 @@ namespace ME3Explorer.Packages
                             case "BioT_LevelMaster.Materials.GUI_Lit_MM":
                             case "BioT_LevelMaster.Materials.Signage.MM_GUIMaster_Emissive":
                             case "BioT_LevelMaster.Materials.Signage.MM_GUIMaster_Emissive_Fallback":
+                            case "BioT_LevelMaster.Materials.Opaque_Standard_MM":
+                            case "BioT_LevelMaster.Tech_Inset_MM":
+                            case "BioT_LevelMaster.Tech_Border_MM":
+                            case "BioT_LevelMaster.Brushed_Metal":
                                 masterMat = resourcePCC.Exports.First(exp => exp.FullPath == mat.FullPath);
                                 hasDefaultMaster = false;
                                 break;
@@ -1044,6 +1048,10 @@ namespace ME3Explorer.Packages
                                     break;
                                 case "BIOG_APL_MASTER_MATERIAL.Placeable_MM":
                                     masterMat = resourcePCC.Exports.First(exp => exp.FullPath == "Materials.Placeable_MM_INST");
+                                    hasDefaultMaster = false;
+                                    break;
+                                case "BioT_LevelMaster.Materials.Opaque_Standard_MM":
+                                    masterMat = resourcePCC.Exports.First(exp => exp.FullPath == "Materials.Opaque_Standard_MM_INST");
                                     hasDefaultMaster = false;
                                     break;
                                 default:
@@ -1176,6 +1184,7 @@ namespace ME3Explorer.Packages
                                     newtextures2.Add(newtexidx);
                                 }
                             }
+
                             foreach (var texidx in staticResTextures3)
                             {
                                 var masterTxt = resourcePCC.GetEntry(texidx);
