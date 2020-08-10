@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
 
 namespace ME3Script.Parsing
 {
@@ -99,6 +100,11 @@ namespace ME3Script.Parsing
                     {
                         throw Error("Expected element type for array!", CurrentPosition);
                     }
+
+                    if (elementType is DynamicArrayType)
+                    {
+                        throw Error("Arrays of Arrays are not supported!", elementType.StartPos, elementType.EndPos);
+                    }
                     if (Tokens.ConsumeToken(TokenType.RightArrow) is null)
                     {
                         throw Error("Expected '>' after array type!", CurrentPosition);
@@ -122,7 +128,7 @@ namespace ME3Script.Parsing
                     {
                         throw Error("Expected '>' after function name!", CurrentPosition);
                     }
-                    return new VariableType($"delegate<{delegateFunction.Value}>", delegateToken.StartPosition, CurrentPosition);//TODO: do this better. DelegateVariableType?
+                    return new DelegateType(new Function(delegateFunction.Value, default, null, null, null), delegateToken.StartPosition, CurrentPosition);
                 }
                 // TODO: word or basic datatype? (int float etc)
                 Token<string> type = Tokens.ConsumeToken(TokenType.Word);

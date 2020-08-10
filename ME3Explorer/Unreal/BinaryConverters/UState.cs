@@ -14,7 +14,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
         public uint stateUnk2;
         public uint stateUnk3;
         public uint stateUnk4;
-        public short stateUnk5;
+        public short LabelTableOffset;
         public StateFlags StateFlags;
         public OrderedMultiValueDictionary<NameReference, UIndex> LocalFunctionMap;
         protected override void Serialize(SerializingContainer2 sc)
@@ -24,7 +24,7 @@ namespace ME3Explorer.Unreal.BinaryConverters
             sc.Serialize(ref stateUnk2);
             sc.Serialize(ref stateUnk3);
             sc.Serialize(ref stateUnk4);
-            sc.Serialize(ref stateUnk5);
+            sc.Serialize(ref LabelTableOffset);
             sc.Serialize(ref StateFlags);
             sc.Serialize(ref LocalFunctionMap, SCExt.Serialize, SCExt.Serialize);
         }

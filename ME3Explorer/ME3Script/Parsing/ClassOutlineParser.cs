@@ -26,7 +26,7 @@ namespace ME3Script.Parsing
             Tokens = tokens;
         }
 
-        public ASTNode ParseDocument()
+        public Class ParseDocument()
         {
             return TryParseClass();
         }
@@ -44,14 +44,9 @@ namespace ME3Script.Parsing
                 var name = Consume(TokenType.Word);
                 if (name == null) throw Error("Expected class name!");
 
-                var parentClass = TryParseParent();
-                if (parentClass == null)
-                {
-                    Log.LogMessage($"No parent class specified for {name.Value}, inheriting from Object");
-                    parentClass = new VariableType("Object");
-                }
+                var parentClass = TryParseParent() ?? new VariableType("Object");
 
-                var outerClass = TryParseOuter();
+                var outerClass = TryParseOuter() ?? new VariableType("Object");
 
                 var interfaces = new List<VariableType>();
 
@@ -59,7 +54,11 @@ namespace ME3Script.Parsing
                 string configName = "None";
                 while (CurrentTokenType == TokenType.Word)
                 {
-                    if (Matches("nativeonly"))
+                    if (Matches("native"))
+                    {
+                        flags |= EClassFlags.Native;
+                    }
+                    else if (Matches("nativeonly"))
                     {
                         flags |= EClassFlags.NativeOnly;
                     }
@@ -77,7 +76,7 @@ namespace ME3Script.Parsing
                     }
                     else if (Matches("hidedropdown"))
                     {
-                        flags |= EClassFlags.HideDropDown2;
+                        flags |= EClassFlags.HideDropDown;
                     }
                     else if (Matches("nativereplication"))
                     {
@@ -155,6 +154,11 @@ namespace ME3Script.Parsing
                     }
                 }
 
+                if (flags.Has(EClassFlags.NoExport) && !flags.Has(EClassFlags.Native))
+                {
+                    throw Error("noexport is only valid for native classes!", CurrentPosition);
+                }
+
                 if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var variables = new List<VariableDeclaration>();
@@ -210,7 +214,7 @@ namespace ME3Script.Parsing
                 }
 
                 // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                return new Class(name.Value, interfaces, flags, variables, types, funcs, states, parentClass, outerClass, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition)
+                return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition)
                 {
                     ConfigName = configName
                 };
@@ -281,8 +285,8 @@ namespace ME3Script.Parsing
                     throw Error("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
                 }
 
-                var type = TryParseEnum() ?? TryParseStruct() ?? TryParseType();
-                if (type == null) throw Error("Expected variable type or struct/enum type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                var type = /*TryParseEnum() ?? TryParseStruct() ??*/ TryParseType();
+                if (type == null) throw Error("Expected variable type", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var var = ParseVariableName();
                 if (var == null) throw Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -350,8 +354,17 @@ namespace ME3Script.Parsing
 
                 if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                var vars = new List<VariableDeclaration>();
+                var types = new List<VariableType>();
                 while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd())
+                {
+                    var variable = TryParseStruct();
+                    if (variable == null) break;
+                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after struct declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    types.Add(variable);
+                }
+
+                var vars = new List<VariableDeclaration>();
+                while (CurrentTokenType != TokenType.RightBracket && !CurrentIs(STRUCTDEFAULTPROPERTIES) && !Tokens.AtEnd())
                 {
                     var variable = TryParseVarDecl();
                     if (variable == null) throw Error("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -359,9 +372,19 @@ namespace ME3Script.Parsing
                     vars.Add(variable);
                 }
 
+                DefaultPropertiesBlock defaults = null;
+                if (Matches(STRUCTDEFAULTPROPERTIES))
+                {
+                    if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
+                    {
+                        throw Error("Malformed defaultproperties body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    }
+                    defaults = new DefaultPropertiesBlock(null, bodyStart, bodyEnd);
+                }
+
                 if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new Struct(name.Value, flags, vars, name.StartPosition, name.EndPosition, parent);
+                return new Struct(name.Value, parent, flags, vars, types, defaults, name.StartPosition, name.EndPosition);
             }
         }
 
@@ -456,7 +479,7 @@ namespace ME3Script.Parsing
                     body = new CodeBody(null, bodyStart, bodyEnd);
                 }
 
-                return new Function(name.Value, returnType, body, flags, parameters, name.StartPosition, name.EndPosition)
+                return new Function(name.Value, flags, returnType, body, parameters, name.StartPosition, name.EndPosition)
                 {
                     NativeIndex = nativeIndex
                 };
@@ -486,6 +509,15 @@ namespace ME3Script.Parsing
                 }
 
                 if (!Matches(STATE)) return null;
+                if (Consume(TokenType.LeftParenth) != null)
+                {
+                    if (Consume(TokenType.RightParenth) is null)
+                    {
+                        throw Error("Expected ')' after '(' in state declaration!");
+                    }
+
+                    flags |= StateFlags.Editable;
+                }
 
                 var name = Consume(TokenType.Word);
                 if (name == null) throw Error("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -502,7 +534,7 @@ namespace ME3Script.Parsing
                         VariableIdentifier variable = TryParseVariable();
                         if (variable == null) throw Error("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                        ignores.Add(new Function(variable.Name, null, null, default, null, variable.StartPos, variable.EndPos));
+                        ignores.Add(new Function(variable.Name, FunctionFlags.Public, null, null, null, variable.StartPos, variable.EndPos));
                     } while (Consume(TokenType.Comma) != null);
 
                     if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));

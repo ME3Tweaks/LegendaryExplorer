@@ -627,7 +627,10 @@ namespace ME3Explorer
 
         private static readonly string[] me3FilesSafeToImportFrom =
         {
-            "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup.pcc", "GFxUI.pcc", "GameFramework.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
+            //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
+            //Assets: these files contain assets common enough that they are always loaded into memory
+            "Startup.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
         };
 
         public static bool IsSafeToImportFrom(string path, MEGame game)

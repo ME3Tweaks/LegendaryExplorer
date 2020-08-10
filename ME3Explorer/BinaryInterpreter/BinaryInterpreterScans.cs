@@ -5330,7 +5330,7 @@ namespace ME3Explorer
             yield return MakeUInt32Node(bin, "State unknown 2");
             yield return MakeInt32Node(bin, "State unknown 3");
             yield return MakeInt32Node(bin, "State unknown 4");
-            yield return MakeInt16Node(bin, "State unknown 5");
+            yield return MakeInt16Node(bin, "Label Table Offset");
             yield return new BinInterpNode(bin.Position, $"StateFlags: {getStateFlagsStr((StateFlags)bin.ReadUInt32())}") { Length = 4 };
             yield return MakeArrayNode(bin, "Local Functions", i =>
                                            new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}() = {Pcc.GetEntryString(bin.ReadInt32())}"));
@@ -5351,15 +5351,13 @@ namespace ME3Explorer
                 var classFlagsNode = new BinInterpNode(classFlagsPos, $"ClassFlags: {(int)ClassFlags:X8}", NodeType.StructLeafInt);
                 subnodes.Add(classFlagsNode);
 
-                //Create claskmask tree
-                foreach (UnrealFlags.EClassFlags flag in Enums.GetValues<UnrealFlags.EClassFlags>())
+                foreach (UnrealFlags.EClassFlags flag in ClassFlags.MaskToList())
                 {
-                    if ((ClassFlags & flag) != UnrealFlags.EClassFlags.None)
+                    if (flag != UnrealFlags.EClassFlags.Inherit)
                     {
-                        string reason = UnrealFlags.classflagdesc[flag];
                         classFlagsNode.Items.Add(new BinInterpNode
                         {
-                            Header = $"{(ulong)flag:X16} {flag} {reason}",
+                            Header = $"{(ulong)flag:X16} {flag}",
                             Name = $"_{classFlagsPos}"
                         });
                     }

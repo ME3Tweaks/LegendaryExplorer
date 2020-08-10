@@ -9,37 +9,41 @@ using ME3Explorer.Unreal;
 
 namespace ME3Script.Language.Tree
 {
-    public sealed class Class : VariableType
+    public sealed class Class : VariableType, IObjectType
     {
         public VariableType Parent;
         public VariableType OuterClass;
-        public List<VariableType> Interfaces;
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
-        public List<VariableDeclaration> VariableDeclarations;
-        public List<VariableType> TypeDeclarations;
-        public List<Function> Functions;
-        public List<State> States;
-        public List<OperatorDeclaration> Operators;
-        public DefaultPropertiesBlock DefaultProperties;
+        public List<VariableType> Interfaces { get; }
+        public List<VariableDeclaration> VariableDeclarations { get; }
+        public List<VariableType> TypeDeclarations { get; }
+        public List<Function> Functions { get; }
+        public List<State> States { get; }
+        public List<OperatorDeclaration> Operators { get; }
+        public DefaultPropertiesBlock DefaultProperties { get; }
 
-        public Class(string name, List<VariableType> interfaces, UnrealFlags.EClassFlags flags,
-                     List<VariableDeclaration> vars, List<VariableType> types, List<Function> funcs,
-                     List<State> states, VariableType parent, VariableType outer, List<OperatorDeclaration> ops,
-                     DefaultPropertiesBlock defaultProperties,
-                     SourcePosition start, SourcePosition end)
+        public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
+                     List<VariableType> interfaces = null,
+                     List<VariableType> types = null,
+                     List<VariableDeclaration> vars = null,
+                     List<Function> funcs = null,
+                     List<State> states = null,
+                     List<OperatorDeclaration> ops = null,
+                     DefaultPropertiesBlock defaultProperties = null,
+                     SourcePosition start = null, SourcePosition end = null)
             : base(name, start, end)
         {
             Parent = parent;
             OuterClass = outer;
-            Interfaces = interfaces;
             Flags = flags;
-            VariableDeclarations = vars;
-            TypeDeclarations = types;
-            Functions = funcs;
-            States = states;
-            Operators = ops;
-            DefaultProperties = defaultProperties;
+            Interfaces = interfaces ?? new List<VariableType>();
+            VariableDeclarations = vars ?? new List<VariableDeclaration>();
+            TypeDeclarations = types ?? new List<VariableType>();
+            Functions = funcs ?? new List<Function>();
+            States = states ?? new List<State>();
+            Operators = ops ?? new List<OperatorDeclaration>();
+            DefaultProperties = defaultProperties ?? new DefaultPropertiesBlock();
             Type = ASTNodeType.Class;
 
             foreach (ASTNode node in ChildNodes)
@@ -57,8 +61,12 @@ namespace ME3Script.Language.Tree
 
         public bool SameOrSubClass(string name)
         {
-            string nodeName = this.Name.ToLower();
             string inputName = name.ToLower();
+            if (inputName == "object")
+            {
+                return true;
+            }
+            string nodeName = this.Name.ToLower();
             if (nodeName == inputName)
                 return true;
             Class current = this;

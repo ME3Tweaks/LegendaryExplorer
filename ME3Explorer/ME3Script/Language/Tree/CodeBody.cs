@@ -12,10 +12,10 @@ namespace ME3Script.Language.Tree
     {
         public List<Statement> Statements;
 
-        public CodeBody(List<Statement> contents, SourcePosition start, SourcePosition end)
+        public CodeBody(List<Statement> contents = null, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.CodeBody, start, end) 
         {
-            Statements = contents;
+            Statements = contents ?? new List<Statement>();
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

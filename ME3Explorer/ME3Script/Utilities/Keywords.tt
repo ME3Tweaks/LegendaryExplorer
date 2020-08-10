@@ -17,6 +17,7 @@
         "state",
         "ignores",
         "defaultproperties",
+        "structdefaultproperties",
         "extends",
         "within",
         "local",
@@ -39,6 +40,14 @@
         "operator",
         "preoperator",
         "postoperator",
+        "int",
+        "bool",
+        "float",
+        "string",
+        "stringref",
+        "byte",
+        "biomask4",
+        "Name",
     };
 #>
 namespace ME3Script.Utilities

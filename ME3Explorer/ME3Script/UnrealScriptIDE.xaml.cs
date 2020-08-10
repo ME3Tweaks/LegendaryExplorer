@@ -5,16 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Script.Analysis.Symbols;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
@@ -154,7 +149,7 @@ namespace ME3Explorer.ME3Script
                 MessageLog log;
                 (RootNode, log) = CompileAST(ScriptText);
 
-                if (RootNode != null)
+                if (RootNode != null && log.AllErrors.IsEmpty())
                 {
                     var codeBuilder = new CodeBuilderVisitor();
                     RootNode.AcceptVisitor(codeBuilder);
@@ -168,13 +163,16 @@ namespace ME3Explorer.ME3Script
         public static (ASTNode ast, MessageLog log) CompileAST(string script)
         {
             var log = new MessageLog();
-            var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(script)), log);
+            var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(script, log)), log);
             try
             {
-                ASTNode ast = parser.ParseDocument();
+                Class ast = parser.ParseDocument();
                 if (ast != null)
                 {
                     log.LogMessage("Parsed!");
+                    //var symbols = SymbolTable.CreateBaseTable(ast);
+                    //var validator = new ClassValidationVisitor(log, symbols);
+                    //ast.AcceptVisitor(validator);
                 }
                 else
                 {
@@ -185,7 +183,7 @@ namespace ME3Explorer.ME3Script
             }
             catch (Exception e)
             {
-                log.LogMessage("Parse failed!");
+                log.LogMessage($"Parse failed! Exception: {e}");
                 return (null, log);
             }
 

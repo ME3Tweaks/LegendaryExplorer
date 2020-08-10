@@ -1054,10 +1054,7 @@ namespace ME3Explorer.Unreal
 
         public NameProperty(NameReference value, NameReference? propertyName = null) : base(propertyName)
         {
-            if (value is NameReference name)
-            {
-                Value = name;
-            }
+            Value = value;
         }
 
         public NameProperty(EndianReader stream, IMEPackage pcc, NameReference? propertyName = null) : base(propertyName)
@@ -1301,7 +1298,7 @@ namespace ME3Explorer.Unreal
             EnumValues = UnrealObjectInfo.GetEnumValues(meGame, enumType, true);
             if (EnumValues == null)
             {
-                Debugger.Break();
+                throw new Exception($"{enumType} is not a valid enum type in {meGame}!");
             }
             Value = EnumValues[0];
         }

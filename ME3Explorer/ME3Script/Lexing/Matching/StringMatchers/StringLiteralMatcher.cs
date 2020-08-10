@@ -18,22 +18,49 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             if (data.CurrentItem == "\"")
             {
                 data.Advance();
-                string prev = "";
-                while (!data.AtEnd())
+                bool inEscape = false;
+                for (;!data.AtEnd(); data.Advance())
                 {
-                    if (data.CurrentItem == "\"" && prev != "\\")
+                    if (inEscape)
+                    {
+                        inEscape = false;
+                        switch (data.CurrentItem)
+                        {
+                            case "\\":
+                            case "\"":
+                                value += data.CurrentItem;
+                                continue;
+                            case "n":
+                                value += "\n";
+                                continue;
+                            case "r":
+                                value += "\r";
+                                continue;
+                            case "t":
+                                value += "\t";
+                                continue;
+                            default:
+                                log.LogError(@$"Unrecognized escape sequence: '\{data.CurrentItem}'", new SourcePosition(streamPos));
+                                return null;
+                        }
+                    }
+
+                    if (data.CurrentItem == "\\")
+                    {
+                        inEscape = true;
+                        continue;
+                    }
+                    if (data.CurrentItem == "\"")
                     {
                         break;
                     }
-                    else if (data.CurrentItem == "\n")
+                    if (data.CurrentItem == "\n")
                     {
                         streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
                         log.LogError("String Literals can not contain line breaks!", start, new SourcePosition(streamPos));
                         return null;
                     }
                     value += data.CurrentItem;
-                    prev = data.CurrentItem;
-                    data.Advance();
                 }
 
                 if (data.CurrentItem == "\"")

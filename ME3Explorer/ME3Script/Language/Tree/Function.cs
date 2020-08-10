@@ -21,16 +21,17 @@ namespace ME3Script.Language.Tree
 
         public int NativeIndex;
 
-        public Function(string name, VariableType returntype, CodeBody body,
-                        FunctionFlags flags, List<FunctionParameter> parameters,
-                        SourcePosition start, SourcePosition end)
+        public Function(string name, FunctionFlags flags, 
+                        VariableType returntype, CodeBody body,
+                        List<FunctionParameter> parameters = null,
+                        SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.Function, start, end)
         {
             Name = name;
             Body = body;
             ReturnType = returntype;
             Flags = flags;
-            Parameters = parameters;
+            Parameters = parameters ?? new List<FunctionParameter>();
             Locals = new List<VariableDeclaration>();
         }
 
@@ -42,10 +43,10 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return ReturnType;
+                if(ReturnType != null) yield return ReturnType;
                 foreach (FunctionParameter functionParameter in Parameters) yield return functionParameter;
                 foreach (VariableDeclaration variableDeclaration in Locals) yield return variableDeclaration;
-                yield return Body;
+                if (Body != null) yield return Body;
             }
         }
     }

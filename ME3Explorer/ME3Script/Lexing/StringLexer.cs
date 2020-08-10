@@ -34,7 +34,7 @@ namespace ME3Script.Lexing
             TokenMatchers.Add(new NumberMatcher(delimiters));
             TokenMatchers.Add(new WordMatcher(delimiters));
 
-            StreamPosition = new SourcePosition(0, 0, 0);
+            StreamPosition = new SourcePosition(1, 0, 0);
         }
 
         public override Token<string> GetNextToken()

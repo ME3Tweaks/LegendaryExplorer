@@ -34,20 +34,27 @@ namespace ME3Explorer.Unreal
             Parsed = 0x00000010U,
             Localized = 0x00000020U,
             SafeReplace = 0x00000040U,
-
+            Native = 0x00000080,
             NoExport = 0x00000100U,
             Placeable = 0x00000200U,
             PerObjectConfig = 0x00000400U,
             NativeReplication = 0x00000800U,
             EditInlineNew = 0x00001000U,
             CollapseCategories = 0x00002000U,
-            ExportStructs = 0x00004000U,      // @Removed(UE3 in early but not latest)
-            HasComponents = 0x00400000U,      // @Redefined Class has component properties.
-            Hidden = 0x00800000U,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
-            Deprecated = 0x01000000U,      // @Redefined Don't save objects of this class when serializing
-            HideDropDown2 = 0x02000000U,
-            Exported = 0x04000000U,
-            NativeOnly = 0x20000000U
+            Interface = 0x00004000,
+            HasInstancedProps = 0x00200000,      // @Removed(UE3 in early but not latest)
+            HasComponents = 0x00800000,      // @Redefined Class has component properties.
+            Hidden = 0x01000000,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
+            Deprecated = 0x02000000,      // @Redefined Don't save objects of this class when serializing
+            HideDropDown = 0x04000000,
+            Exported = 0x08000000,
+            Intrinsic = 0x10000000,
+            NativeOnly = 0x20000000U,
+            PerObjectLocalized = 0x40000000,
+            HasCrossLevelRefs = 0x80000000,
+
+            Inherit = Transient | Config | Localized | SafeReplace | PerObjectConfig | PerObjectLocalized | Placeable 
+                    | HasComponents | Deprecated | Intrinsic | HasInstancedProps | HasCrossLevelRefs
         }
 
         [Flags]
@@ -231,32 +238,6 @@ namespace ME3Explorer.Unreal
             [EPropertyFlags.EditTextBox] = "",
             [EPropertyFlags.CrossLevelPassive] = "",
             [EPropertyFlags.CrossLevelActive] = "",
-        };
-
-        public static Dictionary<EClassFlags, string> classflagdesc = new Dictionary<EClassFlags, string>
-        {
-            [EClassFlags.None] = "",
-            [EClassFlags.Abstract] = "",
-            [EClassFlags.Compiled] = "",
-            [EClassFlags.Config] = "",
-            [EClassFlags.Transient] = "",
-            [EClassFlags.Parsed] = "",
-            [EClassFlags.Localized] = "",
-            [EClassFlags.SafeReplace] = "",
-            [EClassFlags.NoExport] = "",
-            [EClassFlags.Placeable] = "",
-            [EClassFlags.PerObjectConfig] = "",
-            [EClassFlags.NativeReplication] = "",
-            [EClassFlags.EditInlineNew] = "",
-            [EClassFlags.CollapseCategories] = "",
-            [EClassFlags.ExportStructs] = "",      // @Removed(UE3 in early but not latest)
-
-            [EClassFlags.HasComponents] = "Class has component properties",      // @Redefined Class has component properties.
-            [EClassFlags.Hidden] = "Don't show this class in the editor class browser or edit inline new menus",     // @Redefined .
-            [EClassFlags.Deprecated] = "Don't save objects of this class when serializing",      // @Redefined 
-            [EClassFlags.HideDropDown2] = "",
-            [EClassFlags.Exported] = "",
-            [EClassFlags.NativeOnly] = ""
         };
 
         [Flags]

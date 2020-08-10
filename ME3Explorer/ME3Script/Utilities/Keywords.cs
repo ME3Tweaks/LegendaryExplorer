@@ -14,6 +14,7 @@
         public static string STATE = "state";     
         public static string IGNORES = "ignores";     
         public static string DEFAULTPROPERTIES = "defaultproperties";     
+        public static string STRUCTDEFAULTPROPERTIES = "structdefaultproperties";     
         public static string EXTENDS = "extends";     
         public static string WITHIN = "within";     
         public static string LOCAL = "local";     
@@ -36,5 +37,13 @@
         public static string OPERATOR = "operator";     
         public static string PREOPERATOR = "preoperator";     
         public static string POSTOPERATOR = "postoperator";     
+        public static string INT = "int";     
+        public static string BOOL = "bool";     
+        public static string FLOAT = "float";     
+        public static string STRING = "string";     
+        public static string STRINGREF = "stringref";     
+        public static string BYTE = "byte";     
+        public static string BIOMASK4 = "biomask4";     
+        public static string NAME = "Name";     
 	}
 }

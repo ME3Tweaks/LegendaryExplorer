@@ -9,22 +9,27 @@ using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
-    public sealed class Struct : VariableType
+    public sealed class Struct : VariableType, IObjectType
     {
         public ScriptStructFlags Flags;
         public VariableType Parent;
-        public List<VariableDeclaration> Members;
-        public DefaultPropertiesBlock DefaultProperties;
+        public List<VariableDeclaration> VariableDeclarations { get; }
+        public List<VariableType> TypeDeclarations { get; }
+        public DefaultPropertiesBlock DefaultProperties { get; }
 
-        public Struct(string name, ScriptStructFlags flags,
-            List<VariableDeclaration> members,
-            SourcePosition start, SourcePosition end, VariableType parent = null)
+        public Struct(string name, VariableType parent, ScriptStructFlags flags,
+                      List<VariableDeclaration> variableDeclarations = null,
+                      List<VariableType> typeDeclarations = null,
+                      DefaultPropertiesBlock defaults = null,
+                      SourcePosition start = null, SourcePosition end = null)
             : base(name, start, end)
         {
             Type = ASTNodeType.Struct;
             Flags = flags;
-            Members = members;
+            VariableDeclarations = variableDeclarations ?? new List<VariableDeclaration>();
+            TypeDeclarations = typeDeclarations ?? new List<VariableType>();
             Parent = parent;
+            DefaultProperties = defaults ?? new DefaultPropertiesBlock();
             
             foreach (ASTNode node in ChildNodes)
             {
@@ -57,7 +62,8 @@ namespace ME3Script.Language.Tree
             get
             {
                 if (Parent != null) yield return Parent;
-                foreach (VariableDeclaration variableDeclaration in Members) yield return variableDeclaration;
+                foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
+                foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 if (DefaultProperties != null) yield return DefaultProperties;
             }
         }

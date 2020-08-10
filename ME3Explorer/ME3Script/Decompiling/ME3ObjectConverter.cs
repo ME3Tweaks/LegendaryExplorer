@@ -76,8 +76,7 @@ namespace ME3Script.Decompiling
             var propObject = pcc.GetUExport(uClass.Defaults);
             var defaultProperties = ConvertDefaultProperties(propObject);
 
-            Class AST = new Class(uClass.Export.ObjectName.Instanced, interfaces, uClass.ClassFlags, Vars, Types, Funcs,
-                                  States, parent, outer, new List<OperatorDeclaration>(), defaultProperties, null, null)
+            Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, new List<OperatorDeclaration>(), defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName
             };
@@ -100,7 +99,8 @@ namespace ME3Script.Decompiling
             // TODO: labels
 
             State parent = null;
-            if (obj.SuperClass != 0)
+            //if the parent is not from the same class, then it's overriden, not extended
+            if (obj.SuperClass != 0 && obj.SuperClass.GetEntry(obj.Export.FileRef).Parent == obj.Export.Parent)
                 parent = new State(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced, null, default, null, null, null, null, null, null);
 
             var Funcs = new List<Function>();
@@ -116,7 +116,7 @@ namespace ME3Script.Decompiling
                         nextItem = uFunction.Next;
                         break;
                     case UFunction uFunction:
-                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, null, null, default, null, null, null));
+                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, default, null, null, null, null, null));
                         /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
                          * They are defined though, each being its own proper object with simply a return nothing for bytecode.
                          * */
@@ -137,6 +137,7 @@ namespace ME3Script.Decompiling
         public static Struct ConvertStruct(UScriptStruct obj)
         {
             var Vars = new List<VariableDeclaration>();
+            var Types = new List<VariableType>();
             var nextItem = obj.Children;
 
             while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
@@ -148,6 +149,10 @@ namespace ME3Script.Decompiling
                         Vars.Add(ConvertVariable(uProperty));
                         nextItem = uProperty.Next;
                         break;
+                    case UScriptStruct uStruct:
+                        Types.Add(ConvertStruct(uStruct));
+                        nextItem = uStruct.Next;
+                        break;
                     default:
                         nextItem = 0;
                         break;
@@ -155,9 +160,11 @@ namespace ME3Script.Decompiling
             }
 
             VariableType parent = obj.SuperClass != 0 
-                ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced, null, null) : null;
+                ? new VariableType(obj.SuperClass.GetEntry(obj.Export.FileRef).ObjectName.Instanced) : null;
 
-            var node = new Struct(obj.Export.ObjectName.Instanced, obj.StructFlags, Vars, null, null, parent);
+            var defaults = new DefaultPropertiesBlock(ConvertProperties(RemoveDefaultValues(obj.Defaults), obj.Export));
+
+            var node = new Struct(obj.Export.ObjectName.Instanced, parent, obj.StructFlags, Vars, Types, defaults);
 
             foreach (var member in Vars)
                 member.Outer = node;
@@ -165,12 +172,109 @@ namespace ME3Script.Decompiling
             return node;
         }
 
+        private static PropertyCollection RemoveDefaultValues(PropertyCollection props)
+        {
+            var result = new PropertyCollection();
+
+            foreach (Property prop in props)
+            {
+                switch (prop)
+                {
+                    case ArrayPropertyBase arrayPropertyBase:
+                        if (arrayPropertyBase.Count > 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case BioMask4Property bioMask4Property:
+                        if (bioMask4Property.Value != 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case BoolProperty boolProperty:
+                        if (boolProperty.Value)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case ByteProperty byteProperty:
+                        if (byteProperty.Value != 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case DelegateProperty delegateProperty:
+                        if (delegateProperty.Value != ScriptDelegate.Empty)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case EnumProperty enumProperty:
+                        if (enumProperty.Value != enumProperty.EnumValues.FirstOrDefault())
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case FloatProperty floatProperty:
+                        if (floatProperty.Value != 0f)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case IntProperty intProperty:
+                        if (intProperty.Value != 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case NameProperty nameProperty:
+                        if (nameProperty.Value != "None")
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case ObjectProperty objectProperty:
+                        if (objectProperty.Value != 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case StringRefProperty stringRefProperty:
+                        if (stringRefProperty.Value != 0)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case StrProperty strProperty:
+                        if (strProperty.Value != string.Empty)
+                        {
+                            result.Add(prop);
+                        }
+                        break;
+                    case StructProperty structProperty:
+                        structProperty.Properties = RemoveDefaultValues(structProperty.Properties);
+                        if (structProperty.Properties.Count > 0)
+                        {
+                            result.Add(structProperty);
+                        }
+                        break;
+                    case NoneProperty _:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(prop));
+                }
+            }
+
+            return result;
+        }
+
         public static Enumeration ConvertEnum(UEnum obj)
         {
             var vals = new List<VariableIdentifier>();
             foreach (var val in obj.Names)
             {
-                vals.Add(new VariableIdentifier(val, null, null));
+                vals.Add(new VariableIdentifier(val.Instanced, null, null));
             }
 
             var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null);
@@ -210,7 +314,28 @@ namespace ME3Script.Decompiling
                     typeStr = "class";
                     break;
                 case UDelegateProperty delegateProperty:
-                    return new DelegateType(obj.Export.FileRef.GetEntry(delegateProperty.Function)?.ObjectName.Instanced);
+                {
+                    IEntry function = obj.Export.FileRef.GetEntry(delegateProperty.Function);
+                    IEntry functionClass = function.Parent;
+                    for (IEntry delPropClass = delegateProperty.Export; delPropClass != null; delPropClass = delPropClass.Parent)
+                    {
+                        if (delPropClass.ClassName == "Class")
+                        {
+                            while (delPropClass != null)
+                            {
+                                if (delPropClass == functionClass)
+                                {
+                                    return new DelegateType(new Function(function?.ObjectName.Instanced, default, null, null, null));
+                                }
+
+                                delPropClass = (delPropClass as ExportEntry)?.SuperClass;
+                            }
+                            break;
+                        }
+                    }
+                    //function is not in scope, fully qualify it
+                    return new DelegateType(new Function(function?.InstancedFullPath, default, null, null, null));
+                }
                 case UFloatProperty _:
                     typeStr = "float";
                     break;
@@ -289,8 +414,8 @@ namespace ME3Script.Decompiling
             var body = ByteCode.Decompile();
 
             
-            var func = new Function(obj.Export.ObjectName.Instanced, returnType, body,
-                                    obj.FunctionFlags, parameters, null, null)
+            var func = new Function(obj.Export.ObjectName.Instanced,
+                                    obj.FunctionFlags, returnType, body, parameters, null, null)
             {
                 NativeIndex = obj.NativeIndex
             };
@@ -307,7 +432,7 @@ namespace ME3Script.Decompiling
         {
             List<Statement> defaults = ConvertProperties(defaultsExport.GetProperties(), defaultsExport);
 
-            return new DefaultPropertiesBlock(new List<Statement>(defaults), null, null);
+            return new DefaultPropertiesBlock(new List<Statement>(defaults));
         }
 
         private static List<Statement> ConvertProperties(PropertyCollection properties, ExportEntry containingExport)
@@ -315,6 +440,10 @@ namespace ME3Script.Decompiling
             var statements = new List<Statement>();
             foreach (var prop in properties)
             {
+                if (prop is NoneProperty)
+                {
+                    continue;
+                }
                 var name = new SymbolReference(null, null, null, prop.Name);
                 var value = ConvertPropertyValue(prop);
                 if (value is StructLiteral structLiteral)

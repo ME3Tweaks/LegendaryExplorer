@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
 {
     public class DefaultPropertiesBlock : CodeBody
     {
-        public DefaultPropertiesBlock(List<Statement> contents, SourcePosition start, SourcePosition end)
+        public DefaultPropertiesBlock(List<Statement> contents = null, SourcePosition start = null, SourcePosition end = null)
             :base(contents, start, end)
         {
             Type = ASTNodeType.DefaultPropertiesBlock;

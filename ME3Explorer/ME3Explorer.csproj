@@ -352,6 +352,7 @@
     <Compile Include="ME3Script\Language\Tree\InOpDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\InOpReference.cs" />
     <Compile Include="ME3Script\Language\Tree\IntegerLiteral.cs" />
+    <Compile Include="ME3Script\Language\Tree\IObjectType.cs" />
     <Compile Include="ME3Script\Language\Tree\NameLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\PostOpDeclaration.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="ME3Script\Parsing\CodeBodyParser.cs" />
     <Compile Include="ME3Script\Parsing\StringParserBase.cs" />
     <Compile Include="ME3Script\Parsing\TokenStream.cs" />
+    <Compile Include="ME3Script\StandardLibrary.cs" />
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">
       <DependentUpon>UnrealScriptIDE.xaml</DependentUpon>
     </Compile>

@@ -129,6 +129,8 @@ namespace ME3Explorer.Unreal
         }
 
         #endregion
+
+        public static ScriptDelegate Empty = new ScriptDelegate(0, "None");
     }
 
     public enum PropertyType

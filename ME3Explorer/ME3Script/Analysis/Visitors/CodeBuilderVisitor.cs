@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ME3Explorer;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Script.Language.Tree;
@@ -59,9 +60,17 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(Class node)
         {
             // class classname extends parentclass [within outerclass] [specifiers] ;
-            Write($"{CLASS} {node.Name} {EXTENDS} {node.Parent.Name} ");
-            if (node.OuterClass != null && node.OuterClass.Name != node.Parent.Name)
-                Append($"{WITHIN} {node.OuterClass.Name} ");
+            Write($"{CLASS} {node.Name}");
+
+            if (node.Parent != null && !node.Parent.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
+            {
+                Append($" {EXTENDS} {node.Parent.Name}");
+            }
+            if (node.OuterClass != null && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
+            {
+                Append($" {WITHIN} {node.OuterClass.Name}");
+            }
+
             NestingLevel++;
 
             if (node.Interfaces.Any())
@@ -70,6 +79,10 @@ namespace ME3Script.Analysis.Visitors
             }
 
             EClassFlags flags = node.Flags;
+            if (flags.Has(EClassFlags.Native))
+            {
+                Write("native");
+            }
             if (flags.Has(EClassFlags.NativeOnly))
             {
                 Write("nativeonly");
@@ -86,7 +99,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 Write("placeable");
             }
-            if (flags.Has(EClassFlags.HideDropDown2))
+            if (flags.Has(EClassFlags.HideDropDown))
             {
                 Write("hidedropdown");
             }
@@ -147,7 +160,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 Write("");
                 Write("// Variables");
-                foreach (VariableDeclaration decl in node.VariableDeclarations.ToList())
+                foreach (VariableDeclaration decl in node.VariableDeclarations)
                     decl.AcceptVisitor(this);
             }
 
@@ -200,10 +213,22 @@ namespace ME3Script.Analysis.Visitors
             Write($"{type} ");
             WritePropertyFlags(node.Flags);
             string staticarray = node.IsStaticArray ? $"[{node.Size}]" : "";
-            node.VarType.AcceptVisitor(this);
+            WriteTypeName(node.VarType);
             Append($" {node.Name}{staticarray};");
             
             return true;
+        }
+
+        void WriteTypeName(VariableType node)
+        {
+            switch (node)
+            {
+                case DynamicArrayType _:
+                case DelegateType _:
+                    node.AcceptVisitor(this);
+                    return;
+            }
+            Append(node.Name);
         }
 
         public bool VisitNode(VariableType node)
@@ -214,15 +239,15 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayType node)
         {
-            Append($"{node.Name}<");
-            node.ElementType.AcceptVisitor(this);
+            Append($"{ARRAY}<");
+            WriteTypeName(node.ElementType);
             Append(">");
             return true;
         }
 
         public bool VisitNode(DelegateType node)
         {
-            Append($"{node.Name}<{node.FunctionName}>");
+            Append($"{DELEGATE}<{node.DefaultFunction.Name}>");
             return true;
         }
 
@@ -273,8 +298,19 @@ namespace ME3Script.Analysis.Visitors
             Append("{");
             NestingLevel++;
 
-            foreach (VariableDeclaration member in node.Members)
+            foreach (VariableType typeDeclaration in node.TypeDeclarations)
+            {
+                typeDeclaration.AcceptVisitor(this);
+            }
+
+            foreach (VariableDeclaration member in node.VariableDeclarations)
                 member.AcceptVisitor(this);
+
+            if (node.DefaultProperties.Statements.Any())
+            {
+                Write("");
+                node.DefaultProperties.AcceptVisitor(this);
+            }
 
             NestingLevel--;
             Write("};");
@@ -399,7 +435,10 @@ namespace ME3Script.Analysis.Visitors
             }
 
             Append($"{FUNCTION} ");
-            node.ReturnType?.AcceptVisitor(this);
+            if (node.ReturnType != null)
+            {
+                WriteTypeName(node.ReturnType);
+            }
             Append($" {node.Name}(");
             foreach (FunctionParameter p in node.Parameters)
             {
@@ -430,7 +469,7 @@ namespace ME3Script.Analysis.Visitors
             // [specifiers] parametertype parametername[[staticarraysize]]
             WritePropertyFlags(node.Flags);
             string staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
-            node.VarType.AcceptVisitor(this);
+            WriteTypeName(node.VarType);
             Append($" {node.Name}{staticarray}");
             if (node.DefaultParameter != null)
             {
@@ -463,7 +502,12 @@ namespace ME3Script.Analysis.Visitors
                 Append($"{string.Join(" ", specs)} ");
             }
 
-            Append($"{STATE} {node.Name} ");
+            Append($"{STATE}");
+            if (flags.Has(StateFlags.Editable))
+            {
+                Append("()");
+            }
+            Append($" {node.Name} ");
             if (node.Parent != null)
                 Append($"{EXTENDS} {node.Parent.Name} ");
             Append("{");
@@ -545,7 +589,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DefaultPropertiesBlock node)
         {
-            Write(DEFAULTPROPERTIES);
+            Write(node.Outer is Struct ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES);
             Write("{");
             NestingLevel++;
             foreach (Statement s in node.Statements)
@@ -838,7 +882,8 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(CastExpression node)
         {
             // type(expr)
-            node.CastType.AcceptVisitor(this);
+
+            WriteTypeName(node.CastType);
             Append("(");
             node.CastTarget.AcceptVisitor(this);
             Append(")");
@@ -906,7 +951,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StringLiteral node)
         {
             // "string"
-            Append($"\"{node.Value}\"");
+            Append($"\"{EncodeString(node.Value)}\"");
             return true;
         }
 
@@ -1202,6 +1247,37 @@ namespace ME3Script.Analysis.Visitors
             {
                 Append($"{string.Join(" ", specs)} ");
             }
+        }
+
+        public static string EncodeString(string original)
+        {
+            var sb = new StringBuilder();
+            foreach (char c in original)
+            {
+                switch (c)
+                {
+                    case '\r':
+                        sb.Append("\\r");
+                        break;
+                    case '\t':
+                        sb.Append("\\t");
+                        break;
+                    case '\"':
+                        sb.Append("\\\"");
+                        break;
+                    case '\\':
+                        sb.Append("\\\\");
+                        break;
+                    case '\n':
+                        sb.Append("\\n");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         #region Unused

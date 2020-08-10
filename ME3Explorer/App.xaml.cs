@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,11 +20,7 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Splash;
 using ME3Explorer.Unreal;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 
 namespace ME3Explorer
 {
@@ -99,8 +94,8 @@ namespace ME3Explorer
             var props = typeof(APIKeys).GetProperties();
             if (APIKeys.HasAppCenterKey)
             {
-                AppCenter.Start(APIKeys.AppCenterKey,
-                    typeof(Analytics), typeof(Crashes));
+                Microsoft.AppCenter.AppCenter.Start(APIKeys.AppCenterKey,
+                    typeof(Microsoft.AppCenter.Analytics.Analytics), typeof(Microsoft.AppCenter.Crashes.Crashes));
             }
 #endif
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
@@ -173,6 +168,8 @@ namespace ME3Explorer
 
                 GameController.InitializeMessageHook(mainWindow);
                 PendingAppLoadedAction?.Invoke();
+
+                //ME3Script.StandardLibrary.BuildStandardLib();
             }
         }
 

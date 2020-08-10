@@ -10,20 +10,32 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
 using ME3Explorer.Unreal.BinaryConverters;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Script.Analysis.Visitors
 {
+    public enum ValidationPass
+    {
+        TypesAndFunctionNamesAndStateNames,
+        ClassAndStructMembersAndFunctionParams,
+        BodyPass
+    }
+
     public class ClassValidationVisitor : IASTVisitor
     {
-        private SymbolTable Symbols;
-        private MessageLog Log;
+
+        private readonly SymbolTable Symbols;
+        private readonly MessageLog Log;
         private bool Success;
 
-        public ClassValidationVisitor(MessageLog log, SymbolTable symbols)
+        public ValidationPass Pass;
+
+        public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass)
         {
             Log = log;
             Symbols = symbols;
             Success = true;
+            Pass = pass;
         }
 
         private bool Error(string msg, SourcePosition start = null, SourcePosition end = null)
@@ -35,112 +47,163 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Class node)
         {
-            // TODO: allow duplicate names as long as its in different packages!
-            if (Symbols.SymbolExists(node.Name, ""))
-                return Error("A class named '" + node.Name + "' already exists!", node.StartPos, node.EndPos);
-
-            Symbols.AddSymbol(node.Name, node);
-
-            ASTNode parent;
-            if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, ""))
-                return Error("No parent class named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
-            if (parent != null)
+            switch (Pass)
             {
-                if (parent.Type != ASTNodeType.Class)
-                    return Error("Parent named '" + node.Parent.Name + "' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
-                else if ((parent as Class).SameOrSubClass(node.Name)) // TODO: not needed due to no forward declarations?
-                    return Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
-                else
-                    node.Parent = parent as Class;
-            }
+                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                {
+                    // TODO: allow duplicate names as long as its in different packages!
+                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
+                    {
+                        //ADD CLASSNAME TO SYMBOLS BEFORE VALIDATION pass!
+                        //if (!Symbols.TryAddType(node))
+                        //{
+                        //    return Error($"A class named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+                        //}
+                        node.Parent.Outer = node;
+                        if (!Symbols.TryResolveType(ref node.Parent))
+                            return Error($"No parent class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                        if (node.Parent.Type != ASTNodeType.Class)
+                            return Error($"Parent named '{node.Parent.Name}' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
 
-            ASTNode outer;
-            if (node.OuterClass != null)
-            {
-                if (!Symbols.TryGetSymbol(node.OuterClass.Name, out outer, ""))
-                    return Error("No outer class named '" + node.OuterClass.Name + "' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                else if (outer.Type != ASTNodeType.Class)
-                    return Error("Outer named '" + node.OuterClass.Name + "' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                else if (node.Parent.Name == "Actor")
-                    return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                else if (!(outer as Class).SameOrSubClass((node.Parent as Class).OuterClass.Name))
-                    return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-            }
-            else
-            {
-                outer = (node.Parent as Class).OuterClass;
-            }
-            node.OuterClass = outer as Class;
+                        if (node.OuterClass != null)
+                        {
+                            node.OuterClass.Outer = node;
+                            if (!Symbols.TryResolveType(ref node.OuterClass))
+                                return Error($"No outer class named '{node.OuterClass.Name}' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            if (node.OuterClass.Type != ASTNodeType.Class)
+                                return Error($"Outer named '{node.OuterClass.Name}' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            if (node.Parent.Name == "Actor" && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
+                                return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                        }
+                        else
+                        {
+                            node.OuterClass = ((Class)node.Parent).OuterClass;
+                        }
 
-            // TODO(?) validate class specifiers more than the initial parsing?
+                        //specifier validation
+                        if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && !((Class)node.Parent).Flags.Has(EClassFlags.Config))
+                        {
+                            return Error($"Cannot inherit config filename from parent class ({node.Parent.Name}) which is not marked as config!", node.StartPos);
+                        }
+                        //TODO:propagate/check inheritable class flags from parent and implemented interfaces
+                        if (node.Flags.Has(EClassFlags.Native) && !((Class)node.Parent).Flags.Has(EClassFlags.Native))
+                        {
+                            return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
+                        }
+                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                        Symbols.PushScope(node.Name);
+                    }
 
-            Symbols.GoDirectlyToStack((node.Parent as Class).GetInheritanceString());
-            Symbols.PushScope(node.Name);
 
-            foreach (VariableType type in node.TypeDeclarations)
-            {
-                type.Outer = node;
-                Success = Success && type.AcceptVisitor(this);
-            }
-            foreach (VariableDeclaration decl in node.VariableDeclarations.ToList())
-            {
-                decl.Outer = node;
-                Success = Success && decl.AcceptVisitor(this);
-            }
-            foreach (OperatorDeclaration op in node.Operators)
-            {
-                op.Outer = node;
-                Success = Success && op.AcceptVisitor(this);
-            }
-            foreach (Function func in node.Functions)
-            {
-                func.Outer = node;
-                Success = Success && func.AcceptVisitor(this);
-            }
-            foreach (State state in node.States)
-            {
-                state.Outer = node;
-                Success = Success && state.AcceptVisitor(this);
-            }
 
-            Symbols.PopScope();
-            Symbols.RevertToObjectStack();
+                    //register all the types this class declares
+                    foreach (VariableType type in node.TypeDeclarations)
+                    {
+                        type.Outer = node;
+                        Success &= type.AcceptVisitor(this);
+                    }
 
-            node.Declaration = node;
+                    //register all the function names (do this here so that delegates will resolve correctly)
+                    foreach (Function func in node.Functions)
+                    {
+                        func.Outer = node;
+                        Success &= func.AcceptVisitor(this);
+                    }
 
-            return Success;
+                    //register all state names (do this here so that states can extend states that are declared later in the class)
+                    foreach (State state in node.States)
+                    {
+                        state.Outer = node;
+                        Success &= state.AcceptVisitor(this);
+                    }
+
+                    Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
+
+                    return Success;
+                }
+                case ValidationPass.ClassAndStructMembersAndFunctionParams:
+                {
+                    if (node.Name != "Object")
+                    {
+                        if (((Class)node.Parent).SameOrSubClass(node.Name)) // TODO: not needed due to no forward declarations?
+                        {
+                            return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                        }
+                        if (!((Class)node.OuterClass).SameOrSubClass(((Class)node.Parent).OuterClass.Name))
+                        {
+                            return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                        }
+                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                        Symbols.PushScope(node.Name);
+                    }
+
+                    //second pass over structs to resolve their members
+                    foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
+                    {
+                        Success &= type.AcceptVisitor(this);
+                    }
+
+                    //resolve instance variables
+                    foreach (VariableDeclaration decl in node.VariableDeclarations)
+                    {
+                        decl.Outer = node;
+                        Success &= decl.AcceptVisitor(this);
+                    }
+
+                    //second pass over functions to resolve parameters (TODO: and body)
+                    foreach (Function func in node.Functions)
+                    {
+                        Success &= func.AcceptVisitor(this);
+                    }
+
+
+                    //register operators and resolve params (TODO: and body) //split this like functions?
+                    foreach (OperatorDeclaration op in node.Operators)
+                    {
+                        op.Outer = node;
+                        Success &= op.AcceptVisitor(this);
+                    }
+
+                    //second pass over states to resolve 
+                    foreach (State state in node.States)
+                    {
+                        Success &= state.AcceptVisitor(this);
+                    }
+
+                    Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
+
+                    node.Declaration = node;
+                    return Success;
+                }
+                case ValidationPass.BodyPass:
+                {
+                    //third pass over structs to check for circular inheritance chains
+                    foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
+                    {
+                        Success &= type.AcceptVisitor(this);
+                    }
+                    return Success;
+                }
+                default:
+                    return Success;
+            }
         }
 
 
         public bool VisitNode(VariableDeclaration node)
         {
-            ASTNode nodeType;
-            if (node.VarType.Type == ASTNodeType.Struct || node.VarType.Type == ASTNodeType.Enumeration)
+            node.VarType.Outer = node;
+            if (!Symbols.TryResolveType(ref node.VarType))
             {
-                // Check type, if its a struct or enum, visit that first.
-                node.VarType.Outer = node.Outer;
-                Success = Success && node.VarType.AcceptVisitor(this);
-                // Add the type to the list of types in the class.
-                NodeUtils.GetContainingClass(node).TypeDeclarations.Add(node.VarType);
-                nodeType = node.VarType;
-            }
-            else if (!Symbols.TryGetSymbol(node.VarType.Name, out nodeType, NodeUtils.GetOuterClassScope(node)))
-            {
-                return Error("No type named '" + node.VarType.Name + "' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
-            }
-            else if (!(nodeType is VariableType))
-            {
-                return Error("Invalid variable type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
+                return Error($"No type named '{node.VarType.Name}' exists!", node.VarType.StartPos, node.VarType.EndPos);
             }
 
-            if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
+            if (Symbols.SymbolExistsInCurrentScope(node.Name))
             {
-                if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                {
-                    return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.Variable.StartPos, node.Variable.EndPos);
-                }
-                Symbols.AddSymbol(node.Name, node);
+                return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.Variable.StartPos, node.Variable.EndPos);
             }
+            Symbols.AddSymbol(node.Name, node);
+
 
             return Success;
         }
@@ -163,57 +226,86 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Struct node)
         {
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
-
-            Symbols.AddSymbol(node.Name, node);
-            // TODO: add in package / global namespace.
-            // If a symbol with that name exists, overwrite it with this symbol from now on.
-            // damn this language...
-
-            if (node.Parent != null)
+            if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
-                ASTNode parent;
-                if (!Symbols.TryGetSymbol(node.Parent.Name, out parent, NodeUtils.GetOuterClassScope(node)))
-                    Error("No parent struct named '" + node.Parent.Name + "' found!", node.Parent.StartPos, node.Parent.EndPos);
-                if (parent != null)
+                if (!Symbols.TryAddType(node))
                 {
-                    if (parent.Type != ASTNodeType.Struct)
-                        Error("Parent named '" + node.Parent.Name + "' is not a struct!", node.Parent.StartPos, node.Parent.EndPos);
-                    else if ((parent as Struct).SameOrSubStruct(node.Name)) // TODO: not needed due to no forward declarations?
-                        Error("Extending from '" + node.Parent.Name + "' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
-                    else
-                        node.Parent = parent as Struct;
+                    //Structs do not have to be globally unique, but they do have to be unique within a scope
+                    if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                    {
+                        return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                    }
                 }
+
+
+                Symbols.PushScope(node.Name);
+
+                //register types of inner structs
+                foreach (VariableType typeDeclaration in node.TypeDeclarations)
+                {
+                    typeDeclaration.Outer = node;
+                    Success &= typeDeclaration.AcceptVisitor(this);
+                }
+
+                Symbols.PopScope();
+
+                return Success;
             }
 
-            Symbols.PushScope(node.Name);
-
-            // TODO: can all types of variable declarations be supported in a struct?
-            // what does the parser let through?
-            var unprocessed = node.Members.ToList();
-            foreach (VariableDeclaration decl in node.Members.ToList())
+            if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                decl.Outer = node;
-                Success = Success && decl.AcceptVisitor(this);
+                if (node.Parent != null)
+                {
+                    node.Parent.Outer = node;
+                    if (!Symbols.TryResolveType(ref node.Parent))
+                    {
+                        return Error($"No parent struct named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                    }
+
+                    if (node.Parent.Type != ASTNodeType.Struct)
+                        return Error($"Parent named '{node.Parent.Name}' is not a struct!", node.Parent.StartPos, node.Parent.EndPos);
+                }
+
+                Symbols.PushScope(node.Name);
+
+                //second pass for inner struct members
+                foreach (VariableType typeDeclaration in node.TypeDeclarations)
+                {
+                    Success &= typeDeclaration.AcceptVisitor(this);
+                }
+
+                // TODO: can all types of variable declarations be supported in a struct?
+                // what does the parser let through?
+                foreach (VariableDeclaration decl in node.VariableDeclarations)
+                {
+                    decl.Outer = node;
+                    Success = Success && decl.AcceptVisitor(this);
+                }
+
+                Symbols.PopScope();
+
+                node.Declaration = node;
+
+                return Success;
             }
 
-            Symbols.PopScope();
-
-            node.Declaration = node;
-
+            if (Pass == ValidationPass.BodyPass)
+            {
+                if (node.Parent != null && ((Struct)node.Parent).SameOrSubStruct(node.Name))
+                    return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
+                //TODO
+                return Success;
+            }
             return Success;
         }
 
         public bool VisitNode(Enumeration node)
         {
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
+            if (!Symbols.TryAddType(node))
+            {
+                return Error($"A type named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+            }
 
-            Symbols.AddSymbol(node.Name, node);
-            // TODO: add in package / global namespace.
-            // If a symbol with that name exists, overwrite it with this symbol from now on.
-            // damn this language...
             Symbols.PushScope(node.Name);
 
             foreach (VariableIdentifier enumVal in node.Values)
@@ -237,13 +329,11 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Const node)
         {
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("A member named '" + node.Name + "' already exists in this class!", node.StartPos, node.EndPos);
+            if (!Symbols.TryAddType(node))
+            {
+                return Error($"A type named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+            }
 
-            Symbols.AddSymbol(node.Name, node);
-            // TODO: add in package / global namespace.
-            // If a symbol with that name exists, overwrite it with this symbol from now on.
-            // damn this language...
 
             node.Declaration = node;
 
@@ -252,65 +342,73 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Function node)
         {
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
-
-            Symbols.AddSymbol(node.Name, node);
-            ASTNode returnType = null;
-            if (node.ReturnType != null)
+            if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
-                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, NodeUtils.GetOuterClassScope(node)))
-                {
-                    return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
-                }
-                else if (!(returnType is VariableType))
-                {
-                    return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
-                }
+                if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                    return Error($"The name '{node.Name}' is already in use in this class!", node.StartPos, node.EndPos);
+
+                Symbols.AddSymbol(node.Name, node);
+                return Success;
             }
 
-            Symbols.PushScope(node.Name);
-            foreach (FunctionParameter param in node.Parameters)
+            if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
-                param.Outer = node;
-                Success = Success && param.AcceptVisitor(this);
-            }
-            Symbols.PopScope();
-
-            if (Success == false)
-                return Error("Error in function parameters.", node.StartPos, node.EndPos);
-
-            if (Symbols.TryGetSymbol(node.Name, out ASTNode func, "") // override functions in parent classes only (or current class if its a state)
-             && func.Type == ASTNodeType.Function)
-            {   // If there is a function with this name that we should override, validate the new functions declaration
-                Function original = (Function)func;
-                if (original.Flags.Has(FunctionFlags.Final))
-                    return Error("Function name overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
-                if (node.ReturnType != original.ReturnType)
-                    return Error("Function name overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
-                if (node.Parameters.Count != original.Parameters.Count)
-                    return Error("Function name overrides a function in a parent class, but the functions do not have the same amount of parameters!", node.StartPos, node.EndPos);
-                for (int n = 0; n < node.Parameters.Count; n++)
+                if (node.ReturnType != null && !Symbols.TryResolveType(ref node.ReturnType))
                 {
-                    if (node.Parameters[n].Type != original.Parameters[n].Type)
-                        return Error("Function name overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                    return Error($"No type named '{node.ReturnType.Name}' exists!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
-            }
 
+                Symbols.PushScope(node.Name);
+                foreach (FunctionParameter param in node.Parameters)
+                {
+                    param.Outer = node;
+                    Success = Success && param.AcceptVisitor(this);
+                }
+                Symbols.PopScope();
+
+                if (Success == false)
+                    return Error("Error in function parameters.", node.StartPos, node.EndPos);
+
+                string parentScope = null;
+                Class containingClass = NodeUtils.GetContainingClass(node);
+                if (node.Outer.Type == ASTNodeType.State)
+                {
+                    parentScope = containingClass.Name;
+                }
+                else if (containingClass.Parent != null)
+                {
+                    parentScope = containingClass.Parent.Name;
+                }
+
+                if (parentScope != null && Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode func, parentScope) // override functions in parent classes only (or current class if its a state)
+                                        && func.Type == ASTNodeType.Function)
+                {   // If there is a function with this name that we should override, validate the new functions declaration
+                    Function original = (Function)func;
+                    if (original.Flags.Has(FunctionFlags.Final))
+                        return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
+                    if (node.ReturnType != original.ReturnType)
+                        return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
+                    if (node.Parameters.Count != original.Parameters.Count)
+                        return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
+                    for (int n = 0; n < node.Parameters.Count; n++)
+                    {
+                        if (node.Parameters[n].Type != original.Parameters[n].Type)
+                            return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same parameter types!", node.StartPos, node.EndPos);
+                    }
+                }
+
+                return Success;
+            }
             return Success;
         }
 
         public bool VisitNode(FunctionParameter node)
         {
-            if (!Symbols.TryGetSymbol(node.VarType.Name, out ASTNode paramType, NodeUtils.GetOuterClassScope(node)))
+            node.VarType.Outer = node;
+            if (!Symbols.TryResolveType(ref node.VarType))
             {
                 return Error($"No type named '{node.VarType.Name}' exists in this scope!", node.VarType.StartPos, node.VarType.EndPos);
             }
-            else if (!(paramType is VariableType))
-            {
-                return Error("Invalid parameter type, must be a class/struct/enum/primitive.", node.VarType.StartPos, node.VarType.EndPos);
-            }
-            node.VarType = (VariableType)paramType;
 
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
             {
@@ -324,72 +422,83 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(State node)
         {
-            if (Symbols.SymbolExistsInCurrentScope(node.Name))
-                return Error("The name '" + node.Name + "' is already in use in this class!", node.StartPos, node.EndPos);
-
-            bool overrides = Symbols.TryGetSymbol(node.Name, out ASTNode overrideState, NodeUtils.GetOuterClassScope(node))
-                          && overrideState.Type == ASTNodeType.State;
-
-            if (node.Parent != null)
+            if (Pass == ValidationPass.TypesAndFunctionNamesAndStateNames)
             {
-                if (overrides)
-                    return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
+                if (Symbols.SymbolExistsInCurrentScope(node.Name))
+                    return Error($"The name '{node.Name}' is already in use in this class!", node.StartPos, node.EndPos);
+                Symbols.AddSymbol(node.Name, node);
+                return Success;
+            }
 
-                if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out ASTNode parent))
-                    Error("No parent state named '" + node.Parent.Name + "' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
-                if (parent != null)
+            if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
+            {
+                bool overrides = Symbols.TryGetSymbolInScopeStack(node.Name, out ASTNode overrideState, NodeUtils.GetParentClassScope(node))
+                              && overrideState.Type == ASTNodeType.State;
+
+                if (node.Parent != null)
                 {
-                    if (parent.Type != ASTNodeType.State)
-                        Error("Parent named '" + node.Parent.Name + "' is not a state!", node.Parent.StartPos, node.Parent.EndPos);
-                    else
-                        node.Parent = parent as State;
+                    if (overrides)
+                        return Error("A state is not allowed to both override a parent class's state and extend another state at the same time!", node.StartPos, node.EndPos);
+
+                    if (!Symbols.TryGetSymbolFromCurrentScope(node.Parent.Name, out ASTNode parent))
+                        Error($"No parent state named '{node.Parent.Name}' found in the current class!", node.Parent.StartPos, node.Parent.EndPos);
+                    if (parent != null)
+                    {
+                        if (parent.Type != ASTNodeType.State)
+                            Error($"Parent named '{node.Parent.Name}' is not a state!", node.Parent.StartPos, node.Parent.EndPos);
+                        else
+                            node.Parent = parent as State;
+                    }
                 }
+
+                int numFuncs = node.Functions.Count;
+                Symbols.PushScope(node.Name);
+                foreach (Function ignore in node.Ignores)
+                {
+                    if (Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") && original.Type == ASTNodeType.Function)
+                    {
+                        Function header = (Function)original;
+                        Function emptyOverride = new Function(header.Name, header.Flags, header.ReturnType, new CodeBody(), header.Parameters, ignore.StartPos, ignore.EndPos);
+                        node.Functions.Add(emptyOverride);
+                        Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
+                    }
+                    else //TODO: really ought to throw error, but PlayerController.PlayerWaiting.Jump is like this. Find alternate way of handling this?
+                    {
+                        node.Functions.Add(ignore);
+                        Symbols.AddSymbol(ignore.Name, ignore);
+                    }
+                }
+
+                foreach (Function func in node.Functions.GetRange(0, numFuncs))
+                {
+                    func.Outer = node;
+                    Success = Success && func.AcceptVisitor(this);
+                }
+                //TODO: check functions overrides:
+                //if the state overrides another state, we should be in that scope as well whenh we check overrides maybe?
+                //if the state has a parent state, we should be in that scope
+                //this is a royal mess, check that ignores also look-up from parent/overriding states as we are not sure if symbols are in the scope
+
+                // if the state extends a parent state, use that as outer in the symbol lookup
+                // if the state overrides another state, use that as outer
+                // both of the above should apply to functions as well as ignores.
+
+                //TODO: state code/labels
+
+                Symbols.PopScope();
+                return Success;
             }
-
-            int numFuncs = node.Functions.Count;
-            Symbols.PushScope(node.Name);
-            foreach (Function ignore in node.Ignores)
-            {
-                if (!Symbols.TryGetSymbol(ignore.Name, out ASTNode original, "") || original.Type != ASTNodeType.Function)
-                    return Error("No function to ignore named '" + ignore.Name + "' found!", ignore.StartPos, ignore.EndPos);
-                Function header = original as Function;
-                Function emptyOverride = new Function(header.Name, header.ReturnType, new CodeBody(null, null, null), header.Flags, header.Parameters, ignore.StartPos, ignore.EndPos);
-                node.Functions.Add(emptyOverride);
-                Symbols.AddSymbol(emptyOverride.Name, emptyOverride);
-            }
-
-            foreach (Function func in node.Functions.GetRange(0, numFuncs))
-            {
-                func.Outer = node;
-                Success = Success && func.AcceptVisitor(this);
-            }
-            //TODO: check functions overrides:
-            //if the state overrides another state, we should be in that scope as well whenh we check overrides maybe?
-            //if the state has a parent state, we should be in that scope
-            //this is a royal mess, check that ignores also look-up from parent/overriding states as we are not sure if symbols are in the scope
-
-            // if the state extends a parent state, use that as outer in the symbol lookup
-            // if the state overrides another state, use that as outer
-            // both of the above should apply to functions as well as ignores.
-
-            //TODO: state code/labels
-
-            Symbols.PopScope();
             return Success;
         }
 
         public bool VisitNode(OperatorDeclaration node)
         {
-            ASTNode returnType = null;
             if (node.ReturnType != null)
             {
-                if (!Symbols.TryGetSymbol(node.ReturnType.Name, out returnType, NodeUtils.GetOuterClassScope(node)))
+                node.ReturnType.Outer = node;
+                if (!Symbols.TryResolveType(ref node.ReturnType))
                 {
-                    return Error("No type named '" + node.ReturnType.Name + "' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
-                }
-                else if (!typeof(VariableType).IsAssignableFrom(returnType.GetType()))
-                {
-                    return Error("Invalid return type, must be a class/struct/enum/primitive.", node.ReturnType.StartPos, node.ReturnType.EndPos);
+                    return Error($"No type named '{node.ReturnType.Name}' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
                 }
             }
 
@@ -420,7 +529,7 @@ namespace ME3Script.Analysis.Visitors
                 return Error("Error in operator parameters.", node.StartPos, node.EndPos);
 
             if (Symbols.OperatorSignatureExists(node))
-                return Error("An operator with identical signature to '" + node.OperatorKeyword + "' already exists!", node.StartPos, node.EndPos);
+                return Error($"An operator with identical signature to '{node.OperatorKeyword}' already exists!", node.StartPos, node.EndPos);
 
             Symbols.AddOperator(node);
             return Success;

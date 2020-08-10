@@ -500,6 +500,8 @@ namespace ME3Explorer
         {
             return source?.IndexOf(toCheck, comp) >= 0;
         }
+
+        public static bool CaseInsensitiveEquals(this string left, string right) => string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
     }
 
     public static class WPFExtensions

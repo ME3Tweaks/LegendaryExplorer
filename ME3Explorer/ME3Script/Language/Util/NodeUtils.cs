@@ -12,17 +12,33 @@ namespace ME3Script.Language.Util
         public static string GetOuterClassScope(ASTNode node)
         {
             var outer = node.Outer;
-            while (outer.Type != ASTNodeType.Class)
+            while (outer?.Outer != null && outer.Type != ASTNodeType.Class)
                 outer = outer.Outer;
-            return ((outer as Class).OuterClass as Class).GetInheritanceString();
+            return ((outer as Class)?.OuterClass as Class)?.GetInheritanceString();
+        }
+
+        public static string GetParentClassScope(ASTNode node)
+        {
+            var outer = node.Outer;
+            while (outer?.Outer != null && outer.Type != ASTNodeType.Class)
+                outer = outer.Outer;
+            return ((outer as Class)?.Parent as Class)?.GetInheritanceString();
         }
 
         public static Class GetContainingClass(ASTNode node)
         {
             var outer = node.Outer;
-            while (outer.Type != ASTNodeType.Class)
+            while (outer?.Outer != null && outer.Type != ASTNodeType.Class)
                 outer = outer.Outer;
             return outer as Class;
+        }
+
+        public static IObjectType GetContainingScopeObject(ASTNode node)
+        {
+            var outer = node.Outer;
+            while (outer?.Outer != null && !(outer.Outer is IObjectType))
+                outer = outer.Outer;
+            return outer as IObjectType;
         }
     }
 }
