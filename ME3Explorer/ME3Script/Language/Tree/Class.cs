@@ -20,8 +20,9 @@ namespace ME3Script.Language.Tree
         public List<VariableType> TypeDeclarations { get; }
         public List<Function> Functions { get; }
         public List<State> States { get; }
-        public List<OperatorDeclaration> Operators { get; }
         public DefaultPropertiesBlock DefaultProperties { get; }
+
+        public override ASTNodeType NodeType => ASTNodeType.Class;
 
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
                      List<VariableType> interfaces = null,
@@ -29,10 +30,9 @@ namespace ME3Script.Language.Tree
                      List<VariableDeclaration> vars = null,
                      List<Function> funcs = null,
                      List<State> states = null,
-                     List<OperatorDeclaration> ops = null,
                      DefaultPropertiesBlock defaultProperties = null,
                      SourcePosition start = null, SourcePosition end = null)
-            : base(name, start, end)
+            : base(name, start, end, EPropertyType.Object)
         {
             Parent = parent;
             OuterClass = outer;
@@ -42,7 +42,6 @@ namespace ME3Script.Language.Tree
             TypeDeclarations = types ?? new List<VariableType>();
             Functions = funcs ?? new List<Function>();
             States = states ?? new List<State>();
-            Operators = ops ?? new List<OperatorDeclaration>();
             DefaultProperties = defaultProperties ?? new DefaultPropertiesBlock();
             Type = ASTNodeType.Class;
 
@@ -59,7 +58,7 @@ namespace ME3Script.Language.Tree
 
         #region Helpers
 
-        public bool SameOrSubClass(string name)
+        public bool SameAsOrSubClassOf(string name)
         {
             string inputName = name.ToLower();
             if (inputName == "object")
@@ -96,14 +95,11 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return Parent;
-                if (OuterClass != null) yield return OuterClass;
                 foreach (VariableType interfaceType in Interfaces) yield return interfaceType;
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
                 foreach (Function function in Functions) yield return function;
                 foreach (State state in States) yield return state;
-                foreach (OperatorDeclaration operatorDeclaration in Operators) yield return operatorDeclaration;
                 yield return DefaultProperties;
             }
         }

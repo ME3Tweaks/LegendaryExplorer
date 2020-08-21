@@ -34,6 +34,7 @@ namespace ME3Script.Language.Tree
             Ignores = ignores;
             Labels = labels;
             Locals = new List<VariableDeclaration>();
+            if (Body != null) Body.Outer = this;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

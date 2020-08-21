@@ -4,20 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Tree;
 using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
 {
-    public class Const : VariableType
+    public class DefaultReference : SymbolReference
     {
-        public string Value;
-        public Expression Literal;
-
-        public Const(string name, string value, SourcePosition start, SourcePosition end) : base(name, start, end)
+        public DefaultReference(ASTNode symbol, string name = "", SourcePosition start = null, SourcePosition end = null) : base(symbol, name, start, end)
         {
-            Type = ASTNodeType.Const;
-            Value = value;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

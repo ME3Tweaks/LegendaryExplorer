@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
+using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
@@ -17,7 +18,7 @@ namespace ME3Script.Decompiling
             var value = ReadInt32();
 
             StartPositions.Pop();
-            return new IntegerLiteral(value, null, null);
+            return new IntegerLiteral(value);
         }
         public StringRefLiteral DecompileStringRefConst()
         {
@@ -26,7 +27,7 @@ namespace ME3Script.Decompiling
             var value = ReadInt32();
 
             StartPositions.Pop();
-            return new StringRefLiteral(value, null, null);
+            return new StringRefLiteral(value);
         }
 
         public FloatLiteral DecompileFloatConst()
@@ -36,7 +37,7 @@ namespace ME3Script.Decompiling
             var value = ReadFloat();
 
             StartPositions.Pop();
-            return new FloatLiteral(value, null, null);
+            return new FloatLiteral(value);
         }
 
         public StringLiteral DecompileStringConst()
@@ -46,43 +47,40 @@ namespace ME3Script.Decompiling
             var value = ReadNullTerminatedString();
 
             StartPositions.Pop();
-            return new StringLiteral(value, null, null);
+            return new StringLiteral(value);
         }
 
         
-        public Expression/*ObjectLiteral*/ DecompileObjectConst() // TODO: properly
+        public ObjectLiteral DecompileObjectConst()
         {
             PopByte();
 
             var value = ReadObject();
 
             StartPositions.Pop();
-            //return new ObjectLiteral(value, null, null);
-            return new SymbolReference(null, null, null, value.ClassName + "'" + value.ObjectName + "'");
+            return new ObjectLiteral(new NameLiteral(value.ObjectName.Instanced), new VariableType(value.ClassName));
         }
 
-        public Expression/*VectorLiteral*/ DecompileVectorConst() // TODO: properly
+        public VectorLiteral DecompileVectorConst()
         {
             PopByte();
-            var X = ReadFloat();
-            var Y = ReadFloat();
-            var Z = ReadFloat();
+            var x = ReadFloat();
+            var y = ReadFloat();
+            var z = ReadFloat();
 
             StartPositions.Pop();
-            var str = "vect(" + X + ", " + Y + ", " + Z + ")";
-            return new SymbolReference(null, null, null, str);
+            return new VectorLiteral(x, y, z);
         }
 
-        public Expression/*RotationLiteral*/ DecompileRotationConst() // TODO: properly
+        public RotatorLiteral DecompileRotationConst()
         {
             PopByte();
-            var Pitch = ReadInt32();
-            var Yaw = ReadInt32();
-            var Roll = ReadInt32();
+            var pitch = ReadInt32();
+            var yaw = ReadInt32();
+            var roll = ReadInt32();
 
             StartPositions.Pop();
-            var str = "rot(0x" + Pitch.ToString("X8") + ", 0x" + Yaw.ToString("X8") + ", 0x" + Roll.ToString("X8") + ")";
-            return new SymbolReference(null, null, null, str);
+            return new RotatorLiteral(pitch, yaw, roll);
         } 
 
         public NameLiteral DecompileNameConst()
@@ -92,7 +90,7 @@ namespace ME3Script.Decompiling
             var value = ReadNameReference();
 
             StartPositions.Pop();
-            return new NameLiteral(value, null, null);
+            return new NameLiteral(value);
         }
 
         public IntegerLiteral DecompileByteConst()
@@ -102,21 +100,21 @@ namespace ME3Script.Decompiling
             var value = ReadByte();
 
             StartPositions.Pop();
-            return new IntegerLiteral(value, null, null);
+            return new IntegerLiteral(value) { NumType = Keywords.BYTE };
         }
 
         public IntegerLiteral DecompileIntConstVal(int val)
         {
             PopByte();
             StartPositions.Pop();
-            return new IntegerLiteral(val, null, null);
+            return new IntegerLiteral(val);
         }
 
         public BooleanLiteral DecompileBoolConstVal(bool val)
         {
             PopByte();
             StartPositions.Pop();
-            return new BooleanLiteral(val, null, null);
+            return new BooleanLiteral(val);
         }
     }
 }

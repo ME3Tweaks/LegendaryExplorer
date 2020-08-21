@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Utilities;
 
 namespace ME3Script.Parsing
 {
@@ -21,9 +22,21 @@ namespace ME3Script.Parsing
     {
         private readonly Dictionary<int, ASTCacheEntry> Cache;
 
-        public TokenStream(LexerBase<T> lexer) : base (() => lexer.LexData().ToList())
+        private readonly Token<T> EndToken;
+
+        private TokenStream(Func<List<Token<T>>> provider) : base(provider)
         {
             Cache = new Dictionary<int, ASTCacheEntry>();
+            var endPos = Data.Count > 0 ? Data[Data.Count - 1].EndPos : new SourcePosition(0, 0, 0);
+            EndToken = new Token<T>(TokenType.EOF, default, endPos, endPos);
+        }
+
+        public TokenStream(LexerBase<T> lexer) : this (() => lexer.LexData().ToList())
+        {
+        }
+
+        public TokenStream(LexerBase<T> lexer, SourcePosition start, SourcePosition end) : this(() => lexer.LexSubData(start, end).ToList())
+        {
         }
 
         public bool TryRoute(Func<ASTNode> nodeParser)
@@ -72,9 +85,9 @@ namespace ME3Script.Parsing
 
         public override Token<T> LookAhead(int reach)
         {
-            return base.LookAhead(reach) ?? new Token<T>(TokenType.EOF);
+            return base.LookAhead(reach) ?? EndToken;
         }
 
-        public override Token<T> CurrentItem => AtEnd() ? new Token<T>(TokenType.EOF) : base.CurrentItem;
+        public override Token<T> CurrentItem => AtEnd() ? EndToken : base.CurrentItem;
     }
 }

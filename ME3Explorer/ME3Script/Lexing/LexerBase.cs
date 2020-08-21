@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Utilities;
 
 namespace ME3Script.Lexing
 {
@@ -19,6 +20,7 @@ namespace ME3Script.Lexing
         }
 
         public abstract IEnumerable<Token<T>> LexData();
+        public abstract IEnumerable<Token<T>> LexSubData(SourcePosition start, SourcePosition end);
         public abstract Token<T> GetNextToken();
     }
 }

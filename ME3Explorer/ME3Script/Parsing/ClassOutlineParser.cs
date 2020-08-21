@@ -137,7 +137,7 @@ namespace ME3Script.Parsing
 
                         while (Consume(TokenType.Word) is Token<string> interfaceName)
                         {
-                            interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPosition, interfaceName.EndPosition));
+                            interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
                             if (Consume(TokenType.Comma) is null)
                             {
                                 break;
@@ -184,10 +184,9 @@ namespace ME3Script.Parsing
 
                 var funcs = new List<Function>();
                 var states = new List<State>();
-                var ops = new List<OperatorDeclaration>();
                 while (!Tokens.AtEnd())
                 {
-                    ASTNode declaration = TryParseFunction() ?? /*TryParseOperatorDecl() ??*/ TryParseState() ?? (ASTNode)null;
+                    ASTNode declaration = TryParseFunction() ?? TryParseState() ?? (ASTNode)null;
                     if (declaration == null)
                     {
                         break;
@@ -201,9 +200,6 @@ namespace ME3Script.Parsing
                         case ASTNodeType.State:
                             states.Add((State)declaration);
                             break;
-                        default:
-                            ops.Add((OperatorDeclaration)declaration);
-                            break;
                     }
                 }
 
@@ -214,7 +210,7 @@ namespace ME3Script.Parsing
                 }
 
                 // TODO: should AST-nodes accept null values? should they make sure they dont present any?
-                return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, ops, defaultPropertiesBlock, name.StartPosition, name.EndPosition)
+                return new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, start: name.StartPos, end: name.EndPos)
                 {
                     ConfigName = configName
                 };
@@ -235,6 +231,7 @@ namespace ME3Script.Parsing
                         throw Error("Expected '=' after constant name!", CurrentPosition);
                     }
 
+                    Tokens.PushSnapshot();
                     string constValue = null;
                     while (CurrentTokenType != TokenType.SemiColon)
                     {
@@ -246,11 +243,39 @@ namespace ME3Script.Parsing
                         constValue += Tokens.CurrentItem.Value;
                         Tokens.Advance();
                     }
+                    Tokens.PopSnapshot();
                     if (constValue == null)
                     {
                         throw Error($"Expected a value for the constant '{constName.Value}'!");
                     }
-                    return new Const(constName.Value, constValue, startPos, CurrentPosition);
+
+                    //minus sign is not parsed as part of a literal, so do it manually
+                    bool isNegative = Matches(TokenType.MinusSign);
+
+                    Expression literal = ParseLiteral();
+                    if (literal is null)
+                    {
+                        throw Error("Expected a literal value for the constant!", CurrentPosition);
+                    }
+
+                    if (isNegative)
+                    {
+                        switch (literal)
+                        {
+                            case FloatLiteral floatLiteral:
+                                floatLiteral.Value *= -1;
+                                break;
+                            case IntegerLiteral integerLiteral:
+                                integerLiteral.Value *= -1;
+                                break;
+                            default:
+                                throw Error("Malformed constant value!", CurrentPosition);
+                        }
+                    }
+                    return new Const(constName.Value, constValue, startPos, CurrentPosition)
+                    {
+                        Literal = literal
+                    };
                 }
 
                 throw Error("Expected name for constant!", CurrentPosition);
@@ -285,7 +310,7 @@ namespace ME3Script.Parsing
                     throw Error("Can only use 'out', 'coerce', 'optional', or 'skip' with function parameters!", CurrentPosition);
                 }
 
-                var type = /*TryParseEnum() ?? TryParseStruct() ??*/ TryParseType();
+                var type = TryParseType();
                 if (type == null) throw Error("Expected variable type", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 var var = ParseVariableName();
@@ -299,7 +324,7 @@ namespace ME3Script.Parsing
                 var semicolon = Consume(TokenType.SemiColon);
                 if (semicolon == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new VariableDeclaration(type, flags, var, category, startPos, semicolon.EndPosition);
+                return new VariableDeclaration(type, flags, var, category, startPos, semicolon.EndPos);
             }
         }
 
@@ -384,7 +409,7 @@ namespace ME3Script.Parsing
 
                 if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new Struct(name.Value, parent, flags, vars, types, defaults, name.StartPosition, name.EndPosition);
+                return new Struct(name.Value, parent, flags, vars, types, defaults, name.StartPos, name.EndPos);
             }
         }
 
@@ -406,13 +431,13 @@ namespace ME3Script.Parsing
                     var ident = Consume(TokenType.Word);
                     if (ident == null) throw Error("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                    identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPosition, ident.EndPosition));
+                    identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPos, ident.EndPos));
                     if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw Error("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 } while (CurrentTokenType != TokenType.RightBracket);
 
                 if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new Enumeration(name.Value, identifiers, name.StartPosition, name.EndPosition);
+                return new Enumeration(name.Value, identifiers, name.StartPos, name.EndPos);
             }
         }
 
@@ -421,6 +446,7 @@ namespace ME3Script.Parsing
             return (Function)Tokens.TryGetTree(StubParser);
             ASTNode StubParser()
             {
+                var start = CurrentPosition;
                 ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags);
 
                 if (!Matches(FUNCTION))
@@ -469,7 +495,7 @@ namespace ME3Script.Parsing
                 if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
                 CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
-                if (Consume(TokenType.SemiColon) == null)
+                if (Consume(TokenType.SemiColon) is null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                     {
@@ -477,9 +503,10 @@ namespace ME3Script.Parsing
                     }
 
                     body = new CodeBody(null, bodyStart, bodyEnd);
+                    flags |= FunctionFlags.Defined;
                 }
 
-                return new Function(name.Value, flags, returnType, body, parameters, name.StartPosition, name.EndPosition)
+                return new Function(name.Value, flags, returnType, body, parameters, start, body.EndPos)
                 {
                     NativeIndex = nativeIndex
                 };
@@ -558,86 +585,7 @@ namespace ME3Script.Parsing
                 var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd);
 
                 var parentState = parent != null ? new State(parent.Name, null, default, null, null, null, null, parent.StartPos, parent.EndPos) : null;
-                return new State(name.Value, body, flags, parentState, funcs, ignores, null, name.StartPosition, CurrentPosition);
-            }
-        }
-
-        public OperatorDeclaration TryParseOperatorDecl()
-        {
-            return (OperatorDeclaration)Tokens.TryGetTree(OperatorParser);
-            ASTNode OperatorParser()
-            {
-                ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags);
-
-                var token = Matches("operator") || Matches("preoperator") || Matches("postoperator") ? Tokens.Prev() : null;
-
-                if (token is null) return null;
-
-                int precedence = 0;
-                bool isInfixOperator = token.Value.Equals("operator", StringComparison.OrdinalIgnoreCase);
-                if (isInfixOperator)
-                {
-                    if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('! (Did you forget to specify operator precedence?)", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                    if (Consume(TokenType.IntegerNumber) == null) throw Error("Expected an integer number!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    precedence = int.Parse(Tokens.Prev().Value);
-                    if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                }
-
-                Token<string> returnType = null, name = null;
-                var firstString = TryParseOperatorIdentifier();
-                if (firstString == null) throw Error("Expected operator name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var secondString = TryParseOperatorIdentifier();
-                if (secondString == null)
-                    name = firstString;
-                else
-                {
-                    returnType = firstString;
-                    name = secondString;
-                }
-
-                VariableType retVarType = returnType != null ? new VariableType(returnType.Value, returnType.StartPosition, returnType.EndPosition) : null;
-
-                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                var operands = new List<FunctionParameter>();
-                while (CurrentTokenType != TokenType.RightParenth)
-                {
-                    var operand = TryParseParameter();
-                    if (operand == null) throw Error("Malformed operand!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                    operands.Add(operand);
-                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw Error("Unexpected operand content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                }
-
-                if (isInfixOperator && operands.Count != 2)
-                    throw Error("In-fix operators requires exactly 2 parameters!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                else if (isInfixOperator && operands.Count != 1) throw Error("Post/Pre-fix operators requires exactly 1 parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-
-                CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
-                if (Consume(TokenType.SemiColon) == null)
-                {
-                    if (ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
-                    {
-                        body = new CodeBody(null, bodyStart, bodyEnd);
-                    }
-                    else
-                    {
-                        throw Error("Malformed operator body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
-                    }
-                }
-
-                return token.Value.ToLower() switch
-                {
-                    // TODO: determine if operator should be a delimiter! (should only symbol-based ones be?)
-                    "preoperator" => new PreOpDeclaration(name.Value, false, body, retVarType, operands.First(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex},
-                    "postoperator" => new PostOpDeclaration(name.Value, false, body, retVarType, operands.First(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex},
-                    _ => new InOpDeclaration(name.Value, precedence, false, body, retVarType, operands.First(), operands.Last(), flags, name.StartPosition, name.EndPosition) {NativeIndex = nativeIndex}
-                };
+                return new State(name.Value, body, flags, parentState, funcs, ignores, null, name.StartPos, CurrentPosition);
             }
         }
 
@@ -741,7 +689,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                return new VariableType(parentName.Value, parentName.StartPosition, parentName.EndPosition);
+                return new VariableType(parentName.Value, parentName.StartPos, parentName.EndPos);
             }
         }
 
@@ -758,22 +706,13 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
-                return new VariableType(outerName.Value, outerName.StartPosition, outerName.EndPosition);
+                return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
             }
         }
 
         #endregion
         #endregion
         #region Helpers
-
-        public Token<string> TryParseOperatorIdentifier()
-        {
-            if (GlobalLists.ValidOperatorSymbols.Contains(CurrentTokenType)
-                || CurrentTokenType == TokenType.Word)
-                return Consume(CurrentTokenType);
-
-            return null;
-        }
 
         public void ParseVariableSpecifiers(out EPropertyFlags flags)
         {
@@ -943,7 +882,7 @@ namespace ME3Script.Parsing
         private void ParseFunctionSpecifiers(out int nativeIndex, out FunctionFlags flags)
         {
             nativeIndex = 0;
-            flags = FunctionFlags.Defined;
+            flags = default;
             bool unreliable = false;
             while (CurrentTokenType == TokenType.Word)
             {
@@ -1153,7 +1092,7 @@ namespace ME3Script.Parsing
                 Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
                 return false;
             }
-            startPos = Tokens.CurrentItem.StartPosition;
+            startPos = Tokens.CurrentItem.StartPos;
 
             int nestedLevel = 1;
             while (nestedLevel > 0)
@@ -1172,7 +1111,7 @@ namespace ME3Script.Parsing
                 if (nestedLevel > 0)
                     Tokens.Advance();
             }
-            endPos = Tokens.CurrentItem.StartPosition;
+            endPos = Tokens.CurrentItem.StartPos;
             Tokens.Advance();
             return true;
         }

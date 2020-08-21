@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Utilities;
+using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Decompiling
 {
@@ -24,7 +26,7 @@ namespace ME3Script.Decompiling
 
     public partial class ME3ByteCodeDecompiler
     {
-        public Dictionary<int, NativeTableEntry> NativeTable = new Dictionary<int, NativeTableEntry>() 
+        public static readonly Dictionary<int, NativeTableEntry> NativeTable = new Dictionary<int, NativeTableEntry>() 
         {
             { 0x81, new NativeTableEntry { Name="!", Type=NativeType.PreOperator} },
             { 0x82, new NativeTableEntry { Name="&&", Type=NativeType.Operator, Precedence=30} },
@@ -232,50 +234,50 @@ namespace ME3Script.Decompiling
         };
 
 
-        public Dictionary<int, string> PrimitiveCastTable = new Dictionary<int, string>()
+        public static readonly Dictionary<int, string> PrimitiveCastTable = new Dictionary<int, string>()
         {
-            { 0x36, "bool" }, // InterfaceToBool
-            { 0x37, "string" }, // InterfaceToString
-            { 0x38, "object" }, // InterfaceToObject
-            { 0x39, "vect" }, // RotatorToVector
-            { 0x3A, "int" }, // ByteToInt
-            { 0x3B, "bool" }, // ByteToBool
-            { 0x3C, "float" }, // ByteToFloat
-            { 0x3D, "byte" }, // IntToByte
-            { 0x3E, "bool" }, // IntToBool
-            { 0x3F, "float" }, // IntToFloat
-            { 0x40, "byte" }, // BoolToByte
-            { 0x41, "int" }, // BoolToInt
-            { 0x42, "float" }, // BoolToFloat
-            { 0x43, "byte" }, // FloatToByte
-            { 0x44, "int" }, // FloatToInt
-            { 0x45, "bool" }, // FloatToBool
-            { 0x46, "interface" }, // ObjectToInterface
-            { 0x47, "bool" }, // ObjectToBool
-            { 0x48, "bool" }, // NameToBool
-            { 0x49, "byte" }, // StringToByte
-            { 0x4A, "int" }, // StringToInt
-            { 0x4B, "bool" }, // StringToBool
-            { 0x4C, "float" }, // StringToFloat
-            { 0x4D, "vect" }, // StringToVector
-            { 0x4E, "rot" }, // StringToRotator
-            { 0x4F, "bool" }, // VectorToBool
-            { 0x50, "rot" }, // VectorToRotator
-            { 0x51, "bool" }, // RotatorToBool
-            { 0x52, "string" }, // ByteToString
-            { 0x53, "string" }, // IntToString
-            { 0x54, "string" }, // BoolToString
-            { 0x55, "string" }, // FloatToString
-            { 0x56, "string" }, // ObjectToString
-            { 0x57, "string" }, // NameToString
-            { 0x58, "string" }, // VectorToString
-            { 0x59, "string" }, // RotatorToString
-            { 0x5A, "string" }, // DelegateToString
-            { 0x5B, "delegate"}, // StringToDelegate
-            { 0x5C, "string"}, // StringRefToString
-            { 0x5D, "stringRef"}, // IntToStringRef
+            { 0x36, BOOL }, // InterfaceToBool
+            { 0x37, STRING }, // InterfaceToString
+            { 0x38, OBJECT }, // InterfaceToObject
+            { 0x39, VECTOR }, // RotatorToVector
+            { 0x3A, INT }, // ByteToInt
+            { 0x3B, BOOL }, // ByteToBool
+            { 0x3C, FLOAT }, // ByteToFloat
+            { 0x3D, BYTE }, // IntToByte
+            { 0x3E, BOOL }, // IntToBool
+            { 0x3F, FLOAT }, // IntToFloat
+            { 0x40, BYTE }, // BoolToByte
+            { 0x41, INT }, // BoolToInt
+            { 0x42, FLOAT }, // BoolToFloat
+            { 0x43, BYTE }, // FloatToByte
+            { 0x44, INT }, // FloatToInt
+            { 0x45, BOOL }, // FloatToBool
+            { 0x46, INTERFACE }, // ObjectToInterface
+            { 0x47, BOOL }, // ObjectToBool
+            { 0x48, BOOL }, // NameToBool
+            { 0x49, BYTE }, // StringToByte
+            { 0x4A, INT }, // StringToInt
+            { 0x4B, BOOL }, // StringToBool
+            { 0x4C, FLOAT }, // StringToFloat
+            { 0x4D, VECTOR }, // StringToVector
+            { 0x4E, ROTATOR }, // StringToRotator
+            { 0x4F, BOOL }, // VectorToBool
+            { 0x50, ROTATOR }, // VectorToRotator
+            { 0x51, BOOL }, // RotatorToBool
+            { 0x52, STRING }, // ByteToString
+            { 0x53, STRING }, // IntToString
+            { 0x54, STRING }, // BoolToString
+            { 0x55, STRING }, // FloatToString
+            { 0x56, STRING }, // ObjectToString
+            { 0x57, STRING }, // NameToString
+            { 0x58, STRING }, // VectorToString
+            { 0x59, STRING }, // RotatorToString
+            { 0x5A, STRING }, // DelegateToString
+            { 0x5B, DELEGATE }, // StringToDelegate
+            { 0x5C, STRING }, // StringRefToString
+            { 0x5D, STRINGREF }, // IntToStringRef
             { 0x5F, "UNKN_TYPE_5F"}, //UNUSED
-            { 0x60, "name" }, // StringToName
+            { 0x60, NAME }, // StringToName
         };
     }
 }

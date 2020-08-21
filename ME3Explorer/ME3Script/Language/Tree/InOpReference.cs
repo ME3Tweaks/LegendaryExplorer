@@ -36,7 +36,6 @@ namespace ME3Script.Language.Tree
             get
             {
                 yield return LeftOperand;
-                yield return Operator;
                 yield return RightOperand;
             }
         }

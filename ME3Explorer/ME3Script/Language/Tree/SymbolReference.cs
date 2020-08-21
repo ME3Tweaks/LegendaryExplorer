@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public ASTNode Node;
         public string Name;
 
-        public SymbolReference(ASTNode symbol, SourcePosition start, SourcePosition end, string name = "") 
+        public SymbolReference(ASTNode symbol, string name = "", SourcePosition start = null, SourcePosition end = null) 
             : base(ASTNodeType.SymbolReference, start, end)
         {
             Node = symbol;
@@ -29,9 +29,9 @@ namespace ME3Script.Language.Tree
         {
             return Node switch
             {
-                FunctionParameter functionParameter => functionParameter.VarType,
                 VariableDeclaration variable => variable.VarType,
-                Function function => function.ReturnType,
+                Function function => function.VarType,
+                VariableType type => type,
                 _ => (Node as Expression)?.ResolveType()
             };
         }

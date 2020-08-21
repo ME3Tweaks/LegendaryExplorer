@@ -28,6 +28,7 @@ namespace ME3Script.Lexing
             TokenMatchers.Add(new SingleLineCommentMatcher());
             TokenMatchers.Add(new StringLiteralMatcher());
             TokenMatchers.Add(new NameLiteralMatcher());
+            TokenMatchers.Add(new StringRefLiteralMatcher());
             TokenMatchers.AddRange(delimiters);
             //TokenMatchers.AddRange(keywords);
             TokenMatchers.Add(new WhiteSpaceMatcher());
@@ -41,7 +42,7 @@ namespace ME3Script.Lexing
         {
             if (Data.AtEnd())
             {
-                return new Token<string>(TokenType.EOF);
+                return new Token<string>(TokenType.EOF, null, StreamPosition, StreamPosition);
             }
 
             Token<string> result = null;
@@ -67,7 +68,7 @@ namespace ME3Script.Lexing
 
         public override IEnumerable<Token<string>> LexData()
         {
-            StreamPosition = new SourcePosition(0, 0, 0);
+            StreamPosition = new SourcePosition(1, 0, 0);
             var token = GetNextToken();
             while (token.Type != TokenType.EOF)
             {
@@ -80,13 +81,13 @@ namespace ME3Script.Lexing
             }
         }
 
-        public IEnumerable<Token<string>> LexSubData(SourcePosition start, SourcePosition end)
+        public override IEnumerable<Token<string>> LexSubData(SourcePosition start, SourcePosition end)
         {
             StreamPosition = start;
             Data.Advance(start.CharIndex);
             var token = GetNextToken();
             // TODO: this assumes well-formed subdata, fix?
-            while (!token.StartPosition.Equals(end))
+            while (!token.StartPos.Equals(end))
             {
                 if (token.Type != TokenType.WhiteSpace)
                     yield return token;

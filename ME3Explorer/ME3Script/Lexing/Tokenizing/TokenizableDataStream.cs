@@ -9,7 +9,7 @@ namespace ME3Script.Lexing.Tokenizing
     public class TokenizableDataStream<D> where D : class
     {
         #region Members
-        private readonly List<D> Data;
+        protected readonly List<D> Data;
         private readonly Stack<int> Snapshots;
         public int CurrentIndex { get; protected set; }
 

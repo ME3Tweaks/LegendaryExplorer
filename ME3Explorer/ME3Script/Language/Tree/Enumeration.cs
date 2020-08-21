@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public List<VariableIdentifier> Values;
         public Enumeration(string name, List<VariableIdentifier> values,
             SourcePosition start, SourcePosition end)
-            : base(name, start, end)
+            : base(name, start, end, EPropertyType.Byte)
         {
             Type = ASTNodeType.Enumeration;
             Values = values;

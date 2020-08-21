@@ -12,7 +12,7 @@ namespace ME3Script.Language.Tree
     {
         public string Name;
         public int Size;
-        public VariableIdentifier(string name, SourcePosition start, SourcePosition end, int size = 0) 
+        public VariableIdentifier(string name, SourcePosition start = null, SourcePosition end = null, int size = 0) 
             : base(ASTNodeType.VariableIdentifier, start, end) 
         {
             Size = size;

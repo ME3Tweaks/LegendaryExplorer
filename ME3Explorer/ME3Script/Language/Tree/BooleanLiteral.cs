@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Analysis.Symbols;
 
 namespace ME3Script.Language.Tree
 {
@@ -12,7 +13,7 @@ namespace ME3Script.Language.Tree
     {
         public bool Value;
 
-        public BooleanLiteral(bool val, SourcePosition start, SourcePosition end)
+        public BooleanLiteral(bool val, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.BooleanLiteral, start, end)
         {
             Value = val;
@@ -25,7 +26,7 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            return new VariableType("bool", null, null);
+            return SymbolTable.BoolType;
         }
     }
 }

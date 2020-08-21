@@ -4,20 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Tree;
 using ME3Script.Utilities;
+using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Language.Tree
 {
-    public class Const : VariableType
+    public class ClassType : VariableType
     {
-        public string Value;
-        public Expression Literal;
+        public VariableType ClassLimiter;
 
-        public Const(string name, string value, SourcePosition start, SourcePosition end) : base(name, start, end)
+        public ClassType(VariableType classLimiter, SourcePosition start = null, SourcePosition end = null) : base(CLASS, start, end, EPropertyType.Object)
         {
-            Type = ASTNodeType.Const;
-            Value = value;
+            ClassLimiter = classLimiter;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

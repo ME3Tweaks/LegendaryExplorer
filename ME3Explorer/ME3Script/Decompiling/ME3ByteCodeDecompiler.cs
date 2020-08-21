@@ -32,7 +32,7 @@ namespace ME3Script.Decompiling
         private Stack<int> CurrentScope;
 
         private Queue<FunctionParameter> OptionalParams;
-        private List<FunctionParameter> Parameters;
+        private readonly List<FunctionParameter> Parameters;
 
         private List<LabelTableEntry> LabelTable;
 
@@ -76,8 +76,8 @@ namespace ME3Script.Decompiling
             // Skip native funcs
             if (DataContainer is UFunction Func && Func.FunctionFlags.HasFlag(FunctionFlags.Native))
             {
-                var comment = new ExpressionOnlyStatement(null, null, new SymbolReference(null, null, null, "// Native function"));
-                return new CodeBody(new List<Statement> { comment }, null, null);
+                var comment = new ExpressionOnlyStatement(new SymbolReference(null, "// Native function"));
+                return new CodeBody(new List<Statement> { comment });
             }
 
             Position = 0;
@@ -100,11 +100,19 @@ namespace ME3Script.Decompiling
                 if (current == null && PeekByte == (byte)StandardByteCodes.EndOfScript)
                     break; // Natural end after label table, no error
                 if (current == null)
-                    break; // TODO: ERROR!
+                {
+                    //as well as being eye-catching in generated code, this is totally invalid code and will cause compilation errors!
+                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*  DECOMPILATION ERROR!  *")));
+                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "*                        *")));
+                    statements.Add(new ExpressionOnlyStatement(new SymbolReference(null, "**************************")));
+                    break;
+                }
 
                 statements.Add(current);
             }
-            CurrentScope.Pop(); ;
+            CurrentScope.Pop();
             AddStateLabels();
 
             return new CodeBody(statements, null, null);
@@ -159,8 +167,8 @@ namespace ME3Script.Decompiling
                     {       // TODO: weird, research how to deal with this
                         var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
                         value.AcceptVisitor(builder);
-                        var comment = new SymbolReference(null, null, null, "// Orphaned Default Parm: " + builder.GetCodeString());
-                        var statement = new ExpressionOnlyStatement(null, null, comment);
+                        var comment = new SymbolReference(null, "// Orphaned Default Parm: " + builder.GetCodeString(), null, null);
+                        var statement = new ExpressionOnlyStatement(comment, null, null);
                         StatementLocations.Add(StartPositions.Pop(), statement);
                         statements.Add(statement);
                     }

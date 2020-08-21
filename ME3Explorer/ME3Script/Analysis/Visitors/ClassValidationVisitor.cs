@@ -125,11 +125,11 @@ namespace ME3Script.Analysis.Visitors
                 {
                     if (node.Name != "Object")
                     {
-                        if (((Class)node.Parent).SameOrSubClass(node.Name)) // TODO: not needed due to no forward declarations?
+                        if (((Class)node.Parent).SameAsOrSubClassOf(node.Name)) // TODO: not needed due to no forward declarations?
                         {
                             return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.Parent.StartPos, node.Parent.EndPos);
                         }
-                        if (!((Class)node.OuterClass).SameOrSubClass(((Class)node.Parent).OuterClass.Name))
+                        if (!((Class)node.OuterClass).SameAsOrSubClassOf(((Class)node.Parent).OuterClass.Name))
                         {
                             return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                         }
@@ -154,14 +154,6 @@ namespace ME3Script.Analysis.Visitors
                     foreach (Function func in node.Functions)
                     {
                         Success &= func.AcceptVisitor(this);
-                    }
-
-
-                    //register operators and resolve params (TODO: and body) //split this like functions?
-                    foreach (OperatorDeclaration op in node.Operators)
-                    {
-                        op.Outer = node;
-                        Success &= op.AcceptVisitor(this);
                     }
 
                     //second pass over states to resolve 
@@ -220,6 +212,10 @@ namespace ME3Script.Analysis.Visitors
         }
 
         public bool VisitNode(DelegateType node)
+        {
+            throw new NotImplementedException();
+        }
+        public bool VisitNode(ClassType node)
         {
             throw new NotImplementedException();
         }
@@ -303,7 +299,11 @@ namespace ME3Script.Analysis.Visitors
         {
             if (!Symbols.TryAddType(node))
             {
-                return Error($"A type named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+                //Enums do not have to be globally unique, but they do have to be unique within a scope
+                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                {
+                    return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                }
             }
 
             Symbols.PushScope(node.Name);
@@ -320,7 +320,7 @@ namespace ME3Script.Analysis.Visitors
 
             // Add enum values at the class scope so they can be used without being explicitly qualified.
             foreach (VariableIdentifier enumVal in node.Values)
-                Symbols.AddSymbol(enumVal.Name, enumVal);
+                Symbols.TryAddSymbol(enumVal.Name, enumVal);
 
             node.Declaration = node;
 
@@ -331,7 +331,11 @@ namespace ME3Script.Analysis.Visitors
         {
             if (!Symbols.TryAddType(node))
             {
-                return Error($"A type named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+                //Consts do not have to be globally unique, but they do have to be unique within a scope
+                if (((IObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
+                {
+                    return Error($"A type named '{node.Name}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                }
             }
 
 
@@ -386,7 +390,7 @@ namespace ME3Script.Analysis.Visitors
                     Function original = (Function)func;
                     if (original.Flags.Has(FunctionFlags.Final))
                         return Error($"{node.Name} overrides a function in a parent class, but the parent function is marked as final!", node.StartPos, node.EndPos);
-                    if (node.ReturnType != original.ReturnType)
+                    if (!Equals(node.ReturnType, original.ReturnType))
                         return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same return types!", node.StartPos, node.EndPos);
                     if (node.Parameters.Count != original.Parameters.Count)
                         return Error($"{node.Name} overrides a function in a parent class, but the functions do not have the same number of parameters!", node.StartPos, node.EndPos);
@@ -491,50 +495,6 @@ namespace ME3Script.Analysis.Visitors
             return Success;
         }
 
-        public bool VisitNode(OperatorDeclaration node)
-        {
-            if (node.ReturnType != null)
-            {
-                node.ReturnType.Outer = node;
-                if (!Symbols.TryResolveType(ref node.ReturnType))
-                {
-                    return Error($"No type named '{node.ReturnType.Name}' exists in this scope!", node.ReturnType.StartPos, node.ReturnType.EndPos);
-                }
-            }
-
-            Symbols.PushScope(node.OperatorKeyword);
-            if (node.Type == ASTNodeType.InfixOperator)
-            {
-                var op = node as InOpDeclaration;
-                op.LeftOperand.Outer = node;
-                Success = Success && op.LeftOperand.AcceptVisitor(this);
-                op.RightOperand.Outer = node;
-                Success = Success && op.RightOperand.AcceptVisitor(this);
-            }
-            else if (node.Type == ASTNodeType.PrefixOperator)
-            {
-                var op = node as PreOpDeclaration;
-                op.Operand.Outer = node;
-                Success = Success && op.Operand.AcceptVisitor(this);
-            }
-            else if (node.Type == ASTNodeType.PostfixOperator)
-            {
-                var op = node as PostOpDeclaration;
-                op.Operand.Outer = node;
-                Success = Success && op.Operand.AcceptVisitor(this);
-            }
-            Symbols.PopScope();
-
-            if (Success == false)
-                return Error("Error in operator parameters.", node.StartPos, node.EndPos);
-
-            if (Symbols.OperatorSignatureExists(node))
-                return Error($"An operator with identical signature to '{node.OperatorKeyword}' already exists!", node.StartPos, node.EndPos);
-
-            Symbols.AddOperator(node);
-            return Success;
-        }
-
         #region Unused
         public bool VisitNode(CodeBody node)
         { throw new NotImplementedException(); }
@@ -570,6 +530,8 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(ReturnStatement node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(ReturnNothingStatement node)
+        { throw new NotImplementedException(); }
         public bool VisitNode(StopStatement node)
         { throw new NotImplementedException(); }
 
@@ -582,6 +544,12 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(PostOpReference node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(StructComparison node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(DelegateComparison node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(NewOperator node)
+        { throw new NotImplementedException(); }
 
         public bool VisitNode(FunctionCall node)
         { throw new NotImplementedException(); }
@@ -592,6 +560,55 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(SymbolReference node)
         { throw new NotImplementedException(); }
+        public bool VisitNode(DefaultReference node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(DynArrayLength node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(DynArrayAdd node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayAddItem node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayInsert node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayInsertItem node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayRemove node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayRemoveItem node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayFind node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArrayFindStructMember node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(DynArraySort node)
+        {
+            throw new NotImplementedException();
+        }
 
         public bool VisitNode(BooleanLiteral node)
         { throw new NotImplementedException(); }
@@ -608,6 +625,14 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(StructLiteral node)
         { throw new NotImplementedException(); }
         public bool VisitNode(DynamicArrayLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(ObjectLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(VectorLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(RotatorLiteral node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(NoneLiteral node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(ConditionalExpression node)

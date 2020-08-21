@@ -33,7 +33,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return Operator;
                 yield return Operand;
             }
         }

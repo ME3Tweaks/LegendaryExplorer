@@ -19,28 +19,48 @@ namespace ME3Explorer.ME3Script
 {
     public class StandardLibrary
     {
-        private static SymbolTable Symbols;
-        private static readonly List<(Class ast, string scriptText)> Classes = new List<(Class ast, string scriptText)>();
+        public static SymbolTable Symbols { get; private set; }
+        public static readonly CaseInsensitiveDictionary<(Class ast, string scriptText)> Classes = new CaseInsensitiveDictionary<(Class ast, string scriptText)>();
 
 
         public static bool BuildStandardLib()
         {
-            return ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc")) &&
+            bool res = ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GameFramework.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GFxUI.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "WwiseAudio.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXOnlineFoundation.pcc")) &&
             ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"));
+
+            return res;
+        }
+
+        public static void ParseBodies()
+        {
+            var log = new MessageLog();
+            foreach ((Class ast, string scriptText) in Classes.Values)
+            {
+                foreach (Function function in ast.Functions)
+                {
+                    CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
+                    if (log.Content.Any())
+                    {
+                        DisplayError(scriptText, log.ToString());
+                    }
+                }
+            }
         }
 
         private static bool ResolveAllClassesInPackage(string filePath)
         {
-            using var corePcc = MEPackageHandler.OpenMEPackage(filePath);
+            var log = new MessageLog();
+            string fileName = Path.GetFileName(filePath);
+            Debug.WriteLine($"{fileName}: Beginning Parse.");
+            using var pcc = MEPackageHandler.OpenMEPackage(filePath);
             var classes = new List<(Class ast, string scriptText)>();
-            foreach (ExportEntry export in corePcc.Exports.Where(exp => exp.IsClass))
+            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
             {
-                var log = new MessageLog();
                 Class cls = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
                 var codeBuilder = new CodeBuilderVisitor();
                 cls.AcceptVisitor(codeBuilder);
@@ -72,18 +92,18 @@ namespace ME3Explorer.ME3Script
                     return false;
                 }
             }
-
+            Debug.WriteLine($"{fileName}: Finished parse.");
             var validationPasses = new []
             {
                 ValidationPass.TypesAndFunctionNamesAndStateNames,
                 ValidationPass.ClassAndStructMembersAndFunctionParams,
                 ValidationPass.BodyPass
             };
+            int i = 1;
             foreach (var validationPass in validationPasses)
             {
                 foreach ((Class ast, string scriptText) in classes)
                 {
-                    var log = new MessageLog();
                     try
                     {
                         var validator = new ClassValidationVisitor(log, Symbols, validationPass);
@@ -100,8 +120,38 @@ namespace ME3Explorer.ME3Script
                         return false;
                     }
                 }
+                Debug.WriteLine($"{fileName}: Finished validation pass {i++}.");
             }
-            Classes.AddRange(classes);
+
+            if (fileName == "Core.pcc")
+            {
+                Symbols.InitializeOperators();
+            }
+
+            foreach ((Class ast, string scriptText) in classes)
+            {
+                Symbols.RevertToObjectStack();
+                if (!ast.Name.CaseInsensitiveEquals("Object"))
+                {
+                    Symbols.GoDirectlyToStack(((Class)ast.Parent).GetInheritanceString());
+                    Symbols.PushScope(ast.Name);
+                }
+
+                foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
+                {
+                    CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
+                    if (log.Content.Any())
+                    {
+                        DisplayError(scriptText, log.ToString());
+                    }
+                }
+            }
+            Symbols.RevertToObjectStack();
+
+            foreach (var tuple in classes)
+            {
+                Classes.Add(tuple.ast.Name, tuple);
+            }
             return true;
         }
 

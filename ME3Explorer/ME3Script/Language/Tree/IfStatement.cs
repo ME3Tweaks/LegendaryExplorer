@@ -14,6 +14,8 @@ namespace ME3Script.Language.Tree
         public CodeBody Then;
         public CodeBody Else;
 
+        public bool IsNullCheck;
+
         public IfStatement(Expression cond, CodeBody then,
             SourcePosition start, SourcePosition end, CodeBody optelse = null)
             : base(ASTNodeType.IfStatement, start, end) 

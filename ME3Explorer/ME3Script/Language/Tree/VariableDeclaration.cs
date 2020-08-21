@@ -25,7 +25,7 @@ namespace ME3Script.Language.Tree
         public bool IsStaticArray => Size > 1;
 
         public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
-                                   VariableIdentifier name, string category, SourcePosition start, SourcePosition end)
+                                   VariableIdentifier name, string category, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Flags = flags;

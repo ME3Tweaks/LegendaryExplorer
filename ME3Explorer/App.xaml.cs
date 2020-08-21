@@ -140,7 +140,6 @@ namespace ME3Explorer
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
 
-            
 
             Action actionDelegate = HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode);
             if (actionDelegate == null)

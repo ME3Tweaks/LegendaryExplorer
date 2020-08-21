@@ -14,8 +14,8 @@ namespace ME3Script.Lexing.Tokenizing
 
         public TokenType Type { get; private set; }
 
-        public SourcePosition StartPosition { get; private set; }
-        public SourcePosition EndPosition { get; private set; }
+        public SourcePosition StartPos { get; private set; }
+        public SourcePosition EndPos { get; private set; }
         #endregion
 
         #region Methods
@@ -34,8 +34,8 @@ namespace ME3Script.Lexing.Tokenizing
         {
             Value = value;
             Type = type;
-            StartPosition = start;
-            EndPosition = end;
+            StartPos = start;
+            EndPos = end;
         }
 
         public override string ToString()
@@ -68,6 +68,8 @@ namespace ME3Script.Lexing.Tokenizing
         LessOrEquals,   // <=
         RightArrow,     // >
         GreaterOrEquals,// >=
+        Increment,      // ++
+        Decrement,      // --
         MinusSign,      // -
         PlusSign,       // +
         StarSign,       // *
@@ -81,14 +83,14 @@ namespace ME3Script.Lexing.Tokenizing
         StrConcatAssign,// $=
         AtSign,         // @
         StrConcAssSpace,// @=
-        BinaryNegate,   // ~
+        Complement,   // ~
         BinaryAnd,      // &
         BinaryOr,       // |
         BinaryXor,      // ^
         //RightShift,     // >>, also vector reverse rotate   //will have to be matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
         LeftShift,      // <<, also vector rotate
 
-        Conditional,    // ?
+        QuestionMark,    // ?
         Colon,          // :
         SemiColon,      // ;
         Comma,          // ,
@@ -105,6 +107,7 @@ namespace ME3Script.Lexing.Tokenizing
         MultiLineComment,
         StringLiteral,
         NameLiteral,
+        StringRefLiteral,
         EOF,
         Word,
         IntegerNumber,

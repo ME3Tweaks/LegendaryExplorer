@@ -11,11 +11,13 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 {
     public class StringLiteralMatcher : TokenMatcherBase<string>
     {
+        private const string Delimiter = "\"";
+
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             string value = null;
-            if (data.CurrentItem == "\"")
+            if (data.CurrentItem == Delimiter)
             {
                 data.Advance();
                 bool inEscape = false;
@@ -27,7 +29,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                         switch (data.CurrentItem)
                         {
                             case "\\":
-                            case "\"":
+                            case Delimiter:
                                 value += data.CurrentItem;
                                 continue;
                             case "n":
@@ -50,7 +52,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                         inEscape = true;
                         continue;
                     }
-                    if (data.CurrentItem == "\"")
+                    if (data.CurrentItem == Delimiter)
                     {
                         break;
                     }
@@ -63,7 +65,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                     value += data.CurrentItem;
                 }
 
-                if (data.CurrentItem == "\"")
+                if (data.CurrentItem == Delimiter)
                 {
                     data.Advance();
                     value ??= "";

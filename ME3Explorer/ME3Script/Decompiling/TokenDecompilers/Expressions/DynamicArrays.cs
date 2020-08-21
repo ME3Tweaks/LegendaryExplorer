@@ -10,7 +10,7 @@ namespace ME3Script.Decompiling
 {
     public partial class ME3ByteCodeDecompiler
     {
-        public Expression DecompileDynArrLength()
+        public DynArrayLength DecompileDynArrLength()
         {
             PopByte();
             var arr = DecompileExpression();
@@ -18,43 +18,160 @@ namespace ME3Script.Decompiling
                 return null;
 
             StartPositions.Pop();
-            // TODO: ugly solution, should be reworked once dynarrays are in the AST.
-            return new CompositeSymbolRef(arr, new SymbolReference(null, null, null, "Length"), null, null);
+            return new DynArrayLength(arr);
         }
 
-        public Expression DecompileDynArrFunction(string name, bool secondArg = false, bool withoutMemOffs = false, bool withoutTrailingByte = false)
+        public DynArrayRemove DecompileDynArrayRemove()
         {
+
             PopByte();
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
-
-            if (!withoutMemOffs)
-                ReadInt16(); // MemSize
-
-            var args = new List<Expression>();
-            if (secondArg)
-            {
-                var prop = DecompileExpression();
-                if (prop == null)
-                    return null;
-                args.Add(prop);
-            }
-
-            var value = DecompileExpression();
-            if (value == null)
+            var indexArg = DecompileExpression();
+            if (indexArg == null)
                 return null;
-            args.Add(value);
-
-            if (!withoutTrailingByte)
-                PopByte(); // EndFuncParms
-
-            var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
-            arr.AcceptVisitor(builder);
-
+            var countArg = DecompileExpression();
+            if (countArg == null)
+                return null;
+            PopByte(); //EndFuncParms
             StartPositions.Pop();
-            // TODO: ugly solution, should be reworked once dynarrays are in the AST.
-            return new FunctionCall(new SymbolReference(null, null, null, builder.GetCodeString() + "." + name), args, null, null);
+            return new DynArrayRemove(arr, indexArg, countArg);
+        }
+
+        public DynArrayAdd DecompileDynArrayAdd()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            var countArg = DecompileExpression();
+            if (countArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayAdd(arr, countArg);
+        }
+
+        public DynArrayInsert DecompileDynArrayInsert()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            var indexArg = DecompileExpression();
+            if (indexArg == null)
+                return null;
+            var countArg = DecompileExpression();
+            if (countArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayInsert(arr, indexArg, countArg);
+        }
+
+        public DynArrayFindStructMember DecompileDynArrayFindStructMember()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var memberNameArg = DecompileExpression();
+            if (memberNameArg == null)
+                return null;
+            var valueArg = DecompileExpression();
+            if (valueArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayFindStructMember(arr, memberNameArg, valueArg);
+        }
+
+        public DynArrayInsertItem DecompileDynArrayInsertItem()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var indexArg = DecompileExpression();
+            if (indexArg == null)
+                return null;
+            var valueArg = DecompileExpression();
+            if (valueArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayInsertItem(arr, indexArg, valueArg);
+        }
+
+        public DynArrayFind DecompileDynArrayFind()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var valueArg = DecompileExpression();
+            if (valueArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayFind(arr, valueArg);
+        }
+
+        public DynArrayAddItem DecompileDynArrayAddItem()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var valueArg = DecompileExpression();
+            if (valueArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayAddItem(arr, valueArg);
+        }
+
+        public DynArrayRemoveItem DecompileDynArrayRemoveItem()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var valueArg = DecompileExpression();
+            if (valueArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArrayRemoveItem(arr, valueArg);
+        }
+
+        public DynArraySort DecompileDynArraySort()
+        {
+
+            PopByte();
+            var arr = DecompileExpression();
+            if (arr == null)
+                return null;
+            ReadInt16(); // MemSize
+            var comparefunctionArg = DecompileExpression();
+            if (comparefunctionArg == null)
+                return null;
+            PopByte(); //EndFuncParms
+            StartPositions.Pop();
+            return new DynArraySort(arr, comparefunctionArg);
         }
     }
 }

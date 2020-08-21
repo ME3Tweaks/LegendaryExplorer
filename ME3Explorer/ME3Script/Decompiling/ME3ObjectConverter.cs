@@ -10,6 +10,8 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Script.Analysis.Symbols;
+using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
@@ -23,7 +25,7 @@ namespace ME3Script.Decompiling
             VariableType parent = new VariableType(pcc.GetEntry(uClass.SuperClass)?.ObjectName.Instanced ?? "object");
 
             VariableType outer = new VariableType(pcc.GetEntry(uClass.OuterClass)?.ObjectName.Instanced ?? parent.Name);
-            // TODO: operators
+
             // TODO: components
 
             var interfaces = new List<VariableType>();
@@ -76,7 +78,7 @@ namespace ME3Script.Decompiling
             var propObject = pcc.GetUExport(uClass.Defaults);
             var defaultProperties = ConvertDefaultProperties(propObject);
 
-            Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, new List<OperatorDeclaration>(), defaultProperties)
+            Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName
             };
@@ -274,6 +276,10 @@ namespace ME3Script.Decompiling
             var vals = new List<VariableIdentifier>();
             foreach (var val in obj.Names)
             {
+                if (val.Name.EndsWith("_MAX"))
+                {
+                    continue;
+                }
                 vals.Add(new VariableIdentifier(val.Instanced, null, null));
             }
 
@@ -302,21 +308,25 @@ namespace ME3Script.Decompiling
                 case UArrayProperty arrayProperty:
                     return new DynamicArrayType(GetPropertyType(ObjectBinary.From(obj.Export.FileRef.GetUExport(arrayProperty.ElementType)) as UProperty));
                 case UBioMask4Property _:
-                    typeStr = "biomask4";
-                    break;
+                    return SymbolTable.BioMask4Type;
                 case UBoolProperty _:
-                    typeStr = "bool";
-                    break;
+                    return SymbolTable.BoolType;
                 case UByteProperty byteProperty:
-                    typeStr = byteProperty.IsEnum ? byteProperty.Enum.GetEntry(obj.Export.FileRef).ObjectName.Instanced : "byte";
+                    if (byteProperty.IsEnum)
+                    {
+                        typeStr = byteProperty.Enum.GetEntry(obj.Export.FileRef).ObjectName.Instanced;
+                    }
+                    else
+                    {
+                        return SymbolTable.ByteType;
+                    }
                     break;
-                case UClassProperty _:
-                    typeStr = "class";
-                    break;
+                case UClassProperty classProp:
+                    return new ClassType(new VariableType(obj.Export.FileRef.GetEntry(classProp.ClassRef).ObjectName));
                 case UDelegateProperty delegateProperty:
                 {
-                    IEntry function = obj.Export.FileRef.GetEntry(delegateProperty.Function);
-                    IEntry functionClass = function.Parent;
+                    IEntry entry = obj.Export.FileRef.GetEntry(delegateProperty.Function);
+                    IEntry functionClass = entry.Parent;
                     for (IEntry delPropClass = delegateProperty.Export; delPropClass != null; delPropClass = delPropClass.Parent)
                     {
                         if (delPropClass.ClassName == "Class")
@@ -325,7 +335,7 @@ namespace ME3Script.Decompiling
                             {
                                 if (delPropClass == functionClass)
                                 {
-                                    return new DelegateType(new Function(function?.ObjectName.Instanced, default, null, null, null));
+                                    return new DelegateType(new Function(entry?.ObjectName.Instanced, default, null, null, null));
                                 }
 
                                 delPropClass = (delPropClass as ExportEntry)?.SuperClass;
@@ -334,23 +344,24 @@ namespace ME3Script.Decompiling
                         }
                     }
                     //function is not in scope, fully qualify it
-                    return new DelegateType(new Function(function?.InstancedFullPath, default, null, null, null));
+                    string qualifiedFunctionName = entry.ObjectName;
+                    while (entry.Parent != null && entry.Parent.ClassName != "Package")
+                    {
+                        entry = entry.Parent;
+                        qualifiedFunctionName = $"{entry.ObjectName.Instanced}.{qualifiedFunctionName}";
+                    }
+                    return new DelegateType(new Function(qualifiedFunctionName, default, null, null, null));
                 }
                 case UFloatProperty _:
-                    typeStr = "float";
-                    break;
+                    return SymbolTable.FloatType;
                 case UIntProperty _:
-                    typeStr = "int";
-                    break;
+                    return SymbolTable.IntType;
                 case UNameProperty _:
-                    typeStr = "Name"; // ?
-                    break;
+                    return SymbolTable.NameType;
                 case UStringRefProperty _:
-                    typeStr = "stringref";
-                    break;
+                    return SymbolTable.StringRefType;
                 case UStrProperty _:
-                    typeStr = "string";
-                    break;
+                    return SymbolTable.StringType;
                 case UStructProperty structProperty:
                     typeStr = structProperty.Struct.GetEntry(obj.Export.FileRef)?.ObjectName.Instanced ?? typeStr;
                     break;
@@ -444,7 +455,7 @@ namespace ME3Script.Decompiling
                 {
                     continue;
                 }
-                var name = new SymbolReference(null, null, null, prop.Name);
+                var name = new SymbolReference(null, prop.Name);
                 var value = ConvertPropertyValue(prop);
                 if (value is StructLiteral structLiteral)
                 {
@@ -459,7 +470,7 @@ namespace ME3Script.Decompiling
                     statements.AddRange(subObjectsToAdd);
                     structLiteral.Statements = structLiteral.Statements.Where(stmnt => stmnt is AssignStatement).ToList();
                 }
-                statements.Add(new AssignStatement(name, value, null, null));
+                statements.Add(new AssignStatement(name, value));
             }
 
 
@@ -471,51 +482,52 @@ namespace ME3Script.Decompiling
                 switch (prop)
                 {
                     case BoolProperty boolProperty:
-                        return new BooleanLiteral(boolProperty.Value, null, null);
+                        return new BooleanLiteral(boolProperty.Value);
                     case ByteProperty byteProperty:
-                        return new IntegerLiteral(byteProperty.Value, null, null);
+                        return new IntegerLiteral(byteProperty.Value) { NumType = Keywords.BYTE };
                     case BioMask4Property bioMask4Property:
-                        return new IntegerLiteral(bioMask4Property.Value, null, null);
+                        return new IntegerLiteral(bioMask4Property.Value) { NumType = Keywords.BIOMASK4 };
                     case DelegateProperty delegateProperty:
-                        return new SymbolReference(null, null, null, delegateProperty.Value.FunctionName);
+                        return new SymbolReference(null, delegateProperty.Value.FunctionName);
                     case EnumProperty enumProperty:
-                        return new SymbolReference(null, null, null, $"{enumProperty.EnumType.Instanced}.{enumProperty.Value.Instanced}");
+                        return new CompositeSymbolRef(new SymbolReference(null, enumProperty.EnumType.Instanced), new SymbolReference(null, enumProperty.EnumType.Instanced));
                     case FloatProperty floatProperty:
-                        return new FloatLiteral(floatProperty.Value, null, null);
+                        return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:
-                        return new IntegerLiteral(intProperty.Value, null, null);
+                        return new IntegerLiteral(intProperty.Value);
                     case NameProperty nameProperty:
-                        return new NameLiteral(nameProperty.Value, null, null);
+                        return new NameLiteral(nameProperty.Value);
                     case ObjectProperty objectProperty:
                         var objRef = objectProperty.Value;
                         if (objRef == 0)
-                            return new SymbolReference(null, null, null, "None");
+                            return new NoneLiteral();
                         var objEntry = containingExport.FileRef.GetEntry(objRef);
-                        string objStr;
                         if (objEntry is ExportEntry objExp && objExp.Parent == containingExport)
                         {
                             string name = objExp.ObjectName.Instanced;
-                            objStr = $"{name}";
-                            if (statements.All(stmnt => (stmnt as Subobject)?.Name != name))
+                            var type = new VariableType(objExp.ClassName);
+                            if (!(statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name != name) is Subobject subObj))
                             {
-                                statements.Add(new Subobject(name, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp)));
+                                var decl = new VariableDeclaration(type, default, new VariableIdentifier(name), null);
+                                subObj = new Subobject(decl, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp));
+                                statements.Add(subObj);
                             }
+                            return new SymbolReference(subObj.Name, name);
                         }
                         else
                         {
-                            objStr = $"{objEntry.ClassName}'{objEntry.InstancedFullPath}'";
+                            return new ObjectLiteral(new NameLiteral(objEntry.InstancedFullPath), new VariableType(objEntry.ClassName));
                         }
-                        return new SymbolReference(null, null, null, objStr);
                     case StringRefProperty stringRefProperty:
-                        return new StringRefLiteral(stringRefProperty.Value, null, null);
+                        return new StringRefLiteral(stringRefProperty.Value);
                     case StrProperty strProperty:
-                        return new StringLiteral(strProperty.Value, null, null);
+                        return new StringLiteral(strProperty.Value);
                     case StructProperty structProperty:
                         return new StructLiteral(structProperty.StructType, ConvertProperties(structProperty.Properties, containingExport));
                     case ArrayPropertyBase arrayPropertyBase:
                         return new DynamicArrayLiteral(arrayPropertyBase.Reference, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
                     default:
-                        return new SymbolReference(null, null, null, "UNSUPPORTED:" + prop.PropType);
+                        return new SymbolReference(null, "UNSUPPORTED:" + prop.PropType);
 
                 }
             }

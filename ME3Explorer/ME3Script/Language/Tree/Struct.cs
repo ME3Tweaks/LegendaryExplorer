@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
 using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
     public sealed class Struct : VariableType, IObjectType
     {
+        public bool IsVector => Name.CaseInsensitiveEquals("Vector");
+        public bool IsRotator => Name.CaseInsensitiveEquals("Rotator");
+
         public ScriptStructFlags Flags;
         public VariableType Parent;
         public List<VariableDeclaration> VariableDeclarations { get; }
@@ -22,7 +26,7 @@ namespace ME3Script.Language.Tree
                       List<VariableType> typeDeclarations = null,
                       DefaultPropertiesBlock defaults = null,
                       SourcePosition start = null, SourcePosition end = null)
-            : base(name, start, end)
+            : base(name, start, end, EPropertyType.Struct)
         {
             Type = ASTNodeType.Struct;
             Flags = flags;
@@ -61,7 +65,6 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                if (Parent != null) yield return Parent;
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 if (DefaultProperties != null) yield return DefaultProperties;

@@ -164,14 +164,6 @@ namespace ME3Script.Analysis.Visitors
                     decl.AcceptVisitor(this);
             }
 
-            if (node.Operators.Count > 0)
-            {
-                Write("");
-                Write("// Operators");
-                foreach (OperatorDeclaration op in node.Operators)
-                    op.AcceptVisitor(this);
-            }
-
             if (node.Functions.Count > 0)
             {
                 Write("");
@@ -225,6 +217,7 @@ namespace ME3Script.Analysis.Visitors
             {
                 case DynamicArrayType _:
                 case DelegateType _:
+                case ClassType _:
                     node.AcceptVisitor(this);
                     return;
             }
@@ -248,6 +241,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DelegateType node)
         {
             Append($"{DELEGATE}<{node.DefaultFunction.Name}>");
+            return true;
+        }
+
+        public bool VisitNode(ClassType node)
+        {
+            Append($"{CLASS}<{node.ClassLimiter.Name}>");
             return true;
         }
 
@@ -448,7 +447,7 @@ namespace ME3Script.Analysis.Visitors
             }
             Append(")");
 
-            if (node.Body.Statements != null)
+            if (flags.Has(FunctionFlags.Defined) && node.Body.Statements != null)
             {
                 Write("{");
                 NestingLevel++;
@@ -459,7 +458,10 @@ namespace ME3Script.Analysis.Visitors
                 Write("}");
             }
             else
+            {
                 Append(";");
+                Write("");
+            }
 
             return true;
         }
@@ -529,50 +531,6 @@ namespace ME3Script.Analysis.Visitors
 
             NestingLevel--;
             Write("};");
-
-            return true;
-        }
-
-        public bool VisitNode(OperatorDeclaration node)
-        {
-            // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
-            Write("");
-            
-            if (node.Type == ASTNodeType.InfixOperator)
-            {
-                var inOp = (InOpDeclaration)node;
-                Append($"{OPERATOR}({inOp.Precedence}) {(node.ReturnType != null ? node.ReturnType.Name + " " : "")}{node.OperatorKeyword}( ");
-                inOp.LeftOperand.AcceptVisitor(this);
-                Append(", ");
-                inOp.RightOperand.AcceptVisitor(this);
-            }
-            else if (node.Type == ASTNodeType.PrefixOperator)
-            {
-                var preOp = (PreOpDeclaration)node;
-                Append($"{PREOPERATOR} {(node.ReturnType != null ? node.ReturnType.Name + " " : "")}{node.OperatorKeyword}( ");
-                preOp.Operand.AcceptVisitor(this);
-            }
-            else if (node.Type == ASTNodeType.PostfixOperator)
-            {
-                var postOp = (PostOpDeclaration)node;
-                Append($"{POSTOPERATOR} {(node.ReturnType != null ? node.ReturnType.Name + " " : "")}{node.OperatorKeyword}( ");
-                postOp.Operand.AcceptVisitor(this);
-            }
-
-            Append(" )");
-
-            if (node.Body.Statements != null)
-            {
-                Write("{");
-                NestingLevel++;
-                foreach (VariableDeclaration v in node.Locals)
-                    v.AcceptVisitor(this);
-                node.Body.AcceptVisitor(this);
-                NestingLevel--;
-                Write("}");
-            }
-            else
-                Append(";");
 
             return true;
         }
@@ -721,6 +679,7 @@ namespace ME3Script.Analysis.Visitors
             node.Target.AcceptVisitor(this);
             Append(" = ");
             node.Value.AcceptVisitor(this);
+            Append(";");
 
             return true;
         }
@@ -728,21 +687,21 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(BreakStatement node)
         {
             // break;
-            Write(BREAK);
+            Write($"{BREAK};");
             return true;
         }
 
         public bool VisitNode(ContinueStatement node)
         {
             // continue;
-            Write(CONTINUE);
+            Write($"{CONTINUE};");
             return true;
         }
 
         public bool VisitNode(StopStatement node)
         {
             // stop;
-            Write(STOP);
+            Write($"{STOP};");
             return true;
         }
         
@@ -755,7 +714,14 @@ namespace ME3Script.Analysis.Visitors
                 Append(" ");
                 node.Value.AcceptVisitor(this);
             }
+            Append(";");
 
+            return true;
+        }
+
+        public bool VisitNode(ReturnNothingStatement node)
+        {
+            //an implementation detail. no textual representation
             return true;
         }
 
@@ -764,6 +730,7 @@ namespace ME3Script.Analysis.Visitors
             // expression;
             Write("");
             node.Value.AcceptVisitor(this);
+            Append(";");
 
             return true;
         }
@@ -789,7 +756,7 @@ namespace ME3Script.Analysis.Visitors
             NestingLevel--;
             Write("}");
 
-            if (node.Else != null)
+            if (node.Else != null && node.Else.Statements.Any())
             {
                 if (node.Else.Statements.Count == 1
                     && node.Else.Statements[0] is IfStatement)
@@ -862,6 +829,78 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(StructComparison node)
+        {
+            // [(] expression operatorkeyword expression [)]
+            bool scopeNeeded = node.Precedence > ExpressionPrescedence.Peek();
+            ExpressionPrescedence.Push(node.Precedence);
+
+            if (scopeNeeded)
+                Append("(");
+            node.LeftOperand.AcceptVisitor(this);
+            Append($" {(node.IsEqual ? "==" : " != ")} ");
+            node.RightOperand.AcceptVisitor(this);
+            if (scopeNeeded)
+                Append(")");
+
+            ExpressionPrescedence.Pop();
+            return true;
+        }
+
+        public bool VisitNode(DelegateComparison node)
+        {
+            // [(] expression operatorkeyword expression [)]
+            bool scopeNeeded = node.Precedence > ExpressionPrescedence.Peek();
+            ExpressionPrescedence.Push(node.Precedence);
+
+            if (scopeNeeded)
+                Append("(");
+            node.LeftOperand.AcceptVisitor(this);
+            Append($" {(node.IsEqual ? "==" : " != ")} ");
+            node.RightOperand.AcceptVisitor(this);
+            if (scopeNeeded)
+                Append(")");
+
+            ExpressionPrescedence.Pop();
+            return true;
+        }
+
+        public bool VisitNode(NewOperator node)
+        {
+            // new [( [outer [, name [, flags]]] )] class [( template )]
+            ExpressionPrescedence.Push(NOPRESCEDENCE);
+
+            Append("new ");
+            if (node.OuterObject != null)
+            {
+                Append("(");
+                node.OuterObject.AcceptVisitor(this);
+                if (node.ObjectName != null)
+                {
+                    Append(", ");
+                    node.ObjectName.AcceptVisitor(this);
+                    if (node.Flags != null)
+                    {
+                        Append(", ");
+                        node.Flags.AcceptVisitor(this);
+                    }
+                }
+                Append(") ");
+            }
+
+            node.ObjectClass.AcceptVisitor(this);
+
+            if (node.Template != null)
+            {
+                Append(" (");
+                node.Template.AcceptVisitor(this);
+                Append(")");
+            }
+
+            ExpressionPrescedence.Pop();
+            return true;
+        }
+
         public bool VisitNode(FunctionCall node)
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
@@ -907,6 +946,10 @@ namespace ME3Script.Analysis.Visitors
         {
             // outersymbol.innersymbol
             node.OuterSymbol.AcceptVisitor(this);
+            if (node.IsClassContext)
+            {
+                Append($".{STATIC}");
+            }
             Append(".");
             node.InnerSymbol.AcceptVisitor(this);
             return true;
@@ -919,6 +962,109 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
+        public bool VisitNode(DefaultReference node)
+        {
+            // symbolname
+            Append($"{DEFAULT}.{node.Name}");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayLength node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{LENGTH}");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayAdd node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{ADD}(");
+            node.CountArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayAddItem node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{ADDITEM}(");
+            node.ValueArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayInsert node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{INSERT}(");
+            node.CountArg.AcceptVisitor(this);
+            Append(", ");
+            node.IndexArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayInsertItem node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{INSERTITEM}(");
+            node.IndexArg.AcceptVisitor(this);
+            Append(", ");
+            node.ValueArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayRemove node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{REMOVE}(");
+            node.CountArg.AcceptVisitor(this);
+            Append(", ");
+            node.IndexArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayRemoveItem node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{REMOVEITEM}(");
+            node.ValueArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayFind node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{FIND}(");
+            node.ValueArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArrayFindStructMember node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{FIND}(");
+            node.MemberNameArg.AcceptVisitor(this);
+            Append(", ");
+            node.ValueArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
+        public bool VisitNode(DynArraySort node)
+        {
+            node.DynArrayExpression.AcceptVisitor(this);
+            Append($".{SORT}(");
+            node.CompareFuncArg.AcceptVisitor(this);
+            Append(")");
+            return true;
+        }
+
         public bool VisitNode(BooleanLiteral node)
         {
             // true|false
@@ -928,9 +1074,28 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(FloatLiteral node)
         {
-            // floatvalue
-            Append($"{node.Value}");
+            Append(FormatFloat(node.Value));
             return true;
+        }
+
+        private static string FormatFloat(float single)
+        {
+            //G9 ensures a fully accurate version of the float (no rounding) is written.
+            //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
+            string floatString = $"{single:G9}".Replace("E+", "e");
+
+            if (floatString.Contains("E-"))
+            {
+                //unrealscript does not support negative exponents in literals, so we have to format it manually
+                //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
+                //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
+                int ePos = floatString.IndexOf("E-");
+                int exponent = int.Parse(floatString.Substring(ePos + 2));
+                string digits = floatString.Substring(0, ePos).Replace(".", "");
+                floatString = $"0.{new string('0', exponent - 1)}{digits}";
+            }
+
+            return floatString;
         }
 
         public bool VisitNode(IntegerLiteral node)
@@ -942,9 +1107,34 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(NameLiteral node)
         {
-            //unrealscript compliant version, but harder to parse
-            //Append(node.Outer is StructLiteral ? "\"{0}\"" : "'{0}'", node.Value);
-            Append($"'{node.Value}'");
+            //commented version is unrealscript compliant, but harder to parse
+            //Append(node.Outer is StructLiteral ? "\"{EncodeName(node.Value)}\"" : "'{EncodeName(node.Value)}'");
+            Append($"'{EncodeName(node.Value)}'");
+            return true;
+        }
+
+        public bool VisitNode(ObjectLiteral node)
+        {
+            WriteTypeName(node.Class);
+            node.Name.AcceptVisitor(this);
+            return true;
+        }
+
+        public bool VisitNode(NoneLiteral node)
+        {
+            Append(NONE);
+            return true;
+        }
+
+        public bool VisitNode(VectorLiteral node)
+        {
+            Append($"{VECT}({FormatFloat(node.X)}, {FormatFloat(node.Y)}, {FormatFloat(node.Z)})");
+            return true;
+        }
+
+        public bool VisitNode(RotatorLiteral node)
+        {
+            Append($"{ROT}(0x{node.Pitch:X8}, 0x{node.Yaw:X8}, 0x{node.Roll:X8})");
             return true;
         }
 
@@ -1270,6 +1460,28 @@ namespace ME3Script.Analysis.Visitors
                         break;
                     case '\n':
                         sb.Append("\\n");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static string EncodeName(string original)
+        {
+            var sb = new StringBuilder();
+            foreach (char c in original)
+            {
+                switch (c)
+                {
+                    case '\'':
+                        sb.Append("\\'");
+                        break;
+                    case '\\':
+                        sb.Append("\\\\");
                         break;
                     default:
                         sb.Append(c);

@@ -10,15 +10,15 @@ namespace ME3Script.Language.Tree
 {
     public class Subobject : CodeBody
     {
-        public string Name;
+        public VariableDeclaration Name;
 
         public string Class;
 
-        public Subobject(string name, string @class, List<Statement> contents, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
+        public Subobject(VariableDeclaration name, string @class, List<Statement> contents, SourcePosition start = null, SourcePosition end = null) : base(contents, start, end)
         {
             Name = name;
             Class = @class;
-            Type = ASTNodeType.Subobject;
+            Type = ASTNodeType.SubObject;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -12,24 +12,54 @@ namespace ME3Script.Lexing.Matching.StringMatchers
 {
     public class NameLiteralMatcher : TokenMatcherBase<string>
     {
+        private const string Delimiter = "'";
         protected override Token<string> Match(TokenizableDataStream<string> data, ref SourcePosition streamPos, MessageLog log)
         {
             SourcePosition start = new SourcePosition(streamPos);
             string value = null;
-            Regex regex = new Regex(@"[0-9a-zA-Z_\. /]");
-            if (data.CurrentItem == "'")
+            if (data.CurrentItem == Delimiter)
             {
                 data.Advance();
-                while (!data.AtEnd() && regex.IsMatch(data.CurrentItem))
+                bool inEscape = false;
+                for (; !data.AtEnd(); data.Advance())
                 {
+                    if (inEscape)
+                    {
+                        inEscape = false;
+                        switch (data.CurrentItem)
+                        {
+                            case "\\":
+                            case Delimiter:
+                                value += data.CurrentItem;
+                                continue;
+                            default:
+                                log.LogError(@$"Unrecognized escape sequence: '\{data.CurrentItem}'", new SourcePosition(streamPos));
+                                return null;
+                        }
+                    }
+
+                    if (data.CurrentItem == "\\")
+                    {
+                        inEscape = true;
+                        continue;
+                    }
+                    if (data.CurrentItem == Delimiter)
+                    {
+                        break;
+                    }
+                    if (data.CurrentItem == "\n")
+                    {
+                        streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
+                        log.LogError("Name Literals can not contain line breaks!", start, new SourcePosition(streamPos));
+                        return null;
+                    }
                     value += data.CurrentItem;
-                    data.Advance();
                 }
 
-                if (data.CurrentItem == "'")
+                if (data.CurrentItem == Delimiter)
                 {
                     data.Advance();
-                    value ??= "";
+                    value ??= "None"; //empty name literals should be interpreted as 'None'
                 }
                 else
                 {

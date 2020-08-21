@@ -5737,20 +5737,20 @@ namespace ME3Explorer
             if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
 
-            BusyText = "Recook level files";
-            IsBusy = true;
-            Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText, true)).ContinueWithOnUIThread(prevTask =>
-            {
-                if (Pcc != null)
-                    LoadFile(Pcc.FilePath);
-                IsBusy = false;
-                var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                BusyText = "Recook level files";
+                IsBusy = true;
+                Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText, true)).ContinueWithOnUIThread(prevTask =>
                 {
-                    DoubleClickEntryHandler = entryDoubleClick
-                };
-                dlg.Show();
-            });
-        }
+                    if (Pcc != null)
+                        LoadFile(Pcc.FilePath);
+                    IsBusy = false;
+                    var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                    {
+                        DoubleClickEntryHandler = entryDoubleClick
+                    };
+                    dlg.Show();
+                });
+            }
         }
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {

@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using ME3Explorer;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
     public class NumberMatcher : TokenMatcherBase<string>
     {
-        private List<KeywordMatcher> Delimiters;
+        private readonly List<KeywordMatcher> Delimiters;
+        private readonly Regex digits = new Regex("[0-9]", RegexOptions.Compiled);
+        private readonly Regex hexDigits = new Regex("[0-9a-fA-F]", RegexOptions.Compiled);
 
         public NumberMatcher(List<KeywordMatcher> delimiters)
         {
@@ -23,7 +26,8 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             SourcePosition start = new SourcePosition(streamPos);
             TokenType type;
             string value;
-            string first = SubNumber(data, new Regex("[0-9]"));
+
+            string first = SubNumber(data, digits);
             if (first == null)
                 return null;
             
@@ -33,7 +37,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                     return null;
 
                 data.Advance();
-                string hex = SubNumber(data, new Regex("[0-9a-fA-F]"));
+                string hex = SubNumber(data, hexDigits);
                 if (hex == null || data.CurrentItem == "." || data.CurrentItem == "x")
                     return null;
 
@@ -43,13 +47,38 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             } 
             else if (data.CurrentItem == ".")
             {
-                data.Advance();
-                string second = SubNumber(data, new Regex("[0-9]"));
-                if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
-                    return null;
-
                 type = TokenType.FloatingNumber;
-                value = first + "." + second;
+                data.Advance();
+                string second = SubNumber(data, digits);
+                if (data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
+                {
+                    data.Advance();
+                    string exponent = SubNumber(data, digits);
+                    if (exponent == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                        return null;
+                    value = $"{first}.{second}e{exponent}";
+                }
+                else if (second == null && data.CurrentItem == "f")
+                {
+                    data.Advance();
+                    value = $"{first}.0";
+                }
+                else
+                {
+                    if (second == null && data.CurrentItem == "f")
+                    {
+                        data.Advance();
+                    }
+                    if (second == null || data.CurrentItem == "." || data.CurrentItem == "x")
+                        return null;
+
+                    value = $"{first}.{second}";
+                }
+
+                if (data.CurrentItem == "f")
+                {
+                    data.Advance();
+                }
             }
             else
             {
@@ -57,12 +86,18 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 value = first;
             }
 
+            string peek = data.CurrentItem;
+            bool hasDelimiter = string.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek);
+            if (!hasDelimiter)
+            {
+                return null;
+            }
             streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
             SourcePosition end = new SourcePosition(streamPos);
             return new Token<string>(type, value, start, end);
         }
 
-        private string SubNumber(TokenizableDataStream<string> data, Regex regex)
+        private static string SubNumber(TokenizableDataStream<string> data, Regex regex)
         {
             string number = null;
             string peek = data.CurrentItem;
@@ -74,10 +109,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 peek = data.CurrentItem;
             }
 
-            peek = data.CurrentItem;
-            bool hasDelimiter = string.IsNullOrWhiteSpace(peek) || Delimiters.Any(c => c.Keyword == peek)
-                || peek == "x" || peek == ".";
-            return number != null && hasDelimiter ? number : null;
+            return number;
         }
     }
 }

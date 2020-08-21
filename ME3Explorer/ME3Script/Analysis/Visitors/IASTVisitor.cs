@@ -14,12 +14,12 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(VariableType node);
         bool VisitNode(DynamicArrayType node);
         bool VisitNode(DelegateType node);
+        bool VisitNode(ClassType node);
         bool VisitNode(Struct node);
         bool VisitNode(Enumeration node);
         bool VisitNode(Const node);
         bool VisitNode(Function node);
         bool VisitNode(State node);
-        bool VisitNode(OperatorDeclaration node);
         bool VisitNode(FunctionParameter node);
 
         bool VisitNode(CodeBody node);
@@ -40,6 +40,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(ContinueStatement node);
         bool VisitNode(IfStatement node);
         bool VisitNode(ReturnStatement node);
+        bool VisitNode(ReturnNothingStatement node);
         bool VisitNode(StopStatement node);
 
         bool VisitNode(ExpressionOnlyStatement node);
@@ -47,12 +48,16 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(InOpReference node);
         bool VisitNode(PreOpReference node);
         bool VisitNode(PostOpReference node);
+        bool VisitNode(StructComparison node);
+        bool VisitNode(DelegateComparison node);
+        bool VisitNode(NewOperator node);
 
         bool VisitNode(FunctionCall node);
 
         bool VisitNode(ArraySymbolRef node);
         bool VisitNode(CompositeSymbolRef node);
         bool VisitNode(SymbolReference node);
+        bool VisitNode(DefaultReference node);
 
         bool VisitNode(BooleanLiteral node);
         bool VisitNode(FloatLiteral node);
@@ -62,6 +67,10 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(StringRefLiteral node);
         bool VisitNode(StructLiteral node);
         bool VisitNode(DynamicArrayLiteral node);
+        bool VisitNode(ObjectLiteral node);
+        bool VisitNode(VectorLiteral node);
+        bool VisitNode(RotatorLiteral node);
+        bool VisitNode(NoneLiteral node);
 
         bool VisitNode(ConditionalExpression node);
         bool VisitNode(CastExpression node);
@@ -69,5 +78,16 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(DefaultPropertiesBlock node);
 
         bool VisitNode(Subobject node);
+
+        bool VisitNode(DynArrayLength node);
+        bool VisitNode(DynArrayAdd node);
+        bool VisitNode(DynArrayAddItem node);
+        bool VisitNode(DynArrayInsert node);
+        bool VisitNode(DynArrayInsertItem node);
+        bool VisitNode(DynArrayRemove node);
+        bool VisitNode(DynArrayRemoveItem node);
+        bool VisitNode(DynArrayFind node);
+        bool VisitNode(DynArrayFindStructMember node);
+        bool VisitNode(DynArraySort node);
     }
 }

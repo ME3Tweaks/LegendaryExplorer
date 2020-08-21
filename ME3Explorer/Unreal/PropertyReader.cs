@@ -148,7 +148,9 @@ namespace ME3Explorer.Unreal
         StrProperty = 9,
         StringRefProperty = 10,
         DelegateProperty = 11,
-        BioMask4Property
+        BioMask4Property = 12,
+        InterfaceProperty = 13,
+        ComponentProperty = 14
     }
 
     public static class UPropertyExtensions
@@ -197,11 +199,11 @@ namespace ME3Explorer.Unreal
             stream.WriteFloat(value);
         }
 
-        public static void WriteObjectProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex)
+        public static void WriteObjectProperty(this EndianWriter stream, IMEPackage pcc, NameReference propName, int value, int staticArrayIndex, PropertyType propType = PropertyType.ObjectProperty)
         {
             //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
-            stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4, staticArrayIndex);
+            stream.WritePropHeader(pcc, propName, propType, 4, staticArrayIndex);
             stream.WriteInt32(value);
         }
 

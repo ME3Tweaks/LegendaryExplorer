@@ -14,30 +14,17 @@ namespace ME3Script.Language.Tree
         public FunctionParameter Operand;
 
         public PreOpDeclaration(string keyword,
-            bool delim, CodeBody body, VariableType returnType,
-            FunctionParameter operand, FunctionFlags flags,
-            SourcePosition start, SourcePosition end) 
-            : base(ASTNodeType.PrefixOperator, keyword, delim, body, returnType, flags, start, end) 
+                                VariableType returnType, int nativeIndex,
+                                FunctionParameter operand) 
+            : base(keyword, returnType, nativeIndex) 
         {
             Operand = operand;
-        }
-
-        public override bool AcceptVisitor(IASTVisitor visitor)
-        {
-            throw new NotImplementedException();
         }
 
         public bool IdenticalSignature(PreOpDeclaration other)
         {
             return base.IdenticalSignature(other)
-                && this.Operand.VarType.Name.ToLower() == other.Operand.VarType.Name.ToLower();
-        }
-        public override IEnumerable<ASTNode> ChildNodes
-        {
-            get
-            {
-                yield return Operand;
-            }
+                && string.Equals(this.Operand.VarType.Name, other.Operand.VarType.Name, StringComparison.Ordinal);
         }
     }
 }

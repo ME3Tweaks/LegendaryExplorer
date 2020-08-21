@@ -60,9 +60,9 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.GotoLabel:
                     PopByte();
                     var labelExpr = DecompileExpression();
-                    var func = new SymbolReference(null, null, null, "goto");
+                    var func = new SymbolReference(null, "goto", null, null);
                     var call = new FunctionCall(func, new List<Expression>() { labelExpr }, null, null);
-                    var gotoLabel = new ExpressionOnlyStatement(null, null, call);
+                    var gotoLabel = new ExpressionOnlyStatement(call, null, null);
                     StatementLocations.Add(StartPositions.Pop(), gotoLabel);
                     return gotoLabel;
 
@@ -116,7 +116,7 @@ namespace ME3Script.Decompiling
                     var expr = DecompileExpression();
                     if (expr != null)
                     {
-                        var statement = new ExpressionOnlyStatement(null, null, expr);
+                        var statement = new ExpressionOnlyStatement(expr, null, null);
                         StatementLocations.Add(StartPositions.Pop(), statement);
                         return statement;
                     }
@@ -154,10 +154,11 @@ namespace ME3Script.Decompiling
             Expression expr = null;
             if (CurrentIs(StandardByteCodes.ReturnNullValue))
             {
-                // TODO: research this a bit, seems to be the zero-equivalent value for the return type.
                 PopByte();
                 var retVal = ReadObject();
-                expr = new SymbolReference(null, null, null, "null"); // TODO: faulty obv, kind of illustrates the thing though.
+                var returnNothingStatement = new ReturnNothingStatement();
+                StatementLocations.Add(StartPositions.Pop(), returnNothingStatement);
+                return returnNothingStatement;
             }
             else if(CurrentIs(StandardByteCodes.Nothing))
             {
@@ -187,20 +188,20 @@ namespace ME3Script.Decompiling
             ushort afterScopeOffset;
             Expression conditional;
 
+            bool optCheck = true;
             if (isEditorFilter)
             {
 
                 afterScopeOffset = ReadUInt16();
-                conditional = new SymbolReference(null, null, null, "__IN_EDITOR");
+                conditional = new SymbolReference(null, "__IN_EDITOR", null, null);
             }
             else if (isOpt)
             {
                 var obj = ReadObject();
-                var optCheck = Convert.ToBoolean(ReadByte());
+                optCheck = Convert.ToBoolean(ReadByte());
                 afterScopeOffset = ReadUInt16();
 
-                string special = (optCheck ? "" : "!") + obj.ObjectName;
-                conditional = new SymbolReference(null, null, null, special);
+                conditional = new SymbolReference(null, obj.ObjectName, null, null);
             }
             else
             {
@@ -283,8 +284,20 @@ namespace ME3Script.Decompiling
                 CurrentScope.Pop();
             }
 
-            statement ??= new IfStatement(conditional, new CodeBody(scopeStatements, null, null),
-                                          null, null, elseStatements.Count != 0 ? new CodeBody(elseStatements, null, null) : null);
+            if (statement is null)
+            {
+                CodeBody thenBody = new CodeBody(scopeStatements);
+                CodeBody elseBody = new CodeBody(elseStatements);
+                if (!optCheck)
+                {
+                    (thenBody, elseBody) = (elseBody, thenBody);
+                }
+                statement = new IfStatement(conditional, thenBody,
+                                            null, null, elseBody)
+                {
+                    IsNullCheck = isOpt
+                };
+            }
             StatementLocations.Add(scopeStartOffset, statement);
             return statement;
         }
@@ -339,7 +352,7 @@ namespace ME3Script.Decompiling
             {
                 var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
                 iteratorFunc.AcceptVisitor(builder);
-                var arrayName = new SymbolReference(null, null, null, builder.GetCodeString());
+                var arrayName = new SymbolReference(null, builder.GetCodeString(), null, null);
                 var parameters = new List<Expression>() { dynArrVar, dynArrIndex };
                 iteratorFunc = new FunctionCall(arrayName, parameters, null, null);
             }
@@ -416,14 +429,14 @@ namespace ME3Script.Decompiling
             PopByte();
 
             var left = DecompileExpression();
-            if (!(left is SymbolReference))
+            if (left == null)
                 return null; //ERROR ?
 
             var right = DecompileExpression();
             if (right == null)
                 return null; //ERROR ?
 
-            var statement = new AssignStatement(left as SymbolReference, right, null, null);
+            var statement = new AssignStatement(left, right);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
@@ -432,7 +445,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var jumpOffs = ReadUInt16(); // discard jump destination
-            Statement statement = null;
+            Statement statement;
 
             if (ForEachScopes.Count != 0 && jumpOffs == ForEachScopes.Peek()) // A jump to the IteratorPop of a ForEach means break afaik.
                 statement = new BreakStatement(null, null);

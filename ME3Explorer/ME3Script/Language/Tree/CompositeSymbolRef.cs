@@ -12,12 +12,14 @@ namespace ME3Script.Language.Tree
     {
         public Expression InnerSymbol;
         public Expression OuterSymbol;
+        public bool IsClassContext;
 
-        public CompositeSymbolRef(Expression outer, Expression inner, SourcePosition start, SourcePosition end)
-            : base(inner, start, end)
+        public CompositeSymbolRef(Expression outer, Expression inner, bool isClassContext = false, SourcePosition start = null, SourcePosition end = null)
+            : base(inner, start: start, end: end)
         {
             InnerSymbol = inner;
             OuterSymbol = outer;
+            IsClassContext = isClassContext;
             Type = ASTNodeType.CompositeReference;
         }
 

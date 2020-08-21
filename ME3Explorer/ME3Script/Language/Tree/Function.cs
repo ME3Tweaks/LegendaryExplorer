@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer;
 using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
@@ -21,6 +22,12 @@ namespace ME3Script.Language.Tree
 
         public int NativeIndex;
 
+        public DelegateType VarType;
+
+        public bool IsNative => Flags.Has(FunctionFlags.Native);
+
+        public bool IsDefined => Flags.Has(FunctionFlags.Defined);
+
         public Function(string name, FunctionFlags flags, 
                         VariableType returntype, CodeBody body,
                         List<FunctionParameter> parameters = null,
@@ -33,6 +40,12 @@ namespace ME3Script.Language.Tree
             Flags = flags;
             Parameters = parameters ?? new List<FunctionParameter>();
             Locals = new List<VariableDeclaration>();
+            VarType = new DelegateType(this)
+            {
+                IsFunction = true,
+                Declaration = this
+            };
+            if (Body != null) Body.Outer = this;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

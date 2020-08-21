@@ -10,31 +10,17 @@ using ME3Explorer.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
-    public abstract class OperatorDeclaration : ASTNode, IContainsLocals
+    public abstract class OperatorDeclaration
     {
         public string OperatorKeyword;
-        public bool isDelimiter;
-        public FunctionFlags Flags;
         public int NativeIndex;
-        public CodeBody Body;
-        public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
 
-        protected OperatorDeclaration(ASTNodeType type, string keyword, 
-                                      bool delim, CodeBody body, VariableType returnType, FunctionFlags flags, SourcePosition start, SourcePosition end) 
-            : base(type, start, end)
+        protected OperatorDeclaration(string keyword, VariableType returnType, int nativeIndex)
         {
-            Flags = flags;
             OperatorKeyword = keyword;
-            isDelimiter = delim;
-            Body = body;
             ReturnType = returnType;
-            Locals = new List<VariableDeclaration>();
-        }
-
-        public override bool AcceptVisitor(IASTVisitor visitor)
-        {
-            throw new NotImplementedException();
+            NativeIndex = nativeIndex;
         }
 
         public bool IdenticalSignature(OperatorDeclaration other)
@@ -45,16 +31,7 @@ namespace ME3Script.Language.Tree
                 return false;
                 
             return this.OperatorKeyword == other.OperatorKeyword
-                && this.ReturnType.Name.ToLower() == other.ReturnType.Name.ToLower();
-        }
-        public override IEnumerable<ASTNode> ChildNodes
-        {
-            get
-            {
-                yield return ReturnType;
-                foreach (VariableDeclaration variableDeclaration in Locals) yield return variableDeclaration;
-                yield return Body;
-            }
+                && string.Equals(this.ReturnType?.Name, other.ReturnType.Name, StringComparison.Ordinal);
         }
     }
 }

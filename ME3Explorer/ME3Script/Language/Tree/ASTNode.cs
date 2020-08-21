@@ -16,6 +16,7 @@ namespace ME3Script.Language.Tree
         PreOpRef,
         PostOpRef,
         InOpRef,
+        NewOp,
 
         AssignStatement,
         IfStatement,
@@ -59,12 +60,16 @@ namespace ME3Script.Language.Tree
         StringRefLiteral,
         StructLiteral,
         DynamicArrayLiteral,
+        ObjectLiteral,
+        VectorLiteral,
+        RotatorLiteral,
+        NoneLiteral,
 
         ConditionalExpression,
         CastExpression,
 
         DefaultPropertiesBlock,
-        Subobject,
+        SubObject,
 
         INVALID
     }

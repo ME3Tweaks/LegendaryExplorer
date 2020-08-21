@@ -35,8 +35,8 @@
         "return",
         "case",
         "default",
-        "true",
-        "false",
+        "TRUE",
+        "FALSE",
         "operator",
         "preoperator",
         "postoperator",
@@ -48,6 +48,27 @@
         "byte",
         "biomask4",
         "Name",
+        "None",
+        "static",
+        "vect",
+        "rot",
+        "Self",
+        "Super",
+        "Global",
+        "Object",
+        "Length",
+        "Add",
+        "AddItem",
+        "Insert",
+        "InsertItem",
+        "Remove",
+        "RemoveItem",
+        "Find",
+        "Sort",
+        "Vector",
+        "Rotator",
+        "Interface",
+        "new"
     };
 #>
 namespace ME3Script.Utilities
@@ -57,7 +78,7 @@ namespace ME3Script.Utilities
 
 <#
     foreach (string keyword in keywords) { #>
-        public static string <#= keyword.ToUpper() #> = "<#= keyword #>";     
+        public const string <#= keyword.ToUpper() #> = "<#= keyword #>";     
 <# } #>
 	}
 }

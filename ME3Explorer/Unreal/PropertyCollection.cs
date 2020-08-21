@@ -215,7 +215,12 @@ namespace ME3Explorer.Unreal
                             prop = new FloatProperty(stream, nameRef);
                             break;
                         case PropertyType.ObjectProperty:
-                            prop = new ObjectProperty(stream, nameRef);
+                        case PropertyType.InterfaceProperty:
+                        case PropertyType.ComponentProperty:
+                            prop = new ObjectProperty(stream, nameRef)
+                            {
+                                internalPropType = type
+                            };
                             break;
                         case PropertyType.NameProperty:
                             prop = new NameProperty(stream, pcc, nameRef);
@@ -436,7 +441,9 @@ namespace ME3Explorer.Unreal
                 case PropertyType.IntProperty:
                     return new IntProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.ObjectProperty:
-                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos };
+                case PropertyType.InterfaceProperty:
+                case PropertyType.ComponentProperty:
+                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos, internalPropType = template.PropType};
                 case PropertyType.StringRefProperty:
                     return new StringRefProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.NameProperty:
@@ -958,6 +965,8 @@ namespace ME3Explorer.Unreal
         }
         public override PropertyType PropType => PropertyType.ObjectProperty;
 
+        public PropertyType internalPropType;
+
         int _value;
         public int Value
         {
@@ -987,7 +996,7 @@ namespace ME3Explorer.Unreal
         {
             if (!valueOnly)
             {
-                stream.WriteObjectProperty(pcc, Name, Value, StaticArrayIndex);
+                stream.WriteObjectProperty(pcc, Name, Value, StaticArrayIndex, internalPropType);
             }
             else
             {

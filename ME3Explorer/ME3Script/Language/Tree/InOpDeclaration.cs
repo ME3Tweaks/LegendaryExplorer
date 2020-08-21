@@ -15,35 +15,25 @@ namespace ME3Script.Language.Tree
         public FunctionParameter RightOperand;
         public int Precedence;
 
-        public InOpDeclaration(string keyword, int precedence,
-        bool delim, CodeBody body, VariableType returnType,
-        FunctionParameter leftOp, FunctionParameter rightOp,
-        FunctionFlags flags, SourcePosition start, SourcePosition end)
-            : base(ASTNodeType.InfixOperator, keyword, delim, body, returnType, flags, start, end)
+        //only used if NativeIndex is 0
+        public Function Implementer;
+
+        public InOpDeclaration(string keyword, int precedence, int nativeIndex,
+                               VariableType returnType,
+                               FunctionParameter leftOp, FunctionParameter rightOp)
+            : base(keyword, returnType, nativeIndex)
         {
             LeftOperand = leftOp;
             RightOperand = rightOp;
             Precedence = precedence;
         }
 
-        public override bool AcceptVisitor(IASTVisitor visitor)
-        {
-            return visitor.VisitNode(this);
-        }
-
         public bool IdenticalSignature(InOpDeclaration other)
         {
             return base.IdenticalSignature(other)
-                && this.LeftOperand.VarType.Name.ToLower() == other.LeftOperand.VarType.Name.ToLower()
-                && this.RightOperand.VarType.Name.ToLower() == other.RightOperand.VarType.Name.ToLower();
+                && string.Equals(this.LeftOperand.VarType.Name, other.LeftOperand.VarType.Name, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(this.RightOperand.VarType.Name, other.RightOperand.VarType.Name, StringComparison.OrdinalIgnoreCase);
         }
-        public override IEnumerable<ASTNode> ChildNodes
-        {
-            get
-            {
-                yield return LeftOperand;
-                yield return RightOperand;
-            }
-        }
+
     }
 }

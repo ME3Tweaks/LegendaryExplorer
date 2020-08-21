@@ -12,12 +12,15 @@ namespace ME3Script.Language.Tree
     {
         public string Name;
         public ASTNode Declaration;
-        public ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
+        public virtual ASTNodeType NodeType => Declaration?.Type ?? ASTNodeType.INVALID;
 
-        public VariableType(string name, SourcePosition start = null, SourcePosition end = null)
+        public EPropertyType PropertyType;
+
+        public VariableType(string name, SourcePosition start = null, SourcePosition end = null, EPropertyType propType = EPropertyType.None)
             : base(ASTNodeType.VariableType, start, end) 
         {
             Name = name;
+            PropertyType = propType;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

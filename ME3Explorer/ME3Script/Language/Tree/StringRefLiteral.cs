@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Analysis.Symbols;
 using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Tree;
 using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
     {
         public int Value;
 
-        public StringRefLiteral(int val, SourcePosition start, SourcePosition end)
+        public StringRefLiteral(int val, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.StringRefLiteral, start, end)
         {
             Value = val;
@@ -24,9 +24,6 @@ namespace ME3Script.Language.Tree
             return visitor.VisitNode(this);
         }
 
-        public override VariableType ResolveType()
-        {
-            return new VariableType("stringRef", null, null);
-        }
+        public override VariableType ResolveType() => SymbolTable.StringRefType;
     }
 }

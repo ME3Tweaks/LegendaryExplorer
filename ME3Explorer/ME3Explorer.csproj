@@ -321,6 +321,9 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
+    <Compile Include="ME3Script\Language\Tree\ClassType.cs" />
+    <Compile Include="ME3Script\Language\Tree\DefaultReference.cs" />
+    <Compile Include="ME3Script\Language\Tree\DelegateComparison.cs" />
     <Compile Include="ME3Script\Language\Tree\DelegateType.cs" />
     <Compile Include="ME3Script\Language\Tree\DynamicArrayType.cs" />
     <Compile Include="ME3Script\Language\Tree\AssignStatement.cs" />
@@ -339,6 +342,7 @@
     <Compile Include="ME3Script\Language\Tree\DefaultStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DoUntilLoop.cs" />
     <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
+    <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
     <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
     <Compile Include="ME3Script\Language\Tree\Expression.cs" />
     <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
@@ -354,12 +358,17 @@
     <Compile Include="ME3Script\Language\Tree\IntegerLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\IObjectType.cs" />
     <Compile Include="ME3Script\Language\Tree\NameLiteral.cs" />
+    <Compile Include="ME3Script\Language\Tree\NewOperator.cs" />
+    <Compile Include="ME3Script\Language\Tree\NoneLiteral.cs" />
+    <Compile Include="ME3Script\Language\Tree\ObjectLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\OperatorDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\PostOpDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\PostOpReference.cs" />
     <Compile Include="ME3Script\Language\Tree\PreOpDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\PreOpReference.cs" />
+    <Compile Include="ME3Script\Language\Tree\ReturnNothingStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\ReturnStatement.cs" />
+    <Compile Include="ME3Script\Language\Tree\RotatorLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\State.cs" />
     <Compile Include="ME3Script\Language\Tree\StateLabel.cs" />
     <Compile Include="ME3Script\Language\Tree\Statement.cs" />
@@ -367,6 +376,7 @@
     <Compile Include="ME3Script\Language\Tree\StringLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\StringRefLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\Struct.cs" />
+    <Compile Include="ME3Script\Language\Tree\StructComparison.cs" />
     <Compile Include="ME3Script\Language\Tree\StructLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\Subobject.cs" />
     <Compile Include="ME3Script\Language\Tree\SwitchStatement.cs" />
@@ -374,6 +384,7 @@
     <Compile Include="ME3Script\Language\Tree\VariableDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\VariableIdentifier.cs" />
     <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
+    <Compile Include="ME3Script\Language\Tree\VectorLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\WhileLoop.cs" />
     <Compile Include="ME3Script\Language\Util\IContainsLocals.cs" />
     <Compile Include="ME3Script\Language\Util\NodeUtils.cs" />
@@ -384,6 +395,7 @@
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NumberMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\SingleLineCommentMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
+    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringRefLiteralMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WhiteSpaceMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WordMatcher.cs" />
     <Compile Include="ME3Script\Lexing\Matching\TokenMatcherBase.cs" />
@@ -399,6 +411,7 @@
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">
       <DependentUpon>UnrealScriptIDE.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME3Script\Utilities\CastHelper.cs" />
     <Compile Include="ME3Script\Utilities\GlobalLists.cs" />
     <Compile Include="ME3Script\Utilities\Keywords.cs">
       <AutoGen>True</AutoGen>

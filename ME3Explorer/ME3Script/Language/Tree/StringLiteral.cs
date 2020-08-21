@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Script.Analysis.Symbols;
 
 namespace ME3Script.Language.Tree
 {
@@ -12,7 +13,7 @@ namespace ME3Script.Language.Tree
     {
         public string Value;
 
-        public StringLiteral(string val, SourcePosition start, SourcePosition end)
+        public StringLiteral(string val, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.StringLiteral, start, end)
         {
             Value = val;
@@ -23,9 +24,6 @@ namespace ME3Script.Language.Tree
             return visitor.VisitNode(this);
         }
 
-        public override VariableType ResolveType()
-        {
-            return new VariableType("string", null, null);
-        }
+        public override VariableType ResolveType() => SymbolTable.StringType;
     }
 }

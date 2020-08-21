@@ -12,7 +12,9 @@ namespace ME3Script.Language.Tree
     {
         public Function DefaultFunction;
 
-        public DelegateType(Function defaultFunction, SourcePosition start = null, SourcePosition end = null) : base(defaultFunction.Name, start, end)
+        public bool IsFunction;
+
+        public DelegateType(Function defaultFunction, SourcePosition start = null, SourcePosition end = null) : base(defaultFunction.Name, start, end, EPropertyType.Delegate)
         {
             DefaultFunction = defaultFunction;
         }

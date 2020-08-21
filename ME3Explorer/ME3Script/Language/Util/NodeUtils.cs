@@ -27,6 +27,15 @@ namespace ME3Script.Language.Util
 
         public static Class GetContainingClass(ASTNode node)
         {
+            if (node is Class cls)
+            {
+                return cls;
+            }
+
+            if (node is ClassType clsType)
+            {
+                return (Class)clsType.ClassLimiter;
+            }
             var outer = node.Outer;
             while (outer?.Outer != null && outer.Type != ASTNodeType.Class)
                 outer = outer.Outer;

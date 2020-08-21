@@ -27,7 +27,7 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            return (Function.Node as Function).ReturnType;
+            return ((Function)Function.Node).ReturnType;
         }
         public override IEnumerable<ASTNode> ChildNodes
         {
