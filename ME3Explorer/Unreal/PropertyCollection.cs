@@ -965,7 +965,7 @@ namespace ME3Explorer.Unreal
         }
         public override PropertyType PropType => PropertyType.ObjectProperty;
 
-        public PropertyType internalPropType;
+        public PropertyType internalPropType = PropertyType.ObjectProperty;
 
         int _value;
         public int Value
