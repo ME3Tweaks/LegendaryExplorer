@@ -113,12 +113,16 @@ namespace ME3Explorer.Packages
 
                 // This is stored as integer by cooker as it is flipped by size word in big endian
                 uint versionLicenseePacked = er.ReadUInt32();
-                if (versionLicenseePacked == 0x00020000 && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us files has
+                if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && er.Endian == Endian.Little && filePath != null) //can only load fully compressed packages from disk since we won't know what the .us files has
                 {
                     //block size - this is a fully compressed file. we must decompress it
                     //for some reason fully compressed files use a little endian package tag
                     var usfile = filePath + ".us";
                     if (File.Exists(usfile))
+                    {
+                        fullyCompressed = true;
+                    }
+                    else if (File.Exists(filePath + ".UNCOMPRESSED_SIZE"))
                     {
                         fullyCompressed = true;
                     }
@@ -139,7 +143,8 @@ namespace ME3Explorer.Packages
                     version == MEPackage.ME2PS3UnrealVersion && licenseVersion == MEPackage.ME2PS3LicenseeVersion ||
                     version == MEPackage.ME2DemoUnrealVersion && licenseVersion == MEPackage.ME2LicenseeVersion ||
                     version == MEPackage.ME1UnrealVersion && licenseVersion == MEPackage.ME1LicenseeVersion ||
-                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion)
+                    version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion ||
+                    version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
                 {
                     pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
                     ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));

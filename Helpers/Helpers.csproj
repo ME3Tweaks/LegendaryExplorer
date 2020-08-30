@@ -204,6 +204,7 @@
     <Compile Include="ImageBMP.cs" />
     <Compile Include="ImageDDS.cs" />
     <Compile Include="ImageTGA.cs" />
+    <Compile Include="LZXHelper.cs" />
     <Compile Include="LZO2Helper.cs" />
     <Compile Include="SevenZipHelper.cs" />
     <Compile Include="StreamIO.cs" />

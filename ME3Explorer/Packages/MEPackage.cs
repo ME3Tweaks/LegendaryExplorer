@@ -62,6 +62,8 @@ namespace ME3Explorer.Packages
     {
         public const ushort ME1UnrealVersion = 491;
         public const ushort ME1LicenseeVersion = 1008;
+        public const ushort ME1XboxUnrealVersion = 391;
+        public const ushort ME1XboxLicenseeVersion = 92;
         public const ushort ME1PS3UnrealVersion = 684; //same as ME3 ;)
         public const ushort ME1PS3LicenseeVersion = 153;
 
@@ -190,29 +192,42 @@ namespace ME3Explorer.Packages
             var versionLicenseePacked = packageReader.ReadUInt32();
 
             int uncompressedSizeForFullCompressedPackage = 0;
-            if (versionLicenseePacked == 0x00020000 && Endian == Endian.Little)
+            if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && Endian == Endian.Little)
             {
                 //block size - this is a fully compressed file. we must decompress it
                 // these files are little endian package tag for some reason
-                var usfile = filePath + ".us";
-                if (File.Exists(usfile))
-                {
-                    //packageReader.Position = 0xC;
-                    //var uncompSize = packageReader.ReadInt32();
-                    ////calculate number of chunks
-                    //int chunkCoumt = (uncompSize % 0x00020000 == 0)
-                    //    ?
-                    //    uncompSize / 0x00020000
-                    //    :
-                    //    uncompSize / 0x00020000 + 1; //round up
+                //var usfile = filePath + ".us";
+                //var ucsfile = filePath + ".UNCOMPRESSED_SIZE";
+                //if (File.Exists(usfile) || File.Exists(ucsfile))
+                //{
+                //packageReader.Position = 0xC;
+                //var uncompSize = packageReader.ReadInt32();
+                ////calculate number of chunks
+                //int chunkCoumt = (uncompSize % 0x00020000 == 0)
+                //    ?
+                //    uncompSize / 0x00020000
+                //    :
+                //    uncompSize / 0x00020000 + 1; //round up
 
-                    //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
-                    fs = new MemoryStream(CompressionHelper.QuickBMSDecompress(filePath, "XboxLZX_le.bms", false));
-                    packageReader = EndianReader.SetupForPackageReading(fs);
-                    packageReader.SkipInt32(); //skip magic as we have already read it
-                    Endian = packageReader.Endian;
-                    versionLicenseePacked = packageReader.ReadUInt32();
+                //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
+                if (versionLicenseePacked == 0x20000)
+                {
+                    //Xbox? LZX
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZX);
                 }
+                else if (versionLicenseePacked == 0x10000)
+                {
+                    //PS3? LZMA
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
+                } else
+                {
+                    // ??????
+                }
+                packageReader = EndianReader.SetupForPackageReading(fs);
+                packageReader.SkipInt32(); //skip magic as we have already read it
+                Endian = packageReader.Endian;
+                versionLicenseePacked = packageReader.ReadUInt32();
+                //}
             }
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
@@ -222,6 +237,10 @@ namespace ME3Explorer.Packages
                 case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
                     Game = MEGame.ME1;
                     Platform = GamePlatform.PC;
+                    break;
+                case ME1XboxUnrealVersion when licenseeVersion == ME1XboxLicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.Xenon;
                     break;
                 case ME1PS3UnrealVersion when licenseeVersion == ME1PS3LicenseeVersion:
                     Game = MEGame.ME1;
@@ -288,14 +307,18 @@ namespace ME3Explorer.Packages
             ImportOffset = packageReader.ReadInt32();
             //}
 
-            DependencyTableOffset = packageReader.ReadInt32();
+            if (Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
+            {
+                // Seems this doesn't exist on ME1 Xbox
+                DependencyTableOffset = packageReader.ReadInt32();
+            }
 
             if (Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 ImportExportGuidsOffset = packageReader.ReadInt32();
-                packageReader.SkipInt32(); //ImportGuidsCount always 0
-                packageReader.SkipInt32(); //ExportGuidsCount always 0
-                packageReader.SkipInt32(); //ThumbnailTableOffset always 0
+                packageReader.ReadInt32(); //ImportGuidsCount always 0
+                packageReader.ReadInt32(); //ExportGuidsCount always 0
+                packageReader.ReadInt32(); //ThumbnailTableOffset always 0
             }
 
             PackageGuid = packageReader.ReadGuid();
@@ -367,7 +390,7 @@ namespace ME3Explorer.Packages
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
             {
-                inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition);
+                inStream = CompressionHelper.DecompressUDK(packageReader, compressionFlagPosition, game: Game, platform: Platform);
             }
 
 

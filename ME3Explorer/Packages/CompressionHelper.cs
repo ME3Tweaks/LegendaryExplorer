@@ -9,6 +9,8 @@ using LZO2Helper;
 using SevenZipHelper;
 using StreamHelpers;
 using ZlibHelper;
+using LZXHelper;
+using static ME3Explorer.Packages.MEPackage;
 
 namespace ME3Explorer.Packages
 {
@@ -422,7 +424,76 @@ namespace ME3Explorer.Packages
             //output.WriteUInt32(packageFlags & ~0x02000000u, ); //Mark file as decompressed.
             return output;
         }
-        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0)
+
+        public static MemoryStream DecompressFullyCompressedPackage(EndianReader raw, UnrealPackageFile.CompressionType compressionType)
+        {
+            raw.Position = 0;
+            var magic = raw.ReadInt32();
+            var blockSize = raw.ReadInt32();
+            var compressedSize = raw.ReadInt32();
+            var decompressedSize = raw.ReadInt32();
+
+            var blockCount = 0;
+            if (decompressedSize < blockSize)
+            {
+                blockCount = 1;
+            }
+            else
+            {
+                // Calculate the number of blocks
+                blockCount = decompressedSize / blockSize;
+                if (decompressedSize % blockSize != 0) blockCount++; //Add one to decompress the final data
+            }
+
+
+            MemoryStream outStream = new MemoryStream();
+            List<(int blockCompressedSize, int blockDecompressedSize)> blockTable = new List<(int blockCompressedSize, int blockDecompressedSize)>();
+
+            // Read Block Table
+            int i = 0;
+            while (i < blockCount)
+            {
+                blockTable.Add((raw.ReadInt32(), raw.ReadInt32()));
+                i++;
+            }
+
+            foreach (var btInfo in blockTable)
+            {
+                // Decompress
+                Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
+                var datain = raw.ReadToBuffer(btInfo.blockCompressedSize);
+                var dataout = new byte[btInfo.blockDecompressedSize];
+                switch (compressionType)
+                {
+                    case UnrealPackageFile.CompressionType.LZO:
+                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            throw new Exception("LZO decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.Zlib:
+                        if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            throw new Exception("Zlib decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.LZMA:
+                        dataout = LZMA.Decompress(datain, (uint)btInfo.blockDecompressedSize);
+                        if (dataout.Length != btInfo.blockDecompressedSize)
+                            throw new Exception("LZMA decompression failed!");
+                        break;
+                    case UnrealPackageFile.CompressionType.LZX:
+                        if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
+                            throw new Exception("LZX decompression failed!");
+                        break;
+                    default:
+                        throw new Exception("Unknown compression type for this package.");
+                }
+
+                outStream.WriteFromBuffer(dataout);
+            }
+
+            outStream.Position = 0;
+            return outStream;
+        }
+
+        public static MemoryStream DecompressUDK(EndianReader raw, long compressionInfoOffset, UnrealPackageFile.CompressionType compressionType = UnrealPackageFile.CompressionType.None, int NumChunks = 0, MEGame game = MEGame.Unknown, GamePlatform platform = GamePlatform.PC)
         {
             raw.BaseStream.JumpTo(compressionInfoOffset);
             if (compressionType == UnrealPackageFile.CompressionType.None)
@@ -445,8 +516,6 @@ namespace ME3Explorer.Packages
                 };
                 c.Compressed = new byte[c.compressedSize];
                 c.Uncompressed = new byte[c.uncompressedSize];
-                //DebugOutput.PrintLn("Chunk " + i + ", compressed size = " + c.compressedSize + ", uncompressed size = " + c.uncompressedSize);
-                //DebugOutput.PrintLn("Compressed offset = " + c.compressedOffset + ", uncompressed offset = " + c.uncompressedOffset);
                 Chunks.Add(c);
             }
 
@@ -456,33 +525,36 @@ namespace ME3Explorer.Packages
             for (int i = 0; i < Chunks.Count; i++)
             {
                 Chunk c = Chunks[i];
+                Debug.WriteLine($"Compressed offset at {c.compressedOffset:X8}");
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 raw.Read(c.Compressed, 0, c.compressedSize);
 
                 ChunkHeader h = new ChunkHeader
                 {
                     magic = EndianReader.ToInt32(c.Compressed, 0, raw.Endian),
-                    blocksize = EndianReader.ToInt32(c.Compressed, 4, raw.Endian),
+                    // must force block size for ME1 xbox cause in place of block size it seems to list package tag again which breaks loads of things
+                    blocksize = (platform == GamePlatform.Xenon && game == MEGame.ME1) ? 0x20000 : EndianReader.ToInt32(c.Compressed, 4, raw.Endian),
                     compressedsize = EndianReader.ToInt32(c.Compressed, 8, raw.Endian),
                     uncompressedsize = EndianReader.ToInt32(c.Compressed, 12, raw.Endian)
                 };
 
-                if (compressionType == UnrealPackageFile.CompressionType.LZX)
-                {
-                    //we use QuickBMS for this since we don't have a library for this right now
-                    //it uses xmemdecompress.lib. We could make a static wrapper for this
-                    //as the functions are exported
-                    var nextChunkPos = raw.Position;
-                    //Debug.WriteLine($"Extract 0x{datasize:X8} bytes starting from 0x{chunkTableStart:X8}");
-                    var bmsDatapath = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.bin";
-                    File.WriteAllBytes(bmsDatapath, c.Compressed);
-                    c.Uncompressed = QuickBMSDecompress(bmsDatapath, "XboxLZX.bms", true);
-                    if (c.Uncompressed.Length != c.uncompressedSize)
-                        Debug.Write("WRONG LENGTH DECOMPRESSED");
-                    c.header = h;
-                    Chunks[i] = c;
-                    continue;
-                }
+                //if (compressionType == UnrealPackageFile.CompressionType.LZX)
+                //{
+                //    //we use QuickBMS for this since we don't have a library for this right now
+                //    //it uses xmemdecompress.lib. We could make a static wrapper for this
+                //    //as the functions are exported
+                //    LZX.Decompress(c.Compressed, c.Compressed.Length, outBuf)
+                //    var nextChunkPos = raw.Position;
+                //    //Debug.WriteLine($"Extract 0x{datasize:X8} bytes starting from 0x{chunkTableStart:X8}");
+                //    var bmsDatapath = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.bin";
+                //    File.WriteAllBytes(bmsDatapath, c.Compressed);
+                //    c.Uncompressed = QuickBMSDecompress(bmsDatapath, "XboxLZX.bms", true);
+                //    if (c.Uncompressed.Length != c.uncompressedSize)
+                //        Debug.Write("WRONG LENGTH DECOMPRESSED");
+                //    c.header = h;
+                //    Chunks[i] = c;
+                //    continue;
+                //}
 
 
 
@@ -490,11 +562,8 @@ namespace ME3Explorer.Packages
                     throw new FormatException("Chunk magic number incorrect");
                 //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
                 int pos = 16;
-                int blockCount = (h.uncompressedsize % h.blocksize == 0)
-                    ?
-                    h.uncompressedsize / h.blocksize
-                    :
-                    h.uncompressedsize / h.blocksize + 1;
+                int blockCount = h.uncompressedsize / h.blocksize;
+                if (h.uncompressedsize % h.blocksize != 0) blockCount++;
                 var BlockList = new List<Block>();
                 //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
                 for (int j = 0; j < blockCount; j++)
@@ -516,16 +585,16 @@ namespace ME3Explorer.Packages
                     //Debug.WriteLine("Decompressing block " + blocknum);
                     var datain = new byte[b.compressedsize];
                     var dataout = new byte[b.uncompressedsize];
-                    for (int j = 0; j < b.compressedsize; j++)
-                        datain[j] = c.Compressed[pos + j];
+                    Buffer.BlockCopy(c.Compressed, pos, datain, 0, b.compressedsize);
+                    //for (int j = 0; j < b.compressedsize; j++)
+                    //    datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
                             {
-                                if (
-                                        LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                                     throw new Exception("LZO decompression failed!");
                                 break;
                             }
@@ -539,6 +608,10 @@ namespace ME3Explorer.Packages
                             dataout = LZMA.Decompress(datain, (uint)b.uncompressedsize);
                             if (dataout.Length != b.uncompressedsize)
                                 throw new Exception("LZMA decompression failed!");
+                            break;
+                        case UnrealPackageFile.CompressionType.LZX:
+                            if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
+                                throw new Exception("LZX decompression failed!");
                             break;
                         default:
                             throw new Exception("Unknown compression type for this package.");
@@ -587,15 +660,15 @@ namespace ME3Explorer.Packages
             proc.WaitForExit();
             var outputFilename = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(bmsDataPath) + ".decompressed");
             //if (isTemp)
-                //File.Delete(bmsDataPath); //intermediate
+            //File.Delete(bmsDataPath); //intermediate
 
-                if (File.Exists(outputFilename))
-                {
-                    var decompressed = File.ReadAllBytes(outputFilename);
-                    if (isTemp)
-                        File.Delete(outputFilename);
-                    return decompressed;
-                }
+            if (File.Exists(outputFilename))
+            {
+                var decompressed = File.ReadAllBytes(outputFilename);
+                if (isTemp)
+                    File.Delete(outputFilename);
+                return decompressed;
+            }
             Debug.WriteLine("Null QuickBMS decompression!");
             return null;
         }
