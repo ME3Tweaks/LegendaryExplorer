@@ -2,9 +2,9 @@
 using System.IO;
 using System.Reflection;
 using System.Security;
-using Gammtek.Conduit.Windows;
+using ME3ExplorerCore.Gammtek.Windows;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	[SuppressUnmanagedCodeSecurity]
 	public static class ConsoleManager

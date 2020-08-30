@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using ME3Explorer;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -198,7 +197,9 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                if (ME3Explorer.Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject) return ArrayType.Object;
+                // Todo: Make this work with me3explorer app setting somehow
+                // Maybe CoreLib option?
+                //if (ME3Explorer.Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject) return ArrayType.Object;
                 return ArrayType.Int;
             }
         }

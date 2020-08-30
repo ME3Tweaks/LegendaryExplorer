@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Provides a set of extension methods dedicated to strings.

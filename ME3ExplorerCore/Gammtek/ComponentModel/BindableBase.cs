@@ -2,10 +2,9 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using Gammtek.Conduit.Extensions.Linq;
+using ME3ExplorerCore.Gammtek.Extensions.Linq;
 
-namespace Gammtek.Conduit.ComponentModel
+namespace ME3ExplorerCore.Gammtek.ComponentModel
 {
 	/// <summary>
 	///     Implementation of <see cref="INotifyPropertyChanged" /> to simplify models.

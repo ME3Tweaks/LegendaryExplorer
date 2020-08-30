@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace ME3ExplorerCore.Unreal
 {

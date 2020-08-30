@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace ME3ExplorerCore.Unreal
 {
+    // Todo: Convert to EndianReader
     public class TOCBinFile
     {
         MemoryStream Memory;
@@ -35,8 +36,7 @@ namespace ME3ExplorerCore.Unreal
             uint magic = (uint)ReadInt(Memory);
             if (magic != 0x3AB70C13)
             {
-                MessageBox.Show("Not a SFAR File.");
-                return;
+                throw new Exception("Not a TOC file, bad magic header");
             }
             Memory.Seek(8, 0);
             int count = ReadInt(Memory);
@@ -47,7 +47,7 @@ namespace ME3ExplorerCore.Unreal
             do
             {
                 Entry e = new Entry();
-                e.offset = pos;                
+                e.offset = pos;
                 Memory.Seek(pos, 0);
                 blocksize = ReadInt16(Memory);
                 Memory.Seek(pos + 0x4, 0);
@@ -94,7 +94,7 @@ namespace ME3ExplorerCore.Unreal
 
         public MemoryStream Save()
         {
-            
+
             foreach (Entry e in Entries)
             {
                 Memory.Seek(e.offset + 4, 0);

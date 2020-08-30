@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	/// <summary>Mutable byte implementation class</summary>
 	/// <remarks>

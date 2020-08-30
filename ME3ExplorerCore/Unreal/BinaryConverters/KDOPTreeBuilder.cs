@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.SharpDX;
+using System;
 using System.Linq;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters

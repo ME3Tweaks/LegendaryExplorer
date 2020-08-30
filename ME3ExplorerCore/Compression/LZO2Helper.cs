@@ -31,7 +31,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LZO2Helper
+namespace ME3ExplorerCore.Compression
 {
     static public class LZO2
     {

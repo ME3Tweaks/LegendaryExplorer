@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Represents an absolute path to a file on file system.

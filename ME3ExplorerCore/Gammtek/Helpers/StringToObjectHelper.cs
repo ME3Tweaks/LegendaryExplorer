@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using Gammtek.Conduit.Extensions.Reflection;
+using ME3ExplorerCore.Gammtek.Extensions.Reflection;
 
-namespace Gammtek.Conduit.Helpers
+namespace ME3ExplorerCore.Gammtek.Helpers
 {
 	/// <summary>
 	///     String to object helper class that converts a string to the right object if possible.

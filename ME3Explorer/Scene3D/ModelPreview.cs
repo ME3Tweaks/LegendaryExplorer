@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Unreal.Classes;
 using SharpDX;
 using SharpDX.Direct3D11;
 using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using static ME3Explorer.TextureViewerExportLoader;
 using static ME3Explorer.Scene3D.ModelPreview;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
+using ME3Explorer.Unreal.Classes;
 
 
 // MODEL RENDERING OVERVIEW:

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.Classes
@@ -51,7 +52,7 @@ namespace ME3ExplorerCore.Unreal.Classes
             Deserialize(clippingSize);
         }
 
-        internal bool HasFlag(string name)
+        public bool HasFlag(string name)
         {
             return flags.HasFlag(name);
         }

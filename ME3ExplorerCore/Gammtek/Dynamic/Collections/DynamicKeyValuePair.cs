@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 
-namespace Gammtek.Conduit.Dynamic.Collections
+namespace ME3ExplorerCore.Gammtek.Dynamic.Collections
 {
 	internal sealed class DynamicKeyValuePair<TKey, TValue> : DynamicObject
 	{

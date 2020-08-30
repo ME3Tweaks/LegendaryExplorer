@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Gammtek.Conduit.Helpers;
+using ME3ExplorerCore.Gammtek.Helpers;
 
 #pragma warning disable 1591
 
-namespace Gammtek.Conduit.Extensions.Reflection
+namespace ME3ExplorerCore.Gammtek.Extensions.Reflection
 {
     /// <summary>
     ///     Reflection extension class.

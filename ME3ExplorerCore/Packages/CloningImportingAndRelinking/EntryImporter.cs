@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.IO;
-using ME3Explorer;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using StreamHelpers;
 
 namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -53,8 +53,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="newEntry"></param>
         /// <param name="relinkMap"></param>
         /// <returns></returns>
-        public static List<ListDialog.EntryItem> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
-                                                                        out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null)
+        public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink,
+                                                                        out IEntry newEntry, Dictionary<IEntry, IEntry> relinkMap = null
+                                                                        , Action<string> errorOccuredCallback = null)
         {
             relinkMap ??= new Dictionary<IEntry, IEntry>();
             IMEPackage sourcePcc = sourceEntry.FileRef;
@@ -66,7 +67,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry entry)
                 {
                     relinkMap.Add(entry, targetLinkEntry);
-                    ReplaceExportDataWithAnother(entry, targetLinkEntry as ExportEntry);
+                    ReplaceExportDataWithAnother(entry, targetLinkEntry as ExportEntry, errorOccuredCallback);
                 }
             }
 
@@ -80,7 +81,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export
-                    newEntry = ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap);
+                    newEntry = ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
                 }
                 else
                 {
@@ -99,10 +100,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 importChildrenOf(sourceEntry, newEntry);
             }
 
-            List<ListDialog.EntryItem> relinkResults = null;
+            List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
+                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies, errorOccuredCallback);
             }
 
             return relinkResults;
@@ -131,7 +132,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry entry;
                     if (node is ExportEntry exportNode)
                     {
-                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap);
+                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
                     }
                     else
                     {
@@ -155,7 +156,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, IDictionary<IEntry, IEntry> objectMapping = null)
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
             byte[] prePropBinary;
             if (sourceExport.HasStack)
@@ -198,12 +199,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
                 }
             }
-            catch (Exception exception) when (!App.IsDebug)
+            catch (Exception exception) when (!CoreLib.IsDebug)
             {
                 //restore namelist in event of failure.
                 destPackage.restoreNames(names);
-                MessageBox.Show($"Error occured while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
-                throw;
+                errorOccuredCallback?.Invoke($"Error occurred while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
+                throw; //should we throw?
             }
 
             //takes care of slight header differences between ME1/2 and ME3
@@ -290,7 +291,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return newExport;
         }
 
-        public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport)
+        public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, Action<string> errorOccuredCallback = null)
         {
 
             EndianReader res = new EndianReader(new MemoryStream()) { Endian = targetExport.FileRef.Endian };
@@ -323,7 +324,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //restore namelist in event of failure.
                 targetExport.FileRef.restoreNames(names);
-                MessageBox.Show($"Error occured while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
+                errorOccuredCallback?.Invoke($"Error occurred while replacing data in {incomingExport.ObjectName.Instanced} : {exception.Message}");
                 return false;
             }
             targetExport.Data = res.ToArray();
@@ -433,7 +434,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="destinationPCC">PCC to add imports to</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<ListDialog.EntryItem> doubleClickCallback = null)
+        public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullName, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null, Action<EntryStringPair> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
             if (string.IsNullOrEmpty(importFullName))
@@ -510,6 +511,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             throw new Exception($"Unable to add {importFullName} to file! Could not find it!");
         }
 
+#if ME3EXPLORERAPP
         public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className)
         {
             //check to see class is already in file
@@ -617,6 +619,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 return null;
             }
         }
+
+#endif
 
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
         private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "BIOC_Base.u", "BIOC_BaseDLC_Vegas.u", "BIOC_BaseDLC_UNC.u" };

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Stateless static class which exposes methods used to help format strings.

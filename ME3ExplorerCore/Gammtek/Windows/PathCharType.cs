@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit.Windows
+namespace ME3ExplorerCore.Gammtek.Windows
 {
 	[Flags]
 	public enum PathCharType

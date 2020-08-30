@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Gammtek.Conduit.Extensions.Reflection
+namespace ME3ExplorerCore.Gammtek.Extensions.Reflection
 {
 	public static class MemberInfoExtensions
 	{

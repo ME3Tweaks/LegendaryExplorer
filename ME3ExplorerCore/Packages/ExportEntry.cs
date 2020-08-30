@@ -1,20 +1,21 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.IO;
-using ME3Explorer;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using StreamHelpers;
+using PropertyChanged;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3ExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
 
-    public class ExportEntry : NotifyPropertyChangedBase, IEntry
+    public class ExportEntry : INotifyPropertyChanged, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
 
@@ -79,7 +80,7 @@ namespace ME3ExplorerCore.Packages
                         //Debug.WriteLine("GenObjs count: " + generationsNetObjectsCount);
 
                         stream.Seek(16, SeekOrigin.Current); // skip guid size
-                        stream.Seek( generationsNetObjectsCount * 4, SeekOrigin.Current);
+                        stream.Seek(generationsNetObjectsCount * 4, SeekOrigin.Current);
                         long end = stream.Position;
                         stream.Seek(start, SeekOrigin.Begin);
                         var len = (end - start);
@@ -518,7 +519,7 @@ namespace ME3ExplorerCore.Packages
                 dataChanged = value;
                 //    if (value)
                 //    {
-                OnPropertyChanged();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 //    }
             }
         }
@@ -531,15 +532,9 @@ namespace ME3ExplorerCore.Packages
 
             set
             {
-                //This cannot be optimized as we cannot subscribe to array chagne events
-                //if (headerChanged != value)
-                //{
                 headerChanged = value;
                 EntryHasPendingChanges |= value;
-                //    if (value)
-                //    {
-                OnPropertyChanged();
-                //    }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
 
@@ -553,7 +548,8 @@ namespace ME3ExplorerCore.Packages
                 if (value != _entryHasPendingChanges)
                 {
                     _entryHasPendingChanges = value;
-                    OnPropertyChanged();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+
                     EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -663,7 +659,7 @@ namespace ME3ExplorerCore.Packages
                     var data = Data;
                     data.OverwriteRange(GetPropertyStart() - 4, BitConverter.GetBytes(value));
                     Data = data;
-                    OnPropertyChanged();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
             }
         }
@@ -728,5 +724,6 @@ namespace ME3ExplorerCore.Packages
         }
 
         IEntry IEntry.Clone() => Clone();
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -8,7 +8,7 @@
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
 
-namespace Gammtek.Conduit
+namespace ME3ExplorerCore.Gammtek
 {
 	/// <summary>
 	///     Indicates that the value of the marked element could be <c>null</c> sometimes,

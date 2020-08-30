@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Color = System.Windows.Media.Color;
 
 namespace ME3ExplorerCore.Unreal
 {

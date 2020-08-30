@@ -544,7 +544,7 @@ namespace ME3Explorer.PackageDumper
                         for (int x = 0; x < pcc.Imports.Count; x++)
                         {
                             ImportEntry imp = pcc.Imports[x];
-                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
+                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
                         }
                         stringoutput.WriteLine("--End of Imports");
                         //}

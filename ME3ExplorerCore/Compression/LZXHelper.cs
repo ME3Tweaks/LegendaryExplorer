@@ -24,10 +24,9 @@
  * https://github.com/gildor2/UEViewer
  */
 
-using System;
 using System.Runtime.InteropServices;
 
-namespace LZXHelper
+namespace ME3ExplorerCore.Compression
 {
     public static class LZX
     {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.IO;
-using ME3Explorer;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -664,7 +664,7 @@ namespace ME3ExplorerCore.Unreal
                         }
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            // Todo: Somehow make this work in a lib
+                            // Todo: Somehow make this work in a lib. Probably should make it embedded
                             filepath = App.CustomResourceFilePath(MEGame.ME3);
                         }
                         if (File.Exists(filepath))

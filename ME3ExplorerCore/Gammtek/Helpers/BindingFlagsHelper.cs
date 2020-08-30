@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 
-namespace Gammtek.Conduit.Helpers
+namespace ME3ExplorerCore.Gammtek.Helpers
 {
 	/// <summary>
 	///     The binding flags helper.

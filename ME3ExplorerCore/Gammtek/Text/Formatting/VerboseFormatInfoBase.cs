@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Base class for all verbose format providers. Implements basic functionality and defines mandatory members

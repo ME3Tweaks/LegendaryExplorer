@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gammtek.Conduit.Extensions.Collections.Generic
+namespace ME3ExplorerCore.Gammtek.Extensions.Collections.Generic
 {
 	public static class DictionaryExtensions
 	{

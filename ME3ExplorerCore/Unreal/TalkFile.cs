@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3ExplorerCore.Gammtek.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -64,7 +65,7 @@ namespace ME3ExplorerCore.Unreal
         }
 
         TLKHeader Header;
-        public List<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef> StringRefs;
+        public List<ME1.Unreal.Classes.TalkFile.TLKStringRef> StringRefs;
         public string name;
         public string path;
         List<HuffmanNode> CharacterTree;
@@ -150,10 +151,10 @@ namespace ME3ExplorerCore.Unreal
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef>();
+            StringRefs = new List<ME1.Unreal.Classes.TalkFile.TLKStringRef>();
             for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
-                ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef sref = new ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef(r, false);
+                ME1.Unreal.Classes.TalkFile.TLKStringRef sref = new ME1.Unreal.Classes.TalkFile.TLKStringRef(r, false);
                 sref.Index = i;
                 if (sref.BitOffset >= 0)
                 {
@@ -221,7 +222,7 @@ namespace ME3ExplorerCore.Unreal
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", App.GetVersion());
+            xr.WriteAttributeString("TLKToolVersion", CoreLib.GetVersion());
 
             xr.WriteComment("Male entries section begin");
 
@@ -321,7 +322,7 @@ namespace ME3ExplorerCore.Unreal
         }
 
         /* for sorting */
-        private static int CompareTlkStringRef(ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef strRef1, ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef strRef2)
+        private static int CompareTlkStringRef(ME1.Unreal.Classes.TalkFile.TLKStringRef strRef1, ME1.Unreal.Classes.TalkFile.TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;

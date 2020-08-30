@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
-namespace ME3Explorer
+namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
     public static class Relinker
     {
         /// <summary>
         /// Attempts to relink unreal property data and object pointers in binary when cross porting an export
         /// </summary>
-        public static List<ListDialog.EntryItem> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false)
+        public static List<EntryStringPair> RelinkAll(IDictionary<IEntry, IEntry> crossPccObjectMap, bool importExportDependencies = false)
         {
-            var relinkReport = new List<ListDialog.EntryItem>();
+            var relinkReport = new List<EntryStringPair>();
             //relink each modified export
 
             //We must convert this to a list, as this list will be updated as imports are cross mapped during relinking.
@@ -44,9 +43,9 @@ namespace ME3Explorer
             return relinkReport;
         }
 
-        public static List<ListDialog.EntryItem> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, bool importExportDependencies = false)
+        public static List<EntryStringPair> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<ListDialog.EntryItem>();
+            var relinkFailedReport = new List<EntryStringPair>();
             IMEPackage sourcePcc = sourceExport.FileRef;
             //Relink stack
             if (relinkingExport.HasStack)
@@ -90,7 +89,7 @@ namespace ME3Explorer
             {
                 if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
                 {
-                    relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
+                    relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
                     return relinkFailedReport;
                 }
 
@@ -164,7 +163,7 @@ namespace ME3Explorer
                         default:
                             if (binarydata.Any(b => b != 0))
                             {
-                                relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
+                                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
                                                                                                  $"This binary may contain items that need to be relinked. Come to the Discord server " +
                                                                                                  $"(click ME3Tweaks logo in main window for invite) and ask devs to parse this class."));
                             }
@@ -173,19 +172,19 @@ namespace ME3Explorer
                     }
                 }
             }
-            catch (Exception e) when (!App.IsDebug)
+            catch (Exception e) when (!CoreLib.IsDebug)
             {
-                relinkFailedReport.Add(new ListDialog.EntryItem(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
+                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
             return relinkFailedReport;
         }
 
-        private static List<ListDialog.EntryItem> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
+        private static List<EntryStringPair> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
                                                               OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix,
                                                               bool importExportDependencies = false)
         {
-            var relinkResults = new List<ListDialog.EntryItem>();
+            var relinkResults = new List<EntryStringPair>();
             foreach (Property prop in transplantProps)
             {
                 //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
@@ -240,7 +239,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private static ListDialog.EntryItem relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
+        private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
                                            OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false)
         {
             if (uIndex == 0)
@@ -302,16 +301,16 @@ namespace ME3Explorer
                         if (linkFailedDueToError != null)
                         {
                             Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).FullPath}");
-                            return new ListDialog.EntryItem(relinkingExport, $"Relink failed for {prefix}{propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}");
+                            return new EntryStringPair(relinkingExport, $"Relink failed for {prefix}{propertyName} {uIndex} in export {path}({relinkingExport.UIndex}): {linkFailedDueToError}");
                         }
 
                         if (destinationPcc.GetEntry(uIndex) != null)
                         {
                             Debug.WriteLine($"Relink failed: CrossImport porting failed for {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} ({uIndex}): {importingPCC.GetEntry(origvalue).FullPath}");
-                            return new ListDialog.EntryItem(relinkingExport, $"Relink failed: CrossImport porting failed for {prefix}{propertyName} {uIndex} {destinationPcc.GetEntry(uIndex).FullPath} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
+                            return new EntryStringPair(relinkingExport, $"Relink failed: CrossImport porting failed for {prefix}{propertyName} {uIndex} {destinationPcc.GetEntry(uIndex).FullPath} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
                         }
 
-                        return new ListDialog.EntryItem(relinkingExport, $"Relink failed: New export does not exist - this is probably a bug in cross import code for {prefix}{propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
+                        return new EntryStringPair(relinkingExport, $"Relink failed: New export does not exist - this is probably a bug in cross import code for {prefix}{propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
                     }
                 }
             }
@@ -356,7 +355,7 @@ namespace ME3Explorer
                 {
                     string path = importingPCC.GetEntry(uIndex)?.FullPath ?? $"Entry not found: {uIndex}";
                     Debug.WriteLine($"Relink failed in {relinkingExport.ObjectName.Instanced} {relinkingExport.UIndex}: {propertyName} {uIndex} {path}");
-                    return new ListDialog.EntryItem(relinkingExport, $"Relink failed: {prefix}{propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
+                    return new EntryStringPair(relinkingExport, $"Relink failed: {prefix}{propertyName} {uIndex} in export {relinkingExport.FullPath}({relinkingExport.UIndex})");
                 }
             }
 
@@ -364,10 +363,10 @@ namespace ME3Explorer
         }
 
 
-        private static List<ListDialog.EntryItem> RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
+        private static List<EntryStringPair> RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
                                             OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<ListDialog.EntryItem>();
+            var relinkFailedReport = new List<EntryStringPair>();
             Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
 
             int uIndex = entry.UIndex;
@@ -385,10 +384,10 @@ namespace ME3Explorer
             return relinkFailedReport;
         }
 
-        private static List<ListDialog.EntryItem> RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
+        private static List<EntryStringPair> RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
                                                 OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<ListDialog.EntryItem>();
+            var relinkFailedReport = new List<EntryStringPair>();
             Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
             foreach ((int pos, int type, int value) in t.inPackageReferences)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {

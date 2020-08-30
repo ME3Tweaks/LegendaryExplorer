@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Enumerator used to iterate through the last dimension of the multi-dimensional array.

@@ -8,10 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
+using TalkFile = ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
 
 namespace ME3ExplorerCore.Packages
 {
-    public abstract class UnrealPackageFile : NotifyPropertyChangedBase
+    public abstract class UnrealPackageFile : INotifyPropertyChanged
     {
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;
@@ -47,7 +48,7 @@ namespace ME3ExplorerCore.Packages
             LZMA = 0x8 //WiiU, PS3 
         }
 
-        public List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; } = new List<ME1Explorer.Unreal.Classes.TalkFile>();
+        public List<TalkFile> LocalTalkFiles { get; } = new List<TalkFile>();
 
         #region Names
         protected uint namesAdded;
@@ -83,7 +84,7 @@ namespace ME3ExplorerCore.Packages
                 NameCount = names.Count;
 
                 updateTools(PackageChange.NameAdd, NameCount - 1);
-                OnPropertyChanged(nameof(NameCount));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameCount)));
             }
         }
 
@@ -158,7 +159,7 @@ namespace ME3ExplorerCore.Packages
             ExportCount = exports.Count;
 
             updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
-            OnPropertyChanged(nameof(ExportCount));
+            //OnPropertyChanged(nameof(ExportCount));
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -409,9 +410,9 @@ namespace ME3ExplorerCore.Packages
             namesAdded = 0;
 
             lastSaved = DateTime.Now;
-            OnPropertyChanged(nameof(LastSaved));
-            OnPropertyChanged(nameof(FileSize));
-            OnPropertyChanged(nameof(IsModified));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
         }
 
         #region packageHandler stuff
@@ -509,6 +510,8 @@ namespace ME3ExplorerCore.Packages
                 Task task = Task.Delay(queuingDelay);
                 taskCompletion[task.Id] = false;
                 tasks.Add(task);
+
+                // TODO: This won't work in a library as there is no UI
                 task.ContinueWithOnUIThread(x =>
                 {
                     taskCompletion[x.Id] = true;
@@ -558,7 +561,7 @@ namespace ME3ExplorerCore.Packages
                         {
                             item.handleUpdate(pendingUpdatesList);
                         }
-                        OnPropertyChanged(nameof(IsModified));
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
                     }
                 });
             }
@@ -591,5 +594,7 @@ namespace ME3ExplorerCore.Packages
         {
             FilePath = filePath;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

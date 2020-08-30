@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	public static class ConduitPath
 	{

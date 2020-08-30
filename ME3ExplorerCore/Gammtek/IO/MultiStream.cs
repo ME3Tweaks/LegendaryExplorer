@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	public class MultiStream : Stream
 	{

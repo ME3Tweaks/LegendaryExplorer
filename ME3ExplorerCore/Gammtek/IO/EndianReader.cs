@@ -15,12 +15,10 @@
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
-using Gammtek.Conduit.Extensions.IO;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
     /// <summary>
     ///     BinaryReader that supports reading and writing individual bits from

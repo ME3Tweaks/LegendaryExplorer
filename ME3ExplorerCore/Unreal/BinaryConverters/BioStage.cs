@@ -1,4 +1,6 @@
-﻿using ME3ExplorerCore.Packages;
+﻿using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {

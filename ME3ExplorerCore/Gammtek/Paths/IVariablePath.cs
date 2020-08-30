@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Represents a path containing variable(s) defined with the syntax (case-insensitive) <i>$(VariableName)</i>. Such path must be prefixed with a

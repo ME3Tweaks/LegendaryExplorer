@@ -1,14 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
-    public class ImportEntry : NotifyPropertyChangedBase, IEntry
+    public class ImportEntry : INotifyPropertyChanged, IEntry
     {
         public MEGame Game => FileRef.Game;
 
@@ -16,14 +17,14 @@ namespace ME3ExplorerCore.Packages
         {
             HeaderOffset = importData.Position;
             FileRef = pccFile;
-            Header = new byte[byteSize];
+            Header = new byte[headerSize];
             importData.Read(Header, 0, Header.Length);
         }
 
         public ImportEntry(IMEPackage pccFile)
         {
             FileRef = pccFile;
-            Header = new byte[byteSize];
+            Header = new byte[headerSize];
         }
 
         public long HeaderOffset { get; set; }
@@ -33,7 +34,7 @@ namespace ME3ExplorerCore.Packages
 
         public IMEPackage FileRef { get; protected set; }
 
-        public const int byteSize = 28;
+        public const int headerSize = 28;
 
         protected byte[] _header;
         public byte[] Header
@@ -109,9 +110,6 @@ namespace ME3ExplorerCore.Packages
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; }
         }
 
-
-
-
         public string ClassName
         {
             get => FileRef.Names[idxClassName];
@@ -146,34 +144,10 @@ namespace ME3ExplorerCore.Packages
 
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
-        bool headerChanged;
-        public bool HeaderChanged
-        {
-            get => headerChanged;
-
-            set
-            {
-                headerChanged = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool HeaderChanged { get; set; }
 
 
-        private bool _entryHasPendingChanges;
-
-        public bool EntryHasPendingChanges
-        {
-            get => _entryHasPendingChanges;
-            set
-            {
-                if (value != _entryHasPendingChanges)
-                {
-                    _entryHasPendingChanges = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
+        public bool EntryHasPendingChanges { get; set; }
         public bool IsClass => ClassName == "Class";
 
         public ImportEntry Clone()
@@ -184,5 +158,6 @@ namespace ME3ExplorerCore.Packages
         }
 
         IEntry IEntry.Clone() => Clone();
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -24,9 +24,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 
-namespace StreamHelpers
+namespace ME3ExplorerCore.Helpers
 {
     public static class StreamHelpers
     {

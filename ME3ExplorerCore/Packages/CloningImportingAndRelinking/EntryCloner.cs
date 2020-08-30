@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ME3Explorer;
 
 namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {

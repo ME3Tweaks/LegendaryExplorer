@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Formats strings that represent matrices of scalar types.

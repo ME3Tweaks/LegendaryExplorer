@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using ME3Explorer;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;

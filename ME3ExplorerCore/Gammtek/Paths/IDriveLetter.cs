@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Represents a drive on file system.
@@ -11,8 +11,8 @@ namespace Gammtek.Conduit.Paths
 		///     Returns a DriveInfo object representing this drive.
 		/// </summary>
 		/// <exception cref="DriveNotFoundException">This drive doesn't refer to an existing drive.</exception>
-		/// <seealso cref="P:Gammtek.Conduit.Paths.IAbsoluteDirectoryPath.DirectoryInfo" />
-		/// <seealso cref="P:Gammtek.Conduit.Paths.IAbsoluteFilePath.FileInfo" />
+		/// <seealso cref="P:ME3ExplorerCore.Gammtek.Paths.IAbsoluteDirectoryPath.DirectoryInfo" />
+		/// <seealso cref="P:ME3ExplorerCore.Gammtek.Paths.IAbsoluteFilePath.FileInfo" />
 		DriveInfo DriveInfo { get; }
 
 		/// <summary>

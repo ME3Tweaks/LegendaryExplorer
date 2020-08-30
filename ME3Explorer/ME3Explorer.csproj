@@ -422,6 +422,8 @@
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
     <Compile Include="PackageSaver.cs" />
+    <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
+    <Compile Include="Unreal\Classes\Texture2D.cs" />
     <Compile Include="Unreal\WwiseHelper.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
@@ -478,7 +480,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DLCUnpacker\DLCUnpacker.xaml">
+    <Page Include="DLCUnpacker\DLCUnpackerUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -557,9 +559,6 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CloningImportingAndRelinking\EntryCloner.cs" />
-    <Compile Include="CloningImportingAndRelinking\EntryImporter.cs" />
-    <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
     <Compile Include="Deconstructors.cs" />
     <Compile Include="Dialogue Editor\DialogueObjects.cs" />
     <Compile Include="FileSystemHelper.cs" />
@@ -591,7 +590,6 @@
     <Compile Include="PackageEditor\CollectionActorEditor.xaml.cs">
       <DependentUpon>CollectionActorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageEditor\TextureViewer\ParallelCRC.cs" />
     <Compile Include="AssetDatabase\AssetDB.xaml.cs">
       <DependentUpon>AssetDB.xaml</DependentUpon>
     </Compile>
@@ -629,8 +627,8 @@
     <Compile Include="Debugging\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
-      <DependentUpon>DLCUnpacker.xaml</DependentUpon>
+    <Compile Include="DLCUnpacker\DLCUnpackerUI.xaml.cs">
+      <DependentUpon>DLCUnpackerUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditorControl.xaml.cs">
       <DependentUpon>FaceFXAnimSetEditorControl.xaml</DependentUpon>

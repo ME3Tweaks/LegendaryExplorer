@@ -15,7 +15,7 @@
 
 using System.IO;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
     /// <summary>
     ///     Support for identifying the Endian of data based on the marker.

@@ -51,9 +51,7 @@
     <Compile Include="ImageBMP.cs" />
     <Compile Include="ImageDDS.cs" />
     <Compile Include="ImageTGA.cs" />
-    <Compile Include="ZlibBlock\InflateInputStream.cs" />
     <Compile Include="ZlibBlock\ZlibBlock.cs" />
-    <Compile Include="ZlibHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -62,7 +60,12 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ME3ExplorerCore\ME3ExplorerCore.csproj">
+      <Project>{0C43CF93-CE9F-4BEC-A7CC-D45C161C3BE4}</Project>
+      <Name>ME3ExplorerCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Gammtek.Conduit.Dynamic
+namespace ME3ExplorerCore.Gammtek.Dynamic
 {
 	public static class DynamicExtensions
 	{

@@ -5,7 +5,6 @@ namespace ME3ExplorerCore.Packages
 {
     public interface IEntry
     {
-        event PropertyChangedEventHandler PropertyChanged;
         bool EntryHasPendingChanges { get; set; } //used to signal that this entry has uncommited changes
         bool HeaderChanged { get; set; }
         int Index { set; }

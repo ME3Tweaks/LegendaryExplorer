@@ -4,12 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Gammtek.Conduit.IO;
-using LZO2Helper;
-using LZXHelper;
-using SevenZipHelper;
-using StreamHelpers;
-using ZlibHelper;
+using ME3ExplorerCore.Compression;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using static ME3ExplorerCore.Packages.MEPackage;
 
 namespace ME3ExplorerCore.Packages
@@ -479,7 +476,7 @@ namespace ME3ExplorerCore.Packages
                             throw new Exception("LZO decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.Zlib:
-                        if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
+                        if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
                             throw new Exception("Zlib decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZMA:
@@ -609,7 +606,7 @@ namespace ME3ExplorerCore.Packages
                             }
                         case UnrealPackageFile.CompressionType.Zlib:
                             {
-                                if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                                     throw new Exception("Zlib decompression failed!");
                                 break;
                             }

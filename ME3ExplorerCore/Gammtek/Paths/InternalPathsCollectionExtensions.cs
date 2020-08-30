@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Extension methods helpers on collection of paths.

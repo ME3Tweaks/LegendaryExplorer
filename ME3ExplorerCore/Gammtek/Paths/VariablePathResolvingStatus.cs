@@ -1,4 +1,4 @@
-﻿namespace Gammtek.Conduit.Paths
+﻿namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Defines the result of the <see cref="IVariablePath" />.

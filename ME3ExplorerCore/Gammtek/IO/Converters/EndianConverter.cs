@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Gammtek.Conduit.IO.Converters
+namespace ME3ExplorerCore.Gammtek.IO.Converters
 {
     /// <summary>
     /// Provides the conversion functionality between two Endian types.

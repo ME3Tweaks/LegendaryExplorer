@@ -1,4 +1,6 @@
-﻿namespace ME3ExplorerCore.Unreal.BinaryConverters
+﻿using ME3ExplorerCore.SharpDX;
+
+namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
     public class BioMorphFace : ObjectBinary
     {

@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Compression;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -342,7 +343,7 @@ namespace ME3ExplorerCore.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         if (Header.CompressionScheme == "amzl")
                         {
-                            outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
+                            outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                             if (outputBlock.Length != actualUncompressedBlockSize)
                                 throw new Exception("Decompression Error");
                             result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
@@ -471,7 +472,7 @@ namespace ME3ExplorerCore.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         uint actualCompressedBlockSize = compressedBlockSize;
 
-                        outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
+                        outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                         if (outputBlock.Length != actualUncompressedBlockSize)
                             throw new Exception("Decompression Error");
                         result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);

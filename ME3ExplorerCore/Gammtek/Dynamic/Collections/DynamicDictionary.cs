@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace Gammtek.Conduit.Dynamic.Collections
+namespace ME3ExplorerCore.Gammtek.Dynamic.Collections
 {
 	/// <summary>
 	///     An implementation of a <see cref="IDictionary{TKey,TValue}" /> which uses dynamics to allow

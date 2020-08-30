@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit.Extensions
+namespace ME3ExplorerCore.Gammtek.Extensions
 {
 	public static class Int16Extensions
 	{

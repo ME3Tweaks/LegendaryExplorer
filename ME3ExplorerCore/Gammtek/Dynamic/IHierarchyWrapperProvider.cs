@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gammtek.Conduit.Dynamic
+namespace ME3ExplorerCore.Gammtek.Dynamic
 {
 	public interface IHierarchyWrapperProvider<T>
 	{

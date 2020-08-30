@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using static ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
 
 namespace ME3ExplorerCore.Unreal
 {

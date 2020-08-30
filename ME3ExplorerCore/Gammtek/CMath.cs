@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit
+namespace ME3ExplorerCore.Gammtek
 {
 	public static class CMath
 	{

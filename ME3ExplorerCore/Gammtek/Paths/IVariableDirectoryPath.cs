@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gammtek.Conduit.Paths
+namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Represents a directory path on file system, prefixed with an environment variable.

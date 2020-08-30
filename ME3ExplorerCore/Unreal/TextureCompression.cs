@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using ME3ExplorerCore.Compression;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -104,9 +105,9 @@ namespace ME3ExplorerCore.Unreal
                 {
                     ChunkBlock block = blocks[b];
                     if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
-                        block.compressedBuffer = LZO2Helper.LZO2.Compress(block.uncompressedBuffer);
+                        block.compressedBuffer = LZO2.Compress(block.uncompressedBuffer);
                     else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
-                        block.compressedBuffer = ZlibHelper.Zlib.Compress(block.uncompressedBuffer);
+                        block.compressedBuffer = Zlib.Compress(block.uncompressedBuffer);
                     else
                         throw new Exception("Compression type not expected!");
                     if (block.compressedBuffer.Length == 0)
@@ -178,9 +179,9 @@ namespace ME3ExplorerCore.Unreal
                 uint dstLen;
                 ChunkBlock block = blocks[b];
                 if (type == StorageTypes.extLZO || type == StorageTypes.pccLZO)
-                    dstLen = LZO2Helper.LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                    dstLen = LZO2.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
                 else if (type == StorageTypes.extZlib || type == StorageTypes.pccZlib)
-                    dstLen = ZlibHelper.Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
+                    dstLen = Zlib.Decompress(block.compressedBuffer, block.comprSize, block.uncompressedBuffer);
                 else if (type == StorageTypes.extLZMA)
                 {
                     block.uncompressedBuffer = LZMA.Decompress(block.compressedBuffer, block.uncomprSize);

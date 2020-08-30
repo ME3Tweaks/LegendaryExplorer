@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Gammtek.Conduit.Extensions.Reflection;
+using ME3ExplorerCore.Gammtek.Extensions.Reflection;
 
-namespace Gammtek.Conduit.Helpers
+namespace ME3ExplorerCore.Gammtek.Helpers
 {
 	/// <summary>
 	/// Simple static class that turns an object to string.

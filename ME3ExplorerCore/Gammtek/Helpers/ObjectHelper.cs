@@ -1,7 +1,7 @@
 ﻿using System;
-using Gammtek.Conduit.Extensions.Reflection;
+using ME3ExplorerCore.Gammtek.Extensions.Reflection;
 
-namespace Gammtek.Conduit.Helpers
+namespace ME3ExplorerCore.Gammtek.Helpers
 {
 	/// <summary>
 	///     Object helper class.

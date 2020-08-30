@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Provides formatting services for scalar data types and for strings.

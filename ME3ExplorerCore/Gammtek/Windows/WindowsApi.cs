@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Gammtek.Conduit.Windows
+namespace ME3ExplorerCore.Gammtek.Windows
 {
 	public static class WindowsApi
 	{

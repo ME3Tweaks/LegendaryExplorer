@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit.Text.Formatting
+namespace ME3ExplorerCore.Gammtek.Text.Formatting
 {
 	/// <summary>
 	///     Contains information about value (property or field) exposed by the processed object.

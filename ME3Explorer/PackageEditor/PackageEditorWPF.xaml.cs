@@ -35,9 +35,9 @@ using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.ME3Script;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Unreal.Classes;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
@@ -46,6 +46,7 @@ using Microsoft.AppCenter.Analytics;
 using UsefulThings;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using Guid = System.Guid;
+using ME3Explorer.Unreal.Classes;
 
 namespace ME3Explorer
 {

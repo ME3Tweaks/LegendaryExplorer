@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Gammtek.Conduit.IO;
-using ME3Explorer;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
+using TalkFile = ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -211,6 +212,6 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
-        List<ME1Explorer.Unreal.Classes.TalkFile> LocalTalkFiles { get; }
+        List<TalkFile> LocalTalkFiles { get; }
     }
 }

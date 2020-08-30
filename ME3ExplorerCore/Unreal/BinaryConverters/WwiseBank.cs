@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.IO;
-using ME3Explorer;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
@@ -112,78 +111,78 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 // It looks like on consoles this is not endian
                 string chunkID = sc.ms.BaseStream.ReadStringASCII(4);
-                
+
                 int chunkSize = sc.ms.ReadInt32();
                 switch (chunkID)
                 {
                     case "STMG":
-                    {
-                        if (sc.Game == MEGame.ME2)
                         {
-                            ME2STMGFallback = sc.ms.ReadBytes(chunkSize);
+                            if (sc.Game == MEGame.ME2)
+                            {
+                                ME2STMGFallback = sc.ms.ReadBytes(chunkSize);
+                                break;
+                            }
+                            InitStateManagement = new WwiseStateManagement
+                            {
+                                VolumeThreshold = sc.ms.ReadFloat(),
+                                MaxVoiceInstances = sc.ms.ReadUInt16()
+                            };
+                            int stateGroupCount = sc.ms.ReadInt32();
+                            InitStateManagement.StateGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.StateGroup>();
+                            for (int i = 0; i < stateGroupCount; i++)
+                            {
+                                uint id = sc.ms.ReadUInt32();
+                                var stateGroup = new WwiseStateManagement.StateGroup
+                                {
+                                    ID = id,
+                                    DefaultTransitionTime = sc.ms.ReadUInt32(),
+                                    CustomTransitionTimes = new List<WwiseStateManagement.CustomTransitionTime>()
+                                };
+                                int transTimesCount = sc.ms.ReadInt32();
+                                for (int j = 0; j < transTimesCount; j++)
+                                {
+                                    stateGroup.CustomTransitionTimes.Add(new WwiseStateManagement.CustomTransitionTime
+                                    {
+                                        FromStateID = sc.ms.ReadUInt32(),
+                                        ToStateID = sc.ms.ReadUInt32(),
+                                        TransitionTime = sc.ms.ReadUInt32(),
+                                    });
+                                }
+                                InitStateManagement.StateGroups.Add(id, stateGroup);
+                            }
+
+                            int switchGroupCount = sc.ms.ReadInt32();
+                            InitStateManagement.SwitchGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.SwitchGroup>();
+                            for (int i = 0; i < switchGroupCount; i++)
+                            {
+                                uint id = sc.ms.ReadUInt32();
+                                var switchGroup = new WwiseStateManagement.SwitchGroup
+                                {
+                                    ID = id,
+                                    GameParamID = sc.ms.ReadUInt32(),
+                                    Points = new List<WwiseStateManagement.SwitchPoint>()
+                                };
+                                int pointsCount = sc.ms.ReadInt32();
+                                for (int j = 0; j < pointsCount; j++)
+                                {
+                                    switchGroup.Points.Add(new WwiseStateManagement.SwitchPoint
+                                    {
+                                        GameParamValue = sc.ms.ReadFloat(),
+                                        SwitchID = sc.ms.ReadUInt32(),
+                                        CurveShape = sc.ms.ReadUInt32()
+                                    });
+                                }
+                                InitStateManagement.SwitchGroups.Add(id, switchGroup);
+                            }
+
+                            int gameParamsCount = sc.ms.ReadInt32();
+                            InitStateManagement.GameParameterDefaultValues = new OrderedMultiValueDictionary<uint, float>();
+                            for (int i = 0; i < gameParamsCount; i++)
+                            {
+                                InitStateManagement.GameParameterDefaultValues.Add(sc.ms.ReadUInt32(), sc.ms.ReadFloat());
+                            }
                             break;
                         }
-                        InitStateManagement = new WwiseStateManagement
-                        {
-                            VolumeThreshold = sc.ms.ReadFloat(),
-                            MaxVoiceInstances = sc.ms.ReadUInt16()
-                        };
-                        int stateGroupCount = sc.ms.ReadInt32();
-                        InitStateManagement.StateGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.StateGroup>();
-                        for (int i = 0; i < stateGroupCount; i++)
-                        {
-                            uint id = sc.ms.ReadUInt32();
-                            var stateGroup = new WwiseStateManagement.StateGroup
-                            {
-                                ID = id,
-                                DefaultTransitionTime = sc.ms.ReadUInt32(),
-                                CustomTransitionTimes = new List<WwiseStateManagement.CustomTransitionTime>()
-                            };
-                            int transTimesCount = sc.ms.ReadInt32();
-                            for (int j = 0; j < transTimesCount; j++)
-                            {
-                                stateGroup.CustomTransitionTimes.Add(new WwiseStateManagement.CustomTransitionTime
-                                {
-                                    FromStateID = sc.ms.ReadUInt32(),
-                                    ToStateID = sc.ms.ReadUInt32(),
-                                    TransitionTime = sc.ms.ReadUInt32(),
-                                });
-                            }
-                            InitStateManagement.StateGroups.Add(id, stateGroup);
-                        }
-
-                        int switchGroupCount = sc.ms.ReadInt32();
-                        InitStateManagement.SwitchGroups = new OrderedMultiValueDictionary<uint, WwiseStateManagement.SwitchGroup>();
-                        for (int i = 0; i < switchGroupCount; i++)
-                        {
-                            uint id = sc.ms.ReadUInt32();
-                            var switchGroup = new WwiseStateManagement.SwitchGroup
-                            {
-                                ID = id,
-                                GameParamID = sc.ms.ReadUInt32(),
-                                Points = new List<WwiseStateManagement.SwitchPoint>()
-                            };
-                            int pointsCount = sc.ms.ReadInt32();
-                            for (int j = 0; j < pointsCount; j++)
-                            {
-                                switchGroup.Points.Add(new WwiseStateManagement.SwitchPoint
-                                {
-                                    GameParamValue = sc.ms.ReadFloat(),
-                                    SwitchID = sc.ms.ReadUInt32(),
-                                    CurveShape = sc.ms.ReadUInt32()
-                                });
-                            }
-                            InitStateManagement.SwitchGroups.Add(id, switchGroup);
-                        }
-
-                        int gameParamsCount = sc.ms.ReadInt32();
-                        InitStateManagement.GameParameterDefaultValues = new OrderedMultiValueDictionary<uint, float>();
-                        for (int i = 0; i < gameParamsCount; i++)
-                        {
-                            InitStateManagement.GameParameterDefaultValues.Add(sc.ms.ReadUInt32(), sc.ms.ReadFloat());
-                        }
-                        break;
-                    }
                     case "DIDX":
                         int numFiles = chunkSize / 12;
                         var infoPos = sc.ms.Position;
@@ -250,19 +249,19 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     writer.WriteUInt32(id);
                     writer.WriteInt32((int)dataChunk.Position);
                     writer.WriteInt32(bytes.Length);
-                    dataChunk.WriteBytes(bytes);
+                    dataChunk.WriteFromBuffer(bytes);
                 }
 
                 writer.WriteUInt32(data);
                 writer.WriteInt32((int)dataChunk.Length);
-                writer.WriteBytes(dataChunk.ToArray());
+                writer.WriteFromBuffer(dataChunk.ToArray());
             }
 
             if (sc.Game == MEGame.ME2 && ME2STMGFallback != null)
             {
                 writer.WriteUInt32(stmg);
                 writer.WriteInt32(ME2STMGFallback.Length);
-                writer.WriteBytes(ME2STMGFallback);
+                writer.WriteFromBuffer(ME2STMGFallback);
             }
 
             if (sc.Game == MEGame.ME3 && InitStateManagement != null)
@@ -318,7 +317,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 writer.WriteInt32(HIRCObjects.Count);
                 foreach ((uint _, HIRCObject h) in HIRCObjects)
                 {
-                    writer.WriteBytes(h.ToBytes(sc.Game));
+                    writer.WriteFromBuffer(h.ToBytes(sc.Game));
                 }
 
                 var endPos = sc.ms.Position;
@@ -351,14 +350,14 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 writer.WriteUInt32(fxpr);
                 writer.WriteInt32(FXPR_Chunk.Length);
-                writer.WriteBytes(FXPR_Chunk);
+                writer.WriteFromBuffer(FXPR_Chunk);
             }
 
             if (ENVS_Chunk != null)
             {
                 writer.WriteUInt32(envs);
                 writer.WriteInt32(ENVS_Chunk.Length);
-                writer.WriteBytes(ENVS_Chunk);
+                writer.WriteFromBuffer(ENVS_Chunk);
             }
         }
 
@@ -393,7 +392,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             public virtual byte[] ToBytes(MEGame game)
             {
                 MemoryStream ms = WriteHIRCObjectHeader(game);
-                ms.WriteBytes(unparsed);
+                ms.WriteFromBuffer(unparsed);
                 return ms.ToArray();
             }
 
@@ -425,7 +424,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public class SoundSFXVoice : HIRCObject
         {
             public uint Unk1;
-            public SoundState State;  
+            public SoundState State;
             public uint AudioID;
             public uint SourceID;
             public int UnkType;
@@ -448,7 +447,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     ms.WriteInt32(UnkPrefetchLength);
                 }
                 ms.WriteByte((byte)SoundType);
-                ms.WriteBytes(unparsed);
+                ms.WriteFromBuffer(unparsed);
                 return ms.ToArray();
             }
 
@@ -517,7 +516,8 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 {
                     Type = HIRCType.Event,
                     ID = id,
-                    EventActions = new List<uint>(Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => sc.ms.ReadUInt32()))
+                    // Just call .ToList()?
+                    EventActions = Enumerable.Range(0, sc.ms.ReadInt32()).Select(i => (uint)sc.ms.ReadUInt32()).ToList()
                 };
         }
 
@@ -549,7 +549,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 ms.WriteByte((byte)ActionType);
                 ms.WriteUInt16(Unk1);
                 ms.WriteUInt32(ReferencedObjectID);
-                ms.WriteBytes(unparsed);
+                ms.WriteFromBuffer(unparsed);
                 return ms.ToArray();
             }
             public static EventAction Create(SerializingContainer2 sc, uint id, int len) =>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	/// <summary>
 	///     Interface for classes which manage instances of

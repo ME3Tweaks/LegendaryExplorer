@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
-using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -444,7 +444,7 @@ namespace ME3ExplorerCore.Unreal
                 case PropertyType.ObjectProperty:
                 case PropertyType.InterfaceProperty:
                 case PropertyType.ComponentProperty:
-                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos, internalPropType = template.PropType};
+                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos, internalPropType = template.PropType };
                 case PropertyType.StringRefProperty:
                     return new StringRefProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.NameProperty:
@@ -638,15 +638,15 @@ namespace ME3ExplorerCore.Unreal
                 case ArrayType.Byte:
                     return new ImmutableByteArrayProperty(arrayOffset, count, stream, name) { Reference = "Byte" };
                 case ArrayType.StringRef:
-                {
-                    var props = new List<StringRefProperty>();
-                    for (int i = 0; i < count; i++)
                     {
-                        long startPos = stream.Position;
-                        props.Add(new StringRefProperty(stream) { StartOffset = startPos });
+                        var props = new List<StringRefProperty>();
+                        for (int i = 0; i < count; i++)
+                        {
+                            long startPos = stream.Position;
+                            props.Add(new StringRefProperty(stream) { StartOffset = startPos });
+                        }
+                        return new ArrayProperty<StringRefProperty>(arrayOffset, props, name) { Reference = "StringRef" };
                     }
-                    return new ArrayProperty<StringRefProperty>(arrayOffset, props, name) { Reference = "StringRef" };
-                }
                 case ArrayType.Int:
                 default:
                     {
@@ -680,10 +680,9 @@ namespace ME3ExplorerCore.Unreal
         }
     }
 
-    public abstract class Property : NotifyPropertyChangedBase
+    public abstract class Property
     {
         public abstract PropertyType PropType { get; }
-        private NameReference _name;
         public int StaticArrayIndex { get; set; }
         /// <summary>
         /// Offset to the value for this property - note not all properties have actual values.
@@ -695,20 +694,16 @@ namespace ME3ExplorerCore.Unreal
         /// </summary>
         public long StartOffset { get; set; }
 
-        public NameReference Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
+        public NameReference Name { get; set; }
 
         protected Property(NameReference? name)
         {
-            _name = name ?? new NameReference();
+            Name = name ?? new NameReference();
         }
 
         protected Property()
         {
-            _name = new NameReference();
+            Name = new NameReference();
         }
 
         //public abstract void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false);
@@ -750,30 +745,25 @@ namespace ME3ExplorerCore.Unreal
     }
 
     [DebuggerDisplay("StructProperty | {Name.Name} - {StructType}")]
-    public class StructProperty : Property
+    public class StructProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.StructProperty;
-
-        private bool _isImmutable;
-        private PropertyCollection _properties;
-
         public string StructType { get; }
+        public PropertyCollection Properties { get; set; }
 
-        public PropertyCollection Properties
+        public void OnPropertiesChanged()
         {
-            get => _properties;
-            set
+            if (Properties != null)
             {
-                _properties = value;
-                _properties.IsImmutable = _isImmutable;
+                Properties.IsImmutable = IsImmutable;
             }
         }
 
-        public bool IsImmutable
+        public void OnIsImmutableChanged()
         {
-            get => _isImmutable;
-            set => Properties.IsImmutable = _isImmutable = value;
+            Properties.IsImmutable = IsImmutable;
         }
+        public bool IsImmutable { get; set; }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
@@ -813,25 +803,22 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()){Endian = pcc.Endian};
+                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
                     Properties.WriteTo(m.Writer, pcc);
                     return m.BaseStream;
                 }, StaticArrayIndex);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
-    public class IntProperty : Property, IComparable
+    public class IntProperty : Property, IComparable, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.IntProperty;
 
-        int _value;
-        public int Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public int Value { get; set; }
 
         public IntProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
@@ -880,10 +867,12 @@ namespace ME3ExplorerCore.Unreal
         {
             return p?.Value ?? 0;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
-    public class FloatProperty : Property, IComparable
+    public class FloatProperty : Property, IComparable, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.FloatProperty;
 
@@ -898,7 +887,7 @@ namespace ME3ExplorerCore.Unreal
                 if (!_value.IsBinarilyIdentical(value))
                 {
                     _value = value;
-                    OnPropertyChanged(nameof(Value));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                 }
             }
         }
@@ -950,10 +939,12 @@ namespace ME3ExplorerCore.Unreal
         {
             return p?.Value ?? 0;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
-    public class ObjectProperty : Property, IComparable
+    public class ObjectProperty : Property, IComparable, INotifyPropertyChanged
     {
         /// <summary>
         /// Resolves this object property to its corresponding entry from the package parameter
@@ -968,12 +959,7 @@ namespace ME3ExplorerCore.Unreal
 
         public PropertyType internalPropType = PropertyType.ObjectProperty;
 
-        int _value;
-        public int Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public int Value { get; set; }
 
         public ObjectProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
@@ -1048,19 +1034,16 @@ namespace ME3ExplorerCore.Unreal
             // System.Object, which defines Equals as reference equality.
             return (Value == p.Value);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("NameProperty | {Name} = {Value}")]
-    public class NameProperty : Property
+    public class NameProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.NameProperty;
 
-        NameReference _value;
-        public NameReference Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public NameReference Value { get; set; }
 
         public NameProperty(NameReference value, NameReference? propertyName = null) : base(propertyName)
         {
@@ -1126,19 +1109,16 @@ namespace ME3ExplorerCore.Unreal
         {
             return Value;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
-    public class BoolProperty : Property
+    public class BoolProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.BoolProperty;
 
-        bool _value;
-        public bool Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public bool Value { get; set; }
 
         public BoolProperty(EndianReader stream, IMEPackage pcc, NameReference? name = null, bool isArrayContained = false) : base(name)
         {
@@ -1192,19 +1172,16 @@ namespace ME3ExplorerCore.Unreal
         {
             return p?.Value == true;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
-    public class ByteProperty : Property
+    public class ByteProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.ByteProperty;
 
-        byte _value;
-        public byte Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public byte Value { get; set; }
 
         public ByteProperty(byte val, NameReference? name = null) : base(name)
         {
@@ -1228,18 +1205,15 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteByte(Value);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
-    public class BioMask4Property : Property
+    public class BioMask4Property : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.BioMask4Property;
 
-        byte _value;
-        public byte Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public byte Value { get; set; }
 
         public BioMask4Property(byte val, NameReference? name = null) : base(name)
         {
@@ -1260,20 +1234,17 @@ namespace ME3ExplorerCore.Unreal
             }
             stream.WriteByte(Value);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     [DebuggerDisplay("EnumProperty | {Name} = {Value.Name}")]
-    public class EnumProperty : Property
+    public class EnumProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.ByteProperty;
 
         public NameReference EnumType { get; }
-        NameReference _value;
-        public NameReference Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public NameReference Value { get; set; }
         public List<NameReference> EnumValues { get; }
 
         public EnumProperty(EndianReader stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
@@ -1325,6 +1296,8 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteInt32(Value.Number);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public abstract class ArrayPropertyBase : Property, IEnumerable
@@ -1434,7 +1407,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()){Endian = pcc.Endian};
+                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
                     foreach (var prop in Values)
                     {
                         prop.WriteTo(m.Writer, pcc, true);
@@ -1536,12 +1509,7 @@ namespace ME3ExplorerCore.Unreal
     {
         public override PropertyType PropType => PropertyType.StrProperty;
 
-        string _value;
-        public string Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public string Value { get; set; }
 
         public StrProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
@@ -1619,16 +1587,11 @@ namespace ME3ExplorerCore.Unreal
     }
 
     [DebuggerDisplay("StringRefProperty | {Name} = {Value}")]
-    public class StringRefProperty : Property
+    public class StringRefProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.StringRefProperty;
 
-        int _value;
-        public int Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public int Value { get; set; }
 
         public StringRefProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
@@ -1658,19 +1621,15 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteInt32(Value);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
-    public class DelegateProperty : Property
+    public class DelegateProperty : Property, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.DelegateProperty;
 
-        private ScriptDelegate _value;
-
-        public ScriptDelegate Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+        public ScriptDelegate Value { get; set; }
 
         public DelegateProperty(EndianReader stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
@@ -1695,6 +1654,8 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteNameReference(Value.FunctionName, pcc);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class UnknownProperty : Property

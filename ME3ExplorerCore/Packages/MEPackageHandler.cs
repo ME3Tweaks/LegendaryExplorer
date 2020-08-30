@@ -5,9 +5,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
-using StreamHelpers;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Packages
 {

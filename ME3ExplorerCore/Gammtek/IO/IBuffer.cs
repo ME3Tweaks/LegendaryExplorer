@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	/// <summary>
 	///     Interface encapsulating a byte array which may be managed

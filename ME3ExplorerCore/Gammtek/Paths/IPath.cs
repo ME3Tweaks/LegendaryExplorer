@@ -1,4 +1,4 @@
-﻿namespace Gammtek.Conduit.Paths
+﻿namespace ME3ExplorerCore.Gammtek.Paths
 {
 	/// <summary>
 	///     Represents a path, absolute or relative, to a file or to a directory.

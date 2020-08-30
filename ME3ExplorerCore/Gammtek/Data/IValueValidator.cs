@@ -1,4 +1,4 @@
-﻿namespace Gammtek.Conduit.Data
+﻿namespace ME3ExplorerCore.Gammtek.Data
 {
 	/// <summary>
 	///     The value validator interface

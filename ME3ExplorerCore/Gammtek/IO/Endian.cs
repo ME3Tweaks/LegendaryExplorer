@@ -14,9 +14,9 @@
 */
 
 using System;
-using Gammtek.Conduit.IO.Converters;
+using ME3ExplorerCore.Gammtek.IO.Converters;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	/// <summary>
 	///     Endian identification support for the current platform

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Gammtek.Conduit
+namespace ME3ExplorerCore.Gammtek
 {
 	public class Utilities
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Gammtek.Conduit.IO
+namespace ME3ExplorerCore.Gammtek.IO
 {
 	public interface IDataStream
 	{

@@ -6,9 +6,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Windows.Data;
 
-namespace Gammtek.Conduit.Collections.ObjectModel
+namespace ME3ExplorerCore.Gammtek.Collections.ObjectModel
 {
 	[Serializable]
 	public class ObservableDictionary<TKey, TValue> :

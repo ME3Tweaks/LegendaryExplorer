@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Gammtek.Conduit.Extensions.Collections.Generic
+namespace ME3ExplorerCore.Gammtek.Extensions.Collections.Generic
 {
 	public static partial class EnumerableExtensions
 	{

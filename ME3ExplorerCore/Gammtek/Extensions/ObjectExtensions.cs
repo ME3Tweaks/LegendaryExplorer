@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Gammtek.Conduit.Extensions
+namespace ME3ExplorerCore.Gammtek.Extensions
 {
 	public static class ObjectExtensions
 	{

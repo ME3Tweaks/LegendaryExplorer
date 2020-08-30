@@ -13,7 +13,7 @@
 	limitations under the License.
 */
 
-namespace Gammtek.Conduit.IO.Converters
+namespace ME3ExplorerCore.Gammtek.IO.Converters
 {
 	/// <summary>
 	/// The zig zag converter performs a 1-1 and onto mapping of signed integers

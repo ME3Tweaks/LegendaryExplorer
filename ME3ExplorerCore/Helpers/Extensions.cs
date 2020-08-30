@@ -7,12 +7,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Gammtek.Conduit;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using StreamHelpers;
 
 namespace ME3ExplorerCore.Helpers
 {

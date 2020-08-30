@@ -1,4 +1,4 @@
-﻿namespace Gammtek.Conduit.Dynamic
+﻿namespace ME3ExplorerCore.Gammtek.Dynamic
 {
 	public enum NodeType
 	{

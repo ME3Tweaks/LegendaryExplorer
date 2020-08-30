@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3ExplorerCore.Unreal

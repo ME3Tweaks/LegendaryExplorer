@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <PackageId>SharpDX.Mathematics</PackageId>
+    <Product>SharpDX.Mathematics</Product>
+    <DocumentationFile Condition="'$(Configuration)' == 'Release'">bin\$(Configuration)\$(TargetFramework)\SharpDX.Mathematics.xml</DocumentationFile>
+    <AssemblyTitle>SharpDX.Mathematics</AssemblyTitle>
+    <Title>SharpDX.Mathematics</Title>
+    <Description>Assembly providing DirectX - Mathematics managed API.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+<!--     <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile> -->
+  </ItemGroup>
+<!--   <ItemGroup>
+    <ProjectReference Include="..\SharpDX\SharpDX.csproj" />
+  </ItemGroup> -->
+</Project>

@@ -31,7 +31,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace SevenZipHelper
+namespace ME3ExplorerCore.Compression
 {
     static public class LZMA
     {

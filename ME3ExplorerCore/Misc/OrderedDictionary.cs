@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ME3Explorer
+namespace ME3ExplorerCore.Misc
 {
     //todo: make a better implementation
     /// <summary>

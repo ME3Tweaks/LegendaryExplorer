@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Gammtek.Conduit.Collections.Specialized
+namespace ME3ExplorerCore.Gammtek.Collections.Specialized
 {
 	public static class EnumSet
 	{
