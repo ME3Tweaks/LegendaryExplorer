@@ -32,7 +32,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ME3ExplorerCore.Compression
+namespace ZlibHelper
 {
     static public class Zlib
     {

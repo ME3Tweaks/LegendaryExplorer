@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace ME3ExplorerCore.Gammtek.Paths
+namespace Gammtek.Conduit.Paths
 {
 	/// <summary>
 	///     Provides a set of extension methods to optimize enumerables operations on set.

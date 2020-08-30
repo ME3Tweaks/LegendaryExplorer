@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	public sealed class ByteOrderConverter
 	{

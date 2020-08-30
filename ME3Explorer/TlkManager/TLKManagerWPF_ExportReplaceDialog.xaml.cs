@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using Microsoft.Win32;
 using System;
@@ -16,6 +15,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace ME3Explorer.TlkManagerNS

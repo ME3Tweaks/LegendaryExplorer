@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Text.StringMatching
+﻿namespace Gammtek.Conduit.Text.StringMatching
 {
 	/// <summary>
 	///     Types implementing this interface can be used to test whether

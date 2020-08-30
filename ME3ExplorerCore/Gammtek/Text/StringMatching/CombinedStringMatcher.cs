@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.Text.StringMatching
+namespace Gammtek.Conduit.Text.StringMatching
 {
 	/// <summary>
 	///     Combines multiple string matchers. Input string is matched if matched by any of the contained matchers.

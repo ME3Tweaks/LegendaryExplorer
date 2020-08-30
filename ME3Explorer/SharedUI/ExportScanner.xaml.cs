@@ -11,7 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI
 {

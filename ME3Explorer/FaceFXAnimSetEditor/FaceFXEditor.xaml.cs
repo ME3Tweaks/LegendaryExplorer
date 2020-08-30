@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 

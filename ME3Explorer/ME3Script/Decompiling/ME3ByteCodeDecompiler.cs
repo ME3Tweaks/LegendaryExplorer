@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
 using ME3Explorer.ME3Script.Utilities;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using StreamHelpers;
 
 namespace ME3Script.Decompiling

@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.PackageEditorWPFControls
 {

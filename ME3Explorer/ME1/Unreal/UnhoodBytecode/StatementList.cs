@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ME3Explorer.Unreal;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {

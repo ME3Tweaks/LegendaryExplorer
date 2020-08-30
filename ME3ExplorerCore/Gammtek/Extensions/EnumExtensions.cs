@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ME3ExplorerCore.Gammtek.Extensions
+namespace Gammtek.Conduit.Extensions
 {
 	public static class EnumExtensions
 	{

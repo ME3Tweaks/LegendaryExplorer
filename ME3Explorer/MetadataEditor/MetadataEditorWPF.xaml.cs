@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Be.Windows.Forms;
 using ByteSizeLib;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.Unreal.UnrealFlags;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3Explorer.MetadataEditor
 {

@@ -7,7 +7,6 @@
              mc:Ignorable="d" 
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              xmlns:global="clr-namespace:ME3Explorer"
-                xmlns:me3bytecode="clr-namespace:ME3Explorer.Unreal"
              xmlns:me1bytecode="clr-namespace:ME3Explorer.ME1.Unreal.UnhoodBytecode"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"

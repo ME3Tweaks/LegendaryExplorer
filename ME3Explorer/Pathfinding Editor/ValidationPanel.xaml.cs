@@ -1,8 +1,6 @@
 ﻿using FontAwesome5;
 using FontAwesome5.WPF;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,8 +21,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ME3Explorer.CurveEd;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.ME3Enums;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
 
 namespace ME3Explorer.Pathfinding_Editor

@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ME3ExplorerCore.Gammtek.Data;
-using ME3ExplorerCore.Gammtek.Extensions.Reflection;
+using Gammtek.Conduit.Data;
+using Gammtek.Conduit.Extensions.Reflection;
 
-namespace ME3ExplorerCore.Gammtek
+namespace Gammtek.Conduit
 {
 	public partial class Argument
 	{

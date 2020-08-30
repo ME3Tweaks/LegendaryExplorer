@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

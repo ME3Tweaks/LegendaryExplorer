@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.ME3Tweaks
 {

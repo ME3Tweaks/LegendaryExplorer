@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME1Explorer.Unreal.Classes;
-using ME3Explorer.Packages;
 using ME3Explorer;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 using TalkFile = ME1Explorer.Unreal.Classes.TalkFile;
 using Newtonsoft.Json;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	public class MemoryTributary : Stream
 	{

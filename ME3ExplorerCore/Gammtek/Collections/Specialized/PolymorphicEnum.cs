@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace ME3ExplorerCore.Gammtek.Collections.Specialized
+namespace Gammtek.Conduit.Collections.Specialized
 {
 	public abstract class PolymorphicEnum<T, TEnum> : IComparable, IConvertible
 		where T : struct, IComparable<T>, IConvertible

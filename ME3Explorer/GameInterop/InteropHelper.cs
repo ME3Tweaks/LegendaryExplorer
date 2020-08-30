@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ME3Explorer.Properties;
+using ME3ExplorerCore.MEDirectories;
 using Microsoft.Win32;
 using StreamHelpers;
 

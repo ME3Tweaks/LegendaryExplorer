@@ -1,9 +1,7 @@
 ﻿using ByteSizeLib;
 using ME3Explorer.Debugging;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
-using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NAudio.Wave;
@@ -33,10 +31,11 @@ using System.Xml.Linq;
 using FontAwesome5.WPF;
 using FontAwesome5;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
+using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer.Soundplorer
 {

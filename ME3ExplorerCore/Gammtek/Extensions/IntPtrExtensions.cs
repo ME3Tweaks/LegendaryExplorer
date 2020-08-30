@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ME3ExplorerCore.Gammtek.Extensions
+namespace Gammtek.Conduit.Extensions
 {
 	public static class IntPtrExtensions
 	{

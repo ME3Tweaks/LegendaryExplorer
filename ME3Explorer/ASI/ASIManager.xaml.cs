@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +10,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.ASI

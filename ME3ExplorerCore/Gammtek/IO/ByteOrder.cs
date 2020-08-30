@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.IO
+﻿namespace Gammtek.Conduit.IO
 {
 	public enum ByteOrder
 	{

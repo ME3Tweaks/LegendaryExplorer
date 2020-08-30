@@ -11,7 +11,6 @@
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:Packages="clr-namespace:ME3Explorer.Packages"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"

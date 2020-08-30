@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	/// <summary>
 	///     Exception thrown to indicate that a buffer of the

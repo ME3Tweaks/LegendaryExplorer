@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Unreal;
 using SharpDX;
 
 namespace ME3Explorer

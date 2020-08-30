@@ -13,8 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

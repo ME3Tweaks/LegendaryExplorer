@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace ME3ExplorerCore.Gammtek.Text.StringMatching
+namespace Gammtek.Conduit.Text.StringMatching
 {
 	/// <summary>
 	///     Implements string matching algorithm which tries to match regular expression pattern

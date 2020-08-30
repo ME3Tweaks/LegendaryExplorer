@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Unreal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -14,7 +13,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer.SharedUI

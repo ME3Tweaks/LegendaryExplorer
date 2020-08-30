@@ -15,9 +15,9 @@
 
 using System;
 using System.IO;
-using ME3ExplorerCore.Gammtek.IO.Converters;
+using Gammtek.Conduit.IO.Converters;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	/// <summary>
 	///     Extension methods to write variable length integers to a

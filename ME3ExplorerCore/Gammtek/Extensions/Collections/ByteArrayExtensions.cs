@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Extensions.Collections
+﻿namespace Gammtek.Conduit.Extensions.Collections
 {
 	public static class ByteArrayExtensions
 	{

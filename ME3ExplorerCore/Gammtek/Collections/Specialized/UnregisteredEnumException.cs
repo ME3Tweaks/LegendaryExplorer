@@ -1,6 +1,6 @@
 using System;
 
-namespace ME3ExplorerCore.Gammtek.Collections.Specialized
+namespace Gammtek.Conduit.Collections.Specialized
 {
 	public class UnregisteredEnumException : Exception
 	{

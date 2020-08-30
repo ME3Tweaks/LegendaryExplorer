@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Paths
+﻿namespace Gammtek.Conduit.Paths
 {
 	/// <summary>
 	///     Defines a path mode, absolute, relative or prefixed with an environment variable.

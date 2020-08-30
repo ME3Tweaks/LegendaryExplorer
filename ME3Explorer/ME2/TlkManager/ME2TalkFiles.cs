@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using ME3Explorer;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Unreal;
 
 namespace ME2Explorer
 {

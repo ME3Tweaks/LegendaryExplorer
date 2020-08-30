@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace ME3ExplorerCore.Gammtek.Helpers
+namespace Gammtek.Conduit.Helpers
 {
 	/// <summary>
 	///     Collection helper class.

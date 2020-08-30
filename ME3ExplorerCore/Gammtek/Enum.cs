@@ -8,10 +8,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using ME3ExplorerCore.Gammtek.Extensions.Reflection;
-using ME3ExplorerCore.Gammtek.Helpers;
+using Gammtek.Conduit.Extensions.Reflection;
+using Gammtek.Conduit.Helpers;
 
-namespace ME3ExplorerCore.Gammtek
+namespace Gammtek.Conduit
 {
 	/// <summary>
 	///     Generic enumeration wrapper.

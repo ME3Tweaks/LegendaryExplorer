@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:local="clr-namespace:ME3Explorer"
-             xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" Background="#FFF1F1F1">
     <UserControl.Resources>

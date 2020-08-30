@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.GameInterop;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 using Newtonsoft.Json;
 using StreamHelpers;
 

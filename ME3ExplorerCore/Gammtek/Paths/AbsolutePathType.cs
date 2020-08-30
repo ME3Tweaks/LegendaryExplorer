@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Paths
+﻿namespace Gammtek.Conduit.Paths
 {
 	/// <summary>
 	///     Defines the kind of an absolute path.

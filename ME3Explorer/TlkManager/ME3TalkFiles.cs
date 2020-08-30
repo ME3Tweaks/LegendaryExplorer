@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
 
 namespace ME3Explorer

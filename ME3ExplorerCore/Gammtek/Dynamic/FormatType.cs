@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Dynamic
+﻿namespace Gammtek.Conduit.Dynamic
 {
 	public enum FormatType
 	{

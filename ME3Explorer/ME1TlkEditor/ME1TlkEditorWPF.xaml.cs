@@ -12,13 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.IO;
 using System.Xml;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME1Explorer.Unreal.Classes;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
 using System.Threading;
 using System.Media;
+using ME3ExplorerCore.Packages;
+using TalkFile = ME3ExplorerCore.Unreal.TalkFile;
 
 namespace ME3Explorer.ME1TlkEditor
 {

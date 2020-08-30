@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Text.StringMatching
+﻿namespace Gammtek.Conduit.Text.StringMatching
 {
 	/// <summary>
 	///     Implements IStringMatcher interface in such way that string matches the pattern

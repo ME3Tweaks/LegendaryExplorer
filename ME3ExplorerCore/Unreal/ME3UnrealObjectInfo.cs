@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
@@ -85,7 +86,7 @@ namespace ME3ExplorerCore.Unreal
                     PropertyCollection props = new PropertyCollection();
                     while (info != null && info.ClassName != notIncludingClass)
                     {
-                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), info.pccPath);
+                        string filepath = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
                             filepath = info.pccPath; //Used for dynamic lookup

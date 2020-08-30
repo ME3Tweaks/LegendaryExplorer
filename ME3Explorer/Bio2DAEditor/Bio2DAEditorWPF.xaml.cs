@@ -1,10 +1,10 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3ExplorerCore.Packages;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer

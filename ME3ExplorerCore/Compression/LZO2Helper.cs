@@ -19,21 +19,21 @@
  *
  */
 
-/*
- * This code use lzo2wrapper.dll copied from MassEffectModder:
- * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
- *
- * The dll is created using LZO2 library and MassEffectModder wrapper code:
- * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
- *
- */
+ /*
+  * This code use lzo2wrapper.dll copied from MassEffectModder:
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
+  *
+  * The dll is created using LZO2 library and MassEffectModder wrapper code:
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
+  *
+  */
 
 using System;
 using System.Runtime.InteropServices;
 
-namespace ME3ExplorerCore.Compression
+namespace LZO2Helper
 {
-    public static class LZO2
+    static public class LZO2
     {
         [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
@@ -41,7 +41,7 @@ namespace ME3ExplorerCore.Compression
         [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public static uint Decompress(byte[] src, uint srcLen, byte[] dst)
+        static public uint Decompress(byte[] src, uint srcLen, byte[] dst)
         {
             uint dstLen = (uint)dst.Length;
 
@@ -52,7 +52,7 @@ namespace ME3ExplorerCore.Compression
             return dstLen;
         }
 
-        public static byte[] Compress(byte[] src)
+        static public byte[] Compress(byte[] src)
         {
             byte[] tmpbuf = new byte[src.Length + src.Length / 16 + 64 + 3];
             uint dstLen = 0;

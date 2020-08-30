@@ -15,12 +15,12 @@ using ME3Explorer.ASI;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.GameInterop;
 using ME3Explorer.MountEditor;
-using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {

@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Threading;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI.PeregrineTreeView;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

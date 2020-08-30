@@ -422,24 +422,6 @@
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
     <Compile Include="PackageSaver.cs" />
-    <Compile Include="Packages\IPackageUser.cs" />
-    <Compile Include="Packages\MEPackageHandler.cs" />
-    <Compile Include="Unreal\BinaryConverters\Bio2DABinary.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioMorphFace.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioTlkFileSet.cs" />
-    <Compile Include="Unreal\BinaryConverters\BrushComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\FaceFXAnimSet.cs" />
-    <Compile Include="Unreal\BinaryConverters\ForceFeedbackWaveform.cs" />
-    <Compile Include="Unreal\BinaryConverters\LightComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\MorphTarget.cs" />
-    <Compile Include="Unreal\BinaryConverters\ObjectRedirector.cs" />
-    <Compile Include="Unreal\BinaryConverters\PhysicsAssetInstance.cs" />
-    <Compile Include="Unreal\BinaryConverters\RB_BodySetup.cs" />
-    <Compile Include="Unreal\BinaryConverters\SFXMorphFaceFrontEndDataSource.cs" />
-    <Compile Include="Unreal\BinaryConverters\ShadowMap1D.cs" />
-    <Compile Include="Unreal\BinaryConverters\SoundCue.cs" />
-    <Compile Include="Unreal\BinaryConverters\SoundNodeWave.cs" />
-    <Compile Include="Unreal\BinaryConverters\TextureMovie.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -549,7 +531,6 @@
     <Compile Include="AnimationExplorer\AnimationViewer.xaml.cs">
       <DependentUpon>AnimationViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Packages\ExportCreator.cs" />
     <Compile Include="SharedUI\Requirement.xaml.cs">
       <DependentUpon>Requirement.xaml</DependentUpon>
     </Compile>
@@ -611,9 +592,6 @@
       <DependentUpon>CollectionActorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\TextureViewer\ParallelCRC.cs" />
-    <Compile Include="Packages\EntryTree.cs" />
-    <Compile Include="Packages\PackageExtensions.cs" />
-    <Compile Include="Packages\UnrealPackageFile.cs" />
     <Compile Include="AssetDatabase\AssetDB.xaml.cs">
       <DependentUpon>AssetDB.xaml</DependentUpon>
     </Compile>
@@ -745,10 +723,6 @@
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
     <Compile Include="MELoadedFiles.cs" />
-    <Compile Include="MEDirectories\ME1Directory.cs" />
-    <Compile Include="MEDirectories\ME2Directory.cs" />
-    <Compile Include="MEDirectories\ME3Directory.cs" />
-    <Compile Include="MEDirectories\MEDirectories.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -880,8 +854,6 @@
     </Compile>
     <Compile Include="SharedUI\TouchComfySettings.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />
-    <Compile Include="Packages\UDKPackage.cs" />
-    <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\PathfindingEditorConverters.cs" />
     <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
       <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
@@ -947,10 +919,6 @@
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Packages\ExportEntry.cs" />
-    <Compile Include="Packages\IEntry.cs" />
-    <Compile Include="Packages\IMEPackage.cs" />
-    <Compile Include="Packages\ImportEntry.cs" />
     <Compile Include="CurveEd\Anchor.cs" />
     <Compile Include="CurveEd\BezierSegment.cs" />
     <Compile Include="CurveEd\Curve.cs" />
@@ -1068,78 +1036,8 @@
     <Compile Include="UnrealScriptControl\BytecodeEditor.xaml.cs">
       <DependentUpon>BytecodeEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Unreal\ActorUtils.cs" />
-    <Compile Include="Unreal\BinaryConverters\AnimSequence.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioDynamicAnimSet.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioGestureRuntimeData.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioPawn.cs" />
-    <Compile Include="Unreal\BinaryConverters\BioStage.cs" />
-    <Compile Include="Unreal\BinaryConverters\GuidCache.cs" />
-    <Compile Include="Unreal\BinaryConverters\InterpCurve.cs" />
-    <Compile Include="Unreal\BinaryConverters\KDOPTreeBuilder.cs" />
-    <Compile Include="Unreal\BinaryConverters\StaticCollectionActor.cs" />
-    <Compile Include="Unreal\BinaryConverters\UTexture2D.cs" />
-    <Compile Include="Unreal\BinaryConverters\UClass.cs" />
-    <Compile Include="Unreal\BinaryConverters\DecalComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\EntryPruner.cs" />
-    <Compile Include="Unreal\BinaryConverters\ExportBinaryConverter.cs" />
-    <Compile Include="Unreal\BinaryConverters\ConvertExtensions.cs" />
-    <Compile Include="Unreal\BinaryConverters\UConst.cs" />
-    <Compile Include="Unreal\BinaryConverters\UEnum.cs" />
-    <Compile Include="Unreal\BinaryConverters\UField.cs" />
-    <Compile Include="Unreal\BinaryConverters\FluidSurfaceComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\FracturedStaticMesh.cs" />
-    <Compile Include="Unreal\BinaryConverters\Level.cs" />
-    <Compile Include="Unreal\BinaryConverters\Material.cs" />
     <Compile Include="OrderedDictionary.cs" />
-    <Compile Include="Unreal\BinaryConverters\Model.cs" />
-    <Compile Include="Unreal\BinaryConverters\ModelComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\ObjectBinary.cs" />
-    <Compile Include="Unreal\BinaryConverters\Polys.cs" />
-    <Compile Include="Unreal\BinaryConverters\PrefabInstance.cs" />
-    <Compile Include="Unreal\BinaryConverters\ShaderCache.cs" />
-    <Compile Include="Unreal\BinaryConverters\SkeletalMesh.cs" />
-    <Compile Include="Unreal\BinaryConverters\StaticMesh.cs" />
-    <Compile Include="Unreal\BinaryConverters\StaticMeshComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\Terrain.cs" />
-    <Compile Include="Unreal\BinaryConverters\TerrainComponent.cs" />
-    <Compile Include="Unreal\BinaryConverters\UFunction.cs" />
-    <Compile Include="Unreal\BinaryConverters\UReferenceProperty.cs" />
-    <Compile Include="Unreal\BinaryConverters\UValueProperty.cs" />
-    <Compile Include="Unreal\BinaryConverters\UScriptStruct.cs" />
-    <Compile Include="Unreal\BinaryConverters\UState.cs" />
-    <Compile Include="Unreal\BinaryConverters\UStruct.cs" />
-    <Compile Include="Unreal\BinaryConverters\WwiseBank.cs" />
-    <Compile Include="Unreal\BinaryConverters\WwiseEvent.cs" />
-    <Compile Include="Unreal\BinaryConverters\WwiseStream.cs" />
-    <Compile Include="Unreal\WwiseHelper.cs" />
-    <Compile Include="Unreal\CommonStructs.cs" />
-    <Compile Include="Unreal\DLCPackage2.cs" />
-    <Compile Include="Unreal\ME3Enums.cs" />
-    <Compile Include="Unreal\PSA.cs" />
-    <Compile Include="Unreal\SerializingContainer2.cs" />
-    <Compile Include="Unreal\BinaryConverters\TreeNode.cs" />
-    <Compile Include="Unreal\BinaryConverters\UnrealStructs.cs" />
-    <Compile Include="Unreal\BitConverter.cs" />
-    <Compile Include="Unreal\Bytecode.cs" />
-    <Compile Include="Unreal\Classes\Function.cs" />
-    <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
-    <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs" />
-    <Compile Include="Unreal\BinaryConverters\World.cs" />
     <Compile Include="Soundplorer\HIRCDisplayObject.cs" />
-    <Compile Include="Unreal\DLCPackage.cs" />
-    <Compile Include="Unreal\DLCUnpacker.cs" />
-    <Compile Include="Unreal\HuffmanCompression.cs" />
-    <Compile Include="Unreal\PropertyReader.cs" />
-    <Compile Include="Unreal\PropertyCollection.cs" />
-    <Compile Include="Unreal\SerializingContainer.cs" />
-    <Compile Include="Unreal\TalkFile.cs" />
-    <Compile Include="Unreal\TextureCompression.cs" />
-    <Compile Include="Unreal\TOCBinFile.cs" />
-    <Compile Include="Unreal\UDKUnrealObjectInfo.cs" />
-    <Compile Include="Unreal\UnrealFlags.cs" />
-    <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="WinFormsBase.cs">
       <SubType>Form</SubType>
@@ -1436,7 +1334,6 @@
     <Compile Include="ME1\Talkfiles.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
-    <Compile Include="Packages\CompressionHelper.cs" />
     <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer\Meshplorer.cs">
@@ -1538,6 +1435,10 @@
     <ProjectReference Include="..\HexConverterWPF\HexConverterWPF.csproj">
       <Project>{947a6918-ad71-4f61-bc63-8da7997e10e6}</Project>
       <Name>HexConverterWPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ME3ExplorerCore\ME3ExplorerCore.csproj">
+      <Project>{0c43cf93-ce9f-4bec-a7cc-d45c161c3be4}</Project>
+      <Name>ME3ExplorerCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>

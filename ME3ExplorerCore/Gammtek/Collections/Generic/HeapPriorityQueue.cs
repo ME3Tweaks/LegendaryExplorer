@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace ME3ExplorerCore.Gammtek.Collections.Generic
+namespace Gammtek.Conduit.Collections.Generic
 {
 	public sealed class HeapPriorityQueue<T> : IPriorityQueue<T>
 		where T : PriorityQueueNode

@@ -12,6 +12,7 @@ using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
 using ME3Explorer.Matinee;
+using ME3ExplorerCore.MEDirectories;
 
 namespace ME3Explorer
 {

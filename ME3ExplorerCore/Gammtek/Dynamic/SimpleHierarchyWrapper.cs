@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ME3ExplorerCore.Gammtek.Dynamic
+namespace Gammtek.Conduit.Dynamic
 {
 	public class SimpleHierarchyWrapper : IElasticHierarchyWrapper
 	{

@@ -12,8 +12,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ME3Explorer;
-using ME3Explorer.Unreal.BinaryConverters;
-using static ME3Explorer.Unreal.UnrealFlags;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing

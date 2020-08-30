@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace ME3Explorer

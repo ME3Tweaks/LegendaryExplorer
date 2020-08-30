@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.Extensions;
 using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;
 

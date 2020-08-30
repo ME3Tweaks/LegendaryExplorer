@@ -9,8 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
-using ME3Explorer.Unreal.BinaryConverters;
-using static ME3Explorer.Unreal.UnrealFlags;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3Script.Analysis.Visitors
 {

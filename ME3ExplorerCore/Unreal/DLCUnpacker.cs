@@ -21,18 +21,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using ME3ExplorerCore.Compression;
-using ME3ExplorerCore.Gammtek.Extensions.IO;
-using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Unreal
 {
-    class DLCUnpack : INotifyPropertyChanged
+    class DLCUnpack : NotifyPropertyChangedBase
     {
         const uint SfarTag = 0x53464152; // 'SFAR'
         const uint SfarVersion = 0x00010000;
@@ -55,32 +51,58 @@ namespace ME3ExplorerCore.Unreal
         /// </summary>
         public volatile bool UnpackCanceled;
 
+        private string _currentOverallStatus;
         /// <summary>
         /// Current text describing what the overall status is for this DLC
         /// </summary>
-        public string CurrentOverallStatus { get; set; }
+        public string CurrentOverallStatus
+        {
+            get => _currentOverallStatus;
+            set => SetProperty(ref _currentOverallStatus, value);
+        }
 
+        private string _currentStatus;
         /// <summary>
         /// Current text describing what is currently going on with this DLC.
         /// </summary>
-        public string CurrentStatus { get; set; }
+        public string CurrentStatus
+        {
+            get => _currentStatus;
+            set => SetProperty(ref _currentStatus, value);
+        }
 
-        public bool IndeterminateState { get; set; }
+        private bool _loadingFileIntoRAM;
+        public bool IndeterminateState
+        {
+            get => _loadingFileIntoRAM;
+            set => SetProperty(ref _loadingFileIntoRAM, value);
+        }
 
         /// <summary>
         /// The total number of files in this DLC
         /// </summary>
         public uint TotalFilesInDLC { get; private set; }
 
+        private int _currentFilesProcessed;
         /// <summary>
         /// Current number of files that have been extracted from this DLC
         /// </summary>
-        public int CurrentFilesProcessed { get; set; }
+        public int CurrentFilesProcessed
+        {
+            get => _currentFilesProcessed;
+            set => SetProperty(ref _currentFilesProcessed, value);
+        }
+
+        private int _currentProgress;
         /// <summary>
         /// Current over progress percent for this DLC's extraction
         /// </summary>
-        public int CurrentProgress { get; set; }
-        
+        public int CurrentProgress
+        {
+            get => _currentProgress;
+            set => SetProperty(ref _currentProgress, value);
+        }
+
         public struct DLCEntry
         {
             public byte[] filenameHash;
@@ -155,7 +177,7 @@ namespace ME3ExplorerCore.Unreal
                     stream.JumpTo(filesList[i].dataOffset);
                     int compressedBlockSize = blockSizes[filesList[i].compressedBlockSizesIndex];
                     byte[] inBuf = stream.ReadToBuffer(compressedBlockSize);
-                    byte[] outBuf = LZMA.Decompress(inBuf, (uint)filesList[i].uncomprSize);
+                    byte[] outBuf = SevenZipHelper.LZMA.Decompress(inBuf, (uint)filesList[i].uncomprSize);
                     if (outBuf.Length == 0)
                         throw new Exception();
                     StreamReader filenamesStream = new StreamReader(new MemoryStream(outBuf));
@@ -216,7 +238,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     else
                     {
-                        uncompressedBlockBuffers[(int)j] = LZMA.Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
+                        uncompressedBlockBuffers[(int)j] = SevenZipHelper.LZMA.Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
                         if (uncompressedBlockBuffers[(int)j].Length == 0)
                             throw new Exception();
                     }
@@ -301,6 +323,5 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

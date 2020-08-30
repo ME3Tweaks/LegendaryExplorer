@@ -62,17 +62,39 @@ namespace ME3ExplorerCore.Packages
             HeaderOffset = (uint)stream.Position;
             switch (file.Game)
             {
-                case MEGame.ME1 when file.Platform != MEPackage.GamePlatform.PS3:
+                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.Xenon:
+                    {
+
+                        long start = stream.Position;
+                        //Debug.WriteLine($"Export header pos {start:X8}");
+                        stream.Seek(0x28, SeekOrigin.Current);
+                        int componentMapCount = stream.ReadInt32();
+                        //Debug.WriteLine("Component count: " + componentMapCount);
+                        stream.Seek(4 + componentMapCount * 12, SeekOrigin.Current);
+                        int generationsNetObjectsCount = stream.ReadInt32();
+                        //Debug.WriteLine("GenObjs count: " + generationsNetObjectsCount);
+
+                        stream.Seek(16, SeekOrigin.Current); // skip guid size
+                        stream.Seek( generationsNetObjectsCount * 4, SeekOrigin.Current);
+                        long end = stream.Position;
+                        stream.Seek(start, SeekOrigin.Begin);
+                        var len = (end - start);
+                        //Debug.WriteLine($"Len: {len:X2}");
+                        //read header
+                        _header = stream.ReadBytes((int)len);
+                        break;
+                    }
+                case MEGame.ME1 when file.Platform == MEPackage.GamePlatform.PC:
                 case MEGame.ME2 when file.Platform != MEPackage.GamePlatform.PS3:
                     {
 
                         long start = stream.Position;
-                        stream.Seek(40, SeekOrigin.Current);
-                        int count = stream.ReadInt32();
-                        stream.Seek(4 + count * 12, SeekOrigin.Current);
-                        count = stream.ReadInt32();
+                        stream.Seek(0x28, SeekOrigin.Current);
+                        int componentMapCount = stream.ReadInt32();
+                        stream.Seek(4 + componentMapCount * 12, SeekOrigin.Current);
+                        int generationsNetObjectsCount = stream.ReadInt32();
                         stream.Seek(16, SeekOrigin.Current);
-                        stream.Seek(4 + count * 4, SeekOrigin.Current);
+                        stream.Seek(4 + generationsNetObjectsCount * 4, SeekOrigin.Current);
                         long end = stream.Position;
                         stream.Seek(start, SeekOrigin.Begin);
                         //read header

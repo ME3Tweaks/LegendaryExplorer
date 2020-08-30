@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
-        xmlns:packages="clr-namespace:ME3Explorer.Packages"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         mc:Ignorable="d"

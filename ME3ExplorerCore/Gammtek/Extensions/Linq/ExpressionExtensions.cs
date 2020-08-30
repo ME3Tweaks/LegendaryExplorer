@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ME3ExplorerCore.Gammtek.Extensions.Linq
+namespace Gammtek.Conduit.Extensions.Linq
 {
 	/// <summary>
 	///     Extension for <see cref="Expression" />.

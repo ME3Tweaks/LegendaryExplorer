@@ -15,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using FontAwesome5;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Xceed.Wpf.Toolkit.Core.Converters;
 

@@ -1,5 +1,4 @@
 ﻿using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer.Unreal.Classes;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.Soundplorer
 {

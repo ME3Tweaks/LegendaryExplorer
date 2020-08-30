@@ -1,6 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+﻿using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.PathfindingNodes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace ME3Explorer.Pathfinding_Editor

@@ -8,8 +8,7 @@ using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
 
 namespace MassEffect.NativesEditor.Views
 {

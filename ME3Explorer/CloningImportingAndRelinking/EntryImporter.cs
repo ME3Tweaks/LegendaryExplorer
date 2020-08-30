@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using StreamHelpers;
 
 namespace ME3Explorer

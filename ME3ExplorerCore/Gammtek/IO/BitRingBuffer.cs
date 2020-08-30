@@ -15,7 +15,7 @@
 
 using System;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	/// <summary>
 	///     Ring buffer to read and write bits and bytes.

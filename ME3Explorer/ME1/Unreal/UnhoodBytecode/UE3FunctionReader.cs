@@ -4,7 +4,6 @@
  * Modified by Mgamerz (2019)
  */
 
-using ME3Explorer.Packages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gammtek.Conduit.Extensions.IO;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {

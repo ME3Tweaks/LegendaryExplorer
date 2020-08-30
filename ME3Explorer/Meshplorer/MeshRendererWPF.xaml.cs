@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
 using SlavaGu.ConsoleAppLauncher;
 using Matrix = SharpDX.Matrix;
-using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
+using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -538,7 +538,7 @@ namespace ME3Explorer.Meshplorer
 
         private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
         {
-            var matinst = new Unreal.Classes.MaterialInstanceConstant(entry);
+            var matinst = new MaterialInstanceConstant(entry);
             foreach (var tex in matinst.Textures)
             {
 

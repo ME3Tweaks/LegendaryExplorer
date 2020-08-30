@@ -6,8 +6,7 @@
              xmlns:me3explorer="clr-namespace:ME3Explorer"
              xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
              xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
-             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
-             xmlns:packages="clr-namespace:ME3Explorer.Packages"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Icon="/ME3Explorer;component/Resources/facefxeditor_256x256.ico" Title="FaceFX Editor" Loaded="WPFBase_Loaded">

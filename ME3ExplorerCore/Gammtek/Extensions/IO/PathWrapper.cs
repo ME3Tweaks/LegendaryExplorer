@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.Extensions.IO
+namespace Gammtek.Conduit.Extensions.IO
 {
 	public static class PathWrapper
 	{

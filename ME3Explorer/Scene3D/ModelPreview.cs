@@ -5,14 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
 using SharpDX;
 using SharpDX.Direct3D11;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
-using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
+using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using static ME3Explorer.TextureViewerExportLoader;
 using static ME3Explorer.Scene3D.ModelPreview;
+using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -87,11 +89,11 @@ namespace ME3Explorer.Scene3D
     public abstract class ModelPreviewMaterial : IDisposable
     {
         /// <summary>
-        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="Unreal.Classes.MaterialInstanceConstant"/> looks like as possible. 
+        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        protected ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
+        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
             Properties.Add("Name", mat.Export.ObjectName);
@@ -165,11 +167,11 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         public string DiffuseTextureFullName = "";
         /// <summary>
-        /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="Unreal.Classes.MaterialInstanceConstant"/> looks like as possible. 
+        /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
         {
             string matPackage = null;
             if (mat.Export.Parent != null)
@@ -239,7 +241,7 @@ namespace ME3Explorer.Scene3D
     }
 
     /// <summary>
-    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.BinaryConverters.SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
+    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
     /// </summary>
     public class ModelPreview : IDisposable
     {
@@ -621,12 +623,12 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
-        /// Creates a preview of the given <see cref="Unreal.BinaryConverters.SkeletalMesh"/>.
+        /// Creates a preview of the given <see cref="SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device Device, SkeletalMesh m, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MATERIALS
             if (preloadedData == null)
@@ -714,17 +716,17 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
-        /// Creates a preview of the given <see cref="Unreal.Classes.SkeletalMesh"/>.
+        /// Creates a preview of the given <see cref="ME3ExplorerCore.Unreal.Classes.SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.Classes.SkeletalMesh m, PreviewTextureCache texcache)
+        public ModelPreview(Device Device, ME3ExplorerCore.Unreal.Classes.SkeletalMesh m, PreviewTextureCache texcache)
         {
             // STEP 1: MATERIALS
             for (int i = 0; i < m.Materials.Count; i++)
             {
-                Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
+                MaterialInstanceConstant mat = m.MatInsts[i];
                 if (mat == null && m.Materials[i] < 0)
                 {
                     // The material instance is an import!
@@ -748,20 +750,20 @@ namespace ME3Explorer.Scene3D
             }
 
             // STEP 2: LODS
-            foreach (Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
+            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
             {
                 // Vertices
                 List<WorldVertex> vertices = new List<WorldVertex>();
                 if (m.Export.Game == MEGame.ME1)
                 {
-                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+                    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
                     {
                         vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
                     }
                 }
                 else
                 {
-                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+                    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
                     {
                         // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
                         vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
@@ -776,7 +778,7 @@ namespace ME3Explorer.Scene3D
                 WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
                 // Sections
                 List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-                foreach (Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
+                foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
                 {
                     if (section.MaterialIndex < Materials.Count)
                     {

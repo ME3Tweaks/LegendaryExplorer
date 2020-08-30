@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace ME3ExplorerCore.Gammtek.Paths
+namespace Gammtek.Conduit.Paths
 {
 	/// <summary>
 	///     Provides a set of extension methods dedicated to enumerables.

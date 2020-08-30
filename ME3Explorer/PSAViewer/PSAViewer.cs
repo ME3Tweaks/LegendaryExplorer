@@ -7,8 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {

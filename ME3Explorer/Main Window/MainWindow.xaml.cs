@@ -10,10 +10,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
-using ME3Explorer.Packages;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using FontAwesome5.WPF;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

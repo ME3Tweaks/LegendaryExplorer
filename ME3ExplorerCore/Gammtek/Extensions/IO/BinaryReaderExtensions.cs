@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ME3ExplorerCore.Gammtek.Extensions.IO
+namespace Gammtek.Conduit.Extensions.IO
 {
 	public static class BinaryReaderExtensions
 	{

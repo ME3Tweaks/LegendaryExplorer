@@ -15,9 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ME3Explorer;
 using ME3Explorer.CurveEd;
-using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 

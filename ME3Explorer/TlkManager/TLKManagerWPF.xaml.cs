@@ -1,6 +1,5 @@
 ﻿using ME1Explorer;
 using ME2Explorer;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -23,6 +22,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.TlkManagerNS

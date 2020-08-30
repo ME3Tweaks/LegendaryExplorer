@@ -31,9 +31,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace ME3ExplorerCore.Compression
+namespace SevenZipHelper
 {
-    public static class LZMA
+    static public class LZMA
     {
         [DllImport("sevenzipwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);

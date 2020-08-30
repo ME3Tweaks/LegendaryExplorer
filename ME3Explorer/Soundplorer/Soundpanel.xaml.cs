@@ -18,15 +18,14 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome5;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
-using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
+using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
 {

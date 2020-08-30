@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	/// <summary>
 	///     Stream class for writing individual bits to a stream.

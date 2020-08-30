@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -14,7 +13,7 @@ namespace ME3ExplorerCore.Unreal
         {
             var ms = ExtractRawFromSource(afcPath, dataSize, dataOffset);
             if (File.Exists(outfile)) File.Delete(outfile);
-            StreamHelpers.WriteToFile(ms, outfile);
+            StreamHelpers.StreamHelpers.WriteToFile(ms, outfile);
             return true;
         }
 

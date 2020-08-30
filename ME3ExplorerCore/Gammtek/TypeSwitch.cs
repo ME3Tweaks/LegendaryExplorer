@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace ME3ExplorerCore.Gammtek
+namespace Gammtek.Conduit
 {
 	public static class TypeSwitch
 	{

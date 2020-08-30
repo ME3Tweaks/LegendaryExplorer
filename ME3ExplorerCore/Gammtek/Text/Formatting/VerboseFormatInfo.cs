@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.Text.Formatting
+namespace Gammtek.Conduit.Text.Formatting
 {
 	/// <summary>
 	///     Provides extended formatting serivces that can be applied to all reference and value types.

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace ME3ExplorerCore.Gammtek.Collections.ComponentModel
+namespace Gammtek.Conduit.Collections.ComponentModel
 {
 	public class ObservableUInt64Collection : ObservableCollection<ulong>
 	{

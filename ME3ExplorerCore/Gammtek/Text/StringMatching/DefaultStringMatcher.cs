@@ -1,4 +1,4 @@
-﻿namespace ME3ExplorerCore.Gammtek.Text.StringMatching
+﻿namespace Gammtek.Conduit.Text.StringMatching
 {
 	/// <summary>
 	///     Default string matcher which ignores pattern and treats all input strings as matched.

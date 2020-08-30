@@ -11,10 +11,10 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Be.Windows.Forms;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer

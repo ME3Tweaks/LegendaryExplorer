@@ -14,10 +14,14 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Windows.Documents;
+using StreamHelpers;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
     /// <summary>
     ///     A BinaryWriter implementation to write individual bits to a stream

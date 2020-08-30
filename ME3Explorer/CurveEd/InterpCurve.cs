@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ME3Explorer.Unreal;
 using System.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using SharpDX;
 
 namespace ME3Explorer.CurveEd

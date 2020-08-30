@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.Text.Formatting
+namespace Gammtek.Conduit.Text.Formatting
 {
 	/// <summary>
 	///     Format provider used to format strings that represent objects that implement System.Collections.IDictionary

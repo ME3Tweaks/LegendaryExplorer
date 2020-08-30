@@ -9,8 +9,7 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
-    Loaded="MetadataEditor_Loaded"   
-    xmlns:Packages="clr-namespace:ME3Explorer.Packages"
+    Loaded="MetadataEditor_Loaded"
     xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
     d:DesignHeight="730" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>

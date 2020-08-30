@@ -4,11 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ME3ExplorerCore.Compression;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Helpers;
+using Gammtek.Conduit.IO;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -42,19 +41,19 @@ namespace ME3ExplorerCore.Unreal
                     throw new Exception("Not supported DLC file!");
             }
 
-            //public TreeNode ToTree()
-            //{
-            //    TreeNode result = new TreeNode("Header");
-            //    //result.Nodes.Add("Magic : " + Magic.ToString("X8"));
-            //    result.Nodes.Add("Version : " + Version.ToString("X8"));
-            //    result.Nodes.Add("DataOffset : " + DataOffset.ToString("X8"));
-            //    result.Nodes.Add("EntryOffset : " + EntryOffset.ToString("X8"));
-            //    result.Nodes.Add("FileCount : " + FileCount.ToString("X8"));
-            //    result.Nodes.Add("BlockTableOffset : " + BlockTableOffset.ToString("X8"));
-            //    result.Nodes.Add("MaxBlockSize : " + MaxBlockSize.ToString("X8"));
-            //    result.Nodes.Add("Scheme : " + CompressionScheme);
-            //    return result;
-            //}
+            public TreeNode<,> ToTree()
+            {
+                TreeNode result = new TreeNode("Header");
+                //result.Nodes.Add("Magic : " + Magic.ToString("X8"));
+                result.Nodes.Add("Version : " + Version.ToString("X8"));
+                result.Nodes.Add("DataOffset : " + DataOffset.ToString("X8"));
+                result.Nodes.Add("EntryOffset : " + EntryOffset.ToString("X8"));
+                result.Nodes.Add("FileCount : " + FileCount.ToString("X8"));
+                result.Nodes.Add("BlockTableOffset : " + BlockTableOffset.ToString("X8"));
+                result.Nodes.Add("MaxBlockSize : " + MaxBlockSize.ToString("X8"));
+                result.Nodes.Add("Scheme : " + CompressionScheme);
+                return result;
+            }
         }
         public struct FileEntryStruct
         {
@@ -141,27 +140,27 @@ namespace ME3ExplorerCore.Unreal
                 return entryOffset + (numEntries * 0x1E) + (blockIndex * 2);
             }
 
-            //public TreeNode<,> ToTree(int MyIndex)
-            //{
-            //    TreeNode result = new TreeNode(MyIndex + " : @0x" + MyOffset.ToString("X8") + " Filename: " + FileName);
-            //    string h = "Hash : ";
-            //    foreach (byte b in Hash)
-            //        h += b.ToString("X2");
-            //    result.Nodes.Add("Hash : " + h);
-            //    result.Nodes.Add("BlockSizeIndex : " + BlockSizeTableIndex.ToString("X8"));
-            //    result.Nodes.Add("UncompressedSize : " + UncompressedSize.ToString("X8"));
-            //    result.Nodes.Add("UncompressedSizeAdder : " + UncompressedSizeAdder.ToString("X2"));
-            //    result.Nodes.Add("RealUncompressedSize : " + RealUncompressedSize.ToString("X8"));
-            //    result.Nodes.Add("DataOffset : " + DataOffset.ToString("X8"));
-            //    result.Nodes.Add("DataOffsetAdder : " + DataOffsetAdder.ToString("X2"));
-            //    result.Nodes.Add("RealDataOffset : " + RealDataOffset.ToString("X8"));
-            //    result.Nodes.Add("BlockTableOffset : " + BlockTableOffset.ToString("X8"));
-            //    TreeNode t = new TreeNode("Blocks : " + BlockOffsets.Length);
-            //    for (int i = 0; i < BlockOffsets.Length; i++)
-            //        t.Nodes.Add(i + " : Offset: 0x" + BlockOffsets[i].ToString("X8") + " Size: 0x" + BlockSizes[i].ToString("X8"));
-            //    result.Nodes.Add(t);
-            //    return result;
-            //}
+            public TreeNode ToTree(int MyIndex)
+            {
+                TreeNode result = new TreeNode(MyIndex + " : @0x" + MyOffset.ToString("X8") + " Filename: " + FileName);
+                string h = "Hash : ";
+                foreach (byte b in Hash)
+                    h += b.ToString("X2");
+                result.Nodes.Add("Hash : " + h);
+                result.Nodes.Add("BlockSizeIndex : " + BlockSizeTableIndex.ToString("X8"));
+                result.Nodes.Add("UncompressedSize : " + UncompressedSize.ToString("X8"));
+                result.Nodes.Add("UncompressedSizeAdder : " + UncompressedSizeAdder.ToString("X2"));
+                result.Nodes.Add("RealUncompressedSize : " + RealUncompressedSize.ToString("X8"));
+                result.Nodes.Add("DataOffset : " + DataOffset.ToString("X8"));
+                result.Nodes.Add("DataOffsetAdder : " + DataOffsetAdder.ToString("X2"));
+                result.Nodes.Add("RealDataOffset : " + RealDataOffset.ToString("X8"));
+                result.Nodes.Add("BlockTableOffset : " + BlockTableOffset.ToString("X8"));
+                TreeNode t = new TreeNode("Blocks : " + BlockOffsets.Length);
+                for (int i = 0; i < BlockOffsets.Length; i++)
+                    t.Nodes.Add(i + " : Offset: 0x" + BlockOffsets[i].ToString("X8") + " Size: 0x" + BlockSizes[i].ToString("X8"));
+                result.Nodes.Add(t);
+                return result;
+            }
         }
 
         public static readonly byte[] TOCHash = { 0xB5, 0x50, 0x19, 0xCB, 0xF9, 0xD3, 0xDA, 0x65, 0xD5, 0x5B, 0x32, 0x1C, 0x00, 0x19, 0x69, 0x7C };
@@ -378,7 +377,7 @@ namespace ME3ExplorerCore.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         if (Header.CompressionScheme == "amzl")
                         {
-                            outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
+                            outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                             if (outputBlock.Length != actualUncompressedBlockSize)
                                 throw new Exception("Decompression Error");
                             result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
@@ -417,7 +416,7 @@ namespace ME3ExplorerCore.Unreal
         private byte[] pumpLZXDecompressor(List<(byte[], uint)> lzxBlocks)
         {
             // build lzx file for faster decompression with QuickBMS - individual blocks are EXTREMELY slow
-            var uncompSize = (uint)lzxBlocks.Sum(x => x.Item2);
+            var uncompSize = (uint) lzxBlocks.Sum(x => x.Item2);
             EndianReader ms = new EndianReader(new MemoryStream()) { Endian = Endian.Big };
             ms.Writer.WriteUInt32(MEPackage.packageTagLittleEndian);
             ms.Writer.WriteUInt32(Header.MaxBlockSize);
@@ -506,7 +505,7 @@ namespace ME3ExplorerCore.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         uint actualCompressedBlockSize = compressedBlockSize;
 
-                        outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
+                        outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                         if (outputBlock.Length != actualUncompressedBlockSize)
                             throw new Exception("Decompression Error");
                         result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
@@ -565,11 +564,11 @@ namespace ME3ExplorerCore.Unreal
             string path = Path.GetDirectoryName(FileName) + "\\" + Path.GetFileNameWithoutExtension(FileName) + ".tmp";
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 
-            Debug.WriteLine("Creating Header Dummy...");
+            DebugOutput.PrintLn("Creating Header Dummy...");
             for (int i = 0; i < 8; i++)
                 fs.Write(BitConverter.GetBytes(0), 0, 4);
             Header.EntryOffset = 0x20;
-            Debug.WriteLine("Creating File Table...");
+            DebugOutput.PrintLn("Creating File Table...");
             for (int i = 0; i < Header.FileCount; i++)
             {
                 FileEntryStruct e = Files[i];
@@ -581,19 +580,19 @@ namespace ME3ExplorerCore.Unreal
                 fs.WriteByte(e.DataOffsetAdder);
             }
             Header.BlockTableOffset = (uint)fs.Position;
-            Debug.WriteLine("Creating Block Table...");
+            DebugOutput.PrintLn("Creating Block Table...");
             for (int i = 0; i < Header.FileCount; i++)
                 if (Files[i].BlockSizeTableIndex != 0xFFFFFFFF)
                     foreach (ushort u in Files[i].BlockSizes)
                         fs.Write(BitConverter.GetBytes(u), 0, 2);
             Header.DataOffset = (uint)fs.Position;
-            Debug.WriteLine("Appending Files...");
+            DebugOutput.PrintLn("Appending Files...");
             uint pos = (uint)fs.Position;
             for (int i = 0; i < Header.FileCount; i++)
             {
                 List<byte[]> blocks = GetBlocks(i);
                 FileEntryStruct e = Files[i];
-                Debug.WriteLine("Rebuilding \"" + e.FileName + "\" (" + (i + 1) + "/" + Header.FileCount + ") " + BytesToString(e.UncompressedSize) + " ...");
+                DebugOutput.PrintLn("Rebuilding \"" + e.FileName + "\" (" + (i + 1) + "/" + Header.FileCount + ") " + BytesToString(e.UncompressedSize) + " ...");
                 e.DataOffset = pos;
                 e.DataOffsetAdder = 0;
                 for (int j = 0; j < blocks.Count; j++)
@@ -604,7 +603,7 @@ namespace ME3ExplorerCore.Unreal
                 }
                 Files[i] = e;
             }
-            Debug.WriteLine("Updating FileTable...");
+            DebugOutput.PrintLn("Updating FileTable...");
             fs.Seek(0x20, 0);
             pos = (uint)fs.Position;
             uint blocksizeindex = 0;
@@ -629,7 +628,7 @@ namespace ME3ExplorerCore.Unreal
                 pos += 0x1E;
             }
             fs.Seek(0, 0);
-            Debug.WriteLine("Rebuilding Header...");
+            DebugOutput.PrintLn("Rebuilding Header...");
             //magic
             fs.Write(BitConverter.GetBytes(0x53464152), 0, 4);
             fs.Write(BitConverter.GetBytes(Header.Version), 0, 4);
@@ -661,32 +660,32 @@ namespace ME3ExplorerCore.Unreal
             try
             {
                 FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-                Debug.WriteLine("Searching TOC...");
+                DebugOutput.PrintLn("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
                     return;
-                Debug.WriteLine("Found TOC, deleting line...");
+                DebugOutput.PrintLn("Found TOC, deleting line...");
                 MemoryStream m = DecompressEntry(f, fs);
                 fs.Close();
                 FileEntryStruct e = Files[Index];
                 string toc = Encoding.UTF8.GetString(m.ToArray(), 0, (int)m.Length);
                 string file = e.FileName + "\r\n";
                 toc = toc.Replace(file, "");
-                Debug.WriteLine("Replacing TOC...");
+                DebugOutput.PrintLn("Replacing TOC...");
                 ReplaceEntry(Encoding.ASCII.GetBytes(toc), f);
-                Debug.WriteLine("Deleting Entry from Filelist...");
+                DebugOutput.PrintLn("Deleting Entry from Filelist...");
                 List<FileEntryStruct> l = new List<FileEntryStruct>();
                 l.AddRange(Files);
                 l.RemoveAt(Index);
                 Files = l.ToArray();
                 Header.FileCount--;
-                Debug.WriteLine("Rebuilding...");
+                DebugOutput.PrintLn("Rebuilding...");
                 ReBuild();
-                Debug.WriteLine("Done.");
+                DebugOutput.PrintLn("Done.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ERROR\n" + ex.Message);
+                DebugOutput.PrintLn("ERROR\n" + ex.Message);
             }
         }
 
@@ -697,11 +696,11 @@ namespace ME3ExplorerCore.Unreal
                 Index.Sort();
                 Index.Reverse();
                 FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-                Debug.WriteLine("Searching TOC...");
+                DebugOutput.PrintLn("Searching TOC...");
                 int f = FindTOC();
                 if (f == -1)
                     return;
-                Debug.WriteLine("Found TOC, deleting lines...");
+                DebugOutput.PrintLn("Found TOC, deleting lines...");
                 MemoryStream m = DecompressEntry(f, fs);
                 string toc = Encoding.UTF8.GetString(m.ToArray(), 0, (int)m.Length);
                 fs.Close();
@@ -711,9 +710,9 @@ namespace ME3ExplorerCore.Unreal
                     string file = e.FileName + "\r\n";
                     toc = toc.Replace(file, "");
                 }
-                Debug.WriteLine("Replacing TOC...");
+                DebugOutput.PrintLn("Replacing TOC...");
                 ReplaceEntry(Encoding.ASCII.GetBytes(toc), f);
-                Debug.WriteLine("Deleting Entry from Filelist...");
+                DebugOutput.PrintLn("Deleting Entry from Filelist...");
                 List<FileEntryStruct> l = new List<FileEntryStruct>();
                 l.AddRange(Files);
                 for (int i = 0; i < Index.Count; i++)
@@ -722,13 +721,13 @@ namespace ME3ExplorerCore.Unreal
                     Header.FileCount--;
                 }
                 Files = l.ToArray();
-                Debug.WriteLine("Rebuilding...");
+                DebugOutput.PrintLn("Rebuilding...");
                 ReBuild();
-                Debug.WriteLine("Done.");
+                DebugOutput.PrintLn("Done.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ERROR\n" + ex.Message);
+                DebugOutput.PrintLn("ERROR\n" + ex.Message);
             }
         }
 
@@ -752,11 +751,11 @@ namespace ME3ExplorerCore.Unreal
             Files = tmp.ToArray();
             //
             //Find TOC
-            Debug.WriteLine("Searching TOC...");
+            DebugOutput.PrintLn("Searching TOC...");
             int f = FindTOC();
             if (f == -1)
                 return;
-            Debug.WriteLine("Found TOC, adding line...");
+            DebugOutput.PrintLn("Found TOC, adding line...");
             MemoryStream m = DecompressEntry(f, fs);
             //
             //Update TOC
@@ -768,7 +767,7 @@ namespace ME3ExplorerCore.Unreal
             int count = (int)Header.FileCount + 1;
             long oldsize = fs.Length;
             long offset = oldsize;
-            Debug.WriteLine("File End Offset : 0x" + offset.ToString("X10"));
+            DebugOutput.PrintLn("File End Offset : 0x" + offset.ToString("X10"));
             fs.Seek(oldsize, 0);
             Header.EntryOffset = (uint)offset;
             for (int i = 0; i < count; i++)
@@ -782,7 +781,7 @@ namespace ME3ExplorerCore.Unreal
                 fs.WriteByte(e.DataOffsetAdder);
             }
             offset += count * 0x1E;
-            Debug.WriteLine("Table End Offset : 0x" + offset.ToString("X10"));
+            DebugOutput.PrintLn("Table End Offset : 0x" + offset.ToString("X10"));
             Header.BlockTableOffset = (uint)offset;
             //
             //Append blocktable
@@ -794,17 +793,17 @@ namespace ME3ExplorerCore.Unreal
                         fs.Write(BitConverter.GetBytes(u), 0, 2);
             }
             offset = fs.Length;
-            Debug.WriteLine("Block Table End Offset : 0x" + offset.ToString("X10"));
+            DebugOutput.PrintLn("Block Table End Offset : 0x" + offset.ToString("X10"));
             long dataoffset = offset;
             fs.Write(FileIN, 0, FileIN.Length);
             offset += FileIN.Length;
-            Debug.WriteLine("New Data End Offset : 0x" + offset.ToString("X10"));
+            DebugOutput.PrintLn("New Data End Offset : 0x" + offset.ToString("X10"));
             //
             //Append TOC
             long tocoffset = offset;
             fs.Write(m.ToArray(), 0, (int)m.Length);
             offset = fs.Length;
-            Debug.WriteLine("New TOC Data End Offset : 0x" + offset.ToString("X10"));
+            DebugOutput.PrintLn("New TOC Data End Offset : 0x" + offset.ToString("X10"));
             //update filetable
             fs.Seek(oldsize, 0);
             uint blocksizeindex = 0;
@@ -889,23 +888,23 @@ namespace ME3ExplorerCore.Unreal
 
         public List<TOCBinFile.Entry> UpdateTOCbin(bool Rebuild = false)
         {
-            Debug.WriteLine("File opened\nSearching TOCbin...");
+            DebugOutput.PrintLn("File opened\nSearching TOCbin...");
             int f = -1;
             for (int i = 0; i < Files.Length; i++)
                 if (Files[i].FileName.Contains("PCConsoleTOC.bin"))
                     f = i;
             if (f == -1)
             {
-                Debug.WriteLine("Couldnt Find PCConsoleTOC.bin");
+                DebugOutput.PrintLn("Couldnt Find PCConsoleTOC.bin");
                 return null;
             }
             int IndexTOC = f;
-            Debug.WriteLine("Found PCConsoleTOC.bin(" + f + ")!\nLoading Entries...");
+            DebugOutput.PrintLn("Found PCConsoleTOC.bin(" + f + ")!\nLoading Entries...");
             TOCBinFile TOC = new TOCBinFile(new MemoryStream(DecompressEntry(f).ToArray()));
-            Debug.WriteLine("Checking Entries...");
+            DebugOutput.PrintLn("Checking Entries...");
             int count = 0;
             if (TOC.Entries == null)
-                Debug.WriteLine("No TOC entries found. Oh dear...");
+                DebugOutput.PrintLn("No TOC entries found. Oh dear...");
             for (int i = 0; i < TOC.Entries.Count; i++)
             {
                 TOCBinFile.Entry e = TOC.Entries[i];
@@ -925,51 +924,51 @@ namespace ME3ExplorerCore.Unreal
                     {
                         FileInfo fi = new FileInfo(path);
                         if (fi.Length == e.size)
-                            Debug.WriteLine((count++) + " : Entry is correct " + e.name);
+                            DebugOutput.PrintLn((count++) + " : Entry is correct " + e.name);
                         else
                         {
                             e.size = (int)fi.Length;
-                            Debug.WriteLine((count++) + " : Entry will be updated " + e.name);
+                            DebugOutput.PrintLn((count++) + " : Entry will be updated " + e.name);
                             TOC.Entries[i] = e;
                         }
                     }
                     else
-                        Debug.WriteLine((count++) + " : Entry not found " + e.name);
+                        DebugOutput.PrintLn((count++) + " : Entry not found " + e.name);
                 }  /////////////////////////////// END KFREON BLATHER
                 else
                 {
                     if (Files[f].UncompressedSize == e.size)
-                        Debug.WriteLine((count++) + " : Entry is correct " + e.name);
+                        DebugOutput.PrintLn((count++) + " : Entry is correct " + e.name);
                     else if (Files[f].UncompressedSize != e.size)
                     {
                         e.size = (int)Files[f].UncompressedSize;
-                        Debug.WriteLine((count++) + " : Entry will be updated " + e.name);
+                        DebugOutput.PrintLn((count++) + " : Entry will be updated " + e.name);
                         TOC.Entries[i] = e;
                     }
                 }
             }
-            Debug.WriteLine("Replacing TOC back...");
+            DebugOutput.PrintLn("Replacing TOC back...");
             ReplaceEntry(TOC.Save().ToArray(), IndexTOC);
             if (Rebuild)
             {
-                Debug.WriteLine("Reopening SFAR...");
+                DebugOutput.PrintLn("Reopening SFAR...");
                 Load(FileName);
-                Debug.WriteLine("Rebuild...");
+                DebugOutput.PrintLn("Rebuild...");
                 ReBuild();
             }
             return TOC.Entries;
         }
 
-        //public TreeNode ToTree()
-        //{
-        //    TreeNode result = new TreeNode(FileName);
-        //    result.Nodes.Add(Header.ToTree());
-        //    TreeNode t = new TreeNode("FileEntries");
-        //    for (int i = 0; i < Header.FileCount; i++)
-        //        t.Nodes.Add(Files[i].ToTree(i));
-        //    result.Nodes.Add(t);
-        //    return result;
-        //}
+        public TreeNode ToTree()
+        {
+            TreeNode result = new TreeNode(FileName);
+            result.Nodes.Add(Header.ToTree());
+            TreeNode t = new TreeNode("FileEntries");
+            for (int i = 0; i < Header.FileCount; i++)
+                t.Nodes.Add(Files[i].ToTree(i));
+            result.Nodes.Add(t);
+            return result;
+        }
 
         public int FindFileEntry(string fileName)
         {

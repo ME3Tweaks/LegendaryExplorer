@@ -1,11 +1,7 @@
 ﻿using ME3Explorer.Dialogue_Editor;
-using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -26,9 +22,15 @@ using System.Windows.Media;
 using ME3Explorer.GameInterop;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
-using AnimSequence = ME3Explorer.Unreal.BinaryConverters.AnimSequence;
+using AnimSequence = ME3ExplorerCore.Unreal.BinaryConverters.AnimSequence;
 using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
 using SQLite.Extensions;
+using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 
 namespace ME3Explorer.AssetDatabase
 {
@@ -3511,7 +3513,7 @@ namespace ME3Explorer.AssetDatabase
                                 int bones = 0;
                                 if (IsSkel)
                                 {
-                                    var bin = ObjectBinary.From<Unreal.BinaryConverters.SkeletalMesh>(exp);
+                                    var bin = ObjectBinary.From<SkeletalMesh>(exp);
                                     bones = bin?.RefSkeleton.Length ?? 0;
                                 }
                                 var NewMeshRec = new MeshRecord(pExp, IsSkel, IsMod, bones, new ObservableCollectionExtended<Tuple<int, int, bool>> { new Tuple<int, int, bool>(FileKey, pExportUID, IsMod) });

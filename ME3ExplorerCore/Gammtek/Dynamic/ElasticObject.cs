@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ME3ExplorerCore.Gammtek.Dynamic
+namespace Gammtek.Conduit.Dynamic
 {
 	public class ElasticObject : DynamicObject, IElasticHierarchyWrapper, INotifyPropertyChanged
 	{

@@ -17,8 +17,6 @@
 */
 
 using ByteSizeLib;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +26,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.MEDirectories;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.DLCUnpacker

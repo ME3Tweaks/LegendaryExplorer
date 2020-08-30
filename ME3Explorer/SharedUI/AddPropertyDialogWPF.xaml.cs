@@ -1,6 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,6 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+
 namespace ME3Explorer.SharedUI
 {
     /// <summary>

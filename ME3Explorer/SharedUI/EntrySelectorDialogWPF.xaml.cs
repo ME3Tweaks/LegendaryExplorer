@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI
 {

@@ -14,11 +14,11 @@ using Gammtek.Conduit.Extensions.IO;
 using Gammtek.Conduit.IO;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
-using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer

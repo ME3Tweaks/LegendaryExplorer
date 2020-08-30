@@ -8,9 +8,9 @@ using System.Windows.Media;
 using ME1Explorer;
 using ME3Explorer.SharedUI;
 using ME3Explorer;
-using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Color = System.Windows.Media.Color;
 
 namespace ME3Explorer.Matinee

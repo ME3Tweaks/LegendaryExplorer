@@ -10,12 +10,11 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Gammtek.Conduit.IO;
 using ME2Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.TlkManagerNS;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ME3ExplorerCore.Gammtek.Extensions.Reflection
+namespace Gammtek.Conduit.Extensions.Reflection
 {
 	public static class AssemblyExtensions
 	{

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Gammtek.Extensions.IO;
+using Gammtek.Conduit.Extensions;
+using Gammtek.Conduit.Extensions.IO;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	[Obsolete]
 	public class ByteBufferReader

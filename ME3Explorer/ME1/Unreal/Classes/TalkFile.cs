@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using ME3Explorer.Packages;
 using ME1Explorer;
 using System.Diagnostics;
 using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Packages;
 
 namespace ME1Explorer.Unreal.Classes
 {

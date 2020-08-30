@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using ME3Explorer;
-using ME3Explorer.Packages;
 using ME3Explorer.Properties;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
 namespace ME2Explorer.Unreal
@@ -517,7 +518,7 @@ namespace ME2Explorer.Unreal
             };
             if (!isStruct)
             {
-                ME3Explorer.Unreal.BinaryConverters.UClass classBinary = ME3Explorer.Unreal.BinaryConverters.ObjectBinary.From<ME3Explorer.Unreal.BinaryConverters.UClass>(export);
+                UClass classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame"))

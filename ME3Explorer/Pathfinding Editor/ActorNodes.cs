@@ -1,11 +1,11 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.Pathfinding_Editor;
+﻿using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
-using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ME3ExplorerCore.Gammtek.Collections.Generic
+namespace Gammtek.Conduit.Collections.Generic
 {
 	public class Buffer<T> : Queue<T>
 	{

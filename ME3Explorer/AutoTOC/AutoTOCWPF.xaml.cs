@@ -13,6 +13,7 @@ using System.Windows.Media;
 using Ini;
 using FontAwesome5;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.MEDirectories;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using StreamHelpers;

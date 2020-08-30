@@ -16,7 +16,7 @@
 using System.IO;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	/// <summary>
 	///     BinaryReader that supports reading and writing individual bits from

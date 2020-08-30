@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ME3ExplorerCore.Gammtek.Collections.Specialized
+namespace Gammtek.Conduit.Collections.Specialized
 {
 	public static class Incrementer
 	{

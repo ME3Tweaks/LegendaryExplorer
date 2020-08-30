@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Unreal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ME3ExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit;
 
 namespace ME3Explorer.SharedUI.Converters

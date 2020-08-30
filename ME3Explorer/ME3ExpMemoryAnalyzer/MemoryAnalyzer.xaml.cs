@@ -1,5 +1,4 @@
 ﻿using ByteSizeLib;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;

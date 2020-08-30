@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.Windows
+namespace Gammtek.Conduit.Windows
 {
 	public static class ShMisc
 	{

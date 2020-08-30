@@ -8,16 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
-using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using StreamHelpers;
-using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
+using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
 
 //until it gets switched over
-using SkeletalMesh = ME3Explorer.Unreal.Classes.SkeletalMesh;
+using SkeletalMesh = ME3ExplorerCore.Unreal.Classes.SkeletalMesh;
 
 namespace ME3Explorer.Meshplorer
 {

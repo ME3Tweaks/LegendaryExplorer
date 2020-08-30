@@ -12,7 +12,6 @@
                 xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
                 xmlns:properties="clr-namespace:ME3Explorer.Properties"
                 xmlns:graphEditor="clr-namespace:UMD.HCIL.GraphEditor"
-                xmlns:packages="clr-namespace:ME3Explorer.Packages"
                 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                 mc:Ignorable="d"
                 Loaded="WwiseEditorWPF_OnLoaded"

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace ME3ExplorerCore.Gammtek.IO
+namespace Gammtek.Conduit.IO
 {
 	public class DataWriter : BinaryWriter
 	{

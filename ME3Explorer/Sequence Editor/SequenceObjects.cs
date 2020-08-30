@@ -5,9 +5,6 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Packages;
-
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
@@ -17,6 +14,8 @@ using System.Runtime.InteropServices;
 using Gammtek.Conduit.Extensions;
 using ME1Explorer;
 using ME3Explorer.Sequence_Editor;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.SequenceObjects
 {
