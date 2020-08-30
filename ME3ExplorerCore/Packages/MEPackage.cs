@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.IO;
+using Gammtek.Conduit.Paths;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using StreamHelpers;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3ExplorerCore.Packages
@@ -852,6 +857,7 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
+        // TODO: MOVE THIS OUT OF LIB, put into extension method
         public void ConvertTo(MEGame newGame, string tfcPath = null, bool preserveMaterialInstances = false)
         {
             MEGame oldGame = Game;

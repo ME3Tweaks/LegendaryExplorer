@@ -12,6 +12,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using SText = ME3Explorer.SequenceObjects.SText;
+using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
 
 namespace ME3Explorer.WwiseEditor
 {

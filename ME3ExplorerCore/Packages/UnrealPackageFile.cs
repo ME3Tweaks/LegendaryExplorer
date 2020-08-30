@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages

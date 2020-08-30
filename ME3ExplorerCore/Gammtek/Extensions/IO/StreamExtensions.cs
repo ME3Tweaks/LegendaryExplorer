@@ -518,44 +518,6 @@
 //            }
 //        }
 
-//        public static Guid ReadGuid(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
-//        {
-//            var a = stream.ReadInt32(byteOrder);
-//            var b = stream.ReadInt16(byteOrder);
-//            var c = stream.ReadInt16(byteOrder);
-//            var d = stream.ReadBytes(8);
-
-//            return new Guid(a, b, c, d);
-//        }
-
-//        public static Guid ReadGuid(this EndianReader stream)
-//        {
-//            var a = stream.ReadInt32();
-//            var b = stream.ReadInt16();
-//            var c = stream.ReadInt16();
-//            var d = stream.ReadBytes(8);
-
-//            return new Guid(a, b, c, d);
-//        }
-
-//        public static void WriteToFile(this MemoryStream stream, string outfile)
-//        {
-//            long oldPos = stream.Position;
-//            stream.Position = 0;
-//            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
-//                stream.CopyTo(file);
-//            stream.Position = oldPos;
-//        }
-
-//        public static void WriteToFile(this EndianReader stream, string outfile)
-//        {
-//            long oldPos = stream.Position;
-//            stream.Position = 0;
-//            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
-//                stream.BaseStream.CopyTo(file);
-//            stream.Position = oldPos;
-//        }
-
 //        public static short ReadInt16(this Stream stream, ByteOrder byteOrder = ByteOrder.LittleEndian)
 //        {
 //            var data = stream.ReadBytes(2);
@@ -888,29 +850,7 @@
 //            }
 //        }
 
-//        public static void WriteGuid(this Stream stream, Guid value, ByteOrder byteOrder = ByteOrder.LittleEndian)
-//        {
-//            var data = value.ToByteArray();
 
-//            Debug.Assert(data.Length == 16);
-
-//            stream.WriteInt32(BitConverter.ToInt32(data, 0), byteOrder);
-//            stream.WriteInt16(BitConverter.ToInt16(data, 4), byteOrder);
-//            stream.WriteInt16(BitConverter.ToInt16(data, 6), byteOrder);
-//            stream.Write(data, 8, 8);
-//        }
-
-//        public static void WriteGuid(this EndianWriter stream, Guid value)
-//        {
-//            var data = value.ToByteArray();
-
-//            Debug.Assert(data.Length == 16);
-
-//            stream.WriteInt32(BitConverter.ToInt32(data, 0));
-//            stream.WriteInt16(BitConverter.ToInt16(data, 4));
-//            stream.WriteInt16(BitConverter.ToInt16(data, 6));
-//            stream.Write(data, 8, 8);
-//        }
 
 //        public static void WriteInt16(this Stream stream, short value, ByteOrder byteOrder = ByteOrder.LittleEndian)
 //        {

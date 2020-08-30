@@ -6,7 +6,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -367,13 +370,13 @@ namespace ME3ExplorerCore.Unreal
                     defaultStructDict = defaultStructValuesME3;
                     getDefaultStructValueFunc = ME3UnrealObjectInfo.getDefaultStructValue;
                     break;
-                case MEGame.ME2 when ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME2;
-                    getDefaultStructValueFunc = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue;
+                    getDefaultStructValueFunc = ME2UnrealObjectInfo.getDefaultStructValue;
                     break;
-                case MEGame.ME1 when ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME1;
-                    getDefaultStructValueFunc = ME1Explorer.Unreal.ME1UnrealObjectInfo.getDefaultStructValue;
+                    getDefaultStructValueFunc = ME1UnrealObjectInfo.getDefaultStructValue;
                     break;
                 default:
                     Debug.WriteLine("Unknown struct type: " + structType);

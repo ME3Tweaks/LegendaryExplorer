@@ -422,6 +422,7 @@
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
     <Compile Include="PackageSaver.cs" />
+    <Compile Include="Unreal\WwiseHelper.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -556,7 +557,6 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CaseInsensitiveDictionary.cs" />
     <Compile Include="CloningImportingAndRelinking\EntryCloner.cs" />
     <Compile Include="CloningImportingAndRelinking\EntryImporter.cs" />
     <Compile Include="CloningImportingAndRelinking\Relinker.cs" />
@@ -722,7 +722,6 @@
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MELoadedFiles.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -1036,7 +1035,6 @@
     <Compile Include="UnrealScriptControl\BytecodeEditor.xaml.cs">
       <DependentUpon>BytecodeEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OrderedDictionary.cs" />
     <Compile Include="Soundplorer\HIRCDisplayObject.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="WinFormsBase.cs">
@@ -1333,9 +1331,7 @@
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
-    <Compile Include="ME1\Unreal\ME1UnrealObjectInfo.cs" />
     <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
-    <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer\Meshplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1531,6 +1527,7 @@
     <Resource Include="Resources\close.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ME2\Unreal\" />
     <Folder Include="NativesEditor\SFXGame\BioDefine\" />
   </ItemGroup>
   <ItemGroup>

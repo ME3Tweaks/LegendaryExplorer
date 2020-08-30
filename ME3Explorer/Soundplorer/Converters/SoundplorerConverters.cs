@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using ME3ExplorerCore.Unreal;
+using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
 
 namespace ME3Explorer.Soundplorer
 {

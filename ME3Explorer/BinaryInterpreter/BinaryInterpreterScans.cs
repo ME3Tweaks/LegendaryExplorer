@@ -14,6 +14,7 @@ using ME3ExplorerCore.Unreal.Classes;
 using SharpDX;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
 
 namespace ME3Explorer
 {

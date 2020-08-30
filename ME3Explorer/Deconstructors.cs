@@ -10,23 +10,11 @@ namespace ME3Explorer
 {
     public static class Deconstructors
     {
-        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
-        {
-            key = kvp.Key;
-            value = kvp.Value;
-        }
-
         public static void Deconstruct(this Vector3 vec, out float x, out float y, out float z)
         {
             x = vec.X;
             y = vec.Y;
             z = vec.Z;
-        }
-
-        public static void Deconstruct(this NameReference nameRef, out string name, out int number)
-        {
-            name = nameRef.Name;
-            number = nameRef.Number;
         }
     }
 }

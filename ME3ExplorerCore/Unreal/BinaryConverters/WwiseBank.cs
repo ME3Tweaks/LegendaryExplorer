@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gammtek.Conduit.Extensions;
+using Gammtek.Conduit.IO;
+using ME3Explorer;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using StreamHelpers;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {

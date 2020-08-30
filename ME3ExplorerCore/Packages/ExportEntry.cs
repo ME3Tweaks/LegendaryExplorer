@@ -2,8 +2,12 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.IO;
+using ME3Explorer;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using StreamHelpers;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3ExplorerCore.Packages

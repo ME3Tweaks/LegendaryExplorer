@@ -20,7 +20,6 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME1Explorer.Unreal;
-using ME2Explorer.Unreal;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
 using ME3Explorer.ME3Tweaks;
@@ -4136,7 +4135,7 @@ namespace ME3Explorer
 
         private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
+            ME2UnrealObjectInfo.generateInfo();
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
         }
@@ -4151,7 +4150,7 @@ namespace ME3Explorer
         private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             ME1UnrealObjectInfo.generateInfo();
-            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
+            ME2UnrealObjectInfo.generateInfo();
             ME3UnrealObjectInfo.generateInfo();
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
@@ -4191,17 +4190,17 @@ namespace ME3Explorer
                 }
 
                 //ME2
-                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
+                if (ME2UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo _))
                 {
                     searchResult += "Key found in ME2 Classes\n";
                 }
 
-                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
+                if (ME2UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo _))
                 {
                     searchResult += "Key found in ME2 Structs\n";
                 }
 
-                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
+                if (ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out _))
                 {
                     searchResult += "Key found in ME2 Enums\n";
                 }

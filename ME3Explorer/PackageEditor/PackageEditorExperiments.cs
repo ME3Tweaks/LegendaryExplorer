@@ -16,6 +16,7 @@ using ImageMagick;
 using MassEffectModder.Images;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -25,6 +26,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX;
 using SQLite.Extensions;
+using StreamHelpers;
 
 namespace ME3Explorer.PackageEditor
 {

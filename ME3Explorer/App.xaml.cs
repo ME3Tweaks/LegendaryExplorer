@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using ME1Explorer.Unreal;
-using ME2Explorer.Unreal;
 using ME3Explorer.ASI;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.GameInterop;

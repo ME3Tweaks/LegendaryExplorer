@@ -67,10 +67,10 @@ namespace ME3Explorer.SharedUI
             switch (game)
             {
                 case MEGame.ME1:
-                    classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                    classList = ME1UnrealObjectInfo.Classes;
                     break;
                 case MEGame.ME2:
-                    classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                    classList = ME2UnrealObjectInfo.Classes;
                     break;
                 case MEGame.ME3:
                 default:
@@ -99,10 +99,10 @@ namespace ME3Explorer.SharedUI
                 switch (game)
                 {
                     case MEGame.ME1:
-                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
+                        currentInfo = ME1UnrealObjectInfo.generateClassInfo(export);
                         break;
                     case MEGame.ME2:
-                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
+                        currentInfo = ME2UnrealObjectInfo.generateClassInfo(export);
                         break;
                     case MEGame.ME3:
                     default:

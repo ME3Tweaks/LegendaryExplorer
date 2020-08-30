@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Gammtek.Conduit.IO;
@@ -50,6 +51,69 @@ namespace StreamHelpers
         public static void WriteFromBuffer(this Stream stream, byte[] buffer)
         {
             stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public static Guid ReadGuid(this EndianReader stream)
+        {
+            var a = stream.ReadInt32();
+            var b = stream.ReadInt16();
+            var c = stream.ReadInt16();
+            var d = stream.ReadBytes(8);
+
+            return new Guid(a, b, c, d);
+        }
+
+        public static Guid ReadGuid(this Stream stream)
+        {
+            var a = stream.ReadInt32();
+            var b = stream.ReadInt16();
+            var c = stream.ReadInt16();
+            var d = stream.ReadToBuffer(8);
+
+            return new Guid(a, b, c, d);
+        }
+
+        public static void WriteGuid(this Stream stream, Guid value)
+        {
+            var data = value.ToByteArray();
+
+            Debug.Assert(data.Length == 16);
+
+            stream.WriteInt32(BitConverter.ToInt32(data, 0));
+            stream.WriteInt16(BitConverter.ToInt16(data, 4));
+            stream.WriteInt16(BitConverter.ToInt16(data, 6));
+            stream.Write(data, 8, 8);
+        }
+
+        public static void WriteGuid(this EndianWriter stream, Guid value)
+        {
+            var data = value.ToByteArray();
+
+            Debug.Assert(data.Length == 16);
+
+            stream.WriteInt32(BitConverter.ToInt32(data, 0));
+            stream.WriteInt16(BitConverter.ToInt16(data, 4));
+            stream.WriteInt16(BitConverter.ToInt16(data, 6));
+            stream.Write(data, 8, 8);
+        }
+
+
+        public static void WriteToFile(this MemoryStream stream, string outfile)
+        {
+            long oldPos = stream.Position;
+            stream.Position = 0;
+            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+                stream.CopyTo(file);
+            stream.Position = oldPos;
+        }
+
+        public static void WriteToFile(this EndianReader stream, string outfile)
+        {
+            long oldPos = stream.Position;
+            stream.Position = 0;
+            using (FileStream file = new FileStream(outfile, FileMode.Create, System.IO.FileAccess.Write))
+                stream.BaseStream.CopyTo(file);
+            stream.Position = oldPos;
         }
 
         public static void WriteFromStream(this Stream stream, Stream inputStream, int count)

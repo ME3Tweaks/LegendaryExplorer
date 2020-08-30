@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages

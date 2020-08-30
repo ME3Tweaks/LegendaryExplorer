@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Windows.Forms;
-using System.Threading.Tasks;
-using ME1Explorer.Unreal;
-using Newtonsoft.Json;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using ME3Explorer;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Newtonsoft.Json;
 
-namespace ME1Explorer.Unreal
+namespace ME3ExplorerCore.Unreal
 {
     public static class ME1UnrealObjectInfo
     {

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.IO;
+using ME3Explorer;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -93,6 +96,7 @@ namespace ME3ExplorerCore.Unreal
                         }
                         else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
+                            // todo: uh... not really sure here
                             filepath = App.CustomResourceFilePath(game);
                         }
                         if (game == MEGame.ME1 && !File.Exists(filepath))
@@ -397,6 +401,7 @@ namespace ME3ExplorerCore.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "RwPlane", "RwQuat", "BioRwBox44" };
 
+        // Todo: Convert to embedded resource
         private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
 
         public static bool IsImmutableStruct(string structName)
@@ -562,7 +567,8 @@ namespace ME3ExplorerCore.Unreal
             ArrayTypeLookupJustFailed = true;
 #endif
             Debug.WriteLine("ME3 Array type lookup failed due to no info provided, defaulting to int");
-            return Settings.Default.PropertyParsingME3UnknownArrayAsObject ? ArrayType.Object : ArrayType.Int;
+            //return Settings.Default.PropertyParsingME3UnknownArrayAsObject ? ArrayType.Object : ArrayType.Int;
+            return ArrayType.Int;
         }
 
         public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
@@ -658,6 +664,7 @@ namespace ME3ExplorerCore.Unreal
                         }
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
+                            // Todo: Somehow make this work in a lib
                             filepath = App.CustomResourceFilePath(MEGame.ME3);
                         }
                         if (File.Exists(filepath))
@@ -1242,6 +1249,7 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
+        // TODO: MOVE THIS OUT OF ME3UNREALOBJECTINFO
         private static void GenerateStructs()
         {
             using (var fileStream = new FileStream(Path.Combine(App.ExecFolder, "ME3Structs.cs"), FileMode.Create))

@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer;
-using ME3Explorer.Properties;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 
-namespace ME2Explorer.Unreal
+namespace ME3ExplorerCore.Unreal
 {
     public static class ME2UnrealObjectInfo
     {
@@ -193,7 +191,11 @@ namespace ME2Explorer.Unreal
             ArrayTypeLookupJustFailed = true;
 #endif
             Debug.WriteLine("ME2 Array type lookup failed due to no info provided, defaulting to int");
-            if (Settings.Default.PropertyParsingME2UnknownArrayAsObject) return ArrayType.Object;
+            
+            // TODO: UNKNOWN ARRAY TYPES AS INT
+            // MAYBE COMPILE FLAG?
+            // SETTINGS WITH CONDITIONAL COMP FLAG?
+            //if (Settings.Default.PropertyParsingME2UnknownArrayAsObject) return ArrayType.Object;
             return ArrayType.Int;
         }
 

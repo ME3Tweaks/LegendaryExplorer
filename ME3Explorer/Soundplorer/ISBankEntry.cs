@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
 using ME3ExplorerCore.Unreal;
+using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
 
 namespace ME3Explorer.Soundplorer
 {

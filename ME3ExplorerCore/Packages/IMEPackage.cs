@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Gammtek.Conduit.IO;
+using ME3Explorer;
 using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
