@@ -915,4 +915,19 @@ namespace ME3ExplorerCore.Helpers
             if (range != null) list.AddRange(range);
         }
     }
+
+    public static class MiscExtensions
+    {
+        public static bool bit(this uint word, byte index)
+        {
+            Contract.Assert(index < 32);
+
+            return (word << (31 - index)) >> 31 == 1;
+        }
+
+        public static int NumDigits(this int i)
+        {
+            return i > 0 ? (int)Math.Log10(i) + 1 : 1;
+        }
+    }
 }

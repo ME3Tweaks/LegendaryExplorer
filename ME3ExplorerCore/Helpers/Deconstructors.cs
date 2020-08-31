@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Helpers
@@ -17,6 +18,19 @@ namespace ME3ExplorerCore.Helpers
         {
             name = nameRef.Name;
             number = nameRef.Number;
+        }
+
+        public static void Deconstruct(this Vector2 vector, out float x, out float y)
+        {
+            x = vector.X;
+            y = vector.Y;
+        }
+
+        public static void Deconstruct(this Vector3 vector, out float x, out float y, out float z)
+        {
+            x = vector.X;
+            y = vector.Y;
+            z = vector.Z;
         }
     }
 }

@@ -138,9 +138,9 @@ namespace ME3ExplorerCore.Helpers
                 }
                 //is mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
-                IniFile dlcAutoload = new IniFile(autoLoadPath); // We cannot use this implemenation as it is windows only
+                var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
                 // Suggest using M3's DuplicatingIni class instead
-                return Convert.ToInt32(dlcAutoload.ReadValue("ME1DLCMOUNT", "ModMount"));
+                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"]); 
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }
