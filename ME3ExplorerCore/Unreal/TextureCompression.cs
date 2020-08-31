@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Unreal
 {

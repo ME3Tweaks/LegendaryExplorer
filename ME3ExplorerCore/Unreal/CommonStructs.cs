@@ -116,7 +116,7 @@ namespace ME3ExplorerCore.Unreal
             return new Guid(ms.ToArray());
         }
 
-        public static StructProperty ColorProp(Color color, NameReference? name = null)
+        public static StructProperty ColorProp(System.Drawing.Color color, NameReference? name = null)
         {
             return new StructProperty("Color", new PropertyCollection
             {
@@ -127,7 +127,7 @@ namespace ME3ExplorerCore.Unreal
             }, name, true);
         }
 
-        public static Color GetColor(StructProperty prop) => Color.FromArgb(prop.GetProp<ByteProperty>("A").Value, prop.GetProp<ByteProperty>("R").Value,
+        public static System.Drawing.Color GetColor(StructProperty prop) => System.Drawing.Color.FromArgb(prop.GetProp<ByteProperty>("A").Value, prop.GetProp<ByteProperty>("R").Value,
                                                                             prop.GetProp<ByteProperty>("G").Value, prop.GetProp<ByteProperty>("B").Value);
     }
 }

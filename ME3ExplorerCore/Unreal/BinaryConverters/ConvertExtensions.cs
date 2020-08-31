@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.SharpDX;
+using System.Linq;
 using Guid = System.Guid;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters

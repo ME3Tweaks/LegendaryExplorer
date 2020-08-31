@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -681,7 +683,7 @@ namespace ME3ExplorerCore.Packages
                         }
                     }
                 }
-                catch (Exception e) when (!App.IsDebug)
+                catch (Exception e) when (!CoreLib.IsDebug)
                 {
                     result.AddToListAt(exp, "Exception occured while reading this export!");
                 }

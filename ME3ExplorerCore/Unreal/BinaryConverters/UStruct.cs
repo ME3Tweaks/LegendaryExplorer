@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters

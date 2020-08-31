@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal

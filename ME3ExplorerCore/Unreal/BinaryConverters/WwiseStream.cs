@@ -4,6 +4,7 @@ using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
+    // Todo: Split this class up to objectbinary + helper methods (for ui app)
     public class WwiseStream : ObjectBinary
     {
         public uint Unk1;//ME2

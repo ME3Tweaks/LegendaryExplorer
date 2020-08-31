@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -222,7 +221,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                mb.BoneColor = Color.FromArgb(255, 255, 255, 255);
+                mb.BoneColor = new Color(255, 255, 255, 255);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref SkelMeshSection sms)
@@ -270,7 +269,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                rsv.BoneColor = Color.FromArgb(255,255,255,255);
+                rsv.BoneColor = new Color(255,255,255,255);
             }
             sc.Serialize(ref rsv.Bone);
         }
@@ -294,7 +293,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                ssv.BoneColor = Color.FromArgb(255, 255, 255, 255);
+                ssv.BoneColor = new Color(255, 255, 255, 255);
             }
             for (int i = 0; i < 4; i++)
             {

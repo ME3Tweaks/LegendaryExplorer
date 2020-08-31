@@ -242,13 +242,12 @@ namespace ME3ExplorerCore.Unreal
 
             UnpackCanceled = false;
             IndeterminateState = true;
-            CurrentOverallStatus = $"Extracting {SFARUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
-            CurrentStatus = $"Loading {SFARUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)} into memory ({FileSize.FormatSize(new FileInfo(filePath).Length)})";
+            CurrentOverallStatus = $"Extracting {GetPrettyDLCNameFromPath(filePath)}";
+            CurrentStatus = $"Loading {GetPrettyDLCNameFromPath(filePath)} into memory ({FileSize.FormatSize(new FileInfo(filePath).Length)})";
             byte[] buffer = File.ReadAllBytes(filePath);
             CurrentFilesProcessed = 0;
             IndeterminateState = false;
 
-            CurrentOverallStatus = $"Extracting {SFARUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
                 for (int i = 0; i < TotalFilesInDLC; i++, CurrentFilesProcessed++)

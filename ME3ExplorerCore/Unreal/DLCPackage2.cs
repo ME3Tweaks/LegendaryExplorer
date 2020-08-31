@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3ExplorerCore.Helpers;
+using System;
 using System.IO;
 
 namespace ME3ExplorerCore.Unreal

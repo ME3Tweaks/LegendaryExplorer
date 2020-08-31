@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.Classes;
 using static ME3ExplorerCore.Unreal.BinaryConverters.ObjectBinary;

@@ -103,7 +103,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies, errorOccuredCallback);
+                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
             }
 
             return relinkResults;

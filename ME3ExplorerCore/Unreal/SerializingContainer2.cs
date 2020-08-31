@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -331,7 +331,6 @@ namespace ME3ExplorerCore.Unreal
         }
 
 
-        // There is no Color object in .NET Standard. We wil probably need a converter method behind a compiler flag
         public static void Serialize(this SerializingContainer2 sc, ref Color color)
         {
             if (sc.IsLoading)
@@ -340,7 +339,7 @@ namespace ME3ExplorerCore.Unreal
                 byte g = (byte)sc.ms.ReadByte();
                 byte r = (byte)sc.ms.ReadByte();
                 byte a = (byte)sc.ms.ReadByte();
-                color = Color.FromArgb(a, r, g, b);
+                color = new Color(a, r, g, b);
             }
             else
             {
