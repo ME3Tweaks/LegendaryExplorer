@@ -12,7 +12,7 @@ namespace ME3Script.Language.Tree
     {
         public Expression Value;
 
-        public ReturnStatement(SourcePosition start, SourcePosition end, Expression value = null)
+        public ReturnStatement(Expression value = null, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.ReturnStatement, start, end)
         {
             Value = value;

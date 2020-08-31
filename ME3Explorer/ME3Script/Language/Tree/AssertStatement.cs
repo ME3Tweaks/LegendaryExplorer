@@ -8,10 +8,12 @@ using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
 {
-    public class ReturnNothingStatement : ReturnStatement
+    public class AssertStatement : Statement
     {
-        public ReturnNothingStatement(Expression value = null, SourcePosition start = null, SourcePosition end = null) : base(value, start, end)
+        public Expression Condition;
+        public AssertStatement(Expression condition, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.AssertStatement, start, end)
         {
+            Condition = condition;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

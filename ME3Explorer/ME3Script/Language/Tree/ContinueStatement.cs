@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
 {
     public class ContinueStatement : Statement
     {
-        public ContinueStatement(SourcePosition start, SourcePosition end)
+        public ContinueStatement(SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.ContinueStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

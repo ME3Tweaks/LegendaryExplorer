@@ -324,7 +324,7 @@ namespace ME3Script.Parsing
                 var semicolon = Consume(TokenType.SemiColon);
                 if (semicolon == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
 
-                return new VariableDeclaration(type, flags, var, category, startPos, semicolon.EndPos);
+                return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
             }
         }
 
@@ -454,6 +454,7 @@ namespace ME3Script.Parsing
                     return null;
                 }
 
+                bool coerceReturn = Matches("coerce");
                 Tokens.PushSnapshot();
                 var returnType = TryParseType();
                 if (returnType == null) throw Error("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -468,6 +469,11 @@ namespace ME3Script.Parsing
                 else
                 {
                     Tokens.DiscardSnapshot();
+                }
+
+                if (coerceReturn && returnType == null)
+                {
+                    throw Error("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
                 }
 
                 if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
@@ -508,7 +514,8 @@ namespace ME3Script.Parsing
 
                 return new Function(name.Value, flags, returnType, body, parameters, start, body.EndPos)
                 {
-                    NativeIndex = nativeIndex
+                    NativeIndex = nativeIndex,
+                    CoerceReturn = coerceReturn
                 };
             }
         }
@@ -616,9 +623,8 @@ namespace ME3Script.Parsing
             ASTNode ParamParser()
             {
                 ParseVariableSpecifiers(out EPropertyFlags flags);
-                if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.EditInline | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
+                if ((flags & ~(EPropertyFlags.CoerceParm | EPropertyFlags.OptionalParm | EPropertyFlags.OutParm | EPropertyFlags.SkipParm | EPropertyFlags.Component | EPropertyFlags.Const | EPropertyFlags.AlwaysInit)) != 0)
                 {
-                    //editinline????
                     throw Error("The only valid specifiers for function parameters are 'out', 'coerce', 'optional', 'const', 'alwaysinit' and 'skip'!", CurrentPosition);
                 }
 
@@ -630,7 +636,7 @@ namespace ME3Script.Parsing
                 var variable = TryParseVariable();
                 if (variable == null) throw Error("Expected parameter name!", CurrentPosition);
 
-                var funcParam = new FunctionParameter(type, flags, variable, variable.StartPos, variable.EndPos);
+                var funcParam = new FunctionParameter(type, flags, variable.Name, variable.Size, variable.StartPos, variable.EndPos);
 
                 if (Consume(TokenType.Assign) != null)
                 {
@@ -788,13 +794,9 @@ namespace ME3Script.Parsing
                 {
                     flags |= EPropertyFlags.ExportObject;
                 }
-                else if (Matches("editinline"))
-                {
-                    flags |= EPropertyFlags.EditInline;
-                }
                 else if (Matches("editinlineuse"))
                 {
-                    flags |= EPropertyFlags.EditInlineUse | EPropertyFlags.EditInline;
+                    flags |= EPropertyFlags.EditInlineUse;
                 }
                 else if (Matches("noclear"))
                 {
@@ -839,10 +841,6 @@ namespace ME3Script.Parsing
                 else if (Matches("alwaysinit"))
                 {
                     flags |= EPropertyFlags.AlwaysInit;
-                }
-                else if (Matches("instanced"))
-                {
-                    flags |= EPropertyFlags.EditInline | EPropertyFlags.ExportObject;
                 }
                 else if (Matches("databinding"))
                 {

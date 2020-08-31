@@ -19,6 +19,7 @@ namespace ME3Script.Language.Tree
         NewOp,
 
         AssignStatement,
+        AssertStatement,
         IfStatement,
         CodeBody,
         VariableType,
@@ -42,6 +43,7 @@ namespace ME3Script.Language.Tree
         ContinueStatement,
         ReturnStatement,
         StopStatement,
+        ExpressionStatement,
 
         SwitchStatement,
         CaseStatement,

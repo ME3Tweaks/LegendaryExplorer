@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using static ME3Explorer.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
-using ASTNodeDict = ME3Explorer.CaseInsensitiveDictionary<ME3Script.Language.Tree.ASTNode>;
 
 namespace ME3Script.Analysis.Symbols
 {
@@ -141,7 +141,45 @@ namespace ME3Script.Analysis.Symbols
             table.AddType(clientType);
             var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
             table.AddType(staticMeshType);
-            var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
+            var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
+            {
+                VariableDeclarations =
+                {
+                    new VariableDeclaration(staticMeshType, default, "SourceStaticMesh"),
+                    new VariableDeclaration(staticMeshType, default, "SourceCoreMesh"),
+                    new VariableDeclaration(FloatType, default, "CoreMeshScale"),
+                    new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshScale3D"),
+                    new VariableDeclaration(new VariableType("Vector"), default, "CoreMeshOffset"),
+                    new VariableDeclaration(new VariableType("Rotator"), default, "CoreMeshRotation"),
+                    new VariableDeclaration(new VariableType("Vector"), default, "PlaneBias"),
+                    new VariableDeclaration(BoolType, default, "bSliceUsingCoreCollision"),
+                    new VariableDeclaration(new VariableType("ParticleSystem"), default, "FragmentDestroyEffect"),
+                    new VariableDeclaration(new DynamicArrayType(new VariableType("ParticleSystem")), default, "FragmentDestroyEffects"),
+                    new VariableDeclaration(FloatType, default, "FragmentDestroyEffectScale"),
+                    new VariableDeclaration(FloatType, default, "FragmentHealthScale"),
+                    new VariableDeclaration(FloatType, default, "FragmentMinHealth"),
+                    new VariableDeclaration(FloatType, default, "FragmentMaxHealth"),
+                    new VariableDeclaration(BoolType, default, "bUniformFragmentHealth"),
+                    new VariableDeclaration(FloatType, default, "ChunkLinVel"),
+                    new VariableDeclaration(FloatType, default, "ChunkAngVel"),
+                    new VariableDeclaration(FloatType, default, "ChunkLinHorizontalScale"),
+                    new VariableDeclaration(FloatType, default, "ExplosionVelScale"),
+                    new VariableDeclaration(BoolType, default, "bCompositeChunksExplodeOnImpact"),
+                    new VariableDeclaration(BoolType, default, "bFixIsolatedChunks"),
+                    new VariableDeclaration(BoolType, default, "bAlwaysBreakOffIsolatedIslands"),
+                    new VariableDeclaration(BoolType, default, "bSpawnPhysicsChunks"),
+                    new VariableDeclaration(FloatType, default, "ChanceOfPhysicsChunk"),
+                    new VariableDeclaration(FloatType, default, "ExplosionChanceOfPhysicsChunk"),
+                    new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMin"),
+                    new VariableDeclaration(FloatType, default, "NormalPhysicsChunkScaleMax"),
+                    new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMin"),
+                    new VariableDeclaration(FloatType, default, "ExplosionPhysicsChunkScaleMax"),
+                    new VariableDeclaration(FloatType, default, "MinConnectionSupportArea"),
+                    new VariableDeclaration(new VariableType("MaterialInterface"), default, "DynamicOutsideMaterial"),
+                    new VariableDeclaration(new VariableType("MaterialInterface"), default, "LoseChunkOutsideMaterial"),
+                    new VariableDeclaration(IntType, default, "OutsideMaterialIndex"),
+                }
+            };
             table.AddType(fracturedStaticMeshType);
             var shadowMap1DType = new Class("ShadowMap1D", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(shadowMap1DType);
@@ -158,7 +196,7 @@ namespace ME3Script.Analysis.Symbols
             var polysType = new Class("Polys", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(polysType);
 
-            //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because the subclass the non-instrinsic class 'Player'
+            //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 
             return table;
@@ -191,192 +229,192 @@ namespace ME3Script.Analysis.Symbols
             const EPropertyFlags coerce = parm | EPropertyFlags.CoerceParm;
 
             //primitive PostOperators
-            AddOperator(new PostOpDeclaration("++", ByteType, 139, new FunctionParameter(ByteType, outFlags, opParmA)));
-            AddOperator(new PostOpDeclaration("--", ByteType, 140, new FunctionParameter(ByteType, outFlags, opParmA)));
+            AddOperator(new PostOpDeclaration("++", ByteType, 139, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration("--", ByteType, 140, new FunctionParameter(ByteType, outFlags, "A")));
 
-            AddOperator(new PostOpDeclaration("++", IntType, 165, new FunctionParameter(IntType, outFlags, opParmA)));
-            AddOperator(new PostOpDeclaration("--", IntType, 166, new FunctionParameter(IntType, outFlags, opParmA)));
+            AddOperator(new PostOpDeclaration("++", IntType, 165, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PostOpDeclaration("--", IntType, 166, new FunctionParameter(IntType, outFlags, "A")));
 
             //primitive PreOperators
-            AddOperator(new PreOpDeclaration("!", BoolType, 129, new FunctionParameter(BoolType, parm, opParmA)));
+            AddOperator(new PreOpDeclaration("!", BoolType, 129, new FunctionParameter(BoolType, parm, "A")));
 
-            AddOperator(new PreOpDeclaration("++", ByteType, 137, new FunctionParameter(ByteType, outFlags, opParmA)));
-            AddOperator(new PreOpDeclaration("--", ByteType, 138, new FunctionParameter(ByteType, outFlags, opParmA)));
+            AddOperator(new PreOpDeclaration("++", ByteType, 137, new FunctionParameter(ByteType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration("--", ByteType, 138, new FunctionParameter(ByteType, outFlags, "A")));
 
-            AddOperator(new PreOpDeclaration("~", IntType, 141, new FunctionParameter(IntType, parm, opParmA)));
-            AddOperator(new PreOpDeclaration("-", IntType, 143, new FunctionParameter(IntType, parm, opParmA)));
-            AddOperator(new PreOpDeclaration("++", IntType, 163, new FunctionParameter(IntType, outFlags, opParmA)));
-            AddOperator(new PreOpDeclaration("--", IntType, 164, new FunctionParameter(IntType, outFlags, opParmA)));
+            AddOperator(new PreOpDeclaration("~", IntType, 141, new FunctionParameter(IntType, parm, "A")));
+            AddOperator(new PreOpDeclaration("-", IntType, 143, new FunctionParameter(IntType, parm, "A")));
+            AddOperator(new PreOpDeclaration("++", IntType, 163, new FunctionParameter(IntType, outFlags, "A")));
+            AddOperator(new PreOpDeclaration("--", IntType, 164, new FunctionParameter(IntType, outFlags, "A")));
 
-            AddOperator(new PreOpDeclaration("-", FloatType, 169, new FunctionParameter(FloatType, parm, opParmA)));
+            AddOperator(new PreOpDeclaration("-", FloatType, 169, new FunctionParameter(FloatType, parm, "A")));
 
-            AddOperator(new PreOpDeclaration("-", vectorType, 211, new FunctionParameter(vectorType, parm, opParmA)));
+            AddOperator(new PreOpDeclaration("-", vectorType, 211, new FunctionParameter(vectorType, parm, "A")));
 
             //primitive InfixOperators
-            AddOperator(new InOpDeclaration("==", 24, 242, BoolType, new FunctionParameter(BoolType, parm, opParmA), new FunctionParameter(BoolType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 243, BoolType, new FunctionParameter(BoolType, parm, opParmA), new FunctionParameter(BoolType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("&&", 30, 130, BoolType, new FunctionParameter(BoolType, parm, opParmA), new FunctionParameter(BoolType, skip, opParmB)));
-            AddOperator(new InOpDeclaration("^^", 30, 131, BoolType, new FunctionParameter(BoolType, parm, opParmA), new FunctionParameter(BoolType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("||", 32, 132, BoolType, new FunctionParameter(BoolType, parm, opParmA), new FunctionParameter(BoolType, skip, opParmB)));
+            AddOperator(new InOpDeclaration("==", 24, 242, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 243, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration("&&", 30, 130, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
+            AddOperator(new InOpDeclaration("^^", 30, 131, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, parm, "B")));
+            AddOperator(new InOpDeclaration("||", 32, 132, BoolType, new FunctionParameter(BoolType, parm, "A"), new FunctionParameter(BoolType, skip, "B")));
 
-            AddOperator(new InOpDeclaration("*=", 34, 133, ByteType, new FunctionParameter(ByteType, outFlags, opParmA), new FunctionParameter(ByteType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 198, ByteType, new FunctionParameter(ByteType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/=", 34, 134, ByteType, new FunctionParameter(ByteType, outFlags, opParmA), new FunctionParameter(ByteType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+=", 34, 135, ByteType, new FunctionParameter(ByteType, outFlags, opParmA), new FunctionParameter(ByteType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 34, 136, ByteType, new FunctionParameter(ByteType, outFlags, opParmA), new FunctionParameter(ByteType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("*=", 34, 133, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 198, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("/=", 34, 134, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration("+=", 34, 135, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
+            AddOperator(new InOpDeclaration("-=", 34, 136, ByteType, new FunctionParameter(ByteType, outFlags, "A"), new FunctionParameter(ByteType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("*", 16, 144, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/", 16, 145, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+", 20, 146, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-", 20, 147, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<<", 22, 148, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">>", 22, 149, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">>>", 22, 196, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<", 24, 150, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">", 24, 151, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<=", 24, 152, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">=", 24, 153, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 154, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 155, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("&", 28, 156, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("^", 28, 157, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("|", 28, 158, IntType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 159, IntType, new FunctionParameter(IntType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/=", 34, 160, IntType, new FunctionParameter(IntType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+=", 34, 161, IntType, new FunctionParameter(IntType, outFlags, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 34, 162, IntType, new FunctionParameter(IntType, outFlags, opParmA), new FunctionParameter(IntType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("*", 16, 144, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("/", 16, 145, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("+", 20, 146, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("-", 20, 147, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("<<", 22, 148, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(">>", 22, 149, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(">>>", 22, 196, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("<", 24, 150, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(">", 24, 151, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("<=", 24, 152, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration(">=", 24, 153, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 154, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 155, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("&", 28, 156, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("^", 28, 157, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("|", 28, 158, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 159, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("/=", 34, 160, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+=", 34, 161, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("-=", 34, 162, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
 
 
-            AddOperator(new InOpDeclaration("**", 12, 170, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*", 16, 171, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/", 16, 172, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("%", 18, 173, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+", 20, 174, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-", 20, 175, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<", 24, 176, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">", 24, 177, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<=", 24, 178, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">=", 24, 179, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 180, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("~=", 24, 210, FloatType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 181, BoolType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 182, FloatType, new FunctionParameter(FloatType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/=", 34, 183, FloatType, new FunctionParameter(FloatType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+=", 34, 184, FloatType, new FunctionParameter(FloatType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 34, 185, FloatType, new FunctionParameter(FloatType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("**", 12, 170, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*", 16, 171, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("/", 16, 172, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("%", 18, 173, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+", 20, 174, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("-", 20, 175, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("<", 24, 176, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(">", 24, 177, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("<=", 24, 178, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration(">=", 24, 179, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 180, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("~=", 24, 210, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 181, BoolType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 182, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("/=", 34, 183, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+=", 34, 184, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("-=", 34, 185, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("$", 40, 600, StringType, new FunctionParameter(StringType, coerce, opParmA), new FunctionParameter(StringType, coerce, opParmB)));
-            AddOperator(new InOpDeclaration("@", 40, 168, StringType, new FunctionParameter(StringType, coerce, opParmA), new FunctionParameter(StringType, coerce, opParmB)));
-            AddOperator(new InOpDeclaration("<", 24, 601, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">", 24, 602, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<=", 24, 603, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">=", 24, 604, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 605, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 606, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("~=", 24, 607, BoolType, new FunctionParameter(StringType, parm, opParmA), new FunctionParameter(StringType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("$=", 44, 322, StringType, new FunctionParameter(StringType, outFlags, opParmA), new FunctionParameter(StringType, coerce, opParmB)));
-            AddOperator(new InOpDeclaration("@=", 44, 323, StringType, new FunctionParameter(StringType, outFlags, opParmA), new FunctionParameter(StringType, coerce, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 45, 324, StringType, new FunctionParameter(StringType, outFlags, opParmA), new FunctionParameter(StringType, coerce, opParmB)));
+            AddOperator(new InOpDeclaration("$", 40, 600, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("@", 40, 168, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("<", 24, 601, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(">", 24, 602, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration("<=", 24, 603, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration(">=", 24, 604, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 605, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 606, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration("~=", 24, 607, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
+            AddOperator(new InOpDeclaration("$=", 44, 322, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("@=", 44, 323, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("-=", 45, 324, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 640, BoolType, new FunctionParameter(objectType, parm, opParmA), new FunctionParameter(objectType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 641, BoolType, new FunctionParameter(objectType, parm, opParmA), new FunctionParameter(objectType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("==", 24, 640, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 641, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 254, BoolType, new FunctionParameter(NameType, parm, opParmA), new FunctionParameter(NameType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 255, BoolType, new FunctionParameter(NameType, parm, opParmA), new FunctionParameter(NameType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("==", 24, 254, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 255, BoolType, new FunctionParameter(NameType, parm, "A"), new FunctionParameter(NameType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 1000, BoolType, new FunctionParameter(StringRefType, parm, opParmA), new FunctionParameter(StringRefType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 1001, BoolType, new FunctionParameter(StringRefType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 1002, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(StringRefType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 1003, BoolType, new FunctionParameter(StringRefType, parm, opParmA), new FunctionParameter(StringRefType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 1004, BoolType, new FunctionParameter(StringRefType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 1005, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(StringRefType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("==", 24, 1000, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 1001, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 1002, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 1003, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 1004, BoolType, new FunctionParameter(StringRefType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 1005, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(StringRefType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("*", 16, 212, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*", 16, 213, vectorType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*", 16, 296, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/", 16, 214, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+", 20, 215, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-", 20, 216, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("<<", 22, 275, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration(">>", 22, 276, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("==", 24, 217, BoolType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 218, BoolType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("Dot", 16, 219, FloatType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("Cross", 16, 220, vectorType, new FunctionParameter(vectorType, parm, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 221, vectorType, new FunctionParameter(vectorType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 297, vectorType, new FunctionParameter(vectorType, outFlags, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/=", 34, 222, vectorType, new FunctionParameter(vectorType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+=", 34, 223, vectorType, new FunctionParameter(vectorType, outFlags, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 34, 224, vectorType, new FunctionParameter(vectorType, outFlags, opParmA), new FunctionParameter(vectorType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("*", 16, 212, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*", 16, 213, vectorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("*", 16, 296, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("/", 16, 214, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+", 20, 215, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("-", 20, 216, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("<<", 22, 275, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration(">>", 22, 276, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("==", 24, 217, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 218, BoolType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("Dot", 16, 219, FloatType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("Cross", 16, 220, vectorType, new FunctionParameter(vectorType, parm, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 221, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 297, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("/=", 34, 222, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+=", 34, 223, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
+            AddOperator(new InOpDeclaration("-=", 34, 224, vectorType, new FunctionParameter(vectorType, outFlags, "A"), new FunctionParameter(vectorType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("==", 24, 142, BoolType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("!=", 26, 203, BoolType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*", 16, 287, rotatorType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*", 16, 288, rotatorType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/", 16, 289, rotatorType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("*=", 34, 290, rotatorType, new FunctionParameter(rotatorType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("/=", 34, 291, rotatorType, new FunctionParameter(rotatorType, outFlags, opParmA), new FunctionParameter(FloatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+", 20, 316, rotatorType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-", 20, 317, rotatorType, new FunctionParameter(rotatorType, parm, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("+=", 34, 318, rotatorType, new FunctionParameter(rotatorType, outFlags, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-=", 34, 319, rotatorType, new FunctionParameter(rotatorType, outFlags, opParmA), new FunctionParameter(rotatorType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("==", 24, 142, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("!=", 26, 203, BoolType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("*", 16, 287, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*", 16, 288, rotatorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("/", 16, 289, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("*=", 34, 290, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("/=", 34, 291, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
+            AddOperator(new InOpDeclaration("+", 20, 316, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("-", 20, 317, rotatorType, new FunctionParameter(rotatorType, parm, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("+=", 34, 318, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
+            AddOperator(new InOpDeclaration("-=", 34, 319, rotatorType, new FunctionParameter(rotatorType, outFlags, "A"), new FunctionParameter(rotatorType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("+", 16, 270, quatType, new FunctionParameter(quatType, parm, opParmA), new FunctionParameter(quatType, parm, opParmB)));
-            AddOperator(new InOpDeclaration("-", 16, 271, quatType, new FunctionParameter(quatType, parm, opParmA), new FunctionParameter(quatType, parm, opParmB)));
+            AddOperator(new InOpDeclaration("+", 16, 270, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
+            AddOperator(new InOpDeclaration("-", 16, 271, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
 
 
             //operators without a nativeIndex. must be linked directly to their function representations
             ASTNodeDict objectScope = Scopes.First.Value;
-            AddOperator(new InOpDeclaration("ClockwiseFrom", 24, 0, BoolType, new FunctionParameter(IntType, parm, opParmA), new FunctionParameter(IntType, parm, opParmB))
+            AddOperator(new InOpDeclaration("ClockwiseFrom", 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
             {
                 Implementer = (Function)objectScope["ClockwiseFrom_IntInt"]
             });
 
-            AddOperator(new InOpDeclaration("==", 24, 0, BoolType, new FunctionParameter(interfaceType, parm, opParmA), new FunctionParameter(interfaceType, parm, opParmB))
+            AddOperator(new InOpDeclaration("==", 24, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
             {
                 Implementer = (Function)objectScope["EqualEqual_InterfaceInterface"]
             });
-            AddOperator(new InOpDeclaration("!=", 26, 0, BoolType, new FunctionParameter(interfaceType, parm, opParmA), new FunctionParameter(interfaceType, parm, opParmB))
+            AddOperator(new InOpDeclaration("!=", 26, 0, BoolType, new FunctionParameter(interfaceType, parm, "A"), new FunctionParameter(interfaceType, parm, "B"))
             {
                 Implementer = (Function)objectScope["NotEqual_InterfaceInterface"]
             });
 
-            AddOperator(new InOpDeclaration("*", 34, 0, matrixType, new FunctionParameter(matrixType, parm, opParmA), new FunctionParameter(matrixType, parm, opParmB))
+            AddOperator(new InOpDeclaration("*", 34, 0, matrixType, new FunctionParameter(matrixType, parm, "A"), new FunctionParameter(matrixType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_MatrixMatrix"]
             });
 
-            AddOperator(new InOpDeclaration("+", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, opParmA), new FunctionParameter(vector2DType, parm, opParmB))
+            AddOperator(new InOpDeclaration("+", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Add_Vector2DVector2D"]
             });
-            AddOperator(new InOpDeclaration("-", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, opParmA), new FunctionParameter(vector2DType, parm, opParmB))
+            AddOperator(new InOpDeclaration("-", 16, 0, vector2DType, new FunctionParameter(vector2DType, parm, "A"), new FunctionParameter(vector2DType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_Vector2DVector2D"]
             });
 
-            AddOperator(new InOpDeclaration("-", 20, 0, colorType, new FunctionParameter(colorType, parm, opParmA), new FunctionParameter(colorType, parm, opParmB))
+            AddOperator(new InOpDeclaration("-", 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_ColorColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(FloatType, parm, opParmA), new FunctionParameter(colorType, parm, opParmB))
+            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_FloatColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(colorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB))
+            AddOperator(new InOpDeclaration("*", 16, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_ColorFloat"]
             });
-            AddOperator(new InOpDeclaration("+", 20, 0, colorType, new FunctionParameter(colorType, parm, opParmA), new FunctionParameter(colorType, parm, opParmB))
+            AddOperator(new InOpDeclaration("+", 20, 0, colorType, new FunctionParameter(colorType, parm, "A"), new FunctionParameter(colorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Add_ColorColor"]
             });
 
-            AddOperator(new InOpDeclaration("-", 20, 0, linearColorType, new FunctionParameter(linearColorType, parm, opParmA), new FunctionParameter(linearColorType, parm, opParmB))
+            AddOperator(new InOpDeclaration("-", 20, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(linearColorType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Subtract_LinearColorLinearColor"]
             });
-            AddOperator(new InOpDeclaration("*", 16, 0, linearColorType, new FunctionParameter(linearColorType, parm, opParmA), new FunctionParameter(FloatType, parm, opParmB))
+            AddOperator(new InOpDeclaration("*", 16, 0, linearColorType, new FunctionParameter(linearColorType, parm, "A"), new FunctionParameter(FloatType, parm, "B"))
             {
                 Implementer = (Function)objectScope["Multiply_LinearColorFloat"]
             });
@@ -386,16 +424,31 @@ namespace ME3Script.Analysis.Symbols
             operatorsInitialized = true;
         }
 
-        private static VariableIdentifier opParmA => new VariableIdentifier("A");
-        private static VariableIdentifier opParmB => new VariableIdentifier("B");
+        private readonly List<Class> intrinsicClasses = new List<Class>();
+        public void ValidateIntrinsics()
+        {
+            foreach (var validationPass in Enums.GetValues<ValidationPass>())
+            {
+                foreach (Class cls in intrinsicClasses)
+                {
+                    cls.AcceptVisitor(new ClassValidationVisitor(null, this, validationPass));
+                }
+            }
+        }
 
-        public void PushScope(string name)
+        public void PushScope(string name, string secondaryScope = null)
         {
             string fullName = (CurrentScopeName == "" ? "" : $"{CurrentScopeName}.") + name;
             bool cached = Cache.TryGetValue(fullName, out ASTNodeDict scope);
             if (!cached)
+            {
                 scope = new ASTNodeDict();
+            }
 
+            if (secondaryScope != null)
+            {
+                scope.SecondaryScope = secondaryScope;
+            }
             Scopes.AddLast(scope);
             ScopeNames.AddLast(fullName);
             
@@ -422,6 +475,11 @@ namespace ME3Script.Analysis.Symbols
         {
             switch (stub)
             {
+                case StaticArrayType staticArrayType:
+                {
+                    staticArrayType.ElementType.Outer = staticArrayType;
+                    return TryResolveType(ref staticArrayType.ElementType, globalOnly);
+                }
                 case ClassType classType:
                 {
                     return TryResolveType(ref classType.ClassLimiter, true);
@@ -528,13 +586,17 @@ namespace ME3Script.Analysis.Symbols
             return stack.Count > 0;
         }
 
-        private static bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<ASTNodeDict> stack)
+        private bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<ASTNodeDict> stack)
         {
             LinkedListNode<ASTNodeDict> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
                 if (it.Value.TryGetValue(symbol, out node))
                     return true;
+                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out node))
+                {
+                    return true;
+                }
             }
             node = null;
             return false;
@@ -574,9 +636,19 @@ namespace ME3Script.Analysis.Symbols
                     var objClass = Types[OBJECT];
                     var netConType = new Class("NetConnection", node, objClass, EClassFlags.Intrinsic | EClassFlags.Abstract | EClassFlags.Transient | EClassFlags.Config) { ConfigName = "Engine" };
                     AddType(netConType);
-                    AddType(new Class("ChildConnection", netConType, objClass, EClassFlags.Intrinsic | EClassFlags.Transient | EClassFlags.Config) { ConfigName = "Engine" });
+                    var childConType = new Class("ChildConnection", netConType, objClass, EClassFlags.Intrinsic | EClassFlags.Transient | EClassFlags.Config, vars: new List<VariableDeclaration>
+                    {
+                        new VariableDeclaration(netConType, default, "Parent")
+                    }) { ConfigName = "Engine" };
+                    AddType(childConType);
+                    netConType.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(childConType), default, "Children"));
                     break;
                 }
+            }
+
+            if (node is Class c && c.Flags.Has(EClassFlags.Intrinsic))
+            {
+                intrinsicClasses.Add(c);
             }
         }
 
@@ -722,5 +794,10 @@ namespace ME3Script.Analysis.Symbols
         {
             return Types.TryGetValue(nameValue, out variableType);
         }
+    }
+
+    public class ASTNodeDict : CaseInsensitiveDictionary<ASTNode>
+    {
+        public string SecondaryScope;
     }
 }

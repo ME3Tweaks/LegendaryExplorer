@@ -32,7 +32,7 @@ namespace ME3Script.Analysis.Visitors
 
         public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass)
         {
-            Log = log;
+            Log = log ?? new MessageLog();
             Symbols = symbols;
             Success = true;
             Pass = pass;
@@ -65,19 +65,15 @@ namespace ME3Script.Analysis.Visitors
                         if (node.Parent.Type != ASTNodeType.Class)
                             return Error($"Parent named '{node.Parent.Name}' is not a class!", node.Parent.StartPos, node.Parent.EndPos);
 
-                        if (node.OuterClass != null)
+                        if (node._outerClass != null)
                         {
-                            node.OuterClass.Outer = node;
-                            if (!Symbols.TryResolveType(ref node.OuterClass))
-                                return Error($"No outer class named '{node.OuterClass.Name}' found!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            node._outerClass.Outer = node;
+                            if (!Symbols.TryResolveType(ref node._outerClass))
+                                return Error($"No outer class named '{node._outerClass.Name}' found!", node._outerClass.StartPos, node._outerClass.EndPos);
                             if (node.OuterClass.Type != ASTNodeType.Class)
                                 return Error($"Outer named '{node.OuterClass.Name}' is not a class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                             if (node.Parent.Name == "Actor" && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
                                 return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
-                        }
-                        else
-                        {
-                            node.OuterClass = ((Class)node.Parent).OuterClass;
                         }
 
                         //specifier validation
@@ -134,7 +130,12 @@ namespace ME3Script.Analysis.Visitors
                             return Error("Outer class must be a sub-class of the parents outer class!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                         }
                         Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
-                        Symbols.PushScope(node.Name);
+                        string outerScope = null;
+                        if (node.OuterClass != null && !string.Equals(node.OuterClass.Name, "Object", StringComparison.OrdinalIgnoreCase))
+                        {
+                            outerScope = ((Class)node.OuterClass).GetInheritanceString();
+                        }
+                        Symbols.PushScope(node.Name, outerScope);
                     }
 
                     //second pass over structs to resolve their members
@@ -169,6 +170,11 @@ namespace ME3Script.Analysis.Visitors
                 }
                 case ValidationPass.BodyPass:
                 {
+                    if (node.SameAsOrSubClassOf("Interface"))
+                    {
+                        node.Flags |= EClassFlags.Interface;
+                    }
+
                     //third pass over structs to check for circular inheritance chains
                     foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
                     {
@@ -192,7 +198,7 @@ namespace ME3Script.Analysis.Visitors
 
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
             {
-                return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.Variable.StartPos, node.Variable.EndPos);
+                return Error($"A member named '{node.Name}' already exists in this {node.Outer.Type}!", node.StartPos, node.EndPos);
             }
             Symbols.AddSymbol(node.Name, node);
 
@@ -233,7 +239,6 @@ namespace ME3Script.Analysis.Visitors
                     }
                 }
 
-
                 Symbols.PushScope(node.Name);
 
                 //register types of inner structs
@@ -250,6 +255,7 @@ namespace ME3Script.Analysis.Visitors
 
             if (Pass == ValidationPass.ClassAndStructMembersAndFunctionParams)
             {
+                string parentScope = null;
                 if (node.Parent != null)
                 {
                     node.Parent.Outer = node;
@@ -260,9 +266,11 @@ namespace ME3Script.Analysis.Visitors
 
                     if (node.Parent.Type != ASTNodeType.Struct)
                         return Error($"Parent named '{node.Parent.Name}' is not a struct!", node.Parent.StartPos, node.Parent.EndPos);
+
+                    parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
                 }
 
-                Symbols.PushScope(node.Name);
+                Symbols.PushScope(node.Name, parentScope);
 
                 //second pass for inner struct members
                 foreach (VariableType typeDeclaration in node.TypeDeclarations)
@@ -417,7 +425,7 @@ namespace ME3Script.Analysis.Visitors
             if (Symbols.SymbolExistsInCurrentScope(node.Name))
             {
                 return Error($"A parameter named '{node.Name}' already exists in this function!", 
-                             node.Variable.StartPos, node.Variable.EndPos);
+                             node.StartPos, node.EndPos);
             }
 
             Symbols.AddSymbol(node.Name, node);
@@ -517,10 +525,12 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
         public bool VisitNode(CaseStatement node)
         { throw new NotImplementedException(); }
-        public bool VisitNode(DefaultStatement node)
+        public bool VisitNode(DefaultCaseStatement node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(AssignStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(AssertStatement node)
         { throw new NotImplementedException(); }
         public bool VisitNode(BreakStatement node)
         { throw new NotImplementedException(); }
@@ -552,6 +562,9 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
 
         public bool VisitNode(FunctionCall node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(DelegateCall node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(ArraySymbolRef node)
@@ -606,6 +619,10 @@ namespace ME3Script.Analysis.Visitors
         }
 
         public bool VisitNode(DynArraySort node)
+        {
+            throw new NotImplementedException();
+        }
+        public bool VisitNode(DynArrayIterator node)
         {
             throw new NotImplementedException();
         }

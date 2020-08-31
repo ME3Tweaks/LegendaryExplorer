@@ -15,9 +15,9 @@ namespace ME3Script.Language.Tree
         public Statement Init;
         public Statement Update;
 
-        public ForLoop(Expression cond, CodeBody body,
-            Statement init, Statement update,
-            SourcePosition start, SourcePosition end)
+        public ForLoop(Statement init, Expression cond, Statement update,
+                       CodeBody body,
+                       SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.WhileLoop, start, end)
         {
             Condition = cond;
@@ -34,10 +34,10 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return Init;
-                yield return Condition;
-                yield return Update;
-                yield return Body;
+                if (Init != null) yield return Init;
+                if (Condition != null) yield return Condition;
+                if (Update != null) yield return Update;
+                if (Body != null) yield return Body;
             }
         }
     }

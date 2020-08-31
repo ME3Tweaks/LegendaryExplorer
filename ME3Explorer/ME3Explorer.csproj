@@ -313,6 +313,7 @@
     <Compile Include="ME3Script\Compiling\Errors\PositionedMessage.cs" />
     <Compile Include="ME3Script\Compiling\Errors\Warning.cs" />
     <Compile Include="ME3Script\Decompiling\ExtendedNativeTable.cs" />
+    <Compile Include="ME3Script\Decompiling\Intermediate Statements.cs" />
     <Compile Include="ME3Script\Decompiling\ME3ByteCodeDecompiler.cs" />
     <Compile Include="ME3Script\Decompiling\ME3ObjectConverter.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\ConstValues.cs" />
@@ -321,8 +322,10 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
+    <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\ClassType.cs" />
     <Compile Include="ME3Script\Language\Tree\DefaultReference.cs" />
+    <Compile Include="ME3Script\Language\Tree\DelegateCall.cs" />
     <Compile Include="ME3Script\Language\Tree\DelegateComparison.cs" />
     <Compile Include="ME3Script\Language\Tree\DelegateType.cs" />
     <Compile Include="ME3Script\Language\Tree\DynamicArrayType.cs" />
@@ -339,7 +342,7 @@
     <Compile Include="ME3Script\Language\Tree\Const.cs" />
     <Compile Include="ME3Script\Language\Tree\ContinueStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DefaultPropertiesBlock.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultStatement.cs" />
+    <Compile Include="ME3Script\Language\Tree\DefaultCaseStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\DoUntilLoop.cs" />
     <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
@@ -372,6 +375,7 @@
     <Compile Include="ME3Script\Language\Tree\State.cs" />
     <Compile Include="ME3Script\Language\Tree\StateLabel.cs" />
     <Compile Include="ME3Script\Language\Tree\Statement.cs" />
+    <Compile Include="ME3Script\Language\Tree\StaticArrayType.cs" />
     <Compile Include="ME3Script\Language\Tree\StopStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\StringLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\StringRefLiteral.cs" />

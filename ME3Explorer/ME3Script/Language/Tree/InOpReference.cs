@@ -14,7 +14,7 @@ namespace ME3Script.Language.Tree
         public Expression LeftOperand;
         public Expression RightOperand;
 
-        public InOpReference(InOpDeclaration op, Expression lhs, Expression rhs, SourcePosition start, SourcePosition end)
+        public InOpReference(InOpDeclaration op, Expression lhs, Expression rhs, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.InOpRef, start, end) 
         {
             Operator = op;

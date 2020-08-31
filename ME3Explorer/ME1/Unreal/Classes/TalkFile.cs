@@ -52,6 +52,8 @@ namespace ME1Explorer.Unreal.Classes
             public int Index { get => _index; set => SetProperty(ref _index, value); }
             public int BitOffset { get => _flags; set => SetProperty(ref _flags, value); } //use same variable to save memory as flags is not used in me2/3, but bitoffset is.
 
+            public int CalculatedID => _stringID >= 0 ? _stringID : -(int.MinValue - _stringID);
+
             /// <summary>
             /// This is used by huffman compression
             /// </summary>

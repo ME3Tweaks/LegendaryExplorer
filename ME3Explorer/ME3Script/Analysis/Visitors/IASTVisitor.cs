@@ -33,9 +33,10 @@ namespace ME3Script.Analysis.Visitors
 
         bool VisitNode(SwitchStatement node);
         bool VisitNode(CaseStatement node);
-        bool VisitNode(DefaultStatement node);
+        bool VisitNode(DefaultCaseStatement node);
 
         bool VisitNode(AssignStatement node);
+        bool VisitNode(AssertStatement node);
         bool VisitNode(BreakStatement node);
         bool VisitNode(ContinueStatement node);
         bool VisitNode(IfStatement node);
@@ -53,6 +54,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(NewOperator node);
 
         bool VisitNode(FunctionCall node);
+        bool VisitNode(DelegateCall node);
 
         bool VisitNode(ArraySymbolRef node);
         bool VisitNode(CompositeSymbolRef node);
@@ -89,5 +91,6 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(DynArrayFind node);
         bool VisitNode(DynArrayFindStructMember node);
         bool VisitNode(DynArraySort node);
+        bool VisitNode(DynArrayIterator node);
     }
 }

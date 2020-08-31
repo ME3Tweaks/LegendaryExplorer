@@ -23,7 +23,10 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            return  new VariableType(Keywords.ROT);
+            return new VariableType(Keywords.ROTATOR)
+            {
+                PropertyType = EPropertyType.Rotator
+            };
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

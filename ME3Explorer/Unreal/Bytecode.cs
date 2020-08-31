@@ -1172,7 +1172,7 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_InterfaceCast: // 0x52
-                        newTok = ReadUnkn1(start, export);
+                        newTok = ReadDynCast(start, export);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -3703,12 +3703,15 @@ namespace ME3Explorer.Unreal
             pos += c.raw.Length;
             Token d = ReadToken(pos, export);
             pos += d.raw.Length;
+            Token e = ReadToken(pos, export);
+            pos += e.raw.Length;
             t.inPackageReferences.AddRange(a.inPackageReferences);
             t.inPackageReferences.AddRange(b.inPackageReferences);
             t.inPackageReferences.AddRange(c.inPackageReferences);
             t.inPackageReferences.AddRange(d.inPackageReferences);
+            t.inPackageReferences.AddRange(e.inPackageReferences);
 
-            t.text = "new(" + a.text + "," + b.text + "," + c.text + "," + d.text + ")";
+            t.text = $"new({a.text},{b.text},{c.text},{d.text},{e.text})";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4396,20 +4399,6 @@ namespace ME3Explorer.Unreal
             int len = pos - start;
             t.raw = new byte[len];
             for (int i = 0; i < len; i++)
-                t.raw[i] = memory[start + i];
-            return t;
-        }
-
-        private Token ReadUnkn1(int start, ExportEntry export)
-        {
-            Token t = new Token();
-
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
-
-            t.text = export.FileRef.getObjectName(index);
-            t.raw = new byte[5];
-            for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
             return t;
         }

@@ -36,24 +36,10 @@ namespace ME3Explorer.ME3Script
             return res;
         }
 
-        public static void ParseBodies()
-        {
-            var log = new MessageLog();
-            foreach ((Class ast, string scriptText) in Classes.Values)
-            {
-                foreach (Function function in ast.Functions)
-                {
-                    CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
-                    if (log.Content.Any())
-                    {
-                        DisplayError(scriptText, log.ToString());
-                    }
-                }
-            }
-        }
-
         private static bool ResolveAllClassesInPackage(string filePath)
         {
+            string dumpFolderPath = Path.Combine(ME3Directory.gamePath, "ScriptDump", Path.GetFileNameWithoutExtension(filePath));
+            Directory.CreateDirectory(dumpFolderPath);
             var log = new MessageLog();
             string fileName = Path.GetFileName(filePath);
             Debug.WriteLine($"{fileName}: Beginning Parse.");
@@ -65,6 +51,7 @@ namespace ME3Explorer.ME3Script
                 var codeBuilder = new CodeBuilderVisitor();
                 cls.AcceptVisitor(codeBuilder);
                 string scriptText = codeBuilder.GetCodeString();
+                File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
                 try
                 {
                     var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
@@ -93,14 +80,7 @@ namespace ME3Explorer.ME3Script
                 }
             }
             Debug.WriteLine($"{fileName}: Finished parse.");
-            var validationPasses = new []
-            {
-                ValidationPass.TypesAndFunctionNamesAndStateNames,
-                ValidationPass.ClassAndStructMembersAndFunctionParams,
-                ValidationPass.BodyPass
-            };
-            int i = 1;
-            foreach (var validationPass in validationPasses)
+            foreach (var validationPass in Enums.GetValues<ValidationPass>())
             {
                 foreach ((Class ast, string scriptText) in classes)
                 {
@@ -120,29 +100,37 @@ namespace ME3Explorer.ME3Script
                         return false;
                     }
                 }
-                Debug.WriteLine($"{fileName}: Finished validation pass {i++}.");
+                Debug.WriteLine($"{fileName}: Finished validation pass {validationPass}.");
             }
 
-            if (fileName == "Core.pcc")
+            switch (fileName)
             {
-                Symbols.InitializeOperators();
+                case "Core.pcc":
+                    Symbols.InitializeOperators();
+                    break;
+                case "Engine.pcc":
+                    Symbols.ValidateIntrinsics();
+                    break;
             }
 
-            foreach ((Class ast, string scriptText) in classes)
+            if (fileName.StartsWith("SFX"))
             {
-                Symbols.RevertToObjectStack();
-                if (!ast.Name.CaseInsensitiveEquals("Object"))
+                foreach ((Class ast, string scriptText) in classes)
                 {
-                    Symbols.GoDirectlyToStack(((Class)ast.Parent).GetInheritanceString());
-                    Symbols.PushScope(ast.Name);
-                }
-
-                foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
-                {
-                    CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
-                    if (log.Content.Any())
+                    Symbols.RevertToObjectStack();
+                    if (!ast.Name.CaseInsensitiveEquals("Object"))
                     {
-                        DisplayError(scriptText, log.ToString());
+                        Symbols.GoDirectlyToStack(((Class)ast.Parent).GetInheritanceString());
+                        Symbols.PushScope(ast.Name);
+                    }
+
+                    foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
+                    {
+                        CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
+                        if (log.Content.Any())
+                        {
+                            DisplayError(scriptText, log.ToString());
+                        }
                     }
                 }
             }

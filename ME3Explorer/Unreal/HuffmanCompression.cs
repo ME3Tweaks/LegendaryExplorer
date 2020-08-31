@@ -74,6 +74,50 @@ namespace ME3Explorer
             PrepareHuffmanCoding();
         }
 
+        /// <summary>
+        /// Loads files into memory, dedups, and prepares for compressing it to TLK
+        /// </summary>
+        /// <param name="fileNames"></param>
+        /// <param name="debugVersion"></param>
+        /// 
+        public void LoadInputData(string[] fileNames, bool debugVersion)
+        {
+            var maleDict = new Dictionary<int, TLKStringRef>();
+            var femaleDict = new Dictionary<int, TLKStringRef>();
+            foreach (string fileName in fileNames)
+            {
+                _inputData.Clear();
+                var tempMaleDict = new Dictionary<int, TLKStringRef>();
+                var tempFemaleDict = new Dictionary<int, TLKStringRef>();
+                LoadXmlInputData(fileName, debugVersion);
+                foreach (TLKStringRef strRef in _inputData)
+                {
+                    if (tempMaleDict.ContainsKey(strRef.CalculatedID))
+                    {
+                        tempFemaleDict[strRef.CalculatedID] = strRef;
+                    }
+                    else
+                    {
+                        tempMaleDict[strRef.CalculatedID] = strRef;
+                    }
+                }
+
+                foreach ((int key, TLKStringRef value) in tempMaleDict)
+                {
+                    maleDict[key] = value;
+                }
+                foreach ((int key, TLKStringRef value) in tempFemaleDict)
+                {
+                    femaleDict[key] = value;
+                }
+            }
+
+            _inputData = maleDict.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
+            _inputData.AddRange(femaleDict.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value));
+
+            PrepareHuffmanCoding();
+        }
+
         public void LoadInputData(List<TLKStringRef> tlkEntries)
         {
             _inputData = tlkEntries;

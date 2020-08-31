@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public Expression Value;
 
         public ExpressionOnlyStatement(Expression value, SourcePosition start = null, SourcePosition end = null)
-            : base(ASTNodeType.ReturnStatement, start, end)
+            : base(ASTNodeType.ExpressionStatement, start, end)
         {
             Value = value;
         }

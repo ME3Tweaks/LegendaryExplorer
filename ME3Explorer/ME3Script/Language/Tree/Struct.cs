@@ -26,7 +26,12 @@ namespace ME3Script.Language.Tree
                       List<VariableType> typeDeclarations = null,
                       DefaultPropertiesBlock defaults = null,
                       SourcePosition start = null, SourcePosition end = null)
-            : base(name, start, end, EPropertyType.Struct)
+            : base(name, start, end, name switch
+            {
+                "Vector" => EPropertyType.Vector,
+                "Rotator" => EPropertyType.Rotator,
+                _ => EPropertyType.Struct
+            })
         {
             Type = ASTNodeType.Struct;
             Flags = flags;
@@ -61,6 +66,19 @@ namespace ME3Script.Language.Tree
             }
             return false;
         }
+
+        public string GetInheritanceString()
+        {
+            string str = this.Name;
+            Struct current = this;
+            while (current.Parent != null)
+            {
+                current = (Struct)current.Parent;
+                str = current.Name + "." + str;
+            }
+            return str;
+        }
+
         public override IEnumerable<ASTNode> ChildNodes
         {
             get

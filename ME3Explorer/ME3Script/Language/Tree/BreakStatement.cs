@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
 {
     public class BreakStatement : Statement
     {
-        public BreakStatement(SourcePosition start, SourcePosition end) 
+        public BreakStatement(SourcePosition start = null, SourcePosition end = null) 
             : base(ASTNodeType.BreakStatement, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -68,6 +68,11 @@ namespace ME3Script.Utilities
                 return 0; //exact match
             }
 
+            if (src?.PropertyType == EPropertyType.Vector && dest.VarType?.PropertyType == EPropertyType.Vector 
+             || src?.PropertyType == EPropertyType.Rotator && dest.VarType?.PropertyType == EPropertyType.Rotator)
+            {
+                return 0;
+            }
             if (dest.VarType is Class && src is null)
             {
                 return 0;
@@ -80,11 +85,11 @@ namespace ME3Script.Utilities
             {
                 return int.MaxValue;
             }
-            if (dest.VarType.Name.CaseInsensitiveEquals(INTERFACE) && src is Class cls && cls.SameAsOrSubClassOf(INTERFACE))
+            if (INTERFACE.CaseInsensitiveEquals(dest.VarType?.Name) && src is Class cls && cls.SameAsOrSubClassOf(INTERFACE))
             {
                 return 1; //Interface subclass
             }
-            if (!dest.VarType.Name.CaseInsensitiveEquals(INTERFACE) && dest.VarType is Class && src is Class)
+            if (!INTERFACE.CaseInsensitiveEquals(dest.VarType?.Name) && dest.VarType is Class && src is Class)
             {
                 return 2;
             }

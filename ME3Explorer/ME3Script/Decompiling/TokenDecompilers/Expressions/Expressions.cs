@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Script.Utilities;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Decompiling
@@ -290,10 +291,6 @@ namespace ME3Script.Decompiling
                 case (byte)StandardByteCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
-
-                case (byte)StandardByteCodes.Assert:
-                    return DecompileAssert();
-
                 #endregion
 
 
@@ -319,7 +316,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new SymbolReference(null, obj.ObjectName);
+            return new SymbolReference(null, obj.ObjectName.Instanced);
         }
 
         public Expression DecompileDefaultReference()
@@ -329,7 +326,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new DefaultReference(null, obj.ObjectName);
+            return new DefaultReference(null, obj.ObjectName.Instanced);
         }
 
         public Expression DecompileContext(bool isClass = false)
@@ -344,11 +341,11 @@ namespace ME3Script.Decompiling
             ReadObject(); // discard RetValRef.
             ReadByte(); // discard unknown byte.
 
-            isInClassContext = isClass;
+            isInContextExpression = true;
             var right = DecompileExpression();
             if (right == null)
                 return null; // ERROR
-            isInClassContext = false;
+            isInContextExpression = false;
 
             StartPositions.Pop();
             return new CompositeSymbolRef(left, right, isClass);
@@ -369,7 +366,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            var member = new SymbolReference(null, MemberRef.ObjectName);
+            var member = new SymbolReference(null, MemberRef.ObjectName.Instanced);
             return new CompositeSymbolRef(expr, member);
         }
 
@@ -513,11 +510,15 @@ namespace ME3Script.Decompiling
             if (expr == null)
                 return null; // ERROR
 
-            string type = objRef.ObjectName;
+            string type = objRef.ObjectName.Instanced;
             if (meta)
                 type = "class<" + type + ">";
 
             StartPositions.Pop();
+            if (expr is NoneLiteral)
+            {
+                return expr;
+            }
             return new CastExpression(new VariableType(type, null, null), expr, null, null);
         }
 
@@ -534,6 +535,10 @@ namespace ME3Script.Decompiling
             string type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
+            if (typeToken == (byte)ECast.ByteToInt && expr is IntegerLiteral)
+            {
+                return expr;
+            }
             return new CastExpression(new VariableType(type, null, null), expr, null, null);
         }
 
@@ -548,10 +553,38 @@ namespace ME3Script.Decompiling
             else
             {
                 var funcObj = ReadObject();
-                funcName = funcObj.ObjectName;
-                
-                if (funcName == DataContainer.Export.ObjectName && !isInClassContext) // If we're calling ourself, it's a super call
+                funcName = funcObj.ObjectName.Instanced;
+
+                if (AdditionalOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
                 {
+                    Expression parm1, parm2;
+                    if (CurrentIs(StandardByteCodes.Nothing))
+                    {
+                        PopByte();
+                        parm1 = new SymbolReference(null, "None");
+                    }
+                    else
+                    {
+                        parm1 = DecompileExpression();
+                    }
+                    if (CurrentIs(StandardByteCodes.Nothing))
+                    {
+                        PopByte();
+                        parm2 = new SymbolReference(null, "None");
+                    }
+                    else
+                    {
+                        parm2 = DecompileExpression();
+                    }
+                    PopByte();//EndFunctionParms
+
+                    StartPositions.Pop();
+                    return new InOpReference(opDecl, parm1, parm2);
+                }
+                
+                if (IsSuper(funcObj)) // If we're calling ourself, it's a super call
+                {
+                    //TODO: put super calls into the ast, and properly decompile super calls that specifiy the class
                     var str = "super";
                     var classExp = DataContainer.Export.Parent;
                     while (classExp != null && classExp.ClassName != "Class")
@@ -564,8 +597,8 @@ namespace ME3Script.Decompiling
                     {
                         classExp = classExp.Parent;
                     }
-                    var funcOuterClass = classExp.ObjectName;
-                    if (currentClass != null && currentClass.SuperClass != 0 && currentClass.SuperClass.GetEntry(PCC).ObjectName == funcOuterClass)
+                    var funcOuterClass = classExp.ObjectName.Instanced;
+                    if (currentClass != null && currentClass.SuperClass != 0 && currentClass.SuperClass.GetEntry(PCC).ObjectName.Instanced == funcOuterClass)
                         funcName = str + "." + funcName;
                     else
                         funcName = str + "(" + funcOuterClass + ")." + funcName;
@@ -578,6 +611,19 @@ namespace ME3Script.Decompiling
             if (withFuncListIdx)
                 ReadInt16(); // TODO: store this 
 
+            List<Expression> parameters = DecompileArgumentList();
+            if (parameters is null)
+            {
+                return null;
+            }
+
+            StartPositions.Pop();
+            var func = new SymbolReference(null, funcName);
+            return new FunctionCall(func, parameters, null, null);
+        }
+
+        private List<Expression> DecompileArgumentList()
+        {
             var parameters = new List<Expression>();
             while (!CurrentIs(StandardByteCodes.EndFunctionParms))
             {
@@ -590,15 +636,34 @@ namespace ME3Script.Decompiling
 
                 var param = DecompileExpression();
                 if (param == null)
-                    return null; // ERROR
+                    return null;
 
                 parameters.Add(param);
             }
-            PopByte();
 
-            StartPositions.Pop();
-            var func = new SymbolReference(null, funcName);
-            return new FunctionCall(func, parameters, null, null);
+            PopByte();
+            return parameters;
+        }
+
+        bool IsSuper(IEntry funcObj)
+        {
+            //can't be a super call if it's being called on a specific object
+            if (isInContextExpression)
+            {
+                return false;
+            }
+
+            string funcName = funcObj.ObjectName.Instanced;
+            ExportEntry parentContextExport = funcObj.Parent as ExportEntry;
+
+            //if the function being called is in the current context, it's not a super call
+            if (parentContextExport == DataContainer.Export.Parent)
+            {
+                return false;
+            }
+
+            //if it's in a parent context, it's a super call if there is a function with the same name in the current context
+            return DataContainer.Export.Parent.GetChildren().Any(child => child.ObjectName.Instanced.CaseInsensitiveEquals(funcName));
         }
 
         public Expression DecompileNew()
@@ -621,28 +686,33 @@ namespace ME3Script.Decompiling
                 parms.Add(param);
             }
 
+            StartPositions.Pop();
             return new NewOperator(parms[0], parms[1], parms[2], parms[3], parms[4]);
         }
 
         public Expression DecompileDelegateFunction() // TODO: is this proper? Is it even used in ME3?
         {
             PopByte();
-            PopByte(); // unknown
-            var obj = ReadObject(); // unknown objRef?
+            var delegateProp = DecompileExpression();
+            if (!(delegateProp is SymbolReference symRef)) return null;
 
-            Position--; //HACK!!!!! TODO
-            return DecompileFunctionCall(byName: true);
+            var delegateTypeName = ReadNameReference();
+
+            var args = DecompileArgumentList();
+            if (args == null) return null;
+
+            StartPositions.Pop();
+            return new DelegateCall(symRef, args);
         }
 
         public Expression DecompileDelegateProperty() // TODO: is this proper? Is it even used in ME3?
         {
             PopByte();
             var name = ReadNameReference();
-            var obj = ReadObject(); // probably the delegate
+            var obj = ReadObject(); 
 
             StartPositions.Pop();
-            var objName = obj != null ? obj.ObjectName.Instanced : "None";
-            return new SymbolReference(null, $"{name}({objName})", null, null);
+            return new SymbolReference(null, name, null, null);
         }
 
 #endregion
@@ -670,7 +740,7 @@ namespace ME3Script.Decompiling
             var obj = ReadObject();
 
             StartPositions.Pop();
-            return new SymbolReference(null, "UNSUPPORTED: NativeParm: " + obj.ObjectName + " : " + obj.ClassName, null, null);
+            return new SymbolReference(null, "UNSUPPORTED: NativeParm: " + obj.ObjectName.Instanced + " : " + obj.ClassName, null, null);
         }
 
         public Expression DecompileInstanceDelegate() // TODO: check code, seems ok?
@@ -679,21 +749,7 @@ namespace ME3Script.Decompiling
             var name = ReadNameReference();
 
             StartPositions.Pop();
-            return new SymbolReference(null, "UNSUPPORTED: InstanceDelegate: " + name, null, null);
-        }
-
-        public Expression DecompileAssert()
-        {
-            PopByte();
-            var unkn1 = ReadUInt16(); // memoff?
-            var unkn2 = ReadByte(); // true/false?
-            var expr = DecompileExpression();
-
-            var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
-            expr.AcceptVisitor(builder);
-
-            StartPositions.Pop();
-            return new SymbolReference(null, "ASSERT[" + unkn1.ToString("X4") + "|" + unkn2.ToString("X2") + "](" + builder.ToString() + ")", null, null);
+            return new SymbolReference(null, name);
         }
 
         #endregion

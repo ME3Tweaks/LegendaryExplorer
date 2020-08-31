@@ -102,7 +102,7 @@ namespace ME3Explorer.ME3Script
                     return (astNode, codeBuilder.GetCodeString());
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when(!App.IsDebug)
             {
                 return (null, $"Error occured while decompiling {export?.InstancedFullPath}:\n\n{e.FlattenException()}");
             }

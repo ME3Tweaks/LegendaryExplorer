@@ -2237,6 +2237,7 @@ namespace ME3Explorer
                 BusyText = $"Navigating to {QueuedGotoNumber}";
 
                 GoToNumber(QueuedGotoNumber);
+                Goto_TextBox.Text = QueuedGotoNumber.ToString();
                 if (QueuedGotoNumber > 0)
                 {
                     Interpreter_Tab.IsSelected = true;
@@ -2539,7 +2540,7 @@ namespace ME3Explorer
         {
             switch (CurrentView)
             {
-                case CurrentViewMode.Tree when LeftSide_TreeView.SelectedItem is TreeViewEntry selected:
+                case CurrentViewMode.Tree when SelectedItem is TreeViewEntry selected:
                     n = selected.UIndex;
                     return true;
                 case CurrentViewMode.Exports when LeftSide_ListView.SelectedItem != null:

@@ -13,7 +13,7 @@ namespace ME3Script.Language.Tree
         public PreOpDeclaration Operator;
         public Expression Operand;
 
-        public PreOpReference(PreOpDeclaration op, Expression oper, SourcePosition start, SourcePosition end)
+        public PreOpReference(PreOpDeclaration op, Expression oper, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.InOpRef, start, end)
         {
             Operator = op;

@@ -19,7 +19,7 @@ namespace ME3Explorer.Packages
 
         public MEGame Game => FileRef.Game;
 
-        public int Index { private get; set; }
+        public int Index { private get; set; } = -1;
         public int UIndex => Index + 1;
 
         /// <summary>

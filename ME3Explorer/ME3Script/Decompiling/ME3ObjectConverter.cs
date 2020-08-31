@@ -55,7 +55,7 @@ namespace ME3Script.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction));
+                        Funcs.Add(ConvertFunction(uFunction, uClass));
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
@@ -68,7 +68,7 @@ namespace ME3Script.Decompiling
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState));
+                        States.Add(ConvertState(uState, uClass));
                         break;
                     default:
                         nextItem = 0;
@@ -96,8 +96,23 @@ namespace ME3Script.Decompiling
             return AST;
         }
 
-        public static State ConvertState(UState obj)
+        public static State ConvertState(UState obj, UClass containingClass = null)
         {
+            if (containingClass is null)
+            {
+                ExportEntry classExport = obj.Export.Parent as ExportEntry;
+                while (classExport != null && !classExport.IsClass)
+                {
+                    classExport = classExport.Parent as ExportEntry;
+                }
+
+                if (classExport == null)
+                {
+                    throw new Exception($"Could not get containing class for state {obj.Export.ObjectName}");
+                }
+
+                containingClass = classExport.GetBinaryData<UClass>();
+            }
             // TODO: labels
 
             State parent = null;
@@ -114,7 +129,7 @@ namespace ME3Script.Decompiling
                 switch (objBin)
                 {
                     case UFunction uFunction when uFunction.FunctionFlags.HasFlag(FunctionFlags.Defined):
-                        Funcs.Add(ConvertFunction(uFunction));
+                        Funcs.Add(ConvertFunction(uFunction, containingClass));
                         nextItem = uFunction.Next;
                         break;
                     case UFunction uFunction:
@@ -130,7 +145,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var ByteCode = new ME3ByteCodeDecompiler(obj, new List<FunctionParameter>());
+            var ByteCode = new ME3ByteCodeDecompiler(obj, containingClass, new List<FunctionParameter>());
             var body = ByteCode.Decompile();
 
             return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
@@ -295,9 +310,7 @@ namespace ME3Script.Decompiling
         {
             int size = obj.ArraySize;
 
-            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags,
-                                           new VariableIdentifier(obj.Export.ObjectName.Instanced, null, null, size),
-                                           obj.Category != "None" ? obj.Category : null, null, null);
+            return new VariableDeclaration(GetPropertyType(obj), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null);
         }
 
         private static VariableType GetPropertyType(UProperty obj)
@@ -387,13 +400,29 @@ namespace ME3Script.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj)
+        public static Function ConvertFunction(UFunction obj, UClass containingClass = null)
         {
+            if (containingClass is null)
+            {
+                ExportEntry classExport = obj.Export.Parent as ExportEntry;
+                while (classExport != null && !classExport.IsClass)
+                {
+                    classExport = classExport.Parent as ExportEntry;
+                }
+
+                if (classExport == null)
+                {
+                    throw new Exception($"Could not get containing class for function {obj.Export.ObjectName}");
+                }
+
+                containingClass = classExport.GetBinaryData<UClass>();
+            }
             VariableType returnType = null;
             var nextItem = obj.Children;
 
             var parameters = new List<FunctionParameter>();
             var locals = new List<VariableDeclaration>();
+            var coerceReturn = false;
             while (obj.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
@@ -403,11 +432,15 @@ namespace ME3Script.Decompiling
                         if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                         {
                             returnType = ConvertVariable(uProperty).VarType;
+                            if (uProperty.PropertyFlags.Has(UnrealFlags.EPropertyFlags.CoerceParm))
+                            {
+                                coerceReturn = true;
+                            }
                         }
                         else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Variable, null, null));
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.Size));
                         }
                         else
                         {
@@ -421,14 +454,15 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var ByteCode = new ME3ByteCodeDecompiler(obj, parameters);
+            var ByteCode = new ME3ByteCodeDecompiler(obj, containingClass, parameters);
             var body = ByteCode.Decompile();
 
             
             var func = new Function(obj.Export.ObjectName.Instanced,
-                                    obj.FunctionFlags, returnType, body, parameters, null, null)
+                                    obj.FunctionFlags, returnType, body, parameters)
             {
-                NativeIndex = obj.NativeIndex
+                NativeIndex = obj.NativeIndex,
+                CoerceReturn = coerceReturn
             };
 
             foreach (var local in locals)
@@ -508,7 +542,7 @@ namespace ME3Script.Decompiling
                             var type = new VariableType(objExp.ClassName);
                             if (!(statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name != name) is Subobject subObj))
                             {
-                                var decl = new VariableDeclaration(type, default, new VariableIdentifier(name), null);
+                                var decl = new VariableDeclaration(type, default, name);
                                 subObj = new Subobject(decl, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp));
                                 statements.Add(subObj);
                             }

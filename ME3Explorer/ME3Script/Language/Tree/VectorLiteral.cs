@@ -23,7 +23,10 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            return new VariableType(Keywords.VECT);
+            return new VariableType(Keywords.VECTOR)
+            {
+                PropertyType = EPropertyType.Vector
+            };
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

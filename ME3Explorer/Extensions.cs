@@ -242,6 +242,8 @@ namespace ME3Explorer
             return slice;
         }
 
+        public static List<T> Slice<T>(this List<T> src, int start, int length) => src.GetRange(start, length);
+
         public static T[] TypedClone<T>(this T[] src)
         {
             return (T[])src.Clone();
@@ -381,6 +383,12 @@ namespace ME3Explorer
         public static void Add<T, U, V>(this IList<(T, U, V)> list, T item1, U item2, V item3) => list.Add((item1, item2, item3));
 
         public static void Add<T, U, V, W>(this IList<(T, U, V, W)> list, T item1, U item2, V item3, W item4) => list.Add((item1, item2, item3, item4));
+
+        public static void ReplaceAll<T>(this List<T> list, IEnumerable<T> replacement)
+        {
+            list.Clear();
+            list.AddRange(replacement);
+        }
     }
 
     public static class DictionaryExtensions
