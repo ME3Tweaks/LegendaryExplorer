@@ -7,7 +7,7 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
 
-namespace ME3ExplorerCore.Unreal
+namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
     public class SerializingContainer2
     {
@@ -23,13 +23,11 @@ namespace ME3ExplorerCore.Unreal
 
         public SerializingContainer2(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0)
         {
-            ms = new EndianReader(stream) {Endian = pcc?.Endian ?? Endian.Little};
+            ms = new EndianReader(stream) { Endian = pcc?.Endian ?? Endian.Little };
             IsLoading = isLoading;
             Pcc = pcc;
             startOffset = offset;
         }
-
-        
     }
 
     public static partial class SCExt

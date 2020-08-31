@@ -62,7 +62,8 @@ namespace ME3ExplorerCore.Packages
                 {
                     stream.Position -= 8; //reset to where we started for delegate
                     pkg = MEStreamConstructorDelegate(stream, filePath);
-                    ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
+                    // Todo
+                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {

@@ -116,7 +116,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             if (sc.Game == MEGame.UDK)
             {
                 sc.Serialize(ref unk8);
-                sc.Serialize(ref unkFloats, Unreal.SCExt.Serialize);
+                sc.Serialize(ref unkFloats, SCExt.Serialize);
                 sc.Serialize(ref unk9);
                 sc.Serialize(ref unk10);
                 sc.Serialize(ref unk11);
@@ -359,7 +359,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref vBuff.NumVertices);
             int elementsize = 4;
             sc.Serialize(ref elementsize);
-            sc.Serialize(ref vBuff.VertexData, Unreal.SCExt.Serialize);
+            sc.Serialize(ref vBuff.VertexData, SCExt.Serialize);
         }
         public static void Serialize(this SerializingContainer2 sc, ref ColorVertexBuffer buff)
         {
@@ -612,16 +612,16 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref data.NumVertices);
             int elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.IndexBuffer, Unreal.SCExt.Serialize);
+            sc.Serialize(ref data.IndexBuffer, SCExt.Serialize);
             elementSize = 2;
             sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.WireframeIndexBuffer, Unreal.SCExt.Serialize);
+            sc.Serialize(ref data.WireframeIndexBuffer, SCExt.Serialize);
             if (sc.Game != MEGame.UDK)
             {
                 elementSize = 16;
                 sc.Serialize(ref elementSize);
                 sc.Serialize(ref data.Edges, Serialize);
-                sc.Serialize(ref data.ShadowTriangleDoubleSided, Unreal.SCExt.Serialize);
+                sc.Serialize(ref data.ShadowTriangleDoubleSided, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
@@ -630,7 +630,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             if (sc.Game == MEGame.UDK)
             {
-                sc.BulkSerialize(ref data.unkBuffer, Unreal.SCExt.Serialize, 2);
+                sc.BulkSerialize(ref data.unkBuffer, SCExt.Serialize, 2);
             }
             if (sc.Game == MEGame.ME1)
             {

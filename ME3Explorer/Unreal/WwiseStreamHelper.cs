@@ -3,18 +3,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using ME3Explorer.Soundplorer;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal
 {
-    public class WwiseHelper
+    /// <summary>
+    /// Helper class for audio stuff
+    /// </summary>
+    public class WwiseStreamHelper
     {
         public static bool ExtractRawFromSourceToFile(string outfile, string afcPath, int dataSize, int dataOffset)
         {
             var ms = ExtractRawFromSource(afcPath, dataSize, dataOffset);
             if (File.Exists(outfile)) File.Delete(outfile);
-            StreamHelpers.StreamHelpers.WriteToFile(ms, outfile);
+            ms.WriteToFile(outfile);
             return true;
         }
 
@@ -89,10 +93,10 @@ namespace ME3Explorer.Unreal
             {
                 proc.StandardOutput.BaseStream.CopyTo(outputData);
 
-        /*using (var output = new FileStream(outputFile, FileMode.Create))
-        {
-            process.StandardOutput.BaseStream.CopyTo(output);
-        }*/
+                /*using (var output = new FileStream(outputFile, FileMode.Create))
+                {
+                    process.StandardOutput.BaseStream.CopyTo(output);
+                }*/
             });
             Task.WaitAll(outputTask);
 
@@ -147,10 +151,10 @@ namespace ME3Explorer.Unreal
                 proc.StandardOutput.BaseStream.CopyTo(outputData);
                 proc.StandardError.BaseStream.CopyTo(outputErrorData);
 
-        /*using (var output = new FileStream(outputFile, FileMode.Create))
-        {
-            process.StandardOutput.BaseStream.CopyTo(output);
-        }*/
+                /*using (var output = new FileStream(outputFile, FileMode.Create))
+                {
+                    process.StandardOutput.BaseStream.CopyTo(output);
+                }*/
             });
             Task.WaitAll(outputTask);
 
@@ -175,7 +179,9 @@ namespace ME3Explorer.Unreal
                 if (package.IsCompressed)
                 {
                     // Todo: Add method to package class that will get the decompressed data stream
-                    embeddedStream = CompressionHelper.DecompressUDK();
+                    using var compressStream = File.OpenRead(afcPath);
+
+                    embeddedStream = CompressionHelper.DecompressPackage(package.IsCompressed);
                 }
             }
 

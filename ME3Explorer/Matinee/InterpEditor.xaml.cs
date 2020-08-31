@@ -13,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ME3Explorer;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;

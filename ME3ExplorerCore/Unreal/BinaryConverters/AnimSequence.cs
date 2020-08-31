@@ -77,7 +77,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 Enum.TryParse(Export.GetProperty<EnumProperty>("TranslationCompressionFormat")?.Value.Name, out posCompression);
             }
 
-            sc.Serialize(ref CompressedAnimationData, Unreal.SCExt.Serialize);
+            sc.Serialize(ref CompressedAnimationData, SCExt.Serialize);
         }
 
         public void UpdateProps(PropertyCollection props, MEGame newGame, AnimationCompressionFormat newRotationCompression = AnimationCompressionFormat.ACF_Float96NoW)

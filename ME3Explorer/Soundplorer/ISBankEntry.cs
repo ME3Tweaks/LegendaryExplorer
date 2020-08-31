@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gammtek.Conduit.IO;
 using ME3ExplorerCore.Unreal;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -79,7 +79,7 @@ namespace ME3Explorer.Soundplorer
             {
                 string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
                 File.WriteAllBytes(basePath, DataAsStored);
-                MemoryStream waveStream = WwiseHelper.ConvertOggToWave(basePath);
+                MemoryStream waveStream = WwiseStreamHelper.ConvertOggToWave(basePath);
                 return waveStream;
             }
             Debug.WriteLine("Unsupported codec for getting wave: " + CodecID);

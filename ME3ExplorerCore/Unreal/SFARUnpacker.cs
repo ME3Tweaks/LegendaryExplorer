@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -233,6 +234,13 @@ namespace ME3ExplorerCore.Unreal
                     output.WriteFromBuffer(uncompressedBlockBuffers[j]);
                 }
             }
+        }
+
+        private static string GetPrettyDLCNameFromPath(string sfarPath)
+        {
+            var dlcFolderName = Path.GetFileName(Directory.GetParent(Directory.GetParent(sfarPath).FullName).FullName);
+            ME3Directory.OfficialDLCNames.TryGetValue(dlcFolderName, out var prettyname);
+            return prettyname ?? dlcFolderName;
         }
 
         public void Extract(string outPath)

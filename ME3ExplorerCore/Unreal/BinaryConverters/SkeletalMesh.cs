@@ -49,7 +49,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 {
                     ClothingAssets = new UIndex[0];
                 }
-                sc.Serialize(ref BoneBreakNames, Unreal.SCExt.Serialize);
+                sc.Serialize(ref BoneBreakNames, SCExt.Serialize);
                 sc.Serialize(ref ClothingAssets, SCExt.Serialize);
             }
             else
@@ -62,7 +62,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref unk1);
                 sc.Serialize(ref unk2);
-                sc.Serialize(ref unkFloats, Unreal.SCExt.Serialize);
+                sc.Serialize(ref unkFloats, SCExt.Serialize);
                 sc.Serialize(ref unk3);
             }
             else if (sc.IsLoading)
@@ -313,7 +313,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref smc.BaseVertexIndex);
             sc.Serialize(ref smc.RigidVertices, Serialize);
             sc.Serialize(ref smc.SoftVertices, Serialize);
-            sc.Serialize(ref smc.BoneMap, Unreal.SCExt.Serialize);
+            sc.Serialize(ref smc.BoneMap, SCExt.Serialize);
             sc.Serialize(ref smc.NumRigidVertices);
             sc.Serialize(ref smc.NumSoftVertices);
             sc.Serialize(ref smc.MaxBoneInfluences);
@@ -510,16 +510,16 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                sc.Serialize(ref slm.IndexBuffer, Unreal.SCExt.Serialize);
+                sc.Serialize(ref slm.IndexBuffer, SCExt.Serialize);
             }
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowIndices, Unreal.SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowIndices, SCExt.Serialize);
             }
-            sc.Serialize(ref slm.ActiveBoneIndices, Unreal.SCExt.Serialize);
+            sc.Serialize(ref slm.ActiveBoneIndices, SCExt.Serialize);
             if (sc.Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowTriangleDoubleSided, Unreal.SCExt.Serialize);
+                sc.Serialize(ref slm.ShadowTriangleDoubleSided, SCExt.Serialize);
             }
             sc.Serialize(ref slm.Chunks, Serialize);
             sc.Serialize(ref slm.Size);
@@ -532,16 +532,16 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref slm.Edges, Serialize);
             }
-            sc.Serialize(ref slm.RequiredBones, Unreal.SCExt.Serialize);
+            sc.Serialize(ref slm.RequiredBones, SCExt.Serialize);
             if (sc.Game == MEGame.UDK)
             {
                 int[] UDKRawPointIndices = sc.IsSaving ? Array.ConvertAll(slm.RawPointIndices, u => (int)u) : Array.Empty<int>();
-                sc.SerializeBulkData(ref UDKRawPointIndices, Unreal.SCExt.Serialize);
+                sc.SerializeBulkData(ref UDKRawPointIndices, SCExt.Serialize);
                 slm.RawPointIndices = Array.ConvertAll(UDKRawPointIndices, i => (ushort)i);
             }
             else
             {
-                sc.SerializeBulkData(ref slm.RawPointIndices, Unreal.SCExt.Serialize);
+                sc.SerializeBulkData(ref slm.RawPointIndices, SCExt.Serialize);
             }
             if (sc.Game == MEGame.UDK)
             {
@@ -617,7 +617,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                         if (sc.Game == MEGame.UDK)
                         {
                             int[] vertexInfluences = null;
-                            sc.Serialize(ref vertexInfluences, Unreal.SCExt.Serialize);
+                            sc.Serialize(ref vertexInfluences, SCExt.Serialize);
                             int dummy = 0;
                             sc.Serialize(ref dummy);
                         }
@@ -640,7 +640,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 int elementSize = 2;
                 sc.Serialize(ref elementSize);
                 ushort[] secondIndexBuffer = new ushort[0];
-                sc.Serialize(ref secondIndexBuffer, Unreal.SCExt.Serialize);
+                sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref PerPolyBoneCollisionData bcd)

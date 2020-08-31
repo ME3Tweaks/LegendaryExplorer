@@ -14,7 +14,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
 using StreamHelpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer
 {
@@ -4712,7 +4712,7 @@ namespace ME3Explorer
                 HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32());
                 int len = bin.ReadInt32();
                 uint id = bin.ReadUInt32();
-                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
+                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
                 {
                     Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4)
                 };

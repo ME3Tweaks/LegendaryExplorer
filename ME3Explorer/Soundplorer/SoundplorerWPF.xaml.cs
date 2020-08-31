@@ -35,7 +35,7 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer.Soundplorer
@@ -914,7 +914,7 @@ namespace ME3Explorer.Soundplorer
 
             if (location != null)
             {
-                using (Stream s = WwiseHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
+                using (Stream s = WwiseStreamHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
                 {
                     using (var fileStream = File.Create(location))
                     {
@@ -1013,7 +1013,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            if (WwiseHelper.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
+                            if (WwiseStreamHelper.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1043,7 +1043,7 @@ namespace ME3Explorer.Soundplorer
 
                     if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
-                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -1075,9 +1075,9 @@ namespace ME3Explorer.Soundplorer
                 {
                     string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (WwiseHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
+                    if (WwiseStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
-                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
+                        MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using ME3ExplorerCore.Unreal;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -59,7 +59,7 @@ namespace ME3Explorer.Soundplorer
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WwiseHelper.GetHircObjTypeString((byte)value);
+            return WwiseStreamHelper.GetHircObjTypeString((byte)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

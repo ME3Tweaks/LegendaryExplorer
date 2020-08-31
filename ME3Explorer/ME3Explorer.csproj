@@ -422,9 +422,10 @@
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
     <Compile Include="PackageSaver.cs" />
+    <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2D.cs" />
-    <Compile Include="Unreal\WwiseHelper.cs" />
+    <Compile Include="Unreal\WwiseStreamHelper.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1015,7 +1016,6 @@
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
       <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TlkManager\ME3TalkFiles.cs" />
     <Compile Include="Main Window\ToolInfoPanel.xaml.cs">
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>

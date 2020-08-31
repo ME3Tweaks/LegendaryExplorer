@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters

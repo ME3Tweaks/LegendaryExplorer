@@ -67,7 +67,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref ApexMesh, Unreal.SCExt.Serialize);
+                sc.Serialize(ref ApexMesh, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
@@ -76,7 +76,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
             int byteSize = 1;
             sc.Serialize(ref byteSize);
-            sc.Serialize(ref CachedPhysBSPData, Unreal.SCExt.Serialize);
+            sc.Serialize(ref CachedPhysBSPData, SCExt.Serialize);
 
             sc.Serialize(ref CachedPhysSMDataMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref CachedPhysSMDataStore, SCExt.Serialize);
@@ -108,7 +108,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref intToByteMap, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref guidToIntMap2, SCExt.Serialize, SCExt.Serialize);
                 sc.Serialize(ref NavPoints, SCExt.Serialize);
-                sc.Serialize(ref numbers, Unreal.SCExt.Serialize);
+                sc.Serialize(ref numbers, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
@@ -252,7 +252,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref url.Host);
             sc.Serialize(ref url.Map);
             sc.Serialize(ref url.Portal);
-            sc.Serialize(ref url.Op, Unreal.SCExt.Serialize);
+            sc.Serialize(ref url.Op, SCExt.Serialize);
             sc.Serialize(ref url.Port);
             sc.Serialize(ref url.Valid);
         }
@@ -300,7 +300,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 convDataElem = new KCachedConvexDataElement();
             }
-            sc.BulkSerialize(ref convDataElem.ConvexElementData, Unreal.SCExt.Serialize, 1);
+            sc.BulkSerialize(ref convDataElem.ConvexElementData, SCExt.Serialize, 1);
         }
         public static void Serialize(this SerializingContainer2 sc, ref KCachedPerTriData triData)
         {
@@ -311,7 +311,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
             int byteSize = 1;
             sc.Serialize(ref byteSize);
-            sc.Serialize(ref triData.CachedPerTriData, Unreal.SCExt.Serialize);
+            sc.Serialize(ref triData.CachedPerTriData, SCExt.Serialize);
         }
     }
 }

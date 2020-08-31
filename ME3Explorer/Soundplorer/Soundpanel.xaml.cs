@@ -25,7 +25,7 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
@@ -417,7 +417,7 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedAFCFileEntry != null)
             {
-                return WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                return WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
             else
             {
@@ -902,7 +902,7 @@ namespace ME3Explorer
             MemoryStream convertedStream;
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
-                convertedStream = WwiseHelper.ConvertWwiseOggToME3Ogg(fileStream);
+                convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(fileStream);
             }
 
             //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
@@ -1238,7 +1238,7 @@ namespace ME3Explorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    Stream s = WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                    Stream s = WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))
                     {
                         s.Seek(0, SeekOrigin.Begin);

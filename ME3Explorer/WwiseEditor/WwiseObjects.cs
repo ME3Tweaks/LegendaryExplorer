@@ -12,7 +12,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using SText = ME3Explorer.SequenceObjects.SText;
-using WwiseHelper = ME3Explorer.Unreal.WwiseHelper;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.WwiseEditor
 {
@@ -623,7 +623,7 @@ namespace ME3Explorer.WwiseEditor
 
         protected virtual string GetTitle()
         {
-            return WwiseHelper.GetHircObjTypeString(hircObject.Type);
+            return WwiseStreamHelper.GetHircObjTypeString(hircObject.Type);
         }
 
         public class InputDragHandler : PDragEventHandler
@@ -685,7 +685,7 @@ namespace ME3Explorer.WwiseEditor
 
         protected override string GetTitle()
         {
-            return $"{base.GetTitle()}: {WwiseHelper.GetEventActionTypeString(EventAction.ActionType)}";
+            return $"{base.GetTitle()}: {WwiseStreamHelper.GetEventActionTypeString(EventAction.ActionType)}";
         }
 
         protected override void GetLinks()

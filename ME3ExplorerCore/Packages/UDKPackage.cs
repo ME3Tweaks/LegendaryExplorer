@@ -146,7 +146,7 @@ namespace ME3ExplorerCore.Packages
             Stream inStream = fs;
             if (IsCompressed && numChunks > 0)
             {
-                inStream = CompressionHelper.DecompressUDK(new EndianReader(fs), compressionInfoOffset);
+                inStream = CompressionHelper.DecompressPackage(new EndianReader(fs), compressionInfoOffset);
             }
 
             var reader = new EndianReader(inStream); //these will always be little endian so we don't actually use this except for passing

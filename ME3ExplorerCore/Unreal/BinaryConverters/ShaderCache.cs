@@ -226,7 +226,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             byte platform = 0;
             sc.Serialize(ref platform);
             sc.Serialize(ref shader.Frequency);
-            sc.Serialize(ref shader.ShaderByteCode, Unreal.SCExt.Serialize);
+            sc.Serialize(ref shader.ShaderByteCode, SCExt.Serialize);
             sc.Serialize(ref shader.ParameterMapCRC);
             sc.Serialize(ref shader.Guid);//intentional duplicate
             sc.Serialize(ref shader.ShaderType);//intentional duplicate
