@@ -73,11 +73,19 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Used to test if ME3 is running. USed by ME3Explorer GameController class
+        /// </summary>
+        public static Func<bool> CheckME3Running { get; set; }
+        /// <summary>
+        /// Notifies that a TOC update is required for a running instance of a game (for ME3 only).
+        /// </summary>
+        public static Action NotifyRunningTOCUpdateRequired { get; set; }
         private static void Save(MEPackage pcc, string path)
         {
             bool isSaveAs = path != pcc.FilePath;
             int originalLength = -1;
-            if (pcc.Game == MEGame.ME3 && !isSaveAs && pcc.FilePath.StartsWith(ME3Directory.BIOGamePath) && GameController.TryGetME3Process(out _))
+            if (pcc.Game == MEGame.ME3 && !isSaveAs && pcc.FilePath.StartsWith(ME3Directory.BIOGamePath) && CheckME3Running != null && CheckME3Running.Invoke())
             {
                 try
                 {
@@ -112,7 +120,9 @@ namespace ME3ExplorerCore.Packages
                 bin.WriteStringASCIINull(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.BinariesPath, "tocupdate"), bin.ToArray());
                 // oh boy...
-                GameController.SendTOCUpdateMessage();
+                NotifyRunningTOCUpdateRequired();
+                // replaced:
+                //GameController.SendTOCUpdateMessage();
             }
         }
 

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ME3ExplorerCore
 {
@@ -29,6 +31,7 @@ namespace ME3ExplorerCore
 
 #if DEBUG
         public static bool IsDebug => true;
+        public static TaskScheduler SYNCHRONIZATION_CONTEXT { get; set; }
 #else
         public static bool IsDebug => false;
 #endif
