@@ -5,6 +5,7 @@
  */
 
 using System.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode

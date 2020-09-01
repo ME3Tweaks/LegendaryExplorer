@@ -7,8 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
-using TalkFile = ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -48,7 +48,7 @@ namespace ME3ExplorerCore.Packages
             LZMA = 0x8 //WiiU, PS3 
         }
 
-        public List<TalkFile> LocalTalkFiles { get; } = new List<TalkFile>();
+        public List<ME1TalkFile> LocalTalkFiles { get; } = new List<ME1TalkFile>();
 
         #region Names
         protected uint namesAdded;
@@ -159,7 +159,7 @@ namespace ME3ExplorerCore.Packages
             ExportCount = exports.Count;
 
             updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
-            //OnPropertyChanged(nameof(ExportCount));
+            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -205,7 +205,7 @@ namespace ME3ExplorerCore.Packages
             ImportCount = imports.Count;
 
             updateTools(PackageChange.ImportAdd, importEntry.UIndex);
-            OnPropertyChanged(nameof(ImportCount));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImportCount)));
         }
 
         public ImportEntry GetImport(int uIndex) => imports[Math.Abs(uIndex) - 1];
@@ -318,7 +318,7 @@ namespace ME3ExplorerCore.Packages
             if (ImportCount != imports.Count)
             {
                 ImportCount = imports.Count;
-                OnPropertyChanged(nameof(ImportCount));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImportCount)));
             }
 
             //remove exports
@@ -338,7 +338,7 @@ namespace ME3ExplorerCore.Packages
             if (ExportCount != exports.Count)
             {
                 ExportCount = exports.Count;
-                OnPropertyChanged(nameof(ExportCount));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
             //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
             if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage && trashPackage.GetChildren().IsEmpty())
@@ -350,7 +350,7 @@ namespace ME3ExplorerCore.Packages
             if (ExportCount != exports.Count)
             {
                 ExportCount = exports.Count;
-                OnPropertyChanged(nameof(ExportCount));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
         }
 

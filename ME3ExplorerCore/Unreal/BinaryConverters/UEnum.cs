@@ -11,7 +11,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref Names, Unreal.SCExt.Serialize);
+            sc.Serialize(ref Names, SCExt.Serialize);
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)

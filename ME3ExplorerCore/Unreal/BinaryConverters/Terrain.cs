@@ -20,7 +20,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref Heights, Unreal.SCExt.Serialize);
+            sc.Serialize(ref Heights, SCExt.Serialize);
             sc.Serialize(ref InfoData, SCExt.Serialize);
             sc.Serialize(ref AlphaMaps, SCExt.Serialize);
             sc.Serialize(ref WeightedTextureMaps, SCExt.Serialize);
@@ -28,7 +28,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             if (sc.Game > MEGame.ME1)
             {
                 sc.Serialize(ref CachedTerrainMaterials2, SCExt.Serialize);
-                sc.Serialize(ref CachedDisplacements, Unreal.SCExt.Serialize);
+                sc.Serialize(ref CachedDisplacements, SCExt.Serialize);
                 sc.Serialize(ref MaxCollisionDisplacement);
             }
         }
@@ -121,7 +121,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 map = new AlphaMap();
             }
-            sc.Serialize(ref map.Data, Unreal.SCExt.Serialize);
+            sc.Serialize(ref map.Data, SCExt.Serialize);
         }
         public static void Serialize(this SerializingContainer2 sc, ref TerrainMaterialMask mask)
         {
@@ -144,7 +144,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
             sc.Serialize(ref mat.Terrain);
             sc.Serialize(ref mat.Mask);
-            sc.Serialize(ref mat.MaterialIds, Unreal.SCExt.Serialize);
+            sc.Serialize(ref mat.MaterialIds, SCExt.Serialize);
             if (sc.Game == MEGame.ME3)
             {
                 sc.Serialize(ref mat.LightingGuid);

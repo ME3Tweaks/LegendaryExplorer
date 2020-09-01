@@ -31,6 +31,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using SQLite.Extensions;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.AssetDatabase
 {

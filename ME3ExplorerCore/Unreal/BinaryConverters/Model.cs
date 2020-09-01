@@ -43,11 +43,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref NumSharedSides);
             sc.Serialize(ref Zones, SCExt.Serialize);
             sc.Serialize(ref Polys);
-            sc.BulkSerialize(ref LeafHulls, Unreal.SCExt.Serialize, 4);
-            sc.BulkSerialize(ref Leaves, Unreal.SCExt.Serialize, 4);
+            sc.BulkSerialize(ref LeafHulls, SCExt.Serialize, 4);
+            sc.BulkSerialize(ref Leaves, SCExt.Serialize, 4);
             sc.Serialize(ref RootOutside);
             sc.Serialize(ref Linked);
-            sc.BulkSerialize(ref PortalNodes, Unreal.SCExt.Serialize, 4);
+            sc.BulkSerialize(ref PortalNodes, SCExt.Serialize, 4);
             if (sc.Game != MEGame.UDK)
             {
                 sc.BulkSerialize(ref ShadowVolume, SCExt.Serialize, 16);

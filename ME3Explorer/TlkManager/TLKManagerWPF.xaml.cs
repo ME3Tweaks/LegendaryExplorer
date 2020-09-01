@@ -25,6 +25,7 @@ using System.Windows.Shapes;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.TlkManagerNS
 {

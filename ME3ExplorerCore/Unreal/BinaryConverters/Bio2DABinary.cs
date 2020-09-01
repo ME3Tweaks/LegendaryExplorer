@@ -37,7 +37,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             int cellIndex = 0;
             //If IsIndexed, the index needs to be read and written, so just use the normal Serialize for ints.
             //If it's not indexed, we don't need to write anything, but the Dictionary still needs to be populated with a value
-            sc.Serialize(ref Cells, IsIndexed ? (Unreal.SCExt.SerializeDelegate<int>)Unreal.SCExt.Serialize : (SerializingContainer2 sc2, ref int idx) => idx = cellIndex++, SCExt.Serialize);
+            sc.Serialize(ref Cells, IsIndexed ? (SCExt.SerializeDelegate<int>)SCExt.Serialize : (SerializingContainer2 sc2, ref int idx) => idx = cellIndex++, SCExt.Serialize);
             if (!IsIndexed)
             {
                 sc.SerializeConstInt(0);

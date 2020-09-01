@@ -21,7 +21,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpDX.Mathematics.Interop;
 
 namespace SharpDX
 {
@@ -135,44 +134,44 @@ namespace SharpDX
             return string.Format("({0},{1})", X, Y);
         }
 
-        /// <summary>
-        /// Performs an explicit conversion from <see cref="Vector2"/> to <see cref="Point"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static explicit operator Point(Vector2 value)
-        {
-            return new Point((int)value.X, (int)value.Y);
-        }
+        ///// <summary>
+        ///// Performs an explicit conversion from <see cref="Vector2"/> to <see cref="Point"/>.
+        ///// </summary>
+        ///// <param name="value">The value.</param>
+        ///// <returns>The result of the conversion.</returns>
+        //public static explicit operator Point(Vector2 value)
+        //{
+        //    return new Point((int)value.X, (int)value.Y);
+        //}
 
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="Point"/> to <see cref="Vector2"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static implicit operator Vector2(Point value)
-        {
-            return new Vector2(value.X, value.Y);
-        }
+        ///// <summary>
+        ///// Performs an implicit conversion from <see cref="Point"/> to <see cref="Vector2"/>.
+        ///// </summary>
+        ///// <param name="value">The value.</param>
+        ///// <returns>The result of the conversion.</returns>
+        //public static implicit operator Vector2(Point value)
+        //{
+        //    return new Vector2(value.X, value.Y);
+        //}
 
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="Point"/> to <see cref="RawPoint"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public unsafe static implicit operator RawPoint(Point value)
-        {
-            return *(RawPoint*)&value;
-        }
+        ///// <summary>
+        ///// Performs an implicit conversion from <see cref="Point"/> to <see cref="RawPoint"/>.
+        ///// </summary>
+        ///// <param name="value">The value.</param>
+        ///// <returns>The result of the conversion.</returns>
+        //public unsafe static implicit operator RawPoint(Point value)
+        //{
+        //    return *(RawPoint*)&value;
+        //}
 
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="RawPoint"/> to <see cref="Point"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>The result of the conversion.</returns>
-        public unsafe static implicit operator Point(RawPoint value)
-        {
-            return *(Point*)&value;
-        }
+        ///// <summary>
+        ///// Performs an implicit conversion from <see cref="RawPoint"/> to <see cref="Point"/>.
+        ///// </summary>
+        ///// <param name="value">The value.</param>
+        ///// <returns>The result of the conversion.</returns>
+        //public unsafe static implicit operator Point(RawPoint value)
+        //{
+        //    return *(Point*)&value;
+        //}
     }
 }

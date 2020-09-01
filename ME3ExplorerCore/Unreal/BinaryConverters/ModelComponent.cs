@@ -21,7 +21,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ZoneIndex);
             sc.Serialize(ref Elements, SCExt.Serialize);
             sc.Serialize(ref ComponentIndex);
-            sc.Serialize(ref Nodes, Unreal.SCExt.Serialize);
+            sc.Serialize(ref Nodes, SCExt.Serialize);
         }
         public override List<(UIndex, string)> GetUIndexes(MEGame game)
         {
@@ -63,9 +63,9 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref elem.LightMap);
             sc.Serialize(ref elem.Component);
             sc.Serialize(ref elem.Material);
-            sc.Serialize(ref elem.Nodes, Unreal.SCExt.Serialize);
+            sc.Serialize(ref elem.Nodes, SCExt.Serialize);
             sc.Serialize(ref elem.ShadowMaps, Serialize);
-            sc.Serialize(ref elem.IrrelevantLights, Unreal.SCExt.Serialize);
+            sc.Serialize(ref elem.IrrelevantLights, SCExt.Serialize);
         }
     }
 }

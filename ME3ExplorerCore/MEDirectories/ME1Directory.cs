@@ -37,12 +37,13 @@ namespace ME3ExplorerCore.MEDirectories
 
         static ME1Directory()
         {
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME1Directory))
+            if (!string.IsNullOrEmpty(CoreLibSettings.Instance.ME1Directory))
             {
-                gamePath = Properties.Settings.Default.ME1Directory;
+                gamePath = CoreLibSettings.Instance.ME1Directory;
             }
             else
 	        {
+#if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string subkey = @"BioWare\Mass Effect";
@@ -62,6 +63,7 @@ namespace ME3ExplorerCore.MEDirectories
                     gamePath = gamePath + "\\";
                     return;
                 } 
+#endif
             }
         }
 

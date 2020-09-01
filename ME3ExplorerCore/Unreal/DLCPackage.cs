@@ -405,13 +405,13 @@ namespace ME3ExplorerCore.Unreal
             var toDecompress = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.lzx";
             ms.BaseStream.WriteToFile(toDecompress);
             // Todo: Convert to LZX Helper
-            var decompressed = CompressionHelper.QuickBMSDecompress(toDecompress, "xboxlzx.bms", true);
-            if (decompressed == null || decompressed.Length != uncompSize)
-            {
-                throw new Exception("LZX DECOMPRESSION ERROR!");
-            }
-
-            return decompressed;
+            //var decompressed = CompressionHelper.QuickBMSDecompress(toDecompress, "xboxlzx.bms", true);
+            //if (decompressed == null || decompressed.Length != uncompSize)
+            //{
+            //    throw new Exception("LZX DECOMPRESSION ERROR!");
+            //}
+            Debug.Write("LZX DECOMPRESSION NOT YET IMPLEMENTED FOR SFAR");
+            return new byte[2];
         }
 
         internal class InputBlock

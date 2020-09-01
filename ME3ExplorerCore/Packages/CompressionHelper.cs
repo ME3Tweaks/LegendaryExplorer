@@ -501,7 +501,13 @@ namespace ME3ExplorerCore.Packages
 
         public static MemoryStream DecompressPackage(string packagePath)
         {
+            Debug.WriteLine("DECOMPRESSPACKAGE NOT YET IMPLEMENTED~!");
             var p = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+            if (p.IsCompressed)
+            {
+
+            }
+            return new MemoryStream();
         }
 
         /// <summary>
@@ -654,6 +660,13 @@ namespace ME3ExplorerCore.Packages
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
                 result.WriteFromBuffer(c.Uncompressed);
             }
+
+            // Reattach the original header
+            result.Position = 0;
+            raw.Position = 0;
+            raw.BaseStream.CopyToEx(result, Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset); // Copy the header in
+            // Does header need adjusted here to be accurate? 
+            // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
 
             return result;
         }

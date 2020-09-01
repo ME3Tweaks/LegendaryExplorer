@@ -88,7 +88,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             sc.Serialize(ref dat.PrimitiveComponent);
             sc.BulkSerialize(ref dat.Vertices, Serialize, sc.Game == MEGame.ME3 ? 28 : 52);
-            sc.BulkSerialize(ref dat.Indices, Unreal.SCExt.Serialize, 2);
+            sc.BulkSerialize(ref dat.Indices, SCExt.Serialize, 2);
             sc.Serialize(ref dat.NumTriangles);
             sc.Serialize(ref dat.LightMap);
             if (sc.Game == MEGame.ME3)

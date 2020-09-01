@@ -11,7 +11,12 @@ namespace ME3ExplorerCore.Packages
     {
         private static List<string> _me1TextureFiles;
         // Todo: Load embedded
-        public static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json")));
+        public static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
+
+        /// <summary>
+        /// Callback that is invoked when a package fails to save, hook this up to show a message to the user that something failed
+        /// </summary>
+        public static Action<string> PackageSaveFailedCallback { get; set; }
 
         public static bool CanReconstruct(this IMEPackage pcc) => CanReconstruct(pcc, pcc.FilePath);
 
@@ -91,13 +96,12 @@ namespace ME3ExplorerCore.Packages
                 }
                 else
                 {
-                    MessageBox.Show($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {CoreLib.BugReportURL}", "Can't Save!",
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {CoreLib.BugReportURL}");
                 }
             }
-            catch (Exception ex) when (!App.IsDebug)
+            catch (Exception ex) when (!CoreLib.IsDebug)
             {
-                MessageBox.Show($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
+                PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }
 
             if (originalLength > 0)
@@ -121,7 +125,7 @@ namespace ME3ExplorerCore.Packages
             }
             catch (Exception ex) when (!CoreLib.IsDebug)
             {
-                MessageBox.Show($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
+                PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }
         }
     }

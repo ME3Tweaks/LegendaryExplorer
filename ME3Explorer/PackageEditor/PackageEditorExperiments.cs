@@ -7,11 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using Gammtek.Conduit;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using Gammtek.Conduit.Extensions.IO;
 using ImageMagick;
 using MassEffectModder.Images;
 using ME3Explorer.AssetDatabase;
@@ -26,8 +21,6 @@ using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX;
-using SQLite.Extensions;
-using StreamHelpers;
 
 namespace ME3Explorer.PackageEditor
 {

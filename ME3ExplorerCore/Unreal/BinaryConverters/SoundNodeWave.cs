@@ -9,10 +9,10 @@
 
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.SerializeBulkData(ref RawData, Unreal.SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedPCData, Unreal.SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedXbox360Data, Unreal.SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedPS3Data, Unreal.SCExt.Serialize);
+            sc.SerializeBulkData(ref RawData, SCExt.Serialize);
+            sc.SerializeBulkData(ref CompressedPCData, SCExt.Serialize);
+            sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
+            sc.SerializeBulkData(ref CompressedPS3Data, SCExt.Serialize);
         }
     }
 }

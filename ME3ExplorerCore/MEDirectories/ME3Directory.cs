@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3ExplorerCore.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace ME3ExplorerCore.MEDirectories
         public static string BIOGamePath => gamePath != null ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BIOGame\") : null;
         public static string tocFile => gamePath != null ? Path.Combine(gamePath, @"BIOGame\PCConsoleTOC.bin") : null;
         public static string cookedPath => gamePath != null ? Path.Combine(gamePath, @"BIOGame\CookedPCConsole\") : "Not Found";
-        public static string DLCPath => gamePath != null ? Path.Combine(gamePath , @"BIOGame\DLC\") : "Not Found";
+        public static string DLCPath => gamePath != null ? Path.Combine(gamePath, @"BIOGame\DLC\") : "Not Found";
 
         public static string BinariesPath => gamePath != null ? Path.Combine(gamePath, @"Binaries\Win32\") : null;
 
@@ -41,12 +42,13 @@ namespace ME3ExplorerCore.MEDirectories
 
         static ME3Directory()
         {
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME3Directory))
+            if (!string.IsNullOrEmpty(CoreLibSettings.Instance.ME3Directory))
             {
-                gamePath = Properties.Settings.Default.ME3Directory;
+                gamePath = CoreLibSettings.Instance.ME3Directory;
             }
             else
             {
+#if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string subkey = @"BioWare\Mass Effect 3";
@@ -64,6 +66,7 @@ namespace ME3ExplorerCore.MEDirectories
 
                 keyName = hkey64 + subkey;
                 gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null); 
+#endif
             }
         }
 

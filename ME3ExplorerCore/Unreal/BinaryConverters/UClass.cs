@@ -35,7 +35,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ClassConfigName);
             if (sc.Game < MEGame.ME3)
             {
-                sc.Serialize(ref unkNameList1, Unreal.SCExt.Serialize);
+                sc.Serialize(ref unkNameList1, SCExt.Serialize);
             }
             sc.Serialize(ref ComponentNameToDefaultObjectMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref Interfaces, SCExt.Serialize, SCExt.Serialize);
@@ -46,7 +46,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                sc.Serialize(ref unkNameList2, Unreal.SCExt.Serialize);
+                sc.Serialize(ref unkNameList2, SCExt.Serialize);
             }
             sc.Serialize(ref Defaults);
             if (sc.Game >= MEGame.ME3)

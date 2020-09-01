@@ -617,7 +617,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 mres = new MaterialResource();
             }
-            sc.Serialize(ref mres.CompileErrors, Unreal.SCExt.Serialize);
+            sc.Serialize(ref mres.CompileErrors, SCExt.Serialize);
             sc.Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
             sc.Serialize(ref mres.MaxTextureDependencyLength);
             sc.Serialize(ref mres.ID);

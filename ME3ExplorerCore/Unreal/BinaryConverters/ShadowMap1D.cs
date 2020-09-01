@@ -14,7 +14,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 sc.SerializeConstInt(4);
             }
-            sc.Serialize(ref Samples, Unreal.SCExt.Serialize);
+            sc.Serialize(ref Samples, SCExt.Serialize);
             sc.Serialize(ref LightGuid);
         }
     }

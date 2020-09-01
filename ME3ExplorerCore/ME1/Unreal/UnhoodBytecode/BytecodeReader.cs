@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
@@ -1089,20 +1090,21 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             return null;
         }
 
+        private static bool ME1NativeInfoLoaded;
         internal static void LoadME1NativeFunctionsInfo()
         {
-            string path = Application.StartupPath + "//exec//ME1NativeFunctionInfo.json";
-
+            if (ME1NativeInfoLoaded) return; //already loaded
             try
             {
-                if (File.Exists(path))
+                var infosStream = Utilities.LoadEmbeddedFile("Infos.zip");
+                if (infosStream != null)
                 {
-                    string raw = File.ReadAllText(path);
+                    var decompressedStream = Utilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
+                    using StreamReader reader = new StreamReader(decompressedStream);
+                    var raw = reader.ReadToEnd();
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { NativeFunctionInfo });
                     NativeFunctionInfo = blob.NativeFunctionInfo;
-                    //Classes = blob.Classes;
-                    //Structs = blob.Structs;
-                    //Enums = blob.Enums;
+                    ME1NativeInfoLoaded = true;
                 }
             }
             catch

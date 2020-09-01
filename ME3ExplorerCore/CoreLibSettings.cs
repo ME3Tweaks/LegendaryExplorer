@@ -15,7 +15,16 @@ namespace ME3ExplorerCore
         }
         public bool TLKGenderIsMale { get; set; }
         public string TLKDefaultLanguage { get; set; } // maybe should be enum?
+        public string ME2Directory { get; internal set; }
+        public bool ParseUnknownArrayTypesAsObject { get; internal set; }
+        public string ME3Directory { get; internal set; }
+        public string ME1Directory { get; internal set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        internal void Save()
+        {
+
+        }
     }
 }

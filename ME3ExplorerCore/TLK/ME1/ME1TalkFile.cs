@@ -9,9 +9,9 @@ using System.Xml;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 
-namespace ME3ExplorerCore.ME1.Unreal.Classes
+namespace ME3ExplorerCore.TLK.ME1
 {
-    public class TalkFile : ITalkFile, IEquatable<TalkFile>
+    public class ME1TalkFile : IEquatable<ME1TalkFile>
     {
         #region structs
         public struct HuffmanNode
@@ -133,7 +133,7 @@ namespace ME3ExplorerCore.ME1.Unreal.Classes
 
 
         #region Constructors
-        public TalkFile(IMEPackage _pcc, int uindex)
+        public ME1TalkFile(IMEPackage _pcc, int uindex)
         {
             pcc = _pcc;
             //index = _index;
@@ -142,7 +142,7 @@ namespace ME3ExplorerCore.ME1.Unreal.Classes
             LoadTlkData();
         }
 
-        public TalkFile(ExportEntry export)
+        public ME1TalkFile(ExportEntry export)
         {
             if (export.FileRef.Game != MEGame.ME1)
             {
@@ -154,7 +154,7 @@ namespace ME3ExplorerCore.ME1.Unreal.Classes
             LoadTlkData();
         }
 
-        public TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetUIndex)
+        public ME1TalkFile(IMEPackage _pcc, int uindex, bool _male, int _langRef, int _tlkSetUIndex)
         {
             pcc = _pcc;
             //index = _index;
@@ -186,7 +186,7 @@ namespace ME3ExplorerCore.ME1.Unreal.Classes
         }
 
         #region IEquatable
-        public bool Equals(TalkFile other)
+        public bool Equals(ME1TalkFile other)
         {
             return (other?.uindex == uindex && other.pcc.FilePath == pcc.FilePath);
         }
@@ -197,7 +197,7 @@ namespace ME3ExplorerCore.ME1.Unreal.Classes
             {
                 return false;
             }
-            return Equals(obj as TalkFile);
+            return Equals(obj as ME1TalkFile);
         }
 
         public override int GetHashCode()

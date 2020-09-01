@@ -246,7 +246,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         }
         private static void Serialize(this SerializingContainer2 sc, LightMap_1D lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, Unreal.SCExt.Serialize);
+            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.Owner);
             sc.SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
             sc.Serialize(ref lmap.ScaleVector1);
@@ -261,7 +261,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         private static void Serialize(this SerializingContainer2 sc, LightMap_2D lmap)
         {
 
-            sc.Serialize(ref lmap.LightGuids, Unreal.SCExt.Serialize);
+            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.Texture1);
             sc.Serialize(ref lmap.ScaleVector1);
             sc.Serialize(ref lmap.Texture2);
@@ -282,7 +282,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         }
         private static void Serialize(this SerializingContainer2 sc, LightMap_3 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, Unreal.SCExt.Serialize);
+            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.unkInt);
             sc.SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
             sc.Serialize(ref lmap.unkVector1);
@@ -290,7 +290,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         }
         private static void Serialize(this SerializingContainer2 sc, LightMap_4or6 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, Unreal.SCExt.Serialize);
+            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.Texture1);
             for (int i = 0; i < 8; i++)
             {
@@ -311,7 +311,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         }
         private static void Serialize(this SerializingContainer2 sc, LightMap_5 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, Unreal.SCExt.Serialize);
+            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.unkInt);
             sc.SerializeBulkData(ref lmap.SimpleSamples, Serialize);
             sc.Serialize(ref lmap.unkVector);

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
 
 namespace ME3ExplorerCore.Unreal
@@ -19,25 +20,26 @@ namespace ME3ExplorerCore.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "RwVector2", "RwVector3", "RwVector4" };
 
-        private static readonly string jsonPath = Path.Combine(App.ExecFolder, "UDKObjectInfo.json");
-
         public static void loadfromJSON()
         {
-            try
+            if (!IsLoaded)
             {
-                if (File.Exists(jsonPath))
+                try
                 {
-                    string raw = File.ReadAllText(jsonPath);
-                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
-                    Classes = blob.Classes;
-                    Structs = blob.Structs;
-                    Enums = blob.Enums;
-                    IsLoaded = true;
+                    var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.UDK);
+                    if (infoText != null)
+                    {
+                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { Classes, Structs, Enums });
+                        Classes = blob.Classes;
+                        Structs = blob.Structs;
+                        Enums = blob.Enums;
+                        IsLoaded = true;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                return;
+                catch (Exception)
+                {
+                    return;
+                }
             }
         }
 
@@ -145,7 +147,7 @@ namespace ME3ExplorerCore.Unreal
                 ArrayTypeLookupJustFailed = true;
 #endif
                 Debug.WriteLine("UDK Array type lookup failed due to no info provided, defaulting to int");
-                if (ME3Explorer.Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject) return ArrayType.Object;
+                if (CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject) return ArrayType.Object;
                 return ArrayType.Int;
             }
         }
@@ -236,7 +238,7 @@ namespace ME3ExplorerCore.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = pcc.GetUExport(uIndex).SuperClassName,
-                exportIndex = uIndex ,
+                exportIndex = uIndex,
                 ClassName = pcc.GetUExport(uIndex).ObjectName
             };
             if (pcc.FilePath.Contains("BIOGame"))
@@ -271,26 +273,26 @@ namespace ME3ExplorerCore.Unreal
             return info;
         }
 
-                        /*
+        /*
 
-        private static void generateEnumValues(int index, ME3Package pcc)
-        {
-            string enumName = pcc.Exports[index].ObjectName;
-            if (!Enums.ContainsKey(enumName))
-            {
-                var values = new List<NameReference>();
-                byte[] buff = pcc.Exports[index].Data;
-                //subtract 1 so that we don't get the MAX value, which is an implementation detail
-                int count = BitConverter.ToInt32(buff, 20) - 1;
-                for (int i = 0; i < count; i++)
-                {
-                    int enumValIndex = 24 + i * 8;
-                    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
-                }
-                Enums.Add(enumName, values);
-            }
-        }
-        */
+    private static void generateEnumValues(int index, ME3Package pcc)
+    {
+    string enumName = pcc.Exports[index].ObjectName;
+    if (!Enums.ContainsKey(enumName))
+    {
+    var values = new List<NameReference>();
+    byte[] buff = pcc.Exports[index].Data;
+    //subtract 1 so that we don't get the MAX value, which is an implementation detail
+    int count = BitConverter.ToInt32(buff, 20) - 1;
+    for (int i = 0; i < count; i++)
+    {
+    int enumValIndex = 24 + i * 8;
+    values.Add(new NameReference(pcc.Names[BitConverter.ToInt32(buff, enumValIndex)], BitConverter.ToInt32(buff, enumValIndex + 4)));
+    }
+    Enums.Add(enumName, values);
+    }
+    }
+    */
         private static PropertyInfo getProperty(UDKPackage pcc, ExportEntry entry)
         {
             if (!IsLoaded) loadfromJSON();
@@ -382,7 +384,7 @@ namespace ME3ExplorerCore.Unreal
             bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
-        
+
         internal static ClassInfo generateClassInfo(ExportEntry export)
         {
             if (!IsLoaded) loadfromJSON();

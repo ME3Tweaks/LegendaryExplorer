@@ -421,10 +421,10 @@
     <Compile Include="ME3Script\Utilities\ObjectReader.cs" />
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
-    <Compile Include="PackageSaver.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
-    <Compile Include="Unreal\Classes\Texture2D.cs" />
+    <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
+    <Compile Include="Unreal\TLKLoader.cs" />
     <Compile Include="Unreal\WwiseStreamHelper.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
       <SubType>Component</SubType>
@@ -671,7 +671,6 @@
     <Compile Include="CoalesceTool\FileFormats\Huffman\Encoder.cs" />
     <Compile Include="CoalesceTool\FileFormats\Huffman\Node.cs" />
     <Compile Include="CoalesceTool\FileFormats\Huffman\Pair.cs" />
-    <Compile Include="CoalesceTool\FileFormats\StreamHelpers.cs" />
     <Compile Include="CoalesceTool\FileFormats\StringHelpers.cs" />
     <Compile Include="CoalesceTool\Namespace.cs" />
     <Compile Include="CoalesceTool\UpdateActions.cs" />
@@ -1329,7 +1328,6 @@
     <Compile Include="ME1\HuffmanCompression.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
-    <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
     <Compile Include="Meshplorer\Meshplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1525,6 +1523,7 @@
     <Resource Include="Resources\close.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ME2\TlkManager\" />
     <Folder Include="ME2\Unreal\" />
     <Folder Include="NativesEditor\SFXGame\BioDefine\" />
   </ItemGroup>

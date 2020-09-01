@@ -8,11 +8,11 @@ using ME3ExplorerCore.Gammtek.Paths;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
-using TalkFile = ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -398,11 +398,6 @@ namespace ME3ExplorerCore.Packages
 
 
             #endregion
-
-            //if (IsCompressed && numChunks > 0)
-            //{
-            //    inStream = Game == MEGame.ME3 ? CompressionHelper.DecompressME3(packageReader) : CompressionHelper.DecompressME1orME2(fs);
-            //}
 
             var endian = packageReader.Endian;
             packageReader = new EndianReader(inStream) { Endian = endian };
@@ -853,7 +848,7 @@ namespace ME3ExplorerCore.Packages
             foreach (var exp in exportsToLoad)
             {
                 //Debug.WriteLine("Loading local TLK: " + exp.GetIndexedFullPath);
-                LocalTalkFiles.Add(new TalkFile(exp));
+                LocalTalkFiles.Add(new ME1TalkFile(exp));
             }
         }
             }

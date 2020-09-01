@@ -9,6 +9,7 @@ using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
 
 namespace ME3ExplorerCore.Unreal
@@ -89,23 +90,32 @@ namespace ME3ExplorerCore.Unreal
                     PropertyCollection props = new PropertyCollection();
                     while (info != null && info.ClassName != notIncludingClass)
                     {
-                        string filepath = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
+                        Stream loadStream = null;
+                        string filepathTL = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
-                            filepath = info.pccPath; //Used for dynamic lookup
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
                         }
                         else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
-                            // todo: uh... not really sure here
-                            filepath = App.CustomResourceFilePath(game);
+                            var resourcesZip = Utilities.LoadEmbeddedFile("GameResources.zip");
+                            if (resourcesZip != null)
+                            {
+                                var filename = CoreLib.CustomResourceFileName(game);
+                                loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
+                            }
                         }
-                        if (game == MEGame.ME1 && !File.Exists(filepath))
+                        if (game == MEGame.ME1 && !File.Exists(filepathTL))
                         {
-                            filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                            filepathTL = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                            if (File.Exists(filepathTL))
+                            {
+                                loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
+                            }
                         }
-                        if (File.Exists(filepath))
+                        if (loadStream != null)
                         {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                             ExportEntry classExport = importPCC.GetUExport(info.exportIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry defaults = importPCC.GetUExport(classBin.Defaults);
@@ -401,39 +411,40 @@ namespace ME3ExplorerCore.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "RwPlane", "RwQuat", "BioRwBox44" };
 
-        // Todo: Convert to embedded resource
-        private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
-
         public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
 
+        public static bool IsLoaded;
         public static void loadfromJSON()
         {
-
-            try
+            if (!IsLoaded)
             {
-                if (File.Exists(jsonPath))
+                try
                 {
-                    string raw = File.ReadAllText(jsonPath);
-                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { SequenceObjects, Classes, Structs, Enums });
-                    SequenceObjects = blob.SequenceObjects;
-                    Classes = blob.Classes;
-                    Structs = blob.Structs;
-                    Enums = blob.Enums;
-                    foreach ((string className, ClassInfo classInfo) in Classes)
+                    var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME3);
+                    if (infoText != null)
                     {
-                        classInfo.ClassName = className;
-                    }
-                    foreach ((string className, ClassInfo classInfo) in Structs)
-                    {
-                        classInfo.ClassName = className;
+                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { Classes, Structs, Enums });
+                        Classes = blob.Classes;
+                        Structs = blob.Structs;
+                        Enums = blob.Enums;
+                        foreach ((string className, ClassInfo classInfo) in Classes)
+                        {
+                            classInfo.ClassName = className;
+                        }
+                        foreach ((string className, ClassInfo classInfo) in Structs)
+                        {
+                            classInfo.ClassName = className;
+                        }
+                        IsLoaded = true;
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception)
+                {
+                    return;
+                }
             }
         }
 
@@ -657,19 +668,25 @@ namespace ME3ExplorerCore.Unreal
                                 props.Add(uProp);
                             }
                         }
-                        string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
-                        if (File.Exists(info.pccPath))
+                        string filepathTL = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
+                        Stream loadStream = null;
+                        if (File.Exists(filepathTL))
                         {
-                            filepath = info.pccPath; //Used for dynamic lookup
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
                         }
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            // Todo: Somehow make this work in a lib. Probably should make it embedded
-                            filepath = App.CustomResourceFilePath(MEGame.ME3);
+                            var resourcesZip = Utilities.LoadEmbeddedFile("GameResources.zip");
+                            if (resourcesZip != null)
+                            {
+                                var filename = CoreLib.CustomResourceFileName(MEGame.ME3);
+                                loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
+                            }
                         }
-                        if (File.Exists(filepath))
+
+                        if (loadStream != null)
                         {
-                            using (IMEPackage importPCC = MEPackageHandler.OpenME3Package(filepath))
+                            using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream))
                             {
                                 var exportToRead = importPCC.GetUExport(info.exportIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();
@@ -769,6 +786,7 @@ namespace ME3ExplorerCore.Unreal
         }
 
         #region Generating
+#if ME3EXPLORERAPP
         //call this method to regenerate ME3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
@@ -836,7 +854,7 @@ namespace ME3ExplorerCore.Unreal
             }
 
 
-            #region CUSTOM ADDITIONS
+        #region CUSTOM ADDITIONS
             //Custom additions
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or by new classes designed in the modding scene that must be present in order for parsing to work properly
@@ -1022,11 +1040,14 @@ namespace ME3ExplorerCore.Unreal
                 }
             };
 
-            #endregion
+        #endregion
 
-            File.WriteAllText(jsonPath,
+            File.WriteAllText("ME3ObjectInfo.json",
                 JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
+
+#endif
+
 
         private static List<string> generateSequenceObjectInfo(int i, IMEPackage pcc)
         {
@@ -1201,6 +1222,7 @@ namespace ME3ExplorerCore.Unreal
         }
         #endregion
 
+#if ME3EXPLORERAPP
         #region CodeGen
         public static void GenerateCode()
         {
@@ -1353,5 +1375,7 @@ namespace ME3ExplorerCore.Unreal
             }
         }
         #endregion
+#endif
+
     }
 }

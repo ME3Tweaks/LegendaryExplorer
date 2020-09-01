@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.MountEditor
 {

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Xml;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using static ME3ExplorerCore.ME1.Unreal.Classes.TalkFile;
+using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
-namespace ME3ExplorerCore.ME1
+namespace ME3ExplorerCore.TLK.ME1
 {
     class HuffmanCompression
     {
@@ -121,7 +121,7 @@ namespace ME3ExplorerCore.ME1
                     i++;
                     var binaryData = new List<BitArray>();
                     int binaryLength = 0;
-                    
+
                     /* for every character in a string, put it's binary code into data array */
                     foreach (char c in entry.ASCIIData)
                     {

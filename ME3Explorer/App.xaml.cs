@@ -49,15 +49,6 @@ namespace ME3Explorer
         public const string ME1FileFilter = "*.u;*.upk;*sfm;*.xxx|*.u;*.upk;*sfm;*.xxx";
         public const string ME3ME2FileFilter = "*.pcc*;.xxx|*.pcc;*.xxx";
 
-        public static string CustomResourceFilePath(MEGame game) => Path.Combine(ExecFolder, game switch
-        {
-            MEGame.ME3 => "ME3Resources.pcc",
-            MEGame.ME2 => "ME2Resources.pcc",
-            MEGame.ME1 => "ME1Resources.upk",
-            MEGame.UDK => "UDKResources.upk",
-            _ => "ME3Resources.pcc"
-        });
-
         public static string Version => GetVersion();
 
         public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;
@@ -181,7 +172,7 @@ namespace ME3Explorer
             exitCode = 0;
             if (args.Length < 2)
             {
-                return ()=>{}; //do nothing delgate. Will do nothing when main UI loads
+                return () => { }; //do nothing delgate. Will do nothing when main UI loads
             }
 
             string arg = args[1];
@@ -264,7 +255,7 @@ namespace ME3Explorer
             {
                 return () =>
                 {
-                    DLCUnpacker.DLCUnpacker dlcUnpacker = new DLCUnpacker.DLCUnpacker();
+                    DLCUnpacker.DLCUnpackerUI dlcUnpacker = new DLCUnpacker.DLCUnpackerUI();
                     dlcUnpacker.Show();
                     dlcUnpacker.Activate();
                 };

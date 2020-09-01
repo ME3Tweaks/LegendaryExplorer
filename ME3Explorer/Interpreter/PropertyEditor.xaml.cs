@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer

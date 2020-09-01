@@ -665,7 +665,7 @@ namespace ME3ExplorerCore.Unreal
         /// Removes the first matching property name from the collection.
         /// </summary>
         /// <param name="propname">Property name to remove</param>
-        internal bool RemoveNamedProperty(string propname)
+        public bool RemoveNamedProperty(string propname)
         {
             for (int i = 0; i < Count; i++)
             {

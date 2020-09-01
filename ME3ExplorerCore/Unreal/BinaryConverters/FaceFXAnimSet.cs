@@ -302,7 +302,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 {
                     sc.Serialize(ref short0);
                 }
-                sc.Serialize(ref line.NumKeys, Unreal.SCExt.Serialize);
+                sc.Serialize(ref line.NumKeys, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {

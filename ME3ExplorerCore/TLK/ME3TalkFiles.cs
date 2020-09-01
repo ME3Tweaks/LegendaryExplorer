@@ -1,17 +1,13 @@
 ﻿using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Unreal;
-using Newtonsoft.Json;
 
-namespace ME3Explorer
+namespace ME3ExplorerCore.TLK
 {
     public static class ME3TalkFiles
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
 
-        public static readonly string LoadedTLKsPath = App.AppDataFolder + "ME3LoadedTLKs.JSON";
 
         public static void LoadTlkData(string fileName)
         {
@@ -39,28 +35,6 @@ namespace ME3Explorer
                 }
             }
             return s;
-        }
-
-        public static void LoadSavedTlkList()
-        {
-            if (File.Exists(LoadedTLKsPath))
-            {
-                List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPath));
-                foreach (string filePath in files)
-                {
-                    LoadTlkData(filePath);
-                }
-            }
-            else
-            {
-                string tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
-                LoadTlkData(tlkPath);
-            }
-        }
-
-        public static void SaveTLKList()
-        {
-            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => x.path)));
         }
 
         internal static void ClearLoadedTlks()

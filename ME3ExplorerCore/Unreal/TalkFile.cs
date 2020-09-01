@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -65,7 +66,7 @@ namespace ME3ExplorerCore.Unreal
         }
 
         TLKHeader Header;
-        public List<ME1.Unreal.Classes.TalkFile.TLKStringRef> StringRefs;
+        public List<TLKStringRef> StringRefs;
         public string name;
         public string path;
         List<HuffmanNode> CharacterTree;
@@ -151,10 +152,10 @@ namespace ME3ExplorerCore.Unreal
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<ME1.Unreal.Classes.TalkFile.TLKStringRef>();
+            StringRefs = new List<TLKStringRef>();
             for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
-                ME1.Unreal.Classes.TalkFile.TLKStringRef sref = new ME1.Unreal.Classes.TalkFile.TLKStringRef(r, false);
+                TLKStringRef sref = new TLKStringRef(r, false);
                 sref.Index = i;
                 if (sref.BitOffset >= 0)
                 {
@@ -322,7 +323,7 @@ namespace ME3ExplorerCore.Unreal
         }
 
         /* for sorting */
-        private static int CompareTlkStringRef(ME1.Unreal.Classes.TalkFile.TLKStringRef strRef1, ME1.Unreal.Classes.TalkFile.TLKStringRef strRef2)
+        private static int CompareTlkStringRef(TLKStringRef strRef1, TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;

@@ -22,7 +22,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {

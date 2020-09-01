@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using FontAwesome5.WPF;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer
 {

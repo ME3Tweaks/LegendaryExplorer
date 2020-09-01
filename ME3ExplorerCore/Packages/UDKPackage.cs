@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
@@ -24,6 +26,8 @@ namespace ME3ExplorerCore.Packages
         }
 
         public bool CanReconstruct => true;
+
+        List<ME1TalkFile> IMEPackage.LocalTalkFiles => throw new NotImplementedException(); //not supported on this package type
 
         #region HeaderMisc
         private class Thumbnail
@@ -240,13 +244,14 @@ namespace ME3ExplorerCore.Packages
                 {
                     var tex = new Texture2D(export);
                     var mip = tex.GetTopMip();
+                    Debug.WriteLine("PNG THUMBNAILS NOT SUPPORTED IN CORE LIB YET FOR UDKPACKAGE");
                     udkPackage.ThumbnailTable.Add(new Thumbnail
                     {
                         ClassName = export.ClassName,
                         PathName = export.InstancedFullPath,
                         Width = mip.width,
                         Height = mip.height,
-                        Data = tex.GetPNG(mip)
+                        //Data = tex.GetPNG(mip) // will need to see what this is about
                     });
                 }
             }

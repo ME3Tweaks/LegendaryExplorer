@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3ExplorerCore.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace ME3ExplorerCore.MEDirectories
         }
 
         public static string BioGamePath => gamePath != null ? gamePath.Contains("biogame", StringComparison.OrdinalIgnoreCase) ? gamePath : Path.Combine(gamePath, @"BioGame\") : null;
-        public static string cookedPath => gamePath != null ? Path.Combine(gamePath,  @"BioGame\CookedPC\") : "Not Found";
+        public static string cookedPath => gamePath != null ? Path.Combine(gamePath, @"BioGame\CookedPC\") : "Not Found";
         public static string DLCPath => gamePath != null ? Path.Combine(gamePath, @"BioGame\DLC\") : "Not Found";
 
         // "C:\...\MyDocuments\BioWare\Mass Effect 2\" folder
@@ -38,12 +39,13 @@ namespace ME3ExplorerCore.MEDirectories
 
         static ME2Directory()
         {
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ME2Directory))
+            if (!string.IsNullOrEmpty(CoreLibSettings.Instance.ME2Directory))
             {
-                gamePath = Properties.Settings.Default.ME2Directory;
+                gamePath = CoreLibSettings.Instance.ME2Directory;
             }
             else
             {
+#if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string subkey = @"BioWare\Mass Effect 2";
@@ -69,6 +71,7 @@ namespace ME3ExplorerCore.MEDirectories
                     gamePath = gamePath + "\\";
                     return;
                 } 
+#endif
             }
         }
 

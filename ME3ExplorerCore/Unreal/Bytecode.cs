@@ -4,6 +4,7 @@ using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
 
 namespace ME3ExplorerCore.Unreal
 {

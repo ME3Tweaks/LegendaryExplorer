@@ -89,7 +89,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             sc.Serialize(ref hull.VertexData, Serialize);
             sc.Serialize(ref hull.PermutedVertexData, Serialize);
-            sc.Serialize(ref hull.FaceTriData, Unreal.SCExt.Serialize);
+            sc.Serialize(ref hull.FaceTriData, SCExt.Serialize);
             sc.Serialize(ref hull.EdgeDirections, Serialize);
             sc.Serialize(ref hull.FaceNormalDirections, Serialize);
             sc.Serialize(ref hull.FacePlaneData, Serialize);
@@ -106,12 +106,12 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref info.Bounds);
             if (sc.Game >= MEGame.ME3)
             {
-                sc.Serialize(ref info.Neighbours, Unreal.SCExt.Serialize);
+                sc.Serialize(ref info.Neighbours, SCExt.Serialize);
                 sc.Serialize(ref info.bCanBeDestroyed);
                 sc.Serialize(ref info.bRootFragment);
                 sc.Serialize(ref info.bNeverSpawnPhysicsChunk);
                 sc.Serialize(ref info.AverageExteriorNormal);
-                sc.Serialize(ref info.NeighbourDims, Unreal.SCExt.Serialize);
+                sc.Serialize(ref info.NeighbourDims, SCExt.Serialize);
             }
             else if (sc.IsLoading)
             {
