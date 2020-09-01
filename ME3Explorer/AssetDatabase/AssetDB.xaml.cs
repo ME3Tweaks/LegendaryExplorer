@@ -18,18 +18,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using ME3Explorer.GameInterop;
+using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using AnimSequence = ME3ExplorerCore.Unreal.BinaryConverters.AnimSequence;
-using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
-using SQLite.Extensions;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3ExplorerCore.TLK;
 
@@ -176,7 +175,7 @@ namespace ME3Explorer.AssetDatabase
         public ObservableCollectionExtended<string> SpeakerList { get; } = new ObservableCollectionExtended<string>();
         private bool _isGettingTLKs;
         public bool IsGettingTLKs { get => _isGettingTLKs; set => SetProperty(ref _isGettingTLKs, value); }
-        public Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string> CustomFileList { get; } = new Gammtek.Conduit.Collections.ObjectModel.ObservableDictionary<int, string>(); //FileKey, filename<space>Dir
+        public ObservableDictionary<int, string> CustomFileList { get; } = new ObservableDictionary<int, string>(); //FileKey, filename<space>Dir
         public const string CustomListDesc = "Custom File Lists allow the database to be filtered so only assets that are in certain files or groups of files are shown. Lists can be saved/reloaded.";
         private bool _isFilteredByFiles;
         public bool IsFilteredByFiles { get => _isFilteredByFiles; set => SetProperty(ref _isFilteredByFiles, value); }
@@ -781,7 +780,7 @@ namespace ME3Explorer.AssetDatabase
                         //Shouldn't be called in ME1
                         break;
                     case MEGame.ME2:
-                        ol.Line = ME2Explorer.ME2TalkFiles.findDataById(ol.StrRef);
+                        ol.Line = ME2TalkFiles.findDataById(ol.StrRef);
                         break;
                     case MEGame.ME3:
                         ol.Line = ME3TalkFiles.findDataById(ol.StrRef);

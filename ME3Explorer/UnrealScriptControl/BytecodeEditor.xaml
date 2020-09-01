@@ -10,6 +10,7 @@
              xmlns:me1bytecode="clr-namespace:ME3Explorer.ME1.Unreal.UnhoodBytecode"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            xmlns:me3bytecode="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
                             d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UnrealScriptWPF_Loaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">

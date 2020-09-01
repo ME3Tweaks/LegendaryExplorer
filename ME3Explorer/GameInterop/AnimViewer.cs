@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
-using Gammtek.Conduit.Extensions;
 using ME3Explorer.AutoTOC;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
-using SharpDX;
-using StreamHelpers;
 using MessageBox = System.Windows.MessageBox;
 
 namespace ME3Explorer.GameInterop

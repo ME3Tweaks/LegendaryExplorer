@@ -13,7 +13,6 @@ namespace Microsoft.Shell
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.IO;
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Channels;
     using System.Runtime.Remoting.Channels.Ipc;

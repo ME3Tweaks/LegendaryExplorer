@@ -1,13 +1,10 @@
-﻿using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.SequenceObjects;
+﻿using ME3Explorer.SequenceObjects;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -17,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Gammtek.Conduit.Extensions;
 using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -29,13 +25,17 @@ using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
+using MELoadedFiles = ME3ExplorerCore.Helpers.MELoadedFiles;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -445,7 +445,6 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool PackageIsLoaded()
         {
-            Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
 

@@ -1,20 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Be;
-using Be.Windows.Forms;
 using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Unreal;
-using UsefulThings;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using StreamHelpers;
 
 namespace ME3Explorer
 {

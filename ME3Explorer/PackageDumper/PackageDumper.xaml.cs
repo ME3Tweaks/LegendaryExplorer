@@ -4,8 +4,6 @@
  * (c) Mgamerz 2019
  */
 
-using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -15,12 +13,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;

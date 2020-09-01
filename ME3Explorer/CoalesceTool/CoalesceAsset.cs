@@ -1,5 +1,4 @@
 ﻿using System;
-using Gammtek.Conduit.Extensions;
 
 namespace MassEffect3.Coalesce
 {

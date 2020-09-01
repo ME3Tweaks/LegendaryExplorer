@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ME3Explorer;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Language.Tree;
 using static ME3ExplorerCore.Unreal.UnrealFlags;

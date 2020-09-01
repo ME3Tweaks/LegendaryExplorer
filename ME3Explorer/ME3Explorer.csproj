@@ -978,7 +978,6 @@
     <Compile Include="Soundplorer\ISACT_Parser.cs" />
     <Compile Include="Soundplorer\ISBank.cs" />
     <Compile Include="Soundplorer\ISBankEntry.cs" />
-    <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="SharedUI\ExportLoaderControl.cs" />
     <Compile Include="SharedUI\IExportLoader.cs" />
@@ -1633,8 +1632,7 @@ if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBui
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>del "$(ProjectDir)$(OutDir)*.txt"
-
+    <PreBuildEvent>::del "$(ProjectDir)$(OutDir)*.txt"
 </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

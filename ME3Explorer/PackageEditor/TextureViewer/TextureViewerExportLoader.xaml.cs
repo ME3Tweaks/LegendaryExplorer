@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -11,19 +10,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AmaroK86.ImageFormat;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
-using MassEffectModder.Images;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Image = MassEffectModder.Images.Image;
-using PixelFormat = MassEffectModder.Images.PixelFormat;
 
 namespace ME3Explorer
 {

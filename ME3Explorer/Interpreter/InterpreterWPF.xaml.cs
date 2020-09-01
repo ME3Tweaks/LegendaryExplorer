@@ -10,8 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.Properties;

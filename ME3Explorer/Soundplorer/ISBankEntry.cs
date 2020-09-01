@@ -1,14 +1,9 @@
-﻿using Gammtek.Conduit.Extensions.IO;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Gammtek.Conduit.IO;
-using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Gammtek.IO;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.Soundplorer

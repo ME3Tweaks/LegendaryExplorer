@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
 using SharpDX.Direct3D11;
 using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
-using static ME3Explorer.TextureViewerExportLoader;
 using static ME3Explorer.Scene3D.ModelPreview;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal.Classes;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -716,12 +715,12 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
-        /// Creates a preview of the given <see cref="ME3ExplorerCore.Unreal.Classes.SkeletalMesh"/>.
+        /// Creates a preview of the given <see cref="SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, ME3ExplorerCore.Unreal.Classes.SkeletalMesh m, PreviewTextureCache texcache)
+        public ModelPreview(Device Device, ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
         {
             // STEP 1: MATERIALS
             for (int i = 0; i < m.Materials.Count; i++)

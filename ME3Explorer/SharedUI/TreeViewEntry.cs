@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Threading;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Gammtek.Conduit.IO;
-using ME2Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.TlkManagerNS;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 

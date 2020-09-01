@@ -8,9 +8,9 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -292,7 +292,7 @@ namespace ME3Explorer.TFCCompactor
             ProgressBarIndeterminate = false;
             SortedSet<TFCSelector> referencedTFCs = new SortedSet<TFCSelector>();
 
-            if (files.Any())
+            if (Enumerable.Any(files))
             {
                 foreach (string file in files)
                 {
@@ -999,7 +999,7 @@ namespace ME3Explorer.TFCCompactor
                 if (bikend > fs.Length)
                     throw new Exception("tfc corrupt");
 
-                byte[] bikBytes = fs.ReadBytes(length);
+                byte[] bikBytes = fs.ReadToBuffer(length);
                 bikMovie = new MemoryStream(bikBytes);
             }
 
@@ -1007,7 +1007,7 @@ namespace ME3Explorer.TFCCompactor
             byte[] bikarray = bikMovie.ToArray();
             using (FileStream fs = new FileStream(destination, FileMode.Create))
             {
-                fs.WriteBytes(bikarray);
+                fs.WriteFromBuffer(bikarray);
             }
         }
 

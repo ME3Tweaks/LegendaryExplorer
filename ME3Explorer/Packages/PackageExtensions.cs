@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Unreal.Classes;
-using ME3ExplorerCore.MEDirectories;
+﻿using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;

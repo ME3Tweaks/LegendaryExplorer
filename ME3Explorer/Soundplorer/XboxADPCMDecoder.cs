@@ -1,10 +1,6 @@
-﻿using Gammtek.Conduit.Extensions.IO;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.Soundplorer
 {

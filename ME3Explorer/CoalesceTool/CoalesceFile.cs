@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace MassEffect3.Coalesce
 {

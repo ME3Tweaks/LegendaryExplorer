@@ -22,7 +22,6 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;

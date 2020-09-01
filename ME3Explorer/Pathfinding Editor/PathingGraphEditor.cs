@@ -2,13 +2,10 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
 using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 using System.Reflection;
 using System.Collections.Generic;
 using ME3Explorer.PathfindingNodes;

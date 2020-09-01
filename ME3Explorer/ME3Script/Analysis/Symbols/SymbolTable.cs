@@ -1,16 +1,13 @@
 ﻿using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
+using ME3ExplorerCore.Misc;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
-using ASTNodeDict = ME3Explorer.CaseInsensitiveDictionary<ME3Script.Language.Tree.ASTNode>;
+using ASTNodeDict = ME3ExplorerCore.Misc.CaseInsensitiveDictionary<ME3Script.Language.Tree.ASTNode>;
 
 namespace ME3Script.Analysis.Symbols
 {

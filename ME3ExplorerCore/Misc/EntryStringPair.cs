@@ -21,6 +21,19 @@ namespace ME3ExplorerCore.Misc
 
         public IEntry Entry { get; set; }
         public string Message { get; set; }
+
+        public override string ToString() => Message;
+
+        public static implicit operator EntryStringPair(ExportEntry entry)
+        {
+            return new EntryStringPair(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+        }
+
+        public static implicit operator EntryStringPair(ImportEntry entry)
+        {
+            return new EntryStringPair(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

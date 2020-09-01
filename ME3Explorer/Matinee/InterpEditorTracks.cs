@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using ME1Explorer;
 using ME3Explorer.SharedUI;
-using ME3Explorer;
 using ME3Explorer.Pathfinding_Editor;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;

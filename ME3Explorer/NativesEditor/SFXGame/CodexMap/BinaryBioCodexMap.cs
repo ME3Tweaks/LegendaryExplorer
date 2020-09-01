@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 {

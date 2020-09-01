@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:ME3Explorer.SharedUI"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d"
         ResizeMode="NoResize"

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,10 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ImageMagick;
 using MassEffectModder.Images;
-using ME3Explorer.AssetDatabase;
+using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -18,7 +21,6 @@ using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX;
 
@@ -29,6 +31,264 @@ namespace ME3Explorer.PackageEditor
     /// </summary>
     class PackageEditorExperiments
     {
+
+        private void PortWiiUBSP(object sender, RoutedEventArgs e)
+        {
+
+
+            //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
+            //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
+            //var gmplanet01 = me1em.GetUExport(940);
+            //var itm = me1em.GetUExport(966);
+            //var moon = me1em.GetUExport(936);
+            //var planetPos = SharedPathfinding.GetLocation(gmplanet01);
+            //var moonPos = SharedPathfinding.GetLocation(moon);
+            //var cameraPoint = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
+            //var cameraEuler = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
+
+            //Point3D me2planetPos = new Point3D()
+            //{
+            //    X = -5402.598,
+            //    Y = 13571.81,
+            //    Z = -40187.2
+            //};
+
+
+
+            //Debug.WriteLine("Place moon at:");
+            //var diff = moonPos.getDelta(planetPos);
+            //var newpos = me2planetPos.applyDelta(diff);
+
+            //Debug.WriteLine("X: " + newpos.X);
+            //Debug.WriteLine("Y: " + newpos.Y);
+            //Debug.WriteLine("Z: " + newpos.Z);
+
+            //Debug.WriteLine("Set Camera rotation:");
+
+
+            //Debug.WriteLine("Pitch: " + cameraEuler.X);
+            //Debug.WriteLine("Yaw: " + cameraEuler.Y);
+            //Debug.WriteLine("Roll: " + cameraEuler.Z);
+
+            return;
+            var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
+            var pcc = MEPackageHandler.OpenMEPackage(inputfile, forceLoadFromDisk: true);
+            var trackprops = pcc.Exports.Where(x => x.ClassName == "BioEvtSysTrackProp").ToList();
+            foreach (var trackprop in trackprops)
+            {
+                var props = trackprop.GetProperties();
+                var findActor = props.GetProp<NameProperty>("m_nmFindActor");
+                if (findActor != null && findActor.Value.Name == "Player")
+                {
+                    var propKeys = props.GetProp<ArrayProperty<StructProperty>>("m_aPropKeys");
+                    if (propKeys != null)
+                    {
+                        foreach (var trackdata in propKeys)
+                        {
+                            var prop = trackdata.GetProp<NameProperty>("nmProp");
+                            if (prop != null && prop.Value.Name == "Pistol_Carnifex")
+                            {
+                                prop.Value = "Currently_Equipped_Weapon";
+                                //maybe have to change weapon class. we'll see
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Wrote {trackprop.InstancedFullPath}");
+                    trackprop.WriteProperties(props);
+                }
+            }
+            pcc.Save();
+            return;
+            Debug.WriteLine("Opening packages");
+            var pcEntry = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\entryMAT.pcc", forceLoadFromDisk: true);
+            //var packageToPort = MEPackageHandler.OpenMEPackage(@"X:\BSPPorting\wiiuBSP\Bioa_Cat003_TEMP2.xxx", forceLoadFromDisk: true);
+            var packageToPort = MEPackageHandler.OpenMEPackage(@"E:\UDKStuff\testmap.udk");
+            //Locate PC level we will attach new exports to
+            var pcLevel = pcEntry.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
+
+            //Locate WiiU level we will find assets to port from
+            var wiiuLevel = packageToPort.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
+
+            //MODELS FIRST
+            Debug.WriteLine("Porting Model");
+            var wiiumodels = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "Model").ToList();
+            //take larger model
+            var wiiumodel = wiiumodels.MaxBy(x => x.DataSize);
+            var selfRefPositions = new List<(string, int)>();
+            var leBinary = BinaryInterpreterWPF.EndianReverseModelScan(wiiumodel, pcEntry, selfRefPositions);
+            var availableMaterialsToUse = new[]
+            {
+                //102, //grass
+                //89, //rock
+                //142, //night sandy rock //just white
+                156 //tile
+            };
+            var random = new Random();
+            var overrideMaterial = pcEntry.GetUExport(availableMaterialsToUse[random.Next(availableMaterialsToUse.Length)]);
+            foreach (var selfref in selfRefPositions)
+            {
+                leBinary.Seek(selfref.Item2, SeekOrigin.Begin);
+                switch (selfref.Item1)
+                {
+                    //case "Self":
+                    //    leBinary.WriteInt32(existingExport.UIndex);
+                    //    break;
+                    //case "MasterModel":
+                    //    leBinary.WriteInt32(masterPCModel.UIndex);
+                    //    break;
+                    case "DefaultMaterial":
+                        leBinary.WriteInt32(overrideMaterial.UIndex);
+                        break;
+                }
+            }
+            //MemoryStream exportStream = new MemoryStream();
+            ////export header
+            //exportStream.WriteInt32(-1);
+            //exportStream.WriteNameReference("None", pcEntry);
+            //leBinary.CopyTo(exportStream);
+
+            //Debug.WriteLine("Big Endian size: " + wiiumodel.DataSize);
+            //Debug.WriteLine("LTL endian size: " + exportStream.Length);
+            var masterPCModel = pcEntry.GetUExport(8);
+            masterPCModel.SetBinaryData(leBinary.ToArray());
+            if (masterPCModel.DataSize != wiiumodel.DataSize)
+                Debug.WriteLine("ERROR: BINARY NOT SAME LEGNTH!");
+            //Port model components
+            var modelComponents = packageToPort.Exports.Where(x => x.Parent == wiiuLevel && x.ClassName == "ModelComponent").ToList();
+            var availableExistingModelComponents = pcEntry.Exports.Where(x => x.Parent == pcLevel && x.ClassName == "ModelComponent").ToList();
+            var modelComponentClass = pcEntry.Imports.First(x => x.ObjectName.Name == "ModelComponent");
+            byte[] existingData = null; //hack to just setup new exports
+            List<int> addedModelComponents = new List<int>();
+            foreach (var modelcomp in modelComponents)
+            {
+                var existingExport = availableExistingModelComponents.FirstOrDefault();
+                if (existingExport == null)
+                {
+                    //we have no more exports we can use
+                    //ExportEntry exp = new ExportEntry()
+                    existingExport = new ExportEntry(pcEntry)
+                    {
+                        Parent = pcLevel,
+                        indexValue = modelcomp.indexValue,
+                        Class = modelComponentClass,
+                        ObjectName = "ModelComponent",
+                        Data = existingData
+                    };
+
+                    pcEntry.AddExport(existingExport);
+                    addedModelComponents.Add(existingExport.UIndex);
+                }
+
+                if (existingExport == null) continue; //just skip
+                if (existingData == null) existingData = existingExport.Data;
+                overrideMaterial = pcEntry.GetUExport(availableMaterialsToUse[random.Next(availableMaterialsToUse.Length)]);
+                //overrideMaterial = pcEntry.GetUExport(156);
+                availableExistingModelComponents.Remove(existingExport);
+                Debug.WriteLine("Porting model component " + modelcomp.InstancedFullPath);
+                selfRefPositions = new List<(string, int)>();
+
+                var lightmapsToRemove = new List<(int, int)>();
+
+                leBinary = BinaryInterpreterWPF.EndianReverseModelComponentScan(modelcomp, pcEntry, selfRefPositions, lightmapsToRemove);
+                var binstart = existingExport.propsEnd();
+                foreach (var selfref in selfRefPositions)
+                {
+                    leBinary.Seek(selfref.Item2 - binstart, SeekOrigin.Begin);
+                    switch (selfref.Item1)
+                    {
+                        case "Self":
+                            leBinary.WriteInt32(existingExport.UIndex);
+                            break;
+                        case "MasterModel":
+                            leBinary.WriteInt32(masterPCModel.UIndex);
+                            break;
+                        case "DefaultMaterial":
+                            leBinary.WriteInt32(overrideMaterial.UIndex);
+                            break;
+                    }
+                }
+
+                MemoryStream strippedLightmapStream = new MemoryStream();
+                //strip out lightmaps. We must go in reverse order
+                existingExport.SetBinaryData(leBinary.ToArray());
+                leBinary.Position = 0;
+                leBinary = new MemoryStream(existingExport.Data);
+
+                foreach (var lightmapx in lightmapsToRemove)
+                {
+                    var datacountstart = lightmapx.Item1;
+                    var dataend = lightmapx.Item2;
+                    Debug.WriteLine($"Gutting lightmap DATA 0x{lightmapx.Item1:X4} to 0x{lightmapx.Item2:X4}");
+                    if (leBinary.Position == 0)
+                    {
+                        strippedLightmapStream.WriteFromBuffer(leBinary.ReadToBuffer(datacountstart)); //write initial bytes up to first lightmap
+                    }
+                    else
+                    {
+                        var amountToRead = datacountstart - (int)leBinary.Position;
+                        Debug.WriteLine($"Reading {amountToRead:X5} bytes from source pos 0x{leBinary.Position:X5} to output at 0x{strippedLightmapStream.Position:X6}");
+                        strippedLightmapStream.WriteFromBuffer(leBinary.ReadToBuffer(amountToRead)); //write bytes between
+                    }
+
+                    Debug.WriteLine($"Copied to 0x{leBinary.Position:X4}");
+
+                    strippedLightmapStream.WriteInt32(0); //LMT_NONE
+                    Debug.WriteLine($"Wrote LMNONE DATA at output bin 0x{(strippedLightmapStream.Position - 4):X4}");
+
+                    leBinary.Seek(dataend, SeekOrigin.Begin);
+                }
+
+                if (lightmapsToRemove.Count > 0)
+                {
+                    strippedLightmapStream.WriteFromBuffer(leBinary.ReadFully()); //write the rest of the stream
+                }
+
+                existingExport.Data = strippedLightmapStream.ToArray();
+                //if (modelcomp.GetBinaryData().Length != leBinary.Length)
+                //{
+                //    Debug.WriteLine($"WRONG BINARY LENGTH FOR NEW DATA: OLD LEN: 0x{modelcomp.GetBinaryData().Length:X8} NEW LEN: 0x{leBinary.Length:X8}, Difference {(modelcomp.GetBinaryData().Length - leBinary.Length)}");
+                //}
+                //existingExport.SetBinaryData(leBinary.ToArray());
+                existingExport.indexValue = modelcomp.indexValue;
+            }
+
+            //Update LEVEL list of ModelComponents
+            var modelCompontentsOffset = 0x6A; //# of model components - DATA not BINARY DATA
+            var levelBinary = pcLevel.Data;
+            var curCount = BitConverter.ToInt32(levelBinary, modelCompontentsOffset);
+            levelBinary.OverwriteRange(modelCompontentsOffset, BitConverter.GetBytes(curCount + addedModelComponents.Count)); //write new count
+
+            var splitPoint = modelCompontentsOffset + ((curCount + 1) * 4);
+            var preNewStuff = levelBinary.Slice(0, splitPoint);
+            var postNewStuff = levelBinary.Slice(splitPoint, levelBinary.Length - splitPoint);
+            MemoryStream nstuff = new MemoryStream();
+            foreach (var n in addedModelComponents)
+            {
+                nstuff.WriteInt32(n);
+            }
+
+            byte[] newLevelBinary = new byte[levelBinary.Length + nstuff.Length];
+            newLevelBinary.OverwriteRange(0, preNewStuff);
+            newLevelBinary.OverwriteRange(splitPoint, nstuff.ToArray());
+            newLevelBinary.OverwriteRange(splitPoint + (int)nstuff.Length, postNewStuff);
+
+            pcLevel.Data = newLevelBinary;
+
+            pcEntry.Save(@"D:\origin games\mass effect 3\biogame\cookedpcconsole\entrybsp.pcc");
+
+
+            Debug.WriteLine("Done porting");
+        }
+
+        private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelected(out var uindex);
+            if (selected && uindex > 0)
+            {
+                PackageEditorExperiments.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
+            }
+        }
+
         /// <summary>
         /// Builds a comparison of TESTPATCH functions against their original design. View the difference with WinMerge Folder View.
         /// By Mgamerz

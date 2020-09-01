@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX.D3DCompiler;
-using StreamHelpers;
 
 namespace ME3Explorer.MaterialViewer
 {

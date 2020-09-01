@@ -1,14 +1,10 @@
 ﻿/**
  * This class was ported from ALOT Installer
  */
-using ByteSizeLib;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ME3Explorer.SharedUI
 {

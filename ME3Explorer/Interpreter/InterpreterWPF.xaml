@@ -15,6 +15,7 @@
              xmlns:properties="clr-namespace:ME3Explorer.Properties"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                             xmlns:fa="http://schemas.fontawesome.com/icons/"
+                            xmlns:unreal="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
                             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">

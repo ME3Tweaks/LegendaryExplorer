@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using StreamHelpers;
 
 namespace ME3Explorer
 {

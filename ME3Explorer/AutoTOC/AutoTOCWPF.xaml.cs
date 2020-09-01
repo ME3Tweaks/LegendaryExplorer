@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -13,10 +12,10 @@ using System.Windows.Media;
 using Ini;
 using FontAwesome5;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
-using StreamHelpers;
 
 namespace ME3Explorer.AutoTOC
 {

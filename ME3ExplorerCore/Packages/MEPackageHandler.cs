@@ -276,7 +276,7 @@ namespace ME3ExplorerCore.Packages
 
         public static bool IsPackageInUse(string pathToFile) => openPackages.ContainsKey(Path.GetFullPath(pathToFile));
 
-        internal static void PrintOpenPackages()
+        public static void PrintOpenPackages()
         {
             Debug.WriteLine("Open Packages:");
             foreach (KeyValuePair<string, IMEPackage> package in openPackages)

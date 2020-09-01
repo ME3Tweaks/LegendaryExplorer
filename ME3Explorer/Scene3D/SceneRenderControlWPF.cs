@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Controls;
 using SharpDX;
-using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
-using System.Windows;
 
 namespace ME3Explorer.Scene3D
 {

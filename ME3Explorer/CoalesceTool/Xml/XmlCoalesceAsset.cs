@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.Collections.Generic;
 
 namespace MassEffect3.Coalesce.Xml
 {

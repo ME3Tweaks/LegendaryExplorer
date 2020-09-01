@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ME3ExplorerCore.Packages;
-using StreamHelpers;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {

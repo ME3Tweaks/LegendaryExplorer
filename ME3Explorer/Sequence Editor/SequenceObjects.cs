@@ -11,8 +11,6 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
-using Gammtek.Conduit.Extensions;
-using ME1Explorer;
 using ME3Explorer.Sequence_Editor;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;

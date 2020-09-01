@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Script.Language.Tree;
+﻿using ME3Script.Language.Tree;
 
 namespace ME3Script.Analysis.Visitors
 {

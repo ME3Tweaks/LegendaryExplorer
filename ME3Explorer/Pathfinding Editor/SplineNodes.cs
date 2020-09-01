@@ -6,7 +6,6 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using System;
 using System.Linq;
-using System.Windows;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;

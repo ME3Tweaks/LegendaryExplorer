@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.Classes;
-using SharpDX;
 using SharpDX.Direct3D11;
-using static ME3Explorer.TextureViewerExportLoader;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace ME3Explorer.Scene3D

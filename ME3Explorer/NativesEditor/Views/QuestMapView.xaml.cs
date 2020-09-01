@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;

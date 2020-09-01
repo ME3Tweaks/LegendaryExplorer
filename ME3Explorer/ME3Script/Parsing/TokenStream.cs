@@ -1,12 +1,9 @@
-﻿using ME3Script.Language;
-using ME3Script.Language.Tree;
+﻿using ME3Script.Language.Tree;
 using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3Script.Utilities;
 
 namespace ME3Script.Parsing

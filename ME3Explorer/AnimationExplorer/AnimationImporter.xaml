@@ -7,6 +7,7 @@
         xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
         mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"

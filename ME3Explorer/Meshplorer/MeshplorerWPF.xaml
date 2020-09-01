@@ -10,6 +10,7 @@
                xmlns:fa="http://schemas.fontawesome.com/icons/"
                xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
                xmlns:scene3d="clr-namespace:ME3Explorer.Scene3D"
+               xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
                mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"

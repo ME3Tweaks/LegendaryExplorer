@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using FontAwesome5.WPF;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;

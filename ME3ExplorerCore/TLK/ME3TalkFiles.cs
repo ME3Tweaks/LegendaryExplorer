@@ -37,7 +37,7 @@ namespace ME3ExplorerCore.TLK
             return s;
         }
 
-        internal static void ClearLoadedTlks()
+        public static void ClearLoadedTlks()
         {
             tlkList.Clear();
         }

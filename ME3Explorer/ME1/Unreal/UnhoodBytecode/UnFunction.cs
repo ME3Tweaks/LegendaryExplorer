@@ -6,14 +6,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using StreamHelpers;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {

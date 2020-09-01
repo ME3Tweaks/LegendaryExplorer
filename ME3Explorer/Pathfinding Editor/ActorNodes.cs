@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes

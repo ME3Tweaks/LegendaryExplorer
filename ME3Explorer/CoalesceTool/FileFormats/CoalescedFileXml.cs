@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using MassEffect3.FileFormats.Coalesced;
 using MassEffect3.FileFormats.Huffman;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using Decoder = MassEffect3.FileFormats.Huffman.Decoder;
 using Encoder = MassEffect3.FileFormats.Huffman.Encoder;
 

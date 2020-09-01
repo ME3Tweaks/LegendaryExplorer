@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Gammtek.Conduit.Extensions;
 
 namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 {

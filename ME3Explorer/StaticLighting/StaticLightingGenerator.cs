@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;

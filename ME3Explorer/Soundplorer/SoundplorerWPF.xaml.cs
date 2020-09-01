@@ -1,40 +1,27 @@
 ﻿using ByteSizeLib;
-using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using NAudio.Wave;
-using StreamHelpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Xml.Linq;
-using FontAwesome5.WPF;
 using FontAwesome5;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.Helpers;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
@@ -990,8 +977,8 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
-                            if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
+                            var w = spExport.Export.GetBinaryData<WwiseStream>();
+                            if (WwiseStreamHelper.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1041,7 +1028,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
                     string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
+                    if (WwiseStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
                         MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 

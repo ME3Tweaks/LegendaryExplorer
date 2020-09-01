@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ME3Explorer.CurveEd;
 using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
 using static ME3Explorer.PackageEditorWPF;

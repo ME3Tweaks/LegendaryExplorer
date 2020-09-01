@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
@@ -15,6 +14,7 @@ using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
 using ME3Script.Lexing;
 using ME3Script.Parsing;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.ME3Script
 {

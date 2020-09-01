@@ -4,9 +4,7 @@ using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using ME3Explorer;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {

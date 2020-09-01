@@ -4,9 +4,6 @@ using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Decompiling

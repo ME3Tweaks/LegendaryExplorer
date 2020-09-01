@@ -1,6 +1,4 @@
-﻿using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer;
-using ME3Explorer.Sequence_Editor;
+﻿using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using Newtonsoft.Json;

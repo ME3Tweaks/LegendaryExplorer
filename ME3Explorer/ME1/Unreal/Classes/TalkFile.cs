@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
-using ME1Explorer;
 using System.Diagnostics;
-using Gammtek.Conduit.IO;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 
 namespace ME1Explorer.Unreal.Classes

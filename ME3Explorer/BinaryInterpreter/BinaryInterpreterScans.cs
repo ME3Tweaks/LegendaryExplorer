@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 

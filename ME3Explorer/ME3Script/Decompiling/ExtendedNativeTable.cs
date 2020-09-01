@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Script.Utilities;
+﻿using System.Collections.Generic;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Decompiling

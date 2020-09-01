@@ -4,11 +4,7 @@ using ME3Script.Language.Tree;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 

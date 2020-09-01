@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Be.Windows.Forms;
-using Gammtek.Conduit.IO;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Packages;
