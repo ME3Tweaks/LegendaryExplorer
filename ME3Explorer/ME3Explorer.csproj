@@ -418,7 +418,8 @@
     <Compile Include="ME3Script\Utilities\ObjectReader.cs" />
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\PackageEditorExperiments.cs" />
-    <Compile Include="Packages\EntryImporterExtensions.cs" />
+    <Compile Include="Packages\EntryImporterExtended.cs" />
+    <Compile Include="Packages\ExportCreator.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
