@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Be.Windows.Forms;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
 using Path = System.IO.Path;

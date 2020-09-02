@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.TLK.ME2ME3;

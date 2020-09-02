@@ -70,9 +70,9 @@ namespace ME3Explorer
                 switch (pcc.Game)
                 {
                     case MEGame.ME1:
-                        return "ME1 StrRef not Supporte";
+                        return "ME1 StrRef not supported";
                     case MEGame.ME2:
-                        return $"\"{ME2Explorer.ME2TalkFiles.findDataById(strRef)}\"";
+                        return $"\"{ME2TalkFiles.findDataById(strRef)}\"";
                     case MEGame.ME3:
                         return $"\"{ME3TalkFiles.findDataById(strRef)}\"";
                     case MEGame.UDK:

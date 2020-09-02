@@ -124,7 +124,7 @@ namespace ME3ExplorerCore.Unreal
 
         public static ArrayType getArrayType(string className, string propName, bool inStruct = false, ExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export) 
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export)
                           ?? getPropertyInfo(className, propName, !inStruct, containingExport: export);
             if (p == null && export != null)
             {
@@ -193,7 +193,7 @@ namespace ME3ExplorerCore.Unreal
             ArrayTypeLookupJustFailed = true;
 #endif
             Debug.WriteLine("ME2 Array type lookup failed due to no info provided, defaulting to int");
-            
+
             // TODO: UNKNOWN ARRAY TYPES AS INT
             // MAYBE COMPILE FLAG?
             // SETTINGS WITH CONDITIONAL COMP FLAG?
@@ -322,7 +322,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
-                        loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME2)); 
+                        loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME2));
                     }
 
                     if (loadStream != null)
@@ -411,7 +411,7 @@ namespace ME3ExplorerCore.Unreal
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo()
+        public static void generateInfo(string outpath)
         {
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();

@@ -4,15 +4,15 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Be.Windows.Forms;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
-using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
 using Token = ME3ExplorerCore.Unreal.Token;
 
 namespace ME3Explorer
@@ -350,7 +350,7 @@ namespace ME3Explorer
                             }
                             if (Pcc.Game == MEGame.ME1)
                             {
-                                ME1OpCodes m = (ME1OpCodes)currentData[start];
+                                BytecodeReader.ME1OpCodes m = (BytecodeReader.ME1OpCodes)currentData[start];
                                 s += $", OpCode: {m}";
                             }
 

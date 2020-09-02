@@ -14,6 +14,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;

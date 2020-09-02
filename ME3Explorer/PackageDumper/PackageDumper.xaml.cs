@@ -4,7 +4,6 @@
  * (c) Mgamerz 2019
  */
 
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -18,7 +17,9 @@ using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;

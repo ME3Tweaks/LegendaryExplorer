@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer

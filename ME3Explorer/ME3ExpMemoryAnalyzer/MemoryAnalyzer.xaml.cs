@@ -8,6 +8,7 @@ using System.Runtime;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.ME3ExpMemoryAnalyzer
 {

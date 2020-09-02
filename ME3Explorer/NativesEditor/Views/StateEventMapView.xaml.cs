@@ -4,6 +4,7 @@ using System.Linq;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
+using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Packages;
 
 namespace MassEffect.NativesEditor.Views

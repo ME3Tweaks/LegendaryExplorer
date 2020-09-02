@@ -6,6 +6,7 @@ using System.Windows;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
+using ME3ExplorerCore.Gammtek;
 
 namespace MassEffect.NativesEditor.Views
 {

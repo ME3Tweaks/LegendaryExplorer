@@ -23,6 +23,7 @@ using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;

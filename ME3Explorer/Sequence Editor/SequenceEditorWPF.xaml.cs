@@ -25,6 +25,7 @@ using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
+using ME3Explorer.Packages;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -36,6 +37,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 using MELoadedFiles = ME3ExplorerCore.Helpers.MELoadedFiles;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -265,12 +267,12 @@ namespace ME3Explorer.Sequence_Editor
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
                 UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
-                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+                classEntry = EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName);
             }
             else
             {
                 SetBusy($"Adding {info.ClassName}");
-                classEntry = await Task.Run(() => EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
+                classEntry = await Task.Run(() => EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
             }
             if (classEntry is null)
             {

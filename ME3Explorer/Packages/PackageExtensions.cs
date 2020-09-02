@@ -17,7 +17,6 @@ namespace ME3Explorer.Packages
     public static class PackageExtensions
     {
 
-        // TODO: Figure out how to make this work in an external assembly. Maybe a compiler flag to allow it for our app?
         public static void ConvertTo(this MEPackage package, MEGame newGame, string tfcPath = null, bool preserveMaterialInstances = false)
         {
             MEGame oldGame = package.Game;
@@ -30,7 +29,7 @@ namespace ME3Explorer.Packages
                 int idx = package.Names.IndexOf("BIOC_Base");
                 if (idx >= 0)
                 {
-                    package.Names[idx] = "SFXGame";
+                    package.replaceName(idx, "SFXGame");
                 }
             }
             else if (newGame == MEGame.ME1)
@@ -38,7 +37,7 @@ namespace ME3Explorer.Packages
                 int idx = package.Names.IndexOf("SFXGame");
                 if (idx >= 0)
                 {
-                    package.Names[idx] = "BIOC_Base";
+                    package.replaceName(idx, "BIOC_Base");
                 }
             }
 
@@ -176,7 +175,7 @@ namespace ME3Explorer.Packages
                 int idx = package.Names.IndexOf("location");
                 if (idx >= 0)
                 {
-                    package.Names[idx] = "Location";
+                    package.replaceName(idx,"Location");
                 }
             }
             else if (newGame == MEGame.ME3)
@@ -184,7 +183,7 @@ namespace ME3Explorer.Packages
                 int idx = package.Names.IndexOf("Location");
                 if (idx >= 0)
                 {
-                    package.Names[idx] = "location";
+                    package.replaceName(idx,"location");
                 }
             }
 
@@ -192,7 +191,7 @@ namespace ME3Explorer.Packages
             {
 
                 //change all materials to default material, but try to preserve diff and norm textures
-                using var resourcePCC = MEPackageHandler.OpenME3Package(App.CustomResourceFilePath(MEGame.ME3));
+                using var resourcePCC = MEPackageHandler.OpenMEPackageFromStream(Utilities.GetCustomAppResourceStream(MEGame.ME3));
                 var defaultmaster = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
                 var materiallist = package.Exports.Where(exp => exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant").ToList();
                 foreach (var mat in materiallist)

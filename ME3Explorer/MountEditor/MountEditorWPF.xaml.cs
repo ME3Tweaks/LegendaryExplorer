@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;
 
@@ -210,14 +211,7 @@ namespace ME3Explorer.MountEditor
         {
             if (int.TryParse(TLKID_TextBox.Text, out int tlkValue))
             {
-                if (IsME2)
-                {
-                    CurrentTLKIDString = ME2Explorer.ME2TalkFiles.findDataById(tlkValue);
-                }
-                else
-                {
-                    CurrentTLKIDString = ME3TalkFiles.findDataById(tlkValue);
-                }
+                CurrentTLKIDString = IsME2 ? ME2TalkFiles.findDataById(tlkValue) : ME3TalkFiles.findDataById(tlkValue);
             }
         }
 

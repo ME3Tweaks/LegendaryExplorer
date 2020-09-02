@@ -17,6 +17,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;

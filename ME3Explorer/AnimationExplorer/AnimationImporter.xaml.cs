@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using ByteSizeLib;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;

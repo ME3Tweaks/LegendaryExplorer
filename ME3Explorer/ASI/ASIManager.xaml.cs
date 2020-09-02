@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
+using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Packages;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 

@@ -22,6 +22,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -32,7 +33,7 @@ using ME3ExplorerCore.MEDirectories;
 
 namespace ME3ExplorerCore.Unreal
 {
-    public class SFARUnpacker : INotifyCollectionChanged
+    public class SFARUnpacker : INotifyCollectionChanged, INotifyPropertyChanged
     {
         const uint SfarTag = 0x53464152; // 'SFAR'
         const uint SfarVersion = 0x00010000;
@@ -314,5 +315,6 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

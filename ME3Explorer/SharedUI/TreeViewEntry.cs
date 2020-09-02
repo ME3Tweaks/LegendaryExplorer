@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 

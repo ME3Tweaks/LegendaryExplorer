@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using static ME3Explorer.PackageEditorWPF;
 

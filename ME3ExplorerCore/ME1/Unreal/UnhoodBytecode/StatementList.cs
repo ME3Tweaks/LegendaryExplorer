@@ -376,7 +376,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         }
 
         private int scriptSize;
-        internal void SetPaddingForScriptSize(int scriptSize)
+        public void SetPaddingForScriptSize(int scriptSize)
         {
             this.scriptSize = scriptSize;
         }

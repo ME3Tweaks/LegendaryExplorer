@@ -1,5 +1,4 @@
-﻿using ME1Explorer;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.Unreal;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;

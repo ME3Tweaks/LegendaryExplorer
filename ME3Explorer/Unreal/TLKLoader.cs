@@ -30,14 +30,17 @@ namespace ME3Explorer.Unreal
             else
             {
                 string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
-                try
+                if (File.Exists(path))
                 {
-                    IMEPackage pcc = MEPackageHandler.OpenME1Package(path);
-                    ME1TalkFiles.tlkList.Add(new ME1TalkFile(pcc, 1));
-                }
-                catch (Exception)
-                {
-                    return;
+                    try
+                    {
+                        IMEPackage pcc = MEPackageHandler.OpenME1Package(path);
+                        ME1TalkFiles.tlkList.Add(new ME1TalkFile(pcc, 1));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
 
@@ -47,7 +50,14 @@ namespace ME3Explorer.Unreal
                 List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME3));
                 foreach (string filePath in files)
                 {
-                    ME3TalkFiles.LoadTlkData(filePath);
+                    try
+                    {
+                        ME2TalkFiles.LoadTlkData(filePath);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             else
@@ -61,7 +71,14 @@ namespace ME3Explorer.Unreal
                 List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME3));
                 foreach (string filePath in files)
                 {
-                    ME3TalkFiles.LoadTlkData(filePath);
+                    try
+                    {
+                        ME3TalkFiles.LoadTlkData(filePath);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             else

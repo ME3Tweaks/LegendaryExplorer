@@ -14,6 +14,7 @@ using FontAwesome5;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 

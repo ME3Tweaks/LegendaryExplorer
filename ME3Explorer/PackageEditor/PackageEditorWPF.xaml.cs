@@ -47,6 +47,7 @@ using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal.Classes;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer
 {
@@ -63,7 +64,8 @@ namespace ME3Explorer
             Tree
         }
 
-        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile" };
+        public static readonly string[] ExportFileTypes =
+            {"GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile"};
 
         public static readonly string[] ExportIconTypes =
         {
@@ -79,7 +81,9 @@ namespace ME3Explorer
         readonly List<Button> RecentButtons = new List<Button>();
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
-        readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
+        readonly Dictionary<ExportLoaderControl, TabItem>
+            ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
+
         private CurrentViewMode _currentView;
 
         public CurrentViewMode CurrentView
@@ -107,10 +111,18 @@ namespace ME3Explorer
             }
         }
 
-        public SharedUI.ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } = new SharedUI.ObservableCollectionExtended<object>();
-        public SharedUI.ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new SharedUI.ObservableCollectionExtended<IndexedName>();
-        public SharedUI.ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new SharedUI.ObservableCollectionExtended<string>();
-        public SharedUI.ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new SharedUI.ObservableCollectionExtended<TreeViewEntry>();
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } =
+            new ObservableCollectionExtended<object>();
+
+        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } =
+            new ObservableCollectionExtended<IndexedName>();
+
+        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } =
+            new ObservableCollectionExtended<string>();
+
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } =
+            new ObservableCollectionExtended<TreeViewEntry>();
+
         private TreeViewEntry _selectedItem;
 
         public TreeViewEntry SelectedItem
@@ -247,6 +259,7 @@ namespace ME3Explorer
         public ICommand PackageExportIsSelectedCommand { get; set; }
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
         public ICommand ReplaceReferenceLinksCommand { get; set; }
+
         private void LoadCommands()
         {
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
@@ -259,7 +272,8 @@ namespace ME3Explorer
             CloneTreeCommand = new GenericCommand(CloneTree, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
-            CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
+            CheckForInvalidObjectPropertiesCommand =
+                new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -274,7 +288,8 @@ namespace ME3Explorer
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
             PackageExportIsSelectedCommand = new RequirementCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
-            SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+            SetPackageAsFilenamePackageCommand =
+                new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
             PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
             CompactShaderCacheCommand = new GenericCommand(CompactShaderCache, HasShaderCache);
@@ -299,16 +314,20 @@ namespace ME3Explorer
             DumpAllShadersCommand = new GenericCommand(DumpAllShaders, HasShaderCache);
             DumpMaterialShadersCommand = new GenericCommand(DumpMaterialShaders, PackageIsLoaded);
             NavigateToEntryCommand = new RelayCommand(NavigateToEntry, CanNavigateToEntry);
-            OpenMapInGameCommand = new GenericCommand(OpenMapInGame, () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
+            OpenMapInGameCommand = new GenericCommand(OpenMapInGame,
+                () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
         }
 
         private void SetIndicesInTreeToZero()
         {
             if (TreeEntryIsSelected() &&
-                MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to do this? Removing the Indexes from objects can break things if you don't know what you're doing.", "", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning))
+                MessageBoxResult.Yes ==
+                MessageBox.Show(
+                    "Are you sure you want to do this? Removing the Indexes from objects can break things if you don't know what you're doing.",
+                    "", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning))
             {
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
 
                 IEnumerable<IEntry> itemsTosetIndexTo0 = selected.FlattenTree().Select(tvEntry => tvEntry.Entry);
 
@@ -337,7 +356,8 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        MessageBox.Show("Could not find the export that this import references.\nHas the link or name (including parents) of this import been changed?\nDo the filenames match the BioWare naming scheme if it's a BioX file?");
+                        MessageBox.Show(
+                            "Could not find the export that this import references.\nHas the link or name (including parents) of this import been changed?\nDo the filenames match the BioWare naming scheme if it's a BioX file?");
                     }
                 });
             }
@@ -350,7 +370,7 @@ namespace ME3Explorer
 
         private void NavigateToEntry(object obj)
         {
-            IEntry e = (IEntry)obj;
+            IEntry e = (IEntry) obj;
             GoToNumber(e.UIndex);
         }
 
@@ -479,7 +499,8 @@ namespace ME3Explorer
 
         private void BulkExportSWFs()
         {
-            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
+            var swfsInFile = Pcc.Exports.Where(x =>
+                x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
                 CommonOpenFileDialog m = new CommonOpenFileDialog
@@ -493,7 +514,7 @@ namespace ME3Explorer
 
                     string dir = m.FileName;
                     Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
-                                                                //your sample code                    
+                    //your sample code                    
                     foreach (var export in swfsInFile)
                     {
                         string exportFilename = $"{export.FullPath}.swf";
@@ -513,7 +534,8 @@ namespace ME3Explorer
 
         private void BulkImportSWFs()
         {
-            var swfsInFile = Pcc.Exports.Where(x => x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
+            var swfsInFile = Pcc.Exports.Where(x =>
+                x.ClassName == (Pcc.Game == MEGame.ME1 ? "BioSWF" : "GFxMovieInfo") && !x.IsDefaultObject).ToList();
             if (swfsInFile.Count > 0)
             {
                 CommonOpenFileDialog m = new CommonOpenFileDialog
@@ -529,14 +551,17 @@ namespace ME3Explorer
                     bw.RunWorkerCompleted += (x, y) =>
                     {
                         IsBusy = false;
-                        ListDialog ld = new ListDialog((List<EntryStringPair>)y.Result, "Imported Files", "The following files were imported.", this) { DoubleClickEntryHandler = entryDoubleClick };
+                        ListDialog ld =
+                            new ListDialog((List<EntryStringPair>) y.Result, "Imported Files",
+                                    "The following files were imported.", this)
+                                {DoubleClickEntryHandler = entryDoubleClick};
                         ld.Show();
                     };
                     bw.DoWork += (param, eventArgs) =>
                     {
                         BusyText = "Importing SWFs";
                         IsBusy = true;
-                        string dir = (string)eventArgs.Argument;
+                        string dir = (string) eventArgs.Argument;
                         var allfiles = new List<string>();
                         allfiles.AddRange(Directory.GetFiles(dir, "*.swf"));
                         allfiles.AddRange(Directory.GetFiles(dir, "*.gfx"));
@@ -544,7 +569,8 @@ namespace ME3Explorer
                         foreach (var file in allfiles)
                         {
                             var fullpath = Path.GetFileNameWithoutExtension(file);
-                            var matchingExport = swfsInFile.FirstOrDefault(x => x.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
+                            var matchingExport = swfsInFile.FirstOrDefault(x =>
+                                x.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
                             if (matchingExport != null)
                             {
                                 //Import and replace file
@@ -559,9 +585,12 @@ namespace ME3Explorer
                                 rawData.bytes = bytes;
 
                                 //Write SWF metadata
-                                if (matchingExport.FileRef.Game == MEGame.ME1 || matchingExport.FileRef.Game == MEGame.ME2)
+                                if (matchingExport.FileRef.Game == MEGame.ME1 ||
+                                    matchingExport.FileRef.Game == MEGame.ME2)
                                 {
-                                    string sourceFilePropName = matchingExport.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                    string sourceFilePropName = matchingExport.FileRef.Game != MEGame.ME1
+                                        ? "SourceFile"
+                                        : "SourceFilePath";
                                     StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
                                     if (sourceFilePath == null)
                                     {
@@ -575,10 +604,12 @@ namespace ME3Explorer
                                 if (matchingExport.FileRef.Game == MEGame.ME1)
                                 {
                                     StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                                    sourceFileTimestamp = File.GetLastWriteTime(file).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                    sourceFileTimestamp = File.GetLastWriteTime(file)
+                                        .ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                                 }
 
-                                importedFiles.Add(new EntryStringPair(matchingExport, $"{matchingExport.UIndex} {fullpath}"));
+                                importedFiles.Add(new EntryStringPair(matchingExport,
+                                    $"{matchingExport.UIndex} {fullpath}"));
                                 matchingExport.WriteProperties(props);
                             }
                         }
@@ -603,7 +634,7 @@ namespace ME3Explorer
             int index = EditorTabs.SelectedIndex + 1;
             while (index < EditorTabs.Items.Count)
             {
-                TabItem ti = (TabItem)EditorTabs.Items[index];
+                TabItem ti = (TabItem) EditorTabs.Items[index];
                 if (ti.IsEnabled && ti.IsVisible)
                 {
                     EditorTabs.SelectedIndex = index;
@@ -619,7 +650,7 @@ namespace ME3Explorer
             int index = EditorTabs.SelectedIndex - 1;
             while (index >= 0)
             {
-                TabItem ti = (TabItem)EditorTabs.Items[index];
+                TabItem ti = (TabItem) EditorTabs.Items[index];
                 if (ti.IsEnabled && ti.IsVisible)
                 {
                     EditorTabs.SelectedIndex = index;
@@ -661,7 +692,7 @@ namespace ME3Explorer
                     break;
             }
 
-            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            SaveFileDialog d = new SaveFileDialog {Filter = fileFilter};
             if (d.ShowDialog() == true)
             {
                 Pcc.Save(d.FileName);
@@ -676,7 +707,7 @@ namespace ME3Explorer
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog {Filter = App.FileFilter};
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -699,7 +730,8 @@ namespace ME3Explorer
 
         private void NewFile()
         {
-            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:", "Create new package file", new[] { "ME3", "ME2", "ME1", "UDK" }, "ME3");
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose a game to create a file for:",
+                "Create new package file", new[] {"ME3", "ME2", "ME1", "UDK"}, "ME3");
             if (Enum.TryParse(gameString, out MEGame game))
             {
                 var dlg = new SaveFileDialog
@@ -749,6 +781,7 @@ namespace ME3Explorer
                         Pcc.replaceName(i, newName);
                     }
                 }
+
                 var packguid = Guid.NewGuid();
                 var package = Pcc.GetUExport(1);
                 package.PackageGUID = packguid;
@@ -794,7 +827,8 @@ namespace ME3Explorer
                         try
                         {
                             var tag = exp.GetProperty<NameProperty>("Tag");
-                            if (tag != null && tag.Value.Name.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase))
+                            if (tag != null &&
+                                tag.Value.Name.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 GoToNumber(exp.UIndex);
                                 return;
@@ -848,7 +882,8 @@ namespace ME3Explorer
                 uint fullheadersize = ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Full header size:  {fullheadersize} (0x{fullheadersize:X8})");
                 int foldernameStrLen = ms.ReadInt32();
-                items.Add($"0x{ms.Position - 4:X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
+                items.Add(
+                    $"0x{ms.Position - 4:X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
                 long currentPosition = ms.Position;
                 if (foldernameStrLen > 0)
                 {
@@ -864,7 +899,7 @@ namespace ME3Explorer
 
                 uint flags = ms.ReadUInt32();
                 string flagsStr = $"0x{ms.Position - 4:X2} Flags: 0x{flags:X8} ";
-                EPackageFlags flagEnum = (EPackageFlags)flags;
+                EPackageFlags flagEnum = (EPackageFlags) flags;
                 var setFlags = flagEnum.MaskToList();
                 foreach (var setFlag in setFlags)
                 {
@@ -898,20 +933,25 @@ namespace ME3Explorer
                 items.Add($"0x{ms.Position - 4:X2} Import Metadata Table Offset: 0x{importOffset:X8}");
 
                 uint dependencyTableOffset = ms.ReadUInt32();
-                items.Add($"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+                items.Add(
+                    $"0x{ms.Position - 4:X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
 
                 if (Pcc.Game >= MEGame.ME3)
                 {
                     uint importExportGuidsOffset = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
+                    items.Add(
+                        $"0x{ms.Position - 4:X2} ImportExportGuidsOffset: 0x{importExportGuidsOffset:X8} (Not used in Mass Effect games)");
 
                     uint unknown2 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} ImportGuidsCount: {unknown2} (0x{unknown2:X8}) (Not used in Mass Effect games)");
+                    items.Add(
+                        $"0x{ms.Position - 4:X2} ImportGuidsCount: {unknown2} (0x{unknown2:X8}) (Not used in Mass Effect games)");
 
                     uint unknown3 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} ExportGuidsCount: {unknown3} (0x{unknown3:X8}) (Not used in Mass Effect games)");
+                    items.Add(
+                        $"0x{ms.Position - 4:X2} ExportGuidsCount: {unknown3} (0x{unknown3:X8}) (Not used in Mass Effect games)");
                     uint unknown4 = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2} ThumbnailTableOffset: {unknown4} (0x{unknown4:X8}) (Not used in Mass Effect games)");
+                    items.Add(
+                        $"0x{ms.Position - 4:X2} ThumbnailTableOffset: {unknown4} (0x{unknown4:X8}) (Not used in Mass Effect games)");
                 }
 
                 var guidBytes = new byte[16];
@@ -930,7 +970,8 @@ namespace ME3Explorer
                     items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Nametable count: {generationImportcount}");
 
                     uint generationNetcount = ms.ReadUInt32();
-                    items.Add($"0x{ms.Position - 4:X2}   Generation #{i}: Net(worked) object count: {generationNetcount}");
+                    items.Add(
+                        $"0x{ms.Position - 4:X2}   Generation #{i}: Net(worked) object count: {generationNetcount}");
                 }
 
                 uint engineVersion = ms.ReadUInt32();
@@ -979,7 +1020,7 @@ namespace ME3Explorer
                     items.Add($"0x{ms.Position - 4:X2} Unknown 7: {unknown7} (0x{unknown7:X8})");
                 }
 
-                UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType)ms.ReadUInt32();
+                UnrealPackageFile.CompressionType compressionType = (UnrealPackageFile.CompressionType) ms.ReadUInt32();
                 items.Add($"0x{ms.Position - 4:X2} Package Compression Type: {compressionType.ToString()}");
 
                 int numChunks = ms.ReadInt32();
@@ -995,14 +1036,16 @@ namespace ME3Explorer
 
                 if ((Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME1) && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
-                    var alwaysZero1 = ms.ReadUInt32(); //this needs to be read in so it can be properly written back out.
+                    var alwaysZero1 =
+                        ms.ReadUInt32(); //this needs to be read in so it can be properly written back out.
                     items.Add($"0x{ms.Position - 4:X4} Always zero: {alwaysZero1}");
                 }
 
                 if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
                     int additionalPackagesToCookCount = ms.ReadInt32();
-                    items.Add($"0x{ms.Position - 4:X4} Number of additional packages to cook: {additionalPackagesToCookCount}");
+                    items.Add(
+                        $"0x{ms.Position - 4:X4} Number of additional packages to cook: {additionalPackagesToCookCount}");
                     //var additionalPackagesToCook = new string[additionalPackagesToCookCount];
                     for (int i = 0; i < additionalPackagesToCookCount; i++)
                     {
@@ -1018,16 +1061,18 @@ namespace ME3Explorer
 
             }
 
-            new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " header information", "Below is information about this package from the header.", this).Show();
+            new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " header information",
+                "Below is information about this package from the header.", this).Show();
         }
 
         private void TrashEntryAndChildren()
         {
             if (TreeEntryIsSelected())
             {
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
 
-                var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry);
+                var itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex)
+                    .Select(tvEntry => tvEntry.Entry);
 
                 if (selected.Entry is IEntry ent && ent.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                 {
@@ -1043,7 +1088,8 @@ namespace ME3Explorer
                     SelectedItem = AllTreeViewNodesX[0];
                 }
 
-                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" && exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
+                bool removedFromLevel = selected.Entry is ExportEntry exp && exp.ParentName == "PersistentLevel" &&
+                                        exp.IsA("Actor") && Pcc.RemoveFromLevelActors(exp);
 
                 EntryPruner.TrashEntries(Pcc, itemsToTrash);
 
@@ -1063,10 +1109,14 @@ namespace ME3Explorer
                 Task.Run(() => entry.GetEntriesThatReferenceThisOne()).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => new EntryStringPair(kvp.Key, $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
-                        $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.InstancedFullPath}",
-                        "There may be additional references to this object in the unparsed binary of some objects", this)
-                    { DoubleClickEntryHandler = entryDoubleClick };
+                    var dlg = new ListDialog(
+                            prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName =>
+                                new EntryStringPair(kvp.Key,
+                                    $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
+                            $"{prevTask.Result.Count} Objects that reference #{entry.UIndex} {entry.InstancedFullPath}",
+                            "There may be additional references to this object in the unparsed binary of some objects",
+                            this)
+                        {DoubleClickEntryHandler = entryDoubleClick};
                     dlg.Show();
                 });
 
@@ -1079,7 +1129,8 @@ namespace ME3Explorer
             if (!TryGetSelectedExport(out ExportEntry export)) return;
             if (export.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
             {
-                MessageBox.Show("Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
+                MessageBox.Show(
+                    "Cannot reindex exports that are part of ME3ExplorerTrashPackage. All items in this package should have an object index of 0.");
                 return;
             }
 
@@ -1099,11 +1150,12 @@ namespace ME3Explorer
                 string objectname = exp.ObjectName.Name;
                 if (showUI)
                 {
-                    uiConfirm = MessageBox.Show($"Confirm reindexing of all exports named {objectname} within the following package path:\n{(string.IsNullOrEmpty(prefixToReindex) ? "Package file root" : prefixToReindex)}\n\n" +
-                                                $"Only use this reindexing feature for items that are meant to be indexed 1 and above (and not 0) as this tool will force all items to be indexed at 1 or above.\n\n" +
-                                                $"Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
-                                    "Confirm Reindexing",
-                                    MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                    uiConfirm = MessageBox.Show(
+                        $"Confirm reindexing of all exports named {objectname} within the following package path:\n{(string.IsNullOrEmpty(prefixToReindex) ? "Package file root" : prefixToReindex)}\n\n" +
+                        $"Only use this reindexing feature for items that are meant to be indexed 1 and above (and not 0) as this tool will force all items to be indexed at 1 or above.\n\n" +
+                        $"Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
+                        "Confirm Reindexing",
+                        MessageBoxButton.YesNo) == MessageBoxResult.Yes;
                 }
 
                 if (!showUI || uiConfirm)
@@ -1116,7 +1168,8 @@ namespace ME3Explorer
                     foreach (ExportEntry export in Pcc.Exports)
                     {
                         //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
-                        if (objectname == export.ObjectName.Name && export.ParentInstancedFullPath == prefixToReindex && !export.IsClass)
+                        if (objectname == export.ObjectName.Name && export.ParentInstancedFullPath == prefixToReindex &&
+                            !export.IsClass)
                         {
                             export.indexValue = index;
                             index++;
@@ -1126,7 +1179,8 @@ namespace ME3Explorer
 
                 if (showUI && uiConfirm)
                 {
-                    MessageBox.Show($"Objects named \"{objectname}\" under {prefixToReindex} have been reindexed.", "Reindexing completed");
+                    MessageBox.Show($"Objects named \"{objectname}\" under {prefixToReindex} have been reindexed.",
+                        "Reindexing completed");
                 }
             }
         }
@@ -1156,10 +1210,13 @@ namespace ME3Explorer
                 Task.Run(() => Pcc.FindUsagesOfName(name)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName => new EntryStringPair(kvp.Key, $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
-                                             $"{prevTask.Result.Count} Objects that use '{name}'",
-                                             "There may be additional usages of this name in the unparsed binary of some objects", this)
-                    { DoubleClickEntryHandler = entryDoubleClick };
+                    var dlg = new ListDialog(
+                            prevTask.Result.SelectMany(kvp => kvp.Value.Select(refName =>
+                                new EntryStringPair(kvp.Key,
+                                    $"#{kvp.Key.UIndex} {kvp.Key.ObjectName.Instanced}: {refName}"))).ToList(),
+                            $"{prevTask.Result.Count} Objects that use '{name}'",
+                            "There may be additional usages of this name in the unparsed binary of some objects", this)
+                        {DoubleClickEntryHandler = entryDoubleClick};
                     dlg.Show();
                 });
             }
@@ -1196,58 +1253,58 @@ namespace ME3Explorer
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
+                    {
+                        try
                         {
-                            try
-                            {
-                                var props = exp.GetProperties();
-                                string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                var DataProp = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-                                byte[] data = DataProp.bytes;
+                            var props = exp.GetProperties();
+                            string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                            var DataProp = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                            byte[] data = DataProp.bytes;
 
-                                if (savePath == null)
+                            if (savePath == null)
+                            {
+                                //GFX is scaleform extensions for SWF
+                                //SWC is Shockwave Compressed
+                                //SWF is Shockwave Flash (uncompressed)
+                                SaveFileDialog d = new SaveFileDialog
                                 {
-                                    //GFX is scaleform extensions for SWF
-                                    //SWC is Shockwave Compressed
-                                    //SWF is Shockwave Flash (uncompressed)
-                                    SaveFileDialog d = new SaveFileDialog
-                                    {
-                                        Title = "Save SWF",
-                                        FileName = exp.FullPath + ".swf",
-                                        Filter = "*.swf|*.swf"
-                                    };
-                                    if (d.ShowDialog() == true)
-                                    {
-                                        File.WriteAllBytes(d.FileName, data);
-                                        MessageBox.Show("Done");
-                                    }
-                                }
-                                else
+                                    Title = "Save SWF",
+                                    FileName = exp.FullPath + ".swf",
+                                    Filter = "*.swf|*.swf"
+                                };
+                                if (d.ShowDialog() == true)
                                 {
-                                    File.WriteAllBytes(savePath, data);
+                                    File.WriteAllBytes(d.FileName, data);
+                                    MessageBox.Show("Done");
                                 }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                MessageBox.Show("Error reading/saving SWF data:\n\n" + ex.FlattenException());
+                                File.WriteAllBytes(savePath, data);
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error reading/saving SWF data:\n\n" + ex.FlattenException());
+                        }
+                    }
                         break;
                     case "BioTlkFile":
+                    {
+                        string extension = Path.GetExtension(".xml");
+                        SaveFileDialog d = new SaveFileDialog
                         {
-                            string extension = Path.GetExtension(".xml");
-                            SaveFileDialog d = new SaveFileDialog
-                            {
-                                Title = "Export TLK as XML",
-                                FileName = exp.FullPath + ".xml",
-                                Filter = $"*{extension}|*{extension}"
-                            };
-                            if (d.ShowDialog() == true)
-                            {
-                                var exportingTalk = new ME1TalkFile(exp);
-                                exportingTalk.saveToFile(d.FileName);
-                                MessageBox.Show("Done");
-                            }
+                            Title = "Export TLK as XML",
+                            FileName = exp.FullPath + ".xml",
+                            Filter = $"*{extension}|*{extension}"
+                        };
+                        if (d.ShowDialog() == true)
+                        {
+                            var exportingTalk = new ME1TalkFile(exp);
+                            exportingTalk.saveToFile(d.FileName);
+                            MessageBox.Show("Done");
                         }
+                    }
                         break;
                 }
             }
@@ -1261,72 +1318,74 @@ namespace ME3Explorer
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
+                    {
+                        try
                         {
-                            try
-                            {
-                                string extension = Path.GetExtension(".swf");
-                                OpenFileDialog d = new OpenFileDialog
-                                {
-                                    Title = "Replace SWF",
-                                    FileName = exp.FullPath + ".swf",
-                                    Filter = $"*{extension};*.gfx|*{extension};*.gfx"
-                                };
-                                if (d.ShowDialog() == true)
-                                {
-                                    var bytes = File.ReadAllBytes(d.FileName);
-                                    var props = exp.GetProperties();
-
-                                    string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
-                                    var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
-                                    //Write SWF data
-                                    rawData.bytes = bytes;
-
-                                    //Write SWF metadata
-                                    if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
-                                    {
-                                        string sourceFilePropName = exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
-                                        StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
-                                        if (sourceFilePath == null)
-                                        {
-                                            sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
-                                            props.Add(sourceFilePath);
-                                        }
-
-                                        sourceFilePath.Value = d.FileName;
-                                    }
-
-                                    if (exp.FileRef.Game == MEGame.ME1)
-                                    {
-                                        StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
-                                        sourceFileTimestamp = File.GetLastWriteTime(d.FileName).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                                    }
-
-                                    exp.WriteProperties(props);
-                                    MessageBox.Show("Done");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Error reading/setting SWF data:\n\n" + ex.FlattenException());
-                            }
-                        }
-                        break;
-                    case "BioTlkFile":
-                        {
-                            string extension = Path.GetExtension(".xml");
+                            string extension = Path.GetExtension(".swf");
                             OpenFileDialog d = new OpenFileDialog
                             {
-                                Title = "Replace TLK from exported XML (ME1 Only)",
-                                FileName = exp.FullPath + ".xml",
-                                Filter = $"*{extension}|*{extension}"
+                                Title = "Replace SWF",
+                                FileName = exp.FullPath + ".swf",
+                                Filter = $"*{extension};*.gfx|*{extension};*.gfx"
                             };
                             if (d.ShowDialog() == true)
                             {
-                                HuffmanCompression compressor = new HuffmanCompression();
-                                compressor.LoadInputData(d.FileName);
-                                compressor.serializeTalkfileToExport(exp, false);
+                                var bytes = File.ReadAllBytes(d.FileName);
+                                var props = exp.GetProperties();
+
+                                string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                var rawData = props.GetProp<ImmutableByteArrayProperty>(dataPropName);
+                                //Write SWF data
+                                rawData.bytes = bytes;
+
+                                //Write SWF metadata
+                                if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
+                                {
+                                    string sourceFilePropName =
+                                        exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                    StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                                    if (sourceFilePath == null)
+                                    {
+                                        sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
+                                        props.Add(sourceFilePath);
+                                    }
+
+                                    sourceFilePath.Value = d.FileName;
+                                }
+
+                                if (exp.FileRef.Game == MEGame.ME1)
+                                {
+                                    StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                                    sourceFileTimestamp = File.GetLastWriteTime(d.FileName)
+                                        .ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                }
+
+                                exp.WriteProperties(props);
+                                MessageBox.Show("Done");
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error reading/setting SWF data:\n\n" + ex.FlattenException());
+                        }
+                    }
+                        break;
+                    case "BioTlkFile":
+                    {
+                        string extension = Path.GetExtension(".xml");
+                        OpenFileDialog d = new OpenFileDialog
+                        {
+                            Title = "Replace TLK from exported XML (ME1 Only)",
+                            FileName = exp.FullPath + ".xml",
+                            Filter = $"*{extension}|*{extension}"
+                        };
+                        if (d.ShowDialog() == true)
+                        {
+                            HuffmanCompression compressor = new HuffmanCompression();
+                            compressor.LoadInputData(d.FileName);
+                            compressor.serializeTalkfileToExport(exp, false);
+                        }
+                    }
                         break;
                 }
             }
@@ -1351,10 +1410,13 @@ namespace ME3Explorer
                     }
                 }
 
-                levelStreamingKismets = levelStreamingKismets.OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
+                levelStreamingKismets = levelStreamingKismets
+                    .OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
                 if (bioworldinfo != null)
                 {
-                    var streamingLevelsProp = bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels") ?? new ArrayProperty<ObjectProperty>("StreamingLevels");
+                    var streamingLevelsProp =
+                        bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels") ??
+                        new ArrayProperty<ObjectProperty>("StreamingLevels");
 
                     streamingLevelsProp.Clear();
                     foreach (ExportEntry exp in levelStreamingKismets)
@@ -1392,12 +1454,14 @@ namespace ME3Explorer
                 if (idx != Pcc.Names.Count - 1)
                 {
                     //not the last
-                    MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})", "Name already exists");
+                    MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})",
+                        "Name already exists");
                 }
                 else
                 {
 
-                    MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
+                    MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})",
+                        "Name added");
                 }
             }
         }
@@ -1421,7 +1485,8 @@ namespace ME3Explorer
             return CurrentView == CurrentViewMode.Tree && EntryIsSelected();
         }
 
-        private bool NameIsSelected() => CurrentView == CurrentViewMode.Names && LeftSide_ListView.SelectedItem is IndexedName;
+        private bool NameIsSelected() =>
+            CurrentView == CurrentViewMode.Names && LeftSide_ListView.SelectedItem is IndexedName;
 
         private void EditName()
         {
@@ -1429,7 +1494,8 @@ namespace ME3Explorer
             {
                 var name = iName.Name;
                 string input = $"Enter a new name to replace this name ({name}) with.";
-                string result = PromptDialog.Prompt(this, input, "Enter new name", defaultValue: name, selectText: true);
+                string result =
+                    PromptDialog.Prompt(this, input, "Enter new name", defaultValue: name, selectText: true);
                 if (!string.IsNullOrEmpty(result))
                 {
                     Pcc.replaceName(LeftSide_ListView.SelectedIndex, result);
@@ -1440,16 +1506,20 @@ namespace ME3Explorer
         private void SearchReplaceNames()
         {
 
-            string searchstr = PromptDialog.Prompt(this, "Input text to be replaced:", "Search and Replace Names", defaultValue: "search text", selectText: true, PromptDialog.InputType.Text);
+            string searchstr = PromptDialog.Prompt(this, "Input text to be replaced:", "Search and Replace Names",
+                defaultValue: "search text", selectText: true, PromptDialog.InputType.Text);
             if (string.IsNullOrEmpty(searchstr))
                 return;
 
-            string replacestr = PromptDialog.Prompt(this, "Input new text:", "Search and Replace Names", defaultValue: "replacement text", selectText: true, PromptDialog.InputType.Text);
+            string replacestr = PromptDialog.Prompt(this, "Input new text:", "Search and Replace Names",
+                defaultValue: "replacement text", selectText: true, PromptDialog.InputType.Text);
             if (string.IsNullOrEmpty(replacestr))
                 return;
 
-            var wdlg = MessageBox.Show($"This will replace every name containing the text \"{searchstr}\" with a new name containing \"{replacestr}\".\n" +
-                                       $"This may break any properties, or links containing this string. Please confirm.", "WARNING:", MessageBoxButton.OKCancel);
+            var wdlg = MessageBox.Show(
+                $"This will replace every name containing the text \"{searchstr}\" with a new name containing \"{replacestr}\".\n" +
+                $"This may break any properties, or links containing this string. Please confirm.", "WARNING:",
+                MessageBoxButton.OKCancel);
             if (wdlg == MessageBoxResult.Cancel)
                 return;
 
@@ -1487,11 +1557,13 @@ namespace ME3Explorer
                         //bad
                         if (op.Name.Name != null)
                         {
-                            badReferences.Add(new EntryStringPair(entry, $"{op.Name.Name} Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                            badReferences.Add(new EntryStringPair(entry,
+                                $"{op.Name.Name} Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                         }
                         else
                         {
-                            badReferences.Add(new EntryStringPair(entry, $"[Nested property] Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                            badReferences.Add(new EntryStringPair(entry,
+                                $"[Nested property] Export {op.Value} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                         }
                     }
                     else if (op.Value < 0 && Math.Abs(op.Value) > Pcc.ImportCount)
@@ -1499,16 +1571,19 @@ namespace ME3Explorer
                         //bad
                         if (op.Name.Name != null)
                         {
-                            badReferences.Add(new EntryStringPair(entry, $"{op.Name.Name} Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                            badReferences.Add(new EntryStringPair(entry,
+                                $"{op.Name.Name} Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                         }
                         else
                         {
-                            badReferences.Add(new EntryStringPair(entry, $"[Nested property] Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                            badReferences.Add(new EntryStringPair(entry,
+                                $"[Nested property] Import {op.Value} is outside of import table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                         }
                     }
-                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString()  == "Trash")
+                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString() == "Trash")
                     {
-                        badReferences.Add(new EntryStringPair(entry, $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        badReferences.Add(new EntryStringPair(entry,
+                            $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                     }
                 }
                 else if (property is ArrayProperty<ObjectProperty> aop)
@@ -1536,7 +1611,8 @@ namespace ME3Explorer
                 {
                     if (dp.Value.Object != 0 && !Pcc.IsEntry(dp.Value.Object))
                     {
-                        badReferences.Add(new EntryStringPair(entry, $"DelegateProperty {dp.Name.Name} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                        badReferences.Add(new EntryStringPair(entry,
+                            $"DelegateProperty {dp.Name.Name} is outside of export table, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                     }
                 }
             }
@@ -1545,22 +1621,26 @@ namespace ME3Explorer
             {
                 if (exp.idxArchetype != 0 && !Pcc.IsEntry(exp.idxArchetype))
                 {
-                    badReferences.Add(new EntryStringPair(exp, $"Archetype {exp.idxArchetype} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    badReferences.Add(new EntryStringPair(exp,
+                        $"Archetype {exp.idxArchetype} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
 
                 if (exp.idxSuperClass != 0 && !Pcc.IsEntry(exp.idxSuperClass))
                 {
-                    badReferences.Add(new EntryStringPair(exp, $"Header SuperClass {exp.idxSuperClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    badReferences.Add(new EntryStringPair(exp,
+                        $"Header SuperClass {exp.idxSuperClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
 
                 if (exp.idxClass != 0 && !Pcc.IsEntry(exp.idxClass))
                 {
-                    badReferences.Add(new EntryStringPair(exp, $"Header Class {exp.idxClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    badReferences.Add(new EntryStringPair(exp,
+                        $"Header Class {exp.idxClass} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
 
                 if (exp.idxLink != 0 && !Pcc.IsEntry(exp.idxLink))
                 {
-                    badReferences.Add(new EntryStringPair(exp, $"Header Link {exp.idxLink} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    badReferences.Add(new EntryStringPair(exp,
+                        $"Header Link {exp.idxLink} is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
 
                 if (exp.HasComponentMap)
@@ -1570,7 +1650,8 @@ namespace ME3Explorer
                         if (!Pcc.IsEntry(c.Value))
                         {
                             // Can components point to 0? I don't think so
-                            badReferences.Add(new EntryStringPair(exp, $"Header Component Map item ({c.Value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                            badReferences.Add(new EntryStringPair(exp,
+                                $"Header Component Map item ({c.Value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                         }
                     }
                 }
@@ -1582,12 +1663,14 @@ namespace ME3Explorer
                     var stack2 = EndianReader.ToInt32(exp.Data, 4, exp.FileRef.Endian);
                     if (stack1 != 0 && !Pcc.IsEntry(stack1))
                     {
-                        badReferences.Add(new EntryStringPair(exp, $"Export Stack[0] ({stack1}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                        badReferences.Add(new EntryStringPair(exp,
+                            $"Export Stack[0] ({stack1}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                     }
 
                     if (stack2 != 0 && !Pcc.IsEntry(stack2))
                     {
-                        badReferences.Add(new EntryStringPair(exp, $"Export Stack[1] ({stack2}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                        badReferences.Add(new EntryStringPair(exp,
+                            $"Export Stack[1] ({stack2}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                     }
                 }
 
@@ -1607,31 +1690,39 @@ namespace ME3Explorer
                         {
                             if (uIndex.value != 0 && !exp.FileRef.IsEntry(uIndex.value))
                             {
-                                badReferences.Add(new EntryStringPair(exp, $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                                badReferences.Add(new EntryStringPair(exp,
+                                    $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                             }
                             else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash")
                             {
-                                badReferences.Add(new EntryStringPair(exp, $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                                badReferences.Add(new EntryStringPair(exp,
+                                    $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                             }
                         }
                     }
                 }
                 catch (Exception e) when (!App.IsDebug)
                 {
-                    badReferences.Add(new EntryStringPair(exp, $"Unable to parse binary for export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    badReferences.Add(new EntryStringPair(exp,
+                        $"Unable to parse binary for export #{exp.UIndex} {exp.InstancedFullPath}"));
                 }
             }
 
             if (badReferences.Any())
             {
-                MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.", "Bad ObjectProperty references found");
-                ListDialog lw = new ListDialog(badReferences, "Bad object references", "The following items have values outside of the range of the import and export tables. Note that this is a best-effort check and may not be 100% accurate.", this)
-                { DoubleClickEntryHandler = entryDoubleClick };
+                MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.",
+                    "Bad ObjectProperty references found");
+                ListDialog lw = new ListDialog(badReferences, "Bad object references",
+                        "The following items have values outside of the range of the import and export tables. Note that this is a best-effort check and may not be 100% accurate.",
+                        this)
+                    {DoubleClickEntryHandler = entryDoubleClick};
                 lw.Show();
             }
             else
             {
-                MessageBox.Show("No bad object references were found. Note that this is a best-effort check and may not be 100% accurate.", "Check complete");
+                MessageBox.Show(
+                    "No bad object references were found. Note that this is a best-effort check and may not be 100% accurate.",
+                    "Check complete");
             }
         }
 
@@ -1647,7 +1738,8 @@ namespace ME3Explorer
             foreach (ExportEntry exp in Pcc.Exports)
             {
                 string key = exp.InstancedFullPath;
-                if (key.StartsWith(UnrealPackageFile.TrashPackageName)) continue; //Do not report these as requiring re-indexing.
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                    continue; //Do not report these as requiring re-indexing.
                 if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
                     indexList = new List<int>();
@@ -1655,7 +1747,8 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    duplicates.Add(new EntryStringPair(exp, $"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})"));
+                    duplicates.Add(new EntryStringPair(exp,
+                        $"{exp.UIndex} {exp.InstancedFullPath} has duplicate index (index value {exp.indexValue})"));
                 }
 
                 indexList.Add(exp.UIndex);
@@ -1672,8 +1765,10 @@ namespace ME3Explorer
 
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.", this)
-                { DoubleClickEntryHandler = entryDoubleClick };
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes",
+                        "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.",
+                        this)
+                    {DoubleClickEntryHandler = entryDoubleClick};
                 lw.Show();
             }
             else
@@ -1681,6 +1776,7 @@ namespace ME3Explorer
                 MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
             }
         }
+
         private void ReindexDuplicateIndexes()
         {
             if (Pcc == null)
@@ -1688,17 +1784,19 @@ namespace ME3Explorer
                 return;
             }
 
-            if (MessageBox.Show($"This will reindex all objects that have duplicate indexing. Objects this will affect can be seen via `Debugging > Check for duplicate indexes`\n" +
-                                "If you don't understand what this does, do not do it!\n\n" +
-                                "Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
-                                "Confirm Reindexing",
-                                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show(
+                $"This will reindex all objects that have duplicate indexing. Objects this will affect can be seen via `Debugging > Check for duplicate indexes`\n" +
+                "If you don't understand what this does, do not do it!\n\n" +
+                "Ensure this file has a backup, this operation may cause the file to stop working if you use it improperly.",
+                "Confirm Reindexing",
+                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 var duplicatesPackagePathIndexMapping = new Dictionary<string, List<ExportEntry>>();
                 foreach (ExportEntry exp in Pcc.Exports)
                 {
                     string key = exp.InstancedFullPath;
-                    if (key.StartsWith(UnrealPackageFile.TrashPackageName)) continue; //Do not report these as requiring re-indexing.
+                    if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                        continue; //Do not report these as requiring re-indexing.
                     if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<ExportEntry> indexList))
                     {
                         indexList = new List<ExportEntry>();
@@ -1708,7 +1806,8 @@ namespace ME3Explorer
                     indexList.Add(exp);
                 }
 
-                foreach (ExportEntry exp in duplicatesPackagePathIndexMapping.Values.Where(list => list.Count > 1).Select(list => list.First()))
+                foreach (ExportEntry exp in duplicatesPackagePathIndexMapping.Values.Where(list => list.Count > 1)
+                    .Select(list => list.First()))
                 {
                     ReindexObjectsByName(exp, false);
                 }
@@ -1738,7 +1837,8 @@ namespace ME3Explorer
                         {
                             GoToNumber(imp.UIndex);
                             Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + imp.Header.Length - offsetDec);
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + imp.Header.Length -
+                                                                               offsetDec);
                             return;
                         }
                     }
@@ -1750,7 +1850,8 @@ namespace ME3Explorer
                         {
                             GoToNumber(exp.UIndex);
                             Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.Header.Length - offsetDec);
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.Header.Length -
+                                                                               offsetDec);
                             return;
                         }
 
@@ -1761,7 +1862,8 @@ namespace ME3Explorer
                             int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
                             int propsEnd = exp.propsEnd();
 
-                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd && BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
+                                BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
                             {
                                 BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
                                 BinaryInterpreter_Tab.IsSelected = true;
@@ -1805,15 +1907,18 @@ namespace ME3Explorer
             }
         }
 
-        private bool TryAddToPersistentLevel(params IEntry[] newEntries) => TryAddToPersistentLevel((IEnumerable<IEntry>)newEntries);
+        private bool TryAddToPersistentLevel(params IEntry[] newEntries) =>
+            TryAddToPersistentLevel((IEnumerable<IEntry>) newEntries);
 
         private bool TryAddToPersistentLevel(IEnumerable<IEntry> newEntries)
         {
-            ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>().Where(exp => exp.Parent?.ClassName == "Level" && exp.IsA("Actor")).ToArray();
+            ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>()
+                .Where(exp => exp.Parent?.ClassName == "Level" && exp.IsA("Actor")).ToArray();
             int num = actorsToAdd.Length;
             if (num > 0 && Pcc.AddToLevelActorsIfNotThere(actorsToAdd))
             {
-                MessageBox.Show(this, $"Added actor{(num > 1 ? "s" : "")} to PersistentLevel's Actor list:\n{actorsToAdd.Select(exp => exp.ObjectName.Instanced).StringJoin("\n")}");
+                MessageBox.Show(this,
+                    $"Added actor{(num > 1 ? "s" : "")} to PersistentLevel's Actor list:\n{actorsToAdd.Select(exp => exp.ObjectName.Instanced).StringJoin("\n")}");
                 return true;
             }
 
@@ -1894,7 +1999,7 @@ namespace ME3Explorer
             if (Pcc != null)
             {
                 string extension = Path.GetExtension(Pcc.FilePath);
-                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                OpenFileDialog d = new OpenFileDialog {Filter = "*" + extension + "|*" + extension};
                 if (d.ShowDialog() == true)
                 {
                     if (Pcc.FilePath == d.FileName)
@@ -1908,7 +2013,8 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK && !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
+        private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK &&
+                                               !(Pcc.IsInBasegame() || Pcc.IsInOfficialDLC());
 
         private void CompareUnmodded()
         {
@@ -1959,7 +2065,9 @@ namespace ME3Explorer
                     {
                         //try this one
                         var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
-                        filecandidates = unModdedLookup(cookedPackageName); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
+                        filecandidates =
+                            unModdedLookup(
+                                cookedPackageName); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
                         break;
                     }
                 }
@@ -1971,7 +2079,8 @@ namespace ME3Explorer
                 }
             }
 
-            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", filecandidates, filecandidates.Last());
+            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
+                "Unmodified file comparison", filecandidates, filecandidates.Last());
 
             if (string.IsNullOrEmpty(filePath))
             {
@@ -1989,6 +2098,7 @@ namespace ME3Explorer
                 MessageBox.Show("Files are for different games.");
                 return;
             }
+
             var changedImports = new List<EntryStringPair>();
             var changedNames = new List<EntryStringPair>();
             var changedExports = new List<EntryStringPair>();
@@ -2006,8 +2116,8 @@ namespace ME3Explorer
                     //The datasize being different is a data difference not a true header difference so we won't list it here.
                     byte[] header1 = exp1.Header.TypedClone();
                     byte[] header2 = exp2.Header.TypedClone();
-                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+                    Buffer.BlockCopy(BitConverter.GetBytes((long) 0), 0, header1, 32, sizeof(long));
+                    Buffer.BlockCopy(BitConverter.GetBytes((long) 0), 0, header2, 32, sizeof(long));
 
                     //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
                     if (!header1.SequenceEqual(header2))
@@ -2023,12 +2133,14 @@ namespace ME3Explorer
                         //    //Debug.Write(" " + b.ToString("X2"));
                         //}
                         //Debug.WriteLine("");
-                        changedExports.Add(new EntryStringPair(exp1, $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
+                        changedExports.Add(new EntryStringPair(exp1,
+                            $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
                     }
 
                     if (!exp1.Data.SequenceEqual(exp2.Data))
                     {
-                        changedExports.Add(new EntryStringPair(exp1, $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
+                        changedExports.Add(new EntryStringPair(exp1,
+                            $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
                     }
                 }
 
@@ -2042,8 +2154,11 @@ namespace ME3Explorer
 
                 for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
                 {
-                    Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
-                    changedExports.Add(new EntryStringPair(enumerateExtras.Exports[i].FileRef == Pcc ? enumerateExtras.Exports[i] : null, $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}"));
+                    Debug.WriteLine(
+                        $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
+                    changedExports.Add(new EntryStringPair(
+                        enumerateExtras.Exports[i].FileRef == Pcc ? enumerateExtras.Exports[i] : null,
+                        $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}"));
                 }
 
                 #endregion
@@ -2060,7 +2175,8 @@ namespace ME3Explorer
                     ImportEntry imp2 = compareFile.Imports[i];
                     if (!imp1.Header.SequenceEqual(imp2.Header))
                     {
-                        changedImports.Add(new EntryStringPair(imp1, $"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}"));
+                        changedImports.Add(new EntryStringPair(imp1,
+                            $"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}"));
                     }
                 }
 
@@ -2074,8 +2190,11 @@ namespace ME3Explorer
 
                 for (int i = numImportsToEnumerate; i < enumerateExtras.ImportCount; i++)
                 {
-                    Debug.WriteLine($"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
-                    changedImports.Add(new EntryStringPair(enumerateExtras.Imports[i].FileRef == Pcc ? enumerateExtras.Imports[i] : null, $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}"));
+                    Debug.WriteLine(
+                        $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
+                    changedImports.Add(new EntryStringPair(
+                        enumerateExtras.Imports[i].FileRef == Pcc ? enumerateExtras.Imports[i] : null,
+                        $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}"));
                 }
             }
 
@@ -2094,7 +2213,7 @@ namespace ME3Explorer
                     if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
 
                     {
-                        changedNames.Add(new EntryStringPair(null, $"Name { i } is different: {name1} |vs| {name2}"));
+                        changedNames.Add(new EntryStringPair(null, $"Name {i} is different: {name1} |vs| {name2}"));
                     }
                 }
 
@@ -2109,17 +2228,20 @@ namespace ME3Explorer
                 for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
                 {
                     Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                    changedNames.Add(new EntryStringPair(null, $"Name only exists in {file}: {i} {enumerateExtras.Names[i]}"));
+                    changedNames.Add(new EntryStringPair(null,
+                        $"Name only exists in {file}: {i} {enumerateExtras.Names[i]}"));
                 }
             }
 
             #endregion
+
             var fullList = new List<EntryStringPair>();
             fullList.AddRange(changedExports);
             fullList.AddRange(changedImports);
             fullList.AddRange(changedNames);
-            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files", "The following exports, imports and names are different between the files.", this)
-            { DoubleClickEntryHandler = entryDoubleClick };
+            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files",
+                    "The following exports, imports and names are different between the files.", this)
+                {DoubleClickEntryHandler = entryDoubleClick};
             ld.Show();
         }
 
@@ -2137,7 +2259,7 @@ namespace ME3Explorer
 
             InitializeComponent();
             DataContext = this;
-            ((FrameworkElement)Resources["EntryContextMenu"]).DataContext = this;
+            ((FrameworkElement) Resources["EntryContextMenu"]).DataContext = this;
 
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
@@ -2161,13 +2283,18 @@ namespace ME3Explorer
 
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
-            BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
+            BinaryInterpreterTab_BinaryInterpreter
+                .SetParentNameList(NamesList); //reference to this control for name editor set
             Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
 
             InterpreterTab_Interpreter.HideHexBox = Properties.Settings.Default.PackageEditor_HideInterpreterHexBox;
             InterpreterTab_Interpreter.ToggleHexbox_Button.Visibility = Visibility.Visible;
 
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
+            RecentButtons.AddRange(new[]
+            {
+                RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7,
+                RecentButton8, RecentButton9, RecentButton10
+            });
             LoadRecentList();
             RefreshRecent(false);
         }
@@ -2194,7 +2321,8 @@ namespace ME3Explorer
                 crossPCCObjectMap.Clear();
                 BackwardsIndexes = new Stack<int>();
                 ForwardsIndexes = new Stack<int>();
-                StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
+                StatusBar_LeftMostText.Text =
+                    $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
@@ -2222,7 +2350,8 @@ namespace ME3Explorer
             }
         }
 
-        private void InitializeTreeViewBackground_Completed(Task<SharedUI.ObservableCollectionExtended<TreeViewEntry>> prevTask)
+        private void InitializeTreeViewBackground_Completed(
+            Task<ObservableCollectionExtended<TreeViewEntry>> prevTask)
         {
             if (prevTask.Result != null)
             {
@@ -2252,7 +2381,7 @@ namespace ME3Explorer
             }
         }
 
-        private SharedUI.ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
+        private ObservableCollectionExtended<TreeViewEntry> InitializeTreeViewBackground()
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
@@ -2266,9 +2395,9 @@ namespace ME3Explorer
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
 
-            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true };
+            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) {IsExpanded = true};
 
-            var rootNodes = new List<TreeViewEntry> { rootEntry };
+            var rootNodes = new List<TreeViewEntry> {rootEntry};
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
             rootNodes.AddRange(Imports.Select(t => new TreeViewEntry(t)));
 
@@ -2297,7 +2426,7 @@ namespace ME3Explorer
                 }
             }
 
-            return new SharedUI.ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove));
+            return new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
         private void InitializeTreeView()
@@ -2405,7 +2534,7 @@ namespace ME3Explorer
 
         private void RecentFile_click(object sender, EventArgs e)
         {
-            string s = ((FrameworkElement)sender).Tag.ToString();
+            string s = ((FrameworkElement) sender).Tag.ToString();
             if (File.Exists(s))
             {
                 LoadFile(s);
@@ -2501,7 +2630,9 @@ namespace ME3Explorer
             }
         }
 
-        private void InitClassDropDown() => ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList().OrderBy(p => p));
+        private void InitClassDropDown() =>
+            ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList()
+                .OrderBy(p => p));
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
@@ -2618,10 +2749,12 @@ namespace ME3Explorer
             }
 
             bool hasImportChanges = changes.Any(x => x.HasFlag(PackageChange.Import));
-            bool hasExportNonDataChanges = changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
+            bool hasExportNonDataChanges =
+                changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
             bool hasSelection = GetSelected(out int selectedEntryUIndex);
 
-            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index).ToList();
+            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd))
+                .OrderBy(x => x.Index).ToList();
             if (addedChanges.Count > 0)
             {
                 InitClassDropDown();
@@ -2650,7 +2783,7 @@ namespace ME3Explorer
                         TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
                         if (parent != null)
                         {
-                            TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
+                            TreeViewEntry newEntry = new TreeViewEntry(entry) {Parent = parent};
                             parent.Sublinks.Add(newEntry);
                             treeViewItems.Add(newEntry); //used to find parents
                             nodesToSortChildrenFor.Add(parent);
@@ -2698,13 +2831,15 @@ namespace ME3Explorer
                 }
             }
 
-            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index).ToHashSet();
+            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index)
+                .ToHashSet();
             if (headerChanges.Count > 0)
             {
                 List<TreeViewEntry> tree = AllTreeViewNodesX[0].FlattenTree();
                 var nodesNeedingResort = new List<TreeViewEntry>();
 
-                List<TreeViewEntry> tviWithChangedHeaders = tree.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.UIndex)).ToList();
+                List<TreeViewEntry> tviWithChangedHeaders =
+                    tree.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.UIndex)).ToList();
                 foreach (TreeViewEntry tvi in tviWithChangedHeaders)
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
@@ -2760,7 +2895,9 @@ namespace ME3Explorer
             {
                 //initial loading
                 //we don't update the left side with this
-                NamesList.ReplaceAll(Pcc.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
+                NamesList.ReplaceAll(Pcc.Names.Select((name, i) =>
+                    new IndexedName(i,
+                        name))); //we replaceall so we don't add one by one and trigger tons of notifications
             }
             else
             {
@@ -2830,7 +2967,8 @@ namespace ME3Explorer
             Metadata_Tab.Visibility = Visibility.Visible;
             Intro_Tab.Visibility = Visibility.Collapsed;
             //Debug.WriteLine("New selection: " + n);
-            if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
+            if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports ||
+                CurrentView == CurrentViewMode.Tree)
             {
                 Interpreter_Tab.IsEnabled = selectedEntry is ExportEntry;
                 if (selectedEntry is ExportEntry exportEntry)
@@ -2877,13 +3015,13 @@ namespace ME3Explorer
                 }
 
                 //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
-                TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
+                TabItem currentTab = (TabItem) EditorTabs.Items[EditorTabs.SelectedIndex];
                 if (!currentTab.IsEnabled || !currentTab.IsVisible)
                 {
                     int index = 0;
                     while (index < EditorTabs.Items.Count)
                     {
-                        TabItem ti = (TabItem)EditorTabs.Items[index];
+                        TabItem ti = (TabItem) EditorTabs.Items[index];
                         if (ti.IsEnabled && ti.IsVisible)
                         {
                             EditorTabs.SelectedIndex = index;
@@ -2931,58 +3069,59 @@ namespace ME3Explorer
             switch (CurrentView)
             {
                 case CurrentViewMode.Tree:
+                {
+                    /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                     {
-                        /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
+                        //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
+                        var nodeName = entryIndex.ToString().Replace("-", "n");
+                        List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
+                        if (nodes.Count > 0)
                         {
-                            //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
-                            var nodeName = entryIndex.ToString().Replace("-", "n");
-                            List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
-                            if (nodes.Count > 0)
-                            {
-                                nodes[0].BringIntoView();
-                                Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
-                            }
-                        }*/
-                        //DispatcherHelper.EmptyQueue();
-                        var list = AllTreeViewNodesX[0].FlattenTree();
-                        List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
-                        if (selectNode.Any())
-                        {
-                            //selectNode[0].ExpandParents();
-                            selectNode[0].IsProgramaticallySelecting = true;
-                            SelectedItem = selectNode[0];
-                            //FocusTreeViewNodeOld(selectNode[0]);
-
-                            //selectNode[0].Focus(LeftSide_TreeView);
-                            return true;
+                            nodes[0].BringIntoView();
+                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
                         }
+                    }*/
+                    //DispatcherHelper.EmptyQueue();
+                    var list = AllTreeViewNodesX[0].FlattenTree();
+                    List<TreeViewEntry> selectNode =
+                        list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
+                    if (selectNode.Any())
+                    {
+                        //selectNode[0].ExpandParents();
+                        selectNode[0].IsProgramaticallySelecting = true;
+                        SelectedItem = selectNode[0];
+                        //FocusTreeViewNodeOld(selectNode[0]);
 
-                        QueuedGotoNumber = entryIndex; //May be trying to select node that doesn't exist yet
-                        break;
+                        //selectNode[0].Focus(LeftSide_TreeView);
+                        return true;
                     }
+
+                    QueuedGotoNumber = entryIndex; //May be trying to select node that doesn't exist yet
+                    break;
+                }
                 case CurrentViewMode.Exports:
                 case CurrentViewMode.Imports:
+                {
+                    //Check bounds
+                    var entry = Pcc.GetEntry(entryIndex);
+                    if (entry != null)
                     {
-                        //Check bounds
-                        var entry = Pcc.GetEntry(entryIndex);
-                        if (entry != null)
+                        //UI switch
+                        if (CurrentView == CurrentViewMode.Exports && entry is ImportEntry)
                         {
-                            //UI switch
-                            if (CurrentView == CurrentViewMode.Exports && entry is ImportEntry)
-                            {
-                                CurrentView = CurrentViewMode.Imports;
-                            }
-                            else if (CurrentView == CurrentViewMode.Imports && entry is ExportEntry)
-                            {
-                                CurrentView = CurrentViewMode.Exports;
-                            }
-
-                            LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
-                            return true;
+                            CurrentView = CurrentViewMode.Imports;
+                        }
+                        else if (CurrentView == CurrentViewMode.Imports && entry is ExportEntry)
+                        {
+                            CurrentView = CurrentViewMode.Exports;
                         }
 
-                        break;
+                        LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
+                        return true;
                     }
+
+                    break;
+                }
                 case CurrentViewMode.Names when entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count:
                     //Names
                     LeftSide_ListView.SelectedIndex = entryIndex;
@@ -3072,12 +3211,14 @@ namespace ME3Explorer
         /// <param name="dropInfo"></param>
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem && sourceItem.Parent != null)
+            if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
+                sourceItem.Parent != null)
             {
                 //Check if the path of the target and the source is the same. If so, offer to merge instead
                 crossPCCObjectMap.Clear();
 
-                if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
+                if (sourceItem == targetItem ||
+                    (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
                 }
@@ -3100,19 +3241,22 @@ namespace ME3Explorer
 
                 int numExports = Pcc.ExportCount;
                 //Import!
-                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc, targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(portingOption, sourceEntry, Pcc,
+                    targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
                 crossPCCObjectMap.Clear();
                 if ((relinkResults?.Count ?? 0) > 0)
                 {
-                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
+                    ListDialog ld = new ListDialog(relinkResults, "Relink report",
+                        "The following items failed to relink.", this);
                     ld.Show();
                 }
                 else
                 {
-                    MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
+                    MessageBox.Show(
+                        "Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
                 }
 
                 RefreshView();
@@ -3168,11 +3312,14 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Tree)
             {
-                TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry selectedNode = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
                 List<TreeViewEntry> items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
-                LoopFunc(ref pos, items.Count); //increment 1 forward or back to start so we don't immediately find ourself.
-                for (int i = pos, numSearched = 0; numSearched < items.Count; LoopFunc(ref i, items.Count), numSearched++)
+                LoopFunc(ref pos,
+                    items.Count); //increment 1 forward or back to start so we don't immediately find ourself.
+                for (int i = pos, numSearched = 0;
+                    numSearched < items.Count;
+                    LoopFunc(ref i, items.Count), numSearched++)
                 {
                     //int curIndex = (i + pos) % items.Count;
                     TreeViewEntry node = items[i];
@@ -3321,8 +3468,11 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Names)
             {
-                LoopFunc(ref start, Pcc.NameCount); //increment 1 forward or back to start so we don't immediately find ourself.
-                for (int i = start, numSearched = 0; numSearched < Pcc.Names.Count; LoopFunc(ref i, Pcc.NameCount), numSearched++)
+                LoopFunc(ref start,
+                    Pcc.NameCount); //increment 1 forward or back to start so we don't immediately find ourself.
+                for (int i = start, numSearched = 0;
+                    numSearched < Pcc.Names.Count;
+                    LoopFunc(ref i, Pcc.NameCount), numSearched++)
                 {
                     if (Pcc.Names[i].ToLower().Contains(searchTerm))
                     {
@@ -3334,8 +3484,11 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Imports)
             {
-                LoopFunc(ref start, Pcc.ImportCount); //increment 1 forward or back to start so we don't immediately find ourself.
-                for (int i = start, numSearched = 0; numSearched < Pcc.Imports.Count; LoopFunc(ref i, Pcc.ImportCount), numSearched++)
+                LoopFunc(ref start,
+                    Pcc.ImportCount); //increment 1 forward or back to start so we don't immediately find ourself.
+                for (int i = start, numSearched = 0;
+                    numSearched < Pcc.Imports.Count;
+                    LoopFunc(ref i, Pcc.ImportCount), numSearched++)
                 {
                     if (Pcc.Imports[i].ObjectName.Name.ToLower().Contains(searchTerm))
                     {
@@ -3352,8 +3505,11 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Exports)
             {
-                LoopFunc(ref start, Pcc.ExportCount); //increment 1 forward or back to start so we don't immediately find ourself.
-                for (int i = start, numSearched = 0; numSearched < Pcc.Exports.Count; LoopFunc(ref i, Pcc.ExportCount), numSearched++)
+                LoopFunc(ref start,
+                    Pcc.ExportCount); //increment 1 forward or back to start so we don't immediately find ourself.
+                for (int i = start, numSearched = 0;
+                    numSearched < Pcc.Exports.Count;
+                    LoopFunc(ref i, Pcc.ExportCount), numSearched++)
                 {
                     if (Pcc.Exports[i].ObjectName.Name.ToLower().Contains(searchTerm))
                     {
@@ -3370,16 +3526,17 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Tree && AllTreeViewNodesX.Count > 0)
             {
-                TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry selectedNode = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? -1 : items.IndexOf(selectedNode);
 
-                LoopFunc(ref pos, items.Count); //increment 1 forward or back to start so we don't immediately find ourself.
+                LoopFunc(ref pos,
+                    items.Count); //increment 1 forward or back to start so we don't immediately find ourself.
 
                 //Start at the selected node, then search up or down the number of items in the list. If nothing is found, ding.
                 for (int numSearched = 0; numSearched < items.Count; LoopFunc(ref pos, items.Count), numSearched++)
 
-                //for (int i = 0; i < items.Count; LoopFunc(ref i, items.Count))
+                    //for (int i = 0; i < items.Count; LoopFunc(ref i, items.Count))
                 {
                     //int curIndex = (i + pos) % items.Count;
                     TreeViewEntry node = items[pos];
@@ -3402,8 +3559,9 @@ namespace ME3Explorer
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
             string myBasePath = ME1Directory.gamePath;
-            string[] extensions = { ".u", ".upk" };
-            FileInfo[] files = new DirectoryInfo(ME1Directory.cookedPath).EnumerateFiles("*", SearchOption.AllDirectories)
+            string[] extensions = {".u", ".upk"};
+            FileInfo[] files = new DirectoryInfo(ME1Directory.cookedPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
                 .Where(f => extensions.Contains(f.Extension.ToLower()))
                 .ToArray();
             int i = 1;
@@ -3415,7 +3573,8 @@ namespace ME3Explorer
                 int basePathLen = myBasePath.Length;
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
                 {
-                    List<ExportEntry> tlkExports = pack.Exports.Where(x => (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                    List<ExportEntry> tlkExports = pack.Exports.Where(x =>
+                        (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
                     if (tlkExports.Count > 0)
                     {
                         string subPath = f.FullName.Substring(basePathLen);
@@ -3476,7 +3635,7 @@ namespace ME3Explorer
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
                 // Assuming you have one file that you care about, pass it off to whatever
                 // handling code you have defined.
@@ -3489,7 +3648,7 @@ namespace ME3Explorer
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
                 string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm" && ext != ".xxx" && ext != ".udk")
                 {
@@ -3509,7 +3668,8 @@ namespace ME3Explorer
 
         private void ShowImpExpPrefix_Clicked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix = !Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix;
+            Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix =
+                !Properties.Settings.Default.PackageEditorWPF_ShowImpExpPrefix;
             Properties.Settings.Default.Save();
             if (AllTreeViewNodesX.Any())
             {
@@ -3536,7 +3696,7 @@ namespace ME3Explorer
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)
         {
-            var myValue = (string)((MenuItem)sender).Tag;
+            var myValue = (string) ((MenuItem) sender).Tag;
             switch (myValue)
             {
                 case "DialogueEditor":
@@ -3599,7 +3759,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    IndexedName other = (IndexedName)obj;
+                    IndexedName other = (IndexedName) obj;
                     return Index == other.Index && Name == other.Name;
                 }
             }
@@ -3608,7 +3768,8 @@ namespace ME3Explorer
         private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
         {
             //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
-            Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways = !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
+            Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways =
+                !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
             Properties.Settings.Default.Save();
         }
 
@@ -3644,7 +3805,7 @@ namespace ME3Explorer
                 return;
             }
 
-            OpenFileDialog d = new OpenFileDialog { Title = "Select source file", Filter = "*.pcc|*.pcc" };
+            OpenFileDialog d = new OpenFileDialog {Title = "Select source file", Filter = "*.pcc|*.pcc"};
             bool? result = d.ShowDialog();
             if (!result.HasValue || !result.Value)
             {
@@ -3661,7 +3822,8 @@ namespace ME3Explorer
             ExportEntry targetPersistentLevel;
             using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
             {
-                targetPersistentLevel = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+                targetPersistentLevel =
+                    Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
 
                 if (targetPersistentLevel == null)
                 {
@@ -3669,7 +3831,8 @@ namespace ME3Explorer
                     return;
                 }
 
-                var pathnodeForPositioning = Pcc.Exports.FirstOrDefault(x => x.ClassName == "PathNode" && x.ObjectName == "PathNode");
+                var pathnodeForPositioning =
+                    Pcc.Exports.FirstOrDefault(x => x.ClassName == "PathNode" && x.ObjectName == "PathNode");
                 if (pathnodeForPositioning == null)
                 {
 
@@ -3692,7 +3855,8 @@ namespace ME3Explorer
                     if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
                     {
                         Debug.WriteLine("Porting " + export.InstancedFullPath);
-                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export, targetPersistentLevel.UIndex, objectMapping: objectMap);
+                        ExportEntry portedObjective = EntryImporter.ImportExport(Pcc, export,
+                            targetPersistentLevel.UIndex, objectMapping: objectMap);
                         itemsToAddToLevel.Add(portedObjective);
                         var child = export.GetProperty<ObjectProperty>("CollisionComponent");
                         ExportEntry collCyl = sourceFile.Exports[child.Value - 1];
@@ -3777,12 +3941,19 @@ namespace ME3Explorer
                         bool hasPackageNamingItself = false;
                         using (var package = MEPackageHandler.OpenMEPackage(file))
                         {
-                            var filesToSkip = new[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
+                            var filesToSkip = new[]
+                            {
+                                "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner",
+                                "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin",
+                                "BioD_OMG003_125LitExtra"
+                            };
                             foreach (ExportEntry exp in package.Exports)
                             {
-                                if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName.Name))
+                                if (exp.ClassName == "Package" && exp.idxLink == 0 &&
+                                    !filesToSkip.Contains(exp.ObjectName.Name))
                                 {
-                                    if (string.Equals(exp.ObjectName.Name, fname, StringComparison.InvariantCultureIgnoreCase))
+                                    if (string.Equals(exp.ObjectName.Name, fname,
+                                        StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         hasPackageNamingItself = true;
                                     }
@@ -3793,7 +3964,8 @@ namespace ME3Explorer
                                         GuidPackageMap.TryGetValue(guid, out string packagename);
                                         if (packagename != null && packagename != exp.ObjectName.Name)
                                         {
-                                            Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName.Name} has a guid different from already found one ({packagename})! {guid}");
+                                            Debug.WriteLine(
+                                                $"-> {exp.UIndex} {exp.ObjectName.Name} has a guid different from already found one ({packagename})! {guid}");
                                         }
 
                                         if (packagename == null)
@@ -3855,7 +4027,8 @@ namespace ME3Explorer
 
         private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use this!");
+            MessageBox.Show(
+                "This process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use this!");
             OpenFileDialog d = new OpenFileDialog
             {
                 Title = "Select file to regen guid for",
@@ -3881,7 +4054,8 @@ namespace ME3Explorer
 
                     if (selfNamingExport == null)
                     {
-                        MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
+                        MessageBox.Show(
+                            "Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
                         return;
                     }
 
@@ -3896,7 +4070,10 @@ namespace ME3Explorer
 
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
-            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.IsDefaultObject && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer" || x.ObjectName == "SFXAmmoContainer_Simulator"));
+            var ammoGrenades = Pcc.Exports.Where(x =>
+                x.ClassName != "Class" && !x.IsDefaultObject && (x.ObjectName == "SFXAmmoContainer" ||
+                                                                 x.ObjectName == "SFXGrenadeContainer" ||
+                                                                 x.ObjectName == "SFXAmmoContainer_Simulator"));
             foreach (var container in ammoGrenades)
             {
                 BoolProperty respawns = new BoolProperty(true, "bRespawns");
@@ -3931,7 +4108,8 @@ namespace ME3Explorer
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
                 var dir = new DirectoryInfo(ME1Directory.gamePath);
-                var filesToSearch = dir.GetFiles( /*"*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles(*/"*.u", SearchOption.AllDirectories).ToArray();
+                var filesToSearch = dir.GetFiles( /*"*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles(*/"*.u",
+                    SearchOption.AllDirectories).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
@@ -3963,7 +4141,8 @@ namespace ME3Explorer
                                 int friendlyNameIndex = reader.ReadInt32();
                                 reader.ReadInt32();
                                 var function = new UnFunction(export, package.GetNameEntry(friendlyNameIndex),
-                                    new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, operatorPrecedence);
+                                    new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
+                                    operatorPrecedence);
 
                                 if (nativeIndex != 0)
                                 {
@@ -3984,7 +4163,8 @@ namespace ME3Explorer
                     }
                 }
 
-                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"), JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"),
+                    JsonConvert.SerializeObject(new {NativeFunctionInfo = newCachedInfo}, Formatting.Indented));
                 Debug.WriteLine("Done");
             }
         }
@@ -3995,7 +4175,9 @@ namespace ME3Explorer
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
                 var dir = new DirectoryInfo(Path.Combine(ME1Directory.gamePath /*, "BioGame", "CookedPC", "Maps"*/));
-                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
+                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories)
+                    .Union(dir.GetFiles("*.u", SearchOption.AllDirectories))
+                    .Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
@@ -4004,9 +4186,10 @@ namespace ME3Explorer
                         foreach (ExportEntry export in package.Exports)
                         {
                             if ((export.ClassName == "BioSWF"))
-                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                             {
-                                Debug.WriteLine($"{export.ClassName}({export.ObjectName.Instanced}) in {fi.Name} at export {export.UIndex}");
+                                Debug.WriteLine(
+                                    $"{export.ClassName}({export.ObjectName.Instanced}) in {fi.Name} at export {export.UIndex}");
                             }
                         }
                     }
@@ -4033,14 +4216,16 @@ namespace ME3Explorer
                         {
                             if (export.SuperClassName == "SFXPowerCustomAction")
                             {
-                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                                Debug.WriteLine(
+                                    $"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                                 if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
                                 {
                                     instances.Add($"{fi.Name} at export {export.UIndex}");
                                 }
                                 else
                                 {
-                                    newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
+                                    newCachedInfo[export.ObjectName] = new List<string>
+                                        {$"{fi.Name} at export {export.UIndex}"};
                                 }
                             }
                         }
@@ -4080,14 +4265,16 @@ namespace ME3Explorer
                     {
                         if (export.SuperClassName == "SFXPower")
                         {
-                            Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            Debug.WriteLine(
+                                $"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                             if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
                             {
                                 instances.Add($"{fi.Name} at export {export.UIndex}");
                             }
                             else
                             {
-                                newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
+                                newCachedInfo[export.ObjectName] = new List<string>
+                                    {$"{fi.Name} at export {export.UIndex}"};
                             }
                         }
                     }
@@ -4129,30 +4316,30 @@ namespace ME3Explorer
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo();
+            ME1UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME1ObjectInfo.json"));
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
         }
 
         private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME2UnrealObjectInfo.generateInfo();
+            ME2UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME2ObjectInfo.json"));
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
         }
 
         private void BuildME3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME3UnrealObjectInfo.generateInfo();
+            ME3UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME3ObjectInfo.json"));
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
         }
 
         private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo();
-            ME2UnrealObjectInfo.generateInfo();
-            ME3UnrealObjectInfo.generateInfo();
+            ME1UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME1ObjectInfo.json"));
+            ME2UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME2ObjectInfo.json"));
+            ME3UnrealObjectInfo.generateInfo(Path.Combine(App.ExecFolder, "ME3ObjectInfo.json"));
             this.RestoreAndBringToFront();
             MessageBox.Show(this, "Done");
         }
@@ -4224,7 +4411,8 @@ namespace ME3Explorer
 
                 if (searchResult == "")
                 {
-                    searchResult = "Key " + searchTerm + " not found in any ObjectInfo Structs/Classes/Enums dictionaries";
+                    searchResult = "Key " + searchTerm +
+                                   " not found in any ObjectInfo Structs/Classes/Enums dictionaries";
                 }
                 else
                 {
@@ -4242,19 +4430,22 @@ namespace ME3Explorer
 
         private void PropertyParsing_ME3UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject;
+            Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject =
+                !Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject;
             Properties.Settings.Default.Save();
         }
 
         private void PropertyParsing_ME2UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject;
+            Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject =
+                !Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject;
             Properties.Settings.Default.Save();
         }
 
         private void PropertyParsing_ME1UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject;
+            Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject =
+                !Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject;
             Properties.Settings.Default.Save();
         }
 
@@ -4265,13 +4456,15 @@ namespace ME3Explorer
 
         private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
+            Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad =
+                !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
             Properties.Settings.Default.Save();
         }
 
         private void InterpreterWPF_AdvancedMode_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_AdvancedDisplay = !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
+            Properties.Settings.Default.InterpreterWPF_AdvancedDisplay =
+                !Properties.Settings.Default.InterpreterWPF_AdvancedDisplay;
             Properties.Settings.Default.Save();
         }
 
@@ -4294,12 +4487,16 @@ namespace ME3Explorer
         {
             public readonly HashSet<string> PropTypes = new HashSet<string>();
             public readonly HashSet<string> PropLocations = new HashSet<string>();
-            public readonly List<(string filePath, int uIndex, int position)> Usages = new List<(string filePath, int uIndex, int position)>();
+
+            public readonly List<(string filePath, int uIndex, int position)> Usages =
+                new List<(string filePath, int uIndex, int position)>();
         }
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).SkipWhile(path => !path.EndsWith("BioA_CineLab000.pcc")).Skip(1);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3)
+                .SkipWhile(path => !path.EndsWith("BioA_CineLab000.pcc"))
+                .Skip(1); //.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
             var interestingExports = new List<EntryStringPair>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
@@ -4318,8 +4515,10 @@ namespace ME3Explorer
             Task.Run(() =>
             {
                 //preload base files for faster scanning
-                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.ME3).Select(f => Path.Combine(ME3Directory.cookedPath, f)));
-                baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "BIOP_MP_COMMON.pcc")));
+                using var baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(MEGame.ME3)
+                    .Select(f => Path.Combine(ME3Directory.cookedPath, f)));
+                baseFiles.Add(
+                    MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "BIOP_MP_COMMON.pcc")));
 
                 foreach (string filePath in filePaths)
                 {
@@ -4335,6 +4534,7 @@ namespace ME3Explorer
                     {
                         break;
                     }
+
                     //if (resolveImports(filePath)) break;
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -4378,8 +4578,12 @@ namespace ME3Explorer
                             if (!originalData.SequenceEqual(newData))
                             {
                                 interestingExports.Add(exp);
-                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
-                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), newData);
+                                File.WriteAllBytes(
+                                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                        "original.bin"), originalData);
+                                File.WriteAllBytes(
+                                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                        "new.bin"), newData);
                                 return true;
                             }
                         }
@@ -4452,7 +4656,8 @@ namespace ME3Explorer
                             binData.Skip(14);
                             if (binData.ReadInt32() != 1111577667) //CTAB
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{binData.Position - 4}: {filePath}"));
+                                interestingExports.Add(new EntryStringPair(null,
+                                    $"{binData.Position - 4}: {filePath}"));
                                 return;
                             }
 
@@ -4492,7 +4697,8 @@ namespace ME3Explorer
                             int licenseeVersion = binData.ReadInt32();
                             if (unrealVersion != 684 || licenseeVersion != 194)
                             {
-                                interestingExports.Add(new EntryStringPair(null, $"{binData.Position - 8}: {filePath}"));
+                                interestingExports.Add(new EntryStringPair(null,
+                                    $"{binData.Position - 8}: {filePath}"));
                                 return;
                             }
 
@@ -4515,7 +4721,8 @@ namespace ME3Explorer
                 {
                     try
                     {
-                        if ((exp.ClassName == "State" || exp.ClassName == "Function") && ObjectBinary.From(exp) is UStruct uStruct)
+                        if ((exp.ClassName == "State" || exp.ClassName == "Function") &&
+                            ObjectBinary.From(exp) is UStruct uStruct)
                         {
                             byte[] data = exp.Data;
                             (_, List<BytecodeSingularToken> tokens) = Bytecode.ParseBytecode(uStruct.ScriptBytes, exp);
@@ -4525,6 +4732,7 @@ namespace ME3Explorer
                                 {
                                     interestingExports.Add(exp);
                                 }
+
                                 if (unkOpcodes.Contains(token.OpCode))
                                 {
                                     var info = unkOpcodesInfo[token.OpCode];
@@ -4576,7 +4784,8 @@ namespace ME3Explorer
             void ScanScripts2(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsClass && exp.GetBinaryData<UClass>().Defaults >= 0))
+                foreach (ExportEntry exp in pcc.Exports.Where(exp =>
+                    exp.IsClass && exp.GetBinaryData<UClass>().Defaults >= 0))
                 {
                     try
                     {
@@ -4603,12 +4812,16 @@ namespace ME3Explorer
 
                 //pre-load associated files
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3);
-                using var associatedFiles = MEPackageHandler.OpenMEPackages(EntryImporter.GetPossibleAssociatedFiles(pcc)
-                                                                                         .Select(fileName => gameFiles.TryGetValue(fileName, out string path) ? path : null).Where(File.Exists));
+                using var associatedFiles = MEPackageHandler.OpenMEPackages(EntryImporter
+                    .GetPossibleAssociatedFiles(pcc)
+                    .Select(fileName => gameFiles.TryGetValue(fileName, out string path) ? path : null)
+                    .Where(File.Exists));
 
-                var filesSafeToImportFrom = EntryImporter.FilesSafeToImportFrom(pcc.Game).Select(Path.GetFileNameWithoutExtension).ToList();
+                var filesSafeToImportFrom = EntryImporter.FilesSafeToImportFrom(pcc.Game)
+                    .Select(Path.GetFileNameWithoutExtension).ToList();
                 Debug.WriteLine(filePath);
-                foreach (ImportEntry import in pcc.Imports.Where(imp => !filesSafeToImportFrom.Contains(imp.FullPath.Split('.')[0] )))
+                foreach (ImportEntry import in pcc.Imports.Where(imp =>
+                    !filesSafeToImportFrom.Contains(imp.FullPath.Split('.')[0])))
                 {
                     try
                     {
@@ -4621,14 +4834,16 @@ namespace ME3Explorer
                             interestingExports.Add(import);
                             return true;
                         }
-                        
+
                     }
                     catch (Exception exception)
                     {
-                        interestingExports.Add(new EntryStringPair(import, $"{$"#{import.UIndex}",-9} {import.FileRef.FilePath}\n{exception}"));
+                        interestingExports.Add(new EntryStringPair(import,
+                            $"{$"#{import.UIndex}",-9} {import.FileRef.FilePath}\n{exception}"));
                         return true;
                     }
                 }
+
                 return false;
             }
 
@@ -4643,7 +4858,8 @@ namespace ME3Explorer
 
         private void InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize = !Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize;
+            Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize =
+                !Properties.Settings.Default.InterpreterWPF_LimitArrayPropertySize;
             Properties.Settings.Default.Save();
         }
 
@@ -4653,18 +4869,28 @@ namespace ME3Explorer
             var structsDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
             var classesDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
 
-            var immutableME1Structs = ME1UnrealObjectInfo.Structs.Where(kvp => ME1UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            var immutableME2Structs = ME2UnrealObjectInfo.Structs.Where(kvp => ME2UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            var immutableME3Structs = ME2UnrealObjectInfo.Structs.Where(kvp => ME3UnrealObjectInfo.IsImmutableStruct(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var immutableME1Structs = ME1UnrealObjectInfo.Structs
+                .Where(kvp => ME1UnrealObjectInfo.IsImmutableStruct(kvp.Key))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var immutableME2Structs = ME2UnrealObjectInfo.Structs
+                .Where(kvp => ME2UnrealObjectInfo.IsImmutableStruct(kvp.Key))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var immutableME3Structs = ME2UnrealObjectInfo.Structs
+                .Where(kvp => ME3UnrealObjectInfo.IsImmutableStruct(kvp.Key))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             foreach ((string className, ClassInfo classInfo) in immutableME1Structs)
             {
-                if (immutableME2Structs.TryGetValue(className, out ClassInfo classInfo2) && (!classInfo.properties.SequenceEqual(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass))
+                if (immutableME2Structs.TryGetValue(className, out ClassInfo classInfo2) &&
+                    (!classInfo.properties.SequenceEqual(classInfo2.properties) ||
+                     classInfo.baseClass != classInfo2.baseClass))
                 {
                     structsDiff.Add(className, (classInfo, classInfo2));
                 }
 
-                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) && (!classInfo.properties.SequenceEqual(classInfo3.properties) || classInfo.baseClass != classInfo3.baseClass))
+                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) &&
+                    (!classInfo.properties.SequenceEqual(classInfo3.properties) ||
+                     classInfo.baseClass != classInfo3.baseClass))
                 {
                     structsDiff.Add(className, (classInfo, classInfo3));
                 }
@@ -4672,13 +4898,17 @@ namespace ME3Explorer
 
             foreach ((string className, ClassInfo classInfo) in immutableME2Structs)
             {
-                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) && (!classInfo.properties.SequenceEqual(classInfo3.properties) || classInfo.baseClass != classInfo3.baseClass))
+                if (immutableME3Structs.TryGetValue(className, out ClassInfo classInfo3) &&
+                    (!classInfo.properties.SequenceEqual(classInfo3.properties) ||
+                     classInfo.baseClass != classInfo3.baseClass))
                 {
                     structsDiff.Add(className, (classInfo, classInfo3));
                 }
             }
 
-            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"), JsonConvert.SerializeObject((immutableME1Structs, immutableME2Structs, immutableME3Structs), Formatting.Indented));
+            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"),
+                JsonConvert.SerializeObject((immutableME1Structs, immutableME2Structs, immutableME3Structs),
+                    Formatting.Indented));
             return;
 
             var srcEnums = ME2UnrealObjectInfo.Enums;
@@ -4698,7 +4928,9 @@ namespace ME3Explorer
 
             foreach ((string className, ClassInfo classInfo) in srcStructs)
             {
-                if (!compareStructs.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
+                if (!compareStructs.TryGetValue(className, out var classInfo2) ||
+                    !classInfo.properties.SubsetOf(classInfo2.properties) ||
+                    classInfo.baseClass != classInfo2.baseClass)
                 {
                     structsDiff.Add(className, (classInfo, classInfo2));
                 }
@@ -4706,13 +4938,16 @@ namespace ME3Explorer
 
             foreach ((string className, ClassInfo classInfo) in srcClasses)
             {
-                if (!compareClasses.TryGetValue(className, out var classInfo2) || !classInfo.properties.SubsetOf(classInfo2.properties) || classInfo.baseClass != classInfo2.baseClass)
+                if (!compareClasses.TryGetValue(className, out var classInfo2) ||
+                    !classInfo.properties.SubsetOf(classInfo2.properties) ||
+                    classInfo.baseClass != classInfo2.baseClass)
                 {
                     classesDiff.Add(className, (classInfo, classInfo2));
                 }
             }
 
-            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"), JsonConvert.SerializeObject(new { enumsDiff, structsDiff, classesDiff }, Formatting.Indented));
+            File.WriteAllText(Path.Combine(App.ExecFolder, "Diff.json"),
+                JsonConvert.SerializeObject(new {enumsDiff, structsDiff, classesDiff}, Formatting.Indented));
         }
 
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
@@ -4721,7 +4956,9 @@ namespace ME3Explorer
             foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
             {
                 PropertyCollection props = exp.GetProperties();
-                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 && (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false || props.GetProp<BoolProperty>("CastShadow")?.Value == false))
+                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
+                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
+                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
                 {
                     // shadows/lighting has been explicitly forbidden, don't mess with it.
                     continue;
@@ -4736,7 +4973,8 @@ namespace ME3Explorer
                 //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
-                                       new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
                                        {
                                            Name = "LightingChannels"
                                        };
@@ -4755,7 +4993,8 @@ namespace ME3Explorer
                 //props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
 
                 var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
-                                       new StructProperty("LightingChannelContainer", false, new BoolProperty(true, "bIsInitialized"))
+                                       new StructProperty("LightingChannelContainer", false,
+                                           new BoolProperty(true, "bIsInitialized"))
                                        {
                                            Name = "LightingChannels"
                                        };
@@ -4780,18 +5019,21 @@ namespace ME3Explorer
                 var terrainBin = terrain.GetBinaryData<Terrain>();
                 for (int i = 0; i < terrainBin.Heights.Length; i++)
                 {
-                    terrainBin.Heights[i] = (ushort)(r.Next(2000) + 13000);
+                    terrainBin.Heights[i] = (ushort) (r.Next(2000) + 13000);
                 }
+
                 terrain.SetBinaryData(terrainBin);
             }
         }
 
         private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
         {
-            var gameString = InputComboBoxWPF.GetValue(this, "Select which game's files you want converted to having skippable dialogue",
-                "Game selector", new[] { "ME1", "ME2", "ME3" }, "ME1");
+            var gameString = InputComboBoxWPF.GetValue(this,
+                "Select which game's files you want converted to having skippable dialogue",
+                "Game selector", new[] {"ME1", "ME2", "ME3"}, "ME1");
             if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
-                MessageBox.Show(this, $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
+                MessageBox.Show(this,
+                    $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
                     "", MessageBoxButton.YesNo))
             {
                 IsBusy = true;
@@ -4806,7 +5048,8 @@ namespace ME3Explorer
                         {
                             hasConv = true;
                             PropertyCollection props = conv.GetProperties();
-                            if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is ArrayProperty<StructProperty> entryList)
+                            if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is
+                                ArrayProperty<StructProperty> entryList)
                             {
                                 foreach (StructProperty entryNode in entryList)
                                 {
@@ -4814,7 +5057,8 @@ namespace ME3Explorer
                                 }
                             }
 
-                            if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is ArrayProperty<StructProperty> replyList)
+                            if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is
+                                ArrayProperty<StructProperty> replyList)
                             {
                                 foreach (StructProperty entryNode in replyList)
                                 {
@@ -4840,8 +5084,9 @@ namespace ME3Explorer
         {
             if (Pcc is MEPackage pcc)
             {
-                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?", "Game file converter",
-                    new[] { "ME1", "ME2", "ME3" }, "ME2");
+                var gameString = InputComboBoxWPF.GetValue(this, "Which game's format do you want to convert to?",
+                    "Game file converter",
+                    new[] {"ME1", "ME2", "ME3"}, "ME2");
                 if (Enum.TryParse(gameString, out MEGame game))
                 {
                     IsBusy = true;
@@ -4862,7 +5107,8 @@ namespace ME3Explorer
 
         private void ShowExportIcons_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowExportIcons = !Properties.Settings.Default.PackageEditorWPF_ShowExportIcons;
+            Properties.Settings.Default.PackageEditorWPF_ShowExportIcons =
+                !Properties.Settings.Default.PackageEditorWPF_ShowExportIcons;
             Properties.Settings.Default.Save();
             //todo: refire bindings
             LeftSide_TreeView.DataContext = null;
@@ -4884,8 +5130,11 @@ namespace ME3Explorer
                     foreach (Shader shader in shaderCache.Shaders.Values())
                     {
                         string shaderType = shader.ShaderType;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
-                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble());
+                        string pathWithoutInvalids = Path.Combine(dlg.FileName,
+                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
+                        File.WriteAllText(pathWithoutInvalids,
+                            SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
+                                .Disassemble());
                     }
 
                     MessageBox.Show(this, "Done!");
@@ -4909,10 +5158,14 @@ namespace ME3Explorer
                     foreach (Shader shader in matInst.Shaders)
                     {
                         string shaderType = shader.ShaderType;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
-                        File.WriteAllText(pathWithoutInvalids, SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble());
+                        string pathWithoutInvalids = Path.Combine(dlg.FileName,
+                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
+                        File.WriteAllText(pathWithoutInvalids,
+                            SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
+                                .Disassemble());
 
-                        pathWithoutInvalids = Path.Combine(dlg.FileName, $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - SirCxyrtyx.txt");
+                        pathWithoutInvalids = Path.Combine(dlg.FileName,
+                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - SirCxyrtyx.txt");
                         File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
                     }
 
@@ -5008,7 +5261,8 @@ namespace ME3Explorer
 
         private void RunPropertyCollectionTest(object sender, RoutedEventArgs e)
         {
-            var filePaths = /*MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat*/(MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            var filePaths = /*MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat*/
+                (MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
 
             IsBusy = true;
             BusyText = "Scanning";
@@ -5070,14 +5324,16 @@ namespace ME3Explorer
                     udkDlg.Description = @"Select UDK\Custom folder";
                     System.Windows.Forms.DialogResult result = udkDlg.ShowDialog();
 
-                    if (result != System.Windows.Forms.DialogResult.OK || string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
+                    if (result != System.Windows.Forms.DialogResult.OK ||
+                        string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
                         return;
                     udkPath = udkDlg.SelectedPath;
                     Properties.Settings.Default.UDKCustomPath = udkPath;
                 }
 
                 string fileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-                bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes == MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
+                bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes ==
+                    MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
 
                 IsBusy = true;
                 BusyText = $"Converting {fileName}";
@@ -5090,7 +5346,8 @@ namespace ME3Explorer
                         string levelName = fileName.Split('_')[1];
                         foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
                         {
-                            if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 && parts[1] == levelName)
+                            if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 &&
+                                parts[1] == levelName)
                             {
                                 BusyText = $"Converting {fileName}";
                                 using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
@@ -5099,7 +5356,8 @@ namespace ME3Explorer
                         }
 
                         using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
-                        IEntry levStreamingClass = persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        IEntry levStreamingClass =
+                            persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
                         IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                         int i = 1;
                         int firstLevStream = persistentUDK.ExportCount;
@@ -5109,7 +5367,9 @@ namespace ME3Explorer
                             persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
                             {
                                 new NameProperty(fileName, "PackageName"),
-                                CommonStructs.ColorProp(System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256), (byte) ((i * 7) % 256)), "DrawColor")
+                                CommonStructs.ColorProp(
+                                    System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256),
+                                        (byte) ((i * 7) % 256)), "DrawColor")
                             })
                             {
                                 ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
@@ -5125,7 +5385,8 @@ namespace ME3Explorer
                             streamingLevelsProp.Add(new ObjectProperty(j));
                         }
 
-                        persistentUDK.Exports.First(exp => exp.ClassName == "WorldInfo").WriteProperty(streamingLevelsProp);
+                        persistentUDK.Exports.First(exp => exp.ClassName == "WorldInfo")
+                            .WriteProperty(streamingLevelsProp);
                         persistentUDK.Save();
                     }
 
@@ -5166,9 +5427,13 @@ namespace ME3Explorer
                                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, null);
                                 foreach (Texture2DMipInfo mip in mips)
                                 {
-                                    if (mip.storageType == StorageTypes.extLZO || mip.storageType == StorageTypes.extZlib || mip.storageType == StorageTypes.extUnc)
+                                    if (mip.storageType == StorageTypes.extLZO ||
+                                        mip.storageType == StorageTypes.extZlib ||
+                                        mip.storageType == StorageTypes.extUnc)
                                     {
-                                        var fullPath = filePaths.FirstOrDefault(x => Path.GetFileName(x).Equals(mip.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                                        var fullPath = filePaths.FirstOrDefault(x =>
+                                            Path.GetFileName(x).Equals(mip.TextureCacheName,
+                                                StringComparison.InvariantCultureIgnoreCase));
                                         if (fullPath != null)
                                         {
                                             var baseIdx = fullPath.LastIndexOf("CookedPC");
@@ -5177,7 +5442,8 @@ namespace ME3Explorer
                                         }
                                         else
                                         {
-                                            throw new FileNotFoundException($"Externally referenced texture file not found in game: {mip.TextureCacheName}.");
+                                            throw new FileNotFoundException(
+                                                $"Externally referenced texture file not found in game: {mip.TextureCacheName}.");
                                         }
                                     }
                                 }
@@ -5196,7 +5462,8 @@ namespace ME3Explorer
             {
                 IsBusy = false;
                 List<string> files = prevTask.Result.OrderBy(s => s).ToList();
-                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json"), JsonConvert.SerializeObject(files, Formatting.Indented));
+                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json"),
+                    JsonConvert.SerializeObject(files, Formatting.Indented));
                 ListDialog dlg = new ListDialog(files, "", "ME1 files with externally referenced textures", this);
                 dlg.Show();
             });
@@ -5228,13 +5495,15 @@ namespace ME3Explorer
 
         private void InterpreterWPF_LinearColorWheel_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel = !Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel;
+            Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel =
+                !Properties.Settings.Default.InterpreterWPF_ShowLinearColorWheel;
             Properties.Settings.Default.Save();
         }
 
         private void ShowExportMetadataInTree_Clicked(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PackageEditorWPF_ShowSubText = !Properties.Settings.Default.PackageEditorWPF_ShowSubText;
+            Properties.Settings.Default.PackageEditorWPF_ShowSubText =
+                !Properties.Settings.Default.PackageEditorWPF_ShowSubText;
             Properties.Settings.Default.Save();
             foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
             {
@@ -5252,6 +5521,7 @@ namespace ME3Explorer
 
         private Stack<int> BackwardsIndexes;
         private Stack<int> ForwardsIndexes;
+
         private void NavigateToNextEntry()
         {
             if (ForwardsIndexes != null && ForwardsIndexes.Any())
@@ -5261,6 +5531,7 @@ namespace ME3Explorer
                     Debug.WriteLine("Push onto backwards: " + SelectedItem.UIndex);
                     BackwardsIndexes.Push(SelectedItem.UIndex);
                 }
+
                 var index = ForwardsIndexes.Pop();
                 Debug.WriteLine("Navigate to " + index);
                 IsBackForwardsNavigationEvent = true;
@@ -5320,11 +5591,12 @@ namespace ME3Explorer
                 BusyText = "Replacing references...";
                 IsBusy = true;
 
-                Task.Run(() => selectedEntry.ReplaceAllReferencesToThisOne(replacement)).ContinueWithOnUIThread(prevTask =>
-                {
-                    IsBusy = false;
-                    MessageBox.Show($"Replaced {prevTask.Result} reference links.");
-                });
+                Task.Run(() => selectedEntry.ReplaceAllReferencesToThisOne(replacement)).ContinueWithOnUIThread(
+                    prevTask =>
+                    {
+                        IsBusy = false;
+                        MessageBox.Show($"Replaced {prevTask.Result} reference links.");
+                    });
 
             }
         }
@@ -5352,6 +5624,7 @@ namespace ME3Explorer
                 dlg.Show();
             }
         }
+
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
         {
             BusyText = "Scanning audio and updating events";
@@ -5401,9 +5674,12 @@ namespace ME3Explorer
 
         private void TransferLevelBetweenGames(object sender, RoutedEventArgs e)
         {
-            if (Pcc is MEPackage pcc && Path.GetFileNameWithoutExtension(pcc.FilePath).StartsWith("BioP") && pcc.Game == MEGame.ME2)
+            if (Pcc is MEPackage pcc && Path.GetFileNameWithoutExtension(pcc.FilePath).StartsWith("BioP") &&
+                pcc.Game == MEGame.ME2)
             {
-                var cdlg = MessageBox.Show("This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.", "Warning", MessageBoxButton.OKCancel);
+                var cdlg = MessageBox.Show(
+                    "This is a highly experimental method to copy the static art and collision from an ME2 level to an ME3 one.  It will not copy materials or design elements.",
+                    "Warning", MessageBoxButton.OKCancel);
                 if (cdlg == MessageBoxResult.Cancel)
                     return;
 
@@ -5415,19 +5691,24 @@ namespace ME3Explorer
                 };
                 if (o.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
-                    string tfc = PromptDialog.Prompt(this, "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool", "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
+                    string tfc = PromptDialog.Prompt(this,
+                        "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool",
+                        "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
 
                     if (tfc == null || tfc == "Textures_DLC_MOD_")
                         return;
 
                     BusyText = "Parsing level files";
                     IsBusy = true;
-                    Task.Run(() => PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, tfc, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
+                    Task.Run(() =>
+                        PackageEditorExperiments.ConvertLevelToGame(MEGame.ME3, pcc, o.FileName, tfc,
+                            newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
                     {
                         if (Pcc != null)
                             LoadFile(Pcc.FilePath);
                         IsBusy = false;
-                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask?.Result.Count})", "", this)
+                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask?.Result.Count})", "",
+                            this)
                         {
                             DoubleClickEntryHandler = entryDoubleClick
                         };
@@ -5439,7 +5720,8 @@ namespace ME3Explorer
             }
             else
             {
-                MessageBox.Show(this, "Load a level's BioP file to start the transfer.\nCurrently can only convert from ME2 to ME3.");
+                MessageBox.Show(this,
+                    "Load a level's BioP file to start the transfer.\nCurrently can only convert from ME2 to ME3.");
             }
         }
 
@@ -5457,19 +5739,24 @@ namespace ME3Explorer
 
                 BusyText = "Recook level files";
                 IsBusy = true;
-                Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText)).ContinueWithOnUIThread(prevTask =>
-                {
-                    if (Pcc != null)
-                        LoadFile(Pcc.FilePath);
-                    IsBusy = false;
-                    var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "", this)
+                Task.Run(() =>
+                        PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName,
+                            newText => BusyText = newText))
+                    .ContinueWithOnUIThread(prevTask =>
                     {
-                        DoubleClickEntryHandler = entryDoubleClick
-                    };
-                    dlg.Show();
-                });
+                        if (Pcc != null)
+                            LoadFile(Pcc.FilePath);
+                        IsBusy = false;
+                        var dlg = new ListDialog(prevTask.Result, $"Conversion errors: ({prevTask.Result.Count})", "",
+                            this)
+                        {
+                            DoubleClickEntryHandler = entryDoubleClick
+                        };
+                        dlg.Show();
+                    });
             }
         }
+
         private void RecookLevelToTestFromJSON(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog j = new CommonOpenFileDialog
@@ -5478,13 +5765,15 @@ namespace ME3Explorer
                 EnsurePathExists = true,
                 Title = "Select JSON with transfer details"
             };
-        j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
+            j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
             if (j.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
 
                 BusyText = "Recook level files";
                 IsBusy = true;
-                Task.Run(() => PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText, true)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() =>
+                    PackageEditorExperiments.RecookTransferLevelsFromJSON(j.FileName, newText => BusyText = newText,
+                        true)).ContinueWithOnUIThread(prevTask =>
                 {
                     if (Pcc != null)
                         LoadFile(Pcc.FilePath);
@@ -5497,23 +5786,39 @@ namespace ME3Explorer
                 });
             }
         }
+
         private void ConvertFileToME3(object sender, RoutedEventArgs e)
         {
             BusyText = "Converting files";
             IsBusy = true;
-            string tfc = PromptDialog.Prompt(this, "Enter Name of Target Textures File Cache (tfc) without extension", "Level Conversion Tool", "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
+            string tfc = PromptDialog.Prompt(this, "Enter Name of Target Textures File Cache (tfc) without extension",
+                "Level Conversion Tool", "Textures_DLC_MOD_", false, PromptDialog.InputType.Text);
 
             if (Pcc == null || tfc == null || tfc == "Textures_DLC_MOD_")
                 return;
             tfc = Path.Combine(Path.GetDirectoryName(Pcc.FilePath), $"{tfc}.tfc");
 
-            if(Pcc is MEPackage tgt && Pcc.Game != MEGame.ME3)
+            if (Pcc is MEPackage tgt && Pcc.Game != MEGame.ME3)
             {
                 Task.Run(() => tgt.ConvertTo(MEGame.ME3, tfc, true)).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                 });
             }
+        }
+
+        private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelected(out var uindex);
+            if (selected && uindex > 0)
+            {
+                PackageEditorExperiments.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
+            }
+        }
+
+        private void PortWiiUBSP(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperiments.PortWiiUBSP();
         }
     }
 }

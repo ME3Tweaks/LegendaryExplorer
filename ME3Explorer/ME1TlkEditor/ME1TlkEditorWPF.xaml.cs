@@ -10,6 +10,7 @@ using System.Xml;
 using ME3Explorer.SharedUI;
 using Microsoft.Win32;
 using System.Media;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK.ME1;
 using TalkFile = ME3ExplorerCore.TLK.ME2ME3.TalkFile;

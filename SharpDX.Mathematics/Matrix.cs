@@ -3292,10 +3292,14 @@ namespace SharpDX
             return *(Matrix*)&value;
         }
 
-        public static unsafe implicit operator Matrix(ME3ExplorerCore.SharpDX.Matrix other)
+        public static implicit operator Matrix(ME3ExplorerCore.SharpDX.Matrix other)
         {
-            // yeah idk if this works like this
-            return *(Matrix*)&other;
+            return new Matrix(other.ToArray());
+        }
+
+        public static implicit operator ME3ExplorerCore.SharpDX.Matrix(Matrix other)
+        {
+            return new ME3ExplorerCore.SharpDX.Matrix(other.ToArray());
         }
     }
 }

@@ -27,6 +27,8 @@ using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
@@ -3705,7 +3707,7 @@ namespace ME3Explorer.AssetDatabase
                                     ConvoLine newLine = new ConvoLine(linestrref, speakers[speakerindex], pExp);
                                     if(GameBeingDumped == MEGame.ME1)
                                     {
-                                        newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                        newLine.Line = ME1TalkFiles.findDataById(linestrref, pcc);
                                         if (newLine.Line == "No Data" || newLine.Line == "\"\"" || newLine.Line == "\" \"" || newLine.Line == " ")
                                             continue;
                                     }
@@ -3729,7 +3731,7 @@ namespace ME3Explorer.AssetDatabase
                                         ConvoLine newLine = new ConvoLine(linestrref, "Shepard", pExp);
                                         if (GameBeingDumped == MEGame.ME1)
                                         {
-                                            newLine.Line = ME1Explorer.ME1TalkFiles.findDataById(linestrref, pcc);
+                                            newLine.Line = ME1TalkFiles.findDataById(linestrref, pcc);
                                             if (newLine.Line == "No Data" || newLine.Line == "\"\"" || newLine.Line == "\" \"" || newLine.Line == " ")
                                                 continue;
                                         }

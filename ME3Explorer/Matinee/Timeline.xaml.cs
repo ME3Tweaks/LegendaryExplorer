@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 
@@ -143,7 +144,7 @@ namespace ME3Explorer.Matinee
                     {
                         if (trk.Export.UIndex == strk.Export.UIndex)
                         {
-                            MatineeTree.SelectItem(trk);
+                            MatineeTree.SelectItem(trk); //???
                             return;
                         }
                     }

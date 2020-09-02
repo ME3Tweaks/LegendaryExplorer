@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Helpers
 {
-    internal static class Utilities
+    public static class Utilities
     {
         public static string LoadStringFromCompressedResource(string resourceName, string assetName)
         {
@@ -81,6 +80,22 @@ namespace ME3ExplorerCore.Helpers
             catch (Exception e)
             {
                 Debug.WriteLine($"Error reading from zip archive: {e.Message}");
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Loads a package stream for the CustomResources file for the specified game 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static MemoryStream GetCustomAppResourceStream(MEGame game)
+        {
+            var zStream = LoadEmbeddedFile("GameResources.zip");
+            if (zStream != null)
+            {
+                return LoadFileFromZipStream(zStream, CoreLib.CustomResourceFileName(game));
             }
 
             return null;

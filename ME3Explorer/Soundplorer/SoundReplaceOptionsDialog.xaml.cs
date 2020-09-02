@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Soundplorer
 {

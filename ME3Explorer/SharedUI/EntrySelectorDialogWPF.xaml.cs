@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI

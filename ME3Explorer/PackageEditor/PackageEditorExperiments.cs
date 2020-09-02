@@ -32,7 +32,7 @@ namespace ME3Explorer.PackageEditor
     class PackageEditorExperiments
     {
 
-        private void PortWiiUBSP(object sender, RoutedEventArgs e)
+        public static void PortWiiUBSP()
         {
 
 
@@ -280,14 +280,6 @@ namespace ME3Explorer.PackageEditor
             Debug.WriteLine("Done porting");
         }
 
-        private void ShiftME1AnimCutScene(object sender, RoutedEventArgs e)
-        {
-            var selected = GetSelected(out var uindex);
-            if (selected && uindex > 0)
-            {
-                PackageEditorExperiments.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
-            }
-        }
 
         /// <summary>
         /// Builds a comparison of TESTPATCH functions against their original design. View the difference with WinMerge Folder View.

@@ -43,7 +43,7 @@ namespace ME3Explorer.MetadataEditor
         private IEntry CurrentLoadedEntry;
         private byte[] OriginalHeader;
 
-        public SharedUI.ObservableCollectionExtended<object> AllEntriesList { get; } = new SharedUI.ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
         public int CurrentObjectNameIndex { get; private set; }
 
         private HexBox Header_Hexbox;

@@ -786,10 +786,9 @@ namespace ME3ExplorerCore.Unreal
         }
 
         #region Generating
-#if ME3EXPLORERAPP
         //call this method to regenerate ME3ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo()
+        public static void generateInfo(string outpath)
         {
             var NewClasses = new Dictionary<string, ClassInfo>();
             var NewStructs = new Dictionary<string, ClassInfo>();
@@ -854,7 +853,7 @@ namespace ME3ExplorerCore.Unreal
             }
 
 
-        #region CUSTOM ADDITIONS
+            #region CUSTOM ADDITIONS
             //Custom additions
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or by new classes designed in the modding scene that must be present in order for parsing to work properly
@@ -1040,13 +1039,11 @@ namespace ME3ExplorerCore.Unreal
                 }
             };
 
-        #endregion
+            #endregion
 
-            File.WriteAllText("ME3ObjectInfo.json",
+            File.WriteAllText(outpath,
                 JsonConvert.SerializeObject(new { SequenceObjects = newSequenceObjects, Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
         }
-
-#endif
 
 
         private static List<string> generateSequenceObjectInfo(int i, IMEPackage pcc)

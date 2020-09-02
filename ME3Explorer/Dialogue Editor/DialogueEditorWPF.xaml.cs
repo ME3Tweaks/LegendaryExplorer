@@ -29,6 +29,7 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using EConvGUIStyles = ME3Explorer.Dialogue_Editor.BioConversationExtended.EConvGUIStyles;
 using Enums = ME3ExplorerCore.Helpers.Enums;

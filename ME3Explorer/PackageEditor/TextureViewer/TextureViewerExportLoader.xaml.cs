@@ -15,6 +15,7 @@ using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using ME1Explorer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
+using ME3ExplorerCore.ME1;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using Color = System.Windows.Media.Color;

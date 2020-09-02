@@ -414,10 +414,9 @@ namespace ME3ExplorerCore.Unreal
         }
 
         #region Generating
-#if ME3EXPLORERAPP
         //call this method to regenerate ME1ObjectInfo.json
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
-        public static void generateInfo()
+        public static void generateInfo(string outpath)
         {
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
@@ -500,9 +499,8 @@ namespace ME3ExplorerCore.Unreal
             };
 
 
-            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
+            File.WriteAllText(outpath, JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
         }
-#endif
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;

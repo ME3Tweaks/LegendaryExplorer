@@ -1839,11 +1839,11 @@ namespace ME3Explorer
                 MemoryStream asStream = new MemoryStream(data);
                 asStream.Position = offset;
 
-                while (asStream.Position < asStream.Length)
-                {
-                    Debug.WriteLine("Reading at " + asStream.Position);
-                    ISACT_Parser.ReadStream(asStream);
-                }
+                //while (asStream.Position < asStream.Length)
+                //{
+                //    //Debug.WriteLine("Reading at " + asStream.Position);
+                //    //ISACT_Parser.ReadStream(asStream);
+                //}
                 /*
                 offset = binarystart + 0x18;
 

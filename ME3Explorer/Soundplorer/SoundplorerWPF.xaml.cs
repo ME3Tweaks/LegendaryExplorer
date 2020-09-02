@@ -23,6 +23,7 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 

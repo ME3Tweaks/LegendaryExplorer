@@ -2,7 +2,6 @@
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SplineNodes;
 using Microsoft.Win32;
 using System;
@@ -24,6 +23,8 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
+using ME3Explorer.Packages;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -109,15 +110,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocus;
-        public SharedUI.ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
-        public SharedUI.ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
 
-        public SharedUI.ObservableCollectionExtended<string> TagsList { get; set; } = new SharedUI.ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
-        public SharedUI.ObservableCollectionExtended<CollectionActor> CollectionActors { get; set; } = new SharedUI.ObservableCollectionExtended<CollectionActor>();
-        public SharedUI.ObservableCollectionExtended<Zone> CombatZones { get; } = new SharedUI.ObservableCollectionExtended<Zone>();
+        public ObservableCollectionExtended<CollectionActor> CollectionActors { get; set; } = new ObservableCollectionExtended<CollectionActor>();
+        public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
-        public SharedUI.ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new SharedUI.ObservableCollectionExtended<Zone>();
+        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
         private readonly List<ExportEntry> AllLevelObjects = new List<ExportEntry>();
         private readonly List<ExportEntry> AllOverlayObjects = new List<ExportEntry>();
@@ -2509,7 +2510,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public SharedUI.ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new SharedUI.ObservableCollectionExtended<NodeType>();
+        public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
 
         public class NodeType : NotifyPropertyChangedBase
         {
@@ -2597,7 +2598,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
-            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent");
+            var splineComponentClass = EntryImporterExtended.EnsureClassIsInFile(Pcc, "SplineComponent");
             var splineComponent = new ExportEntry(Pcc, new byte[8])
             {
                 Class = splineComponentClass,
@@ -3304,7 +3305,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #endregion
 
         #region SequenceRefs
-        public SharedUI.ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<ExportEntry>();
         private void OpenRefInSequenceEditor(object obj)
         {
             if (obj is ExportEntry exp)
@@ -4108,7 +4109,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #region ArtLevelTools
         private bool _showArtTools;
         public bool ShowArtTools { get => _showArtTools; set => SetProperty(ref _showArtTools, value); }
-        public SharedUI.ObservableCollectionExtended<LightChannel> rgbChannels { get; } = new SharedUI.ObservableCollectionExtended<LightChannel>() { LightChannel.Red, LightChannel.Green, LightChannel.Blue };
+        public ObservableCollectionExtended<LightChannel> rgbChannels { get; } = new ObservableCollectionExtended<LightChannel>() { LightChannel.Red, LightChannel.Green, LightChannel.Blue };
         public enum LightChannel
         {
             Red,
@@ -4136,7 +4137,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private float _brightnessAdjustment;
         public float BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
 
-        public SharedUI.ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
+        public ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new ObservableCollectionExtended<ExportEntry>();
         private bool _showonlyGroup;
         public bool ShowOnlyGroup
         {
