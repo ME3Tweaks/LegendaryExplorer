@@ -13,10 +13,44 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using ME3ExplorerCore.Helpers;
+using SharpDX;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using Matrix = System.Windows.Media.Matrix;
+using Point = System.Windows.Point;
 
 namespace ME3Explorer
 {
+    public static class UnrealExtensions
+    {
+        public static (Vector3 translation, Vector3 scale, Rotator rotation) UnrealDecompose(this SharpDX.Matrix m)
+        {
+            Vector3 translation = m.TranslationVector;
+            Vector3 scale = new Vector3((float)Math.Sqrt(m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13),
+                (float)Math.Sqrt(m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23),
+                (float)Math.Sqrt(m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33));
 
+            if (MathUtil.IsZero(scale.X) ||
+                MathUtil.IsZero(scale.Y) ||
+                MathUtil.IsZero(scale.Z))
+            {
+                return (translation, scale, default);
+            }
+
+            m.M11 /= scale.X;
+            m.M12 /= scale.X;
+            m.M13 /= scale.X;
+
+            m.M21 /= scale.Y;
+            m.M22 /= scale.Y;
+            m.M23 /= scale.Y;
+
+            m.M31 /= scale.Z;
+            m.M32 /= scale.Z;
+            m.M33 /= scale.Z;
+            return (translation, scale, ((ME3ExplorerCore.SharpDX.Matrix)m).GetRotator());
+        }
+    }
     public static class WPFExtensions
     {
         /// <summary>
