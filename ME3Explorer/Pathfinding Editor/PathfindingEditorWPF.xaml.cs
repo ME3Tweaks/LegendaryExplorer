@@ -25,10 +25,13 @@ using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
+using ME3ExplorerCore.Helpers;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -106,15 +109,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocus;
-        public ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
-        public ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new ObservableCollectionExtended<ExportEntry>();
+        public SharedUI.ObservableCollectionExtended<ExportEntry> ActiveNodes { get; set; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
+        public SharedUI.ObservableCollectionExtended<ExportEntry> ActiveOverlayNodes { get; set; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
 
-        public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
+        public SharedUI.ObservableCollectionExtended<string> TagsList { get; set; } = new SharedUI.ObservableCollectionExtended<string>();
 
-        public ObservableCollectionExtended<CollectionActor> CollectionActors { get; set; } = new ObservableCollectionExtended<CollectionActor>();
-        public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
+        public SharedUI.ObservableCollectionExtended<CollectionActor> CollectionActors { get; set; } = new SharedUI.ObservableCollectionExtended<CollectionActor>();
+        public SharedUI.ObservableCollectionExtended<Zone> CombatZones { get; } = new SharedUI.ObservableCollectionExtended<Zone>();
 
-        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
+        public SharedUI.ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new SharedUI.ObservableCollectionExtended<Zone>();
 
         private readonly List<ExportEntry> AllLevelObjects = new List<ExportEntry>();
         private readonly List<ExportEntry> AllOverlayObjects = new List<ExportEntry>();
@@ -2506,7 +2509,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
+        public SharedUI.ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new SharedUI.ObservableCollectionExtended<NodeType>();
 
         public class NodeType : NotifyPropertyChangedBase
         {
@@ -3301,7 +3304,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #endregion
 
         #region SequenceRefs
-        public ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<ExportEntry>();
+        public SharedUI.ObservableCollectionExtended<ExportEntry> CurrentNodeSequenceReferences { get; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
         private void OpenRefInSequenceEditor(object obj)
         {
             if (obj is ExportEntry exp)
@@ -3771,45 +3774,45 @@ namespace ME3Explorer.Pathfinding_Editor
                 switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
-                    {
-                        var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
-                        foreach (UIndex uIndex in smca.Components)
                         {
-                            if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
+                            var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
+                            foreach (UIndex uIndex in smca.Components)
                             {
-                                InvertScalingOnExport(smComponent, "Scale3D");
+                                if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
+                                {
+                                    InvertScalingOnExport(smComponent, "Scale3D");
+                                }
                             }
-                        }
 
-                        for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
-                        {
-                            Matrix m = smca.LocalToWorldTransforms[i];
-                            m.TranslationVector *= -1;
-                            smca.LocalToWorldTransforms[i] = m;
+                            for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
+                            {
+                                Matrix m = smca.LocalToWorldTransforms[i];
+                                m.TranslationVector *= -1;
+                                smca.LocalToWorldTransforms[i] = m;
+                            }
+                            exp.SetBinaryData(smca);
+                            break;
                         }
-                        exp.SetBinaryData(smca);
-                        break;
-                    }
                     default:
-                    {
-                        var props = exp.GetProperties();
-                        StructProperty locationProp = props.GetProp<StructProperty>("location");
-                        if (locationProp != null)
                         {
-                            FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
-                            FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
-                            FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                            Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                            var props = exp.GetProperties();
+                            StructProperty locationProp = props.GetProp<StructProperty>("location");
+                            if (locationProp != null)
+                            {
+                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                            xProp.Value *= -1;
-                            yProp.Value *= -1;
-                            zProp.Value *= -1;
+                                xProp.Value *= -1;
+                                yProp.Value *= -1;
+                                zProp.Value *= -1;
 
-                            exp.WriteProperty(locationProp);
-                            InvertScalingOnExport(exp, "DrawScale3D");
+                                exp.WriteProperty(locationProp);
+                                InvertScalingOnExport(exp, "DrawScale3D");
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
             MessageBox.Show("Items flipped.", "Flipping complete");
@@ -4105,7 +4108,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #region ArtLevelTools
         private bool _showArtTools;
         public bool ShowArtTools { get => _showArtTools; set => SetProperty(ref _showArtTools, value); }
-        public ObservableCollectionExtended<LightChannel> rgbChannels { get; } = new ObservableCollectionExtended<LightChannel>() { LightChannel.Red, LightChannel.Green, LightChannel.Blue };
+        public SharedUI.ObservableCollectionExtended<LightChannel> rgbChannels { get; } = new SharedUI.ObservableCollectionExtended<LightChannel>() { LightChannel.Red, LightChannel.Green, LightChannel.Blue };
         public enum LightChannel
         {
             Red,
@@ -4133,7 +4136,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private float _brightnessAdjustment;
         public float BrightnessAdjustment { get => _brightnessAdjustment; set => SetProperty(ref _brightnessAdjustment, value); }
 
-        public ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new ObservableCollectionExtended<ExportEntry>();
+        public SharedUI.ObservableCollectionExtended<ExportEntry> ActorGroup { get; } = new SharedUI.ObservableCollectionExtended<ExportEntry>();
         private bool _showonlyGroup;
         public bool ShowOnlyGroup
         {
@@ -4779,7 +4782,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return new SharpDX.Vector3(groupX / actorcount, groupY / actorcount, groupZ / actorcount);
         }
 
-        public async void RecookPersistantLevel() 
+        public async void RecookPersistantLevel()
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
                          $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -10,6 +11,7 @@ using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
+using ME3ExplorerCore.Helpers;
 using SText = ME3Explorer.SequenceObjects.SText;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 

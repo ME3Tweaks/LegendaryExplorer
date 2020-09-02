@@ -714,79 +714,79 @@ namespace ME3Explorer.Scene3D
             }
         }
 
-        /// <summary>
-        /// Creates a preview of the given <see cref="SkeletalMesh"/>.
-        /// </summary>
-        /// <param name="Device">The Direct3D device to use for buffer creation.</param>
-        /// <param name="m">The mesh to generate a preview for.</param>
-        /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
-        {
-            // STEP 1: MATERIALS
-            for (int i = 0; i < m.Materials.Count; i++)
-            {
-                MaterialInstanceConstant mat = m.MatInsts[i];
-                if (mat == null && m.Materials[i] < 0)
-                {
-                    // The material instance is an import!
-                    ImportEntry matImport = m.Export.FileRef.GetImport(m.Materials[i]);
-                    var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
-                    if (externalAsset != null)
-                    {
-                        mat = new MaterialInstanceConstant(externalAsset);
-                    }
-                }
+        ///// <summary>
+        ///// Creates a preview of the given <see cref="SkeletalMesh"/>.
+        ///// </summary>
+        ///// <param name="Device">The Direct3D device to use for buffer creation.</param>
+        ///// <param name="m">The mesh to generate a preview for.</param>
+        ///// <param name="texcache">The texture cache for loading textures.</param>
+        //public ModelPreview(Device Device, ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
+        //{
+        //    // STEP 1: MATERIALS
+        //    for (int i = 0; i < m.Materials.Count; i++)
+        //    {
+        //        MaterialInstanceConstant mat = m.MatInsts[i];
+        //        if (mat == null && m.Materials[i] < 0)
+        //        {
+        //            // The material instance is an import!
+        //            ImportEntry matImport = m.Export.FileRef.GetImport(m.Materials[i]);
+        //            var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
+        //            if (externalAsset != null)
+        //            {
+        //                mat = new MaterialInstanceConstant(externalAsset);
+        //            }
+        //        }
 
-                if (mat != null)
-                {
-                    ModelPreviewMaterial material;
-                    // TODO: pick what material class best fits based on what properties the 
-                    // MaterialInstanceConstant mat has.
-                    // For now, just use the default material.
-                    material = new TexturedPreviewMaterial(texcache, mat);
-                    AddMaterial(material.Properties["Name"], material);
-                }
-            }
+        //        if (mat != null)
+        //        {
+        //            ModelPreviewMaterial material;
+        //            // TODO: pick what material class best fits based on what properties the 
+        //            // MaterialInstanceConstant mat has.
+        //            // For now, just use the default material.
+        //            material = new TexturedPreviewMaterial(texcache, mat);
+        //            AddMaterial(material.Properties["Name"], material);
+        //        }
+        //    }
 
-            // STEP 2: LODS
-            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
-            {
-                // Vertices
-                List<WorldVertex> vertices = new List<WorldVertex>();
-                if (m.Export.Game == MEGame.ME1)
-                {
-                    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-                    {
-                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
-                    }
-                }
-                else
-                {
-                    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-                    {
-                        // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
-                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
-                    }
-                }
-                // Triangles
-                List<Triangle> triangles = new List<Triangle>();
-                for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
-                {
-                    triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
-                }
-                WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
-                // Sections
-                List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-                foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
-                {
-                    if (section.MaterialIndex < Materials.Count)
-                    {
-                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
-                    }
-                }
-                LODs.Add(new ModelPreviewLOD(mesh, sections));
-            }
-        }
+        //    // STEP 2: LODS
+        //    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
+        //    {
+        //        // Vertices
+        //        List<WorldVertex> vertices = new List<WorldVertex>();
+        //        if (m.Export.Game == MEGame.ME1)
+        //        {
+        //            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+        //            {
+        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+        //            {
+        //                // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
+        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
+        //            }
+        //        }
+        //        // Triangles
+        //        List<Triangle> triangles = new List<Triangle>();
+        //        for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
+        //        {
+        //            triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
+        //        }
+        //        WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
+        //        // Sections
+        //        List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+        //        foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
+        //        {
+        //            if (section.MaterialIndex < Materials.Count)
+        //            {
+        //                sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
+        //            }
+        //        }
+        //        LODs.Add(new ModelPreviewLOD(mesh, sections));
+        //    }
+        //}
 
         /// <summary>
         /// Renders the ModelPreview at the specified level of detail.

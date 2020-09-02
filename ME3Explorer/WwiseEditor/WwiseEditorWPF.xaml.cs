@@ -21,6 +21,7 @@ using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
+using ME3ExplorerCore.Helpers;
 using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;

@@ -47,9 +47,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if FULLWINDOWS
 using SharpDX.Mathematics.Interop;
-#endif
 
 namespace SharpDX
 {
@@ -62,7 +60,7 @@ namespace SharpDX
         /// <summary>
         /// The size of the <see cref="Vector4"/> type, in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = 16; // Utilities.SizeOf<Vector4>();
+        public static readonly int SizeInBytes = Utilities.SizeOf<Vector4>();
 
         /// <summary>
         /// A <see cref="Vector4"/> with all of its components set to zero.
@@ -1262,7 +1260,7 @@ namespace SharpDX
         /// <param name="scale">The amount by which to scale the vector.</param>
         /// <param name="value">The vector to scale.</param>        
         /// <returns>The scaled vector.</returns>
-        public static Vector4 operator /(float scale, Vector4 value)
+        public static Vector4 operator /(float scale,Vector4 value)
         {
             return new Vector4(scale / value.X, scale / value.Y, scale / value.Z, scale / value.W);
         }
@@ -1389,7 +1387,7 @@ namespace SharpDX
             if (format == null)
                 return ToString();
 
-            return string.Format(CultureInfo.CurrentCulture, "X:{0} Y:{1} Z:{2} W:{3}", X.ToString(format, CultureInfo.CurrentCulture),
+            return string.Format(CultureInfo.CurrentCulture, "X:{0} Y:{1} Z:{2} W:{3}", X.ToString(format, CultureInfo.CurrentCulture), 
                 Y.ToString(format, CultureInfo.CurrentCulture), Z.ToString(format, CultureInfo.CurrentCulture), W.ToString(format, CultureInfo.CurrentCulture));
         }
 
@@ -1484,8 +1482,6 @@ namespace SharpDX
             return Equals(ref strongValue);
         }
 
-#if FULLWINDOWS
-
         /// <summary>
         /// Performs an implicit conversion from <see cref="Vector4"/> to <see cref="RawVector4"/>.
         /// </summary>
@@ -1505,6 +1501,5 @@ namespace SharpDX
         {
             return *(Vector4*)&value;
         }
-#endif
     }
 }

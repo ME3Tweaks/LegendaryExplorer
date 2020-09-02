@@ -100,7 +100,7 @@ namespace SharpDX
             B = blue;
             A = 255;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Color"/> struct.  Passed values are clamped within byte range.
         /// </summary>
@@ -115,7 +115,7 @@ namespace SharpDX
             B = ToByte(blue);
             A = ToByte(alpha);
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Color"/> struct.  Alpha is set to 255.  Passed values are clamped within byte range.
         /// </summary>
@@ -123,7 +123,7 @@ namespace SharpDX
         /// <param name="green">The green component of the color.</param>
         /// <param name="blue">The blue component of the color.</param>
         public Color(int red, int green, int blue)
-            : this (red, green, blue, 255) { }
+            : this(red, green, blue, 255) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Color"/> struct.
@@ -363,7 +363,7 @@ namespace SharpDX
         /// <returns>A four-element array containing the components of the color in RGBA order.</returns>
         public byte[] ToArray()
         {
-            return new [] { R, G , B, A };
+            return new[] { R, G, B, A };
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace SharpDX
                 }
             }
             return s;
-        } 
+        }
 
         /// <summary>
         /// Adds two colors.
@@ -671,7 +671,7 @@ namespace SharpDX
         /// <returns>A color.</returns>
         public static Color FromBgra(uint color)
         {
-            return FromBgra(unchecked((int) color));
+            return FromBgra(unchecked((int)color));
         }
 
         /// <summary>
@@ -866,10 +866,10 @@ namespace SharpDX
         /// <returns>The adjusted color.</returns>
         public static Color AdjustContrast(Color value, float contrast)
         {
-            return new Color(                
+            return new Color(
                 ToByte(0.5f + contrast * (value.R / 255.0f - 0.5f)),
                 ToByte(0.5f + contrast * (value.G / 255.0f - 0.5f)),
-                ToByte(0.5f + contrast * (value.B / 255.0f- 0.5f)),
+                ToByte(0.5f + contrast * (value.B / 255.0f - 0.5f)),
                 value.A);
         }
 
@@ -881,11 +881,11 @@ namespace SharpDX
         /// <param name="result">When the method completes, contains the adjusted color.</param>
         public static void AdjustSaturation(ref Color value, float saturation, out Color result)
         {
-            float grey = value.R  / 255.0f * 0.2125f + value.G / 255.0f * 0.7154f + value.B / 255.0f * 0.0721f;
+            float grey = value.R / 255.0f * 0.2125f + value.G / 255.0f * 0.7154f + value.B / 255.0f * 0.0721f;
 
             result.A = value.A;
             result.R = ToByte(grey + saturation * (value.R / 255.0f - grey));
-            result.G = ToByte(grey + saturation * (value.G / 255.0f- grey));
+            result.G = ToByte(grey + saturation * (value.G / 255.0f - grey));
             result.B = ToByte(grey + saturation * (value.B / 255.0f - grey));
         }
 
@@ -899,7 +899,7 @@ namespace SharpDX
         {
             float grey = value.R / 255.0f * 0.2125f + value.G / 255.0f * 0.7154f + value.B / 255.0f * 0.0721f;
 
-            return new Color(                
+            return new Color(
                 ToByte(grey + saturation * (value.R / 255.0f - grey)),
                 ToByte(grey + saturation * (value.G / 255.0f - grey)),
                 ToByte(grey + saturation * (value.B / 255.0f - grey)),
@@ -1274,6 +1274,16 @@ namespace SharpDX
         public static byte ToByte(int value)
         {
             return (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
+        }
+
+        public static implicit operator Color(ME3ExplorerCore.SharpDX.Color other)
+        {
+            return new Color(other.R, other.G, other.B, other.A);
+        }
+
+        public static implicit operator ME3ExplorerCore.SharpDX.Color(Color other)
+        {
+            return new ME3ExplorerCore.SharpDX.Color(other.R, other.G, other.B, other.A);
         }
     }
 }

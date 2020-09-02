@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -61,7 +62,7 @@ begin
                     Debug.WriteLine("Is PCM: " + isPCM);
                     currentCounter = counter;
                 }
-                string blockName = ms.ReadString(4);
+                string blockName = ms.ReadStringASCII(4);
                 Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
 
                 switch (blockName)
@@ -141,7 +142,7 @@ begin
                         counter++;
                         blocksize = ms.ReadUInt32(); //size of block
                         if (blocksize % 2 != 0) ms.Seek(1, SeekOrigin.Current); //byte align
-                        string encodedType = ms.ReadString(4);
+                        string encodedType = ms.ReadStringASCII(4);
                         isOgg = encodedType == "OggS";
                         ms.Seek(-4, SeekOrigin.Current); //go to block start
                         MemoryStream data = new MemoryStream();
@@ -212,17 +213,17 @@ begin
                 int headerSize = 52;
                 MemoryStream ms = new MemoryStream();
                 //WAVE HEADER
-                ms.WriteBytes(Encoding.ASCII.GetBytes("RIFF"));
+                ms.WriteFromBuffer(Encoding.ASCII.GetBytes("RIFF"));
                 ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part.
-                ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
-                ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
+                ms.WriteFromBuffer(Encoding.ASCII.GetBytes("WAVE"));
+                ms.WriteFromBuffer(Encoding.ASCII.GetBytes("fmt "));
                 ms.WriteInt32(16); //wavelen
                 ms.WriteInt32(1); //Wave Format PCM
                 ms.WriteUInt32(pcChannels);
                 ms.WriteUInt32(sampleRate);
                 ms.WriteUInt32(pcChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2
                 ms.WriteUInt32(pcChannels * 2 * sampleRate);
-                ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
+                ms.WriteFromBuffer(Encoding.ASCII.GetBytes("data"));
                 ms.WriteUInt32(0); //data len = this will have to be updated later, i think
 
                 XboxADPCMDecoder decoder = new XboxADPCMDecoder(pcChannels);

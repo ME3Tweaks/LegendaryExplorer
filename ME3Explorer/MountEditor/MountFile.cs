@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer
 {

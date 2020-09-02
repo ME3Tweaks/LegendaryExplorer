@@ -16,7 +16,7 @@ namespace ME3ExplorerCore.Unreal
 {
     public static class UnrealObjectInfo
     {
-        internal const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
+        public const string Me3ExplorerCustomNativeAdditionsName = "ME3Explorer_CustomNativeAdditions";
 
         public static List<ClassInfo> GetNonAbstractDerivedClassesOf(string baseClassName, MEGame game) =>
             GetClasses(game).Values.Where(info => info.ClassName != baseClassName && !info.isAbstract && IsA(info.ClassName, baseClassName, game)).ToList();

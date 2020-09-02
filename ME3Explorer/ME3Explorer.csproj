@@ -167,9 +167,6 @@
     <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite-net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-pcl.1.3.1\lib\netstandard1.1\SQLite-net.dll</HintPath>
     </Reference>
@@ -1434,6 +1431,10 @@
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
       <Name>Piccolo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX.Mathematics\SharpDX.Mathematics.csproj">
+      <Project>{9118fcd1-ea08-45ad-a2f7-c2fbbbaf924e}</Project>
+      <Name>SharpDX.Mathematics</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

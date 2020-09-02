@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
 

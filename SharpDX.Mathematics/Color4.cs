@@ -47,9 +47,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if FULLWINDOWS
 using SharpDX.Mathematics.Interop;
-#endif
 
 namespace SharpDX
 {
@@ -997,7 +995,6 @@ namespace SharpDX
             return Equals(ref strongValue);
         }
 
-#if FULLWINDOWS
         /// <summary>
         /// Performs an implicit conversion from <see cref="Color4"/> to <see cref="RawColor4"/>.
         /// </summary>
@@ -1017,6 +1014,5 @@ namespace SharpDX
         {
             return *(Color4*)&value;
         }
-#endif
     }
 }

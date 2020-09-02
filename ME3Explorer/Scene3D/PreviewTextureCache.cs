@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.Classes;
 using SharpDX.Direct3D11;

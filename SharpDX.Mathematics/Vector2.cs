@@ -47,9 +47,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if FULLWINDOWS
 using SharpDX.Mathematics.Interop;
-#endif
 
 namespace SharpDX
 {
@@ -62,7 +60,7 @@ namespace SharpDX
         /// <summary>
         /// The size of the <see cref="Vector2"/> type, in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = 8;// Utilities.SizeOf<Vector2>();
+        public static readonly int SizeInBytes = Utilities.SizeOf<Vector2>();
 
         /// <summary>
         /// A <see cref="Vector2"/> with all of its components set to zero.
@@ -410,7 +408,7 @@ namespace SharpDX
         /// <param name="scale">The amount by which to scale the vector.</param>
         /// <param name="value">The vector to scale.</param>
         /// <param name="result">When the method completes, contains the scaled vector.</param>
-        public static void Divide(float scale, ref Vector2 value, out Vector2 result)
+        public static void Divide(float scale,ref Vector2 value, out Vector2 result)
         {
             result = new Vector2(scale / value.X, scale / value.Y);
         }
@@ -1338,7 +1336,7 @@ namespace SharpDX
         /// <param name="scale">The amount by which to scale the vector.</param>
         /// <param name="value">The vector to scale.</param>  
         /// <returns>The scaled vector.</returns>
-        public static Vector2 operator /(float scale, Vector2 value)
+        public static Vector2 operator /(float scale , Vector2 value)
         {
             return new Vector2(scale / value.X, scale / value.Y);
         }
@@ -1552,7 +1550,6 @@ namespace SharpDX
             return Equals(ref strongValue);
         }
 
-#if FULLWINDOWS
         /// <summary>
         /// Performs an implicit conversion from <see cref="Vector2"/> to <see cref="RawVector2"/>.
         /// </summary>
@@ -1572,6 +1569,5 @@ namespace SharpDX
         {
             return *(Vector2*)&value;
         }
-#endif
     }
 }

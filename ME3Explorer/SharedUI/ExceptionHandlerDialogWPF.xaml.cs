@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using ME3ExplorerCore.Helpers;
 using Microsoft.AppCenter.Crashes;
 
 namespace ME3Explorer.SharedUI

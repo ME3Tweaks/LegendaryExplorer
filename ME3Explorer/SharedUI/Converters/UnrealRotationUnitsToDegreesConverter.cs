@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.SharedUI.Converters
 {

@@ -30,12 +30,12 @@ namespace ME3ExplorerCore.Unreal.Classes
                                     null, "Public", "Private", "Protected",
                                     "Delegate", "NetServer", "HasOutParms", "HasDefaults",
                                     "NetClient", "FuncInherit", "FuncOverrideMatch");
-        internal string ScriptText; //This is not used but is referenced by PAckage Editor Classic, SCriptDB. Probably does not work since I refactored
+        public string ScriptText; //This is not used but is referenced by PAckage Editor Classic, SCriptDB. Probably does not work since I refactored
         //the parsing script pretty heavily
         public string HeaderText;
         public List<Token> ScriptBlocks;
 
-        internal List<BytecodeSingularToken> SingularTokenList { get; private set; }
+        public List<BytecodeSingularToken> SingularTokenList { get; private set; }
 
         public Function()
         {

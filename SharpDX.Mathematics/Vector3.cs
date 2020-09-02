@@ -47,9 +47,8 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if FULLWINDOWS
 using SharpDX.Mathematics.Interop;
-#endif
+
 namespace SharpDX
 {
     /// <summary>
@@ -61,7 +60,7 @@ namespace SharpDX
         /// <summary>
         /// The size of the <see cref="Vector3"/> type, in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = 12; //Utilities.SizeOf<Vector3>();
+        public static readonly int SizeInBytes = Utilities.SizeOf<Vector3>();
 
         /// <summary>
         /// A <see cref="Vector3"/> with all of its components set to zero.
@@ -1831,8 +1830,6 @@ namespace SharpDX
             return Equals(ref strongValue);
         }
 
-#if FULLWINDOWS
-
         /// <summary>
         /// Performs an implicit conversion from <see cref="Vector3"/> to <see cref="RawVector3"/>.
         /// </summary>
@@ -1852,6 +1849,15 @@ namespace SharpDX
         {
             return *(Vector3*)&value;
         }
-#endif
+
+        public static implicit operator Vector3(ME3ExplorerCore.SharpDX.Vector3 other)
+        {
+            return new Vector3(other.X, other.Y, other.Z);
+        }
+
+        public static implicit operator ME3ExplorerCore.SharpDX.Vector3(Vector3 local)
+        {
+            return new ME3ExplorerCore.SharpDX.Vector3(local.X, local.Y, local.Z);
+        }
     }
 }

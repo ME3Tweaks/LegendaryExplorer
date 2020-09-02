@@ -141,7 +141,7 @@ namespace ME3Explorer.Soundplorer
                         MemoryStream data = new MemoryStream();
                         ms.BaseStream.CopyToEx(data, (int)chunksize);
                         data.Position = 0;
-                        var str = data.ReadString(4, false);
+                        var str = data.ReadStringASCII(4);
                         isbEntry.DataAsStored = data.ToArray();
                         break;
                     case "FFIR":

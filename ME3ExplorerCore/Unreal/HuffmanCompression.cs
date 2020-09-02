@@ -8,7 +8,10 @@ using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.Unreal
 {
-    class HuffmanCompression
+    /// <summary>
+    /// ME2/ME3 huffman compressor for TLK
+    /// </summary>
+    public class HuffmanCompression
     {
         private Version _inputFileVersion = null;
         private List<TLKStringRef> _inputData = new List<TLKStringRef>();

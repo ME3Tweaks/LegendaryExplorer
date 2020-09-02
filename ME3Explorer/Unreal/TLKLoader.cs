@@ -71,11 +71,11 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static void SaveTLKList()
+        public static void SaveTLKList(MEGame game = MEGame.Unknown)
         {
-            File.WriteAllText(LoadedTLKsPathME1, JsonConvert.SerializeObject(ME1TalkFiles.tlkList.Select(x => (x.uindex, x.pcc.FilePath))));
-            File.WriteAllText(LoadedTLKsPathME2, JsonConvert.SerializeObject(ME2TalkFiles.tlkList.Select(x => x.path)));
-            File.WriteAllText(LoadedTLKsPathME3, JsonConvert.SerializeObject(ME3TalkFiles.tlkList.Select(x => x.path)));
+            if (game == MEGame.Unknown || game == MEGame.ME1) File.WriteAllText(LoadedTLKsPathME1, JsonConvert.SerializeObject(ME1TalkFiles.tlkList.Select(x => (x.uindex, x.pcc.FilePath))));
+            if (game == MEGame.Unknown || game == MEGame.ME2) File.WriteAllText(LoadedTLKsPathME2, JsonConvert.SerializeObject(ME2TalkFiles.tlkList.Select(x => x.path)));
+            if (game == MEGame.Unknown || game == MEGame.ME3) File.WriteAllText(LoadedTLKsPathME3, JsonConvert.SerializeObject(ME3TalkFiles.tlkList.Select(x => x.path)));
         }
     }
 }

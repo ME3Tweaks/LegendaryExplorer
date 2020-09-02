@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using Be.Windows.Forms;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;

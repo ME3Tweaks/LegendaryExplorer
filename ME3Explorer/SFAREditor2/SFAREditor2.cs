@@ -34,7 +34,8 @@ namespace ME3Explorer
             {
                 DLC = new DLCPackage(filename);
                 treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(DLC.ToTree());
+                //todo
+                //treeView1.Nodes.Add(DLC.ToTree());
 
                 //var outf = @"X:\quickbms";
                 //foreach (var f in DLC.Files.Where(x => x.isActualFile))
@@ -154,13 +155,15 @@ namespace ME3Explorer
 
             DLC = new DLCPackage(DLC.FileName);
             treeView1.Nodes.Clear();
-            treeView1.Nodes.Add(DLC.ToTree());
+            // Todo: Add extension for toTree()
+            // SFAR Editor 2 is useful for looking at non-PC SFARs
+            //treeView1.Nodes.Add(DLC.ToTree());
             SearchNode(filename, treeView1.Nodes[0]);
         }
 
         private void unpackAllDLCsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new DLCUnpacker.DLCUnpacker().Show();
+            new DLCUnpacker.DLCUnpackerUI().Show();
         }
 
         private void updateTOCToolStripMenuItem_Click(object sender, EventArgs e)

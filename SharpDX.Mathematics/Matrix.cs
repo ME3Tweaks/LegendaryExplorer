@@ -3291,5 +3291,11 @@ namespace SharpDX
         {
             return *(Matrix*)&value;
         }
+
+        public static unsafe implicit operator Matrix(ME3ExplorerCore.SharpDX.Matrix other)
+        {
+            // yeah idk if this works like this
+            return *(Matrix*)&other;
+        }
     }
 }

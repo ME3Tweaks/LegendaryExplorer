@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3Explorer.Unreal;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -299,17 +300,14 @@ namespace ME3Explorer.TlkManagerNS
         {
             //ME1 TLKs are held in Package Files
             //For a proper full reload we have to reload the package from disk
+            // which we don't do
             ME1TalkFiles.ClearLoadedTlks();
-            foreach (LoadedTLK tlk in tlksToLoad)
-            {
-                
-            }
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
             }
             ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME1TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME1);
         }
 
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -321,7 +319,7 @@ namespace ME3Explorer.TlkManagerNS
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
             }
             ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME2TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME2);
         }
 
         private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -333,7 +331,7 @@ namespace ME3Explorer.TlkManagerNS
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);
             }
             ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME3TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME3);
         }
 
         private async void ME1ReloadTLKStrings()

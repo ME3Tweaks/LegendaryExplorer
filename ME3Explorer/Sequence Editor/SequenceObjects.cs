@@ -12,6 +12,7 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using ME3Explorer.Sequence_Editor;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 

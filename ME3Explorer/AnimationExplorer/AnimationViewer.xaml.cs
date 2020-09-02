@@ -13,6 +13,7 @@ using FontAwesome5;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.GameInterop;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -314,7 +315,7 @@ namespace ME3Explorer.AnimationExplorer
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
         }
 
-        private bool IsDatabaseLoaded() => Animations.Any();
+        private bool IsDatabaseLoaded() => Enumerable.Any(Animations);
 
         private void TryLoadDatabase()
         {
@@ -387,7 +388,7 @@ namespace ME3Explorer.AnimationExplorer
                 SetBusy("Loading Animation", () => LoadingAnimation = false);
                 int animUIndex = 0;
                 string filePath = null;
-                if (anim != null && anim.AnimUsages.Any())
+                if (anim != null && Enumerable.Any(anim.AnimUsages))
                 {
                     //CameraState = ECameraState.Fixed;
                     int fileListIndex;

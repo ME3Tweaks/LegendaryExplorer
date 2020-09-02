@@ -181,7 +181,7 @@ namespace ME3Explorer.Unreal
                     // Todo: Add method to package class that will get the decompressed data stream
                     using var compressStream = File.OpenRead(afcPath);
 
-                    embeddedStream = CompressionHelper.DecompressPackage(package.IsCompressed);
+                    //embeddedStream = CompressionHelper.DecompressPackage(package.IsCompressed);
                 }
             }
 

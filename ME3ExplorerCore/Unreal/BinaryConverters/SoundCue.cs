@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using SharpDX;
+using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {

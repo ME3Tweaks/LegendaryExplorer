@@ -22,7 +22,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace SharpDX
+namespace ME3ExplorerCore.SharpDX
 {
     /// <summary>
     /// Structure using the same layout than <see cref="System.Drawing.Point"/>.

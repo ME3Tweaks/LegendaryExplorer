@@ -22,9 +22,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if WINDOWS
 using SharpDX.Mathematics.Interop;
-#endif
 
 namespace SharpDX
 {
@@ -169,7 +167,7 @@ namespace SharpDX
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (!(obj is Viewport))
+            if(!(obj is Viewport))
                 return false;
 
             var strongValue = (Viewport)obj;
@@ -195,7 +193,7 @@ namespace SharpDX
                 return hashCode;
             }
         }
-
+        
         /// <summary>
         /// Implements the operator ==.
         /// </summary>
@@ -326,8 +324,6 @@ namespace SharpDX
             }
         }
 
-#if WINDOWS
-
         /// <summary>
         /// Performs an implicit conversion from <see cref="Viewport"/> to <see cref="RawViewport"/>.
         /// </summary>
@@ -358,7 +354,5 @@ namespace SharpDX
         {
             return *(Viewport*)&value;
         }
-
-#endif
     }
 }

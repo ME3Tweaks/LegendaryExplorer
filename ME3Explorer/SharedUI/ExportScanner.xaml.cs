@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 
