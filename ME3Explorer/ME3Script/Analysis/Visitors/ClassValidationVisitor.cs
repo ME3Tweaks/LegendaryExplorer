@@ -5,6 +5,7 @@ using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 

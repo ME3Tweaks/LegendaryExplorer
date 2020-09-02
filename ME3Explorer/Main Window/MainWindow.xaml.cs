@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using FontAwesome5.WPF;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
-namespace ME3ExplorerCore.Unreal
+namespace ME3ExplorerCore.TLK.ME2ME3
 {
     /// <summary>
     /// ME2/ME3 huffman compressor for TLK

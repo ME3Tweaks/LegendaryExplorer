@@ -6,6 +6,7 @@ using System.Linq;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;

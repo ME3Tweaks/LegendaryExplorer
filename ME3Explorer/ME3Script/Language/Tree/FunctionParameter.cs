@@ -1,4 +1,5 @@
-﻿using ME3Script.Analysis.Visitors;
+﻿using ME3ExplorerCore.Helpers;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 

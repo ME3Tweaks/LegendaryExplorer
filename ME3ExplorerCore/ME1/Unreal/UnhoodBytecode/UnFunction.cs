@@ -23,7 +23,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         public StatementList Statements { get; set; }
         public List<BytecodeSingularToken> Tokens;
 
-        internal UnFunction(ExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
+        public UnFunction(ExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
             : base(export, bytecode)
         {
             _name = name;
@@ -42,13 +42,13 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             get { return _bytecode; }
         }
 
-        internal string Name { get { return _name; } }
-        internal int NativeIndex { get { return _nativeIndex; } }
-        internal bool Native { get { return HasFlag("Native"); } }
-        internal bool Event { get { return HasFlag("Event"); } }
-        internal bool PreOperator { get { return HasFlag("PreOperator"); } }
-        internal bool Operator { get { return HasFlag("Operator"); } }
-        internal bool PostOperator { get { return Operator && _operatorPrecedence == 0; } }
+        public string Name { get { return _name; } }
+        public int NativeIndex { get { return _nativeIndex; } }
+        public bool Native { get { return HasFlag("Native"); } }
+        public bool Event { get { return HasFlag("Event"); } }
+        public bool PreOperator { get { return HasFlag("PreOperator"); } }
+        public bool Operator { get { return HasFlag("Operator"); } }
+        public bool PostOperator { get { return Operator && _operatorPrecedence == 0; } }
 
         public List<Token> ScriptTokens = new List<Token>();
 
@@ -57,7 +57,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             Decompile(result, true);
         }
 
-        internal bool HasFlag(string name)
+        public bool HasFlag(string name)
         {
             return _flags.HasFlag(name);
         }

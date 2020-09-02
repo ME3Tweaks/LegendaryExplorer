@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using ME3ExplorerCore.TLK.ME2ME3;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.TLK

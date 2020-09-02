@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing

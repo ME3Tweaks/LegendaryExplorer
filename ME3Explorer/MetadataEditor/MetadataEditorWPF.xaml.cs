@@ -8,6 +8,8 @@ using System.Windows.Input;
 using Be.Windows.Forms;
 using ByteSizeLib;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
@@ -41,7 +43,7 @@ namespace ME3Explorer.MetadataEditor
         private IEntry CurrentLoadedEntry;
         private byte[] OriginalHeader;
 
-        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
+        public SharedUI.ObservableCollectionExtended<object> AllEntriesList { get; } = new SharedUI.ObservableCollectionExtended<object>();
         public int CurrentObjectNameIndex { get; private set; }
 
         private HexBox Header_Hexbox;

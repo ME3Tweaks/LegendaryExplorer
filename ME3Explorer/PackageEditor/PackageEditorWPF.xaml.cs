@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
@@ -44,7 +43,9 @@ using Guid = System.Guid;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal.Classes;
 
 namespace ME3Explorer
@@ -1242,7 +1243,7 @@ namespace ME3Explorer
                             };
                             if (d.ShowDialog() == true)
                             {
-                                var exportingTalk = new ME1Explorer.Unreal.Classes.TalkFile(exp);
+                                var exportingTalk = new ME1TalkFile(exp);
                                 exportingTalk.saveToFile(d.FileName);
                                 MessageBox.Show("Done");
                             }
@@ -1321,7 +1322,7 @@ namespace ME3Explorer
                             };
                             if (d.ShowDialog() == true)
                             {
-                                ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
+                                HuffmanCompression compressor = new HuffmanCompression();
                                 compressor.LoadInputData(d.FileName);
                                 compressor.serializeTalkfileToExport(exp, false);
                             }
@@ -3421,7 +3422,7 @@ namespace ME3Explorer
                         Debug.WriteLine("Found exports in " + f.FullName.Substring(basePathLen));
                         foreach (ExportEntry exp in tlkExports)
                         {
-                            ME1Explorer.Unreal.Classes.TalkFile talkFile = new ME1Explorer.Unreal.Classes.TalkFile(exp);
+                            var talkFile = new ME1TalkFile(exp);
                             foreach (var sref in talkFile.StringRefs)
                             {
                                 if (sref.StringID == 0) continue; //skip blank
@@ -5108,7 +5109,7 @@ namespace ME3Explorer
                             persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
                             {
                                 new NameProperty(fileName, "PackageName"),
-                                CommonStructs.ColorProp(Color.FromRgb((byte) (i % 256), (byte) ((255 - i) % 256), (byte) ((i * 7) % 256)), "DrawColor")
+                                CommonStructs.ColorProp(System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256), (byte) ((i * 7) % 256)), "DrawColor")
                             })
                             {
                                 ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),

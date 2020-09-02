@@ -1,4 +1,5 @@
 ﻿using System;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Language.Tree;

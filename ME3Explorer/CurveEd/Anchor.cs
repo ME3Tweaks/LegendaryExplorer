@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.CurveEd
 {

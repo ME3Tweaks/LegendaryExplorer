@@ -258,7 +258,7 @@ namespace ME3ExplorerCore.Unreal
         /// <param name="typeName">Struct type name</param>
         /// <param name="stripTransients">Strip transients from the struct</param>
         /// <returns></returns>
-        internal static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients)
+        public static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients)
         {
             switch (game)
             {

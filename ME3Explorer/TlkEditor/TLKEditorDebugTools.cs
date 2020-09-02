@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.TLK.ME2ME3;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer

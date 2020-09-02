@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.SharedUI
 {

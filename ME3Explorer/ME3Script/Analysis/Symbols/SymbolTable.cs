@@ -5,6 +5,7 @@ using System.Linq;
 using ME3ExplorerCore.Misc;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
+using ME3ExplorerCore.Helpers;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 using ASTNodeDict = ME3ExplorerCore.Misc.CaseInsensitiveDictionary<ME3Script.Language.Tree.ASTNode>;

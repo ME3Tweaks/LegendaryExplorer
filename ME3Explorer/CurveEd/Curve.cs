@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.CurveEd
 {

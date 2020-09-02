@@ -366,7 +366,8 @@ namespace ME3Explorer.DLCUnpacker
             {
                 if (!UnpackCanceled)
                 {
-                    sfar.Pr += SFAR_PropertyChanged;
+                    // Todo: hook this up
+                    sfar.PropertyChanged += SFAR_PropertyChanged;
                     string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
                     string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
                     sfar.Extract(outPath);

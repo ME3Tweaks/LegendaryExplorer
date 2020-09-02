@@ -3,6 +3,7 @@ using ME3Script.Language.Tree;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
 using System.Collections.Generic;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;

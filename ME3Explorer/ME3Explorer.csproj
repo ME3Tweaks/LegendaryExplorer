@@ -421,6 +421,7 @@
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
+    <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />
     <Compile Include="Unreal\TLKLoader.cs" />
     <Compile Include="Unreal\WwiseStreamHelper.cs" />
     <Compile Include="WwiseEditor\WwiseGraphEditor.cs">
@@ -705,15 +706,6 @@
     <Compile Include="ME1TlkEditor\ME1TlkEditorWPF.xaml.cs">
       <DependentUpon>ME1TlkEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME1\ITalkFile.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\ProblemRegistry.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\StatementList.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\TextBuilder.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
       <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
     </Compile>
@@ -1321,9 +1313,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ME1\HuffmanCompression.cs" />
-    <Compile Include="ME1\Talkfiles.cs" />
-    <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
     <Compile Include="Meshplorer\Meshplorer.cs">
       <SubType>Form</SubType>
     </Compile>

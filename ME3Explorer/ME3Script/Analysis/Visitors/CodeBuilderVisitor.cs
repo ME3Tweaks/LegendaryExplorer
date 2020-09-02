@@ -6,6 +6,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Language.Tree;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Script.Analysis.Visitors
 {

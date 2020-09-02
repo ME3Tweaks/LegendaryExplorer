@@ -1,6 +1,7 @@
 ﻿using ME3Script.Analysis.Visitors;
 using ME3Script.Utilities;
 using System.Collections.Generic;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree

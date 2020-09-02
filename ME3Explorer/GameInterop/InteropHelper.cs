@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Input;
 using ME3Explorer.Properties;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using Microsoft.Win32;
 

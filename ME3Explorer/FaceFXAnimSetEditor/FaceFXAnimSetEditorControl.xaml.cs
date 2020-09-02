@@ -9,6 +9,7 @@ using ClosedXML.Excel;
 using ME3Explorer.CurveEd;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;

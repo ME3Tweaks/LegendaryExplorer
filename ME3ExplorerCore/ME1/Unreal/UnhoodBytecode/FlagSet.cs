@@ -24,7 +24,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             return (flags & _masks[name]) != 0;
         }
 
-        internal int GetMask(string name)
+        public int GetMask(string name)
         {
             return _masks[name];
         }
@@ -32,7 +32,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         internal string[] Flags { get; private set; }
     }
 
-    class FlagValues
+    public class FlagValues
     {
         private readonly int _flags;
         private readonly FlagSet _set;

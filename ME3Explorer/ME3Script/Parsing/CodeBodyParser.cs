@@ -7,6 +7,7 @@ using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Lexing;

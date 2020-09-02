@@ -10,7 +10,7 @@ using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.TLK.ME1
 {
-    class HuffmanCompression
+    public class HuffmanCompression
     {
         private List<TLKStringRef> _inputData = new List<TLKStringRef>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();

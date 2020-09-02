@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -734,7 +735,7 @@ namespace ME3Explorer.Pathfinding_Editor
             double deltaX = X - other.X;
             double deltaY = Y - other.Y;
             double deltaZ = Z - other.Z;
-            return new Point3D(deltaX,deltaY,deltaZ);
+            return new Point3D(deltaX, deltaY, deltaZ);
         }
 
         public override string ToString()
@@ -750,6 +751,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return new Point3D(deltaX, deltaY, deltaZ);
         }
 
-        public static implicit operator Point3D(Vector3 vec) =>  new Point3D(vec.X, vec.Y, vec.Z);
+        public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
+        public static implicit operator Point3D(ME3ExplorerCore.SharpDX.Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
     }
 }

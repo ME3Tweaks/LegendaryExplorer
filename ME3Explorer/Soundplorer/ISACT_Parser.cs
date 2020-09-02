@@ -197,6 +197,7 @@ begin
 
         private static void SavePcFile(string currentFileName, string path, uint blocksize, bool isOgg, bool isPCM, uint pcChannels, uint sampleRate, MemoryStream inData)
         {
+            // todo: Gut this and use VGMStream instead
             string outPath = Path.Combine(path, currentFileName);
             if (isPCM)
             {

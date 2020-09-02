@@ -10,7 +10,7 @@ using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 {
-    internal class UE3FunctionReader
+    public class UE3FunctionReader
     {
         public static readonly FlagSet _flagSet = new FlagSet("Final", "Defined", "Iterator", "Latent",
             "PreOperator", "Singular", "Net", "NetReliable",

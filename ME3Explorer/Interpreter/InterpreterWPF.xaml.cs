@@ -15,7 +15,10 @@ using ME3Explorer.Meshplorer;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 

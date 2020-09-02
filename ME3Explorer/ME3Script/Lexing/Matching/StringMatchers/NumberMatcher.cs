@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {

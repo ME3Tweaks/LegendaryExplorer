@@ -5,7 +5,7 @@ using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
-    public class WwiseStream : ObjectBinary
+    public partial class WwiseStream : ObjectBinary
     {
         public uint Unk1;//ME2
         public uint Unk2;//ME2
@@ -16,11 +16,9 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public int DataSize;
         public int DataOffset;
         public byte[] EmbeddedData;
-
-
+        
         public int Id;
         public string Filename;
-        public bool IsPCCStored => Filename == null;
 
         protected override void Serialize(SerializingContainer2 sc)
         {

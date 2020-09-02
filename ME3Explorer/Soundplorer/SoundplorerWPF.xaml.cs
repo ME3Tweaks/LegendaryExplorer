@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FontAwesome5;
+using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -978,7 +979,7 @@ namespace ME3Explorer.Soundplorer
                         if (d.ShowDialog() == true)
                         {
                             var w = spExport.Export.GetBinaryData<WwiseStream>();
-                            if (WwiseStreamHelper.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
+                            if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1028,7 +1029,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
                     string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (WwiseStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
+                    if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
                         MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
