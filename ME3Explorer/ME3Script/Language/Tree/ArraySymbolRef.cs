@@ -23,7 +23,8 @@ namespace ME3Script.Language.Tree
             return Array.ResolveType() switch
             {
                  DynamicArrayType dynArrType => dynArrType.ElementType,
-                _ => throw new ParseError("Expected a dynamic array!")
+                 StaticArrayType staticArrayType => staticArrayType.ElementType,
+                _ => throw new ParseError("Expected an array!")
             };
         }
 

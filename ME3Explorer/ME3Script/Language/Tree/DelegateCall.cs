@@ -1,22 +1,23 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Script.Analysis.Symbols;
+using ME3Script.Analysis.Visitors;
+using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
 {
-    public class FunctionCall : Expression
+    public class DelegateCall : Expression
     {
-        public SymbolReference Function;
+        public SymbolReference DelegateReference;
         public List<Expression> Arguments;
 
-        public FunctionCall(SymbolReference func, List<Expression> arguments, SourcePosition start, SourcePosition end)
+        public DelegateCall(SymbolReference del, List<Expression> arguments, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.FunctionCall, start, end)
         {
-            Function = func;
+            DelegateReference = del;
             Arguments = arguments;
         }
 
@@ -27,7 +28,7 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            Function function = ((Function)Function.Node);
+            Function function = ((DelegateType)((VariableDeclaration)DelegateReference.Node).VarType).DefaultFunction;
             if (function.CoerceReturn && function.ReturnType != SymbolTable.StringType)
             {
                 return ((ClassType)Arguments[0].ResolveType()).ClassLimiter;
@@ -39,7 +40,7 @@ namespace ME3Script.Language.Tree
         {
             get
             {
-                yield return Function;
+                yield return DelegateReference;
                 foreach (Expression expression in Arguments) yield return expression;
             }
         }

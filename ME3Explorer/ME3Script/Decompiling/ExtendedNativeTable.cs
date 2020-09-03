@@ -1,4 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ME3Script.Language.Tree;
+using ME3Script.Utilities;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Decompiling
@@ -231,9 +236,9 @@ namespace ME3Script.Decompiling
 
         public static readonly Dictionary<int, string> PrimitiveCastTable = new Dictionary<int, string>()
         {
-            { 0x36, BOOL }, // InterfaceToBool
+            { 0x36, OBJECT }, // InterfaceToObject
             { 0x37, STRING }, // InterfaceToString
-            { 0x38, OBJECT }, // InterfaceToObject
+            { 0x38, BOOL }, // InterfaceToBool
             { 0x39, VECTOR }, // RotatorToVector
             { 0x3A, INT }, // ByteToInt
             { 0x3B, BOOL }, // ByteToBool
@@ -273,6 +278,21 @@ namespace ME3Script.Decompiling
             { 0x5D, STRINGREF }, // IntToStringRef
             { 0x5F, "UNKN_TYPE_5F"}, //UNUSED
             { 0x60, NAME }, // StringToName
+        };
+
+        public static readonly Dictionary<string, InOpDeclaration> AdditionalOperators = new Dictionary<string, InOpDeclaration>
+        {
+            ["EqualEqual_InterfaceInterface"] = new InOpDeclaration("==", 24, 0, null, null, null),
+            ["NotEqual_InterfaceInterface"] = new InOpDeclaration("!=", 26, 0, null, null, null),
+            ["Multiply_MatrixMatrix"] = new InOpDeclaration("*", 34, 0, null, null, null),
+            ["Add_Vector2DVector2D"] = new InOpDeclaration("+", 16, 0, null, null, null),
+            ["Subtract_Vector2DVector2D"] = new InOpDeclaration("-", 16, 0, null, null, null),
+            ["Subtract_ColorColor"] = new InOpDeclaration("-", 20, 0, null, null, null),
+            ["Multiply_FloatColor"] = new InOpDeclaration("*", 16, 0, null, null, null),
+            ["Multiply_ColorFloat"] = new InOpDeclaration("*", 16, 0, null, null, null),
+            ["Add_ColorColor"] = new InOpDeclaration("+", 20, 0, null, null, null),
+            ["Multiply_LinearColorFloat"] = new InOpDeclaration("*", 20, 0, null, null, null),
+            ["Subtract_LinearColorLinearColor"] = new InOpDeclaration("-", 16, 0, null, null, null),
         };
     }
 }

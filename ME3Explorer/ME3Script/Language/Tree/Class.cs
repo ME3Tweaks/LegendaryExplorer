@@ -8,7 +8,7 @@ namespace ME3Script.Language.Tree
     public sealed class Class : VariableType, IObjectType
     {
         public VariableType Parent;
-        public VariableType OuterClass;
+        public VariableType _outerClass;
         public UnrealFlags.EClassFlags Flags;
         public string ConfigName;
         public List<VariableType> Interfaces { get; }
@@ -98,6 +98,12 @@ namespace ME3Script.Language.Tree
                 foreach (State state in States) yield return state;
                 yield return DefaultProperties;
             }
+        }
+
+        public VariableType OuterClass
+        {
+            get => _outerClass ?? (Parent as Class)?.OuterClass;
+            set => _outerClass = value;
         }
     }
 }

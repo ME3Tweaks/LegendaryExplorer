@@ -54,6 +54,8 @@ namespace ME3ExplorerCore.TLK.ME1
                 }
             }
 
+            public int CalculatedID => _stringID >= 0 ? _stringID : -(int.MinValue - _stringID);
+
             /// <summary>
             /// This is used by huffman compression
             /// </summary>

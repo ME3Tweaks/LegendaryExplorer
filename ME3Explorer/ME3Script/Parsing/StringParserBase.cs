@@ -22,17 +22,19 @@ namespace ME3Script.Parsing
 
         protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPos ?? new SourcePosition(-1, -1, -1);
 
-        protected List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
+        public static readonly List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
         {
             ASTNodeType.WhileLoop,
             ASTNodeType.ForLoop,
+            ASTNodeType.ForEachLoop,
             ASTNodeType.IfStatement,
             ASTNodeType.SwitchStatement,
             ASTNodeType.CaseStatement,
-            ASTNodeType.DefaultStatement
+            ASTNodeType.DefaultStatement,
+            ASTNodeType.StateLabel,
         };
 
-        protected List<ASTNodeType> CompositeTypes = new List<ASTNodeType>
+        public static readonly List<ASTNodeType> CompositeTypes = new List<ASTNodeType>
         {
             ASTNodeType.Class,
             ASTNodeType.Struct,
@@ -339,7 +341,7 @@ namespace ME3Script.Parsing
             if (Matches(TokenType.IntegerNumber))
             {
                 int val = int.Parse(token.Value, CultureInfo.InvariantCulture);
-                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = val >= 0 && val <= 255 ? BYTE : INT };
+                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = INT };
             }
 
             if (Matches(TokenType.FloatingNumber))
@@ -372,13 +374,15 @@ namespace ME3Script.Parsing
                 return new NoneLiteral(token.StartPos, token.EndPos);
             }
 
-            if (Matches(VECT))
+            if (CurrentIs(VECT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
+                Tokens.Advance();
                 return ParseVectorLiteral();
             }
 
-            if (Matches(ROT))
+            if (CurrentIs(ROT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
+                Tokens.Advance();
                 return ParseRotatorLiteral();
             }
 
@@ -393,35 +397,21 @@ namespace ME3Script.Parsing
                 throw Error($"Expected '(' after '{ROT}' in rotator literal!");
             }
 
-            if (!Matches(TokenType.IntegerNumber))
-            {
-                throw Error("Expected integer literal for pitch component in rotator literal!");
-            }
+            int pitch = ParseInt();
 
-            int pitch = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
             if (!Matches(TokenType.Comma))
             {
                 throw Error("Expected ',' after pitch component in rotator literal!");
             }
 
-            if (!Matches(TokenType.IntegerNumber))
-            {
-                throw Error("Expected integer literal for yaw component in rotator literal!");
-            }
-
-            int yaw = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            int yaw = ParseInt();
 
             if (!Matches(TokenType.Comma))
             {
                 throw Error("Expected ',' after yaw component in rotator literal!");
             }
 
-            if (!Matches(TokenType.IntegerNumber))
-            {
-                throw Error("Expected integer literal for roll component in rotator literal!");
-            }
-
-            int roll = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            int roll = ParseInt();
 
             if (!Matches(TokenType.RightParenth))
             {
@@ -439,35 +429,21 @@ namespace ME3Script.Parsing
                 throw Error($"Expected '(' after '{VECT}' in vector literal!");
             }
 
-            if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
-            {
-                throw Error("Expected number literal for x component in vector literal!");
-            }
+            float x = ParseFloat();
 
-            float x = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
             if (!Matches(TokenType.Comma))
             {
                 throw Error("Expected ',' after x component in vector literal!");
             }
 
-            if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
-            {
-                throw Error("Expected number literal for y component in vector literal!");
-            }
-
-            float y = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            float y = ParseFloat();
 
             if (!Matches(TokenType.Comma))
             {
                 throw Error("Expected ',' after y component in vector literal!");
             }
 
-            if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
-            {
-                throw Error("Expected number literal for z component in vector literal!");
-            }
-
-            float z = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            float z = ParseFloat();
 
             if (!Matches(TokenType.RightParenth))
             {
@@ -475,6 +451,30 @@ namespace ME3Script.Parsing
             }
 
             return new VectorLiteral(x, y, z, start, Tokens.Prev().EndPos);
+        }
+
+        float ParseFloat()
+        {
+            bool isNegative = Matches(TokenType.MinusSign);
+            if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
+            {
+                throw Error("Expected number literal!");
+            }
+
+            var val = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            return isNegative ? -val : val;
+        }
+
+        int ParseInt()
+        {
+            bool isNegative = Matches(TokenType.MinusSign);
+            if (!Matches(TokenType.IntegerNumber))
+            {
+                throw Error("Expected integer literal!");
+            }
+
+            var val = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
+            return isNegative ? -val : val;
         }
     }
 

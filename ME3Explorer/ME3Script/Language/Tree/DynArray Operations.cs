@@ -176,4 +176,21 @@ namespace ME3Script.Language.Tree
             return visitor.VisitNode(this);
         }
     }
+
+    public class DynArrayIterator : DynArrayOperation
+    {
+        public Expression ValueArg;
+        public Expression IndexArg;
+
+        public DynArrayIterator(Expression dynArrayExpression, Expression valueArg, Expression indexArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
+        {
+            ValueArg = valueArg;
+            IndexArg = indexArg;
+        }
+
+        public override bool AcceptVisitor(IASTVisitor visitor)
+        {
+            return visitor.VisitNode(this);
+        }
+    }
 }

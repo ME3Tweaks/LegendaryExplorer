@@ -68,7 +68,8 @@
         "Vector",
         "Rotator",
         "Interface",
-        "new"
+        "new",
+        "assert"
     };
 #>
 namespace ME3Script.Utilities

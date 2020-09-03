@@ -6,7 +6,7 @@ namespace ME3Script.Language.Tree
 {
     public abstract class Statement : ASTNode
     {
-        public Statement(ASTNodeType type,SourcePosition start, SourcePosition end) 
+        protected Statement(ASTNodeType type,SourcePosition start, SourcePosition end) 
             : base(type, start, end) { }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

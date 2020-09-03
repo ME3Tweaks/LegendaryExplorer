@@ -10,6 +10,8 @@ namespace ME3Script.Language.Tree
         public Expression TrueExpression;
         public Expression FalseExpression;
 
+        public VariableType ExpressionType;
+
         public ConditionalExpression(Expression cond, Expression first, Expression second, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.ConditionalExpression, start, end)
         {
@@ -25,7 +27,7 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            return TrueExpression.ResolveType();
+            return ExpressionType ?? TrueExpression.ResolveType() ?? FalseExpression.ResolveType();
         }
         public override IEnumerable<ASTNode> ChildNodes
         {

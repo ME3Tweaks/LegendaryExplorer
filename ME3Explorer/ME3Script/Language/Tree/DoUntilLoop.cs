@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
         public CodeBody Body;
 
         public DoUntilLoop(Expression cond, CodeBody body,
-            SourcePosition start, SourcePosition end)
+            SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.WhileLoop, start, end)
         {
             Condition = cond;

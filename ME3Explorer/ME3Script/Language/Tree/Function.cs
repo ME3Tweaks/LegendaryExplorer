@@ -2,8 +2,12 @@
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System.Collections.Generic;
-using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.Unreal.BinaryConverters;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ME3Explorer;
+using ME3Explorer.Unreal.BinaryConverters;
+using ME3Script.Parsing;
 
 namespace ME3Script.Language.Tree
 {
@@ -13,6 +17,7 @@ namespace ME3Script.Language.Tree
         public CodeBody Body;
         public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
+        public bool CoerceReturn;
         public FunctionFlags Flags;
         public List<FunctionParameter> Parameters;
 
@@ -42,6 +47,26 @@ namespace ME3Script.Language.Tree
                 Declaration = this
             };
             if (Body != null) Body.Outer = this;
+        }
+
+        public bool SignatureEquals(Function other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (ReturnType != other.ReturnType || Parameters.Count != other.Parameters.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                var thisParam = Parameters[i];
+                var otherParam = other.Parameters[i];
+                if (!NodeUtils.TypeEqual(thisParam.VarType, otherParam.VarType) || thisParam.Size != otherParam.Size)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

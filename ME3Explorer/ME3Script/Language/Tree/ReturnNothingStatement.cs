@@ -5,7 +5,7 @@ namespace ME3Script.Language.Tree
 {
     public class ReturnNothingStatement : ReturnStatement
     {
-        public ReturnNothingStatement(SourcePosition start = null, SourcePosition end = null, Expression value = null) : base(start, end, value)
+        public ReturnNothingStatement(Expression value = null, SourcePosition start = null, SourcePosition end = null) : base(value, start, end)
         {
         }
 

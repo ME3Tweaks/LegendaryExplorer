@@ -66,5 +66,6 @@
         public const string ROTATOR = "Rotator";     
         public const string INTERFACE = "Interface";     
         public const string NEW = "new";     
+        public const string ASSERT = "assert";     
 	}
 }
