@@ -115,7 +115,7 @@ namespace ME3Explorer.Packages
                 export.RegenerateHeader(newGame, true);
             }
 
-            package.Game = newGame;
+            package.setGame(newGame);
 
             for (int i = 0; i < package.Exports.Count; i++)
             {
@@ -356,6 +356,7 @@ namespace ME3Explorer.Packages
                                     default:
                                         break;
                                 }
+
                                 var newtexidx = package.Exports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;
                                 if (newtexidx == 0)
                                     newtexidx = package.Imports.FirstOrDefault(x => x.FullPath == newTxtEnt.FullPath)?.UIndex ?? 0;

@@ -222,7 +222,8 @@ namespace ME3ExplorerCore.Packages
                 {
                     //PS3? LZMA
                     fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
-                } else
+                }
+                else
                 {
                     // ??????
                 }
@@ -594,95 +595,95 @@ namespace ME3ExplorerCore.Packages
             switch (export.Game)
             {
                 case MEGame.ME2:
-                {
-                    MemoryStream binData = new MemoryStream(export.Data);
-                    binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-                    int nameList1Count = binData.ReadInt32();
-                    binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-                    int shaderCount = binData.ReadInt32();
-                    for (int i = 0; i < shaderCount; i++)
                     {
-                        binData.Seek(24, SeekOrigin.Current);
-                        int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                        binData.Seek(-4, SeekOrigin.Current);
-                        binData.WriteInt32(nextShaderOffset + newDataOffset);
-                        binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                        MemoryStream binData = new MemoryStream(export.Data);
+                        binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+                        int nameList1Count = binData.ReadInt32();
+                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                        int shaderCount = binData.ReadInt32();
+                        for (int i = 0; i < shaderCount; i++)
+                        {
+                            binData.Seek(24, SeekOrigin.Current);
+                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.Seek(-4, SeekOrigin.Current);
+                            binData.WriteInt32(nextShaderOffset + newDataOffset);
+                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                        }
+
+                        int vertexFactoryMapCount = binData.ReadInt32();
+                        binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+
+                        int materialShaderMapCount = binData.ReadInt32();
+                        for (int i = 0; i < materialShaderMapCount; i++)
+                        {
+                            binData.Seek(16, SeekOrigin.Current);
+
+                            int switchParamCount = binData.ReadInt32();
+                            binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                            int componentMaskParamCount = binData.ReadInt32();
+                            binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.Seek(-4, SeekOrigin.Current);
+                            binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                            binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+                        }
+
+                        export.Data = binData.ToArray();
+                        break;
                     }
-
-                    int vertexFactoryMapCount = binData.ReadInt32();
-                    binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-
-                    int materialShaderMapCount = binData.ReadInt32();
-                    for (int i = 0; i < materialShaderMapCount; i++)
-                    {
-                        binData.Seek(16, SeekOrigin.Current);
-
-                        int switchParamCount = binData.ReadInt32();
-                        binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                        int componentMaskParamCount = binData.ReadInt32();
-                        binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                        int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                        binData.Seek(-4, SeekOrigin.Current);
-                        binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                        binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-                    }
-
-                    export.Data = binData.ToArray();
-                    break;
-                }
                 case MEGame.ME3:
-                {
-                    MemoryStream binData = new MemoryStream(export.Data);
-                    binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
-
-                    int nameList1Count = binData.ReadInt32();
-                    binData.Seek(nameList1Count * 12, SeekOrigin.Current);
-
-                    int namelist2Count = binData.ReadInt32();//namelist2
-                    binData.Seek(namelist2Count * 12, SeekOrigin.Current);
-
-                    int shaderCount = binData.ReadInt32();
-                    for (int i = 0; i < shaderCount; i++)
                     {
-                        binData.Seek(24, SeekOrigin.Current);
-                        int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
-                        binData.Seek(-4, SeekOrigin.Current);
-                        binData.WriteInt32(nextShaderOffset + newDataOffset);
-                        binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                        MemoryStream binData = new MemoryStream(export.Data);
+                        binData.Seek(export.propsEnd() + 1, SeekOrigin.Begin);
+
+                        int nameList1Count = binData.ReadInt32();
+                        binData.Seek(nameList1Count * 12, SeekOrigin.Current);
+
+                        int namelist2Count = binData.ReadInt32();//namelist2
+                        binData.Seek(namelist2Count * 12, SeekOrigin.Current);
+
+                        int shaderCount = binData.ReadInt32();
+                        for (int i = 0; i < shaderCount; i++)
+                        {
+                            binData.Seek(24, SeekOrigin.Current);
+                            int nextShaderOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.Seek(-4, SeekOrigin.Current);
+                            binData.WriteInt32(nextShaderOffset + newDataOffset);
+                            binData.Seek(nextShaderOffset, SeekOrigin.Begin);
+                        }
+
+                        int vertexFactoryMapCount = binData.ReadInt32();
+                        binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
+
+                        int materialShaderMapCount = binData.ReadInt32();
+                        for (int i = 0; i < materialShaderMapCount; i++)
+                        {
+                            binData.Seek(16, SeekOrigin.Current);
+
+                            int switchParamCount = binData.ReadInt32();
+                            binData.Seek(switchParamCount * 32, SeekOrigin.Current);
+
+                            int componentMaskParamCount = binData.ReadInt32();
+                            binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
+
+                            int normalParams = binData.ReadInt32();
+                            binData.Seek(normalParams * 29, SeekOrigin.Current);
+
+                            binData.Seek(8, SeekOrigin.Current);
+
+                            int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
+                            binData.Seek(-4, SeekOrigin.Current);
+                            binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
+                            binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
+                        }
+
+                        export.Data = binData.ToArray();
+                        break;
                     }
-
-                    int vertexFactoryMapCount = binData.ReadInt32();
-                    binData.Seek(vertexFactoryMapCount * 12, SeekOrigin.Current);
-
-                    int materialShaderMapCount = binData.ReadInt32();
-                    for (int i = 0; i < materialShaderMapCount; i++)
-                    {
-                        binData.Seek(16, SeekOrigin.Current);
-
-                        int switchParamCount = binData.ReadInt32();
-                        binData.Seek(switchParamCount * 32, SeekOrigin.Current);
-
-                        int componentMaskParamCount = binData.ReadInt32();
-                        binData.Seek(componentMaskParamCount * 44, SeekOrigin.Current);
-
-                        int normalParams = binData.ReadInt32();
-                        binData.Seek(normalParams * 29, SeekOrigin.Current);
-
-                        binData.Seek(8, SeekOrigin.Current);
-
-                        int nextMaterialShaderMapOffset = binData.ReadInt32() - oldDataOffset;
-                        binData.Seek(-4, SeekOrigin.Current);
-                        binData.WriteInt32(nextMaterialShaderMapOffset + newDataOffset);
-                        binData.Seek(nextMaterialShaderMapOffset, SeekOrigin.Begin);
-                    }
-
-                    export.Data = binData.ToArray();
-                    break;
-                }
             }
         }
 
@@ -851,5 +852,14 @@ namespace ME3ExplorerCore.Packages
                 LocalTalkFiles.Add(new ME1TalkFile(exp));
             }
         }
-            }
+
+        /// <summary>
+        /// Sets the game for this MEPackage. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING
+        /// </summary>
+        /// <param name="newGame"></param>
+        public void setGame(MEGame newGame)
+        {
+            Game = newGame;
+        }
+    }
 }
