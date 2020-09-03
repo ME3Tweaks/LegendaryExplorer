@@ -1,13 +1,10 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Language.ByteCode;
+﻿using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Utilities;
 using static ME3Script.Utilities.Keywords;
 

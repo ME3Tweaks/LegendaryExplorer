@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using ME3ExplorerCore.Helpers;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.TLK.ME2ME3

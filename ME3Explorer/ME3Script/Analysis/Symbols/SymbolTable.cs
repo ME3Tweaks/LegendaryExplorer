@@ -9,6 +9,7 @@ using ME3Script.Analysis.Visitors;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 

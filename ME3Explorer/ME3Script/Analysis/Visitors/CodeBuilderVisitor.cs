@@ -5,9 +5,9 @@ using System.Text;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Language.Tree;
 using ME3Script.Parsing;
-using static ME3Explorer.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Script.Analysis.Visitors
 {
@@ -79,68 +79,68 @@ namespace ME3Script.Analysis.Visitors
                 Write($"implements({string.Join(", ", node.Interfaces.Select(i => i.Name))})");
             }
 
-            EClassFlags flags = node.Flags;
-            if (flags.Has(EClassFlags.Native))
+            UnrealFlags.EClassFlags flags = node.Flags;
+            if (flags.Has(UnrealFlags.EClassFlags.Native))
             {
                 Write("native");
             }
-            if (flags.Has(EClassFlags.NativeOnly))
+            if (flags.Has(UnrealFlags.EClassFlags.NativeOnly))
             {
                 Write("nativeonly");
             }
-            if (flags.Has(EClassFlags.NoExport))
+            if (flags.Has(UnrealFlags.EClassFlags.NoExport))
             {
                 Write("noexport");
             }
-            if (flags.Has(EClassFlags.EditInlineNew))
+            if (flags.Has(UnrealFlags.EClassFlags.EditInlineNew))
             {
                 Write("editinlinenew");
             }
-            if (flags.Has(EClassFlags.Placeable))
+            if (flags.Has(UnrealFlags.EClassFlags.Placeable))
             {
                 Write("placeable");
             }
-            if (flags.Has(EClassFlags.HideDropDown))
+            if (flags.Has(UnrealFlags.EClassFlags.HideDropDown))
             {
                 Write("hidedropdown");
             }
-            if (flags.Has(EClassFlags.NativeReplication))
+            if (flags.Has(UnrealFlags.EClassFlags.NativeReplication))
             {
                 Write("nativereplication");
             }
-            if (flags.Has(EClassFlags.PerObjectConfig))
+            if (flags.Has(UnrealFlags.EClassFlags.PerObjectConfig))
             {
                 Write("perobjectconfig");
             }
-            if (flags.Has(EClassFlags.Localized))
+            if (flags.Has(UnrealFlags.EClassFlags.Localized))
             {
                 Write("localized");
             }
-            if (flags.Has(EClassFlags.Abstract))
+            if (flags.Has(UnrealFlags.EClassFlags.Abstract))
             {
                 Write("abstract");
             }
-            if (flags.Has(EClassFlags.Deprecated))
+            if (flags.Has(UnrealFlags.EClassFlags.Deprecated))
             {
                 Write("deprecated");
             }
-            if (flags.Has(EClassFlags.Transient))
+            if (flags.Has(UnrealFlags.EClassFlags.Transient))
             {
                 Write("transient");
             }
-            if (flags.Has(EClassFlags.Config))
+            if (flags.Has(UnrealFlags.EClassFlags.Config))
             {
                 Write($"config({node.ConfigName})");
             }
-            if (flags.Has(EClassFlags.SafeReplace))
+            if (flags.Has(UnrealFlags.EClassFlags.SafeReplace))
             {
                 Write("safereplace");
             }
-            if (flags.Has(EClassFlags.Hidden))
+            if (flags.Has(UnrealFlags.EClassFlags.Hidden))
             {
                 Write("hidden");
             }
-            if (flags.Has(EClassFlags.CollapseCategories))
+            if (flags.Has(UnrealFlags.EClassFlags.CollapseCategories))
             {
                 Write("collapsecategories");
             }
@@ -1309,186 +1309,186 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
-        private void WritePropertyFlags(EPropertyFlags flags)
+        private void WritePropertyFlags(UnrealFlags.EPropertyFlags flags)
         {
             var specs = new List<string>();
 
-            if (flags.Has(EPropertyFlags.OptionalParm))
+            if (flags.Has(UnrealFlags.EPropertyFlags.OptionalParm))
             {
                 specs.Add("optional");
             }
 
-            if (flags.Has(EPropertyFlags.Const))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Const))
             {
                 specs.Add("const");
             }
 
-            if (flags.Has(EPropertyFlags.GlobalConfig))
+            if (flags.Has(UnrealFlags.EPropertyFlags.GlobalConfig))
             {
                 specs.Add("globalconfig");
             }
-            else if (flags.Has(EPropertyFlags.Config))
+            else if (flags.Has(UnrealFlags.EPropertyFlags.Config))
             {
                 specs.Add("config");
             }
 
-            if (flags.Has(EPropertyFlags.Localized))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Localized))
             {
                 specs.Add("localized");
             }
 
             //TODO: private, protected, and public are in ObjectFlags, not PropertyFlags 
-            if (flags.Has(EPropertyFlags.ProtectedWrite))
+            if (flags.Has(UnrealFlags.EPropertyFlags.ProtectedWrite))
             {
                 specs.Add("protectedwrite");
             }
 
-            if (flags.Has(EPropertyFlags.PrivateWrite))
+            if (flags.Has(UnrealFlags.EPropertyFlags.PrivateWrite))
             {
                 specs.Add("privatewrite");
             }
 
-            if (flags.Has(EPropertyFlags.EditConst))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditConst))
             {
                 specs.Add("editconst");
             }
 
-            if (flags.Has(EPropertyFlags.EditHide))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditHide))
             {
                 specs.Add("edithide");
             }
 
-            if (flags.Has(EPropertyFlags.EditTextBox))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditTextBox))
             {
                 specs.Add("edittextbox");
             }
 
-            if (flags.Has(EPropertyFlags.Input))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Input))
             {
                 specs.Add("input");
             }
 
-            if (flags.Has(EPropertyFlags.Transient))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Transient))
             {
                 specs.Add("transient");
             }
 
-            if (flags.Has(EPropertyFlags.Native))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Native))
             {
                 specs.Add("native");
             }
 
-            if (flags.Has(EPropertyFlags.NoExport))
+            if (flags.Has(UnrealFlags.EPropertyFlags.NoExport))
             {
                 specs.Add("noexport");
             }
 
-            if (flags.Has(EPropertyFlags.DuplicateTransient))
+            if (flags.Has(UnrealFlags.EPropertyFlags.DuplicateTransient))
             {
                 specs.Add("duplicatetransient");
             }
 
-            if (flags.Has(EPropertyFlags.NoImport))
+            if (flags.Has(UnrealFlags.EPropertyFlags.NoImport))
             {
                 specs.Add("noimport");
             }
 
-            if (flags.Has(EPropertyFlags.OutParm))
+            if (flags.Has(UnrealFlags.EPropertyFlags.OutParm))
             {
                 specs.Add("out");
             }
 
-            if (flags.Has(EPropertyFlags.ExportObject))
+            if (flags.Has(UnrealFlags.EPropertyFlags.ExportObject))
             {
                 specs.Add("export");
             }
 
-            if (flags.Has(EPropertyFlags.EditInlineUse))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditInlineUse))
             {
                 specs.Add("editinlineuse");
             }
 
-            if (flags.Has(EPropertyFlags.NoClear))
+            if (flags.Has(UnrealFlags.EPropertyFlags.NoClear))
             {
                 specs.Add("noclear");
             }
 
-            if (flags.Has(EPropertyFlags.EditFixedSize))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditFixedSize))
             {
                 specs.Add("editfixedsize");
             }
 
-            if (flags.Has(EPropertyFlags.RepNotify))
+            if (flags.Has(UnrealFlags.EPropertyFlags.RepNotify))
             {
                 specs.Add("repnotify");
             }
 
-            if (flags.Has(EPropertyFlags.RepRetry))
+            if (flags.Has(UnrealFlags.EPropertyFlags.RepRetry))
             {
                 specs.Add("repretry");
             }
 
-            if (flags.Has(EPropertyFlags.Interp))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Interp))
             {
                 specs.Add("interp");
             }
 
-            if (flags.Has(EPropertyFlags.NonTransactional))
+            if (flags.Has(UnrealFlags.EPropertyFlags.NonTransactional))
             {
                 specs.Add("nontransactional");
             }
 
-            if (flags.Has(EPropertyFlags.Deprecated))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Deprecated))
             {
                 specs.Add("deprecated");
             }
 
-            if (flags.Has(EPropertyFlags.SkipParm))
+            if (flags.Has(UnrealFlags.EPropertyFlags.SkipParm))
             {
                 specs.Add("skip");
             }
 
-            if (flags.Has(EPropertyFlags.CoerceParm))
+            if (flags.Has(UnrealFlags.EPropertyFlags.CoerceParm))
             {
                 specs.Add("coerce");
             }
 
-            if (flags.Has(EPropertyFlags.AlwaysInit))
+            if (flags.Has(UnrealFlags.EPropertyFlags.AlwaysInit))
             {
                 specs.Add("alwaysinit");
             }
 
-            if (flags.Has(EPropertyFlags.DataBinding))
+            if (flags.Has(UnrealFlags.EPropertyFlags.DataBinding))
             {
                 specs.Add("databinding");
             }
 
-            if (flags.Has(EPropertyFlags.EditorOnly))
+            if (flags.Has(UnrealFlags.EPropertyFlags.EditorOnly))
             {
                 specs.Add("editoronly");
             }
 
-            if (flags.Has(EPropertyFlags.NotForConsole))
+            if (flags.Has(UnrealFlags.EPropertyFlags.NotForConsole))
             {
                 specs.Add("notforconsole");
             }
 
-            if (flags.Has(EPropertyFlags.Archetype))
+            if (flags.Has(UnrealFlags.EPropertyFlags.Archetype))
             {
                 specs.Add("archetype");
             }
 
-            if (flags.Has(EPropertyFlags.SerializeText))
+            if (flags.Has(UnrealFlags.EPropertyFlags.SerializeText))
             {
                 specs.Add("serializetext");
             }
 
-            if (flags.Has(EPropertyFlags.CrossLevelActive))
+            if (flags.Has(UnrealFlags.EPropertyFlags.CrossLevelActive))
             {
                 specs.Add("crosslevelactive");
             }
 
-            if (flags.Has(EPropertyFlags.CrossLevelPassive))
+            if (flags.Has(UnrealFlags.EPropertyFlags.CrossLevelPassive))
             {
                 specs.Add("crosslevelpassive");
             }
