@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -244,6 +245,52 @@ namespace ME3Explorer
         {
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+    }
+
+    public static class TreeViewExtension
+    {
+        public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
+        {
+            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(FlattenTree);
+
+            List<System.Windows.Forms.TreeNode> FlattenTree(System.Windows.Forms.TreeNode rootNode)
+            {
+                var nodes = new List<System.Windows.Forms.TreeNode> { rootNode };
+                foreach (System.Windows.Forms.TreeNode node in rootNode.Nodes)
+                {
+                    nodes.AddRange(FlattenTree(node));
+                }
+                return nodes;
+            }
+        }
+
+        /// <summary>
+        /// Select specified item in a TreeView
+        /// </summary>
+        public static void SelectItem(this TreeView treeView, object item)
+        {
+            if (treeView.ItemContainerGenerator.ContainerFromItemRecursive(item) is TreeViewItem tvItem)
+            {
+                tvItem.IsSelected = true;
+            }
+        }
+    }
+
+    public static class TreeViewExtensions
+    {
+        public static TreeViewItem ContainerFromItemRecursive(this ItemContainerGenerator root, object item)
+        {
+            if (root.ContainerFromItem(item) is TreeViewItem treeViewItem)
+                return treeViewItem;
+            foreach (var subItem in root.Items)
+            {
+                treeViewItem = root.ContainerFromItem(subItem) as TreeViewItem;
+                var search = treeViewItem?.ItemContainerGenerator.ContainerFromItemRecursive(item);
+                if (search != null)
+                    return search;
+            }
+            return null;
         }
     }
 }
