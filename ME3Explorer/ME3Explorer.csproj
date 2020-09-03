@@ -297,6 +297,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoreLibSettingsBridge.cs" />
     <Compile Include="ME3Script\Analysis\Symbols\SymbolTable.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\ClassValidationVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />

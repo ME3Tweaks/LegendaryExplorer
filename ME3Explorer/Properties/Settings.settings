@@ -41,13 +41,7 @@
     <Setting Name="BinaryInterpreterWPFAutoScanAlways" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="PropertyParsingME3UnknownArrayAsObject" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="PropertyParsingME2UnknownArrayAsObject" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="PropertyParsingME1UnknownArrayAsObject" Type="System.Boolean" Scope="User">
+    <Setting Name="PropertyParsingUnknownArrayAsObject" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PathfindingEditorShowNodeSizes" Type="System.Boolean" Scope="User">
@@ -116,6 +110,5 @@
     <Setting Name="PackageEditorWPF_ShowSubText" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    
   </Settings>
 </SettingsFile>

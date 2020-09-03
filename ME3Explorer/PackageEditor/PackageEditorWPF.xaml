@@ -59,7 +59,7 @@
             <MenuItem Header="Open in Interp Viewer" Command="{Binding OpenExportInCommand}" CommandParameter="InterpViewer" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenExportInCommand}" CommandParameter="PathfindingEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Open in WwiseEditor" Command="{Binding OpenExportInCommand}" CommandParameter="WwiseEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
-            
+
             <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
@@ -194,11 +194,7 @@
                     <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowImpExpPrefix, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>
                     <MenuItem Name="ShowMetadata_MenuItem" Header="Show metadata in tree (if available)" Click="ShowExportMetadataInTree_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowSubText, Mode=TwoWay}" ToolTip="Adds a second line to items in the tree if the export has additional information, such as Tag property or WwiseStream TLK reference"/>
                     <MenuItem Name="ShowExportIcons_MenuItem" Header="Show Export Icons" Click="ShowExportIcons_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowExportIcons, Mode=TwoWay}" ToolTip="Toggles display of icons that visually distinguish class types in the tree view"/>
-                    <MenuItem Header="Property Parsing">
-                        <MenuItem Name="PropertyParsing_ME1UnknownArrayAsObj_MenuItem" Header="ME1: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME1UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME1UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME1."/>
-                        <MenuItem Name="PropertyParsing_ME2UnknownArrayAsObj_MenuItem" Header="ME2: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME2UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME2UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME2."/>
-                        <MenuItem Name="PropertyParsing_ME3UnknownArrayAsObj_MenuItem" Header="ME3: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME3UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME3UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME3."/>
-                    </MenuItem>
+                    <MenuItem Name="PropertyParsing_UnknownArrayAsObj_MenuItem" Header="Parse Unknown array types as objects instead of int" Click="PropertyParsing_UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingUnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values."/>
                     <MenuItem Header="Binary Interpreter">
                         <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
                     </MenuItem>
@@ -378,18 +374,18 @@
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
                                 <DockPanel>
-                                
-                                <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                    <Setter Property="Background" Value="Yellow"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="Yellow"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
                                         <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">

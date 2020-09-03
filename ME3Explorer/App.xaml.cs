@@ -88,7 +88,7 @@ namespace ME3Explorer
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
             initCoreLib();
-            
+
 
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
@@ -123,7 +123,7 @@ namespace ME3Explorer
 
             //static class setup
             Tools.Initialize();
-            
+
 
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
@@ -162,16 +162,17 @@ namespace ME3Explorer
 
         private void initCoreLib()
         {
-            CoreLib.SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
-            CoreLibSettings.Instance = new CoreLibSettings();
-            MEPackageHandler.Initialize();
-            PackageSaver.Initialize();
-            PackageSaver.PackageSaveFailedCallback = message =>
+            void packageSaveFailed(string message)
             {
-                MessageBox.Show(message);
-            };
+                // I'm not sure if this requires ui thread since it's win32 but i'll just make sure
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show(message);
+                });
+            }
+            CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+            CoreLibSettingsBridge.MapSettingsIntoBridge();
             TLKLoader.LoadSavedTlkList();
-
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
@@ -329,4 +330,6 @@ namespace ME3Explorer
             e.Handled = eh.Handled;
         }
     }
+
+
 }
