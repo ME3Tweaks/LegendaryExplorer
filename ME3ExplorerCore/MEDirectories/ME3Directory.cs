@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+#if WINDOWS
+using Microsoft.Win32;
+#endif
 
 namespace ME3ExplorerCore.MEDirectories
 {
@@ -54,18 +56,21 @@ namespace ME3ExplorerCore.MEDirectories
                 string subkey = @"BioWare\Mass Effect 3";
 
                 string keyName = hkey32 + subkey;
-                string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null);
+                string test = (string)Registry.GetValue(keyName, "Install Dir", null);
                 if (test != null)
                 {
                     gamePath = test;
+                    CoreLibSettings.Instance.ME2Directory = gamePath;
                     return;
                 }
 
-                /*if (gamePath != null)
-                    return;*/
-
                 keyName = hkey64 + subkey;
-                gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Install Dir", null); 
+                gamePath = (string)Registry.GetValue(keyName, "Install Dir", null);
+                if (gamePath != null)
+                {
+                    gamePath = gamePath + "\\";
+                    CoreLibSettings.Instance.ME2Directory = gamePath;
+                }
 #endif
             }
         }

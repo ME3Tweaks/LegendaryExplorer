@@ -109,8 +109,6 @@ namespace ME3Explorer.Sequence_Editor
                     while (classInfo != null && (varLinksProp == null || outLinksProp == null))
                     {
                         string filepath = Path.Combine(MEDirectories.BioGamePath(game), classInfo.pccPath);
-                        // Is this incorrect? The original code never seemed to actually use filepath
-
                         Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
@@ -127,6 +125,10 @@ namespace ME3Explorer.Sequence_Editor
                             {
                                 loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                             }
+                        }
+                        else if (File.Exists(filepath))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                         }
                         if (loadStream != null)
                         {

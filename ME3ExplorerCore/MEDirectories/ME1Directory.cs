@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if WINDOWS
+using Microsoft.Win32;
+#endif
 
 namespace ME3ExplorerCore.MEDirectories
 {
@@ -42,27 +45,29 @@ namespace ME3ExplorerCore.MEDirectories
                 gamePath = CoreLibSettings.Instance.ME1Directory;
             }
             else
-	        {
+            {
 #if WINDOWS
                 string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
                 string subkey = @"BioWare\Mass Effect";
 
                 string keyName = hkey32 + subkey;
-                string test = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                string test = (string)Registry.GetValue(keyName, "Path", null);
                 if (test != null)
                 {
                     gamePath = test;
+                    CoreLibSettings.Instance.ME1Directory = gamePath;
                     return;
                 }
 
                 keyName = hkey64 + subkey;
-                gamePath = (string)Microsoft.Win32.Registry.GetValue(keyName, "Path", null);
+                gamePath = (string)Registry.GetValue(keyName, "Path", null);
                 if (gamePath != null)
                 {
                     gamePath = gamePath + "\\";
+                    CoreLibSettings.Instance.ME1Directory = gamePath;
                     return;
-                } 
+                }
 #endif
             }
         }

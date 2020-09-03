@@ -316,13 +316,17 @@ namespace ME3ExplorerCore.Unreal
 
                     string filepath = Path.Combine(ME2Directory.gamePath, "BioGame", info.pccPath);
                     Stream loadStream = null;
-                    if (File.Exists(filepath))
+                    if (File.Exists(info.pccPath))
                     {
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                     }
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME2));
+                    }
+                    else if (File.Exists(filepath))
+                    {
+                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                     }
 
                     if (loadStream != null)

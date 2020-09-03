@@ -14,6 +14,8 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
+using ME3Explorer.Unreal;
+using ME3ExplorerCore;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 
@@ -66,7 +68,6 @@ namespace ME3Explorer
             return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
-        public static TaskScheduler SYNCHRONIZATION_CONTEXT;
         public static int CoreCount;
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -86,7 +87,9 @@ namespace ME3Explorer
 #endif
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
-            SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
+            initCoreLib();
+            
+
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -110,18 +113,17 @@ namespace ME3Explorer
             //}
             //Be.Windows.Forms.HexBox.SetColors((IsDarkMode ? Color.FromArgb(255, 55, 55, 55) : Colors.White).ToWinformsColor(), SystemColors.ControlTextColor.ToWinformsColor());
 
-            Parallel.Invoke(
-                            ME1UnrealObjectInfo.loadfromJSON,
-                            ME2UnrealObjectInfo.loadfromJSON,
-                            ME3UnrealObjectInfo.loadfromJSON
-                );
+            //Parallel.Invoke(
+            //                ME1UnrealObjectInfo.loadfromJSON,
+            //                ME2UnrealObjectInfo.loadfromJSON,
+            //                ME3UnrealObjectInfo.loadfromJSON
+            //    );
 
 
 
             //static class setup
             Tools.Initialize();
-            MEPackageHandler.Initialize();
-            PackageSaver.Initialize();
+            
 
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
@@ -156,6 +158,20 @@ namespace ME3Explorer
 
                 //ME3Script.StandardLibrary.BuildStandardLib();
             }
+        }
+
+        private void initCoreLib()
+        {
+            CoreLib.SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
+            CoreLibSettings.Instance = new CoreLibSettings();
+            MEPackageHandler.Initialize();
+            PackageSaver.Initialize();
+            PackageSaver.PackageSaveFailedCallback = message =>
+            {
+                MessageBox.Show(message);
+            };
+            TLKLoader.LoadSavedTlkList();
+
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

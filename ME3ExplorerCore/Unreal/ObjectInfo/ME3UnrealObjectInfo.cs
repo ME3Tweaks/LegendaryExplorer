@@ -94,7 +94,7 @@ namespace ME3ExplorerCore.Unreal
                         string filepathTL = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
+                            loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                         }
                         else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
@@ -105,6 +105,11 @@ namespace ME3ExplorerCore.Unreal
                                 loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
                             }
                         }
+                        else if (File.Exists(filepathTL))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
+                        }
+
                         if (game == MEGame.ME1 && !File.Exists(filepathTL))
                         {
                             filepathTL = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
@@ -670,9 +675,9 @@ namespace ME3ExplorerCore.Unreal
                         }
                         string filepathTL = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
                         Stream loadStream = null;
-                        if (File.Exists(filepathTL))
+                        if (File.Exists(info.pccPath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
+                            loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                         }
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
@@ -682,6 +687,10 @@ namespace ME3ExplorerCore.Unreal
                                 var filename = CoreLib.CustomResourceFileName(MEGame.ME3);
                                 loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
                             }
+                        }
+                        else if (File.Exists(filepathTL))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
                         }
 
                         if (loadStream != null)

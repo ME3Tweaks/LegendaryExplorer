@@ -97,10 +97,12 @@ namespace ME3ExplorerCore.Gammtek.Paths
 
 		// Notes that there is no way to do Distinct with Hashset, since all elements are necessarily distinct in a hashset!
 
-		//
-		// Hashset operations!
-		//
+//
+// Hashset operations!
+//
 
+
+#if NETSTANDARD
 		/// <summary>
 		///     Creates an hashset from a <i>IEnumerable&lt;T&gt;</i>.
 		/// </summary>
@@ -108,27 +110,28 @@ namespace ME3ExplorerCore.Gammtek.Paths
 		/// <param name="seq">An <i>IEnumerable&lt;T&gt;</i> to create an hashset from.</param>
 		/// <returns>An hashset that contains the elements from the input sequence.</returns>
 		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> seq)
-		{
-			Contract.Requires(seq != null, "seq must not be null");
-			Contract.Ensures(Contract.Result<HashSet<T>>() != null, "returned hashset object is not null");
-			Debug.Assert(seq != null);
-			return new HashSet<T>(seq);
-		}
+        {
+            Contract.Requires(seq != null, "seq must not be null");
+            Contract.Ensures(Contract.Result<HashSet<T>>() != null, "returned hashset object is not null");
+            Debug.Assert(seq != null);
+            return new HashSet<T>(seq);
+        }
+#endif
 
-		//
-		// Union
-		//
+        //
+        // Union
+        //
 
-		/// <summary>
-		///     Produces the set of elements, union of this <paramref name="hashset" /> and <paramref name="seq" />. This method is an optimized version of
-		///     <i>Enumerable.Union&lt;T&gt;</i>.
-		/// </summary>
-		/// <typeparam name="T">The code element type of the elements of the hashset and the sequence.</typeparam>
-		/// <param name="hashset">An hashset of elements whose distinct elements form the first set for the union.</param>
-		/// <param name="seq">A sequence of elements whose distinct elements form the second set for the union.</param>
-		/// <returns>A sequence that contains the elements that form the set union of the hashset and the sequence, excluding duplicates.</returns>
-		/// <remarks>This extension method has a <i>O(<paramref name="seq" />.Count)</i> time complexity.</remarks>
-		public static IEnumerable<T> Union<T>(this HashSet<T> hashset, IEnumerable<T> seq)
+        /// <summary>
+        ///     Produces the set of elements, union of this <paramref name="hashset" /> and <paramref name="seq" />. This method is an optimized version of
+        ///     <i>Enumerable.Union&lt;T&gt;</i>.
+        /// </summary>
+        /// <typeparam name="T">The code element type of the elements of the hashset and the sequence.</typeparam>
+        /// <param name="hashset">An hashset of elements whose distinct elements form the first set for the union.</param>
+        /// <param name="seq">A sequence of elements whose distinct elements form the second set for the union.</param>
+        /// <returns>A sequence that contains the elements that form the set union of the hashset and the sequence, excluding duplicates.</returns>
+        /// <remarks>This extension method has a <i>O(<paramref name="seq" />.Count)</i> time complexity.</remarks>
+        public static IEnumerable<T> Union<T>(this HashSet<T> hashset, IEnumerable<T> seq)
 		{
 			Contract.Requires(hashset != null, "hashset must not be null");
 			Contract.Requires(seq != null, "seq must not be null");

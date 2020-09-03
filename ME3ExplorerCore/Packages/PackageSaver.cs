@@ -10,8 +10,7 @@ namespace ME3ExplorerCore.Packages
     public static class PackageSaver
     {
         private static List<string> _me1TextureFiles;
-        // Todo: Load embedded
-        public static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
+        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
 
         /// <summary>
         /// Callback that is invoked when a package fails to save, hook this up to show a message to the user that something failed

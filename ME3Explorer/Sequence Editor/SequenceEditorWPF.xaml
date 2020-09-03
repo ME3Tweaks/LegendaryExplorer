@@ -15,6 +15,7 @@
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="SequenceEditorWPF_Loaded"

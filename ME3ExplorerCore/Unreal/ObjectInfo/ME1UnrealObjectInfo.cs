@@ -301,14 +301,19 @@ namespace ME3ExplorerCore.Unreal
 
                     string filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
                     Stream loadStream = null;
-                    if (File.Exists(filepath))
+                    if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
                     {
-                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                     }
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
                     }
+                    else if (File.Exists(filepath))
+                    {
+                        loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                    }
+
                     if (loadStream == null)
                     {
                         filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC

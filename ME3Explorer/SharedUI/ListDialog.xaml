@@ -8,6 +8,7 @@
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:misc="clr-namespace:ME3ExplorerCore.Misc;assembly=ME3ExplorerCore"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="List Dialog" Width="640" Height="480">
@@ -39,7 +40,7 @@
                 <DataTemplate DataType="{x:Type System:String}">
                     <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type local:ListDialog+EntryItem}">
+                <DataTemplate DataType="{x:Type misc:EntryStringPair}">
                     <StackPanel Orientation="Horizontal">
                         <fa5:ImageAwesome Icon="Solid_MousePointer" Height="16" Margin="0,0,5,0" ToolTip="Double click to goto this export" Cursor="Hand"
                                           Visibility="{Binding ReferencedEntry.UIndex, Converter={StaticResource IntMatchesToVisibilityConverter}, ConverterParameter='0;not', FallbackValue=Collapsed}"/>
