@@ -15,6 +15,8 @@ namespace ME3ExplorerCore
     {
         public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
         public static string BugReportURL => $"{RepositoryURL}issues/";
+        public static TaskScheduler SYNCHRONIZATION_CONTEXT { get; private set; }
+
 
         public static string CustomResourceFileName(MEGame game) => game switch
         {
@@ -47,7 +49,6 @@ namespace ME3ExplorerCore
 
 #if DEBUG
         public static bool IsDebug => true;
-        public static TaskScheduler SYNCHRONIZATION_CONTEXT { get; private set; }
 #else
         public static bool IsDebug => false;
 #endif
