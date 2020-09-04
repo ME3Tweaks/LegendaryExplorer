@@ -79,7 +79,7 @@ namespace ME3ExplorerCore.Packages
         /// <summary>
         /// Notifies that a TOC update is required for a running instance of a game (for ME3 only).
         /// </summary>
-        public static Action NotifyRunningTOCUpdateRequired { get; set; }
+        public static Func<bool> NotifyRunningTOCUpdateRequired { get; set; }
         private static void Save(MEPackage pcc, string path)
         {
             bool isSaveAs = path != pcc.FilePath;

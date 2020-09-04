@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -172,6 +173,12 @@ namespace ME3Explorer
             }
             CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
             CoreLibSettingsBridge.MapSettingsIntoBridge();
+            PackageSaver.CheckME3Running = () =>
+            {
+                GameController.TryGetME3Process(out var me3Proc);
+                return me3Proc != null;
+            };
+            PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendTOCUpdateMessage;
             TLKLoader.LoadSavedTlkList();
         }
 
