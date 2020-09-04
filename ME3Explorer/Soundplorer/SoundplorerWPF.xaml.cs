@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
@@ -74,7 +75,7 @@ namespace ME3Explorer.Soundplorer
 
         public SoundplorerWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundplorer WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundplorer WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Soundplorer" }

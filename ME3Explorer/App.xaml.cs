@@ -17,6 +17,7 @@ using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using ME3ExplorerCore;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 
@@ -163,6 +164,9 @@ namespace ME3Explorer
 
         private void initCoreLib()
         {
+#if DEBUG
+            MemoryAnalyzer.IsTrackingMemory = true;
+#endif
             void packageSaveFailed(string message)
             {
                 // I'm not sure if this requires ui thread since it's win32 but i'll just make sure

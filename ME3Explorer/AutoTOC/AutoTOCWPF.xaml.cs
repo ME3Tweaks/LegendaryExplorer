@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Ini;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
@@ -32,7 +33,7 @@ namespace ME3Explorer.AutoTOC
         public AutoTOCWPF()
         {
             DataContext = this;
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("AutoTOC WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("AutoTOC WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "AutoTOC" }

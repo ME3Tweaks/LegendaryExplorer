@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Input;
 using System.Xml.Linq;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
@@ -132,7 +133,7 @@ namespace ME3Explorer.ASI
         /// </summary>
         public ASIManager()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("ASI Manager", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("ASI Manager", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "ASI Manager" }

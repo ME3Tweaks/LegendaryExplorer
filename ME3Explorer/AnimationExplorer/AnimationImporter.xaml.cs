@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
@@ -29,7 +30,7 @@ namespace ME3Explorer
 
         public AnimationImporter()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Importer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Animation Importer", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Animation Importer" }

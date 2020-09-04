@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -62,15 +63,14 @@ namespace ME3ExplorerCore.Packages
                 {
                     stream.Position -= 8; //reset to where we started for delegate
                     pkg = MEStreamConstructorDelegate(stream, filePath);
-                    // Todo
-                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
+                    MemoryAnalyzer.AddTrackedMemoryItem("MEPackage (Stream)", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
                     throw new Exception("Cannot load UDK packages from streams at this time.");
                     //pkg = UDKConstructorDelegate(filePath, false);
-                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("UDKPackage (Stream)", new WeakReference(pkg));
+                    MemoryAnalyzer.AddTrackedMemoryItem("UDKPackage (Stream)", new WeakReference(pkg));
                 }
                 else
                 {
@@ -152,15 +152,13 @@ namespace ME3ExplorerCore.Packages
                     version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
                 {
                     pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
-                    // TODO
-                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
+                    MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
                     pkg = UDKConstructorDelegate(filePath, false);
-                    // TODO
-                    //ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
+                    MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
                 else
                 {

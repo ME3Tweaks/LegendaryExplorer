@@ -25,8 +25,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Unreal;
 
@@ -183,7 +185,7 @@ namespace ME3Explorer.DLCUnpacker
 
         public DLCUnpackerUI()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("DLC Unpacker", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("DLC Unpacker", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "DLC Unpacker" }
@@ -366,7 +368,6 @@ namespace ME3Explorer.DLCUnpacker
             {
                 if (!UnpackCanceled)
                 {
-                    // Todo: hook this up
                     sfar.PropertyChanged += SFAR_PropertyChanged;
                     string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
                     string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -22,7 +23,7 @@ namespace ME3Explorer.Matinee
 
         public InterpEditor()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interp Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interp Viewer", new WeakReference(this)));
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";

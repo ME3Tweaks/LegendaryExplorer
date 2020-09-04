@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Be.Windows.Forms;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3ExplorerCore.Gammtek.IO;
@@ -118,7 +119,7 @@ namespace ME3Explorer
 
         public BinaryInterpreterWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Binary Interpreter", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Binary Interpreter", new WeakReference(this)));
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();

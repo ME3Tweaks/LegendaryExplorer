@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Helpers;
@@ -71,7 +72,7 @@ namespace ME3Explorer.GameInterop
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Live Level Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Live Level Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Live Level Editor" }

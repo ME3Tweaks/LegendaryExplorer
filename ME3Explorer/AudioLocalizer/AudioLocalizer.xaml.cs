@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Helpers;
@@ -61,7 +62,7 @@ namespace ME3Explorer
 
         public AudioLocalizer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Audio Localizer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Audio Localizer", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Audio Localizer" }

@@ -26,6 +26,7 @@ using ME3Explorer.PackageEditor;
 using ME3Explorer.StaticLighting;
 using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using Newtonsoft.Json;
 using ME3Explorer.ME3Script;
 using ME3Explorer.Packages;
@@ -2249,7 +2250,7 @@ namespace ME3Explorer
 
         public PackageEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Package Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 {"Toolname", "Package Editor WPF"}
@@ -3778,29 +3779,6 @@ namespace ME3Explorer
         //todo: this should be possible to move now
         private void Port_SFXObjectives_Click(object sender, RoutedEventArgs e)
         {
-            //Extract Xbox SFAR
-
-
-            /* Platform comparison
-            var pcfolder = @"D:\Origin Games\Mass Effect 2\BioGame\CookedPC";
-            var platformfolder = @"X:\Mass Effect 2 Builds\PS3\PS3_GAME\USRDIR\BIOGAME\COOKEDPS3";
-
-            var pcfiles = Directory.GetFiles(pcfolder, "*.*", SearchOption.AllDirectories).Where(x => !x.Contains("_loc_")).ToList();
-            var platformfiles = Directory.GetFiles(platformfolder, "*.*", SearchOption.AllDirectories).Select(x=>x.ToLower()).Where(x => !x.Contains("_loc_") &&
-                                                                                                    !x.EndsWith("_deu.afc") && !x.EndsWith("_ita.afc") && !x.EndsWith("_fra.afc")).ToList();
-
-            var pcfilesbyname = pcfiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower());
-            var platformfilesbyname = platformfiles.Select(x => Path.GetFileNameWithoutExtension(x).ToLower());
-
-            var uniqueplatformfiles = platformfilesbyname.Except(pcfilesbyname).ToList();
-
-            foreach (var s in uniqueplatformfiles)
-            {
-                Debug.WriteLine(s);
-            }
-
-
-            return;*/
             if (Pcc == null)
             {
                 return;

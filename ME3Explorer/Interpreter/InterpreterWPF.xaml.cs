@@ -150,7 +150,7 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
-            MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interpreter WPF Export Loader", new WeakReference(this)));
             LoadCommands();
             InitializeComponent();
             Settings.Default.PropertyChanged += SettingChanged;

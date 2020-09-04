@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -44,7 +45,7 @@ namespace ME3Explorer.WwiseEditor
         private readonly WwiseGraphEditor graphEditor;
         public WwiseEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Wwise Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Wwise Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Wwise Editor" }

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -81,7 +82,7 @@ namespace ME3Explorer
         /// </summary>
         public MeshplorerWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Meshplorer WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Meshplorer" }

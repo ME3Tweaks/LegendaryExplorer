@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CsvHelper;
 using System.Text.RegularExpressions;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.PlotVarDB
 {
@@ -58,7 +60,7 @@ namespace ME3Explorer.PlotVarDB
 
         public PlotVarDB()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Database", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Plot Database", new WeakReference(this)));
             InitializeComponent();
             this.plotVarTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
         }

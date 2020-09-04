@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Microsoft.AppCenter.Analytics;
@@ -253,7 +254,7 @@ namespace ME3Explorer.AssetDatabase
 
         public AssetDB()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Asset Database", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Asset Database", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Asset Database" }

@@ -23,6 +23,7 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.MEDirectories;
@@ -566,7 +567,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #region Load+I/O
         public PathfindingEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Pathfinding Editor WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Pathfinding Editor" }

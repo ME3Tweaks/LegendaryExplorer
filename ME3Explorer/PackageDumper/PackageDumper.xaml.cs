@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.MEDirectories;
@@ -177,7 +178,7 @@ namespace ME3Explorer.PackageDumper
 
         public PackageDumper(Window owner = null)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Package Dumper", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Package Dumper" }

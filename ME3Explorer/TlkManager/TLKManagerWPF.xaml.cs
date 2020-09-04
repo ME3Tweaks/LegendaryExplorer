@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Unreal;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1;
@@ -37,7 +38,7 @@ namespace ME3Explorer.TlkManagerNS
 
         public TLKManagerWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("TLK Manager WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "TLK Manager" }

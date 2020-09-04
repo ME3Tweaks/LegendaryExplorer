@@ -298,6 +298,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreLibSettingsBridge.cs" />
+    <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
     <Compile Include="ME3Script\Analysis\Symbols\SymbolTable.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\ClassValidationVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />
@@ -713,8 +714,8 @@
     <Compile Include="ME1TlkEditor\ME1TlkEditorWPF.xaml.cs">
       <DependentUpon>ME1TlkEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml.cs">
-      <DependentUpon>MemoryAnalyzer.xaml</DependentUpon>
+    <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerUI.xaml.cs">
+      <DependentUpon>MemoryAnalyzerUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
@@ -1089,7 +1090,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml">
+    <Page Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

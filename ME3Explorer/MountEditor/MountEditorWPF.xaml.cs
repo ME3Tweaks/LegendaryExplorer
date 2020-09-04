@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;
@@ -44,7 +45,7 @@ namespace ME3Explorer.MountEditor
 
         public MountEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Mount Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Mount Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Mount Editor" }

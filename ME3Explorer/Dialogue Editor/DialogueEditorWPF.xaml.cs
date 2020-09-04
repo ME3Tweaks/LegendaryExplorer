@@ -22,6 +22,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -230,7 +231,7 @@ namespace ME3Explorer.Dialogue_Editor
         #region Startup/Exit
         public DialogueEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Dialogue Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Dialogue Editor" }

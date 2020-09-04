@@ -12,9 +12,11 @@ using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.GameInterop;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
@@ -64,7 +66,7 @@ namespace ME3Explorer.AnimationExplorer
             }
 
             Instance = this;
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Animation Viewer", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Animation Viewer" }

@@ -9,6 +9,7 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
 using ME3ExplorerCore.MEDirectories;
 
@@ -72,11 +73,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Memory Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzerUI),
                 icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
                 open = () =>
                 {
-                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
+                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzerUI()).Show();
                 },
                 tags = new List<string> { "utility", "toolsetdev" },
                 subCategory = "For Toolset Devs Only",
@@ -86,7 +87,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "File Hex Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(FileHexViewerWPF),
                 icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
                 open = () =>
                 {

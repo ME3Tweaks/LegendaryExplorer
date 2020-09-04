@@ -25,6 +25,7 @@ using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
@@ -87,7 +88,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Sequence Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Sequence Editor" }

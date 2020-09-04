@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Input;
 using MassEffect3.Coalesce;
 using ME3Explorer;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -22,7 +24,7 @@ namespace MassEffect3.CoalesceTool
 
 		public CoalescedEditor()
 		{
-            ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Coalesced Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Coalesced Editor", new WeakReference(this)));
 			Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Coalesced Editor" }

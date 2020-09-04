@@ -87,7 +87,7 @@ namespace ME3Explorer
 
         public TextureViewerExportLoader()
         {
-            MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Embedded Texture Viewer Export Loader", new WeakReference(this)));
 
             DataContext = this;
 

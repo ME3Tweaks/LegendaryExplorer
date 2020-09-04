@@ -30,7 +30,7 @@
 
 //        public Meshplorer()
 //        {
-//            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer", new WeakReference(this));
+//            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Meshplorer", new WeakReference(this));
 //            InitializeComponent();
 //            LoadRecentList();
 //            RefreshRecent(false);

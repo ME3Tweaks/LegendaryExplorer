@@ -18,6 +18,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
@@ -112,7 +113,7 @@ namespace ME3Explorer
 
         public Soundpanel()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundpanel Export Loader", new WeakReference(this)));
 
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();

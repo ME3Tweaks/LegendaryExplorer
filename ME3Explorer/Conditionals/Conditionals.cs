@@ -3,7 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
@@ -34,7 +36,7 @@ namespace ME3Explorer
         public List<int> currefbool = new List<int>();
         public Conditionals()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Conditionals Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Conditionals Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Conditionals Editor" }
