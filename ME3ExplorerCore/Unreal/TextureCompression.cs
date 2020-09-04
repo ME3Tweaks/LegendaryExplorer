@@ -55,7 +55,7 @@ namespace ME3ExplorerCore.Unreal
         unused = 1 << 5,
     }
 
-    static public class TextureCompression
+    public static class TextureCompression
     {
         const uint textureTag = 0x9E2A83C1;
         const uint maxBlockSize = 0x20000; // 128KB

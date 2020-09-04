@@ -33,15 +33,15 @@ using System.Runtime.InteropServices;
 
 namespace ME3ExplorerCore.Compression
 {
-    static public class LZO2
+    public static class LZO2
     {
-        [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        static public uint Decompress(byte[] src, uint srcLen, byte[] dst)
+        public static uint Decompress(byte[] src, uint srcLen, byte[] dst)
         {
             uint dstLen = (uint)dst.Length;
 
@@ -52,7 +52,7 @@ namespace ME3ExplorerCore.Compression
             return dstLen;
         }
 
-        static public byte[] Compress(byte[] src)
+        public static byte[] Compress(byte[] src)
         {
             byte[] tmpbuf = new byte[src.Length + src.Length / 16 + 64 + 3];
             uint dstLen = 0;

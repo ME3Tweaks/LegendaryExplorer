@@ -33,16 +33,16 @@ using System.Runtime.InteropServices;
 
 namespace ME3ExplorerCore.Compression
 {
-    static public class LZMA
+    public static class LZMA
     {
-        [DllImport("sevenzipwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        [DllImport("sevenzipwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
 
-        static public byte[] Decompress(byte[] src, uint dstLen)
+        public static byte[] Decompress(byte[] src, uint dstLen)
         {
             uint len = dstLen;
             byte[] dst = new byte[dstLen];
@@ -54,7 +54,7 @@ namespace ME3ExplorerCore.Compression
             return dst;
         }
 
-        static public byte[] Compress(byte[] src, int compressionLevel = 9)
+        public static byte[] Compress(byte[] src, int compressionLevel = 9)
         {
             uint dstLen = (uint)(src.Length * 2 + 8);
             byte[] tmpbuf = new byte[dstLen];

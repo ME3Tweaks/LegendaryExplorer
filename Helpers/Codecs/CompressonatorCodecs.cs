@@ -30,29 +30,29 @@ namespace CompressonatorCodecs
         public const int BLOCK_SIZE_4X4BPP4 = 8;
         public const int BLOCK_SIZE_4X4BPP8 = 16;
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressRGBABlock([In] byte[] rgbBlock, [Out] uint[] compressedBlock);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressRGBABlock([Out] byte[] rgbBlock, [In] uint[] compressedBlock);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressRGBABlock_ExplicitAlpha([In] byte[] rgbBlock, [Out] uint[] compressedBlock);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressRGBABlock_ExplicitAlpha([Out] byte[] rgbBlock, [In] uint[] compressedBlock);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressRGBBlock([In] byte[] rgbBlock, [Out] uint[] compressedBlock, int bDXT1 = 0,
             int bDXT1UseAlpha = 0, byte nDXT1AlphaThreshold = 128);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressRGBBlock([Out] byte[] rgbBlock, [In] uint[] compressedBlock, int bDXT1);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressAlphaBlock([In] byte[] alphaBlock, [Out] uint[] compressedBlock);
 
-        [DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressAlphaBlock([Out] byte[] alphaBlock, [In] uint[] compressedBlock);
 
 

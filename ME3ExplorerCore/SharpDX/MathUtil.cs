@@ -85,7 +85,7 @@ namespace ME3ExplorerCore.SharpDX
         /// The code is using the technique described by Bruce Dawson in 
         /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>. 
         /// </remarks>
-        public unsafe static bool NearEqual(float a, float b)
+        public static unsafe bool NearEqual(float a, float b)
         {
             // Check if the numbers are really close -- needed
             // when comparing numbers near zero.
