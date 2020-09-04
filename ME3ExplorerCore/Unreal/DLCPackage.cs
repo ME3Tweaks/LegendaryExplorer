@@ -365,14 +365,6 @@ namespace ME3ExplorerCore.Unreal
                                 throw new Exception("SFAR LZX Decompression Error");
                             result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
                             left -= uncompressedBlockSize;
-
-                            //var extracted = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}-{actualUncompressedBlockSize}.lzx";
-                            //File.WriteAllBytes(extracted, inputBlock);
-                            //outputBlock = CompressionHelper.QuickBMSDecompress(extracted, "rawlzx.bms", true);
-                            //if (outputBlock == null || outputBlock.Length != actualUncompressedBlockSize)
-                            //    throw new Exception("LZX decompression error!");
-                            //result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
-                            //left -= uncompressedBlockSize;
                         }
                     }
                     count++;
@@ -380,41 +372,6 @@ namespace ME3ExplorerCore.Unreal
             }
             fs.Close();
             return result;
-        }
-
-        private byte[] pumpLZXDecompressor(List<(byte[], uint)> lzxBlocks)
-        {
-            // build lzx file for faster decompression with QuickBMS - individual blocks are EXTREMELY slow
-            var uncompSize = (uint)lzxBlocks.Sum(x => x.Item2);
-            EndianReader ms = new EndianReader(new MemoryStream()) { Endian = Endian.Big };
-            ms.Writer.WriteUInt32(MEPackage.packageTagLittleEndian);
-            ms.Writer.WriteUInt32(Header.MaxBlockSize);
-            ms.Writer.WriteUInt32((uint)lzxBlocks.Sum(x => x.Item1.Length)); //Comp
-            ms.Writer.WriteUInt32(uncompSize); //Uncomp
-
-            //Write Table
-            foreach (var lzxBlock in lzxBlocks)
-            {
-                ms.Writer.WriteInt32(lzxBlock.Item1.Length); //comp
-                ms.Writer.WriteUInt32(lzxBlock.Item2); //uncomp
-            }
-
-            //Write data
-            foreach (var lzxBlock in lzxBlocks)
-            {
-                ms.Writer.Write(lzxBlock.Item1);
-            }
-            ms.BaseStream.Position = 0;
-            var toDecompress = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}.lzx";
-            ms.BaseStream.WriteToFile(toDecompress);
-            // Todo: Convert to LZX Helper
-            //var decompressed = CompressionHelper.QuickBMSDecompress(toDecompress, "xboxlzx.bms", true);
-            //if (decompressed == null || decompressed.Length != uncompSize)
-            //{
-            //    throw new Exception("LZX DECOMPRESSION ERROR!");
-            //}
-            Debug.Write("LZX DECOMPRESSION NOT YET IMPLEMENTED FOR SFAR");
-            return new byte[2];
         }
 
         internal class InputBlock
