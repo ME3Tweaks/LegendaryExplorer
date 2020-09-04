@@ -427,6 +427,9 @@
     <Compile Include="Packages\EntryImporterExtended.cs" />
     <Compile Include="Packages\ExportCreator.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
+    <Compile Include="SFAREditor2\SFARExplorer.xaml.cs">
+      <DependentUpon>SFARExplorer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />
@@ -448,6 +451,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ME3Script\UnrealScriptIDE.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SFAREditor2\SFARExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

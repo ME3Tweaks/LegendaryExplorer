@@ -7,6 +7,7 @@ using System.Text;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -51,14 +52,14 @@ namespace ME3ExplorerCore.Unreal
             public uint BlockSizeTableIndex;
             public uint UncompressedSize;
             public byte UncompressedSizeAdder;
-            public long RealUncompressedSize;
+            public long RealUncompressedSize { get; set; }
             public uint DataOffset;
             public byte DataOffsetAdder;
-            public long RealDataOffset;
+            public long RealDataOffset { get; set; }
             public long BlockTableOffset;
             public long[] BlockOffsets;
             public ushort[] BlockSizes;
-            public string FileName;
+            public string FileName { get; set; }
             public bool isActualFile;
 
             public void Serialize(SerializingFile con, HeaderStruct header)
@@ -132,7 +133,7 @@ namespace ME3ExplorerCore.Unreal
         public static readonly byte[] TOCHash = { 0xB5, 0x50, 0x19, 0xCB, 0xF9, 0xD3, 0xDA, 0x65, 0xD5, 0x5B, 0x32, 0x1C, 0x00, 0x19, 0x69, 0x7C };
 
         public HeaderStruct Header;
-        public FileEntryStruct[] Files;
+        public ObservableCollectionExtended<FileEntryStruct> Files { get; } = new ObservableCollectionExtended<FileEntryStruct>();
 
         public long UncompressedSize
         {
@@ -168,13 +169,12 @@ namespace ME3ExplorerCore.Unreal
                 Header = new HeaderStruct();
             Header.Serialize(con);
             con.Seek((int)Header.EntryOffset, SeekOrigin.Begin);
-            if (con.isLoading)
-                Files = new FileEntryStruct[Header.FileCount];
             for (int i = 0; i < Header.FileCount; i++)
             {
                 //Debug.WriteLine($"Serialize sfar file {i} at 0x{con.Memory.Position:X8}");
-                var pos = con.GetPos();
-                Files[i].Serialize(con, Header);
+                var feStruct = new FileEntryStruct();
+                feStruct.Serialize(con, Header);
+                Files.Add(feStruct);
                 //Debug.WriteLine($"Data offset for {i}: 0x{Files[i].DataOffset:X8} (0x{Files[i].RealDataOffset:X8}), header at 0x{pos:X8}");
             }
 
@@ -204,8 +204,10 @@ namespace ME3ExplorerCore.Unreal
             }
             if (f == -1)
                 return;
-            Files[f].FileName = "Filenames.txt (this file has no real name)";
-            Files[f].isActualFile = false;
+            var fFile = Files[f];
+            fFile.FileName = "Filenames.txt (this file has no real name)";
+            fFile.isActualFile = false;
+            Files[f] = fFile;
             MemoryStream m = DecompressEntry(f);
             m.Seek(0, 0);
             StreamReader r = new StreamReader(m);
@@ -289,7 +291,7 @@ namespace ME3ExplorerCore.Unreal
             MemoryStream result = new MemoryStream();
             uint count = 0;
             byte[] inputBlock;
-            byte[] outputBlock = new byte[Header.MaxBlockSize];
+            //byte[] outputBlock = new byte[Header.MaxBlockSize];
             long left = e.RealUncompressedSize;
             FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
@@ -302,8 +304,8 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                List<(byte[], uint)> currentLZXblocks = new List<(byte[], uint)>();
-                uint currentLZXCompressedSize = 0; //for lzx
+                //List<(byte[], uint)> currentLZXblocks = new List<(byte[], uint)>();
+                //uint currentLZXCompressedSize = 0; //for lzx
                 while (left > 0)
                 {
                     uint compressedBlockSize = e.BlockSizes[count];
@@ -315,13 +317,13 @@ namespace ME3ExplorerCore.Unreal
                         buff = new byte[compressedBlockSize];
                         fs.Read(buff, 0, buff.Length);
 
-                        if (currentLZXblocks.Count > 0)
-                        {
-                            result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
-                            //Write out the current LZX to the result stream
-                            currentLZXblocks.Clear();
-                            currentLZXCompressedSize = 0;
-                        }
+                        //if (currentLZXblocks.Count > 0)
+                        //{
+                        //    result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
+                        //    //Write out the current LZX to the result stream
+                        //    currentLZXblocks.Clear();
+                        //    currentLZXCompressedSize = 0;
+                        //}
 
 
                         result.Write(buff, 0, buff.Length);
@@ -335,7 +337,7 @@ namespace ME3ExplorerCore.Unreal
                             throw new Exception("compressed block size smaller than 5");
                         }
 
-                        currentLZXCompressedSize += compressedBlockSize;
+                        //currentLZXCompressedSize += compressedBlockSize;
 
                         inputBlock = new byte[compressedBlockSize];
                         //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
@@ -343,9 +345,9 @@ namespace ME3ExplorerCore.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         if (Header.CompressionScheme == "amzl")
                         {
-                            outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
+                            var outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                             if (outputBlock.Length != actualUncompressedBlockSize)
-                                throw new Exception("Decompression Error");
+                                throw new Exception("SFAR LZMA Decompression Error");
                             result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
                             left -= uncompressedBlockSize;
                             //continue;
@@ -354,9 +356,15 @@ namespace ME3ExplorerCore.Unreal
                         if (Header.CompressionScheme == "lzx")
                         {
                             //we put decomp into filename so bms script can read it
-                            currentLZXblocks.Add((inputBlock, uncompressedBlockSize));
+                            //currentLZXblocks.Add((inputBlock, uncompressedBlockSize));
+                            //left -= uncompressedBlockSize;
+                            
+                            var outputBlock = new byte[actualUncompressedBlockSize];
+                            var decompResult = LZX.Decompress(inputBlock, (uint)inputBlock.Length, outputBlock);
+                            if (decompResult != 0)
+                                throw new Exception("SFAR LZX Decompression Error");
+                            result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
                             left -= uncompressedBlockSize;
-
 
                             //var extracted = Path.GetTempPath() + $"ME3EXP_LZX_{Guid.NewGuid()}-{actualUncompressedBlockSize}.lzx";
                             //File.WriteAllBytes(extracted, inputBlock);
@@ -369,11 +377,6 @@ namespace ME3ExplorerCore.Unreal
                     }
                     count++;
                 }
-
-                if (currentLZXblocks.Count > 0)
-                {
-                    result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
-                }
             }
             fs.Close();
             return result;
@@ -382,7 +385,7 @@ namespace ME3ExplorerCore.Unreal
         private byte[] pumpLZXDecompressor(List<(byte[], uint)> lzxBlocks)
         {
             // build lzx file for faster decompression with QuickBMS - individual blocks are EXTREMELY slow
-            var uncompSize = (uint) lzxBlocks.Sum(x => x.Item2);
+            var uncompSize = (uint)lzxBlocks.Sum(x => x.Item2);
             EndianReader ms = new EndianReader(new MemoryStream()) { Endian = Endian.Big };
             ms.Writer.WriteUInt32(MEPackage.packageTagLittleEndian);
             ms.Writer.WriteUInt32(Header.MaxBlockSize);
@@ -644,7 +647,7 @@ namespace ME3ExplorerCore.Unreal
                 List<FileEntryStruct> l = new List<FileEntryStruct>();
                 l.AddRange(Files);
                 l.RemoveAt(Index);
-                Files = l.ToArray();
+                Files.ReplaceAll(l);
                 Header.FileCount--;
                 Debug.WriteLine("Rebuilding...");
                 ReBuild();
@@ -687,7 +690,7 @@ namespace ME3ExplorerCore.Unreal
                     l.RemoveAt(Index[i]);
                     Header.FileCount--;
                 }
-                Files = l.ToArray();
+                Files.ReplaceAll(l);
                 Debug.WriteLine("Rebuilding...");
                 ReBuild();
                 Debug.WriteLine("Done.");
@@ -715,7 +718,7 @@ namespace ME3ExplorerCore.Unreal
             e.UncompressedSizeAdder = 0;
             tmp.Add(e);
             e = new FileEntryStruct();
-            Files = tmp.ToArray();
+            Files.ReplaceAll(tmp);
             //
             //Find TOC
             Debug.WriteLine("Searching TOC...");
@@ -857,7 +860,7 @@ namespace ME3ExplorerCore.Unreal
         {
             Debug.WriteLine("File opened\nSearching TOCbin...");
             int f = -1;
-            for (int i = 0; i < Files.Length; i++)
+            for (int i = 0; i < Files.Count; i++)
                 if (Files[i].FileName.Contains("PCConsoleTOC.bin"))
                     f = i;
             if (f == -1)
@@ -876,7 +879,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 TOCBinFile.Entry e = TOC.Entries[i];
                 f = -1;
-                for (int j = 0; j < Files.Length; j++)
+                for (int j = 0; j < Files.Count; j++)
                     if (Files[j].FileName.Replace('/', '\\').Contains(e.name))
                         f = j;
 

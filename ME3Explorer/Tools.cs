@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
 using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
+using ME3Explorer.SFARUI;
 using ME3ExplorerCore.MEDirectories;
 
 namespace ME3Explorer
@@ -558,18 +559,31 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
+            //set.Add(new Tool
+            //{
+            //    name = "SFAR Editor",
+            //    type = typeof(SFAREditor2),
+            //    icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new SFAREditor2()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "dlc" },
+            //    subCategory = other,
+            //    description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+            //});
             set.Add(new Tool
             {
-                name = "SFAR Editor",
-                type = typeof(SFAREditor2),
+                name = "SFAR Explorer",
+                type = typeof(SFARExplorer),
                 icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
                 open = () =>
                 {
-                    (new SFAREditor2()).Show();
+                    (new SFARExplorer()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
             set.Add(new Tool
             {
