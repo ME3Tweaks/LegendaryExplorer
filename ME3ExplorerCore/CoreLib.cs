@@ -32,11 +32,14 @@ namespace ME3ExplorerCore
             return "4.0.0.0"; //This is used by the TLK tool. We should probably change this to be more proper
         }
 
+        private static bool initialized = false;
+
         /// <summary>
         /// Call this before using anything in this library. It registers things such as package loaders
         /// </summary>
         public static void InitLib(TaskScheduler uiThreadScheduler, Action<string> packageSavingFailed = null)
         {
+            if (initialized) return;
             SYNCHRONIZATION_CONTEXT = uiThreadScheduler;
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
@@ -45,6 +48,7 @@ namespace ME3ExplorerCore
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
             CoreLibSettings.Instance = new CoreLibSettings();
+            initialized = true;
         }
 
 #if DEBUG
