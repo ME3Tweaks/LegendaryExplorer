@@ -14,23 +14,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LinuxDebug|x64'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacDebug|x64'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
-	</PropertyGroup>
-
+	
 	<PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
 		<DebugType>embedded</DebugType>
 		<DebugSymbols>true</DebugSymbols>
@@ -39,12 +23,27 @@
 		<DefineConstants>WINDOWS</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LinuxDebug|x64'">
+		<DebugType>embedded</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<PlatformTarget>x64</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LinuxRelease|x64'">
 		<DebugType>embedded</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<PlatformTarget>x64</PlatformTarget>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>LINUX</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacDebug|x64'">
+		<DebugType>embedded</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<PlatformTarget>x64</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacRelease|x64'">
@@ -84,7 +83,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
