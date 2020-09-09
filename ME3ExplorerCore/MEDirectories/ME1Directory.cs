@@ -62,9 +62,9 @@ namespace ME3ExplorerCore.MEDirectories
 
                 keyName = hkey64 + subkey;
                 gamePath = (string)Registry.GetValue(keyName, "Path", null);
-                if (gamePath != null)
+                if (gamePath != null) ;
                 {
-                    gamePath = gamePath + "\\";
+                    gamePath += Path.PathSeparator;
                     CoreLibSettings.Instance.ME1Directory = gamePath;
                     return;
                 }

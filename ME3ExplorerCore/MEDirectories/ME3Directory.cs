@@ -68,7 +68,7 @@ namespace ME3ExplorerCore.MEDirectories
                 gamePath = (string)Registry.GetValue(keyName, "Install Dir", null);
                 if (gamePath != null)
                 {
-                    gamePath = gamePath + "\\";
+                    gamePath += Path.DirectorySeparatorChar;
                     CoreLibSettings.Instance.ME2Directory = gamePath;
                 }
 #endif

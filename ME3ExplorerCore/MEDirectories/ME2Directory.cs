@@ -60,17 +60,11 @@ namespace ME3ExplorerCore.MEDirectories
                     return;
                 }
 
-                /*if (gamePath != null)
-                {
-                    gamePath = gamePath + "\\";
-                    return;
-                }*/
-
                 keyName = hkey64 + subkey;
                 gamePath = (string)Registry.GetValue(keyName, "Path", null);
                 if (gamePath != null)
                 {
-                    gamePath = gamePath + "\\";
+                    gamePath += Path.DirectorySeparatorChar;
                     CoreLibSettings.Instance.ME2Directory = gamePath;
                     return;
                 } 
