@@ -488,7 +488,7 @@ namespace ME3ExplorerCore.Unreal
 
         public void ReBuild()
         {
-            string path = Path.GetDirectoryName(FileName) + "\\" + Path.GetFileNameWithoutExtension(FileName) + ".tmp";
+            string path = Path.Combine(Path.GetDirectoryName(FileName), Path.GetFileNameWithoutExtension(FileName) + ".tmp");
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 
             Debug.WriteLine("Creating Header Dummy...");
