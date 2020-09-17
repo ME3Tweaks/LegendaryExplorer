@@ -69,11 +69,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition=" '$(OS)' == 'Windows_NT' ">
+		<ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('Win'))">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>CompressionWrappers.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+		<ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>libCompressionWrappers.so</TargetPath>
 		</ContentWithTargetPath>
