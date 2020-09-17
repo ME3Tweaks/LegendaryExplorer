@@ -30,15 +30,16 @@
 
 using System;
 using System.Runtime.InteropServices;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
 {
     public static class LZO2
     {
-        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         public static uint Decompress(byte[] src, uint srcLen, byte[] dst)

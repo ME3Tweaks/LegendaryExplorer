@@ -13,6 +13,14 @@ namespace ME3ExplorerCore.Packages
 {
     public static class CompressionHelper
     {
+#if WINDOWS
+        public const string COMPRESSION_WRAPPER_NAME = "CompressionWrappers.dll";
+#elif MACOS
+        public const string COMPRESSION_WRAPPER_NAME = "IDK";
+#elif LINUX
+        public const string COMPRESSION_WRAPPER_NAME = "libCompressionWrappers.so";
+#endif
+
         /// <summary>
         /// Represents an item in the Chunk table of a package
         /// </summary>
@@ -46,6 +54,7 @@ namespace ME3ExplorerCore.Packages
             public int compressedsize;
             public int uncompressedsize;
         }
+
 
         //        #region Decompression
 

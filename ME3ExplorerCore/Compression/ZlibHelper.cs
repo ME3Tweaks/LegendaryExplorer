@@ -30,16 +30,16 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
 {
     public static class Zlib
     {
-        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         public static uint Decompress(byte[] src, uint srcLen, byte[] dst)

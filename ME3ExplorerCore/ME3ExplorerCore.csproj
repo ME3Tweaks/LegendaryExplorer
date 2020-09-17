@@ -73,9 +73,9 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>CompressionWrappers.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\Linux\CompressionWrappers.dll" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+		<ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>CompressionWrappers.dll</TargetPath>
+			<TargetPath>libCompressionWrappers.so</TargetPath>
 		</ContentWithTargetPath>
 		<!--<Content Include="Libraries\Mac\CompressionWrappers.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
