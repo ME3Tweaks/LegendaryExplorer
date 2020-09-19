@@ -438,7 +438,7 @@ namespace ME3ExplorerCore.Packages
         //        //}
 
         ///
-        /// Decompressesa fully compressed package file. These can be found on console platforms
+        /// Decompresses a fully compressed package file. These can be found on console platforms
         /// 
         public static MemoryStream DecompressFullyCompressedPackage(EndianReader raw, UnrealPackageFile.CompressionType compressionType)
         {
@@ -472,6 +472,8 @@ namespace ME3ExplorerCore.Packages
                 i++;
             }
 
+            int index = 0;
+            var root = @"C:\users\mgamerz\desktop\lzxdata";
             foreach (var btInfo in blockTable)
             {
                 // Decompress
@@ -494,6 +496,8 @@ namespace ME3ExplorerCore.Packages
                             throw new Exception("LZMA decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZX:
+                        var fname = Path.Combine(root, $"{index}-{datain.Length}-{dataout.Length}-0x{outStream.Position:X8}.bin");
+                        File.WriteAllBytes(fname, datain);
                         if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
                             throw new Exception("LZX decompression failed!");
                         break;
@@ -501,10 +505,12 @@ namespace ME3ExplorerCore.Packages
                         throw new Exception("Unknown compression type for this package.");
                 }
 
+                index++;
                 outStream.WriteFromBuffer(dataout);
             }
 
             outStream.Position = 0;
+            outStream.WriteToFile(Path.Combine(root, "Decompressed.xxx"));
             return outStream;
         }
 

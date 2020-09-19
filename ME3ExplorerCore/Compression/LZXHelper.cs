@@ -25,12 +25,13 @@
  */
 
 using System.Runtime.InteropServices;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
 {
     public static class LZX
     {
-        [DllImport("lzxdhelper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZXDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
         /// <summary>
