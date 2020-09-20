@@ -4,7 +4,7 @@
 		<TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<Platforms>x64</Platforms>
-		<Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug</Configurations>
+		<Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
