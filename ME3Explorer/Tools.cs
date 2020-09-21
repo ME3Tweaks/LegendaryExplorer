@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
 using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
-using ME3Explorer.SFARUI;
+using ME3Explorer.SFAREditor;
 using ME3ExplorerCore.MEDirectories;
 
 namespace ME3Explorer

@@ -371,6 +371,7 @@ namespace ME3ExplorerCore.Unreal
                 }
             }
             fs.Close();
+            result.Position = 0;
             return result;
         }
 

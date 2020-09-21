@@ -1,13 +1,19 @@
-﻿<me3Explorer:NotifyPropertyChangedWindowBase x:Class="ME3Explorer.SFARUI.SFARExplorer"
+﻿<me3Explorer:NotifyPropertyChangedWindowBase x:Class="ME3Explorer.SFAREditor.SFARExplorer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         xmlns:unreal="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
+        xmlns:sfarEditor="clr-namespace:ME3Explorer.SFAREditor"
+        xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
         AllowDrop="True"
         mc:Ignorable="d"
         Title="SFARExplorer" Height="450" Width="800">
+    <Window.Resources>
+        <sfarEditor:FilesizeToHumanSizeConverter x:Key="FilesizeToHumanSizeConverter"/>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -16,17 +22,27 @@
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock Text="Open or drop SFAR"/>
+                <TextBlock Text="{Binding BottomLeftText}"/>
             </StatusBarItem>
         </StatusBar>
         <ListBox ItemsSource="{Binding LoadedDLCPackage.Files}">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type unreal:DLCPackage+FileEntryStruct}">
                     <DockPanel>
+                        <TextBlock Text ="{Binding RealUncompressedSize, Converter={StaticResource FilesizeToHumanSizeConverter}}" DockPanel.Dock="Bottom"/>
                         <TextBlock Text ="{Binding FileName}"/>
-                        <TextBlock Text ="{Binding RealUncompressedSize}" DockPanel.Dock="Bottom"/>
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+
+                                <MenuItem Header="Open in TLK Editor" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInTLKEditorCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                                <MenuItem Header="Open in Package Editor" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInPackageEditorCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                            </ContextMenu>
+
+                        </DockPanel.ContextMenu>
                     </DockPanel>
                 </DataTemplate>
+
+
             </ListBox.Resources>
         </ListBox>
     </DockPanel>

@@ -44,6 +44,12 @@ namespace ME3Explorer
             Pcc = MEPackageHandler.OpenMEPackage(s, this);
         }
 
+        public void LoadMEPackage(Stream stream, string associatedFilePath = null)
+        {
+            UnLoadMEPackage();
+            Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath);
+        }
+
         protected void UnLoadMEPackage()
         {
             pcc?.Release(this);

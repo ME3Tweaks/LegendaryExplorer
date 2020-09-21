@@ -93,9 +93,18 @@ namespace ME3ExplorerCore.TLK.ME2ME3
              * reading first 28 (4 * 7) bytes 
              */
             
-            Stream fs = File.OpenRead(fileName);
+            using Stream fs = File.OpenRead(fileName);
+            LoadTlkDataFromStream(fs);
+        }
+
+        /// <summary>
+        /// Loads TLK data from a stream. The position must be properly set.
+        /// </summary>
+        /// <param name="fs"></param>
+        public void LoadTlkDataFromStream(Stream fs)
+        {
             //Magic: "Tlk " on Little Endian
-            EndianReader r = EndianReader.SetupForReading(fs,0x006B6C54, out var magic);
+            EndianReader r = EndianReader.SetupForReading(fs, 0x006B6C54, out var magic);
             r.Position = 0;
             Header = new TLKHeader(r);
 
@@ -137,12 +146,12 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             {
                 int key = offset;
                 // if (key > maxOffset)
-                    // maxOffset = key;
+                // maxOffset = key;
                 /* read the string and update 'offset' variable to store NEXT string offset */
                 string s = GetString(ref offset);
                 rawStrings.Add(key, s);
             }
-            
+
             // Console.WriteLine("Max offset = " + maxOffset);
 
             /* **************** STEP FIVE ****************

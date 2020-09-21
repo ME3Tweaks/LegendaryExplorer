@@ -30,7 +30,7 @@ namespace ME3ExplorerCore.Packages
         public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null)
         {
             IMEPackage package;
-            package = LoadPackage(inStream);
+            package = LoadPackage(inStream, associatedFilePath);
             IMEPackage LoadPackage(Stream stream, string filePath = null)
             {
                 ushort version = 0;

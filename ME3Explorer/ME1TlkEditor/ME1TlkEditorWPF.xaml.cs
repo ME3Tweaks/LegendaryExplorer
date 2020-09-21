@@ -389,6 +389,19 @@ namespace ME3Explorer.ME1TlkEditor
             FileModified = false;
         }
 
+        public void LoadFileFromStream(Stream stream)
+        {
+            UnloadExport();
+            //CurrentLoadedFile = filepath;
+            CurrentME2ME3TalkFile = new TalkFile();
+            CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
+
+            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            FileModified = false;
+        }
+
         public override bool CanLoadFile()
         {
             //this doesn't do any background threading so we can always load files
