@@ -6,6 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProjectGuid>{60E91B60-FCEE-4B36-967E-4022D8A54F2F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <XamlDebuggingInformation>True</XamlDebuggingInformation>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ME3Explorer</RootNamespace>
     <AssemblyName>ME3Explorer</AssemblyName>
