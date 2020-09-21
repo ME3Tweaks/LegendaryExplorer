@@ -2,6 +2,7 @@
  * SevenZip Helper
  *
  * Copyright (C) 2015-2018 Pawel Kolodziejski
+ * Copyright (C) 2019 Michael Perez
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,21 +20,26 @@
  *
  */
 
- /*
-  * This code use sevenzipwrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
-  *
-  * The dll is created using LZMA SDK and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/7Zip
-  *
-  */
+/*
+ * This code use sevenzipwrapper.dll copied from MassEffectModder:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
+ *
+ * The dll is created using LZMA SDK and MassEffectModder wrapper code:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/7Zip
+ *
+ */
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
 {
+    // This class has additional methods that are used by external libraries
+    // Do not remove them
     public static class LZMA
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
@@ -42,6 +48,8 @@ namespace ME3ExplorerCore.Compression
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
+        [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int SevenZipUnpackFile([In] string archive, [In] string outputpath, [In] int keepArchivePaths);
 
         public static byte[] Decompress(byte[] src, uint dstLen)
         {
@@ -68,6 +76,77 @@ namespace ME3ExplorerCore.Compression
             Array.Copy(tmpbuf, dst, (int)dstLen);
 
             return dst;
+        }
+
+        public static bool ExtractSevenZipArchive(string archive, string outputpath, bool keepArchivePath = true)
+        {
+            Directory.CreateDirectory(outputpath); //must exist
+            var result = SevenZipUnpackFile(archive, outputpath, keepArchivePath ? 1 : 0);
+            return result == 0;
+        }
+
+        /// <summary>
+        /// Compresses the input data and returns LZMA compressed data, with the proper header for an LZMA file.
+        /// </summary>
+        /// <param name="src">Source data</param>
+        /// <returns>Byte array of compressed data</returns>
+
+        public static byte[] CompressToLZMAFile(byte[] src)
+        {
+            var compressedBytes = LZMA.Compress(src);
+            byte[] fixedBytes = new byte[compressedBytes.Length + 8]; //needs 8 byte header written into it (only mem version needs this)
+            Buffer.BlockCopy(compressedBytes, 0, fixedBytes, 0, 5);
+            fixedBytes.OverwriteRange(5, BitConverter.GetBytes(src.Length));
+            Buffer.BlockCopy(compressedBytes, 5, fixedBytes, 13, compressedBytes.Length - 5);
+            return fixedBytes;
+        }
+
+        internal static byte[] DecompressLZMAFile(byte[] lzmaFile)
+        {
+            int len = (int)BitConverter.ToInt32(lzmaFile, 5); //this is technically a 64-bit value, but since MEM code can't handle 64 bit sizes we are just going to use 32bit. We aren't going to have a 2GB+ single LZMA file
+
+            if (len >= 0)
+            {
+                byte[] strippedData = new byte[lzmaFile.Length - 8];
+                //Non-Streamed (made from disk)
+                Buffer.BlockCopy(lzmaFile, 0, strippedData, 0, 5);
+                Buffer.BlockCopy(lzmaFile, 13, strippedData, 5, lzmaFile.Length - 13);
+                return Decompress(strippedData, (uint)len);
+            }
+            else if (len == -1)
+            {
+                throw new Exception("Cannot decompress streamed LZMA with this implementation!");
+            }
+            else
+            {
+                Debug.WriteLine(@"Cannot decompress LZMA array: Length is not positive or -1 (" + len + @")! This is not an LZMA array");
+                return null; //Not LZMA!
+            }
+        }
+
+        internal static void DecompressLZMAStream(MemoryStream compressedStream, MemoryStream decompressedStream)
+        {
+            compressedStream.Seek(5, SeekOrigin.Begin);
+            int len = compressedStream.ReadInt32();
+            compressedStream.Seek(0, SeekOrigin.Begin);
+
+            if (len >= 0)
+            {
+                byte[] strippedData = new byte[compressedStream.Length - 8];
+                compressedStream.Read(strippedData, 0, 5);
+                compressedStream.Seek(8, SeekOrigin.Current); //Skip 8 bytes for length.
+                compressedStream.Read(strippedData, 5, (int)compressedStream.Length - 13);
+                var decompressed = Decompress(strippedData, (uint)len);
+                decompressedStream.WriteFromBuffer(decompressed);
+            }
+            else if (len == -1)
+            {
+                throw new Exception("Cannot decompress streamed LZMA with this implementation!");
+            }
+            else
+            {
+                Debug.WriteLine(@"LZMA Stream to decompress has wrong length: " + len);
+            }
         }
     }
 }
