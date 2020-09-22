@@ -51,7 +51,7 @@ steps:
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
       # Build configuration
       $buildConfiguration = "Release"
-      if ($(Build.SourceBranchName) -eq "librarysplit") { $buildConfiguration = "WinRelease" }
+      if ("$(Build.SourceBranchName)" -eq "librarysplit") { $buildConfiguration = "WinRelease" }
       Write-Host "##vso[task.setvariable variable=buildConfiguration]$buildConfiguration"
 
 - task: NuGetToolInstaller@1
