@@ -63,7 +63,7 @@ namespace ME3Explorer.Unreal.Classes
                 path = ws.GetPathToAFC();
             }
 
-            Stream waveStream = ws.CreateWaveStream(path);
+            Stream waveStream = ws.CreateWaveStream(path); 
             if (waveStream != null)
             {
                 //Check it is RIFF
@@ -71,7 +71,7 @@ namespace ME3Explorer.Unreal.Classes
                 waveStream.SeekBegin();
                 waveStream.Read(riffHeaderBytes, 0, 4);
                 string wemHeader = "" + (char)riffHeaderBytes[0] + (char)riffHeaderBytes[1] + (char)riffHeaderBytes[2] + (char)riffHeaderBytes[3];
-                if (wemHeader == "RIFF")
+                if (wemHeader == "RIFF") //this is terrible code and will not work for RIFX (big endian). Length can be calculated by sound header (look at vgmstream source) with samplerate * bits per sample divided by number of samples
                 {
                     waveStream.SeekBegin();
                     WaveFileReader wf = new WaveFileReader(waveStream);

@@ -120,6 +120,7 @@ namespace ME3Explorer.Unreal
         public static MemoryStream ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
         {
             //convert RIFF to WwiseOGG
+            // Is this useful?
             //System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
             if (!File.Exists(riffPath))
             {
