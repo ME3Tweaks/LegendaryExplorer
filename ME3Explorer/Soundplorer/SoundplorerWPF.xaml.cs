@@ -220,7 +220,7 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc|Package files|*.pcc;*.u;*.sfm;*.upk|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
+            OpenFileDialog d = new OpenFileDialog { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {

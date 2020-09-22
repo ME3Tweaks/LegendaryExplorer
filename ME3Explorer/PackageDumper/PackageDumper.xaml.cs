@@ -68,9 +68,9 @@ namespace ME3Explorer.PackageDumper
                 EnsureFileExists = true,
                 Title = "Select files to dump",
             };
-            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc;*.xxx"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
