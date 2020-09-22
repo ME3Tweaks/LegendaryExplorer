@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Packages;
@@ -23,12 +24,15 @@ namespace ME3ExplorerCore.Tests
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
+                    Console.WriteLine($"Opening package {p}");
                     var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+                    Console.WriteLine($" > Enumerating all exports for properties");
+
                     foreach (var exp in package.Exports)
                     {
                         if (exp.ClassName != "Class")
                         {
-                            var props = exp.GetProperties();
+                            var props = exp.GetProperties(forceReload: true, includeNoneProperties: true);
                             Assert.IsInstanceOfType(props.LastOrDefault(), typeof(NoneProperty),
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
