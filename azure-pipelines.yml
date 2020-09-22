@@ -61,7 +61,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/Release'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_4.2.0.$(Build.BuildId).7z'
