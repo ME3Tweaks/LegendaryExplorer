@@ -47,8 +47,8 @@ namespace ME3ExplorerCore
             Action[] jsonLoaders =
             {
                 () => ME1UnrealObjectInfo.loadfromJSON(),
-                () => ME1UnrealObjectInfo.loadfromJSON(),
-                () => ME1UnrealObjectInfo.loadfromJSON()
+                () => ME2UnrealObjectInfo.loadfromJSON(),
+                () => ME3UnrealObjectInfo.loadfromJSON()
             };
             Parallel.ForEach(jsonLoaders, (action, state, arg3) => action());
             CoreLibSettings.Instance = new CoreLibSettings();
