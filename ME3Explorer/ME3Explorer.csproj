@@ -953,7 +953,6 @@
     <Compile Include="SharedUI\PeregrineTreeView\PeregrineHeap.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\TreeViewItemHelper.cs" />
     <Compile Include="SingleInstance.cs" />
-    <Compile Include="Soundplorer\ISACT_Parser.cs" />
     <Compile Include="Soundplorer\ISBank.cs" />
     <Compile Include="Soundplorer\ISBankEntry.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
