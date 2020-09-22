@@ -15,7 +15,7 @@ namespace ME3ExplorerCore
             Instance = this;
         }
         public bool TLKGenderIsMale { get; set; }
-        public string TLKDefaultLanguage { get; set; } // maybe should be enum?
+        public string TLKDefaultLanguage { get; set; } = "INT"; // maybe should be enum?
         public bool ParseUnknownArrayTypesAsObject { get; set; }
         public string ME1Directory { get; set; }
         public string ME2Directory { get; set; }
