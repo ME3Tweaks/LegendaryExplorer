@@ -1767,6 +1767,12 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 int count;
+                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 1 (PS3): {bin.ReadInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 2 (PS3): {bin.ReadInt32()}"));
+                }
+
                 subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));

@@ -177,8 +177,6 @@ namespace ME3ExplorerCore.MEDirectories
                     CoreLibSettings.Instance.ME3Directory = BIOGames[2];
                     ME3Directory.gamePath = BIOGames[2];
                 }
-
-                CoreLibSettings.Instance.Save();
             }
             catch (Exception e)
             {

@@ -7,6 +7,7 @@ namespace ME3ExplorerCore
 {
     public class CoreLibSettings : INotifyPropertyChanged
     {
+        // In ME3Explorer (not this lib) the property changed event is listened to for changes and maps them into the .net framework defaults system
         public static CoreLibSettings Instance { get; set; }
 
         public CoreLibSettings()
@@ -22,10 +23,5 @@ namespace ME3ExplorerCore
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        internal void Save()
-        {
-
-        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ME3ExplorerCore.Unreal.BinaryConverters
+﻿using ME3ExplorerCore.Packages;
+
+namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
     public class SoundNodeWave : ObjectBinary
     {
@@ -9,6 +11,12 @@
 
         protected override void Serialize(SerializingContainer2 sc)
         {
+            if (sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
+            {
+                // Unknown items
+                sc.SerializeConstInt(0);
+                sc.SerializeConstInt(0);
+            }
             sc.SerializeBulkData(ref RawData, SCExt.Serialize);
             sc.SerializeBulkData(ref CompressedPCData, SCExt.Serialize);
             sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
