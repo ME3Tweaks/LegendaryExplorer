@@ -59,6 +59,12 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: 'ME3ExplorerCore.Tests\ME3ExplorerCore.Tests.csproj'
+    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include=ME3Explorer'
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
