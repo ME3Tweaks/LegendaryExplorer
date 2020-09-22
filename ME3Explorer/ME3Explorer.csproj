@@ -1416,10 +1416,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\BIK_movie_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\interpreter_icon.ico" />
     <Resource Include="Resources\About_icon.ico" />
     <Resource Include="Resources\close_icon.ico" />
     <Resource Include="Resources\create_mods_icon.ico" />
@@ -1428,9 +1424,6 @@
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
-    <Resource Include="Icons\udk_explorer_64x64.png" />
-    <Resource Include="Icons\placeholder_64x64.png" />
-    <Resource Include="Icons\modmaker_64x64.png" />
     <Page Include="CurveEd\CurveEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1534,7 +1527,6 @@
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
     <Resource Include="Resources\BikExtractor_256x256.ico" />
     <Resource Include="Resources\InterpViewer_256x256.ico" />
-    <Resource Include="Resources\sfareditor_256x256.ico" />
     <Resource Include="Resources\wwisebankeditor_256x256.ico" />
     <Resource Include="Resources\tpftools_256x256.ico" />
     <Resource Include="Resources\animationexplorer_256x256.ico" />
@@ -1574,6 +1566,8 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Keywords.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\placeholder_256x256.ico" />
+    <Resource Include="Resources\sfarexplorer_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>

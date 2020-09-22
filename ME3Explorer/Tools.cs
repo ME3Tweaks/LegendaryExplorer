@@ -576,7 +576,7 @@ namespace ME3Explorer
             {
                 name = "SFAR Explorer",
                 type = typeof(SFARExplorer),
-                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
                 open = () =>
                 {
                     (new SFARExplorer()).Show();
