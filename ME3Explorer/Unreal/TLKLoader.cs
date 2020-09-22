@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ME3Explorer.Unreal
 {
@@ -17,7 +18,8 @@ namespace ME3Explorer.Unreal
         public static readonly string LoadedTLKsPathME2 = App.AppDataFolder + "ME2LoadedTLKs.JSON";
         public static readonly string LoadedTLKsPathME3 = App.AppDataFolder + "ME3LoadedTLKs.JSON";
 
-        public static void LoadSavedTlkList()
+
+        private static void loadME1Tlk()
         {
             if (File.Exists(LoadedTLKsPathME1))
             {
@@ -43,8 +45,10 @@ namespace ME3Explorer.Unreal
                     }
                 }
             }
+        }
 
-
+        private static void loadME2Tlk()
+        {
             if (File.Exists(LoadedTLKsPathME2))
             {
                 List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME3));
@@ -65,7 +69,10 @@ namespace ME3Explorer.Unreal
                 string tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
                 ME2TalkFiles.LoadTlkData(tlkPath);
             }
+        }
 
+        private static void loadME3Tlk()
+        {
             if (File.Exists(LoadedTLKsPathME3))
             {
                 List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME3));
@@ -86,6 +93,17 @@ namespace ME3Explorer.Unreal
                 string tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
                 ME3TalkFiles.LoadTlkData(tlkPath);
             }
+        }
+
+        public static void LoadSavedTlkList()
+        {
+            Action[] jsonLoaders =
+            {
+                loadME1Tlk,
+                loadME2Tlk,
+                loadME3Tlk
+            };
+            Parallel.ForEach(jsonLoaders, (action, state, arg3) => action());
         }
 
         public static void SaveTLKList(MEGame game = MEGame.Unknown)
