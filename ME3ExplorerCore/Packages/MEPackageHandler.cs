@@ -162,7 +162,7 @@ namespace ME3ExplorerCore.Packages
                     pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
                     MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
                 }
-                else if (version == 868 && licenseVersion == 0)
+                else if (version == 868 || version == 867 && licenseVersion == 0)
                 {
                     //UDK
                     pkg = UDKConstructorDelegate(filePath, false);

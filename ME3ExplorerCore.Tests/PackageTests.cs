@@ -12,7 +12,7 @@ namespace ME3ExplorerCore.Tests
     public class PackageTests
     {
         [TestMethod]
-        public void TestPackageLoadingAndProperties()
+        public void TestPackages()
         {
             GlobalTest.Init();
 
@@ -36,6 +36,13 @@ namespace ME3ExplorerCore.Tests
                             Assert.IsInstanceOfType(props.LastOrDefault(), typeof(NoneProperty),
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
+
+                        if (exp.ClassName == "Function")
+                        {
+                            // test function parsing
+                        }
+
+                        // Binary testing?
                     }
                 }
             }
