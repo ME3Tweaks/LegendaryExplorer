@@ -6,14 +6,15 @@
 
 trigger:
 - Beta
+- librarysplit
 
 pool:
   vmImage: 'windows-latest'
 
+
 variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
-  buildConfiguration: 'Release'
 
 steps:
 # Change artifact name when the version major/minor changes
@@ -27,28 +28,25 @@ steps:
       Write-Host "##vso[task.setvariable variable=time]$date"
       # Commit Message (Multiliner)-----------------------
       $commitMessageFull = git log -1 --pretty=%B
-      Write-Host "Type of commitmessagefull:"
-      Write-Host $commitMessageFull.GetType()
       $numlines = $($commitMessageFull | measure).Count
-      Write-Host "Message before newline stripping:"
-      Write-Host $commitMessageFull
       if ($numlines > 0) { 
         $commitMessageFull=[system.String]::Join(" ", $commitMessageFull)
       }
       Write-Host "##vso[task.setvariable variable=commitMessageFull]$commitMessageFull"
-      # Commit Message (Singleline)-----------------------
-      $discordmessage="$(Build.SourceVersionMessage)"
-      $numlines = $($discordmessage | measure).Count
-      if ($numlines > 0) { $discordmessage=$($discordmessage.replace('\n', ' ')) }
-      Write-Host "##vso[task.setvariable variable=discordmessage]$discordmessage"
       # Author-------------------------------------------
       $author = git log -1 --pretty=format:'%an'
       Write-Host "##vso[task.setvariable variable=author]$author"
+      Write-Host "Author: $($author)"
       # API Keys and versioning--------------------------
       $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
       Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
-      
+      # Build configuration
+      $buildConfiguration = "Release"
+      if ("$(Build.SourceBranchName)" -eq "librarysplit") { $buildConfiguration = "WinRelease" }
+      Write-Host "##vso[task.setvariable variable=buildConfiguration]$buildConfiguration"
+      Write-Host "Build Configuration: $($buildConfiguration)"
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -63,7 +61,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/Release'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_4.2.0.$(Build.BuildId).7z'
@@ -107,6 +105,10 @@ steps:
         {
           "name": "Author",
           "value": "$(author)"
+        },
+        {
+          "name": "Branch",
+          "value": "$(Build.SourceBranchName)"
         },
         {
           "name": "Version",
