@@ -3,12 +3,16 @@ using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
+using ME3Explorer.ME3Script;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
+using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;
 using static ME3Script.Utilities.Keywords;
 
@@ -38,239 +42,241 @@ namespace ME3Script.Decompiling
             switch (token)
             {
                 // variable lookups
-                case (byte)StandardByteCodes.DefaultVariable:
+                case (byte)OpCodes.DefaultVariable:
 
                     PopByte();
                     return DecompileDefaultReference();
-                case (byte)StandardByteCodes.LocalOutVariable:
-                case (byte)StandardByteCodes.LocalVariable:
-                case (byte)StandardByteCodes.InstanceVariable:
-
-                case (byte)StandardByteCodes.Unkn_5B: // TODO: fix these, 
-                case (byte)StandardByteCodes.Unkn_5C: // map them out with names / purposes, 
-                case (byte)StandardByteCodes.Unkn_5D: // here for test purposes for now!
-                case (byte)StandardByteCodes.Unkn_5E: 
-                case (byte)StandardByteCodes.Unkn_5F:
-                case (byte)StandardByteCodes.Unkn_60:
-                case (byte)StandardByteCodes.Unkn_61:
-                case (byte)StandardByteCodes.Unkn_62: 
-                    
+                case (byte)OpCodes.LocalVariable:
+                case (byte)OpCodes.InstanceVariable:
+                case (byte)OpCodes.LocalOutVariable:
+                case (byte)OpCodes.LocalFloatVariable:
+                case (byte)OpCodes.LocalIntVariable:
+                case (byte)OpCodes.LocalByteVariable:
+                case (byte)OpCodes.LocalObjectVariable: 
+                case (byte)OpCodes.InstanceFloatVariable:
+                case (byte)OpCodes.InstanceIntVariable:
+                case (byte)OpCodes.InstanceByteVariable:
+                case (byte)OpCodes.InstanceObjectVariable:
                     PopByte();
                     return DecompileObjectLookup();
 
-                case (byte)StandardByteCodes.Nothing:
+                case (byte)OpCodes.Nothing:
                     PopByte();
                     StartPositions.Pop();
                     return DecompileExpression(); // TODO, solve this better? What about variable assignments etc?
 
                 // array[index]
-                case (byte)StandardByteCodes.DynArrayElement: //TODO: possibly separate this
-                case (byte)StandardByteCodes.ArrayElement:
+                case (byte)OpCodes.DynArrayElement: //TODO: possibly separate this
+                case (byte)OpCodes.ArrayElement:
                     return DecompileArrayRef();
 
                 // new (...) class (.)
-                case (byte)StandardByteCodes.New: // TODO: support in AST
+                case (byte)OpCodes.New: // TODO: support in AST
                     return DecompileNew();
 
                 // (class|object|struct).member
-                case (byte)StandardByteCodes.ClassContext: // TODO: support in AST
+                case (byte)OpCodes.ClassContext: // TODO: support in AST
                     return DecompileContext(isClass:true);
 
-                case (byte)StandardByteCodes.Context:
+                case (byte)OpCodes.Context:
                     return DecompileContext();
 
-                case (byte)StandardByteCodes.StructMember:
+                case (byte)OpCodes.StructMember:
                     return DecompileStructMember();
 
                 // unknown, interface
-                case (byte)StandardByteCodes.InterfaceContext:
+                case (byte)OpCodes.InterfaceContext:
                     PopByte();
                     StartPositions.Pop();
                     return DecompileExpression(); // TODO: research this
 
                 // class<Name>(Obj)
-                case(byte)StandardByteCodes.Metacast:
+                case(byte)OpCodes.Metacast:
                     return DecompileCast(meta:true); // TODO: ugly hack to make this qork quickly
 
                 // Self
-                case (byte)StandardByteCodes.Self:
+                case (byte)OpCodes.Self:
                     PopByte();
                     StartPositions.Pop();
                     return new SymbolReference(null, SELF, null, null); // TODO: solve better
 
                 // Skip(numBytes)
-                case (byte)StandardByteCodes.Skip: // handles skips in operator arguments
+                case (byte)OpCodes.Skip: // handles skips in operator arguments
                     PopByte();
                     ReadInt16(); // MemSize
                     StartPositions.Pop();
                     return DecompileExpression();
 
                 // Function calls
-                case (byte)StandardByteCodes.FinalFunction:
+                case (byte)OpCodes.FinalFunction:
                     return DecompileFunctionCall();
 
-                case (byte)StandardByteCodes.GlobalFunction:
+                case (byte)OpCodes.GlobalFunction:
                     return DecompileFunctionCall(byName: true, global: true); // TODO: is this correct?
 
-                case (byte)StandardByteCodes.VirtualFunction:
+                case (byte)OpCodes.VirtualFunction:
                     return DecompileFunctionCall(byName: true);
 
                 // int, eg. 5
-                case (byte)StandardByteCodes.IntConst:
+                case (byte)OpCodes.IntConst:
                     return DecompileIntConst();
 
                 // float, eg. 5.5
-                case (byte)StandardByteCodes.FloatConst:
+                case (byte)OpCodes.FloatConst:
                     return DecompileFloatConst();
 
                 // "string"
-                case (byte)StandardByteCodes.StringConst:
+                case (byte)OpCodes.StringConst:
                     return DecompileStringConst();
 
                 // Object
-                case (byte)StandardByteCodes.ObjectConst:
+                case (byte)OpCodes.ObjectConst:
                     return DecompileObjectConst();
 
                 // 'name'
-                case (byte)StandardByteCodes.NameConst:
+                case (byte)OpCodes.NameConst:
                     return DecompileNameConst();
 
                 // rot(1, 2, 3)
-                case (byte)StandardByteCodes.RotationConst:
+                case (byte)OpCodes.RotationConst:
                     return DecompileRotationConst();  //TODO: properly
 
                 // vect(1.0, 2.0, 3.0)
-                case (byte)StandardByteCodes.VectorConst:
+                case (byte)OpCodes.VectorConst:
                     return DecompileVectorConst();
 
                 // byte, eg. 0B
-                case (byte)StandardByteCodes.ByteConst:
-                case (byte)StandardByteCodes.IntConstByte:
-                    return DecompileByteConst();
+                case (byte)OpCodes.ByteConst:
+                    return DecompileByteConst(BYTE);
+                case (byte)OpCodes.IntConstByte:
+                    return DecompileByteConst(INT);
 
                 // 0
-                case (byte)StandardByteCodes.IntZero:
+                case (byte)OpCodes.IntZero:
                     return DecompileIntConstVal(0);
 
                 // 1
-                case (byte)StandardByteCodes.IntOne:
+                case (byte)OpCodes.IntOne:
                     return DecompileIntConstVal(1);
 
                 // true
-                case (byte)StandardByteCodes.True:
+                case (byte)OpCodes.True:
                     return DecompileBoolConstVal(true);
 
                 // false
-                case (byte)StandardByteCodes.False:
+                case (byte)OpCodes.False:
                     return DecompileBoolConstVal(false);
 
                 // None    (object literal)
-                case (byte)StandardByteCodes.NoObject:
-                case (byte)StandardByteCodes.EmptyDelegate: // TODO: is this correct?
+                case (byte)OpCodes.NoObject:
+                case (byte)OpCodes.EmptyDelegate:
                     PopByte();
                     StartPositions.Pop();
                     return new NoneLiteral();
 
                 // (bool expression)
-                case (byte)StandardByteCodes.BoolVariable:
+                case (byte)OpCodes.BoolVariable:
                     return DecompileBoolExprValue();
 
                 // ClassName(Obj)
-                case (byte)StandardByteCodes.InterfaceCast:
-                case (byte)StandardByteCodes.DynamicCast:
+                case (byte)OpCodes.InterfaceCast:
+                case (byte)OpCodes.DynamicCast:
                     return DecompileCast();
 
                 // struct == struct 
-                case (byte)StandardByteCodes.StructCmpEq:
+                case (byte)OpCodes.StructCmpEq:
                     return DecompileStructComparison(true);
 
                 // struct != struct 
-                case (byte)StandardByteCodes.StructCmpNe:
-                    return DecompileStructComparison(true);
+                case (byte)OpCodes.StructCmpNe:
+                    return DecompileStructComparison(false);
 
                 // delegate == delegate 
-                case (byte)StandardByteCodes.EqualEqual_DelDel:
+                case (byte)OpCodes.EqualEqual_DelDel:
                     return DecompileDelegateComparison(true);
 
                 // delegate != delegate 
-                case (byte)StandardByteCodes.NotEqual_DelDel:
+                case (byte)OpCodes.NotEqual_DelDel:
                     return DecompileDelegateComparison(false);
 
                 // delegate == Function
-                case (byte)StandardByteCodes.EqualEqual_DelFunc:
+                case (byte)OpCodes.EqualEqual_DelFunc:
                     return DecompileDelegateComparison(true);
 
                 // delegate != Function 
-                case (byte)StandardByteCodes.NotEqual_DelFunc:
+                case (byte)OpCodes.NotEqual_DelFunc:
                     return DecompileDelegateComparison(false);
 
                 // primitiveType(expr)
-                case (byte)StandardByteCodes.PrimitiveCast:
+                case (byte)OpCodes.PrimitiveCast:
                     return DecompilePrimitiveCast();
 
                 // (bool expr) ? expr : expr
-                case (byte)StandardByteCodes.Conditional:
+                case (byte)OpCodes.Conditional:
                     return DecompileConditionalExpression();
 
                 // end of script
-                case (byte)StandardByteCodes.EndOfScript:
+                case (byte)OpCodes.EndOfScript:
                     return null; // ERROR?
 
                 // (empty function param)
-                case (byte)StandardByteCodes.EmptyParmValue:
+                case (byte)OpCodes.EmptyParmValue:
                     PopByte();
                     StartPositions.Pop();
                     return new SymbolReference(null, ""); // TODO: solve better
 
                 // arrayName.Length
-                case (byte)StandardByteCodes.DynArrayLength:
+                case (byte)OpCodes.DynArrayLength:
                     return DecompileDynArrLength();
 
                 // arrayName.Find(value)
-                case (byte)StandardByteCodes.DynArrayFind:
+                case (byte)OpCodes.DynArrayFind:
                     return DecompileDynArrayFind();
 
                 // arrayName.Find(StructProperty, value)
-                case (byte)StandardByteCodes.DynArrayFindStruct:
+                case (byte)OpCodes.DynArrayFindStruct:
                     return DecompileDynArrayFindStructMember();
 
                 // arrayName.Insert(Index, Count)
-                case (byte)StandardByteCodes.DynArrayInsert:
+                case (byte)OpCodes.DynArrayInsert:
                     return DecompileDynArrayInsert();
 
                 // arrayName.Remove(Index, Count)
-                case (byte)StandardByteCodes.DynArrayRemove:
+                case (byte)OpCodes.DynArrayRemove:
                     return DecompileDynArrayRemove();
 
                 // arrayName.Add(value)
-                case (byte)StandardByteCodes.DynArrayAdd:
+                case (byte)OpCodes.DynArrayAdd:
                     return DecompileDynArrayAdd();
 
                 // arrayName.AddItem(value)
-                case (byte)StandardByteCodes.DynArrayAddItem:
+                case (byte)OpCodes.DynArrayAddItem:
                     return DecompileDynArrayAddItem();
 
                 // arrayName.RemoveItem(value)
-                case (byte)StandardByteCodes.DynArrayRemoveItem:
+                case (byte)OpCodes.DynArrayRemoveItem:
                     return DecompileDynArrayRemoveItem();
 
                 // arrayName.InsertItem(StructProperty, value)
-                case (byte)StandardByteCodes.DynArrayInsertItem:
+                case (byte)OpCodes.DynArrayInsertItem:
                     return DecompileDynArrayInsertItem();
 
                 // arrayName.Sort(value)
-                case (byte)StandardByteCodes.DynArraySort:
+                case (byte)OpCodes.DynArraySort:
                     return DecompileDynArraySort();
 
                 // TODO: temporary delegate handling, probably wrong:
-                case (byte)StandardByteCodes.DelegateFunction:
+                case (byte)OpCodes.DelegateFunction:
                     return DecompileDelegateFunction();
 
-                case (byte)StandardByteCodes.DelegateProperty:
+                case (byte)OpCodes.DelegateProperty:
                     return DecompileDelegateProperty();
 
-                case (byte)StandardByteCodes.NamedFunction:
+                case (byte)OpCodes.NamedFunction:
                     return DecompileFunctionCall(byName: true, withFuncListIdx: true);
+
+                case (byte)OpCodes.StringRefConst:
+                    return DecompileStringRefConst();
 
 
 
@@ -279,16 +285,13 @@ namespace ME3Script.Decompiling
                  * */
                 #region Unsupported
 
-                case (byte)StandardByteCodes.NativeParm: // is this even present anywhere?
+                case (byte)OpCodes.NativeParm: // is this even present anywhere?
                     return DecompileNativeParm();
 
-                case (byte)StandardByteCodes.GoW_DefaultValue:
+                case (byte)OpCodes.GoW_DefaultValue:
                     return DecompileGoW_DefaultValue();
 
-                case (byte)StandardByteCodes.StringRefConst:
-                    return DecompileStringRefConst();
-
-                case (byte)StandardByteCodes.InstanceDelegate:
+                case (byte)OpCodes.InstanceDelegate:
                     return DecompileInstanceDelegate();
 
                 #endregion
@@ -316,7 +319,36 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new SymbolReference(null, obj.ObjectName.Instanced);
+            ASTNode node = null;
+            if (obj.ClassName == "ByteProperty")
+            {
+                if (StandardLibrary.IsInitialized)
+                {
+                    IEntry typeExp = obj.Parent;
+                    string scope = null;
+                    while (typeExp.ClassName != "Class" && typeExp.ClassName != "ScriptStruct")
+                    {
+                        scope = scope is null ? typeExp.ObjectName.Name : $"{typeExp.ObjectName}.{scope}";
+                        typeExp = typeExp.Parent;
+                    }
+
+                    if (StandardLibrary.ReadonlySymbolTable.TryGetType(typeExp.ObjectName, out VariableType cls))
+                    {
+                        scope = scope is null ? cls.GetScope() : $"{cls.GetScope()}.{scope}";
+                        if (StandardLibrary.ReadonlySymbolTable.TryGetSymbolFromSpecificScope(obj.ObjectName, out ASTNode astNode, scope)
+                         && astNode is VariableDeclaration decl && decl.VarType is Enumeration enumeration)
+                        {
+                            node = enumeration;
+                        }
+                    }
+                }
+                if (node is null && obj is ExportEntry exp && PCC.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is ExportEntry enumExp)
+                {
+                    node = ME3ObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                }
+            }
+
+            return new SymbolReference(node, obj.ObjectName.Instanced);
         }
 
         public Expression DecompileDefaultReference()
@@ -348,25 +380,41 @@ namespace ME3Script.Decompiling
             isInContextExpression = false;
 
             StartPositions.Pop();
-            return new CompositeSymbolRef(left, right, isClass);
+            switch (right)
+            {
+                //A const accessed by an instance of another class can be compiled as EX_Context(instancevar, literal),
+                //which, if decompiled naively, can lead to nonsense like: Weapon.-1
+                //in such a case, the context expression can be safely replaced with the literal
+                case IntegerLiteral _:
+                case FloatLiteral _:
+                case BooleanLiteral _:
+                case StringLiteral _:
+                case NameLiteral _:
+                case StringRefLiteral _:
+                    return right;
+                default:
+                    return new CompositeSymbolRef(left, right, isClass);
+            }
         }
 
         public Expression DecompileStructMember()
         {
             PopByte();
 
-            var MemberRef = ReadObject();
+            var member = DecompileObjectLookup();
             var StructRef = ReadObject();
 
-            ReadByte(); // discard unknown bytes
-            ReadByte();
-
+            bool needsCopy = ReadByte() > 0; // is accessed through rvalue
+            bool isModified = ReadByte() > 0;
+            //if (needsCopy || isModified)
+            //{
+            //    Debugger.Log(0,"", $"#{DataContainer.Export.UIndex} {Path.GetFileNameWithoutExtension(PCC.FilePath)}\n");
+            //}
             var expr = DecompileExpression(); // get the expression for struct instance
             if (expr == null)
                 return null; // ERROR
 
-            StartPositions.Pop();
-            var member = new SymbolReference(null, MemberRef.ObjectName.Instanced);
+            //StartPositions.Pop(); Occurs in DecompileObjectLookup
             return new CompositeSymbolRef(expr, member);
         }
 
@@ -400,7 +448,6 @@ namespace ME3Script.Decompiling
 
         public DelegateComparison DecompileDelegateComparison(bool isEqual)
         {
-            //TODO: distinguish between deldel and delfunc 
             PopByte();
 
             var left = DecompileExpression();
@@ -462,7 +509,7 @@ namespace ME3Script.Decompiling
         public Expression DecompileNativeFunction(ushort index)
         {
             var parameters = new List<Expression>();
-            while (!CurrentIs(StandardByteCodes.EndFunctionParms))
+            while (!CurrentIs(OpCodes.EndFunctionParms))
             {
                 var param = DecompileExpression();
                 if (param == null)
@@ -478,18 +525,20 @@ namespace ME3Script.Decompiling
             switch (entry.Type)
             {
                 case NativeType.Function:
-                    var func = new SymbolReference(null, entry.Name, null, null);
+                    var func = new SymbolReference(null, entry.Name);
                     call = new FunctionCall(func, parameters, null, null);
                     break;
 
                 case NativeType.Operator:
                     var op = new InOpDeclaration(entry.Name, entry.Precedence, index, null, null, null);
-                    call = new InOpReference(op, parameters[0], parameters[1], null, null);
+                    var opRef = new InOpReference(op, parameters[0], parameters[1]);
+                    DecompileEnumOperatorComparisons(opRef);
+                    call = opRef;
                     break;
 
                 case NativeType.PreOperator:
                     var preOp = new PreOpDeclaration(entry.Name, null, index, null);
-                    call = new PreOpReference(preOp, parameters[0], null, null);
+                    call = new PreOpReference(preOp, parameters[0]);
                     break;
 
                 case NativeType.PostOperator:
@@ -502,6 +551,42 @@ namespace ME3Script.Decompiling
             return call;
         }
 
+        private static void DecompileEnumOperatorComparisons(InOpReference opRef)
+        {
+            switch (opRef.Operator.OperatorKeyword)
+            {
+                case "==":
+                case "!=":
+                case ">":
+                case "<":
+                case ">=":
+                case "<=":
+                    if (!ResolveEnumValues(ref opRef.LeftOperand, ref opRef.RightOperand))
+                    {
+                        ResolveEnumValues(ref opRef.RightOperand, ref opRef.LeftOperand);
+                    }
+                    break;
+            }
+
+        }
+        static bool ResolveEnumValues(ref Expression a, ref Expression b)
+        {
+            SymbolReference symRef = a as SymbolReference;
+            if (symRef is null && a is CastExpression cast && cast.CastType.Name == INT)
+            {
+                symRef = cast.CastTarget as SymbolReference;
+            }
+
+            if (symRef?.Node is Enumeration enm && b is IntegerLiteral intLit && intLit.Value >= 0 && intLit.Value < enm.Values.Count)
+            {
+                a = symRef;
+                b = new SymbolReference(enm.Values[intLit.Value], enm.Values[intLit.Value].Name);
+                return true;
+            }
+
+            return false;
+        }
+
         public Expression DecompileCast(bool meta = false)
         {
             PopByte();
@@ -510,16 +595,18 @@ namespace ME3Script.Decompiling
             if (expr == null)
                 return null; // ERROR
 
-            string type = objRef.ObjectName.Instanced;
-            if (meta)
-                type = "class<" + type + ">";
 
             StartPositions.Pop();
             if (expr is NoneLiteral)
             {
                 return expr;
             }
-            return new CastExpression(new VariableType(type, null, null), expr, null, null);
+            VariableType type = new VariableType(objRef.ObjectName.Instanced);
+            if (meta)
+            {
+                type = new ClassType(type);
+            }
+            return new CastExpression(type, expr, null, null);
         }
 
         public Expression DecompilePrimitiveCast()
@@ -535,17 +622,25 @@ namespace ME3Script.Decompiling
             string type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
-            if (typeToken == (byte)ECast.ByteToInt && expr is IntegerLiteral)
+            if (typeToken == (byte)ECast.ByteToInt && expr is IntegerLiteral || typeToken == (byte)ECast.InterfaceToObject)
             {
                 return expr;
             }
-            return new CastExpression(new VariableType(type, null, null), expr, null, null);
+
+            //re-enable this once testing is complete
+            //if (typeToken == (byte)ECast.IntToFloat && expr is IntegerLiteral shouldBeFloat)
+            //{
+            //    return new FloatLiteral(shouldBeFloat.Value);
+            //}
+            return new PrimitiveCast((ECast)typeToken, new VariableType(type), expr, null, null);
         }
 
         public Expression DecompileFunctionCall(bool byName = false, bool withFuncListIdx = false, bool global = false)
         {
             PopByte();
             string funcName;
+            bool isSuper = false;
+            string superSpecifier = null;
             if (byName)
             {
                 funcName = ReadNameReference();
@@ -557,24 +652,15 @@ namespace ME3Script.Decompiling
 
                 if (AdditionalOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
                 {
-                    Expression parm1, parm2;
-                    if (CurrentIs(StandardByteCodes.Nothing))
+                    Expression parm1 = DecompileExpression();
+                    if (parm1 is null)
                     {
-                        PopByte();
-                        parm1 = new SymbolReference(null, "None");
+                        return null;
                     }
-                    else
+                    Expression parm2 = DecompileExpression();
+                    if (parm2 is null)
                     {
-                        parm1 = DecompileExpression();
-                    }
-                    if (CurrentIs(StandardByteCodes.Nothing))
-                    {
-                        PopByte();
-                        parm2 = new SymbolReference(null, "None");
-                    }
-                    else
-                    {
-                        parm2 = DecompileExpression();
+                        return null;
                     }
                     PopByte();//EndFunctionParms
 
@@ -584,8 +670,6 @@ namespace ME3Script.Decompiling
                 
                 if (IsSuper(funcObj)) // If we're calling ourself, it's a super call
                 {
-                    //TODO: put super calls into the ast, and properly decompile super calls that specifiy the class
-                    var str = "super";
                     var classExp = DataContainer.Export.Parent;
                     while (classExp != null && classExp.ClassName != "Class")
                     {
@@ -597,19 +681,17 @@ namespace ME3Script.Decompiling
                     {
                         classExp = classExp.Parent;
                     }
-                    var funcOuterClass = classExp.ObjectName.Instanced;
-                    if (currentClass != null && currentClass.SuperClass != 0 && currentClass.SuperClass.GetEntry(PCC).ObjectName.Instanced == funcOuterClass)
-                        funcName = str + "." + funcName;
-                    else
-                        funcName = str + "(" + funcOuterClass + ")." + funcName;
+                    var funcOuterClass = classExp?.ObjectName.Instanced;
+                    isSuper = true;
+                    if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(PCC).ObjectName.Instanced != funcOuterClass)
+                    {
+                        superSpecifier = funcOuterClass;
+                    }
                 }
             }
 
-            if (global)
-                funcName = "global." + funcName;
-
             if (withFuncListIdx)
-                ReadInt16(); // TODO: store this 
+                ReadInt16();
 
             List<Expression> parameters = DecompileArgumentList();
             if (parameters is null)
@@ -618,19 +700,24 @@ namespace ME3Script.Decompiling
             }
 
             StartPositions.Pop();
-            var func = new SymbolReference(null, funcName);
+            var func = new SymbolReference(null, funcName)
+            {
+                IsGlobal = global,
+                IsSuper = isSuper,
+                SuperSpecifier = superSpecifier
+            };
             return new FunctionCall(func, parameters, null, null);
         }
 
         private List<Expression> DecompileArgumentList()
         {
             var parameters = new List<Expression>();
-            while (!CurrentIs(StandardByteCodes.EndFunctionParms))
+            while (!CurrentIs(OpCodes.EndFunctionParms))
             {
-                if (CurrentIs(StandardByteCodes.Nothing))
+                if (CurrentIs(OpCodes.Nothing))
                 {
                     PopByte(); // TODO: is this reasonable? what does it mean?
-                    parameters.Add(new SymbolReference(null, "None"));
+                    parameters.Add(null);
                     continue;
                 }
 
@@ -672,7 +759,7 @@ namespace ME3Script.Decompiling
             var parms = new List<Expression>();
             for (int n = 0; n < 5; n++)
             {
-                if (CurrentIs(StandardByteCodes.Nothing))
+                if (CurrentIs(OpCodes.Nothing))
                 {
                     PopByte();
                     parms.Add(null);

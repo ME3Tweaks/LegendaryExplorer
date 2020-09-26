@@ -76,13 +76,23 @@ namespace ME3Script.Analysis.Visitors
                                 return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                         }
 
+                        for (int i = 0; i < node.Interfaces.Count; i++)
+                        {
+                            VariableType nodeInterface = node.Interfaces[i];
+                            if (!Symbols.TryResolveType(ref nodeInterface, true))
+                            {
+                                return Error($"No outer class named '{nodeInterface.Name}' found!", nodeInterface.StartPos, nodeInterface.EndPos);
+                            }
+                            node.Interfaces[i] = nodeInterface;
+                        }
+
                         //specifier validation
                         if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && !((Class)node.Parent).Flags.Has(EClassFlags.Config))
                         {
                             return Error($"Cannot inherit config filename from parent class ({node.Parent.Name}) which is not marked as config!", node.StartPos);
                         }
                         //TODO:propagate/check inheritable class flags from parent and implemented interfaces
-                        if (node.Flags.Has(EClassFlags.Native) && !((Class)node.Parent).Flags.Has(EClassFlags.Native))
+                        if (node.IsNative && !((Class)node.Parent).IsNative)
                         {
                             return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
                         }
@@ -135,7 +145,8 @@ namespace ME3Script.Analysis.Visitors
                         {
                             outerScope = ((Class)node.OuterClass).GetInheritanceString();
                         }
-                        Symbols.PushScope(node.Name, outerScope);
+
+                        Symbols.PushScope(node.Name); //, outerScope);
                     }
 
                     //second pass over structs to resolve their members
@@ -149,6 +160,19 @@ namespace ME3Script.Analysis.Visitors
                     {
                         decl.Outer = node;
                         Success &= decl.AcceptVisitor(this);
+                    }
+
+                    if (node.Name != "Object")
+                    {
+                        Symbols.TryGetType("Object", out Class objectClass);
+                        Symbols.AddSymbol("Class", new VariableDeclaration(new ClassType(node), EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Class")
+                        {
+                            Outer = objectClass
+                        });
+                        Symbols.AddSymbol("Outer", new VariableDeclaration(node.OuterClass, EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Outer")
+                        {
+                            Outer = objectClass
+                        });
                     }
 
                     //second pass over functions to resolve parameters (TODO: and body)
@@ -173,12 +197,20 @@ namespace ME3Script.Analysis.Visitors
                     if (node.SameAsOrSubClassOf("Interface"))
                     {
                         node.Flags |= EClassFlags.Interface;
+                        node.PropertyType = EPropertyType.Interface;
                     }
 
                     //third pass over structs to check for circular inheritance chains
                     foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
                     {
                         Success &= type.AcceptVisitor(this);
+                    }
+
+
+                    foreach (Function func in node.Functions)
+                    {
+                        //if the return type is > 64 bytes, it can't be allocated on the stack.
+                        func.RetValNeedsDestruction |= (func.ReturnType?.Size ?? 0) > 64;
                     }
                     return Success;
                 }
@@ -213,6 +245,11 @@ namespace ME3Script.Analysis.Visitors
         }
 
         public bool VisitNode(DynamicArrayType node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(StaticArrayType node)
         {
             throw new NotImplementedException();
         }
@@ -316,18 +353,16 @@ namespace ME3Script.Analysis.Visitors
 
             Symbols.PushScope(node.Name);
 
-            foreach (VariableIdentifier enumVal in node.Values)
+            foreach (EnumValue enumVal in node.Values)
             {
                 enumVal.Outer = node;
-                if (enumVal.Type != ASTNodeType.VariableIdentifier)
-                    Error("An enumeration member must be a simple(name only) variable.", enumVal.StartPos, enumVal.EndPos);
                 Symbols.AddSymbol(enumVal.Name, enumVal);
             }
 
             Symbols.PopScope();
 
             // Add enum values at the class scope so they can be used without being explicitly qualified.
-            foreach (VariableIdentifier enumVal in node.Values)
+            foreach (EnumValue enumVal in node.Values)
                 Symbols.TryAddSymbol(enumVal.Name, enumVal);
 
             node.Declaration = node;
@@ -510,6 +545,8 @@ namespace ME3Script.Analysis.Visitors
         { throw new NotImplementedException(); }
 
         public bool VisitNode(VariableIdentifier node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(EnumValue node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(DoUntilLoop node)

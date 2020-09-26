@@ -669,7 +669,7 @@ namespace ME3Explorer.Unreal
             VectorToString = 0x58,
             RotatorToString = 0x59,
             DelegateToString = 0x5A,
-            StringToDelegate = 0x5B,
+            StringRefToInt = 0x5B,
             StringRefToString = 0x5C,
             IntToStringRef = 0x5D,
             StringToName = 0x60

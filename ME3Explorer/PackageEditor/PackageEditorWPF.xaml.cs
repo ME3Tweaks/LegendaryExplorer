@@ -38,6 +38,7 @@ using Newtonsoft.Json;
 using StreamHelpers;
 using Gammtek.Conduit.Extensions.IO;
 using ME3Explorer.ME3Script;
+using ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
@@ -4299,17 +4300,20 @@ namespace ME3Explorer
 
         private void ScanStuff_Click(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3).SkipWhile(path => !path.EndsWith("BioA_CineLab000.pcc")).Skip(1);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
+            //var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME3);//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME2));//.Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
             //var filePaths = MELoadedFiles.GetAllFiles(game);
+            /*"Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" */
+            var filePaths = new [] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc" }.Select(f => Path.Combine(ME3Directory.cookedPath, f));
             var interestingExports = new List<ListDialog.EntryItem>();
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
 
 
-            var unkOpcodes = Enumerable.Range(0x5B, 8).ToList();
+            var unkOpcodes = new List<int>();//Enumerable.Range(0x5B, 8).ToList();
             unkOpcodes.Add(0);
             unkOpcodes.Add(1);
             var unkOpcodesInfo = unkOpcodes.ToDictionary(i => i, i => new OpcodeInfo());
+            var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
 
             var extraInfo = new HashSet<string>();
 
@@ -4331,10 +4335,10 @@ namespace ME3Explorer
                     //if (findClass(filePath, "ShaderCache", true)) break;
                     //findClassesWithBinary(filePath);
                     ScanScripts2(filePath);
-                    if (interestingExports.Count > 0)
-                    {
-                        break;
-                    }
+                    //if (interestingExports.Count > 0)
+                    //{
+                    //    break;
+                    //}
                     //if (resolveImports(filePath)) break;
                 }
             }).ContinueWithOnUIThread(prevTask =>
@@ -4351,6 +4355,11 @@ namespace ME3Explorer
                             p.Show();
                             p.LoadFile(entryToSelect.FileRef.FilePath, entryToSelect.UIndex);
                             p.Activate();
+                            if (comparisonDict.TryGetValue($"{entryToSelect.UIndex} {entryToSelect.FileRef.FilePath}", out (byte[] original, byte[] newData) val))
+                            {
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), val.original);
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), val.newData);
+                            }
                         }
                     }
                 };
@@ -4527,39 +4536,43 @@ namespace ME3Explorer
                                 }
                                 if (unkOpcodes.Contains(token.OpCode))
                                 {
-                                    var info = unkOpcodesInfo[token.OpCode];
-                                    info.Usages.Add(pcc.FilePath, exp.UIndex, token.StartPos);
                                     int refUIndex = EndianReader.ToInt32(data, token.StartPos + 1, pcc.Endian);
                                     IEntry entry = pcc.GetEntry(refUIndex);
-                                    info.PropTypes.Add(refUIndex switch
+                                    if (entry != null && (entry.ClassName == "ByteProperty"))
                                     {
-                                        0 => "Null",
-                                        _ when entry != null => entry.ClassName,
-                                        _ => "Invalid"
-                                    });
-                                    if (entry != null)
-                                    {
-                                        if (entry.Parent == exp)
+                                        var info = unkOpcodesInfo[token.OpCode];
+                                        info.Usages.Add(pcc.FilePath, exp.UIndex, token.StartPos);
+                                        info.PropTypes.Add(refUIndex switch
                                         {
-                                            info.PropLocations.Add("Local");
-                                        }
-                                        else if (entry.Parent == exp.Parent)
+                                            0 => "Null",
+                                            _ when entry != null => entry.ClassName,
+                                            _ => "Invalid"
+                                        });
+                                        if (entry != null)
                                         {
-                                            info.PropLocations.Add("ThisClass");
-                                        }
-                                        else if (entry.Parent.ClassName == "Function")
-                                        {
-                                            info.PropLocations.Add("OtherFunction");
-                                        }
-                                        else if (exp.Parent.IsA(entry.Parent.ObjectName))
-                                        {
-                                            info.PropLocations.Add("AncestorClass");
-                                        }
-                                        else
-                                        {
-                                            info.PropLocations.Add("Other");
+                                            if (entry.Parent == exp)
+                                            {
+                                                info.PropLocations.Add("Local");
+                                            }
+                                            else if (entry.Parent == (exp.Parent.ClassName == "State" ? exp.Parent.Parent : exp.Parent))
+                                            {
+                                                info.PropLocations.Add("ThisClass");
+                                            }
+                                            else if (entry.Parent.ClassName == "Function")
+                                            {
+                                                info.PropLocations.Add("OtherFunction");
+                                            }
+                                            else if (exp.Parent.IsA(entry.Parent.ObjectName))
+                                            {
+                                                info.PropLocations.Add("AncestorClass");
+                                            }
+                                            else
+                                            {
+                                                info.PropLocations.Add("OtherClass");
+                                            }
                                         }
                                     }
+                                    
 
                                 }
                             }
@@ -4576,23 +4589,33 @@ namespace ME3Explorer
             void ScanScripts2(string filePath)
             {
                 using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                foreach (ExportEntry exp in pcc.Exports.Where(exp => exp.IsClass && exp.GetBinaryData<UClass>().Defaults >= 0))
+                foreach (ExportEntry exp in pcc.Exports.Reverse().Where(exp => exp.ClassName == "Function" && exp.Parent.ClassName == "Class" && !exp.GetBinaryData<UFunction>().FunctionFlags.Has(FunctionFlags.Native)))
                 {
                     try
                     {
-                        (_, string script) = UnrealScriptIDE.DecompileExport(exp);
-                        (ASTNode ast, MessageLog log) = UnrealScriptIDE.CompileAST(script);
+                        var originalData = exp.Data;
+                        (_, string originalScript) = ME3ScriptCompiler.DecompileExport(exp);
+                        (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileFunction(exp, originalScript);
                         if (ast == null || log.AllErrors.Count > 0)
                         {
                             interestingExports.Add(exp);
-                            return;
+                            continue;
+                        }
+
+                        if (!originalData.SequenceEqual(exp.Data))
+                        {
+                            interestingExports.Add(exp);
+                            comparisonDict.Add($"{exp.UIndex} {exp.FileRef.FilePath}", (originalData, exp.Data));
+                            //File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), originalData);
+                            //File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), exp.Data);
+                            continue;
                         }
                     }
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
                         interestingExports.Add(new ListDialog.EntryItem(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
-                        return;
+                        continue;
                     }
                 }
             }
@@ -5592,8 +5615,8 @@ namespace ME3Explorer
                 var exportsWithDecompilationErrors = new List<ListDialog.EntryItem>();
                 foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    (_, string script) = UnrealScriptIDE.DecompileExport(export);
-                    (ASTNode ast, MessageLog log) = UnrealScriptIDE.CompileAST(script);
+                    (_, string script) = ME3ScriptCompiler.DecompileExport(export);
+                    (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(script, export.ClassName);
                     if (ast == null)
                     {
                         exportsWithDecompilationErrors.Add(new ListDialog.EntryItem(export, "Compilation Error!"));

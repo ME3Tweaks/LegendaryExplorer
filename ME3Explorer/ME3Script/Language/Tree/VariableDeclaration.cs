@@ -18,19 +18,19 @@ namespace ME3Script.Language.Tree
         public string Category;
         public string Name;
 
-        public int Size;
+        public int ArrayLength;
 
-        public bool IsStaticArray => Size > 1;
+        public bool IsStaticArray => ArrayLength > 1;
 
         public VariableDeclaration(VariableType type, UnrealFlags.EPropertyFlags flags,
-                                   string name, int size = 0, string category = null, SourcePosition start = null, SourcePosition end = null)
+                                   string name, int arrayLength = 0, string category = null, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.VariableDeclaration, start, end)
         {
             Flags = flags;
             Name = name;
-            Size = size;
+            ArrayLength = arrayLength;
             Category = category;
-            VarType = IsStaticArray ? new StaticArrayType(type, Size) : type;
+            VarType = IsStaticArray  && !(type is StaticArrayType) ? new StaticArrayType(type, ArrayLength) : type;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -44,5 +44,7 @@ namespace ME3Script.Language.Tree
                 yield return VarType;
             }
         }
+
+        public int GetSize() => VarType?.Size ?? 0 * ArrayLength;
     }
 }

@@ -25,8 +25,8 @@ namespace ME3Script.Language.Tree
         public Expression DefaultParameter;
         public CodeBody UnparsedDefaultParam;
 
-        public FunctionParameter(VariableType type, EPropertyFlags flags, string Name, int size = 0, SourcePosition start = null, SourcePosition end = null)
-            : base(type, flags, Name, size, null, start, end)
+        public FunctionParameter(VariableType type, EPropertyFlags flags, string Name, int arrayLength = 0, SourcePosition start = null, SourcePosition end = null)
+            : base(type, flags, Name, arrayLength, null, start, end)
         {
             Type = ASTNodeType.FunctionParameter;
         }

@@ -16,6 +16,26 @@ namespace ME3Script.Language.Tree
 
         public EPropertyType PropertyType;
 
+        public virtual int Size => PropertyType switch
+        {
+            EPropertyType.None => 0,
+            EPropertyType.Byte => 1,
+            EPropertyType.Int => 4,
+            EPropertyType.Bool => 4,
+            EPropertyType.Float => 4,
+            EPropertyType.Object => 4,
+            EPropertyType.Name => 8,
+            EPropertyType.Delegate => 12,
+            EPropertyType.Interface => 8,
+            EPropertyType.Struct => 0,
+            EPropertyType.Vector => 12,
+            EPropertyType.Rotator => 12,
+            EPropertyType.String => 0,
+            EPropertyType.Map => 0,
+            EPropertyType.StringRef => 4,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
         public VariableType(string name, SourcePosition start = null, SourcePosition end = null, EPropertyType propType = EPropertyType.None)
             : base(ASTNodeType.VariableType, start, end) 
         {
@@ -33,6 +53,16 @@ namespace ME3Script.Language.Tree
             {
                 if(Declaration != null) yield return Declaration;
             }
+        }
+
+        public virtual string GetScope()
+        {
+            if (Outer is VariableType varType)
+            {
+                return $"{varType.GetScope()}.{Name}";
+            }
+
+            return Name;
         }
     }
 }

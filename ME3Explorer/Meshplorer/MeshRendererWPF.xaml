@@ -10,7 +10,8 @@
                                  xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
                                  mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Control.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Control.Resources>

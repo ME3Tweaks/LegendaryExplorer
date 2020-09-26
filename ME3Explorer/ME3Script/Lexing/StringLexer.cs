@@ -89,7 +89,9 @@ namespace ME3Script.Lexing
             // TODO: this assumes well-formed subdata, fix?
             while (!token.StartPos.Equals(end))
             {
-                if (token.Type != TokenType.WhiteSpace)
+                if (token.Type != TokenType.WhiteSpace
+                 && token.Type != TokenType.SingleLineComment
+                 && token.Type != TokenType.MultiLineComment)
                     yield return token;
 
                 token = GetNextToken();

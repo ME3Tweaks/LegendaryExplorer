@@ -28,6 +28,7 @@ namespace ME3Script.Decompiling
     public abstract class ConditionalJump : Jump
     {
         public Expression Condition;
+        public int SizeOfExpression;
 
         protected ConditionalJump(ushort jumpLoc, Expression condition) : base(jumpLoc)
         {
@@ -37,7 +38,6 @@ namespace ME3Script.Decompiling
 
     public class IfNotJump : ConditionalJump
     {
-        public int SizeOfExpression;
 
         public IfNotJump(ushort jumpLoc, Expression condition, int sizeOfExpression) : base(jumpLoc, condition)
         {
@@ -52,6 +52,7 @@ namespace ME3Script.Decompiling
         public NullJump(ushort jumpLoc, Expression condition, bool not) : base(jumpLoc, condition)
         {
             Not = not;
+            Condition = new InOpReference(new InOpDeclaration(Not ? "!=" : "==", 0, 0, null, null, null), Condition, new NoneLiteral());
         }
     }
 

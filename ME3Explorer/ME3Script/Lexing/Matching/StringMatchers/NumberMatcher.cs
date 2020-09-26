@@ -45,18 +45,22 @@ namespace ME3Script.Lexing.Matching.StringMatchers
                 type = TokenType.IntegerNumber;
                 value = hex;
             } 
-            else if (data.CurrentItem == ".")
+            else if (data.CurrentItem == "." || data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
             {
                 type = TokenType.FloatingNumber;
-                data.Advance();
-                string second = SubNumber(data, digits);
+                string second = null;
+                if (data.CurrentItem == ".")
+                {
+                    data.Advance();
+                    second = SubNumber(data, digits);
+                }
                 if (data.CurrentItem.CaseInsensitiveEquals("e") || data.CurrentItem.CaseInsensitiveEquals("d"))
                 {
                     data.Advance();
                     string exponent = SubNumber(data, digits);
                     if (exponent == null || data.CurrentItem == "." || data.CurrentItem == "x")
                         return null;
-                    value = $"{first}.{second}e{exponent}";
+                    value = $"{first}.{second ?? "0"}e{exponent}";
                 }
                 else if (second == null && data.CurrentItem == "f")
                 {

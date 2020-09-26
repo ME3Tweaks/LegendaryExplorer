@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Script.Analysis.Visitors;
-using ME3Script.Language.Tree;
 using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
 {
-    public class Const : VariableType
+    public class EnumValue : ASTNode
     {
-        public string Value;
-        public Expression Literal;
+        public string Name;
+        public byte IntVal;
+        public Enumeration Enum;
 
-        public Const(string name, string value, SourcePosition start = null, SourcePosition end = null) : base(name, start, end)
+        public EnumValue(string name, byte intVal, SourcePosition start = null, SourcePosition end = null)
+            : base(ASTNodeType.VariableIdentifier, start, end)
         {
-            Type = ASTNodeType.Const;
-            Value = value;
+            Name = name;
+            IntVal = intVal;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -26,5 +26,7 @@ namespace ME3Script.Language.Tree
             return base.IdenticalSignature(other)
                 && string.Equals(this.Operand.VarType.Name, other.Operand.VarType.Name, StringComparison.Ordinal);
         }
+
+        public override bool HasOutParams => Operand.IsOut;
     }
 }

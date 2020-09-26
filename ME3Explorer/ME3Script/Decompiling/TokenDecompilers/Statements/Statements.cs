@@ -10,6 +10,7 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
+using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
@@ -23,19 +24,19 @@ namespace ME3Script.Decompiling
             switch (token)
             {
                 // return [expression];
-                case (byte)StandardByteCodes.Return:
+                case (byte)OpCodes.Return:
                     return DecompileReturn();
 
                 // switch (expression)
-                case (byte)StandardByteCodes.Switch:
+                case (byte)OpCodes.Switch:
                     return DecompileSwitch();
 
                 // case expression :
-                case (byte)StandardByteCodes.Case:
+                case (byte)OpCodes.Case:
                     return DecompileCase();
 
                 // if (expression) // while / for / do until
-                case (byte)StandardByteCodes.JumpIfNot:
+                case (byte)OpCodes.JumpIfNot:
                 {
                     PopByte();
                     var jump = new IfNotJump(ReadUInt16(), DecompileExpression(), Position - StartPositions.Peek());
@@ -43,7 +44,7 @@ namespace ME3Script.Decompiling
                     return jump;
                 }
 
-                case (byte)StandardByteCodes.Jump:
+                case (byte)OpCodes.Jump:
                 {
                     PopByte();
                     ushort jumpLoc = ReadUInt16();
@@ -58,28 +59,35 @@ namespace ME3Script.Decompiling
                     return jump;
                 }
                 // continue (iterator)
-                case (byte)StandardByteCodes.IteratorNext:
+                case (byte)OpCodes.IteratorNext:
                 {
                     PopByte();
                     var itNext = new ContinueStatement();
                     StatementLocations.Add(StartPositions.Pop(), itNext);
+                    if (PopByte() != (byte)OpCodes.Jump)
+                    {
+                        return null; //there should always be a jump after an iteratornext that's not at the end of the loop
+                    }
+                    //skip the jump address
+                    PopByte();
+                    PopByte();
                     return itNext;
                 }
                 // break;
-                case (byte)StandardByteCodes.IteratorPop:
+                case (byte)OpCodes.IteratorPop:
                 {
                     PopByte();
                     return DecompileStatement(StartPositions.Pop());
                 }
                 // stop;
-                case (byte)StandardByteCodes.Stop:
+                case (byte)OpCodes.Stop:
                     PopByte();
                     var stopStatement = new StopStatement(null, null);
                     StatementLocations.Add(StartPositions.Pop(), stopStatement);
                     return stopStatement;
 
                 // Goto label
-                case (byte)StandardByteCodes.GotoLabel: //TODO: make got astnode
+                case (byte)OpCodes.GotoLabel: //TODO: make got astnode
                     PopByte();
                     var labelExpr = DecompileExpression();
                     var func = new SymbolReference(null, "goto");
@@ -89,38 +97,38 @@ namespace ME3Script.Decompiling
                     return gotoLabel;
 
                 // assignable expression = expression;
-                case (byte)StandardByteCodes.Let:
-                case (byte)StandardByteCodes.LetBool:
-                case (byte)StandardByteCodes.LetDelegate:
+                case (byte)OpCodes.Let:
+                case (byte)OpCodes.LetBool:
+                case (byte)OpCodes.LetDelegate:
                     return DecompileAssign();
 
                 // [skip x bytes]
-                case (byte)StandardByteCodes.Skip: // TODO: this should never occur as statement, possibly remove?
+                case (byte)OpCodes.Skip: // TODO: this should never occur as statement, possibly remove?
                     PopByte();
                     ReadUInt16();
                     StartPositions.Pop();
                     return DecompileStatement();
 
-                case (byte)StandardByteCodes.Nothing:
+                case (byte)OpCodes.Nothing:
                     PopByte();
                     StartPositions.Pop();
                     return DecompileStatement(); // TODO, should probably have a nothing expression or statement, this is ugly
 
                 // foreach IteratorFunction(...)
-                case (byte)StandardByteCodes.Iterator:
+                case (byte)OpCodes.Iterator:
                     return DecompileForEach();
 
                 // foreach arrayName(valuevariable[, indexvariable])
-                case (byte)StandardByteCodes.DynArrayIterator:
+                case (byte)OpCodes.DynArrayIterator:
                     return DecompileForEach(true);
 
-                case (byte)StandardByteCodes.LabelTable:
+                case (byte)OpCodes.LabelTable:
                     DecompileLabelTable();
                     StartPositions.Pop();
                     return DecompileStatement();
 
-                case (byte)StandardByteCodes.OptIfLocal:
-                case (byte)StandardByteCodes.OptIfInstance:
+                case (byte)OpCodes.OptIfLocal:
+                case (byte)OpCodes.OptIfInstance:
                 {
                     PopByte();
                     IEntry obj = ReadObject();
@@ -135,23 +143,26 @@ namespace ME3Script.Decompiling
                         return ifJump;
                     }
 
-                    var nullJump = new NullJump(ReadUInt16(), condition, not);
+                    var nullJump = new NullJump(ReadUInt16(), condition, not)
+                    {
+                        SizeOfExpression = Position - StartPositions.Peek()
+                    };
                     StatementLocations.Add(StartPositions.Pop(), nullJump);
                     return nullJump;
                 }
-                case (byte)StandardByteCodes.FilterEditorOnly:
+                case (byte)OpCodes.FilterEditorOnly:
                 {
                     PopByte();
                     var edFilter = new InEditorJump(ReadUInt16());
                     StatementLocations.Add(StartPositions.Pop(), edFilter);
                     return edFilter;
                 }
-                case (byte)StandardByteCodes.EatReturnValue:
+                case (byte)OpCodes.EatReturnValue:
                     PopByte();
                     ReadObject();
                     return DecompileStatement(StartPositions.Pop());
 
-                case (byte)StandardByteCodes.Assert:
+                case (byte)OpCodes.Assert:
                     return DecompileAssert();
                 default:
                     var expr = DecompileExpression();
@@ -191,7 +202,7 @@ namespace ME3Script.Decompiling
             PopByte();
 
             Expression expr = null;
-            if (CurrentIs(StandardByteCodes.ReturnNullValue))
+            if (CurrentIs(OpCodes.ReturnNullValue))
             {
                 PopByte();
                 var retVal = ReadObject();
@@ -199,17 +210,21 @@ namespace ME3Script.Decompiling
                 StatementLocations.Add(StartPositions.Pop(), returnNothingStatement);
                 return returnNothingStatement;
             }
-            else if(CurrentIs(StandardByteCodes.Nothing))
+            else if(CurrentIs(OpCodes.Nothing))
             {
                 PopByte();
             }
             else
             {
                 expr = DecompileExpression();
-                if (expr == null && PopByte() != (byte)StandardByteCodes.Nothing)
+                if (expr == null && PopByte() != (byte)OpCodes.Nothing)
                     return null; //ERROR ?
             }
 
+            if (ReturnType is Enumeration enm && expr is IntegerLiteral intLit && intLit.Value >= 0 && intLit.Value < enm.Values.Count)
+            {
+                expr = new CompositeSymbolRef(new SymbolReference(enm, enm.Name), new SymbolReference(null, enm.Values[intLit.Value].Name));
+            }
             var statement = new ReturnStatement(expr);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
@@ -224,14 +239,12 @@ namespace ME3Script.Decompiling
             if (iteratorFunc == null)
                 return null;
 
-            Expression dynArrVar = null;
-            Expression dynArrIndex = null;
-            bool hasIndex = false;
             if (isDynArray)
             {
-                dynArrVar = DecompileExpression();
-                hasIndex = Convert.ToBoolean(ReadByte());
-                dynArrIndex = DecompileExpression();
+                Expression dynArrVar = DecompileExpression();
+                bool hasIndex = Convert.ToBoolean(ReadByte());
+                Expression dynArrIndex = DecompileExpression();
+                iteratorFunc = new DynArrayIterator(iteratorFunc, dynArrVar, dynArrIndex);
             }
 
             var scopeEnd = ReadUInt16(); // MemOff
@@ -241,10 +254,10 @@ namespace ME3Script.Decompiling
             CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size)
             {
-                if (CurrentIs(StandardByteCodes.IteratorNext))
+                if (CurrentIs(OpCodes.IteratorNext))
                 {
                     PopByte(); // IteratorNext
-                    if (PeekByte == (byte)StandardByteCodes.IteratorPop)
+                    if (PeekByte == (byte)OpCodes.IteratorPop)
                     {
                         StatementLocations[(ushort)(Position - 1)] = new IteratorNext();
                         StatementLocations[(ushort)Position] = new IteratorPop();
@@ -263,12 +276,10 @@ namespace ME3Script.Decompiling
             CurrentScope.Pop();
             ForEachScopes.Pop();
 
-            if (isDynArray)
+            var statement = new ForEachLoop(iteratorFunc, new CodeBody(scopeStatements))
             {
-                iteratorFunc = new DynArrayIterator(iteratorFunc, dynArrVar, dynArrIndex);
-            }
-
-            var statement = new ForEachLoop(iteratorFunc, new CodeBody(scopeStatements));
+                iteratorPopPos = Position - 1
+            };
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
         }
@@ -350,7 +361,7 @@ namespace ME3Script.Decompiling
             var right = DecompileExpression();
             if (right == null)
                 return null; //ERROR ?
-
+            ResolveEnumValues(ref left, ref right);
             var statement = new AssignStatement(left, right);
             StatementLocations.Add(StartPositions.Pop(), statement);
             return statement;
@@ -386,7 +397,7 @@ namespace ME3Script.Decompiling
         public Statement DecompileIteratorPop()
         {
             PopByte();
-            if (CurrentIs(StandardByteCodes.Return)) // Any return inside a ForEach seems to call IteratorPop before the return, maybe breaks the loop?
+            if (CurrentIs(OpCodes.Return)) // Any return inside a ForEach seems to call IteratorPop before the return, maybe breaks the loop?
             {
                 return DecompileReturn();
             }

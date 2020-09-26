@@ -246,104 +246,13 @@ namespace ME3Script.Parsing
 
         #endregion
 
-        #region ParseLiterals
-
-
-        //private ObjectLiteral TryParseNone()
-        //{
-        //    return (ObjectLiteral)Tokens.TryGetTree(NoneParser);
-        //    ASTNode NoneParser()
-        //    {
-        //        var token = Consume(NONE);
-        //        if (token == null) return null;
-
-        //        return new ObjectLiteral(new NameLiteral(NONE), null, token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        //public IntegerLiteral TryParseInteger()
-        //{
-        //    return (IntegerLiteral)Tokens.TryGetTree(IntParser);
-        //    ASTNode IntParser()
-        //    {
-        //        var token = Consume(TokenType.IntegerNumber);
-        //        if (token == null) return null;
-
-        //        return new IntegerLiteral(int.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        //public BooleanLiteral TryParseBoolean()
-        //{
-        //    return (BooleanLiteral)Tokens.TryGetTree(BoolParser);
-        //    ASTNode BoolParser()
-        //    {
-        //        if (CurrentIs(TRUE, FALSE))
-        //        {
-        //            var token = Consume(CurrentTokenType);
-        //            return new BooleanLiteral(bool.Parse(token.Value), token.StartPosition, token.EndPosition);
-        //        }
-        //        return null;
-        //    }
-        //}
-
-        //public FloatLiteral TryParseFloat()
-        //{
-        //    return (FloatLiteral)Tokens.TryGetTree(FloatParser);
-        //    ASTNode FloatParser()
-        //    {
-        //        var token = Consume(TokenType.FloatingNumber);
-        //        if (token == null) return null;
-
-        //        return new FloatLiteral(float.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        //public NameLiteral TryParseName()
-        //{
-        //    return (NameLiteral)Tokens.TryGetTree(NameParser);
-        //    ASTNode NameParser()
-        //    {
-        //        var token = Consume(TokenType.NameLiteral);
-        //        if (token == null) return null;
-
-        //        return new NameLiteral(token.Value, token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        //public StringLiteral TryParseString()
-        //{
-        //    return (StringLiteral)Tokens.TryGetTree(StringParser);
-        //    ASTNode StringParser()
-        //    {
-        //        var token = Consume(TokenType.StringLiteral);
-        //        if (token == null) return null;
-
-        //        return new StringLiteral(token.Value, token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        //public IntegerLiteral TryParseStringRef()
-        //{
-        //    return (IntegerLiteral)Tokens.TryGetTree(IntParser);
-        //    ASTNode IntParser()
-        //    {
-        //        var token = Consume(TokenType.StringRefLiteral);
-        //        if (token == null) return null;
-
-        //        return new StringRefLiteral(int.Parse(token.Value, CultureInfo.InvariantCulture), token.StartPosition, token.EndPosition);
-        //    }
-        //}
-
-        #endregion
-
         public Expression ParseLiteral()
         {
             Token<string> token = CurrentToken;
             if (Matches(TokenType.IntegerNumber))
             {
                 int val = int.Parse(token.Value, CultureInfo.InvariantCulture);
-                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = INT };
+                return new IntegerLiteral(val, token.StartPos, token.EndPos) { NumType = val >= 0 && val <= byte.MaxValue ? BYTE : INT };
             }
 
             if (Matches(TokenType.FloatingNumber))

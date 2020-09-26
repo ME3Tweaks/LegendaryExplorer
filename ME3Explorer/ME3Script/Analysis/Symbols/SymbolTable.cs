@@ -32,25 +32,29 @@ namespace ME3Script.Analysis.Symbols
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
         private readonly LinkedList<ASTNodeDict> Scopes;
         private readonly LinkedList<string> ScopeNames;
-        private readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators;
-        private readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators;
-        private readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators;
         private readonly CaseInsensitiveDictionary<VariableType> Types;
 
-        public readonly List<string> InFixOperatorSymbols;
+        private static readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new CaseInsensitiveDictionary<List<PreOpDeclaration>>();
+        private static readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new CaseInsensitiveDictionary<List<InOpDeclaration>>();
+        private static readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new CaseInsensitiveDictionary<List<PostOpDeclaration>>();
+        public static readonly List<string> InFixOperatorSymbols = new List<string>();
 
         public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Last();
 
         private SymbolTable()
         {
-            InFixOperatorSymbols = new List<string>();
-            PrefixOperators = new CaseInsensitiveDictionary<List<PreOpDeclaration>>();
-            InfixOperators = new CaseInsensitiveDictionary<List<InOpDeclaration>>();
-            PostfixOperators = new CaseInsensitiveDictionary<List<PostOpDeclaration>>();
             ScopeNames = new LinkedList<string>();
             Scopes = new LinkedList<ASTNodeDict>();
             Cache = new CaseInsensitiveDictionary<ASTNodeDict>();
             Types = new CaseInsensitiveDictionary<VariableType>();
+        }
+
+        private SymbolTable(LinkedList<string> scopeNames, LinkedList<ASTNodeDict> scopes, CaseInsensitiveDictionary<ASTNodeDict> cache, CaseInsensitiveDictionary<VariableType> types)
+        {
+            ScopeNames = scopeNames;
+            Scopes = scopes;
+            Cache = cache;
+            Types = types;
         }
 
         public static SymbolTable CreateIntrinsicTable(Class objectClass)
@@ -203,7 +207,7 @@ namespace ME3Script.Analysis.Symbols
 
         }
 
-        private bool operatorsInitialized;
+        private static bool operatorsInitialized;
         //must be called AFTER Core.pcc has been parsed and validated, and BEFORE parsing any CodeBody!
         public void InitializeOperators()
         {
@@ -227,6 +231,8 @@ namespace ME3Script.Analysis.Symbols
             const EPropertyFlags outFlags = parm | EPropertyFlags.OutParm;
             const EPropertyFlags skip = parm | EPropertyFlags.SkipParm;
             const EPropertyFlags coerce = parm | EPropertyFlags.CoerceParm;
+
+            ASTNodeDict objectScope = Scopes.First.Value;
 
             //primitive PostOperators
             AddOperator(new PostOpDeclaration("++", ByteType, 139, new FunctionParameter(ByteType, outFlags, "A")));
@@ -265,6 +271,7 @@ namespace ME3Script.Analysis.Symbols
 
             AddOperator(new InOpDeclaration("*", 16, 144, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration("/", 16, 145, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
+            AddOperator(new InOpDeclaration("%", 18, 253, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration("+", 20, 146, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration("-", 20, 147, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration("<<", 22, 148, IntType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B")));
@@ -303,8 +310,14 @@ namespace ME3Script.Analysis.Symbols
             AddOperator(new InOpDeclaration("+=", 34, 184, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
             AddOperator(new InOpDeclaration("-=", 34, 185, FloatType, new FunctionParameter(FloatType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
 
-            AddOperator(new InOpDeclaration("$", 40, 600, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B")));
-            AddOperator(new InOpDeclaration("@", 40, 168, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("$", 40, 600, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
+            {
+                Implementer = (Function)objectScope["Concat_StrStr"]
+            });
+            AddOperator(new InOpDeclaration("@", 40, 168, StringType, new FunctionParameter(StringType, coerce, "A"), new FunctionParameter(StringType, coerce, "B"))
+            {
+                Implementer = (Function)objectScope["At_StrStr"]
+            });
             AddOperator(new InOpDeclaration("<", 24, 601, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
             AddOperator(new InOpDeclaration(">", 24, 602, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
             AddOperator(new InOpDeclaration("<=", 24, 603, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
@@ -312,9 +325,18 @@ namespace ME3Script.Analysis.Symbols
             AddOperator(new InOpDeclaration("==", 24, 605, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
             AddOperator(new InOpDeclaration("!=", 26, 606, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
             AddOperator(new InOpDeclaration("~=", 24, 607, BoolType, new FunctionParameter(StringType, parm, "A"), new FunctionParameter(StringType, parm, "B")));
-            AddOperator(new InOpDeclaration("$=", 44, 322, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
-            AddOperator(new InOpDeclaration("@=", 44, 323, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
-            AddOperator(new InOpDeclaration("-=", 45, 324, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B")));
+            AddOperator(new InOpDeclaration("$=", 44, 322, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            {
+                Implementer = (Function)objectScope["ConcatEqual_StrStr"]
+            });
+            AddOperator(new InOpDeclaration("@=", 44, 323, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            {
+                Implementer = (Function)objectScope["AtEqual_StrStr"]
+            });
+            AddOperator(new InOpDeclaration("-=", 45, 324, StringType, new FunctionParameter(StringType, outFlags, "A"), new FunctionParameter(StringType, coerce, "B"))
+            {
+                Implementer = (Function)objectScope["SubtractEqual_StrStr"]
+            });
 
             AddOperator(new InOpDeclaration("==", 24, 640, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
             AddOperator(new InOpDeclaration("!=", 26, 641, BoolType, new FunctionParameter(objectType, parm, "A"), new FunctionParameter(objectType, parm, "B")));
@@ -364,7 +386,6 @@ namespace ME3Script.Analysis.Symbols
 
 
             //operators without a nativeIndex. must be linked directly to their function representations
-            ASTNodeDict objectScope = Scopes.First.Value;
             AddOperator(new InOpDeclaration("ClockwiseFrom", 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
             {
                 Implementer = (Function)objectScope["ClockwiseFrom_IntInt"]
@@ -554,7 +575,7 @@ namespace ME3Script.Analysis.Symbols
 
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
 
-        public bool TryGetSymbolInScopeStack(string symbol, out ASTNode node, string lowestScope)
+        public bool TryGetSymbolInScopeStack<T>(string symbol, out T node, string lowestScope) where T : ASTNode
         {
             node = null;
 
@@ -586,19 +607,23 @@ namespace ME3Script.Analysis.Symbols
             return stack.Count > 0;
         }
 
-        private bool TryGetSymbolInternal(string symbol, out ASTNode node, LinkedList<ASTNodeDict> stack)
+        private bool TryGetSymbolInternal<T>(string symbol, out T outNode, LinkedList<ASTNodeDict> stack) where T : ASTNode
         {
             LinkedListNode<ASTNodeDict> it;
             for (it = stack.Last; it != null; it = it.Previous)
             {
-                if (it.Value.TryGetValue(symbol, out node))
-                    return true;
-                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out node))
+                if (it.Value.TryGetValue(symbol, out ASTNode tempNode) && tempNode is T)
                 {
+                    outNode = (T)tempNode;
+                    return true;
+                }
+                if (it.Value.SecondaryScope != null && Cache.TryGetValue(it.Value.SecondaryScope, out ASTNodeDict parentScope) && parentScope.TryGetValue(symbol, out tempNode) && tempNode is T)
+                {
+                    outNode = (T)tempNode;
                     return true;
                 }
             }
-            node = null;
+            outNode = null;
             return false;
         }
 
@@ -714,26 +739,6 @@ namespace ME3Script.Analysis.Symbols
             }
         }
 
-        //public OperatorDeclaration GetOperator(OperatorDeclaration sig)
-        //{
-        //    return sig switch
-        //    {
-        //        InOpDeclaration inOp => Operators.First(opdecl => opdecl.Value is InOpDeclaration && inOp.IdenticalSignature(opdecl.Value)).Value,
-        //        PreOpDeclaration preOp => Operators.First(opdecl => opdecl.Value is PreOpDeclaration && preOp.IdenticalSignature(opdecl.Value)).Value,
-        //        PostOpDeclaration postOp => Operators.First(opdecl => opdecl.Value is PostOpDeclaration && postOp.IdenticalSignature(opdecl.Value)).Value,
-        //        _ => null
-        //    };
-        //}
-
-        //public bool OperatorSignatureExists(OperatorDeclaration sig) =>
-        //    sig switch
-        //    {
-        //        InOpDeclaration inOp => Operators.Any(opdecl => opdecl.Value is InOpDeclaration && inOp.IdenticalSignature(opdecl.Value)),
-        //        PreOpDeclaration preOp => Operators.Any(opdecl => opdecl.Value is PreOpDeclaration && preOp.IdenticalSignature(opdecl.Value)),
-        //        PostOpDeclaration postOp => Operators.Any(opdecl => opdecl.Value is PostOpDeclaration && postOp.IdenticalSignature(opdecl.Value)),
-        //        _ => false
-        //    };
-
         public PreOpDeclaration GetPreOp(string name, VariableType type)
         {
             if (PrefixOperators.TryGetValue(name, out List<PreOpDeclaration> operators))
@@ -790,14 +795,36 @@ namespace ME3Script.Analysis.Symbols
             return null;
         }
 
-        public bool TryGetType(string nameValue, out VariableType variableType)
+        public bool TryGetType<T>(string nameValue, out T variableType) where T : VariableType
         {
-            return Types.TryGetValue(nameValue, out variableType);
+            if (Types.TryGetValue(nameValue, out VariableType varType) && varType is T tType)
+            {
+                variableType = tType;
+                return true;
+            }
+
+            variableType = null;
+            return false;
+        }
+
+        public SymbolTable Clone()
+        {
+            return new SymbolTable(new LinkedList<string>(ScopeNames), new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
+                                   new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
+                                   new CaseInsensitiveDictionary<VariableType>(Types));
         }
     }
 
     public class ASTNodeDict : CaseInsensitiveDictionary<ASTNode>
     {
         public string SecondaryScope;
+        public ASTNodeDict()
+        {
+        }
+
+        public ASTNodeDict(ASTNodeDict dictionary) : base(dictionary)
+        {
+            SecondaryScope = dictionary.SecondaryScope;
+        }
     }
 }

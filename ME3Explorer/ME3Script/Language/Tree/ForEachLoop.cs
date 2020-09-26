@@ -13,6 +13,8 @@ namespace ME3Script.Language.Tree
         public Expression IteratorCall;
         public CodeBody Body;
 
+        public int iteratorPopPos;
+
         public ForEachLoop(Expression iterator, CodeBody body, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.ForEachLoop, start, end)
         {

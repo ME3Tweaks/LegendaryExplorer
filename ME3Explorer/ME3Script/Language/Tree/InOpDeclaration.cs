@@ -14,9 +14,7 @@ namespace ME3Script.Language.Tree
         public FunctionParameter LeftOperand;
         public FunctionParameter RightOperand;
         public int Precedence;
-
-        //only used if NativeIndex is 0
-        public Function Implementer;
+        public override bool HasOutParams => LeftOperand.IsOut || RightOperand.IsOut;
 
         public InOpDeclaration(string keyword, int precedence, int nativeIndex,
                                VariableType returnType,

@@ -11,5 +11,6 @@ namespace ME3Script.Language.Tree
         public List<VariableDeclaration> VariableDeclarations { get; }
         public List<VariableType> TypeDeclarations { get; }
         public DefaultPropertiesBlock DefaultProperties { get; }
+
     }
 }

@@ -12,6 +12,7 @@ namespace ME3Script.Language.Tree
     public class PostOpDeclaration : OperatorDeclaration
     {
         public FunctionParameter Operand;
+        public override bool HasOutParams => Operand.IsOut;
 
         public PostOpDeclaration(string keyword,
                                  VariableType returnType, int nativeIndex,

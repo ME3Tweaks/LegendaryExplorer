@@ -16,6 +16,10 @@ namespace ME3Script.Language.Tree
         public int NativeIndex;
         public VariableType ReturnType;
 
+        public Function Implementer;
+
+        public abstract bool HasOutParams { get; }
+
         protected OperatorDeclaration(string keyword, VariableType returnType, int nativeIndex)
         {
             OperatorKeyword = keyword;

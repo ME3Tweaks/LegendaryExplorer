@@ -14,6 +14,8 @@ namespace ME3Script.Language.Tree
         public SymbolReference Function;
         public List<Expression> Arguments;
 
+        public bool IsCalledOnInterface;
+
         public FunctionCall(SymbolReference func, List<Expression> arguments, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.FunctionCall, start, end)
         {

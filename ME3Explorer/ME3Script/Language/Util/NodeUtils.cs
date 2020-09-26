@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
+using ME3Explorer.Unreal;
+using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;
 
 namespace ME3Script.Language.Util
@@ -67,7 +69,7 @@ namespace ME3Script.Language.Util
             return outer as IObjectType;
         }
 
-        public static bool TypeCompatible(VariableType dest, VariableType src)
+        public static bool TypeCompatible(VariableType dest, VariableType src, bool coerce = false)
         {
             if (dest is DynamicArrayType destArr && src is DynamicArrayType srcArr)
             {
@@ -96,7 +98,16 @@ namespace ME3Script.Language.Util
             {
                 if (src is Class srcClass)
                 {
-                    return srcClass.SameAsOrSubClassOf(destClass.Name) || destClass.SameAsOrSubClassOf(srcClass.Name);
+                    bool sameAsOrSubClassOf = srcClass.SameAsOrSubClassOf(destClass.Name);
+                    if (srcClass.IsInterface)
+                    {
+                        return sameAsOrSubClassOf || destClass.Implements(srcClass);
+                    }
+                    return sameAsOrSubClassOf 
+                        //this seems super wrong obviously. A sane type system would require an explicit downcast.
+                        //But to make this work with existing bioware code, it's this, or write a control-flow analyzer that implicitly downcasts based on typecheck conditional gates
+                        //I have chosen the lazy path
+                        || destClass.SameAsOrSubClassOf(srcClass.Name);
                 }
 
                 if (destClass.Name.CaseInsensitiveEquals("Object") && src is ClassType)
@@ -105,7 +116,13 @@ namespace ME3Script.Language.Util
                 }
             }
 
-            return dest.Name.CaseInsensitiveEquals(src?.Name) || CastHelper.GetConversion(dest, src).Has(ECast.AutoConvert);
+            if (dest.Name.CaseInsensitiveEquals(src?.Name)) return true;
+            ECast cast = CastHelper.GetConversion(dest, src);
+            if (coerce)
+            {
+                return cast != ECast.Max;
+            }
+            return cast.Has(ECast.AutoConvert);
         }
 
         public static bool TypeEqual(VariableType a, VariableType b)
@@ -118,10 +135,15 @@ namespace ME3Script.Language.Util
             {
                 return TypeEqual(destArr.ElementType, srcArr.ElementType);
             }
+            if (a is ClassType aClsType && b is ClassType bClsType)
+            {
+                return aClsType.ClassLimiter == bClsType.ClassLimiter;
+            }
             return a == b //No type conversion, types must be an exact match
                 || a is null && b is Class || a is Class && b is null
                 || a is null && b is ClassType || a is ClassType && b is null
-                || a is null && b is DelegateType || a is DelegateType && b is null
+                || a is null && b is DelegateType || a is DelegateType && b is null 
+                || a is Enumeration && b == SymbolTable.ByteType || a == SymbolTable.ByteType && b is Enumeration
                 || (a?.PropertyType == EPropertyType.Vector || a?.PropertyType == EPropertyType.Rotator) && a.PropertyType == b.PropertyType;
         }
     }

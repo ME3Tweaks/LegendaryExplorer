@@ -12,9 +12,6 @@ namespace ME3Script.Language.Tree
 {
     public sealed class Struct : VariableType, IObjectType
     {
-        public bool IsVector => Name.CaseInsensitiveEquals("Vector");
-        public bool IsRotator => Name.CaseInsensitiveEquals("Rotator");
-
         public ScriptStructFlags Flags;
         public VariableType Parent;
         public List<VariableDeclaration> VariableDeclarations { get; }
@@ -78,6 +75,8 @@ namespace ME3Script.Language.Tree
             }
             return str;
         }
+
+        public override int Size => VariableDeclarations.Sum(decl => decl.GetSize()) + ((Parent as Struct)?.Size ?? 0);
 
         public override IEnumerable<ASTNode> ChildNodes
         {

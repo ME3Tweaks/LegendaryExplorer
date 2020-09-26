@@ -13,6 +13,7 @@ namespace ME3Script.Language.Tree
     {
         public SymbolReference DelegateReference;
         public List<Expression> Arguments;
+        public Function DefaultFunction => ((DelegateType)((VariableDeclaration)DelegateReference.Node).VarType).DefaultFunction;
 
         public DelegateCall(SymbolReference del, List<Expression> arguments, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.FunctionCall, start, end)
@@ -28,7 +29,7 @@ namespace ME3Script.Language.Tree
 
         public override VariableType ResolveType()
         {
-            Function function = ((DelegateType)((VariableDeclaration)DelegateReference.Node).VarType).DefaultFunction;
+            Function function = DefaultFunction;
             if (function.CoerceReturn && function.ReturnType != SymbolTable.StringType)
             {
                 return ((ClassType)Arguments[0].ResolveType()).ClassLimiter;
