@@ -5,6 +5,7 @@ using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
+using PropertyChanged;
 
 namespace ME3ExplorerCore.Packages
 {
@@ -110,6 +111,8 @@ namespace ME3ExplorerCore.Packages
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 24, sizeof(int)); HeaderChanged = true; }
         }
 
+
+        [DoNotCheckEquality]
         public string ClassName
         {
             get => FileRef.Names[idxClassName];

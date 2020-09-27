@@ -208,7 +208,7 @@ namespace ME3Explorer
                         {
                             uIndex.value = 0;
                         }
-                        CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin);
+                        CurrentExport.WritePropertiesAndBinary(new PropertyCollection(), objBin, false);
 
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
                                                              out IEntry _);
