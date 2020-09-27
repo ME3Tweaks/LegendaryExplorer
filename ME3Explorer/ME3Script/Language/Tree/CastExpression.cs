@@ -9,7 +9,9 @@ namespace ME3Script.Language.Tree
         public VariableType CastType;
         public Expression CastTarget;
 
-        public CastExpression(VariableType type, Expression expr, SourcePosition start, SourcePosition end)
+        public bool IsInterfaceCast;//TODO:Remove
+
+        public CastExpression(VariableType type, Expression expr, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.CastExpression, start, end)
         {
             CastType = type;

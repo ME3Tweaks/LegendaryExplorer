@@ -18,9 +18,19 @@ namespace ME3Script.Parsing
             Tokens = tokens;
         }
 
-        public Class ParseDocument()
+        public ASTNode ParseDocument(string parseUnit = "Class")
         {
-            return TryParseClass();
+            return parseUnit switch
+            {
+                "Class" => TryParseClass(),
+                "Function" => TryParseFunction(),
+                "State" => TryParseState(),
+                "ScriptStruct" => TryParseStruct(),
+                "Enum" => TryParseEnum(),
+                "Const" => TryParseConstant(),
+                _ when parseUnit.EndsWith("Property") => TryParseVarDecl(),
+                _ => TryParseDefaultProperties()
+            };
         }
 
         #region Parsers
@@ -151,7 +161,7 @@ namespace ME3Script.Parsing
                     throw Error("noexport is only valid for native classes!", CurrentPosition);
                 }
 
-                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition);
 
                 var variables = new List<VariableDeclaration>();
                 var types = new List<VariableType>();
@@ -160,17 +170,17 @@ namespace ME3Script.Parsing
                     if (CurrentIs(VAR))
                     {
                         var variable = TryParseVarDecl();
-                        if (variable == null) throw Error("Malformed instance variable!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (variable == null) throw Error("Malformed instance variable!", CurrentPosition);
                         variables.Add(variable);
                     }
                     else
                     {
                         VariableType type = TryParseEnum() ?? TryParseStruct() ?? TryParseConstant() ?? (VariableType)null;
-                        if (type is null) throw Error("Malformed type declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (type is null) throw Error("Malformed type declaration!", CurrentPosition);
 
                         types.Add(type);
 
-                        if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition);
                     }
                 }
 
@@ -198,7 +208,7 @@ namespace ME3Script.Parsing
                 var defaultPropertiesBlock = TryParseDefaultProperties();
                 if (defaultPropertiesBlock == null)
                 {
-                    throw Error("Expected defaultproperties block!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Expected defaultproperties block!", CurrentPosition);
                 }
 
                 // TODO: should AST-nodes accept null values? should they make sure they dont present any?
@@ -241,29 +251,7 @@ namespace ME3Script.Parsing
                         throw Error($"Expected a value for the constant '{constName.Value}'!");
                     }
 
-                    //minus sign is not parsed as part of a literal, so do it manually
-                    bool isNegative = Matches(TokenType.MinusSign);
-
-                    Expression literal = ParseLiteral();
-                    if (literal is null)
-                    {
-                        throw Error("Expected a literal value for the constant!", CurrentPosition);
-                    }
-
-                    if (isNegative)
-                    {
-                        switch (literal)
-                        {
-                            case FloatLiteral floatLiteral:
-                                floatLiteral.Value *= -1;
-                                break;
-                            case IntegerLiteral integerLiteral:
-                                integerLiteral.Value *= -1;
-                                break;
-                            default:
-                                throw Error("Malformed constant value!", CurrentPosition);
-                        }
-                    }
+                    Expression literal = ParseConstValue();
                     return new Const(constName.Value, constValue, startPos, CurrentPosition)
                     {
                         Literal = literal
@@ -272,6 +260,35 @@ namespace ME3Script.Parsing
 
                 throw Error("Expected name for constant!", CurrentPosition);
             }
+        }
+
+        public Expression ParseConstValue()
+        {
+            //minus sign is not parsed as part of a literal, so do it manually
+            bool isNegative = Matches(TokenType.MinusSign);
+
+            Expression literal = ParseLiteral();
+            if (literal is null)
+            {
+                throw Error("Expected a literal value for the constant!", CurrentPosition);
+            }
+
+            if (isNegative)
+            {
+                switch (literal)
+                {
+                    case FloatLiteral floatLiteral:
+                        floatLiteral.Value *= -1;
+                        break;
+                    case IntegerLiteral integerLiteral:
+                        integerLiteral.Value *= -1;
+                        break;
+                    default:
+                        throw Error("Malformed constant value!", CurrentPosition);
+                }
+            }
+
+            return literal;
         }
 
         public VariableDeclaration TryParseVarDecl()
@@ -292,7 +309,7 @@ namespace ME3Script.Parsing
 
                     if (Consume(TokenType.RightParenth) == null)
                     {
-                        throw Error("Expected ')' after category name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Expected ')' after category name!", CurrentPosition);
                     }
                 }
 
@@ -303,18 +320,18 @@ namespace ME3Script.Parsing
                 }
 
                 var type = TryParseType();
-                if (type == null) throw Error("Expected variable type", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (type == null) throw Error("Expected variable type", CurrentPosition);
 
                 var var = ParseVariableName();
-                if (var == null) throw Error("Malformed variable name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (var == null) throw Error("Malformed variable name!", CurrentPosition);
 
                 if (CurrentTokenType == TokenType.Comma)
                 {
-                    throw Error("All variables must be declared on their own line!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("All variables must be declared on their own line!", CurrentPosition);
                 }
 
                 var semicolon = Consume(TokenType.SemiColon);
-                if (semicolon == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (semicolon == null) throw Error("Expected semi-colon!", CurrentPosition);
 
                 return new VariableDeclaration(type, flags, var.Name, var.Size, category, startPos, semicolon.EndPos);
             }
@@ -365,18 +382,18 @@ namespace ME3Script.Parsing
                 }
 
                 var name = Consume(TokenType.Word);
-                if (name == null) throw Error("Expected struct name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (name == null) throw Error("Expected struct name!", CurrentPosition);
 
                 var parent = TryParseParent();
 
-                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition);
 
                 var types = new List<VariableType>();
                 while (CurrentTokenType != TokenType.RightBracket && !Tokens.AtEnd())
                 {
                     var variable = TryParseStruct();
                     if (variable == null) break;
-                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after struct declaration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after struct declaration!", CurrentPosition);
                     types.Add(variable);
                 }
 
@@ -384,7 +401,7 @@ namespace ME3Script.Parsing
                 while (CurrentTokenType != TokenType.RightBracket && !CurrentIs(STRUCTDEFAULTPROPERTIES) && !Tokens.AtEnd())
                 {
                     var variable = TryParseVarDecl();
-                    if (variable == null) throw Error("Malformed struct content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (variable == null) throw Error("Malformed struct content!", CurrentPosition);
 
                     vars.Add(variable);
                 }
@@ -394,12 +411,12 @@ namespace ME3Script.Parsing
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                     {
-                        throw Error("Malformed defaultproperties body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Malformed defaultproperties body!", CurrentPosition);
                     }
                     defaults = new DefaultPropertiesBlock(null, bodyStart, bodyEnd);
                 }
 
-                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition);
 
                 return new Struct(name.Value, parent, flags, vars, types, defaults, name.StartPos, name.EndPos);
             }
@@ -413,21 +430,28 @@ namespace ME3Script.Parsing
                 if (!Matches(ENUM)) return null;
 
                 var name = Consume(TokenType.Word);
-                if (name == null) throw Error("Expected enumeration name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (name == null) throw Error("Expected enumeration name!", CurrentPosition);
 
-                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition);
 
-                var identifiers = new List<VariableIdentifier>();
+                var identifiers = new List<EnumValue>();
+                byte i = 0;
                 do
                 {
-                    var ident = Consume(TokenType.Word);
-                    if (ident == null) throw Error("Expected non-empty enumeration!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (identifiers.Count >= 254)
+                    {
+                        throw Error("Enums cannot have more than 254 values!", CurrentPosition);
+                    }
+                    Token<string> ident = Consume(TokenType.Word);
+                    if (ident == null) throw Error("Expected non-empty enumeration!", CurrentPosition);
+                    if (ident.Value.Length > 63) throw Error("Enum value must be 63 characters or less!", CurrentPosition);
 
-                    identifiers.Add(new VariableIdentifier(ident.Value, ident.StartPos, ident.EndPos));
-                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw Error("Malformed enumeration content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    identifiers.Add(new EnumValue(ident.Value, i, ident.StartPos, ident.EndPos));
+                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightBracket) throw Error("Malformed enumeration content!", CurrentPosition);
+                    i++;
                 } while (CurrentTokenType != TokenType.RightBracket);
 
-                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition);
 
                 return new Enumeration(name.Value, identifiers, name.StartPos, name.EndPos);
             }
@@ -449,7 +473,7 @@ namespace ME3Script.Parsing
                 bool coerceReturn = Matches("coerce");
                 Tokens.PushSnapshot();
                 var returnType = TryParseType();
-                if (returnType == null) throw Error("Expected function name or return type!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (returnType == null) throw Error("Expected function name or return type!", CurrentPosition);
 
                 Token<string> name = Consume(TokenType.Word);
                 if (name == null)
@@ -468,14 +492,14 @@ namespace ME3Script.Parsing
                     throw Error("Coerce specifier cannot be applied to a void return type!", CurrentPosition);
                 }
 
-                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
 
                 var parameters = new List<FunctionParameter>();
                 bool hasOptionalParams = false;
                 while (CurrentTokenType != TokenType.RightParenth)
                 {
                     var param = TryParseParameter();
-                    if (param == null) throw Error("Malformed parameter!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (param == null) throw Error("Malformed parameter!", CurrentPosition);
                     if (hasOptionalParams && !param.IsOptional)
                     {
                         throw Error("Non-optional parameters cannot follow optional parameters!", param.StartPos, param.EndPos);
@@ -483,21 +507,21 @@ namespace ME3Script.Parsing
 
                     hasOptionalParams |= param.IsOptional;
                     parameters.Add(param);
-                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw Error("Unexpected parameter content!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw Error("Unexpected parameter content!", CurrentPosition);
                 }
 
                 if (hasOptionalParams)
                 {
                     flags |= FunctionFlags.HasOptionalParms;
                 }
-                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
 
                 CodeBody body = new CodeBody(null, CurrentPosition, CurrentPosition);
                 if (Consume(TokenType.SemiColon) is null)
                 {
                     if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                     {
-                        throw Error("Malformed function body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        throw Error("Malformed function body!", CurrentPosition);
                     }
 
                     body = new CodeBody(null, bodyStart, bodyEnd);
@@ -546,11 +570,11 @@ namespace ME3Script.Parsing
                 }
 
                 var name = Consume(TokenType.Word);
-                if (name == null) throw Error("Expected state name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (name == null) throw Error("Expected state name!", CurrentPosition);
 
                 var parent = TryParseParent();
 
-                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition);
 
                 var ignores = new List<Function>();
                 if (Matches(IGNORES))
@@ -558,12 +582,12 @@ namespace ME3Script.Parsing
                     do
                     {
                         VariableIdentifier variable = TryParseVariable();
-                        if (variable == null) throw Error("Malformed ignore statement!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                        if (variable == null) throw Error("Malformed ignore statement!", CurrentPosition);
 
                         ignores.Add(new Function(variable.Name, FunctionFlags.Public, null, null, null, variable.StartPos, variable.EndPos));
                     } while (Consume(TokenType.Comma) != null);
 
-                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon!", CurrentPosition);
                 }
 
                 var funcs = new List<Function>();
@@ -577,9 +601,9 @@ namespace ME3Script.Parsing
 
                 if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, true, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                 {
-                    throw Error("Malformed state body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Malformed state body!", CurrentPosition);
                 }
-                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon at end of state!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon at end of state!", CurrentPosition);
 
                 var body = new CodeBody(new List<Statement>(), bodyStart, bodyEnd);
 
@@ -598,7 +622,7 @@ namespace ME3Script.Parsing
 
                 if (!ParseScopeSpan(TokenType.LeftBracket, TokenType.RightBracket, false, out SourcePosition bodyStart, out SourcePosition bodyEnd))
                 {
-                    throw Error("Malformed defaultproperties body!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    throw Error("Malformed defaultproperties body!", CurrentPosition);
                 }
 
                 return new DefaultPropertiesBlock(new List<Statement>(), bodyStart, bodyEnd);
@@ -683,7 +707,7 @@ namespace ME3Script.Parsing
                 var parentName = Consume(TokenType.Word);
                 if (parentName == null)
                 {
-                    Log.LogError("Expected parent name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    Log.LogError("Expected parent name!", CurrentPosition);
                     return null;
                 }
 
@@ -700,7 +724,7 @@ namespace ME3Script.Parsing
                 var outerName = Consume(TokenType.Word);
                 if (outerName == null)
                 {
-                    Log.LogError("Expected outer class name!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    Log.LogError("Expected outer class name!", CurrentPosition);
                     return null;
                 }
 
@@ -1049,7 +1073,7 @@ namespace ME3Script.Parsing
             var scopedTokens = new List<Token<string>>();
             if (Consume(scopeStart) == null)
             {
-                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition);
                 return null;
             }
 
@@ -1079,7 +1103,7 @@ namespace ME3Script.Parsing
             endPos = null;
             if (!isPartialScope && Consume(scopeStart) == null)
             {
-                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                Log.LogError($"Expected '{scopeStart}'!", CurrentPosition);
                 return false;
             }
             startPos = Tokens.CurrentItem.StartPos;
@@ -1089,7 +1113,7 @@ namespace ME3Script.Parsing
             {
                 if (CurrentTokenType == TokenType.EOF)
                 {
-                    Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition, CurrentPosition.GetModifiedPosition(0, 1, 1));
+                    Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition);
                     return false;
                 }
                 if (CurrentTokenType == scopeStart)

@@ -79,8 +79,8 @@ namespace ME3Script.Language.Tree
 
         public ASTNode Outer;
 
-        public SourcePosition StartPos { get; }
-        public SourcePosition EndPos { get; }
+        public SourcePosition StartPos { get; set; }
+        public SourcePosition EndPos { get; set; }
 
         protected ASTNode(ASTNodeType type, SourcePosition start, SourcePosition end)
         {

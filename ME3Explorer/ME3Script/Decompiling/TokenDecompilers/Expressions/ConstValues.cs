@@ -52,7 +52,7 @@ namespace ME3Script.Decompiling
             var value = ReadObject();
 
             StartPositions.Pop();
-            return new ObjectLiteral(new NameLiteral(value.ObjectName.Instanced), new VariableType(value.ClassName));
+            return new ObjectLiteral(new NameLiteral(value.ClassName == "Class" || value.Parent == ContainingClass.Export ? value.ObjectName.Instanced : value.InstancedFullPath), new VariableType(value.ClassName));
         }
 
         public VectorLiteral DecompileVectorConst()
@@ -84,17 +84,17 @@ namespace ME3Script.Decompiling
             var value = ReadNameReference();
 
             StartPositions.Pop();
-            return new NameLiteral(value);
+            return new NameLiteral(value.Instanced);
         }
 
-        public IntegerLiteral DecompileByteConst()
+        public IntegerLiteral DecompileByteConst(string numType)
         {
             PopByte();
 
             var value = ReadByte();
 
             StartPositions.Pop();
-            return new IntegerLiteral(value) { NumType = Keywords.BYTE };
+            return new IntegerLiteral(value) { NumType = numType };
         }
 
         public IntegerLiteral DecompileIntConstVal(int val)

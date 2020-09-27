@@ -5,7 +5,7 @@
 
         public const string ARRAY = "array";     
         public const string DELEGATE = "delegate";     
-        public const string CLASS = "class";     
+        public const string CLASS = "Class";     
         public const string VAR = "var";     
         public const string STRUCT = "struct";     
         public const string ENUM = "enum";     

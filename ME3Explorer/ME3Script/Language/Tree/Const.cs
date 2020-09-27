@@ -8,7 +8,7 @@ namespace ME3Script.Language.Tree
         public string Value;
         public Expression Literal;
 
-        public Const(string name, string value, SourcePosition start, SourcePosition end) : base(name, start, end)
+        public Const(string name, string value, SourcePosition start = null, SourcePosition end = null) : base(name, start, end)
         {
             Type = ASTNodeType.Const;
             Value = value;

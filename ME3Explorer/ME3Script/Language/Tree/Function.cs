@@ -25,6 +25,8 @@ namespace ME3Script.Language.Tree
 
         public bool IsDefined => Flags.Has(FunctionFlags.Defined);
 
+        public bool RetValNeedsDestruction;
+
         public Function(string name, FunctionFlags flags, 
                         VariableType returntype, CodeBody body,
                         List<FunctionParameter> parameters = null,
@@ -57,7 +59,7 @@ namespace ME3Script.Language.Tree
             {
                 var thisParam = Parameters[i];
                 var otherParam = other.Parameters[i];
-                if (!NodeUtils.TypeEqual(thisParam.VarType, otherParam.VarType) || thisParam.Size != otherParam.Size)
+                if (!NodeUtils.TypeEqual(thisParam.VarType, otherParam.VarType) || thisParam.ArrayLength != otherParam.ArrayLength)
                 {
                     return false;
                 }

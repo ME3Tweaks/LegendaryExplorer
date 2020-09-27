@@ -273,10 +273,10 @@ namespace ME3Script.Decompiling
             { 0x58, STRING }, // VectorToString
             { 0x59, STRING }, // RotatorToString
             { 0x5A, STRING }, // DelegateToString
-            { 0x5B, DELEGATE }, // StringToDelegate
+            { 0x5B, INT }, // StringRefToInt
             { 0x5C, STRING }, // StringRefToString
             { 0x5D, STRINGREF }, // IntToStringRef
-            { 0x5F, "UNKN_TYPE_5F"}, //UNUSED
+            //{ 0x5F, "UNKN_TYPE_5F"}, //UNUSED
             { 0x60, NAME }, // StringToName
         };
 

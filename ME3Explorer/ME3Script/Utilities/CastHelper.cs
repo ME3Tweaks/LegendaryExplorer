@@ -17,12 +17,12 @@ namespace ME3Script.Utilities
 			/*          --------   ------------------    ------------------    ----------------    -------------------    -----------------    ---------------    -------------------         ---------------    ----------------   -------------------    --------------------   -----------------     ----------------    -------------- */
 /* None     */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
 /* Byte     */ new []{ ECast.Max,  ECast.Max,            ECast.IntToByte|TAC,  ECast.BoolToByte,   ECast.FloatToByte|TAC, ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.StringToByte,   ECast.Max,          ECast.Max,          },
-/* Int      */ new []{ ECast.Max,  ECast.ByteToInt|AC,   ECast.Max,            ECast.BoolToInt,    ECast.FloatToInt|TAC,  ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.StringToInt,    ECast.Max,          ECast.Max,          },
+/* Int      */ new []{ ECast.Max,  ECast.ByteToInt|AC,   ECast.Max,            ECast.BoolToInt,    ECast.FloatToInt|TAC,  ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.StringToInt,    ECast.Max,         ECast.StringRefToInt,},
 /* Bool     */ new []{ ECast.Max,  ECast.ByteToBool,     ECast.IntToBool,      ECast.Max,          ECast.FloatToBool,     ECast.ObjectToBool,  ECast.NameToBool,  ECast.Max,      ECast.InterfaceToBool,         ECast.Max,         ECast.VectorToBool,    ECast.RotatorToBool,   ECast.StringToBool,   ECast.Max,          ECast.Max,          },
 /* Float    */ new []{ ECast.Max,  ECast.ByteToFloat|AC, ECast.IntToFloat|AC,  ECast.BoolToFloat,  ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.StringToFloat,  ECast.Max,          ECast.Max,          },
 /* Object   */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max, ECast.InterfaceToObject|AC,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
 /* Name     */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.StringToName,   ECast.Max,          ECast.Max,          },
-/* Delegate */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,            ECast.StringToDelegate,ECast.Max,          ECast.Max,          },
+/* Delegate */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
 /* Interface*/ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,       AC|ECast.ObjectToInterface,ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
 /* Struct   */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
 /* Vector   */ new []{ ECast.Max,  ECast.Max,            ECast.Max,            ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.RotatorToVector, ECast.StringToVector, ECast.Max,          ECast.Max,          },
@@ -35,8 +35,8 @@ namespace ME3Script.Utilities
 
         public static ECast GetConversion(VariableType dest, VariableType src)
         {
-            var destType = dest is null ? EPropertyType.None : (dest as Struct)?.IsVector == true ? EPropertyType.Vector : (dest as Struct)?.IsRotator == true ? EPropertyType.Rotator : dest.PropertyType;
-            var srcType = src is null ? EPropertyType.None : (src as Struct)?.IsVector == true ? EPropertyType.Vector : (src as Struct)?.IsRotator == true ? EPropertyType.Rotator : src.PropertyType;
+            var destType = dest?.PropertyType ?? EPropertyType.None;
+            var srcType = src?.PropertyType ?? EPropertyType.None;
 
             if (dest is Class dCls && dCls.SameAsOrSubClassOf("Interface"))
             {
@@ -44,7 +44,7 @@ namespace ME3Script.Utilities
             }
             if (src is Class sCls && sCls.SameAsOrSubClassOf("Interface"))
             {
-                destType = EPropertyType.Interface;
+                srcType = EPropertyType.Interface;
             }
 
             if (src is null && (destType == EPropertyType.Object || destType == EPropertyType.Delegate))
@@ -69,7 +69,7 @@ namespace ME3Script.Utilities
             {
                 return 0;
             }
-            if (dest.VarType is Class && src is null)
+            if (dest.VarType is Class c && (src is null || src is ClassType && !c.IsInterface))
             {
                 return 0;
             }
@@ -90,7 +90,7 @@ namespace ME3Script.Utilities
                 return 2;
             }
             ECast conversion = GetConversion(dest.VarType, src);
-            //if it has 'coerce', any valid conversion is acceptable, else only autoconversions are acceptable
+            //if it has 'coerce', any valid conversion is acceptable, otherwise only autoconversions are acceptable
             if (dest.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm) ? conversion != ECast.Max : conversion.Has(ECast.AutoConvert))
             {
                 if (conversion.Has(ECast.Truncate))
@@ -98,7 +98,7 @@ namespace ME3Script.Utilities
                     return 104; //lossy conversion
                 }
 
-                if (dest.VarType == SymbolTable.FloatType && (src == SymbolTable.IntType || src == SymbolTable.ByteType))
+                if (dest.VarType == SymbolTable.FloatType && (src == SymbolTable.IntType || src?.PropertyType == EPropertyType.Byte))
                 {
                     return 103; //int to float conversion
                 }
@@ -169,7 +169,7 @@ namespace ME3Script.Utilities
         VectorToString = 0x58,
         RotatorToString = 0x59,
         DelegateToString = 0x5A,
-        StringToDelegate = 0x5B,
+        StringRefToInt = 0x5B,
         StringRefToString = 0x5C,
         IntToStringRef = 0x5D,
         StringToName = 0x60,

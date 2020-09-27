@@ -6,13 +6,17 @@ namespace ME3Script.Language.Tree
 {
     public class Enumeration : VariableType
     {
-        public List<VariableIdentifier> Values;
-        public Enumeration(string name, List<VariableIdentifier> values,
+        public List<EnumValue> Values;
+        public Enumeration(string name, List<EnumValue> values,
             SourcePosition start, SourcePosition end)
             : base(name, start, end, EPropertyType.Byte)
         {
             Type = ASTNodeType.Enumeration;
             Values = values;
+            foreach (EnumValue enumValue in values)
+            {
+                enumValue.Enum = this;
+            }
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

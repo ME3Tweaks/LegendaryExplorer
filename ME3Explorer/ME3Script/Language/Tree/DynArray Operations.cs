@@ -45,6 +45,11 @@ namespace ME3Script.Language.Tree
         {
             return visitor.VisitNode(this);
         }
+
+        public override VariableType ResolveType()
+        {
+            return SymbolTable.IntType;
+        }
     }
     public class DynArrayAddItem : DynArrayOperation
     {
@@ -58,6 +63,11 @@ namespace ME3Script.Language.Tree
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
             return visitor.VisitNode(this);
+        }
+
+        public override VariableType ResolveType()
+        {
+            return SymbolTable.IntType;
         }
     }
     public class DynArrayInsert : DynArrayOperation
@@ -85,6 +95,11 @@ namespace ME3Script.Language.Tree
         {
             IndexArg = indexArg;
             ValueArg = valueArg;
+        }
+
+        public override VariableType ResolveType()
+        {
+            return SymbolTable.IntType;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -120,6 +135,11 @@ namespace ME3Script.Language.Tree
         public override bool AcceptVisitor(IASTVisitor visitor)
         {
             return visitor.VisitNode(this);
+        }
+
+        public override VariableType ResolveType()
+        {
+            return SymbolTable.IntType;
         }
     }
     public class DynArrayFind : DynArrayOperation
@@ -169,6 +189,11 @@ namespace ME3Script.Language.Tree
         public DynArraySort(Expression dynArrayExpression, Expression comparefunctionArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
         {
             CompareFuncArg = comparefunctionArg;
+        }
+
+        public override VariableType ResolveType()
+        {
+            return ((DynamicArrayType)DynArrayExpression.ResolveType()).ElementType;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)

@@ -1,11 +1,11 @@
 ﻿namespace ME3Script.Language.ByteCode
 {
-    public enum StandardByteCodes
+    public enum OpCodes : byte
     {
         LocalVariable = 0x00,
         InstanceVariable = 0x01,
         DefaultVariable = 0x02,
-        StateVariable = 0x03, // TODO: possibly implemented after ME3's UE version?
+        //StateVariable = 0x03, // TODO: possibly implemented after ME3's UE version?
         Return = 0x04,
         Switch = 0x05,
         Jump = 0x06,
@@ -45,7 +45,7 @@
         False = 0x28,
         NativeParm = 0x29,
         NoObject = 0x2A,
-        Unknown_Deprecated = 0x2B, // seems unused, exe's assert fails.
+        //Unknown_Deprecated = 0x2B, // seems unused, exe's assert fails.
         IntConstByte = 0x2C,
         BoolVariable = 0x2D,
         DynamicCast = 0x2E,
@@ -54,7 +54,7 @@
         IteratorNext = 0x31, //undefined in GNatives?
         StructCmpEq = 0x32,
         StructCmpNe = 0x33,
-        UnicodeStringConst = 0x34, // unused?
+        //UnicodeStringConst = 0x34, // unused?
         StructMember = 0x35,
         DynArrayLength = 0x36,
         GlobalFunction = 0x37,
@@ -67,7 +67,7 @@
         NotEqual_DelFunc = 0x3E,
         EmptyDelegate = 0x3F,
         DynArrayRemove = 0x40,
-        DebugInfo = 0x41,
+        //DebugInfo = 0x41,
         DelegateFunction = 0x42,
         DelegateProperty = 0x43,
         LetDelegate = 0x44,
@@ -90,15 +90,18 @@
         DynArrayInsertItem = 0x57,
         DynArrayIterator = 0x58,
         DynArraySort = 0x59,
-        FilterEditorOnly = 0x5A, // FilterEditorOnly?
-        Unkn_5B = 0x5B, // 0-2 , 48, 5B-62, all share the same behavior
-        Unkn_5C = 0x5C, // presumably variable related?
-        Unkn_5D = 0x5D,
-        Unkn_5E = 0x5E,
-        Unkn_5F = 0x5F,
-        Unkn_60 = 0x60,
-        Unkn_61 = 0x61,
-        Unkn_62 = 0x62,
+        FilterEditorOnly = 0x5A,
+
+        //0x5B - 0x62 are not used if the variable is a static array
+        LocalFloatVariable = 0x5B,
+        LocalIntVariable = 0x5C,
+        LocalByteVariable = 0x5D,
+        LocalObjectVariable = 0x5E,
+        InstanceFloatVariable = 0x5F,
+        InstanceIntVariable = 0x60,
+        InstanceByteVariable = 0x61,
+        InstanceObjectVariable = 0x62,
+
         OptIfLocal = 0x63,
         OptIfInstance = 0x64,
         NamedFunction = 0x65,

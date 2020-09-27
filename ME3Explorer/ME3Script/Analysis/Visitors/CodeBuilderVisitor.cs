@@ -205,7 +205,7 @@ namespace ME3Script.Analysis.Visitors
             // var|local [specifiers] variabletype variablename[[staticarraysize]];
             Write($"{type} ");
             WritePropertyFlags(node.Flags);
-            string staticarray = node.IsStaticArray ? $"[{node.Size}]" : "";
+            string staticarray = node.IsStaticArray ? $"[{node.ArrayLength}]" : "";
             AppendTypeName(node.VarType);
             Append($" {node.Name}{staticarray};");
             
@@ -216,6 +216,7 @@ namespace ME3Script.Analysis.Visitors
         {
             switch (node)
             {
+                case StaticArrayType _:
                 case DynamicArrayType _:
                 case DelegateType _:
                 case ClassType _:
@@ -228,6 +229,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(VariableType node)
         {
             Append(node.Name);
+            return true;
+        }
+
+        public bool VisitNode(StaticArrayType node)
+        {
+            AppendTypeName(node.ElementType);
             return true;
         }
 
@@ -325,12 +332,18 @@ namespace ME3Script.Analysis.Visitors
             Write("{");
             NestingLevel++;
 
-            foreach (VariableIdentifier value in node.Values)
+            foreach (EnumValue value in node.Values)
                 Write($"{value.Name},");
 
             NestingLevel--;
             Write("};");
 
+            return true;
+        }
+
+        public bool VisitNode(EnumValue node)
+        {
+            Append(node.Name);
             return true;
         }
 
@@ -481,7 +494,7 @@ namespace ME3Script.Analysis.Visitors
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
             WritePropertyFlags(node.Flags);
-            string staticarray = node.IsStaticArray ? "[" + node.Size + "]" : "";
+            string staticarray = node.IsStaticArray ? "[" + node.ArrayLength + "]" : "";
             AppendTypeName(node.VarType);
             Append($" {node.Name}{staticarray}");
             if (node.DefaultParameter != null)
@@ -576,7 +589,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Subobject node)
         {
-            Write($"Begin Object Class={node.Class} Name={node.Name}");
+            Write($"Begin Object Class={node.Class} Name={node.Name.Name}");
             NestingLevel++;
             foreach (Statement s in node.Statements)
             {
@@ -826,13 +839,27 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
-            bool scopeNeeded = node.Operator.Precedence > ExpressionPrescedence.Peek();
+            bool scopeNeeded = node.Operator.Precedence >= ExpressionPrescedence.Peek();
             ExpressionPrescedence.Push(node.Operator.Precedence);
 
             if (scopeNeeded) Append("(");
-            node.LeftOperand.AcceptVisitor(this);
+            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, _ => false } && node.LeftOperand is PrimitiveCast lpc && lpc.CastType?.Name == "string")
+            {
+                lpc.CastTarget.AcceptVisitor(this);
+            }
+            else
+            {
+                node.LeftOperand.AcceptVisitor(this);
+            }
             Append($" {node.Operator.OperatorKeyword} ");
-            node.RightOperand.AcceptVisitor(this);
+            if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast rpc && rpc.CastType?.Name == "string")
+            {
+                rpc.CastTarget.AcceptVisitor(this);
+            }
+            else
+            {
+                node.RightOperand.AcceptVisitor(this);
+            }
             if (scopeNeeded) Append(")");
 
             ExpressionPrescedence.Pop();
@@ -870,7 +897,7 @@ namespace ME3Script.Analysis.Visitors
             if (scopeNeeded)
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
-            Append($" {(node.IsEqual ? "==" : " != ")} ");
+            Append($" {(node.IsEqual ? "==" : "!=")} ");
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
@@ -888,7 +915,7 @@ namespace ME3Script.Analysis.Visitors
             if (scopeNeeded)
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
-            Append($" {(node.IsEqual ? "==" : " != ")} ");
+            Append($" {(node.IsEqual ? "==" : "!=")} ");
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
@@ -937,13 +964,27 @@ namespace ME3Script.Analysis.Visitors
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
-            Append($"{node.Function.Name}(");
-            foreach(Expression expr in node.Arguments)
+            if (node.Function.IsGlobal)
             {
-                expr.AcceptVisitor(this);
-                if (node.Arguments.IndexOf(expr) != node.Arguments.Count - 1)
+                Append($"{GLOBAL}.");
+            }
+            else if (node.Function.IsSuper)
+            {
+                Append(SUPER);
+                if (node.Function.SuperSpecifier is string s)
+                {
+                    Append($"({s})");
+                }
+                Append(".");
+            }
+            Append($"{node.Function.Name}(");
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                node.Arguments[i]?.AcceptVisitor(this);
+                if (i < node.Arguments.Count - 1)
                     Append(", ");
             }
+
             Append(")");
 
             ExpressionPrescedence.Pop();
@@ -955,12 +996,13 @@ namespace ME3Script.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
             Append($"{node.DelegateReference.Name}(");
-            foreach(Expression expr in node.Arguments)
+            for (int i = 0; i < node.Arguments.Count; i++)
             {
-                expr.AcceptVisitor(this);
-                if (node.Arguments.IndexOf(expr) != node.Arguments.Count - 1)
+                node.Arguments[i]?.AcceptVisitor(this);
+                if (i < node.Arguments.Count - 1)
                     Append(", ");
             }
+
             Append(")");
 
             ExpressionPrescedence.Pop();
@@ -1006,7 +1048,11 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(SymbolReference node)
         {
-            // symbolname
+            if (node.Node is EnumValue ev)
+            {
+                Append($"{ev.Enum.Name}.{ev.Name}");
+                return true;
+            }
             Append(node.Name);
             return true;
         }
@@ -1047,9 +1093,9 @@ namespace ME3Script.Analysis.Visitors
         {
             node.DynArrayExpression.AcceptVisitor(this);
             Append($".{INSERT}(");
-            node.CountArg.AcceptVisitor(this);
-            Append(", ");
             node.IndexArg.AcceptVisitor(this);
+            Append(", ");
+            node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
@@ -1069,9 +1115,9 @@ namespace ME3Script.Analysis.Visitors
         {
             node.DynArrayExpression.AcceptVisitor(this);
             Append($".{REMOVE}(");
-            node.CountArg.AcceptVisitor(this);
-            Append(", ");
             node.IndexArg.AcceptVisitor(this);
+            Append(", ");
+            node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
         }
@@ -1152,12 +1198,18 @@ namespace ME3Script.Analysis.Visitors
                 //unrealscript does not support negative exponents in literals, so we have to format it manually
                 //for example, 1.401298E-45 would be formatted as 0.00000000000000000000000000000000000000000000140129846
                 //This code assumes there is exactly 1 digit before the decimal point, which will always be the case when formatted as scientific notation with the G specifier
+                string minus = null;
+                if (floatString[0] == '-')
+                {
+                    minus = "-";
+                    floatString = floatString.Substring(1, floatString.Length - 1);
+                }
                 int ePos = floatString.IndexOf("E-");
                 int exponent = int.Parse(floatString.Substring(ePos + 2));
                 string digits = floatString.Substring(0, ePos).Replace(".", "");
-                floatString = $"0.{new string('0', exponent - 1)}{digits}";
+                floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
             }
-            else if (!floatString.Contains("."))
+            else if (!floatString.Contains(".") && !floatString.Contains("e"))
             {
                 //need a decimal place in the float so that it does not get parsed as an int
                 floatString += ".0";
@@ -1183,7 +1235,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(ObjectLiteral node)
         {
-            AppendTypeName(node.Class);
+            Append(node.Class.Name);
             node.Name.AcceptVisitor(this);
             return true;
         }

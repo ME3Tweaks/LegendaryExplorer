@@ -7,6 +7,7 @@ namespace ME3Script.Language.Tree
 {
     public sealed class Class : VariableType, IObjectType
     {
+        public string Package;
         public VariableType Parent;
         public VariableType _outerClass;
         public UnrealFlags.EClassFlags Flags;
@@ -18,7 +19,13 @@ namespace ME3Script.Language.Tree
         public List<State> States { get; }
         public DefaultPropertiesBlock DefaultProperties { get; }
 
+        public Dictionary<string, ushort> VirtualFunctionLookup;
+
         public override ASTNodeType NodeType => ASTNodeType.Class;
+
+        public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
+
+        public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
                      List<VariableType> interfaces = null,
@@ -84,6 +91,23 @@ namespace ME3Script.Language.Tree
                 str = current.Name + "." + str; 
             }
             return str;
+        }
+
+        public override string GetScope() => GetInheritanceString();
+
+        public bool Implements(Class interfaceClass)
+        {
+            Class c = this;
+            while (c != null)
+            {
+                if (c.Interfaces.Contains(interfaceClass))
+                {
+                    return true;
+                }
+
+                c = c.Parent as Class;
+            }
+            return false;
         }
 
         #endregion

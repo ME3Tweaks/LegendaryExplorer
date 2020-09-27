@@ -11,6 +11,8 @@ namespace ME3Script.Language.Tree
         public Expression LeftOperand;
         public Expression RightOperand;
 
+        public Struct Struct;
+
         public int Precedence => IsEqual ? 24 : 26;
 
         public StructComparison(bool isEqual, Expression lhs, Expression rhs, SourcePosition start = null, SourcePosition end = null) : base(ASTNodeType.InfixOperator, start, end)

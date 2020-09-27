@@ -7,6 +7,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(Class node);
         bool VisitNode(VariableDeclaration node);
         bool VisitNode(VariableType node);
+        bool VisitNode(StaticArrayType node);
         bool VisitNode(DynamicArrayType node);
         bool VisitNode(DelegateType node);
         bool VisitNode(ClassType node);
@@ -20,6 +21,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(CodeBody node);
         bool VisitNode(StateLabel node);
         bool VisitNode(VariableIdentifier node);
+        bool VisitNode(EnumValue node);
 
         bool VisitNode(DoUntilLoop node);
         bool VisitNode(ForLoop node);

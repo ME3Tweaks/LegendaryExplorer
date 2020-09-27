@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Windows;
 using ME3Explorer.ASI;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.GameInterop;
+using ME3Explorer.ME3Script;
 using ME3Explorer.MountEditor;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
@@ -158,7 +160,9 @@ namespace ME3Explorer
                 GameController.InitializeMessageHook(mainWindow);
                 PendingAppLoadedAction?.Invoke();
 
-                //ME3Script.StandardLibrary.BuildStandardLib();
+#if DEBUG
+                StandardLibrary.InitializeStandardLib();
+#endif
             }
         }
 

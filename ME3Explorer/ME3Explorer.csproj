@@ -278,6 +278,8 @@
     <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\IAcceptASTVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\IASTVisitor.cs" />
+    <Compile Include="ME3Script\Compiling\ByteCodeCompilerVisitor.cs" />
+    <Compile Include="ME3Script\Compiling\BytecodeWriter.cs" />
     <Compile Include="ME3Script\Compiling\Errors\Error.cs" />
     <Compile Include="ME3Script\Compiling\Errors\LineError.cs" />
     <Compile Include="ME3Script\Compiling\Errors\LineWarning.cs" />
@@ -293,6 +295,7 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\DynamicArrays.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
+    <Compile Include="ME3Script\FileLib.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
@@ -320,6 +323,7 @@
     <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
     <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
+    <Compile Include="ME3Script\Language\Tree\EnumValue.cs" />
     <Compile Include="ME3Script\Language\Tree\Expression.cs" />
     <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\FloatLiteral.cs" />
@@ -342,6 +346,7 @@
     <Compile Include="ME3Script\Language\Tree\PostOpReference.cs" />
     <Compile Include="ME3Script\Language\Tree\PreOpDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\PreOpReference.cs" />
+    <Compile Include="ME3Script\Language\Tree\PrimitiveCast.cs" />
     <Compile Include="ME3Script\Language\Tree\ReturnNothingStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\ReturnStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\RotatorLiteral.cs" />
@@ -380,6 +385,7 @@
     <Compile Include="ME3Script\Lexing\Tokenizing\StringTokenizer.cs" />
     <Compile Include="ME3Script\Lexing\Tokenizing\Token.cs" />
     <Compile Include="ME3Script\Lexing\Tokenizing\TokenizableDataStream.cs" />
+    <Compile Include="ME3Script\ME3ScriptCompiler.cs" />
     <Compile Include="ME3Script\Parsing\ClassOutlineParser.cs" />
     <Compile Include="ME3Script\Parsing\CodeBodyParser.cs" />
     <Compile Include="ME3Script\Parsing\StringParserBase.cs" />

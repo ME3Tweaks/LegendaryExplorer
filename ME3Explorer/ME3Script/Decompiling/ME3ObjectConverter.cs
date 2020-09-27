@@ -2,12 +2,15 @@
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
+using ME3Script.Lexing;
+using ME3Script.Parsing;
 using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
@@ -15,7 +18,7 @@ namespace ME3Script.Decompiling
     public static class ME3ObjectToASTConverter
     {
 
-        public static Class ConvertClass(UClass uClass) // TODO: this is only for text decompiling, should extend to a full ast for modification.
+        public static Class ConvertClass(UClass uClass, bool decompileBytecode)
         {
             IMEPackage pcc = uClass.Export.FileRef;
 
@@ -26,7 +29,7 @@ namespace ME3Script.Decompiling
             // TODO: components
 
             var interfaces = new List<VariableType>();
-            foreach ((UIndex interfaceUIndex, UIndex vftablePointerProperty) in uClass.Interfaces)
+            foreach ((UIndex interfaceUIndex, UIndex _) in uClass.Interfaces)
             {
                 interfaces.Add(new VariableType(pcc.GetEntry(interfaceUIndex)?.ObjectName.Instanced ?? "UNK_INTERFACE"));
             }
@@ -44,7 +47,10 @@ namespace ME3Script.Decompiling
                 switch (objBin)
                 {
                     case UConst uConst:
-                        Types.Add(new Const(uConst.Export.ObjectName.Instanced, uConst.Value, null, null));
+                        Types.Add(new Const(uConst.Export.ObjectName.Instanced, uConst.Value)
+                        {
+                            Literal = new ClassOutlineParser(new TokenStream<string>(new StringLexer(uConst.Value))).ParseConstValue()
+                        });
                         nextItem = uConst.Next;
                         break;
                     case UEnum uEnum:
@@ -52,7 +58,7 @@ namespace ME3Script.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction, uClass));
+                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecode));
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
@@ -65,7 +71,7 @@ namespace ME3Script.Decompiling
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState, uClass));
+                        States.Add(ConvertState(uState, uClass, decompileBytecode));
                         break;
                     default:
                         nextItem = 0;
@@ -77,7 +83,8 @@ namespace ME3Script.Decompiling
 
             Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
-                ConfigName = uClass.ClassConfigName
+                ConfigName = uClass.ClassConfigName,
+                Package = uClass.Export.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClass.Export.ParentInstancedFullPath,
             };
             // Ugly quick fix:
             foreach (var member in Types)
@@ -90,10 +97,17 @@ namespace ME3Script.Decompiling
                 member.Outer = AST;
 
 
+            var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
+            for (ushort i = 0; i < uClass.FullFunctionsList.Length; i++)
+            {
+                virtFuncLookup.Add(uClass.FullFunctionsList[i].GetEntry(pcc)?.ObjectName, i);
+            }
+            AST.VirtualFunctionLookup = virtFuncLookup;
+
             return AST;
         }
 
-        public static State ConvertState(UState obj, UClass containingClass = null)
+        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true)
         {
             if (containingClass is null)
             {
@@ -126,11 +140,11 @@ namespace ME3Script.Decompiling
                 switch (objBin)
                 {
                     case UFunction uFunction when uFunction.FunctionFlags.HasFlag(FunctionFlags.Defined):
-                        Funcs.Add(ConvertFunction(uFunction, containingClass));
+                        Funcs.Add(ConvertFunction(uFunction, containingClass, decompileBytecode));
                         nextItem = uFunction.Next;
                         break;
                     case UFunction uFunction:
-                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, default, null, null, null, null, null));
+                        Ignores.Add(new Function(uFunction.Export.ObjectName.Instanced, default, null, null));
                         /* Ignored functions are not marked as defined, so we dont need to lookup the ignormask.
                          * They are defined though, each being its own proper object with simply a return nothing for bytecode.
                          * */
@@ -142,8 +156,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var ByteCode = new ME3ByteCodeDecompiler(obj, containingClass, new List<FunctionParameter>());
-            var body = ByteCode.Decompile();
+            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass).Decompile() : null;
 
             return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
         }
@@ -285,14 +298,16 @@ namespace ME3Script.Decompiling
 
         public static Enumeration ConvertEnum(UEnum obj)
         {
-            var vals = new List<VariableIdentifier>();
-            foreach (var val in obj.Names)
+            var vals = new List<EnumValue>();
+            for (byte i = 0; i < obj.Names.Length; i++)
             {
+                var val = obj.Names[i];
                 if (val.Name.EndsWith("_MAX"))
                 {
                     continue;
                 }
-                vals.Add(new VariableIdentifier(val.Instanced, null, null));
+
+                vals.Add(new EnumValue(val.Instanced, i));
             }
 
             var node = new Enumeration(obj.Export.ObjectName.Instanced, vals, null, null);
@@ -324,7 +339,12 @@ namespace ME3Script.Decompiling
                 case UByteProperty byteProperty:
                     if (byteProperty.IsEnum)
                     {
-                        typeStr = byteProperty.Enum.GetEntry(obj.Export.FileRef).ObjectName.Instanced;
+                        IEntry enumDef = byteProperty.Enum.GetEntry(obj.Export.FileRef);
+                        if (enumDef is ExportEntry enumExp)
+                        {
+                            return ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                        }
+                        typeStr = enumDef.ObjectName.Instanced;
                     }
                     else
                     {
@@ -397,7 +417,7 @@ namespace ME3Script.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj, UClass containingClass = null)
+        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true)
         {
             if (containingClass is null)
             {
@@ -415,6 +435,7 @@ namespace ME3Script.Decompiling
                 containingClass = classExport.GetBinaryData<UClass>();
             }
             VariableType returnType = null;
+            bool retValNeedsDestruction = false;
             var nextItem = obj.Children;
 
             var parameters = new List<FunctionParameter>();
@@ -428,16 +449,19 @@ namespace ME3Script.Decompiling
                     case UProperty uProperty:
                         if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                         {
-                            returnType = ConvertVariable(uProperty).VarType;
+                            var returnVal = ConvertVariable(uProperty);
+                            returnType = returnVal.VarType;
                             if (uProperty.PropertyFlags.Has(UnrealFlags.EPropertyFlags.CoerceParm))
                             {
                                 coerceReturn = true;
                             }
+
+                            retValNeedsDestruction = returnVal.Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
                         }
                         else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
                         {
                             var convert = ConvertVariable(uProperty);
-                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.Size));
+                            parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength));
                         }
                         else
                         {
@@ -451,15 +475,19 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var ByteCode = new ME3ByteCodeDecompiler(obj, containingClass, parameters);
-            var body = ByteCode.Decompile();
+            CodeBody body = null;
+            if (decompileBytecode)
+            {
+                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType).Decompile();
+            }
 
-            
+
             var func = new Function(obj.Export.ObjectName.Instanced,
                                     obj.FunctionFlags, returnType, body, parameters)
             {
                 NativeIndex = obj.NativeIndex,
-                CoerceReturn = coerceReturn
+                CoerceReturn = coerceReturn,
+                RetValNeedsDestruction = retValNeedsDestruction
             };
 
             foreach (var local in locals)
@@ -521,7 +549,7 @@ namespace ME3Script.Decompiling
                     case DelegateProperty delegateProperty:
                         return new SymbolReference(null, delegateProperty.Value.FunctionName);
                     case EnumProperty enumProperty:
-                        return new CompositeSymbolRef(new SymbolReference(null, enumProperty.EnumType.Instanced), new SymbolReference(null, enumProperty.EnumType.Instanced));
+                        return new CompositeSymbolRef(new SymbolReference(null, enumProperty.EnumType.Instanced), new SymbolReference(null, enumProperty.Value.Instanced));
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:
@@ -536,9 +564,9 @@ namespace ME3Script.Decompiling
                         if (objEntry is ExportEntry objExp && objExp.Parent == containingExport)
                         {
                             string name = objExp.ObjectName.Instanced;
-                            var type = new VariableType(objExp.ClassName);
-                            if (!(statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name != name) is Subobject subObj))
+                            if (!(statements.FirstOrDefault(stmnt => (stmnt as Subobject)?.Name.Name == name) is Subobject subObj))
                             {
+                                var type = new VariableType(objExp.ClassName);
                                 var decl = new VariableDeclaration(type, default, name);
                                 subObj = new Subobject(decl, objExp.ClassName, ConvertProperties(objExp.GetProperties(), objExp));
                                 statements.Add(subObj);

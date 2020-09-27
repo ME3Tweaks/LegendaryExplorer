@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if DEBUG
+//#define DEBUGSCRIPT
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,29 +22,77 @@ using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.ME3Script
 {
-    public class StandardLibrary
+
+    public static class StandardLibrary
     {
-        public static SymbolTable Symbols { get; private set; }
-        public static readonly CaseInsensitiveDictionary<(Class ast, string scriptText)> Classes = new CaseInsensitiveDictionary<(Class ast, string scriptText)>();
+        private static SymbolTable _symbols;
+        public static SymbolTable GetSymbolTable() => IsInitialized ? _symbols?.Clone() : null;
 
+        public static SymbolTable ReadonlySymbolTable => IsInitialized ? _symbols : null;
 
-        public static bool BuildStandardLib()
+        //public static readonly CaseInsensitiveDictionary<(Class ast, string scriptText)> Classes = new CaseInsensitiveDictionary<(Class ast, string scriptText)>();
+
+        public static bool IsInitialized { get; private set; }
+
+        public static bool HadInitializationError { get; private set; }
+
+        public static event EventHandler Initialized;
+
+        private static readonly object initializationLock = new object();
+
+        public static async Task<bool> InitializeStandardLib()
         {
-            bool res = ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GameFramework.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GFxUI.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "WwiseAudio.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXOnlineFoundation.pcc")) &&
-            ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"));
+            if (IsInitialized)
+            {
+                return true;
+            }
 
-            return res;
+            return await Task.Run(() =>
+            {
+                bool success;
+                if (IsInitialized)
+                {
+                    return true;
+                }
+                lock (initializationLock)
+                {
+                    if (IsInitialized)
+                    {
+                        return true;
+                    }
+                    success = InternalInitialize();
+                    IsInitialized = success;
+                    HadInitializationError = !success;
+                }
+                Initialized?.Invoke(null, EventArgs.Empty);
+                return success;
+            });
         }
 
-        private static bool ResolveAllClassesInPackage(string filePath)
+        private static bool InternalInitialize()
         {
+            try
+            {
+                return ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GameFramework.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GFxUI.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "WwiseAudio.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXOnlineFoundation.pcc"), ref _symbols) &&
+                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"), ref _symbols);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public static bool ResolveAllClassesInPackage(string filePath, ref SymbolTable symbols)
+        {
+#if DEBUGSCRIPT
             string dumpFolderPath = Path.Combine(ME3Directory.gamePath, "ScriptDump", Path.GetFileNameWithoutExtension(filePath));
             Directory.CreateDirectory(dumpFolderPath);
+#endif
             var log = new MessageLog();
             string fileName = Path.GetFileName(filePath);
             Debug.WriteLine($"{fileName}: Beginning Parse.");
@@ -48,28 +100,31 @@ namespace ME3Explorer.ME3Script
             var classes = new List<(Class ast, string scriptText)>();
             foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
             {
-                Class cls = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>());
-                var codeBuilder = new CodeBuilderVisitor();
-                cls.AcceptVisitor(codeBuilder);
-                string scriptText = codeBuilder.GetCodeString();
-                File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
+                Class cls = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false);
+                string scriptText = "";
                 try
                 {
+#if DEBUGSCRIPT
+                    var codeBuilder = new CodeBuilderVisitor();
+                    cls.AcceptVisitor(codeBuilder);
+                    scriptText = codeBuilder.GetCodeString();
+                    File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
                     var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
-                    cls = parser.ParseDocument();
+                    cls = parser.TryParseClass();
                     if (cls == null || log.Content.Any())
                     {
                         DisplayError(scriptText, log.ToString());
                         return false;
                     }
+#endif
 
                     if (export.ObjectName == "Object")
                     {
-                        Symbols = SymbolTable.CreateIntrinsicTable(cls);
+                        symbols = SymbolTable.CreateIntrinsicTable(cls);
                     }
                     else
                     {
-                        Symbols.AddType(cls);
+                        symbols.AddType(cls);
                     }
 
                     classes.Add(cls, scriptText);
@@ -87,7 +142,7 @@ namespace ME3Explorer.ME3Script
                 {
                     try
                     {
-                        var validator = new ClassValidationVisitor(log, Symbols, validationPass);
+                        var validator = new ClassValidationVisitor(log, symbols, validationPass);
                         ast.AcceptVisitor(validator);
                         if (log.Content.Any())
                         {
@@ -107,43 +162,43 @@ namespace ME3Explorer.ME3Script
             switch (fileName)
             {
                 case "Core.pcc":
-                    Symbols.InitializeOperators();
+                    symbols.InitializeOperators();
                     break;
                 case "Engine.pcc":
-                    Symbols.ValidateIntrinsics();
+                    symbols.ValidateIntrinsics();
                     break;
             }
 
-            if (fileName.StartsWith("SFX"))
+#if DEBUGSCRIPT
+            //parse function bodies for testing purposes
+            foreach ((Class ast, string scriptText) in classes)
             {
-                foreach ((Class ast, string scriptText) in classes)
+                symbols.RevertToObjectStack();
+                if (!ast.Name.CaseInsensitiveEquals("Object"))
                 {
-                    Symbols.RevertToObjectStack();
-                    if (!ast.Name.CaseInsensitiveEquals("Object"))
-                    {
-                        Symbols.GoDirectlyToStack(((Class)ast.Parent).GetInheritanceString());
-                        Symbols.PushScope(ast.Name);
-                    }
+                    symbols.GoDirectlyToStack(((Class)ast.Parent).GetInheritanceString());
+                    symbols.PushScope(ast.Name);
+                }
 
-                    foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
+                foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
+                {
+                    CodeBodyParser.ParseFunction(function, scriptText, symbols, log);
+                    if (log.Content.Any())
                     {
-                        CodeBodyParser.ParseFunction(function, scriptText, Symbols, log);
-                        if (log.Content.Any())
-                        {
-                            DisplayError(scriptText, log.ToString());
-                        }
+                        DisplayError(scriptText, log.ToString());
                     }
                 }
             }
-            Symbols.RevertToObjectStack();
+#endif
 
-            foreach (var tuple in classes)
-            {
-                Classes.Add(tuple.ast.Name, tuple);
-            }
+
+            symbols.RevertToObjectStack();
+            
             return true;
         }
 
+
+        [Conditional("DEBUGSCRIPT")]
         static void DisplayError(string scriptText, string logText)
         {
             string scriptFile = Path.Combine(App.ExecFolder, "TEMPME3Script.txt");
