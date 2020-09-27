@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
 using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Language.ByteCode;
@@ -1134,7 +1135,7 @@ namespace ME3Script.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).FullPath}.{s.Name}", "State");
 
-        private IEntry ResolveClass(Class c) => EntryImporter.EnsureClassIsInFile(Pcc, c.Name);
+        private IEntry ResolveClass(Class c) => EntryImporterExtended.EnsureClassIsInFile(Pcc, c.Name);
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);

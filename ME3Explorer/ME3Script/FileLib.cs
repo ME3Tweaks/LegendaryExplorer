@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using ME3Explorer;
 using ME3Explorer.ME3Script;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
 using ME3Script.Analysis.Symbols;
-using ME3Script.Language.Tree;
 
 namespace ME3Script
 {

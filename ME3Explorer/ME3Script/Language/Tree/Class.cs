@@ -2,6 +2,7 @@
 using ME3Script.Utilities;
 using System.Collections.Generic;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Script.Language.Tree
 {

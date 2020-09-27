@@ -1,4 +1,5 @@
-﻿using ME3Script.Analysis.Visitors;
+﻿using System;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Utilities;
 using System.Collections.Generic;
 

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling;
 using ME3Script.Compiling.Errors;

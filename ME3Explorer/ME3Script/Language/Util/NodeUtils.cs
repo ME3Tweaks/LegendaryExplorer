@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer;
 using ME3ExplorerCore.Helpers;
+using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;
 
 namespace ME3Script.Language.Util
