@@ -119,7 +119,7 @@ namespace ME3Explorer.Packages
 
             for (int i = 0; i < package.Exports.Count; i++)
             {
-                package.Exports[i].WritePrePropsAndPropertiesAndBinary(prePropBinary[i], propCollections[i], postPropBinary[i], false);
+                package.Exports[i].WritePrePropsAndPropertiesAndBinary(prePropBinary[i], propCollections[i], postPropBinary[i]);
             }
 
             if (newGame != MEGame.ME3)  //Fix Up Textures before Materials

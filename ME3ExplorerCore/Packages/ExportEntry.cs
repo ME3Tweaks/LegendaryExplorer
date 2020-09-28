@@ -701,16 +701,13 @@ namespace ME3ExplorerCore.Packages
         /// <param name="props"></param>
         /// <param name="binary"></param>
         /// <param name="setData">Set to false to not set this export's data - useful if we are copying data to another area and are just serializing data</param>
-        public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary, bool setData = true)
+        public void WritePropertiesAndBinary(PropertyCollection props, ObjectBinary binary)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
             props?.WriteTo(m.Writer, FileRef); //props could be null if this is a class
             binary.WriteTo(m.Writer, FileRef, DataOffset);
-            if (setData)
-            {
-                Data = m.ToArray();
-            }
+            Data = m.ToArray();
         }
 
         /// <summary>
@@ -719,17 +716,13 @@ namespace ME3ExplorerCore.Packages
         /// <param name="preProps"></param>
         /// <param name="props"></param>
         /// <param name="setData">Set to false to not set this export's data - useful if we are copying data to another area and are just serializing data</param>
-        public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary,
-            bool setData = true)
+        public void WritePrePropsAndPropertiesAndBinary(byte[] preProps, PropertyCollection props, ObjectBinary binary)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.WriteBytes(preProps);
             props?.WriteTo(m.Writer, FileRef); //props could be null if this is a class
             binary.WriteTo(m.Writer, FileRef, DataOffset);
-            if (setData)
-            {
-                Data = m.ToArray();
-            }
+            Data = m.ToArray();
         }
 
         public ExportEntry Clone()
