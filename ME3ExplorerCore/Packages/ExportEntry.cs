@@ -14,7 +14,7 @@ using static ME3ExplorerCore.Unreal.UnrealFlags;
 namespace ME3ExplorerCore.Packages
 {
     [DebuggerDisplay("{Game} ExportEntry | {UIndex} {ObjectName.Instanced}({ClassName}) in {System.IO.Path.GetFileName(FileRef.FilePath)}")]
-
+    [DoNotNotify]//disable Fody/PropertyChanged for this class. Do notification manually
     public class ExportEntry : INotifyPropertyChanged, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
@@ -417,14 +417,12 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        [DoNotCheckEquality]
         public string ObjectNameString
         {
             get => FileRef.Names[idxObjectName];
             set => idxObjectName = FileRef.FindNameOrAdd(value);
         }
 
-        [DoNotCheckEquality]
         public NameReference ObjectName
         {
             get => new NameReference(ObjectNameString, indexValue);
@@ -521,7 +519,7 @@ namespace ME3ExplorerCore.Packages
                 dataChanged = value;
                 //    if (value)
                 //    {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataChanged)));
                 //    }
             }
         }

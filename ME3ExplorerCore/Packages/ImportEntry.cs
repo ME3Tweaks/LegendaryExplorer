@@ -10,6 +10,7 @@ using PropertyChanged;
 namespace ME3ExplorerCore.Packages
 {
     [DebuggerDisplay("ImportEntry | {UIndex} = {InstancedFullPath}")]
+    [DoNotNotify] //disable Fody/PropertyChanged for this class. Do notification manually
     public class ImportEntry : INotifyPropertyChanged, IEntry
     {
         public MEGame Game => FileRef.Game;
@@ -112,7 +113,6 @@ namespace ME3ExplorerCore.Packages
         }
 
 
-        [DoNotCheckEquality]
         public string ClassName
         {
             get => FileRef.Names[idxClassName];
