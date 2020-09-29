@@ -92,7 +92,13 @@ namespace ME3Explorer.MetadataEditor
         public bool HexChanged
         {
             get => _hexChanged && CurrentLoadedEntry != null;
-            private set => SetProperty(ref _hexChanged, value);
+            private set
+            {
+                if (SetProperty(ref _hexChanged, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         public ICommand SaveHexChangesCommand { get; private set; }

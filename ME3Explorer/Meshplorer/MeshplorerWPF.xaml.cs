@@ -202,6 +202,7 @@ namespace ME3Explorer
                     MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
+                        bool isAlreadyChanged = CurrentExport.DataChanged;
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
                         foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
@@ -213,6 +214,10 @@ namespace ME3Explorer
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
                                                              out IEntry _);
                         CurrentExport.Data = dataBackup;
+                        if (!isAlreadyChanged)
+                        {
+                            CurrentExport.DataChanged = false;
+                        }
 
                         upk.Save();
                     }

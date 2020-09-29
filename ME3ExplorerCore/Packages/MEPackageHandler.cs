@@ -176,6 +176,8 @@ namespace ME3ExplorerCore.Packages
                 case MEGame.UDK:
                     UDKConstructorDelegate(path, true).Save();
                     break;
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
                 default:
                     MEConstructorDelegate(path, game).Save();
                     break;

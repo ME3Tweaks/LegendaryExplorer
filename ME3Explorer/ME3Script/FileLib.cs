@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ME3Explorer.ME3Script;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3Script.Analysis.Symbols;
 
 namespace ME3Script
 {
-    public class FileLib : IPackageUser
+    public class FileLib : IPackageUser, IDisposable
     {
         private SymbolTable _symbols;
         public SymbolTable GetSymbolTable() => IsInitialized ? _symbols?.Clone() : null;
@@ -18,7 +20,7 @@ namespace ME3Script
 
         public bool HadInitializationError { get; private set; }
 
-        public event EventHandler Initialized;
+        public event Action<bool> InitializationStatusChange;
 
         private readonly object initializationLock = new object();
         public async Task<bool> Initialize()
@@ -47,7 +49,7 @@ namespace ME3Script
                     HadInitializationError = !success;
                 }
 
-                Initialized?.Invoke(null, EventArgs.Empty);
+                InitializationStatusChange?.Invoke(true);
                 return success;
             });
         }
@@ -68,15 +70,68 @@ namespace ME3Script
 
         public IMEPackage Pcc { get; }
 
+        public readonly List<int> ScriptUIndexes = new List<int>();
+
         public FileLib(IMEPackage pcc)
         {
             Pcc = pcc;
-            //pcc.Users.Add(this);//TODO: Once librarysplit merge has been completed, create an actual system for weak users in UnrealPackage
+            pcc.WeakUsers.Add(this);
+            ScriptUIndexes.AddRange(pcc.Exports.Where(IsScriptExport).Select(exp => exp.UIndex));
+        }
+
+        static bool IsScriptExport(ExportEntry exp)
+        {
+            switch (exp.ClassName)
+            {
+                case "Class":
+                case "State":
+                case "Enum":
+                case "Const":
+                case "ScriptStruct":
+                case "IntProperty":
+                case "BoolProperty":
+                case "FloatProperty":
+                case "NameProperty":
+                case "StrProperty":
+                case "StringRefProperty":
+                case "ByteProperty":
+                case "ObjectProperty":
+                case "ComponentProperty":
+                case "InterfaceProperty":
+                case "ArrayProperty":
+                case "StructProperty":
+                case "BioMask4Property":
+                case "MapProperty":
+                case "ClassProperty":
+                case "DelegateProperty":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         void IPackageUser.handleUpdate(List<PackageUpdate> updates)
         {
+            if (_symbols is null)
+            {
+                return;
+            }
             //TODO: invalidate this when changes are made to script objects in this file
+            foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
+            {
+                if (ScriptUIndexes.Contains(update.Index) 
+                 || update.Change.Has(PackageChange.Add) && Pcc.GetEntry(update.Index) is ExportEntry exp && (IsScriptExport(exp) || exp.ClassName == "Function"))
+                {
+                    lock (initializationLock)
+                    {
+                        IsInitialized = false;
+                        HadInitializationError = false;
+                        _symbols = null;
+                    }
+                    InitializationStatusChange?.Invoke(false);
+                    return;
+                }
+            }
         }
 
         void IPackageUser.RegisterClosed(Action handler)
@@ -85,6 +140,11 @@ namespace ME3Script
 
         void IPackageUser.ReleaseUse()
         {
+        }
+
+        public void Dispose()
+        {
+            Pcc?.WeakUsers.Remove(this);
         }
     }
 }
