@@ -40,6 +40,11 @@ namespace ME3ExplorerCore.Packages
             {
                 return;
             }
+
+            if (package.FilePath is null)
+            {
+                throw new InvalidOperationException("Cannot save a temporary package!");
+            }
             switch (package)
             {
                 case MEPackage mePackage:

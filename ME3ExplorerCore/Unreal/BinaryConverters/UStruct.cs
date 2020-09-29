@@ -60,7 +60,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                         {
                             {
                                 var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY);
-                                uIndices.AddRange(refs.Select(x => (new UIndex(x.value), $"Reference inside of function at{x.position}")));
+                                uIndices.AddRange(refs.Select(x => (new UIndex(x.value), $"Reference inside of function at 0x{x.position:X}")));
                             }
                         }
                     }

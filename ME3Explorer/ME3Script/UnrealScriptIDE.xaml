@@ -10,7 +10,8 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{Binding RelativeSource={RelativeSource Self}}" IsVisibleChanged="ExportLoaderControl_IsVisibleChanged">
+             d:DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+             IsVisibleChanged="ExportLoaderControl_IsVisibleChanged" Loaded="ExportLoaderControl_Loaded">
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
         <xctk:BusyIndicator.ProgressBarStyle>
             <Style TargetType="ProgressBar">

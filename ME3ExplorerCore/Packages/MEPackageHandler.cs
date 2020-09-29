@@ -29,8 +29,7 @@ namespace ME3ExplorerCore.Packages
 
         public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null)
         {
-            IMEPackage package;
-            package = LoadPackage(inStream, associatedFilePath);
+            IMEPackage package = LoadPackage(inStream, associatedFilePath);
             IMEPackage LoadPackage(Stream stream, string filePath = null)
             {
                 ushort version = 0;
@@ -200,6 +199,8 @@ namespace ME3ExplorerCore.Packages
                 case MEGame.UDK:
                     UDKConstructorDelegate(path, true).Save();
                     break;
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
                 default:
                     MEConstructorDelegate(path, game).Save();
                     break;

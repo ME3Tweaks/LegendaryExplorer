@@ -417,6 +417,7 @@ namespace ME3ExplorerCore.Packages
 
         #region packageHandler stuff
         public ObservableCollection<IPackageUser> Users { get; } = new ObservableCollection<IPackageUser>();
+        public List<IPackageUser> WeakUsers { get; } = new List<IPackageUser>();
 
         public void RegisterTool(IPackageUser user)
         {
@@ -491,7 +492,7 @@ namespace ME3ExplorerCore.Packages
         const int queuingDelay = 50;
         protected void updateTools(PackageChange change, int index)
         {
-            if (Users.Count == 0)
+            if (Users.Count == 0 && WeakUsers.Count == 0)
             {
                 return;
             }
@@ -557,7 +558,7 @@ namespace ME3ExplorerCore.Packages
                                     break;
                             }
                         }
-                        foreach (var item in Users)
+                        foreach (var item in Users.Concat(WeakUsers))
                         {
                             item.handleUpdate(pendingUpdatesList);
                         }

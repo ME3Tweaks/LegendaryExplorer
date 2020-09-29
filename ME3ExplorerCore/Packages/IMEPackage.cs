@@ -207,6 +207,7 @@ namespace ME3ExplorerCore.Packages
 
         byte[] getHeader();
         ObservableCollection<IPackageUser> Users { get; }
+        List<IPackageUser> WeakUsers { get; }
         void RegisterTool(IPackageUser user);
         void Release(IPackageUser user = null);
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
