@@ -673,29 +673,26 @@ namespace ME3ExplorerCore.Unreal
                                 props.Add(uProp);
                             }
                         }
-                        string filepathTL = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
+                        string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
                         Stream loadStream = null;
                         if (File.Exists(info.pccPath))
                         {
+                            filepath = info.pccPath;
                             loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                         }
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            var resourcesZip = Utilities.LoadEmbeddedFile("GameResources.zip");
-                            if (resourcesZip != null)
-                            {
-                                var filename = CoreLib.CustomResourceFileName(MEGame.ME3);
-                                loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
-                            }
+                            filepath = "GAMERESOURCES_ME3";
+                            loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME3));
                         }
-                        else if (File.Exists(filepathTL))
+                        else if (File.Exists(filepath))
                         {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                         }
 
                         if (loadStream != null)
                         {
-                            using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream))
+                            using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
                             {
                                 var exportToRead = importPCC.GetUExport(info.exportIndex);
                                 byte[] buff = exportToRead.Data.Skip(0x24).ToArray();

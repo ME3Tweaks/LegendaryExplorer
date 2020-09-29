@@ -295,7 +295,11 @@ namespace ME3Explorer.ME3Script
 
         public override void Dispose()
         {
-            //
+            if (progressBarTimer != null)
+            {
+                progressBarTimer.IsEnabled = false; //Stop timer
+                progressBarTimer.Tick -= ProgressBarTimer_Tick;
+            }
         }
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -563,7 +563,7 @@ namespace ME3ExplorerCore.Packages
             for (int i = 0; i < Chunks.Count; i++)
             {
                 Chunk c = Chunks[i];
-                Debug.WriteLine($"Compressed offset at {c.compressedOffset:X8}");
+                //Debug.WriteLine($"Compressed offset at {c.compressedOffset:X8}");
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 raw.Read(c.Compressed, 0, c.compressedSize);
 

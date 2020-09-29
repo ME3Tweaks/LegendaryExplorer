@@ -179,12 +179,6 @@ namespace ME3ExplorerCore.Packages
 
             #region Header
 
-            //uint magic = fs.ReadUInt32();
-            //if (magic != packageTagLittleEndian && magic != packageTagBigEndian)
-            //{
-            //    throw new FormatException("Not a supported unreal package!");
-            //}
-
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
             packageReader.SkipInt32(); //skip magic as we have already read it
             Endian = packageReader.Endian;
@@ -194,25 +188,8 @@ namespace ME3ExplorerCore.Packages
             // This is stored as integer by cooker as it is flipped by size word in big endian
             var versionLicenseePacked = packageReader.ReadUInt32();
 
-            int uncompressedSizeForFullCompressedPackage = 0;
             if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && Endian == Endian.Little)
             {
-                //block size - this is a fully compressed file. we must decompress it
-                // these files are little endian package tag for some reason
-                //var usfile = filePath + ".us";
-                //var ucsfile = filePath + ".UNCOMPRESSED_SIZE";
-                //if (File.Exists(usfile) || File.Exists(ucsfile))
-                //{
-                //packageReader.Position = 0xC;
-                //var uncompSize = packageReader.ReadInt32();
-                ////calculate number of chunks
-                //int chunkCoumt = (uncompSize % 0x00020000 == 0)
-                //    ?
-                //    uncompSize / 0x00020000
-                //    :
-                //    uncompSize / 0x00020000 + 1; //round up
-
-                //fs = CompressionHelper.DecompressUDK(packageReader, 0x10, CompressionType.LZX, chunkCoumt);
                 if (versionLicenseePacked == 0x20000)
                 {
                     //Xbox? LZX
@@ -231,7 +208,6 @@ namespace ME3ExplorerCore.Packages
                 packageReader.SkipInt32(); //skip magic as we have already read it
                 Endian = packageReader.Endian;
                 versionLicenseePacked = packageReader.ReadUInt32();
-                //}
             }
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);

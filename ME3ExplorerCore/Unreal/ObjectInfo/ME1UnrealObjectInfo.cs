@@ -303,10 +303,12 @@ namespace ME3ExplorerCore.Unreal
                     Stream loadStream = null;
                     if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
                     {
+                        filepath = info.pccPath;
                         loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
                     }
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
+                        filepath = "GAMERESOURCES_ME1"; //used for cache
                         loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
                     }
                     else if (File.Exists(filepath))
@@ -324,7 +326,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     if (loadStream != null)
                     {
-                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream))
+                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
                         {
                             var exportToRead = importPCC.GetUExport(info.exportIndex);
                             byte[] buff = exportToRead.Data.Skip(0x30).ToArray();

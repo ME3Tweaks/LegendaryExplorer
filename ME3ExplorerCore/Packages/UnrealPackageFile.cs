@@ -570,7 +570,11 @@ namespace ME3ExplorerCore.Packages
         public event MEPackageEventHandler noLongerUsed;
         private int RefCount;
 
-        public void RegisterUse() => RefCount++;
+        public void RegisterUse()
+        {
+            RefCount++;
+            Debug.WriteLine($"Ref count incrementing for {FilePath}. Is now {RefCount}");
+        }
 
         /// <summary>
         /// Doesn't neccesarily dispose the object.

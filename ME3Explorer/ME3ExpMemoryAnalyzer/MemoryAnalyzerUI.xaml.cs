@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.ME3ExpMemoryAnalyzer
 {
@@ -79,6 +80,13 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
         private void MemoryAnalyzer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             dispatcherTimer.Stop();
+        }
+
+        private void ShowOpenPackages_Click(object sender, RoutedEventArgs e)
+        {
+            var openPackages = MEPackageHandler.packagesInTools.ToList().Select(x => x.FilePath);
+            ListDialog ld = new ListDialog(openPackages, "Open packages", "This is the list of packages the MEPackageHandler class has currently open.", this);
+            ld.Show();
         }
     }
 }
