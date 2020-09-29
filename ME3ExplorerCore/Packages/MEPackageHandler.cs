@@ -158,7 +158,7 @@ namespace ME3ExplorerCore.Packages
             }
             else
             {
-                throw new FormatException("Not an ME1, ME2, ME3, or UDK package file.");
+                throw new FormatException("Not an ME1, ME2, ME3, or UDK (2015) package file.");
             }
 
             if (useSharedCache)
