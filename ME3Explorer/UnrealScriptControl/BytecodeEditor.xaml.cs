@@ -165,7 +165,7 @@ namespace ME3Explorer
                 {
                     pos = data.Length - 6;
                     string flagStr = func.GetFlags();
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
                     pos += 2;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian):X8} {func.GetFlags().Substring(6)}", pos));
                 }
@@ -176,13 +176,13 @@ namespace ME3Explorer
                     var footerstartpos = 0x20 + diskSize;
                     var footerdata = CurrentLoadedExport.Data.Slice(0x20 + diskSize, (int)CurrentLoadedExport.Data.Length - (0x20 + diskSize));
                     var fpos = 0;
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2 bytes", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", "??", fpos + footerstartpos) { length = 2 });
                     fpos += 0x2;
 
 

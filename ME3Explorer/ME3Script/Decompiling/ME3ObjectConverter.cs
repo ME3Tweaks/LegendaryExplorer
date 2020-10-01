@@ -159,7 +159,7 @@ namespace ME3Script.Decompiling
 
             var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
         }
 
         public static Struct ConvertStruct(UScriptStruct obj)

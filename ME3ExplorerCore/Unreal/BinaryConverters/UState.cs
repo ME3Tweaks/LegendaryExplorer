@@ -14,7 +14,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public uint stateUnk2;
         public uint stateUnk3;
         public uint stateUnk4;
-        public short LabelTableOffset;
+        public ushort LabelTableOffset;
         public StateFlags StateFlags;
         public OrderedMultiValueDictionary<NameReference, UIndex> LocalFunctionMap;
         protected override void Serialize(SerializingContainer2 sc)

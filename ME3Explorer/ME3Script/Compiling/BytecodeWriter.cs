@@ -140,9 +140,9 @@ namespace ME3Script.Compiling
                 writer.WriteByte(0);
             }
 
-            public void End()
+            public void End(ushort? position = null)
             {
-                ushort jumpPos = Writer.Position;
+                ushort jumpPos = position ?? Writer.Position;
                 Writer.bytecode.OverwriteRange(placeHolderIdx, BitConverter.GetBytes(jumpPos));
             }
         }

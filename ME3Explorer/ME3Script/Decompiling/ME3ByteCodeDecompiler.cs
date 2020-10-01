@@ -445,7 +445,7 @@ namespace ME3Script.Decompiling
         {
             foreach (var label in LabelTable)
             {
-                var node = new StateLabel(label.NameRef, (int)label.Offset, null, null);
+                var node = new Label(label.NameRef, (ushort)label.Offset);
                 var statement = StatementLocations[(ushort)label.Offset];
                 foreach (List<Statement> stmnt in Scopes)
                 {

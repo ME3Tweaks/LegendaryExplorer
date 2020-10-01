@@ -332,6 +332,7 @@
     <Compile Include="ME3Script\Language\Tree\Function.cs" />
     <Compile Include="ME3Script\Language\Tree\FunctionCall.cs" />
     <Compile Include="ME3Script\Language\Tree\FunctionParameter.cs" />
+    <Compile Include="ME3Script\Language\Tree\Goto.cs" />
     <Compile Include="ME3Script\Language\Tree\IfStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\InOpDeclaration.cs" />
     <Compile Include="ME3Script\Language\Tree\InOpReference.cs" />
@@ -351,7 +352,8 @@
     <Compile Include="ME3Script\Language\Tree\ReturnStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\RotatorLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\State.cs" />
-    <Compile Include="ME3Script\Language\Tree\StateLabel.cs" />
+    <Compile Include="ME3Script\Language\Tree\Label.cs" />
+    <Compile Include="ME3Script\Language\Tree\StateGoto.cs" />
     <Compile Include="ME3Script\Language\Tree\Statement.cs" />
     <Compile Include="ME3Script\Language\Tree\StaticArrayType.cs" />
     <Compile Include="ME3Script\Language\Tree\StopStatement.cs" />

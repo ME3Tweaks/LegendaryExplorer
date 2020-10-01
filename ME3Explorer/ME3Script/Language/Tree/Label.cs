@@ -3,12 +3,12 @@ using ME3Script.Utilities;
 
 namespace ME3Script.Language.Tree
 {
-    public class StateLabel : Statement
+    public class Label : Statement
     {
-        public int StartOffset;
+        public ushort StartOffset;
         public string Name;
 
-        public StateLabel(string name, int offset, SourcePosition start, SourcePosition end)
+        public Label(string name, ushort offset, SourcePosition start = null, SourcePosition end = null)
             : base(ASTNodeType.StateLabel, start, end)
         {
             StartOffset = offset;

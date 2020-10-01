@@ -82,12 +82,9 @@ namespace ME3Script.Decompiling
                     return stopStatement;
 
                 // Goto label
-                case (byte)OpCodes.GotoLabel: //TODO: make got astnode
+                case (byte)OpCodes.GotoLabel:
                     PopByte();
-                    var labelExpr = DecompileExpression();
-                    var func = new SymbolReference(null, "goto");
-                    var call = new FunctionCall(func, new List<Expression> { labelExpr }, null, null);
-                    var gotoLabel = new ExpressionOnlyStatement(call);
+                    var gotoLabel = new StateGoto(DecompileExpression());
                     StatementLocations.Add(StartPositions.Pop(), gotoLabel);
                     return gotoLabel;
 

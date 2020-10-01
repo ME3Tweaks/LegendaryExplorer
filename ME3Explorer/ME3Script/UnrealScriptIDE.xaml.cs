@@ -343,6 +343,7 @@ namespace ME3Explorer.ME3Script
                 if (CurrentLoadedExport.ClassName != "Function")
                 {
                     outputListBox.ItemsSource = new[] {$"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."};
+                    return;
                 }
                 (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
                 outputListBox.ItemsSource = log?.Content;

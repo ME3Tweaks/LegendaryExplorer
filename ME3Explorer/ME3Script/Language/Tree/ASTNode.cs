@@ -41,6 +41,7 @@ namespace ME3Script.Language.Tree
         ReturnStatement,
         StopStatement,
         ExpressionStatement,
+        Goto,
 
         SwitchStatement,
         CaseStatement,

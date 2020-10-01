@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ME3Explorer.ME3Script;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3Script.Analysis.Symbols;
 
 namespace ME3Script
@@ -59,8 +61,20 @@ namespace ME3Script
             try
             {
                 _symbols = StandardLibrary.GetSymbolTable();
-                //TODO: make file libs for non-standardlib files this depends on
-                return StandardLibrary.ResolveAllClassesInPackage(Pcc.FilePath, ref _symbols);
+                var files = EntryImporter.GetPossibleAssociatedFiles(Pcc);
+                var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
+                foreach (var fileName in Enumerable.Reverse(files))
+                {
+                    if (gameFiles.TryGetValue(fileName, out string path) &&  File.Exists(path))
+                    {
+                        using var pcc = MEPackageHandler.OpenMEPackage(path);
+                        if (!StandardLibrary.ResolveAllClassesInPackage(pcc, ref _symbols))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return StandardLibrary.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
             catch (Exception e)
             {
@@ -87,6 +101,7 @@ namespace ME3Script
                 case "State":
                 case "Enum":
                 case "Const":
+                case "Function":
                 case "ScriptStruct":
                 case "IntProperty":
                 case "BoolProperty":

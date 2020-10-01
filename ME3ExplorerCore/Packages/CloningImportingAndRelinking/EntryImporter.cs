@@ -671,18 +671,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         {
             var entryFullPath = entry.FullPath;
 
-            // Next, split the filename by underscores
-            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(entry.FileRef.FilePath).ToLower();
+
             string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
             var filesToCheck = new List<string>();
             CaseInsensitiveDictionary<string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(entry.Game);
 
-            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
             string upkOrPcc = entry.Game == MEGame.ME1 ? ".upk" : ".pcc";
-            if (gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath))
-            {
-                filesToCheck.Add(Path.GetFileName(efxPath));
-            }
+            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
+            bool addPackageFile = gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath);
 
             // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
             IEntry p = entry.Parent;
@@ -712,6 +708,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(entry.FileRef));
 
+            if (addPackageFile)
+            {
+                filesToCheck.Add(Path.GetFileName(efxPath));
+            }
 
             if (entry.Game == MEGame.ME3)
             {

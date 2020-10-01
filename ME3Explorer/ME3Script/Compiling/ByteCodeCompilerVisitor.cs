@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ME3Explorer.Packages;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Helpers;
@@ -29,6 +30,8 @@ namespace ME3Script.Compiling
         private bool inIteratorCall;
         private bool useInstanceDelegate;
         private SkipPlaceholder iteratorCallSkip;
+
+        private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new Dictionary<Label, List<JumpPlaceholder>>();
 
         [Flags]
         private enum NestType
@@ -138,6 +141,14 @@ namespace ME3Script.Compiling
 
                 WriteOpCode(OpCodes.EndOfScript);
 
+                foreach ((Label label, List<JumpPlaceholder> jumpPlaceholders) in LabelJumps)
+                {
+                    foreach (JumpPlaceholder jumpPlaceholder in jumpPlaceholders)
+                    {
+                        jumpPlaceholder.End(label.StartOffset);
+                    }
+                }
+
                 Target.ScriptBytecodeSize = GetMemLength();
                 Target.ScriptBytes = GetByteCode();
                 Target.Export.SetBinaryData(Target);
@@ -148,6 +159,53 @@ namespace ME3Script.Compiling
             }
         }
 
+
+        public void Compile(State state)
+        {
+            if (Target is UState uState)
+            {
+                uState.LabelTableOffset = 0;
+                Emit(state.Body);
+
+                WriteOpCode(OpCodes.Stop);
+
+                if (state.Labels.Any())
+                {
+                    int paddingNeeded = (Position + 1).Align(4) - (Position + 1);
+                    for (; paddingNeeded > 0; paddingNeeded--)
+                    {
+                        WriteOpCode(OpCodes.Nothing);
+                    }
+                    WriteOpCode(OpCodes.LabelTable);
+                    uState.LabelTableOffset = Position;
+                    foreach (Label label in state.Labels)
+                    {
+                        WriteName(label.Name);
+                        WriteInt(label.StartOffset);
+                    }
+                    WriteName("None");
+                    WriteInt(ushort.MaxValue);
+                }
+
+                WriteOpCode(OpCodes.EndOfScript);
+
+                foreach ((Label label, List<JumpPlaceholder> jumpPlaceholders) in LabelJumps)
+                {
+                    foreach (JumpPlaceholder jumpPlaceholder in jumpPlaceholders)
+                    {
+                        jumpPlaceholder.End(label.StartOffset);
+                    }
+                }
+
+                Target.ScriptBytecodeSize = GetMemLength();
+                Target.ScriptBytes = GetByteCode();
+                Target.Export.SetBinaryData(Target);
+            }
+            else
+            {
+                throw new Exception("Cannot compile a state to a function!");
+            }
+        }
 
 
         public bool VisitNode(CodeBody node)
@@ -403,6 +461,20 @@ namespace ME3Script.Compiling
         public bool VisitNode(StopStatement node)
         {
             WriteOpCode(OpCodes.Stop);
+            return true;
+        }
+
+        public bool VisitNode(StateGoto node)
+        {
+            WriteOpCode(OpCodes.GotoLabel);
+            Emit(node.LabelExpression);
+            return true;
+        }
+
+        public bool VisitNode(Goto node)
+        {
+            WriteOpCode(OpCodes.Jump);
+            LabelJumps.AddToListAt(node.Label, WriteJumpPlaceholder());
             return true;
         }
 
@@ -993,6 +1065,12 @@ namespace ME3Script.Compiling
         }
 
 
+        public bool VisitNode(Label node)
+        {
+            node.StartOffset = Position;
+            return true;
+        }
+
         public bool VisitNode(BooleanLiteral node)
         {
             WriteOpCode(node.Value ? OpCodes.True : OpCodes.False);
@@ -1223,11 +1301,6 @@ namespace ME3Script.Compiling
         }
 
         public bool VisitNode(ClassType node)
-        {
-            throw new InvalidOperationException();
-        }
-
-        public bool VisitNode(StateLabel node)
         {
             throw new InvalidOperationException();
         }

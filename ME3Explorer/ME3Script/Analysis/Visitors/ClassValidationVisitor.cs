@@ -538,7 +538,7 @@ namespace ME3Script.Analysis.Visitors
         #region Unused
         public bool VisitNode(CodeBody node)
         { throw new NotImplementedException(); }
-        public bool VisitNode(StateLabel node)
+        public bool VisitNode(Label node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(VariableIdentifier node)
@@ -577,6 +577,10 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ReturnNothingStatement node)
         { throw new NotImplementedException(); }
         public bool VisitNode(StopStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(StateGoto node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(Goto node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(ExpressionOnlyStatement node)

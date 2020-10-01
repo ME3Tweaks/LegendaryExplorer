@@ -19,7 +19,7 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(FunctionParameter node);
 
         bool VisitNode(CodeBody node);
-        bool VisitNode(StateLabel node);
+        bool VisitNode(Label node);
         bool VisitNode(VariableIdentifier node);
         bool VisitNode(EnumValue node);
 
@@ -40,6 +40,8 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(ReturnStatement node);
         bool VisitNode(ReturnNothingStatement node);
         bool VisitNode(StopStatement node);
+        bool VisitNode(StateGoto node);
+        bool VisitNode(Goto node);
 
         bool VisitNode(ExpressionOnlyStatement node);
 

@@ -745,7 +745,22 @@ namespace ME3Script.Analysis.Visitors
             Write($"{STOP}");
             return true;
         }
-        
+
+        public bool VisitNode(StateGoto node)
+        {
+            // goto expression;
+            Write($"{GOTO} ");
+            node.LabelExpression.AcceptVisitor(this);
+            return true;
+        }
+
+        public bool VisitNode(Goto node)
+        {
+            // goto labelName;
+            Write($"{GOTO} {node.LabelName}");
+            return true;
+        }
+
         public bool VisitNode(ReturnStatement node)
         {
             // return expression;
@@ -1350,7 +1365,7 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
-        public bool VisitNode(StateLabel node)
+        public bool VisitNode(Label node)
         {
             // Label
             var temp = NestingLevel;

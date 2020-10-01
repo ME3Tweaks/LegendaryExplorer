@@ -6,7 +6,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
-    public class State : ASTNode, IContainsLocals
+    public class State : ASTNode
     {
         public StateFlags Flags;
         public string Name;
@@ -14,12 +14,11 @@ namespace ME3Script.Language.Tree
         public State Parent;
         public List<Function> Functions;
         public List<Function> Ignores;
-        public List<VariableDeclaration> Locals { get; set; }
-        public List<StateLabel> Labels;
+        public List<Label> Labels;
 
         public State(string name, CodeBody body, StateFlags flags,
             State parent, List<Function> funcs, List<Function> ignores,
-            List<StateLabel> labels, SourcePosition start, SourcePosition end)
+            List<Label> labels, SourcePosition start, SourcePosition end)
             : base(ASTNodeType.State, start, end)
         {
             Flags = flags;
@@ -29,7 +28,6 @@ namespace ME3Script.Language.Tree
             Functions = funcs;
             Ignores = ignores;
             Labels = labels;
-            Locals = new List<VariableDeclaration>();
             if (Body != null) Body.Outer = this;
         }
 
