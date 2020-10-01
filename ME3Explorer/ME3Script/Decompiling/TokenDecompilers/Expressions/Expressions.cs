@@ -315,9 +315,11 @@ namespace ME3Script.Decompiling
 
             StartPositions.Pop();
             ASTNode node = null;
+
+            //attempt to resolve Enum references so that byte constants can be converted to enum values
             if (obj.ClassName == "ByteProperty")
             {
-                if (StandardLibrary.IsInitialized)
+                if (LibInitialized)
                 {
                     IEntry typeExp = obj.Parent;
                     string scope = null;
@@ -327,19 +329,26 @@ namespace ME3Script.Decompiling
                         typeExp = typeExp.Parent;
                     }
 
-                    if (StandardLibrary.ReadonlySymbolTable.TryGetType(typeExp.ObjectName, out VariableType cls))
+                    if (ReadOnlySymbolTable.TryGetType(typeExp.ObjectName, out VariableType cls))
                     {
                         scope = scope is null ? cls.GetScope() : $"{cls.GetScope()}.{scope}";
-                        if (StandardLibrary.ReadonlySymbolTable.TryGetSymbolFromSpecificScope(obj.ObjectName, out ASTNode astNode, scope)
+                        if (ReadOnlySymbolTable.TryGetSymbolFromSpecificScope(obj.ObjectName, out ASTNode astNode, scope)
                          && astNode is VariableDeclaration decl && decl.VarType is Enumeration enumeration)
                         {
                             node = enumeration;
                         }
                     }
                 }
-                if (node is null && obj is ExportEntry exp && PCC.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is ExportEntry enumExp)
+                if (node is null && obj is ExportEntry exp && PCC.GetEntry(exp.GetBinaryData<UByteProperty>().Enum) is IEntry enumEntry)
                 {
-                    node = ME3ObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                    if (enumEntry is ExportEntry enumExp)
+                    {
+                        node = ME3ObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                    }
+                    else if (LibInitialized && ReadOnlySymbolTable.TryGetType(enumEntry.ObjectName, out Enumeration enumeration))
+                    {
+                        node = enumeration;
+                    }
                 }
             }
 

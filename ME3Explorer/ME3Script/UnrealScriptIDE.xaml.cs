@@ -178,7 +178,7 @@ namespace ME3Explorer.ME3Script
             }
             if (!IsBusy)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
             }
         }
 
@@ -211,7 +211,7 @@ namespace ME3Explorer.ME3Script
                     }
                     if (CurrentLoadedExport != null)
                     {
-                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
                     }
                 }
             }
@@ -354,7 +354,7 @@ namespace ME3Explorer.ME3Script
         {
             if (CurrentLoadedExport != null)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
             }
         }
 

@@ -19,7 +19,7 @@ namespace ME3Script.Decompiling
     public static class ME3ObjectToASTConverter
     {
 
-        public static Class ConvertClass(UClass uClass, bool decompileBytecode)
+        public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null)
         {
             IMEPackage pcc = uClass.Export.FileRef;
 
@@ -108,7 +108,7 @@ namespace ME3Script.Decompiling
             return AST;
         }
 
-        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true)
+        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
         {
             if (containingClass is null)
             {
@@ -157,7 +157,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass).Decompile() : null;
+            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass, lib: lib).Decompile() : null;
 
             return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
         }
@@ -418,7 +418,7 @@ namespace ME3Script.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true)
+        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
         {
             if (containingClass is null)
             {
@@ -479,7 +479,7 @@ namespace ME3Script.Decompiling
             CodeBody body = null;
             if (decompileBytecode)
             {
-                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType).Decompile();
+                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType, lib).Decompile();
             }
 
 

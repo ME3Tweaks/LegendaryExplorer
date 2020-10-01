@@ -4,18 +4,24 @@ using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ME3Explorer.ME3Script;
 using ME3Explorer.ME3Script.Utilities;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3Script.Analysis.Symbols;
 
 namespace ME3Script.Decompiling
 {
-    //TODO: most likely cleaner to convert to stack-based solution like the tokenstream, investigate.
     public partial class ME3ByteCodeDecompiler : ObjectReader 
     {
         private readonly UStruct DataContainer;
         private readonly UClass ContainingClass;
+        private readonly FileLib FileLib;
+
+        private bool LibInitialized => FileLib?.IsInitialized ?? StandardLibrary.IsInitialized;
+        private SymbolTable ReadOnlySymbolTable => FileLib?.ReadonlySymbolTable ?? StandardLibrary.ReadonlySymbolTable;
+
         private IMEPackage PCC => DataContainer.Export.FileRef;
         private byte PopByte() { return ReadByte(); }
 
@@ -62,7 +68,7 @@ namespace ME3Script.Decompiling
             return new NameReference(PCC.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
-        public ME3ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, List<FunctionParameter> parameters = null, VariableType returnType = null)
+        public ME3ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, List<FunctionParameter> parameters = null, VariableType returnType = null, FileLib lib = null)
             :base(new byte[dataContainer.ScriptBytecodeSize])
         {
             Buffer.BlockCopy(dataContainer.ScriptBytes, 0, _data, 0, dataContainer.ScriptStorageSize);
@@ -70,6 +76,7 @@ namespace ME3Script.Decompiling
             ContainingClass = containingClass;
             Parameters = parameters;
             ReturnType = returnType;
+            FileLib = lib;
         }
 
         public CodeBody Decompile()
