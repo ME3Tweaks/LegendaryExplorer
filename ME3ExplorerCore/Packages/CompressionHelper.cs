@@ -22,6 +22,20 @@ namespace ME3ExplorerCore.Packages
 #endif
 
         /// <summary>
+        /// Maximum size of a compressed chunk. This is not relevant for the table chunk or if an export is larger than the max chunk size
+        /// </summary>
+        public const int MAX_CHUNK_SIZE = 0x100000; //1 Mebibyte
+
+        /// <summary>
+        /// Maximum size of a block within a chunk
+        /// </summary>
+        public const int MAX_BLOCK_SIZE = 0x20000; //128 Kibibytes
+
+        public const int SIZE_OF_CHUNK_HEADER = 16;
+        public const int SIZE_OF_CHUNK_BLOCK_HEADER = 8;
+
+
+        /// <summary>
         /// Represents an item in the Chunk table of a package
         /// </summary>
         public struct Chunk
@@ -48,11 +62,15 @@ namespace ME3ExplorerCore.Packages
             public int uncompressedsize;
         }
 
-
+        /// <summary>
+        /// Represents a block in the block table of a chunk
+        /// </summary>
         public struct Block
         {
             public int compressedsize;
             public int uncompressedsize;
+            public byte[] uncompressedData;
+            public byte[] compressedData;
         }
 
 
