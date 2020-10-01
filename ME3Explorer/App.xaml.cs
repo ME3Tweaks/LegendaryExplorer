@@ -18,6 +18,7 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -187,6 +188,7 @@ namespace ME3Explorer
                 return me3Proc != null;
             };
             PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendTOCUpdateMessage;
+            PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip());
             TLKLoader.LoadSavedTlkList();
         }
 

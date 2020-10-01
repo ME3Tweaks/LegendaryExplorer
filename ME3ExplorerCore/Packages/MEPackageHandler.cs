@@ -17,16 +17,27 @@ namespace ME3ExplorerCore.Packages
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
+        static Func<Stream, string, bool, UDKPackage> UDKStreamConstructorDelegate;
+
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
         static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
 
         public static void Initialize()
         {
             UDKConstructorDelegate = UDKPackage.RegisterLoader();
+            UDKStreamConstructorDelegate = UDKPackage.RegisterStreamLoader();
             MEConstructorDelegate = MEPackage.RegisterLoader();
             MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
         }
 
+        /// <summary>
+        /// Opens a package from a stream. Ensure the position is correctly set to the start of the package.
+        /// </summary>
+        /// <param name="inStream"></param>
+        /// <param name="associatedFilePath"></param>
+        /// <param name="useSharedPackageCache"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null, bool useSharedPackageCache = false, IPackageUser user = null)
         {
             IMEPackage package;
@@ -147,13 +158,15 @@ namespace ME3ExplorerCore.Packages
                 version == MEPackage.ME1PS3UnrealVersion && licenseVersion == MEPackage.ME1PS3LicenseeVersion ||
                 version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
             {
-                pkg = MEConstructorDelegate(filePath, MEGame.Unknown);
+                stream.Position -= 8; //reset to start
+                pkg = MEStreamConstructorDelegate(stream, filePath);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else if (version == 868 || version == 867 && licenseVersion == 0)
             {
                 //UDK
-                pkg = UDKConstructorDelegate(filePath, false);
+                stream.Position -= 8; //reset to start
+                pkg = UDKStreamConstructorDelegate(stream, filePath, false);
                 MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
@@ -213,6 +214,7 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
+        MemoryStream SaveToStream(bool compress);
         List<ME1TalkFile> LocalTalkFiles { get; }
     }
 }

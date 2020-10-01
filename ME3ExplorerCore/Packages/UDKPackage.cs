@@ -63,9 +63,23 @@ namespace ME3ExplorerCore.Packages
             else
             {
                 isLoaderRegistered = true;
-                return (fileName, shouldCreate) => new UDKPackage(fileName, shouldCreate);
+                return (fileName, shouldCreate) => new UDKPackage(new MemoryStream(File.ReadAllBytes(fileName)), fileName, shouldCreate);
             }
         }
+
+        private static bool isStreamLoaderRegistered;
+        internal static Func<Stream, string, bool, UDKPackage> RegisterStreamLoader()
+        {
+
+            if (isStreamLoaderRegistered)
+            {
+                throw new Exception(nameof(UDKPackage) + " streamloader can only be initialized once");
+            }
+
+            isStreamLoaderRegistered = true;
+            return (s, associatedFilePath, create) => new UDKPackage(s, associatedFilePath, create);
+        }
+
 
         public static Action<UDKPackage, string, bool> RegisterSaver() => saveByReconstructing;
 
@@ -73,8 +87,8 @@ namespace ME3ExplorerCore.Packages
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
-        /// <param name="create">Create a file instead of reading from disk</param>
-        private UDKPackage(string UDKPackagePath, bool create = false) : base(Path.GetFullPath(UDKPackagePath))
+        /// <param name="create">Create a file instead of reading from stream. In this instance you can pass the stream as null</param>
+        private UDKPackage(Stream fs, string filePath, bool create = false) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             if (create)
             {
@@ -84,8 +98,6 @@ namespace ME3ExplorerCore.Packages
                 Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
                 return;
             }
-
-            using var fs = File.OpenRead(FilePath);
 
             #region Header
 
@@ -154,7 +166,7 @@ namespace ME3ExplorerCore.Packages
             }
 
             var reader = new EndianReader(inStream); //these will always be little endian so we don't actually use this except for passing
-            //through to methods that can use endianness
+                                                     //through to methods that can use endianness
 
             inStream.JumpTo(NameOffset);
             for (int i = 0; i < NameCount; i++)
@@ -183,13 +195,29 @@ namespace ME3ExplorerCore.Packages
 
         private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
         {
-            if (udkPackage.exports.Any(exp => exp.ClassName == "Level"))
+            var datastream = udkPackage.SaveToStream(false);
+            datastream.WriteToFile(path);
+
+            if (!isSaveAs)
             {
-                udkPackage.Flags |= EPackageFlags.Map;
+                udkPackage.AfterSave();
+            }
+        }
+
+        /// <summary>
+        /// Saves this UDK package to disk. The compression flag is not used by this method, the package will always save uncompressed.
+        /// </summary>
+        /// <param name="compress"></param>
+        /// <returns></returns>
+        public MemoryStream SaveToStream(bool compress)
+        {
+            if (exports.Any(exp => exp.ClassName == "Level"))
+            {
+                Flags |= EPackageFlags.Map;
             }
 
             //UDK does not like it when exports have the forced export flag, which is common in ME files
-            foreach (ExportEntry export in udkPackage.exports)
+            foreach (ExportEntry export in exports)
             {
                 //if (export.ClassName != "Package")
                 {
@@ -200,12 +228,12 @@ namespace ME3ExplorerCore.Packages
             var ms = new MemoryStream();
 
             //just for positioning. We write over this later when the header values have been updated
-            udkPackage.WriteHeader(ms);
+            WriteHeader(ms);
 
             //name table
-            udkPackage.NameOffset = (int)ms.Position;
-            udkPackage.NameCount = udkPackage.Gen0NameCount = udkPackage.names.Count;
-            foreach (string name in udkPackage.names)
+            NameOffset = (int)ms.Position;
+            NameCount = Gen0NameCount = names.Count;
+            foreach (string name in names)
             {
                 ms.WriteUnrealStringASCII(name);
                 ms.WriteInt32(0);
@@ -213,51 +241,50 @@ namespace ME3ExplorerCore.Packages
             }
 
             //import table
-            udkPackage.ImportOffset = (int)ms.Position;
-            udkPackage.ImportCount = udkPackage.imports.Count;
-            foreach (ImportEntry e in udkPackage.imports)
+            ImportOffset = (int)ms.Position;
+            ImportCount = imports.Count;
+            foreach (ImportEntry e in imports)
             {
                 ms.WriteFromBuffer(e.Header);
             }
 
             //export table
-            udkPackage.ExportOffset = (int)ms.Position;
-            udkPackage.ExportCount = udkPackage.Gen0NetworkedObjectCount = udkPackage.Gen0ExportCount = udkPackage.exports.Count;
-            foreach (ExportEntry e in udkPackage.exports)
+            ExportOffset = (int)ms.Position;
+            ExportCount = Gen0NetworkedObjectCount = Gen0ExportCount = exports.Count;
+            foreach (ExportEntry e in exports)
             {
                 e.HeaderOffset = (uint)ms.Position;
                 ms.WriteFromBuffer(e.Header);
             }
 
             //dependency table
-            udkPackage.DependencyTableOffset = (int)ms.Position;
-            ms.WriteZeros(4 * udkPackage.ExportCount);
+            DependencyTableOffset = (int)ms.Position;
+            ms.WriteZeros(4 * ExportCount);
 
-            udkPackage.importExportGuidsOffset = (int)ms.Position;
-            udkPackage.importGuidsCount = udkPackage.exportGuidsCount = 0;
+            importExportGuidsOffset = (int)ms.Position;
+            importGuidsCount = exportGuidsCount = 0;
 
             //generate thumbnails
-            udkPackage.ThumbnailTable.Clear();
-            foreach (ExportEntry export in udkPackage.exports)
+            ThumbnailTable.Clear();
+            foreach (ExportEntry export in exports)
             {
                 if (export.IsTexture())
                 {
                     var tex = new Texture2D(export);
                     var mip = tex.GetTopMip();
-                    Debug.WriteLine("PNG THUMBNAILS NOT SUPPORTED IN CORE LIB YET FOR UDKPACKAGE");
-                    udkPackage.ThumbnailTable.Add(new Thumbnail
+                    ThumbnailTable.Add(new Thumbnail
                     {
                         ClassName = export.ClassName,
                         PathName = export.InstancedFullPath,
-                        Width = mip.width,
-                        Height = mip.height,
-                        //Data = tex.GetPNG(mip) // will need to see what this is about
+                        Width = PackageSaver.GetPNGForThumbnail != null ? mip.width : 64,
+                        Height = PackageSaver.GetPNGForThumbnail != null ? mip.height : 64,
+                        Data = PackageSaver.GetPNGForThumbnail?.Invoke(tex) ?? GetDefaultThumbnailBytes()
                     });
                 }
             }
 
             //write thumbnails
-            foreach (Thumbnail thumbnail in udkPackage.ThumbnailTable)
+            foreach (Thumbnail thumbnail in ThumbnailTable)
             {
                 thumbnail.Offset = (int)ms.Position;
                 ms.WriteInt32(thumbnail.Width);
@@ -267,19 +294,19 @@ namespace ME3ExplorerCore.Packages
                 //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(FilePath), $"{thumbnail.PathName}({thumbnail.ClassName}).png"), thumbnail.Data);
             }
 
-            udkPackage.thumbnailTableOffset = (int)ms.Position;
-            ms.WriteInt32(udkPackage.ThumbnailTable.Count);
-            foreach (Thumbnail thumbnail in udkPackage.ThumbnailTable)
+            thumbnailTableOffset = (int)ms.Position;
+            ms.WriteInt32(ThumbnailTable.Count);
+            foreach (Thumbnail thumbnail in ThumbnailTable)
             {
                 ms.WriteUnrealStringASCII(thumbnail.ClassName);
                 ms.WriteUnrealStringASCII(thumbnail.PathName);
                 ms.WriteInt32(thumbnail.Offset);
             }
 
-            udkPackage.FullHeaderSize = (int)ms.Position;
+            FullHeaderSize = (int)ms.Position;
 
             //export data
-            foreach (ExportEntry e in udkPackage.exports)
+            foreach (ExportEntry e in exports)
             {
                 UpdateUDKOffsets(e, (int)ms.Position);
                 e.DataOffset = (int)ms.Position;
@@ -295,15 +322,13 @@ namespace ME3ExplorerCore.Packages
 
             //re-write header with updated values
             ms.JumpTo(0);
-            udkPackage.WriteHeader(ms);
+            WriteHeader(ms);
 
-
-            File.WriteAllBytes(path, ms.ToArray());
-            if (!isSaveAs)
-            {
-                udkPackage.AfterSave();
-            }
+            ms.Position = 0;
+            return ms;
         }
+
+        private byte[] GetDefaultThumbnailBytes() => Utilities.LoadEmbeddedFile("udkdefaultthumb.png").ToArray();
 
         private void WriteHeader(Stream ms)
         {

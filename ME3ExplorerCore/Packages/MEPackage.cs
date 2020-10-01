@@ -153,7 +153,7 @@ namespace ME3ExplorerCore.Packages
         {
             if (isStreamLoaderRegistered)
             {
-                throw new Exception(nameof(MEPackage) + "streamloader can only be initialized once");
+                throw new Exception(nameof(MEPackage) + " streamloader can only be initialized once");
             }
 
             isStreamLoaderRegistered = true;
@@ -178,7 +178,7 @@ namespace ME3ExplorerCore.Packages
         private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
-
+            Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
             #region Header
 
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
@@ -337,6 +337,7 @@ namespace ME3ExplorerCore.Packages
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
             var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
+            Debug.WriteLine($"Compression type {filePath}: {compressionType}");
             int numChunks = packageReader.ReadInt32();
 
             //read package source
@@ -481,7 +482,7 @@ namespace ME3ExplorerCore.Packages
             MemoryStream compressedStream = new MemoryStream();
             package.WriteHeader(compressedStream); //for positioning
             var chunks = new List<CompressionHelper.Chunk>();
-            var compressionType = package.Game == MEGame.ME2 ? CompressionType.LZO : CompressionType.Zlib;
+            var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
 
             //Compression format:
             //uint ChunkMetaDataTableCount (chunk table)
@@ -626,7 +627,21 @@ namespace ME3ExplorerCore.Packages
         /// <returns></returns>
         private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress)
         {
-            mePackage.Flags &= ~EPackageFlags.Compressed;
+            if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
+            //if (mePackage.Game == MEGame.ME1 && compress) throw new Exception("Cannot save ME1 packages compressed due to texture linking issues");
+
+            var sourceIsCompressed = mePackage.IsCompressed;
+
+            // Set the compression flag that will be saved
+            if (!compress)
+            {
+                mePackage.Flags &= ~EPackageFlags.Compressed;
+            }
+            else
+            {
+                mePackage.Flags |= EPackageFlags.Compressed;
+            }
+
             try
             {
                 var ms = new MemoryStream();
@@ -725,16 +740,22 @@ namespace ME3ExplorerCore.Packages
             finally
             {
                 //If we're doing save as, reset compressed flag to reflect file on disk as we still point to the original one
-                if (isSaveAs && compress)
+                if (isSaveAs)
                 {
-                    mePackage.Flags |= EPackageFlags.Compressed;
+                    if (sourceIsCompressed)
+                    {
+                        mePackage.Flags |= EPackageFlags.Compressed;
+                    }
+                    else
+                    {
+                        mePackage.Flags &= ~EPackageFlags.Compressed;
+                    }
                 }
             }
         }
 
         public MemoryStream SaveToStream(bool compress = false)
         {
-            bool compressed = IsCompressed;
             return saveByReconstructingToStream(this, true, compress);
         }
 

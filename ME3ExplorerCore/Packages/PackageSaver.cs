@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
 
 namespace ME3ExplorerCore.Packages
@@ -77,28 +78,28 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        /// <summary>
-        /// Saves this package to a stream. This does not mark the package as no longer modified like the save to disk does.
-        /// </summary>
-        /// <param name="package"></param>
-        /// <param name="compress"></param>
-        /// <returns></returns>
-        public static MemoryStream SaveToStream(this IMEPackage package, bool compress = false)
-        {
-            if (package == null)
-            {
-                return null;
-            }
-            switch (package)
-            {
-                case MEPackage mePackage:
-                    return SaveToStream(mePackage, compress);
-                case UDKPackage udkPackage:
-                    return SaveToStream(udkPackage, compress);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(package));
-            }
-        }
+        ///// <summary>
+        ///// Saves this package to a stream. This does not mark the package as no longer modified like the save to disk does.
+        ///// </summary>
+        ///// <param name="package"></param>
+        ///// <param name="compress"></param>
+        ///// <returns></returns>
+        //public static MemoryStream SaveToStream(this IMEPackage package, bool compress = false)
+        //{
+        //    if (package == null)
+        //    {
+        //        return null;
+        //    }
+        //    switch (package)
+        //    {
+        //        case MEPackage mePackage:
+        //            return mePackage.SaveToStream(compress);
+        //        case UDKPackage udkPackage:
+        //            return udkPackage.SaveToStream(compress);
+        //        default:
+        //            throw new ArgumentOutOfRangeException(nameof(package));
+        //    }
+        //}
 
         /// <summary>
         /// Used to test if ME3 is running. USed by ME3Explorer GameController class
@@ -108,6 +109,9 @@ namespace ME3ExplorerCore.Packages
         /// Notifies that a TOC update is required for a running instance of a game (for ME3 only).
         /// </summary>
         public static Func<bool> NotifyRunningTOCUpdateRequired { get; set; }
+
+        public static Func<Texture2D, byte[]> GetPNGForThumbnail { get; set; }
+
         private static void Save(MEPackage pcc, string path, bool compress = false)
         {
             bool isSaveAs = path != pcc.FilePath;
