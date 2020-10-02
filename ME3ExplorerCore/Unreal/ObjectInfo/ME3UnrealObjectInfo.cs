@@ -158,9 +158,9 @@ namespace ME3ExplorerCore.Unreal
         {
             switch (game)
             {
-                case MEGame.ME1:
+                case MEGame.ME1 when parsingEntry == null || parsingEntry.FileRef.Platform != MEPackage.GamePlatform.PS3:
                     return ME1UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
-                case MEGame.ME2:
+                case MEGame.ME2 when parsingEntry == null || parsingEntry.FileRef.Platform != MEPackage.GamePlatform.PS3:
                     var res2 = ME2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
 #if DEBUG
                     //For debugging only!
@@ -171,6 +171,8 @@ namespace ME3ExplorerCore.Unreal
                     }
 #endif
                     return res2;
+                case MEGame.ME1 when parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     var res = ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as ExportEntry);
@@ -214,13 +216,14 @@ namespace ME3ExplorerCore.Unreal
             PropertyInfo p = null;
             switch (game)
             {
-                // todo: Add checks for PS3 Platform (ME3)
-                case MEGame.ME1:
+                case MEGame.ME1 when containingExport == null || containingExport.FileRef.Platform != MEPackage.GamePlatform.PS3:
                     p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
-                case MEGame.ME2:
+                case MEGame.ME2 when containingExport == null || containingExport.FileRef.Platform != MEPackage.GamePlatform.PS3:
                     p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
+                case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
+                case MEGame.ME2 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                 case MEGame.ME3:
                 case MEGame.UDK:
                     p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
@@ -235,12 +238,13 @@ namespace ME3ExplorerCore.Unreal
                 inStruct = true;
                 switch (game)
                 {
-                    case MEGame.ME1:
+                    case MEGame.ME1 when containingExport == null || containingExport.FileRef.Platform != MEPackage.GamePlatform.PS3:
                         p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.ME2:
                         p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
+                    case MEGame.ME1 when containingExport.FileRef.Platform == MEPackage.GamePlatform.PS3:
                     case MEGame.ME3:
                         p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
@@ -374,8 +378,10 @@ namespace ME3ExplorerCore.Unreal
 
             return export.FileRef.Game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.generateClassInfo(export, isStruct),
-                MEGame.ME2 => ME2UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME1 when export.FileRef.Platform != MEPackage.GamePlatform.PS3 => ME1UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME2 when export.FileRef.Platform != MEPackage.GamePlatform.PS3 => ME2UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME1 when export.FileRef.Platform == MEPackage.GamePlatform.PS3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.ME2 when export.FileRef.Platform == MEPackage.GamePlatform.PS3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.ME3 => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.UDK => ME3UnrealObjectInfo.generateClassInfo(export, isStruct),
                 _ => null
@@ -1091,6 +1097,8 @@ namespace ME3ExplorerCore.Unreal
             {
                 info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
             }
+
+            // Is this code correct for console platforms?
             int nextExport = EndianReader.ToInt32(export.Data, isStruct ? 0x14 : 0xC, export.FileRef.Endian);
             while (nextExport > 0)
             {

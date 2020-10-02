@@ -5270,18 +5270,18 @@ namespace ME3Explorer
             {
                 yield return node;
             }
-            if (Pcc.Game <= MEGame.ME2)
+            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "Unknown 1");
             }
             yield return MakeEntryNode(bin, "ChildListStart");
-            if (Pcc.Game <= MEGame.ME2)
+            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "Unknown 2");
                 yield return MakeInt32Node(bin, "Source file line number");
                 yield return MakeInt32Node(bin, "Source file text position");
             }
-            if (Pcc.Game >= MEGame.ME3)
+            if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "ScriptByteCodeSize");
             }
@@ -5368,14 +5368,14 @@ namespace ME3Explorer
                     }
                 }
 
-                if (Pcc.Game <= MEGame.ME2)
+                if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeByteNode(bin, "Unknown byte"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Outer Class"));
                 subnodes.Add(MakeNameNode(bin, "Class Config Name"));
 
-                if (Pcc.Game <= MEGame.ME2)
+                if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown name list 1", i => MakeNameNode(bin, $"{i}")));
                 }
@@ -5385,7 +5385,7 @@ namespace ME3Explorer
                 subnodes.Add(MakeArrayNode(bin, "Interface Table", i =>
                                                new BinInterpNode(bin.Position, $"{Pcc.GetEntryString(bin.ReadInt32())} => {Pcc.GetEntryString(bin.ReadInt32())}")));
 
-                if (Pcc.Game >= MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeNameNode(bin, "Unknown Name"));
                     subnodes.Add(MakeUInt32Node(bin, "Unknown"));
@@ -5394,8 +5394,13 @@ namespace ME3Explorer
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}")));
                 }
+
+                if (Pcc.Platform == MEPackage.GamePlatform.PS3 && Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "PS3 ME2 Unknown"));
+                }
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
-                if (Pcc.Game >= MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3/* && Pcc.Platform = MEPackage.GamePlatform.PS3*/) // THIS NEEDS CHECKED AS IT DOESN'T SEEM ACCURATE FOR NON-PC PLATS. ME1 PS3 DOESN'T LIST FULL FUNCTION TABLE DESPITE USING ME3 ENGINE
                 {
                     subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, $"{i}: ")));
                 }

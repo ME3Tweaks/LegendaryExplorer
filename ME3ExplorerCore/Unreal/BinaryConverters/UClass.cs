@@ -18,6 +18,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public OrderedMultiValueDictionary<UIndex, UIndex> Interfaces;
         public NameReference unkName2;//ME3
         public uint unk2; //ME3
+        public uint me2ps3Unknown; //ME2, PS3 only
         public NameReference[] unkNameList2;//ME1/ME2
         public UIndex Defaults;
         public UIndex[] FullFunctionsList;//ME3
@@ -26,20 +27,20 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref ClassFlags);
-            if (sc.Game < MEGame.ME3)
+            if (sc.Game < MEGame.ME3 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 byte dummy = 0;
                 sc.Serialize(ref dummy);
             }
             sc.Serialize(ref OuterClass);
             sc.Serialize(ref ClassConfigName);
-            if (sc.Game < MEGame.ME3)
+            if (sc.Game < MEGame.ME3 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref unkNameList1, SCExt.Serialize);
             }
             sc.Serialize(ref ComponentNameToDefaultObjectMap, SCExt.Serialize, SCExt.Serialize);
             sc.Serialize(ref Interfaces, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game >= MEGame.ME3)
+            if (sc.Game >= MEGame.ME3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref unkName2);
                 sc.Serialize(ref unk2);
@@ -48,8 +49,13 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref unkNameList2, SCExt.Serialize);
             }
+
+            if (sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3) //ME2 PS3 has extra integer here for some reason
+            {
+                sc.Serialize(ref me2ps3Unknown);
+            }
             sc.Serialize(ref Defaults);
-            if (sc.Game >= MEGame.ME3)
+            if (sc.Game >= MEGame.ME3) //PS3 doesn't seem to use this
             {
                 sc.Serialize(ref FullFunctionsList, SCExt.Serialize);
             }

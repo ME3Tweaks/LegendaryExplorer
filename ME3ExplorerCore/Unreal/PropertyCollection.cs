@@ -141,7 +141,7 @@ namespace ME3ExplorerCore.Unreal
             sourceFilePath = export.FileRef.FilePath;
             TypeName = typeName;
             game = export.FileRef.Game;
-            info = UnrealObjectInfo.GetClassOrStructInfo(game, typeName);
+            info = UnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
         }
 
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
@@ -518,7 +518,8 @@ namespace ME3ExplorerCore.Unreal
                 case ArrayType.Enum:
                     {
                         //Attempt to get info without lookup first
-                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
+                        // PS3 is based on ME3 engine. So use ME3
+                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3, name, enclosingType);
                         ClassInfo classInfo = null;
                         if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
@@ -539,9 +540,8 @@ namespace ME3ExplorerCore.Unreal
                 case ArrayType.Struct:
                     {
                         long startPos = stream.Position;
-
                         var props = new List<StructProperty>();
-                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType);
+                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
                             var currentInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
@@ -549,7 +549,7 @@ namespace ME3ExplorerCore.Unreal
                         }
 
                         string arrayStructType = propertyInfo?.Reference;
-                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Game))
+                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)

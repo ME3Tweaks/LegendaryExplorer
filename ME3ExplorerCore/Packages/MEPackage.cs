@@ -96,10 +96,11 @@ namespace ME3ExplorerCore.Packages
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
-        public GamePlatform Platform { get; }
+        public GamePlatform Platform { get; } = GamePlatform.Unknown;
 
         public enum GamePlatform
         {
+            Unknown, //Unassigned
             PC,
             Xenon,
             PS3,
@@ -178,7 +179,7 @@ namespace ME3ExplorerCore.Packages
         private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
-            Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
+            //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
             #region Header
 
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
@@ -194,17 +195,21 @@ namespace ME3ExplorerCore.Packages
             {
                 if (versionLicenseePacked == 0x20000)
                 {
-                    //Xbox? LZX
-                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZX);
+                    // It's WiiU LZMA or Xenon LZX
+                    // To determine if it's LZMA we have to read the first block's compressed bytes and read first few bytes
+                    // LZMA always starts with 0x5D and then is followed by a dictionary size of size word (32) (in ME it looks like 0x10000)
+
+                    // This is done in the decompress fully compressed package method when we pass it None type
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.None);
                 }
                 else if (versionLicenseePacked == 0x10000)
                 {
-                    //PS3? LZMA
+                    //PS3, LZMA
                     fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
                 }
                 else
                 {
-                    // ??????
+                    
                 }
                 packageReader = EndianReader.SetupForPackageReading(fs);
                 packageReader.SkipInt32(); //skip magic as we have already read it
@@ -214,6 +219,7 @@ namespace ME3ExplorerCore.Packages
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
             var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
+            bool platformNeedsResolved = false;
             switch (unrealVersion)
             {
                 case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
@@ -243,7 +249,17 @@ namespace ME3ExplorerCore.Packages
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
                     Game = MEGame.ME3;
-                    Platform = GamePlatform.PC;
+                    if (Endian == Endian.Little)
+                    {
+                        Platform = GamePlatform.PC;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
+                        // Should we adjust constructor to allow us to pass an expected type for package? OR should we have callback to determine type
+                        platformNeedsResolved = true; // Not sure what we can use in package file to determine this since it determines header parsing...
+                        Platform = GamePlatform.PS3;
+                    } 
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
                     Game = MEGame.ME3;
@@ -270,24 +286,12 @@ namespace ME3ExplorerCore.Packages
 
             }
 
-            //if (Platform != GamePlatform.PC)
-            //{
-            //    NameOffset = packageReader.ReadInt32();
-            //    NameCount = packageReader.ReadInt32();
-            //    ExportOffset = packageReader.ReadInt32();
-            //    ExportCount = packageReader.ReadInt32();
-            //    ImportOffset = packageReader.ReadInt32();
-            //    ImportCount = packageReader.ReadInt32();
-            //}
-            //else
-            //{
             NameCount = packageReader.ReadInt32();
             NameOffset = packageReader.ReadInt32();
             ExportCount = packageReader.ReadInt32();
             ExportOffset = packageReader.ReadInt32();
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
-            //}
 
             if (Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
             {
@@ -993,7 +997,7 @@ namespace ME3ExplorerCore.Packages
                     if (chunk.blocks != null)
                     {
                         var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Count;
-                        Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
+                        //Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
                         ms.WriteInt32(chunksize); //Size of compressed data + chunk header + block header * number of blocks in the chunk
                     }
                     else

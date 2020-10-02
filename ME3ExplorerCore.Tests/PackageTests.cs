@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Packages;
@@ -15,7 +16,7 @@ namespace ME3ExplorerCore.Tests
         public void TestPackages()
         {
             GlobalTest.Init();
-
+            string[] ignoreddirnames = { "demo", "retail" };
             // Loads compressed packages and attempts to enumerate every object's properties.
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
@@ -24,8 +25,39 @@ namespace ME3ExplorerCore.Tests
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
-                    Console.WriteLine($"Opening package {p}");
+                    Debug.WriteLine($"Opening package {p}");
+
+                    MEPackage.GamePlatform expectedPlatform = MEPackage.GamePlatform.PS3; // no unknown
+                    MEGame expectedGame = MEGame.Unknown;
+
+                    string parentname = Directory.GetParent(p).FullName;
+                    int level = 0;
+                    while (parentname != null)
+                    {
+                        var dirname = Path.GetFileName(parentname);
+                        if (dirname == "retail" || dirname == "demo") continue;
+
+                        if (level == 0)
+                        {
+                            expectedGame = Enum.Parse<MEGame>(dirname);
+                        }
+                        else if (level == 1)
+                        {
+                            expectedPlatform = Enum.Parse<MEPackage.GamePlatform>(dirname);
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        parentname = Directory.GetParent(parentname).FullName;
+                        level++;
+                    }
+
                     var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+
+                    Assert.AreEqual(expectedGame, package.Game, "The expected game and the resolved game do not match!");
+                    Assert.AreEqual(expectedPlatform, package.Platform, "The expected platform and the resolved platform do not match!");
                     Console.WriteLine($" > Enumerating all exports for properties");
 
                     foreach (var exp in package.Exports)
@@ -37,10 +69,7 @@ namespace ME3ExplorerCore.Tests
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
 
-                        if (exp.ClassName == "Function")
-                        {
-                            // test function parsing
-                        }
+                        
 
                         // Binary testing?
                     }
@@ -55,13 +84,14 @@ namespace ME3ExplorerCore.Tests
 
             // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
+            //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
-                    Console.WriteLine($"Opening package {p}");
+                    Debug.WriteLine($"Opening package {p}");
                     var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p);
                     if (originalLoadedPackage.Platform != MEPackage.GamePlatform.PC)
                     {

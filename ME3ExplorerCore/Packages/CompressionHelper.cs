@@ -496,28 +496,52 @@ namespace ME3ExplorerCore.Packages
                 // Decompress
                 Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
                 var datain = raw.ReadToBuffer(btInfo.blockCompressedSize);
-                var dataout = new byte[btInfo.blockDecompressedSize];
-                switch (compressionType)
+                if (compressionType == UnrealPackageFile.CompressionType.None)
                 {
-                    case UnrealPackageFile.CompressionType.LZO:
-                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
-                            throw new Exception("LZO decompression failed!");
-                        break;
-                    case UnrealPackageFile.CompressionType.Zlib:
-                        if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
-                            throw new Exception("Zlib decompression failed!");
-                        break;
-                    case UnrealPackageFile.CompressionType.LZMA:
-                        dataout = LZMA.Decompress(datain, (uint)btInfo.blockDecompressedSize);
-                        if (dataout.Length != btInfo.blockDecompressedSize)
-                            throw new Exception("LZMA decompression failed!");
-                        break;
-                    case UnrealPackageFile.CompressionType.LZX:
-                        if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
-                            throw new Exception("LZX decompression failed!");
-                        break;
-                    default:
-                        throw new Exception("Unknown compression type for this package.");
+                    // We have to determine if it's LZMA or LZX based on first few bytes
+                    if (datain[0] == 0x5D && BitConverter.ToInt32(datain, 1) == 0x10000)
+                    {
+                        // This is LZMA header
+                        Debug.WriteLine("Fully compressed package: Detected LZMA compression");
+                        compressionType = UnrealPackageFile.CompressionType.LZMA;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Fully compressed package: Detected LZX compression");
+                        compressionType = UnrealPackageFile.CompressionType.LZX;
+                    }
+                }
+
+                var dataout = new byte[btInfo.blockDecompressedSize];
+                if (dataout.Length == datain.Length)
+                {
+                    // WiiU SFXGame has weird case where one single block has same sizes and does not have LZMA compression flag for some reason
+                    dataout = datain;
+                }
+                else
+                {
+                    switch (compressionType)
+                    {
+                        case UnrealPackageFile.CompressionType.LZO:
+                            if (LZO2.Decompress(datain, (uint) datain.Length, dataout) != btInfo.blockDecompressedSize)
+                                throw new Exception("LZO decompression failed!");
+                            break;
+                        case UnrealPackageFile.CompressionType.Zlib:
+                            if (Zlib.Decompress(datain, (uint) datain.Length, dataout) != btInfo.blockDecompressedSize)
+                                throw new Exception("Zlib decompression failed!");
+                            break;
+                        case UnrealPackageFile.CompressionType.LZMA:
+                            dataout = LZMA.Decompress(datain, (uint) btInfo.blockDecompressedSize);
+                            if (dataout.Length != btInfo.blockDecompressedSize)
+                                throw new Exception("LZMA decompression failed!");
+                            break;
+                        case UnrealPackageFile.CompressionType.LZX:
+                            if (LZX.Decompress(datain, (uint) datain.Length, dataout) != 0)
+                                throw new Exception("LZX decompression failed!");
+                            break;
+                        default:
+                            throw new Exception("Unknown compression type for this package.");
+                    }
                 }
 
                 index++;
