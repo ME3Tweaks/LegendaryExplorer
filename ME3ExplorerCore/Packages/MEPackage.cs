@@ -341,7 +341,7 @@ namespace ME3ExplorerCore.Packages
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
             var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
-            Debug.WriteLine($"Compression type {filePath}: {compressionType}");
+            //Debug.WriteLine($"Compression type {filePath}: {compressionType}");
             int numChunks = packageReader.ReadInt32();
 
             //read package source

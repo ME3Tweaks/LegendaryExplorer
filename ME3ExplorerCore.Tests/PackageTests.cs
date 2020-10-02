@@ -35,7 +35,11 @@ namespace ME3ExplorerCore.Tests
                     while (parentname != null)
                     {
                         var dirname = Path.GetFileName(parentname);
-                        if (dirname == "retail" || dirname == "demo") continue;
+                        if (dirname == "retail" || dirname == "demo")
+                        {
+                            parentname = Directory.GetParent(parentname).FullName;
+                            continue;
+                        }
 
                         if (level == 0)
                         {

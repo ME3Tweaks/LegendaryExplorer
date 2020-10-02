@@ -494,7 +494,7 @@ namespace ME3ExplorerCore.Packages
             foreach (var btInfo in blockTable)
             {
                 // Decompress
-                Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
+                //Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
                 var datain = raw.ReadToBuffer(btInfo.blockCompressedSize);
                 if (compressionType == UnrealPackageFile.CompressionType.None)
                 {
