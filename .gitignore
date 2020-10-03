@@ -207,3 +207,4 @@ Be.Windows.Forms.HexBox/Be.Windows.Forms.HexBox.xml
 Debug_x64/
 Release_x64/
 /ME3Explorer/APIKeysPrivate.cs
+/ME3ExplorerCore.Tests/coverage.cobertura.xml

@@ -63,7 +63,7 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*[Tt]ests/*.csproj'
-    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
     publishTestResults: true
 
 - task: reportgenerator@4

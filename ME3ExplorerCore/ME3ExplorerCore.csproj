@@ -6,6 +6,10 @@
 		<Platforms>x64</Platforms>
 		<Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease</Configurations>
 	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
 		<DebugType>embedded</DebugType>
