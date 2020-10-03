@@ -85,8 +85,8 @@ Global
 		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinDebug|x64.Build.0 = WinDebug|x64
 		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|Any CPU.Build.0 = Release|Any CPU
-		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|x64.ActiveCfg = Release|Any CPU
-		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|x64.Build.0 = Release|Any CPU
+		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|x64.ActiveCfg = WinRelease|x64
+		{4F89E27F-AEE8-40C9-935C-DB33FF5100FA}.WinRelease|x64.Build.0 = WinRelease|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -57,11 +57,13 @@
 	<ItemGroup>
 		<None Remove="Embedded\GameResources.zip" />
 		<None Remove="Embedded\Infos.zip" />
+		<None Remove="Embedded\udkdefaultthumb.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="Embedded\GameResources.zip" />
 		<EmbeddedResource Include="Embedded\Infos.zip" />
+		<EmbeddedResource Include="Embedded\udkdefaultthumb.png" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">

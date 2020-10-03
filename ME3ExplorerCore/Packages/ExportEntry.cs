@@ -342,7 +342,7 @@ namespace ME3ExplorerCore.Packages
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
         }
 
-        public bool HasComponentMap => (FileRef.Game == MEGame.ME1 && FileRef.Platform != MEPackage.GamePlatform.PS3) || FileRef.Game == MEGame.ME2;
+        public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
 
         //me1 and me2 only
         public OrderedMultiValueDictionary<NameReference, int> ComponentMap

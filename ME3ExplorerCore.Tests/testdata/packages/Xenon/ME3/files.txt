@@ -1,0 +1,2 @@
+Startup_INT => Fully compressed package
+BioD_Nor.xxx => Not fully compressed pacakge

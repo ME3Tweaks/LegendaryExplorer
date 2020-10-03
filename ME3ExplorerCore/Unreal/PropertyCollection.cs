@@ -141,7 +141,7 @@ namespace ME3ExplorerCore.Unreal
             sourceFilePath = export.FileRef.FilePath;
             TypeName = typeName;
             game = export.FileRef.Game;
-            info = UnrealObjectInfo.GetClassOrStructInfo(game, typeName);
+            info = UnrealObjectInfo.GetClassOrStructInfo(export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? game : MEGame.ME3, typeName);
         }
 
         public static PropertyCollection ReadProps(ExportEntry export, Stream rawStream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
@@ -365,6 +365,8 @@ namespace ME3ExplorerCore.Unreal
             Func<string, bool, PropertyCollection> getDefaultStructValueFunc;
             switch (pcc.Game)
             {
+                case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                 case MEGame.UDK when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
                     defaultStructDict = defaultStructValuesME3;
@@ -469,7 +471,7 @@ namespace ME3ExplorerCore.Unreal
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
-                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).Reference, 0);
+                    PropertyCollection structProps = ReadImmutableStruct(export, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType, containingExport: export).Reference, 0, export);
                     var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true)
                     {
                         StartOffset = startPos,
@@ -518,7 +520,8 @@ namespace ME3ExplorerCore.Unreal
                 case ArrayType.Enum:
                     {
                         //Attempt to get info without lookup first
-                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
+                        // PS3 is based on ME3 engine. So use ME3
+                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3, name, enclosingType);
                         ClassInfo classInfo = null;
                         if (enumname == null && parsingEntry is ExportEntry parsingExport)
                         {
@@ -539,9 +542,8 @@ namespace ME3ExplorerCore.Unreal
                 case ArrayType.Struct:
                     {
                         long startPos = stream.Position;
-
                         var props = new List<StructProperty>();
-                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType);
+                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, containingExport: parsingEntry as ExportEntry);
                         if (propertyInfo == null && parsingEntry is ExportEntry parsingExport)
                         {
                             var currentInfo = UnrealObjectInfo.generateClassInfo(parsingExport);
@@ -549,7 +551,7 @@ namespace ME3ExplorerCore.Unreal
                         }
 
                         string arrayStructType = propertyInfo?.Reference;
-                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Game))
+                        if (IsInImmutable || UnrealObjectInfo.IsImmutable(arrayStructType, pcc.Platform != MEPackage.GamePlatform.PS3 ? pcc.Game : MEGame.ME3))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)
@@ -1251,12 +1253,22 @@ namespace ME3ExplorerCore.Unreal
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
-            var eNameIdx = stream.ReadInt32();
-            var eName = pcc.GetNameEntry(eNameIdx);
-            var eNameNumber = stream.ReadInt32();
-
-            Value = new NameReference(eName, eNameNumber);
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+
+            if (pcc.Game == MEGame.ME1 && pcc.Platform == MEPackage.GamePlatform.Xenon)
+            {
+                // ME1 Xenon uses 1 byte values
+                var enumIdx = stream.ReadByte();
+                Value = EnumValues[enumIdx + 1]; // +1 cause we don't use 'None' first item
+            }
+            else
+            {
+                var eNameIdx = stream.ReadInt32();
+                var eName = pcc.GetNameEntry(eNameIdx);
+                var eNameNumber = stream.ReadInt32();
+                Value = new NameReference(eName, eNameNumber);
+            }
+
         }
 
         public EnumProperty(NameReference value, NameReference enumType, MEGame meGame, NameReference? name = null) : base(name)

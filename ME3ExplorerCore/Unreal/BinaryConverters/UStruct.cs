@@ -18,13 +18,13 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         protected override void Serialize(SerializingContainer2 sc)
         {
             base.Serialize(sc);
-            if (sc.Game <= MEGame.ME2)
+            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
             }
             sc.Serialize(ref Children);
-            if (sc.Game <= MEGame.ME2)
+            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
@@ -32,7 +32,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref TextPos);
             }
 
-            if (sc.Game >= MEGame.ME3)
+            if (sc.Game >= MEGame.ME3 || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref ScriptBytecodeSize);
             }

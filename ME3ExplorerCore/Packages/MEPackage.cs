@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Gammtek.Paths;
 using ME3ExplorerCore.Helpers;
@@ -94,10 +96,11 @@ namespace ME3ExplorerCore.Packages
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
-        public GamePlatform Platform { get; }
+        public GamePlatform Platform { get; } = GamePlatform.Unknown;
 
         public enum GamePlatform
         {
+            Unknown, //Unassigned
             PC,
             Xenon,
             PS3,
@@ -151,7 +154,7 @@ namespace ME3ExplorerCore.Packages
         {
             if (isStreamLoaderRegistered)
             {
-                throw new Exception(nameof(MEPackage) + "streamloader can only be initialized once");
+                throw new Exception(nameof(MEPackage) + " streamloader can only be initialized once");
             }
 
             isStreamLoaderRegistered = true;
@@ -176,7 +179,7 @@ namespace ME3ExplorerCore.Packages
         private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
-
+            //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
             #region Header
 
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
@@ -192,17 +195,21 @@ namespace ME3ExplorerCore.Packages
             {
                 if (versionLicenseePacked == 0x20000)
                 {
-                    //Xbox? LZX
-                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZX);
+                    // It's WiiU LZMA or Xenon LZX
+                    // To determine if it's LZMA we have to read the first block's compressed bytes and read first few bytes
+                    // LZMA always starts with 0x5D and then is followed by a dictionary size of size word (32) (in ME it looks like 0x10000)
+
+                    // This is done in the decompress fully compressed package method when we pass it None type
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.None);
                 }
                 else if (versionLicenseePacked == 0x10000)
                 {
-                    //PS3? LZMA
+                    //PS3, LZMA
                     fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
                 }
                 else
                 {
-                    // ??????
+                    
                 }
                 packageReader = EndianReader.SetupForPackageReading(fs);
                 packageReader.SkipInt32(); //skip magic as we have already read it
@@ -212,6 +219,7 @@ namespace ME3ExplorerCore.Packages
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
             var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
+            bool platformNeedsResolved = false;
             switch (unrealVersion)
             {
                 case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
@@ -241,7 +249,17 @@ namespace ME3ExplorerCore.Packages
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
                     Game = MEGame.ME3;
-                    Platform = GamePlatform.PC;
+                    if (Endian == Endian.Little)
+                    {
+                        Platform = GamePlatform.PC;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
+                        // Should we adjust constructor to allow us to pass an expected type for package? OR should we have callback to determine type
+                        platformNeedsResolved = true; // Not sure what we can use in package file to determine this since it determines header parsing...
+                        Platform = GamePlatform.PS3;
+                    } 
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
                     Game = MEGame.ME3;
@@ -268,24 +286,12 @@ namespace ME3ExplorerCore.Packages
 
             }
 
-            //if (Platform != GamePlatform.PC)
-            //{
-            //    NameOffset = packageReader.ReadInt32();
-            //    NameCount = packageReader.ReadInt32();
-            //    ExportOffset = packageReader.ReadInt32();
-            //    ExportCount = packageReader.ReadInt32();
-            //    ImportOffset = packageReader.ReadInt32();
-            //    ImportCount = packageReader.ReadInt32();
-            //}
-            //else
-            //{
             NameCount = packageReader.ReadInt32();
             NameOffset = packageReader.ReadInt32();
             ExportCount = packageReader.ReadInt32();
             ExportOffset = packageReader.ReadInt32();
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
-            //}
 
             if (Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
             {
@@ -335,6 +341,7 @@ namespace ME3ExplorerCore.Packages
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
             var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
+            //Debug.WriteLine($"Compression type {filePath}: {compressionType}");
             int numChunks = packageReader.ReadInt32();
 
             //read package source
@@ -452,12 +459,193 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        public static Action<MEPackage, string, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<MEPackage, string, bool, bool> RegisterSaver() => saveByReconstructing;
 
-        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs)
+        /// <summary>
+        /// Saves the package to disk by reconstructing the package file
+        /// </summary>
+        /// <param name="mePackage"></param>
+        /// <param name="path"></param>
+        /// <param name="isSaveAs"></param>
+        /// <param name="compress"></param>
+        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress)
         {
-            bool compressed = mePackage.IsCompressed;
-            mePackage.Flags &= ~EPackageFlags.Compressed;
+            var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress);
+            saveStream.WriteToFile(path);
+        }
+
+        /// <summary>
+        /// Compresses a package's uncompressed stream to a compressed stream and returns it.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="uncompressedStream"></param>
+        /// <returns></returns>
+        private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream)
+        {
+            uncompressedStream.Position = 0;
+            MemoryStream compressedStream = new MemoryStream();
+            package.WriteHeader(compressedStream); //for positioning
+            var chunks = new List<CompressionHelper.Chunk>();
+            var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
+
+            //Compression format:
+            //uint ChunkMetaDataTableCount (chunk table)
+
+            //CHUNK METADATA TABLE ENTRIES:
+            //uint UncompressedOffset
+            //uint UncompressedSize
+            //uint CompressedOffset
+            //uint CompressedSize
+            //
+            // After ChunkMetaDataTableCount * 16 bytes the chunk blocks begin
+            // Each chunk block has it's own block header specifying the uncompressed and compressed size of the block.
+            //
+
+            CompressionHelper.Chunk chunk = new CompressionHelper.Chunk();
+            //Tables chunk
+            chunk.uncompressedSize = package.FullHeaderSize - package.NameOffset;
+            chunk.uncompressedOffset = package.NameOffset;
+
+            #region DEBUG STUFF
+            //string firstElement = "Tables";
+            //string lastElement = firstElement;
+
+            //MemoryStream m2 = new MemoryStream();
+            //long pos = uncompressedStream.Position;
+            //uncompressedStream.Position = NameOffset;
+            //m2.WriteFromStream(uncompressedStream, chunk.uncompressedSize);
+            //uncompressedStream.Position = pos;
+            #endregion
+
+            //Export data chunks
+            int chunkNum = 0;
+            //Debug.WriteLine($"Exports start at {Exports[0].DataOffset}");
+            foreach (ExportEntry e in package.Exports)
+            {
+                if (chunk.uncompressedSize + e.DataSize > CompressionHelper.MAX_CHUNK_SIZE)
+                {
+                    //Rollover to the next chunk as this chunk would be too big if we tried to put this export into the chunk
+                    chunks.Add(chunk);
+                    //Debug.WriteLine($"Chunk {chunkNum} ({chunk.uncompressedSize} bytes) contains {firstElement} to {lastElement} - 0x{chunk.uncompressedOffset:X6} to 0x{(chunk.uncompressedSize + chunk.uncompressedOffset):X6}");
+                    chunkNum++;
+                    chunk = new CompressionHelper.Chunk
+                    {
+                        uncompressedSize = e.DataSize,
+                        uncompressedOffset = e.DataOffset
+                    };
+                }
+                else
+                {
+                    chunk.uncompressedSize += e.DataSize; //This chunk can fit this export
+                }
+            }
+            //Debug.WriteLine($"Chunk {chunkNum} contains {firstElement} to {lastElement}");
+            chunks.Add(chunk);
+
+            //Rewrite header with chunk table information so we can position the data blocks after table
+            compressedStream.Position = 0;
+            package.WriteHeader(compressedStream, compressionType, chunks);
+            MemoryStream m1 = new MemoryStream();
+
+            for (int c = 0; c < chunks.Count; c++)
+            {
+                chunk = chunks[c];
+                chunk.compressedOffset = (int)compressedStream.Position;
+                chunk.compressedSize = 0; // filled later
+
+                int dataSizeRemainingToCompress = chunk.uncompressedSize;
+                int numBlocksInChunk = (int)Math.Ceiling(chunk.uncompressedSize * 1.0 / CompressionHelper.MAX_BLOCK_SIZE);
+                // skip chunk header and blocks table - filled later
+                compressedStream.Seek(CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * numBlocksInChunk, SeekOrigin.Current);
+
+                uncompressedStream.JumpTo(chunk.uncompressedOffset);
+
+                chunk.blocks = new List<CompressionHelper.Block>();
+
+                //Calculate blocks by splitting data into 128KB "block chunks".
+                for (int b = 0; b < numBlocksInChunk; b++)
+                {
+                    CompressionHelper.Block block = new CompressionHelper.Block();
+                    block.uncompressedsize = Math.Min(CompressionHelper.MAX_BLOCK_SIZE, dataSizeRemainingToCompress);
+                    dataSizeRemainingToCompress -= block.uncompressedsize;
+                    block.uncompressedData = uncompressedStream.ReadToBuffer(block.uncompressedsize);
+                    chunk.blocks.Add(block);
+                }
+
+                if (chunk.blocks.Count != numBlocksInChunk) throw new Exception("Number of blocks does not match expected amount");
+
+                //Compress blocks
+                Parallel.For(0, chunk.blocks.Count, b =>
+                {
+                    CompressionHelper.Block block = chunk.blocks[b];
+                    if (compressionType == CompressionType.LZO)
+                        block.compressedData = LZO2.Compress(block.uncompressedData);
+                    else if (compressionType == CompressionType.Zlib)
+                        block.compressedData = Zlib.Compress(block.uncompressedData);
+                    else
+                        throw new Exception("Internal error: Unsupported compression type for compressing blocks: " + compressionType);
+                    if (block.compressedData.Length == 0)
+                        throw new Exception("Internal error: Block compression failed! Compressor returned no bytes");
+                    block.compressedsize = (int)block.compressedData.Length;
+                    chunk.blocks[b] = block;
+                });
+
+                //Write compressed data to stream 
+                for (int b = 0; b < numBlocksInChunk; b++)
+                {
+                    var block = chunk.blocks[b];
+                    compressedStream.Write(block.compressedData, 0, (int)block.compressedsize);
+                    chunk.compressedSize += block.compressedsize;
+                }
+                chunks[c] = chunk;
+            }
+
+            //Update each chunk header with new information
+            foreach (var c in chunks)
+            {
+                compressedStream.JumpTo(c.compressedOffset); // jump to blocks header
+                compressedStream.WriteUInt32(packageTagLittleEndian);
+                compressedStream.WriteUInt32(CompressionHelper.MAX_BLOCK_SIZE); //128 KB
+                compressedStream.WriteInt32(c.compressedSize);
+                compressedStream.WriteInt32(c.uncompressedSize);
+
+                //write block header table
+                foreach (var block in c.blocks)
+                {
+                    compressedStream.WriteInt32(block.compressedsize);
+                    compressedStream.WriteInt32(block.uncompressedsize);
+                }
+            }
+
+            //Write final header
+            compressedStream.Position = 0;
+            package.WriteHeader(compressedStream, compressionType, chunks);
+            return compressedStream;
+        }
+
+        /// <summary>
+        /// Saves the package to stream. If this saving operation is not going to be committed to disk in the same place as the package was loaded from, you should mark this as a 'save as'.
+        /// </summary>
+        /// <param name="mePackage"></param>
+        /// <param name="isSaveAs"></param>
+        /// <returns></returns>
+        private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress)
+        {
+            if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
+            //if (mePackage.Game == MEGame.ME1 && compress) throw new Exception("Cannot save ME1 packages compressed due to texture linking issues");
+
+            var sourceIsCompressed = mePackage.IsCompressed;
+
+            // Set the compression flag that will be saved
+            if (!compress)
+            {
+                mePackage.Flags &= ~EPackageFlags.Compressed;
+            }
+            else
+            {
+                mePackage.Flags |= EPackageFlags.Compressed;
+            }
+
             try
             {
                 var ms = new MemoryStream();
@@ -505,7 +693,7 @@ namespace ME3ExplorerCore.Packages
                 }
 
                 mePackage.DependencyTableOffset = (int)ms.Position;
-                ms.WriteInt32(0);//zero-count DependencyTable
+                ms.WriteInt32(0); //zero-count DependencyTable
                 mePackage.FullHeaderSize = mePackage.ImportExportGuidsOffset = (int)ms.Position;
 
                 //export data
@@ -527,6 +715,7 @@ namespace ME3ExplorerCore.Packages
                                 break;
                         }
                     }
+
                     e.DataOffset = (int)ms.Position;
                     if (objBin != null)
                     {
@@ -548,21 +737,30 @@ namespace ME3ExplorerCore.Packages
                 ms.JumpTo(0);
                 mePackage.WriteHeader(ms);
 
-
-                File.WriteAllBytes(path, ms.ToArray());
-                if (!isSaveAs)
-                {
-                    mePackage.AfterSave();
-                }
+                if (compress)
+                    return compressPackage(mePackage, ms);
+                return ms;
             }
             finally
             {
-                //If we're doing save as, reset compressed flag to reflect file on disk
-                if (isSaveAs && compressed)
+                //If we're doing save as, reset compressed flag to reflect file on disk as we still point to the original one
+                if (isSaveAs)
                 {
-                    mePackage.Flags |= EPackageFlags.Compressed;
+                    if (sourceIsCompressed)
+                    {
+                        mePackage.Flags |= EPackageFlags.Compressed;
+                    }
+                    else
+                    {
+                        mePackage.Flags &= ~EPackageFlags.Compressed;
+                    }
                 }
             }
+        }
+
+        public MemoryStream SaveToStream(bool compress = false)
+        {
+            return saveByReconstructingToStream(this, true, compress);
         }
 
         private static void UpdateShaderCacheOffsets(ExportEntry export, int newDataOffset)
@@ -663,7 +861,7 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private void WriteHeader(Stream ms)
+        private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null)
         {
             ms.WriteUInt32(packageTagLittleEndian);
             //version
@@ -778,8 +976,38 @@ namespace ME3ExplorerCore.Packages
                 ms.WriteInt32(-1);
             }
 
-            ms.WriteUInt32((uint)CompressionType.None);
-            ms.WriteInt32(0);//numChunks
+
+            if (chunks == null || !chunks.Any() || compressionType == CompressionType.None)
+            {
+                // No compress
+                ms.WriteUInt32((uint)CompressionType.None);
+                ms.WriteInt32(0); //numChunks
+            }
+            else
+            {
+                ms.WriteUInt32((uint)compressionType);
+                //Chunks
+                ms.WriteInt32(chunks.Count);
+                int i = 0;
+                foreach (var chunk in chunks)
+                {
+                    ms.WriteInt32(chunk.uncompressedOffset);
+                    ms.WriteInt32(chunk.uncompressedSize);
+                    ms.WriteInt32(chunk.compressedOffset);
+                    if (chunk.blocks != null)
+                    {
+                        var chunksize = chunk.compressedSize + CompressionHelper.SIZE_OF_CHUNK_HEADER + CompressionHelper.SIZE_OF_CHUNK_BLOCK_HEADER * chunk.blocks.Count;
+                        //Debug.WriteLine($"Writing chunk table chunk {i} size: {chunksize}");
+                        ms.WriteInt32(chunksize); //Size of compressed data + chunk header + block header * number of blocks in the chunk
+                    }
+                    else
+                    {
+                        //list is null - might not be populated yet
+                        ms.WriteInt32(0); //write zero for now, we will call this method later with the compressedSize populated.
+                    }
+                    i++;
+                }
+            }
 
             ms.WriteUInt32(packageSource);
 
@@ -790,7 +1018,6 @@ namespace ME3ExplorerCore.Packages
 
             if (Game == MEGame.ME3 || Game == MEGame.ME2)
             {
-                //this code is not in me3exp right now
                 ms.WriteInt32(AdditionalPackagesToCook.Count);
                 foreach (var pname in AdditionalPackagesToCook)
                 {

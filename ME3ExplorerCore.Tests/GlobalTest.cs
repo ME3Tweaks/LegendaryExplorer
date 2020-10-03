@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Tests
 {
@@ -38,6 +39,44 @@ namespace ME3ExplorerCore.Tests
 
 
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
+        public static string GetTestMountsdirectory() => Path.Combine(GetTestDataDirectory(), "mounts");
+        public static string GetTestTLKdirectory() => Path.Combine(GetTestDataDirectory(), "tlk");
 
+
+        public static (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) GetExpectedTypes(string p)
+        {
+            MEPackage.GamePlatform expectedPlatform = MEPackage.GamePlatform.Unknown;
+            MEGame expectedGame = MEGame.Unknown;
+
+            string parentname = Directory.GetParent(p).FullName;
+            int level = 0;
+            while (parentname != null)
+            {
+                var dirname = Path.GetFileName(parentname);
+                if (dirname == "retail" || dirname == "demo")
+                {
+                    parentname = Directory.GetParent(parentname).FullName;
+                    continue;
+                }
+
+                if (level == 0)
+                {
+                    expectedGame = Enum.Parse<MEGame>(dirname);
+                }
+                else if (level == 1)
+                {
+                    expectedPlatform = Enum.Parse<MEPackage.GamePlatform>(dirname);
+                }
+                else
+                {
+                    break;
+                }
+
+                parentname = Directory.GetParent(parentname).FullName;
+                level++;
+            }
+
+            return (expectedGame, expectedPlatform);
+        }
     }
 }

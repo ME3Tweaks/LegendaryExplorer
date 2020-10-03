@@ -291,7 +291,6 @@ namespace ME3ExplorerCore.Unreal
             MemoryStream result = new MemoryStream();
             uint count = 0;
             byte[] inputBlock;
-            //byte[] outputBlock = new byte[Header.MaxBlockSize];
             long left = e.RealUncompressedSize;
             FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
@@ -304,8 +303,6 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                //List<(byte[], uint)> currentLZXblocks = new List<(byte[], uint)>();
-                //uint currentLZXCompressedSize = 0; //for lzx
                 while (left > 0)
                 {
                     uint compressedBlockSize = e.BlockSizes[count];
@@ -317,15 +314,6 @@ namespace ME3ExplorerCore.Unreal
                         buff = new byte[compressedBlockSize];
                         fs.Read(buff, 0, buff.Length);
 
-                        //if (currentLZXblocks.Count > 0)
-                        //{
-                        //    result.WriteFromBuffer(pumpLZXDecompressor(currentLZXblocks));
-                        //    //Write out the current LZX to the result stream
-                        //    currentLZXblocks.Clear();
-                        //    currentLZXCompressedSize = 0;
-                        //}
-
-
                         result.Write(buff, 0, buff.Length);
                         left -= compressedBlockSize;
                     }
@@ -336,8 +324,6 @@ namespace ME3ExplorerCore.Unreal
                         {
                             throw new Exception("compressed block size smaller than 5");
                         }
-
-                        //currentLZXCompressedSize += compressedBlockSize;
 
                         inputBlock = new byte[compressedBlockSize];
                         //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
@@ -355,10 +341,6 @@ namespace ME3ExplorerCore.Unreal
 
                         if (Header.CompressionScheme == "lzx")
                         {
-                            //we put decomp into filename so bms script can read it
-                            //currentLZXblocks.Add((inputBlock, uncompressedBlockSize));
-                            //left -= uncompressedBlockSize;
-                            
                             var outputBlock = new byte[actualUncompressedBlockSize];
                             var decompResult = LZX.Decompress(inputBlock, (uint)inputBlock.Length, outputBlock);
                             if (decompResult != 0)

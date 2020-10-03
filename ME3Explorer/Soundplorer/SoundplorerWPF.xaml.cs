@@ -863,7 +863,7 @@ namespace ME3Explorer.Soundplorer
                     {
                         // Must run on the UI thread or the tool interop will throw an exception
                         // because we are on a background thread.
-                        Application.Current.Dispatcher.Invoke(pack.Save);
+                        Application.Current.Dispatcher.Invoke(() => pack.Save(false));
                     }
                 }
                 i++;
@@ -1687,39 +1687,39 @@ namespace ME3Explorer.Soundplorer
             switch (Export.ClassName)
             {
                 case "WwiseStream":
-                {
-                    WwiseStream w = Export.GetBinaryData<WwiseStream>();
-                    string afcPath = w.GetPathToAFC();
-                    if (afcPath == "")
                     {
-                        SubText = "Could not find AFC";
-                    }
-                    else
-                    {
-                        TimeSpan? time = w.GetSoundLength();
-                        if (time != null)
+                        WwiseStream w = Export.GetBinaryData<WwiseStream>();
+                        string afcPath = w.GetPathToAFC();
+                        if (afcPath == "")
                         {
-                            //here backslash must be present to tell that parser colon is
-                            //not the part of format, it just a character that we want in output
-                            SubText = time.Value.ToString(@"mm\:ss\:fff");
+                            SubText = "Could not find AFC";
                         }
                         else
                         {
-                            SubText = "Error getting length, may be unsupported";
+                            TimeSpan? time = w.GetSoundLength();
+                            if (time != null)
+                            {
+                                //here backslash must be present to tell that parser colon is
+                                //not the part of format, it just a character that we want in output
+                                SubText = time.Value.ToString(@"mm\:ss\:fff");
+                            }
+                            else
+                            {
+                                SubText = "Error getting length, may be unsupported";
+                            }
                         }
+                        NeedsLoading = false;
+                        Icon = EFontAwesomeIcon.Solid_VolumeUp;
+                        break;
                     }
-                    NeedsLoading = false;
-                    Icon = EFontAwesomeIcon.Solid_VolumeUp;
-                    break;
-                }
                 case "WwiseBank":
-                {
-                    var bank = Export.GetBinaryData<WwiseBank>();
-                    SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
-                    NeedsLoading = false;
-                    Icon = EFontAwesomeIcon.Solid_University;
-                    break;
-                }
+                    {
+                        var bank = Export.GetBinaryData<WwiseBank>();
+                        SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
+                        NeedsLoading = false;
+                        Icon = EFontAwesomeIcon.Solid_University;
+                        break;
+                    }
                 case "SoundNodeWave":
                     SubText = "";
                     NeedsLoading = false;

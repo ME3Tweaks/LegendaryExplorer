@@ -5,8 +5,13 @@ namespace ME3ExplorerCore.MEDirectories
 {
     public enum EMountFileFlag
     {
-        ME2_NoSaveFileDependency = 0x0, //Based on tajfun research
+        // There is flag 0x1 in DLC_CER_02 ??
+        // ME2 flags make no sense
+        ME2_UNKNOWNMOUNTFLAG = 0x0,  //UNKNOWN WHAT THIS VALUE DOES
+        ME2_NoSaveFileDependency = 0x1,//Based on tajfun research
         ME2_SaveFileDependency = 0x2, //Based on tajfun research
+        ME2_UNKNOWNMOUNTFLAG2 = 0x3,  //UNKNOWN WHAT THIS VALUE DOES // only used by kasumi dlc
+
         ME3_SPOnly_NoSaveFileDependency = 0x8,
         ME3_SPOnly_SaveFileDependency = 0x9,
         ME3_SPMP_SaveFileDependency = 0x1C,

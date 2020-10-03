@@ -715,7 +715,6 @@
     <Compile Include="MountEditor\MountEditorWPF.xaml.cs">
       <DependentUpon>MountEditorWPF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MountEditor\MountFile.cs" />
     <Compile Include="NativesEditor\CodexMapCommands.cs" />
     <Compile Include="NativesEditor\Commands.cs" />
     <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
