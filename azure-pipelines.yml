@@ -53,12 +53,7 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
+# Test ME3ExplorerCore
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
@@ -78,6 +73,13 @@ steps:
     summaryFileLocation: '**/coverage.cobertura.xml'
     reportDirectory: 'CoverageReport'
     failIfCoverageEmpty: true
+
+# Build ME3Explorer UI Application
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
 - task: ArchiveFiles@2
   inputs:
