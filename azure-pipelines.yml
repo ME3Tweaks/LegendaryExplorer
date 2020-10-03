@@ -46,6 +46,8 @@ steps:
       if ("$(Build.SourceBranchName)" -eq "librarysplit") { $buildConfiguration = "WinRelease" }
       Write-Host "##vso[task.setvariable variable=buildConfiguration]$buildConfiguration"
       Write-Host "Build Configuration: $($buildConfiguration)"
+      # Install code coverage tool
+      # dotnet tool install -g dotnet-reportgenerator-globaltool
 
 - task: NuGetToolInstaller@1
 
@@ -63,20 +65,18 @@ steps:
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests\ME3ExplorerCore.Tests.csproj'
-    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include=ME3ExplorerCore'
+    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include=ME3ExplorerCore /p:CoverletOutput=./CoreCoverage/'
 
 # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
-# First install the tool on the machine, then run it
-- script: |
-    dotnet tool install -g dotnet-reportgenerator-globaltool
-    reportgenerator -reports:ME3ExplorerCore.Tests/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
-  displayName: Create Code coverage report
+#- script: |
+#    reportgenerator -reports:ME3ExplorerCore.Tests/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
+#  displayName: Create Code coverage report
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
+    summaryFileLocation: '$(Build.SourcesDirectory)/**/CoreCoverage/coverage.cobertura.xml'
+    failIfCoverageEmpty: true
 
 - task: ArchiveFiles@2
   inputs:
