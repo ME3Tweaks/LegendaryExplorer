@@ -68,7 +68,7 @@ steps:
 
 - task: reportgenerator@4
   inputs:
-    reports: '**/coverage.cobertura.coverage.xml'
+    reports: '**/cobertura.coverage.xml'
     targetdir: 'CoverageReport'
     title: 'ME3ExplorerCore Code Coverage Report'
 
