@@ -61,6 +61,15 @@ steps:
     arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
     publishTestResults: true
 
+# Find output file
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $Dir = get-childitem -recurse
+      # $List = $Dir | where {$_.extension -eq ".xml"}
+      $List | format-table fullname
+
 - task: reportgenerator@4
   inputs:
     reports: '**/cobertura.coverage.xml'
