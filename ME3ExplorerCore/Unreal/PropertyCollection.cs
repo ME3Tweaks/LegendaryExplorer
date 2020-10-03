@@ -877,6 +877,7 @@ namespace ME3ExplorerCore.Unreal
     public class FloatProperty : Property, IComparable, INotifyPropertyChanged
     {
         public override PropertyType PropType => PropertyType.FloatProperty;
+        private byte[] _originalData; //This is used because -0 and 0 have different byte patterns, and to reserialize the same, we must write back the correct one.
 
         float _value;
         public float Value
@@ -897,11 +898,13 @@ namespace ME3ExplorerCore.Unreal
         public FloatProperty(EndianReader stream, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            Value = stream.ReadSingle();
+            _originalData = stream.ReadToBuffer(4);
+            Value = EndianReader.ToSingle(_originalData, 0, stream.Endian);
         }
 
         public FloatProperty(float val, NameReference? name = null) : base(name)
         {
+            _originalData = BitConverter.GetBytes(val);
             Value = val;
         }
 
@@ -915,7 +918,15 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                stream.WriteFloat(Value);
+                // Negative zero. We must use exact check
+                if (Value == 0 && BitConverter.ToSingle(_originalData, 0) == Value && _originalData.Any(x=>x != 0x00))
+                {
+                    stream.Write(_originalData);
+                }
+                else
+                {
+                    stream.WriteFloat(Value);
+                }
             }
         }
 

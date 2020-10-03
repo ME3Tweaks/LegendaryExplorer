@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using ME3ExplorerCore.Helpers;
@@ -155,7 +156,8 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(float value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            // We use bitconverter here to do -0 values (yes, -0)
+            _source.Write(BitConverter.GetBytes(Endian.Native.To(Endian).Convert(value)));
         }
 
         /// <summary>
