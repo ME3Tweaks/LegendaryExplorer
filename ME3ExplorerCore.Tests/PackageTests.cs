@@ -27,36 +27,7 @@ namespace ME3ExplorerCore.Tests
                     // Do not use package caching in tests
                     Debug.WriteLine($"Opening package {p}");
 
-                    MEPackage.GamePlatform expectedPlatform = MEPackage.GamePlatform.PS3; // no unknown
-                    MEGame expectedGame = MEGame.Unknown;
-
-                    string parentname = Directory.GetParent(p).FullName;
-                    int level = 0;
-                    while (parentname != null)
-                    {
-                        var dirname = Path.GetFileName(parentname);
-                        if (dirname == "retail" || dirname == "demo")
-                        {
-                            parentname = Directory.GetParent(parentname).FullName;
-                            continue;
-                        }
-
-                        if (level == 0)
-                        {
-                            expectedGame = Enum.Parse<MEGame>(dirname);
-                        }
-                        else if (level == 1)
-                        {
-                            expectedPlatform = Enum.Parse<MEPackage.GamePlatform>(dirname);
-                        }
-                        else
-                        {
-                            break;
-                        }
-
-                        parentname = Directory.GetParent(parentname).FullName;
-                        level++;
-                    }
+                    (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) = GlobalTest.GetExpectedTypes(p);
 
                     var package = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
 

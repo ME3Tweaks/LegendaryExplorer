@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;
@@ -50,8 +51,10 @@ namespace ME3Explorer.MountEditor
             {
                 { "Toolname", "Mount Editor" }
             });
+            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG, "0x00 | Mount Flag (Unknown purpose)"));
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_NoSaveFileDependency, "0x01 | No save file dependency on DLC"));
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_SaveFileDependency, "0x02 | Save file dependency on DLC"));
+            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG2, "0x03 | Mount Flag (Unknown purpose)"));
 
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_NoSaveFileDependency, "0x08 - SP only | No file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_SaveFileDependency, "0x09 - SP only | Save file dependency on DLC"));
@@ -114,11 +117,11 @@ namespace ME3Explorer.MountEditor
             HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
             MountIDValues.ClearEx();
             MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
-            var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
-            MountComboBox.SelectedItem = flag;
             TLKID_TextBox.Text = mf.TLKID.ToString();
             MountPriority_TextBox.Text = mf.MountPriority.ToString();
-
+            var flagset = IsME2 ? ME2MountFlags : ME3MountFlags;
+            var flag = flagset.First(x => x.Flag == mf.MountFlag);
+            MountComboBox.SelectedItem = flag;
             CurrentMountFileText = fileName;
         }
 
