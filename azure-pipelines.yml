@@ -46,6 +46,8 @@ steps:
       if ("$(Build.SourceBranchName)" -eq "librarysplit") { $buildConfiguration = "WinRelease" }
       Write-Host "##vso[task.setvariable variable=buildConfiguration]$buildConfiguration"
       Write-Host "Build Configuration: $($buildConfiguration)"
+      # Get report generator
+      dotnet tool install -g dotnet-reportgenerator-globaltool
 
 - task: NuGetToolInstaller@1
 
@@ -57,7 +59,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/*[Tt]ests/*.csproj'
+    projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
     arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
     publishTestResults: true
 
@@ -66,15 +68,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $Dir = get-childitem -recurse
-      # $List = $Dir | where {$_.extension -eq ".xml"}
-      $List | format-table fullname
+      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverateReport -reporttypes:HtmlInline_AzurePipelines;Cobertura
 
-- task: reportgenerator@4
-  inputs:
-    reports: '**/cobertura.coverage.xml'
-    targetdir: 'CoverageReport'
-    title: 'ME3ExplorerCore Code Coverage Report'
+# - task: reportgenerator@4
+#   inputs:
+#     reports: '**/cobertura.coverage.xml'
+#     targetdir: 'CoverageReport'
+#     title: 'ME3ExplorerCore Code Coverage Report'
 
 - task: PublishCodeCoverageResults@1
   inputs:
