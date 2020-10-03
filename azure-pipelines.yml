@@ -68,7 +68,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverateReport -reporttypes:HtmlInline_AzurePipelines;Cobertura
+      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverateReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
 
 # - task: reportgenerator@4
 #   inputs:
