@@ -118,21 +118,25 @@ namespace ME3Explorer.Meshplorer
 
         private void CenterView()
         {
-            if (Preview != null && Preview.LODs.Count > 0)
+            if (CurrentLOD >= 0)
             {
-                WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
-                SceneViewer.Context.Camera.Position = m.AABBCenter;
-                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
-                if (SceneViewer.Context.Camera.FirstPerson)
+                if (Preview != null && Preview.LODs.Count > 0)
                 {
-                    SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
+                    WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
+                    SceneViewer.Context.Camera.Position = m.AABBCenter;
+                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
+                    if (SceneViewer.Context.Camera.FirstPerson)
+                    {
+                        SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward *
+                                                               SceneViewer.Context.Camera.FocusDepth;
+                    }
                 }
-            }
-            else
-            {
-                SceneViewer.Context.Camera.Position = Vector3.Zero;
-                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
-                SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                else
+                {
+                    SceneViewer.Context.Camera.Position = Vector3.Zero;
+                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
+                    SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                }
             }
         }
         #endregion
