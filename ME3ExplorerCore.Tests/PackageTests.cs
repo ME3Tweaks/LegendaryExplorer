@@ -45,7 +45,7 @@ namespace ME3ExplorerCore.Tests
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
 
-                        
+
 
                         // Binary testing?
                     }
@@ -68,7 +68,7 @@ namespace ME3ExplorerCore.Tests
                 {
                     // Do not use package caching in tests
                     Debug.WriteLine($"Opening package {p}");
-                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true); 
+                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
                     if (originalLoadedPackage.Platform != MEPackage.GamePlatform.PC)
                     {
                         Assert.ThrowsException<Exception>(() =>
@@ -131,18 +131,25 @@ namespace ME3ExplorerCore.Tests
                 {
                     // Do not use package caching in tests
                     Debug.WriteLine($"Opening package {p}");
-                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
-                    foreach (var export in originalLoadedPackage.Exports)
+                    GlobalTest.GetExpectedTypes(p);
+                    (var game, var platform) = GlobalTest.GetExpectedTypes(p);
+                    if (platform == MEPackage.GamePlatform.PC) // Will expand in future, but not now.
                     {
-                        PropertyCollection props = export.GetProperties();
-                        ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
-                        byte[] original = export.Data;
+                        var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+                        foreach (var export in originalLoadedPackage.Exports)
+                        {
+                            PropertyCollection props = export.GetProperties();
+                            ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
 
-                        export.WriteProperties(props);
-                        export.SetBinaryData(bin);
-                        byte[] changed = export.Data;
-                        Assert.IsTrue(original.SequenceEqual(changed),
-                            $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different result than the input. File: {p}");
+                            if (game == MEGame.UDK) continue; // No point testing converting things to UDK in this fashion
+
+                            byte[] original = export.Data;
+                            export.WriteProperties(props);
+                            export.SetBinaryData(bin);
+                            byte[] changed = export.Data;
+                            Assert.IsTrue(original.SequenceEqual(changed),
+                                $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different result than the input. File: {p}");
+                        }
                     }
                 }
             }

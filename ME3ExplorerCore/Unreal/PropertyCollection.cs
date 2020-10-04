@@ -912,14 +912,30 @@ namespace ME3ExplorerCore.Unreal
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
         {
+            // Check for NEGATIVE ZERO. Yes that is a thing.
+            // Some values in ME games seem to be -0 (00 00 00 80)
+            // CLR makes -0 = 0 so we must check the backing bytes
+            // or we will re-serialize this wrong. This check only
+            // matters when the value has not changed from the original.
+
+            bool isNegativeZero = Value == 0 && BitConverter.ToSingle(_originalData, 0) == Value &&
+                                  _originalData.Any(x => x != 0x00);
             if (!valueOnly)
             {
-                stream.WriteFloatProperty(pcc, Name, Value, StaticArrayIndex);
+                if (isNegativeZero)
+                {
+                    stream.WritePropHeader(pcc, Name, PropertyType.FloatProperty, 4, StaticArrayIndex);
+                    stream.Write(_originalData);
+                }
+                else
+                {
+                    stream.WriteFloatProperty(pcc, Name, Value, StaticArrayIndex);
+                }
             }
             else
             {
                 // Negative zero. We must use exact check
-                if (Value == 0 && BitConverter.ToSingle(_originalData, 0) == Value && _originalData.Any(x=>x != 0x00))
+                if (isNegativeZero)
                 {
                     stream.Write(_originalData);
                 }

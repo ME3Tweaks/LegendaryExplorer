@@ -585,6 +585,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 else if (sc.Game < MEGame.ME3 && data.ColorVertexBuffer != null)
                 {
                     //this was read in from ME3 or UDK, we need to integrate the color data
+                    // Why is this written backwards?
                     for (int i = data.VertexBuffer.VertexData.Length - 1; i >= 0; i--)
                     {
                         data.VertexBuffer.VertexData[i].Color = data.ColorVertexBuffer.VertexData[i];
