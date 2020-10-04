@@ -17,7 +17,6 @@ namespace ME3ExplorerCore.Tests
         public void TestPackages()
         {
             GlobalTest.Init();
-            string[] ignoreddirnames = { "demo", "retail" };
             // Loads compressed packages and attempts to enumerate every object's properties.
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
@@ -143,8 +142,8 @@ namespace ME3ExplorerCore.Tests
                             export.WriteProperties(props);
                             export.SetBinaryData(bin);
                             byte[] changed = export.Data;
-                            Assert.IsTrue(original.SequenceEqual(changed),
-                                $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different result than the input. File: {p}");
+                            Assert.AreEqual(original.Length, changed.Length,$"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different sized byte array than the input. Original size: {original.Length}, reserialized: {changed.Length}, File: {p}");
+                            Assert.IsTrue(original.SequenceEqual(changed), $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
                         }
                     }
                 }
