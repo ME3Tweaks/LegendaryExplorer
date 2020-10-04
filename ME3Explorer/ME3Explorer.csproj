@@ -415,6 +415,7 @@
     <Compile Include="SFAREditor\SFARExplorer.xaml.cs">
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Soundplorer\AFCCompactor.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />
@@ -979,7 +980,6 @@
     <Compile Include="Soundplorer\SoundReplaceOptionsDialog.xaml.cs">
       <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
     <Compile Include="SharedUI\StatusBarGameIDIndicator.xaml.cs">
       <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
     </Compile>

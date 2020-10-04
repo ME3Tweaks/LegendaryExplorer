@@ -79,8 +79,8 @@ namespace ME3ExplorerCore.Helpers
             return Enumerable.Empty<string>();
         }
 
-        public static IEnumerable<string> GetAllFiles(MEGame game) => GetEnabledDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
-        public static IEnumerable<string> GetOfficialFiles(MEGame game) => GetOfficialDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory));
+        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
 
         private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
         {
@@ -90,7 +90,7 @@ namespace ME3ExplorerCore.Helpers
             List<string> extensions = new List<string>();
             if (includeTFCs) extensions.Add("*.tfc");
             if (includeAFCs) extensions.Add("*.afc");
-            extensions.Add("*pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
+            extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order. By putting pcc's last, the lookups will be searched first when using
             //includeTFC or includeAFC.
             return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
         }
@@ -140,7 +140,7 @@ namespace ME3ExplorerCore.Helpers
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
                 // Suggest using M3's DuplicatingIni class instead
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"]); 
+                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"]);
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }

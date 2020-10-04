@@ -702,7 +702,7 @@ namespace ME3Explorer.Soundplorer
             if (afcFiles.Any() && pccFiles.Any())
             {
                 string foldername = Path.GetFileName(dlg.FileName);
-                if (foldername.ToLower() == "cookedpcconsole")
+                if (foldername.ToLower().StartsWith("cookedpc"))
                 {
                     foldername = Path.GetFileName(Directory.GetParent(dlg.FileName).FullName);
                 }
@@ -717,14 +717,39 @@ namespace ME3Explorer.Soundplorer
                         IsBusy = true;
                         IsBusyTaskbar = true;
                         soundPanel.FreeAudioResources(); // stop playing
-                        BackgroundWorker afcCompactWorker = new BackgroundWorker();
-                        afcCompactWorker.DoWork += CompactAFCBackgroundThread;
-                        afcCompactWorker.RunWorkerCompleted += compactAFCBackgroundThreadCompleted;
-                        afcCompactWorker.RunWorkerAsync((dlg.FileName, result));
-                        Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+
+                        var gameString = InputComboBoxWPF.GetValue(this, "Which game are you compacting audio for?",
+                            "Game file converter",
+                            new[] { "ME2", "ME3" }, "ME2");
+                        if (Enum.TryParse(gameString, out MEGame game))
                         {
-                            { "Toolname", "AFC Compactor" }
-                        });
+                            List<AFCCompactor.ReferencedAudio> referencedAudio = new List<AFCCompactor.ReferencedAudio>();
+                            //Task.Run(() => AFCCompactor.GetReferencedAudio(game, dlg.FileName)).ContinueWithOnUIThread(prevTask =>
+                            //{
+                            //    IsBusy = false;
+                            //    IsBusyTaskbar = false;
+                            //    ListDialog ld = new ListDialog(prevTask.Result.Select(x => $"{x.uiSourceName} in {x.afcName} @ 0x{x.audioOffset:X8}, length {x.audioSize}"), "Referenced audio", "Here is the list of referenced audio by files in the specified folder.", this);
+                            //    ld.Show();
+                            //});
+
+                            Task.Run(() =>
+                            {
+                                referencedAudio = AFCCompactor.GetReferencedAudio(game, dlg.FileName);
+                                // Determine what audio is not in basegame. We would somehow need to know what the original sizes of AFC are
+                                // Maybe use mem DB?
+                                
+                                return null;
+                            }).ContinueWithOnUIThread(prevTask =>
+                                {
+                                    IsBusy = false;
+                                    IsBusyTaskbar = false;
+                                });
+                        }
+
+                        //Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
+                        //{
+                        //    { "Toolname", "AFC Compactor" }
+                        //});
                     }
                     else
                     {
@@ -734,144 +759,6 @@ namespace ME3Explorer.Soundplorer
             }
 
         }
-
-        private void compactAFCBackgroundThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            IsBusy = false;
-            IsBusyTaskbar = false;
-        }
-
-        private void CompactAFCBackgroundThread(object sender, DoWorkEventArgs e)
-        {
-            (string path, string NewAFCBaseName) = (ValueTuple<string, string>)e.Argument;
-
-            var pccFiles = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            var afcFiles = Directory.GetFiles(path, "*.afc", SearchOption.AllDirectories);
-            //.Select(x => System.IO.Path.GetFileNameWithoutExtension(x).ToLower()).ToArray();
-
-            var referencedAFCAudio = new List<(string, int, int)>();
-
-            int i = 1;
-            foreach (string pccPath in pccFiles)
-            {
-                BusyText = $"Finding all referenced audio ({i}/{pccFiles.Length})";
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
-                {
-                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (ExportEntry exp in wwiseStreamExports)
-                    {
-                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
-                        if (afcNameProp != null)
-                        {
-                            var afcFile = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
-                            if (afcFile != null)
-                            {
-                                string afcName = afcNameProp.ToString().ToLower();
-                                int readPos = exp.Data.Length - 8;
-                                int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                                int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
-                                referencedAFCAudio.Add((afcName, audioSize, audioOffset));
-
-                            }
-                        }
-                    }
-                }
-                i++;
-            }
-            referencedAFCAudio = referencedAFCAudio.Distinct().ToList();
-
-            //extract referenced audio
-            BusyText = "Extracting referenced audio";
-            var extractedAudioMap = new Dictionary<(string, int, int), byte[]>();
-            i = 1;
-            foreach ((string afcName, int audioSize, int audioOffset) reference in referencedAFCAudio)
-            {
-                BusyText = $"Extracting referenced audio ({i} / {referencedAFCAudio.Count})";
-                var afcPath = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(reference.afcName, StringComparison.InvariantCultureIgnoreCase));
-                FileStream stream = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
-                stream.Seek(reference.audioOffset, SeekOrigin.Begin);
-                var extractedAudio = new byte[reference.audioSize];
-                stream.Read(extractedAudio, 0, reference.audioSize);
-                stream.Close();
-                extractedAudioMap[reference] = extractedAudio;
-                i++;
-            }
-
-            var newAFCEntryPointMap = new Dictionary<(string, int, int), long>();
-            i = 1;
-            string newAfcPath = Path.Combine(path, NewAFCBaseName + ".afc");
-            if (File.Exists(newAfcPath))
-            {
-                File.Delete(newAfcPath);
-            }
-            FileStream newAFCStream = new FileStream(newAfcPath, FileMode.CreateNew, FileAccess.Write);
-
-            foreach ((string, int, int) reference in referencedAFCAudio)
-            {
-                BusyText = $"Building new AFC file ({i} / {referencedAFCAudio.Count})";
-                newAFCEntryPointMap[reference] = newAFCStream.Position; //save entry point in map
-                newAFCStream.Write(extractedAudioMap[reference], 0, extractedAudioMap[reference].Length);
-                i++;
-            }
-            newAFCStream.Close();
-            extractedAudioMap = null; //clean out ram on next GC
-
-            i = 1;
-            foreach (string pccPath in pccFiles)
-            {
-                BusyText = $"Updating audio references ({i}/{pccFiles.Length})";
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
-                {
-                    bool shouldSave = false;
-                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (ExportEntry exp in wwiseStreamExports)
-                    {
-                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
-                        if (afcNameProp != null)
-                        {
-                            var afcPath = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
-                            if (afcPath != null)
-                            {
-                                //it's in list of AFCs
-                                string afcName = afcNameProp.ToString().ToLower();
-                                int readPos = exp.Data.Length - 8;
-                                int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                                int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
-                                var key = (afcName, audioSize, audioOffset);
-                                if (newAFCEntryPointMap.TryGetValue(key, out long newOffset))
-                                {
-                                    //its a match
-                                    afcNameProp.Value = NewAFCBaseName;
-                                    Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        exp.WriteProperty(afcNameProp);
-                                        byte[] newData = exp.Data;
-                                        Buffer.BlockCopy(BitConverter.GetBytes((int)newOffset), 0, newData, newData.Length - 4, 4); //update AFC audio offset
-                                        exp.Data = newData;
-                                        if (exp.DataChanged)
-                                        {
-                                            //don't mark for saving if the data didn't actually change (e.g. trying to compact a compacted AFC).
-                                            shouldSave = true;
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-
-                    if (shouldSave)
-                    {
-                        // Must run on the UI thread or the tool interop will throw an exception
-                        // because we are on a background thread.
-                        Application.Current.Dispatcher.Invoke(() => pack.Save(false));
-                    }
-                }
-                i++;
-            }
-            BusyText = "Rebuild complete";
-            System.Threading.Thread.Sleep(2000);
-        }
-
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)
         {
             switch (SoundExports_ListBox.SelectedItem)
@@ -1326,7 +1213,7 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
             }
-            
+
             return;
             */
             if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
