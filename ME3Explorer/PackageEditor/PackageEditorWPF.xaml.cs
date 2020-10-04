@@ -4863,18 +4863,36 @@ namespace ME3Explorer
                 byte[] original = export.Data;
 
                 export.WriteProperties(props);
-                export.SetBinaryData(bin);
-                byte[] changed = export.Data;
+
+                EndianReader ms = new EndianReader(new MemoryStream()) { Endian = export.FileRef.Endian };
+                ms.Writer.Write(export.Data, 0, export.propsEnd());
+                bin.WriteTo(ms.Writer, export.FileRef, export.DataOffset);
+
+                byte[] changed = ms.ToArray();
                 if (original.SequenceEqual(changed))
                 {
                     MessageBox.Show(this, "reserialized identically!");
                 }
                 else
                 {
-                    MessageBox.Show(this, "Differences detected!");
                     string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
                     File.WriteAllBytes(Path.Combine(userFolder, "converted.bin"), changed);
                     File.WriteAllBytes(Path.Combine(userFolder, "original.bin"), original);
+                    if (original.Length != changed.Length)
+                    {
+                        MessageBox.Show(this, $"Differences detected: Lengths are not the same. Original {original.Length}, Reserialized {changed.Length}");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Math.Min(changed.Length, original.Length); i++)
+                        {
+                            if (original[i] != changed[i])
+                            {
+                                MessageBox.Show(this, $"Differences detected: Bytes differ first at 0x{i:X8}");
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
