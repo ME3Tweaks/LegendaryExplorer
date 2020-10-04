@@ -37,7 +37,7 @@
                         <Button Content="Select folder" Command="{Binding SelectDLCInputFolderCommand}" HorizontalAlignment="Right"/>
 
                     </StackPanel>
-                    <CheckBox Content="Include basegame audio" 
+                    <CheckBox Content="Include official basegame audio" 
                               IsChecked="{Binding IncludeBasegameAudio}"
                               ToolTip="Audio that is fully contained in a vanilla, basegame AFC will always be available to users. You often don't need to package this with your mod."/>
                     <CheckBox Content="Include official DLC audio" 
@@ -59,6 +59,9 @@
             </StackPanel>
             <DockPanel>
                 <TextBlock Text="Audio to be built into new AFC" FontWeight="Bold" DockPanel.Dock="Top"/>
+                <DockPanel Dock="Bottom">
+                    <xctk:WatermarkTextBox Watermark="Type to filter"  ToolTip="Filter shown items. Note this only filters the interface and not what will actually be compacted"></xctk:WatermarkTextBox>
+                </DockPanel>
                 <ListBox ItemsSource="{Binding AudioReferences}" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type audio:AFCCompactor+ReferencedAudio}">
