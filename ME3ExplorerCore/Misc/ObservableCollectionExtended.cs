@@ -5,24 +5,30 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using ME3ExplorerCore.Gammtek;
 
 namespace ME3ExplorerCore.Misc
 {
+    [Localizable(false)]
     public class ObservableCollectionExtended<T> : ObservableCollection<T>
     {
         //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
 
         protected override event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PublicPropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PublicPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged
+
+        /// <summary>
+        /// For UI binding 
+        /// </summary>
+        public bool IsNotEmpty => this.Any();
 
         /// <summary> 
         /// Adds the elements of the specified collection to the end of the ObservableCollection(Of T). 
@@ -35,6 +41,7 @@ namespace ME3ExplorerCore.Misc
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             if (oldcount != Count)
             {
+                OnPropertyChanged(nameof(IsNotEmpty));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -46,13 +53,14 @@ namespace ME3ExplorerCore.Misc
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             // ReSharper disable once PossibleUnintendedReferenceComparison
-            if (collection == Items) throw new Exception("Cannot remove range of same collection");
+            if (collection == Items) throw new Exception(@"Cannot remove range of same collection");
             int oldcount = Count;
             //Todo: catch reachspec crash when changing size
             foreach (var i in collection) Items.Remove(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             if (oldcount != Count)
             {
+                OnPropertyChanged(nameof(IsNotEmpty));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -67,6 +75,7 @@ namespace ME3ExplorerCore.Misc
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             if (oldcount != Count)
             {
+                OnPropertyChanged(nameof(IsNotEmpty));
                 OnPropertyChanged(nameof(Count));
             }
 
@@ -92,6 +101,7 @@ namespace ME3ExplorerCore.Misc
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             if (oldcount != Count)
             {
+                OnPropertyChanged(nameof(IsNotEmpty));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -144,12 +154,41 @@ namespace ME3ExplorerCore.Misc
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
+        private int _bindableCount;
+        public int BindableCount
+        {
+            get { return Count; }
+            private set
+            {
+                if (_bindableCount != Count)
+                {
+                    _bindableCount = Count;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Used to force property to raise event changed of the count
+        /// </summary>
+        public void RaiseBindableCountChanged()
+        {
+            OnPropertyChanged(nameof(BindableCount));
+        }
+
         #endregion // Sorting
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
-        public ObservableCollectionExtended() { }
+        public ObservableCollectionExtended() : base()
+        {
+            CollectionChanged += (a, b) =>
+            {
+                BindableCount = Count;
+                OnPropertyChanged(nameof(IsNotEmpty));
+            };
+        }
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 
@@ -157,6 +196,13 @@ namespace ME3ExplorerCore.Misc
         /// <param name="collection">collection: The collection from which the elements are copied.</param> 
         /// <exception cref="System.ArgumentNullException">The collection parameter cannot be null.</exception> 
         public ObservableCollectionExtended(IEnumerable<T> collection)
-            : base(collection) { }
+            : base(collection)
+        {
+            CollectionChanged += (a, b) =>
+            {
+                BindableCount = Count;
+                OnPropertyChanged(nameof(IsNotEmpty));
+            };
+        }
     }
 }

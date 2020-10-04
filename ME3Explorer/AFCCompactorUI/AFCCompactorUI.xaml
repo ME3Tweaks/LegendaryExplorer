@@ -22,7 +22,7 @@
                 <TextBlock Text="{Binding StatusText, FallbackValue=Ahoy}" VerticalAlignment="Center" 
                            Margin="5,0"
                            HorizontalAlignment="Right" DockPanel.Dock="Right"></TextBlock>
-                <ProgressBar IsIndeterminate="True" Width="200" HorizontalAlignment="Left"/>
+                <ProgressBar IsIndeterminate="{Binding IsBusy}" Width="200" HorizontalAlignment="Left"/>
 
             </DockPanel>
 
@@ -48,7 +48,7 @@
                         <ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding GameOptions}"/>
                     </DockPanel>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" IsEnabled="{Binding ScanCompleted}">
+                <StackPanel Margin="0,5,0,0" IsEnabled="{Binding AudioReferences.IsNotEmpty}">
                     <TextBlock Text="Compaction options" FontWeight="Bold" DockPanel.Dock="Top"/>
                     <TextBlock Text="New AFC name" DockPanel.Dock="Top"/>
                     <xctk:WatermarkTextBox Watermark="New AFC name" Text="{Binding NewAFCName}" 
@@ -72,8 +72,17 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding uiOriginatingExportName}" FontWeight="Bold"/>
-                                <TextBlock  Grid.Row="1" Grid.Column="0" Text="{Binding audioOffset, StringFormat='@ 0x{0:X8}'}"/>
-                                <TextBlock  Grid.Row="1" Grid.Column="1" Text="{Binding afcName}" HorizontalAlignment="Right"/>
+                                <TextBlock  Grid.Row="0" Grid.Column="1" Text="{Binding uiAFCSourceType}" HorizontalAlignment="Right"/>
+
+
+                                <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} @ 0x{1}">
+                                            <Binding Path="afcName" />
+                                            <Binding Path="audioOffset" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ListBox.Resources>

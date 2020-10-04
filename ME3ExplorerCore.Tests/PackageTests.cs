@@ -44,10 +44,6 @@ namespace ME3ExplorerCore.Tests
                             Assert.IsInstanceOfType(props.LastOrDefault(), typeof(NoneProperty),
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
-
-
-
-                        // Binary testing?
                     }
                 }
             }

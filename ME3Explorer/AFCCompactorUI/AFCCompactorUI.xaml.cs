@@ -36,11 +36,39 @@ namespace ME3Explorer.AFCCompactorUI
         {
             ScanForReferencesCommand = new GenericCommand(ScanForReferences, CanScanForReferences);
             SelectDLCInputFolderCommand = new GenericCommand(SelectDLCInputFolder, () => !IsBusy);
+            CompactAFCCommand = new GenericCommand(BeginCompactingAFC, CanCompactAFC);
+        }
+
+        private void BeginCompactingAFC()
+        {
+            Task.Run(() =>
+            {
+                IsBusy = true;
+                AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, AudioReferences.ToList(), statusUpdate => StatusText = statusUpdate);
+                return null;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                StatusText = "Compaction completed. Rescan to verify references";
+                AudioReferences.ClearEx();
+                IsBusy = false;
+            });
+
+        }
+
+        private bool CanCompactAFC()
+        {
+            if (!IsBusy && AudioReferences.Any() && !string.IsNullOrWhiteSpace(DLCInputFolder) && !string.IsNullOrWhiteSpace(NewAFCName))
+            {
+                var regex = new Regex(@"^[a-zA-Z0-9_]+$");
+                return regex.IsMatch(NewAFCName);
+            }
+            return false;
         }
 
         #region Commands
         public GenericCommand ScanForReferencesCommand { get; set; }
         public GenericCommand SelectDLCInputFolderCommand { get; set; }
+        public GenericCommand CompactAFCCommand { get; set; }
         #endregion
 
 
@@ -125,11 +153,10 @@ namespace ME3Explorer.AFCCompactorUI
         {
             if (Directory.Exists(DLCInputFolder))
             {
-
-                string[] afcFiles = Directory.GetFiles(DLCInputFolder, "*.afc", SearchOption.AllDirectories);
+                //string[] afcFiles = Directory.GetFiles(DLCInputFolder, "*.afc", SearchOption.AllDirectories);
                 string[] pccFiles = Directory.GetFiles(DLCInputFolder, "*.pcc", SearchOption.AllDirectories);
 
-                if (afcFiles.Any() && pccFiles.Any())
+                if (pccFiles.Any())
                 {
                     List<AFCCompactor.ReferencedAudio> referencedAudio =
                         new List<AFCCompactor.ReferencedAudio>();
@@ -143,14 +170,13 @@ namespace ME3Explorer.AFCCompactorUI
 
                     Task.Run(() =>
                     {
-                        referencedAudio = AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder, IncludeBasegameAudio, IncludeOfficialDLCAudio);
-
-                        // Determine what audio is not in basegame. We would somehow need to know what the original sizes of AFC are
-                        // Maybe use mem DB?
-
+                        IsBusy = true;
+                        referencedAudio = AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder, IncludeBasegameAudio, IncludeOfficialDLCAudio,
+                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}");
                         return referencedAudio;
                     }).ContinueWithOnUIThread(prevTask =>
                     {
+                        StatusText = "Review audio references and adjust as necessary";
                         AudioReferences.ReplaceAll(prevTask.Result);
                         IsBusy = false;
                     });
@@ -190,7 +216,7 @@ namespace ME3Explorer.AFCCompactorUI
 
         private bool CanScanForReferences()
         {
-            return !IsBusy;
+            return !IsBusy && DLCInputFolder != null;
         }
 
         public void SelectDLCInputFolder()
