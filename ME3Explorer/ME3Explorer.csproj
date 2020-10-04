@@ -271,6 +271,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AFCCompactorUI\AFCCompactorUI.xaml.cs">
+      <DependentUpon>AFCCompactorUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
     <Compile Include="ME3Script\Analysis\Symbols\SymbolTable.cs" />
@@ -415,7 +418,6 @@
     <Compile Include="SFAREditor\SFARExplorer.xaml.cs">
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\AFCCompactor.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />
@@ -428,6 +430,10 @@
       <DependentUpon>WwiseEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="WwiseEditor\WwiseObjects.cs" />
+    <Page Include="AFCCompactorUI\AFCCompactorUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AnimationExplorer\AnimationImporter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1576,6 +1582,7 @@
     </Content>
     <Resource Include="Resources\placeholder_256x256.ico" />
     <Resource Include="Resources\sfarexplorer_256x256.ico" />
+    <Resource Include="Resources\afccompactor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>

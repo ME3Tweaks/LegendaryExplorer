@@ -5,6 +5,7 @@ using System.Linq;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Tests.helpers;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ME3ExplorerCore.Tests
@@ -67,7 +68,7 @@ namespace ME3ExplorerCore.Tests
                 {
                     // Do not use package caching in tests
                     Debug.WriteLine($"Opening package {p}");
-                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p);
+                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true); 
                     if (originalLoadedPackage.Platform != MEPackage.GamePlatform.PC)
                     {
                         Assert.ThrowsException<Exception>(() =>
@@ -110,6 +111,38 @@ namespace ME3ExplorerCore.Tests
                         var exportCCP = reopenedCCP.Exports[i];
                         var exportUCP = reopenedUCP.Exports[i];
                         Assert.IsTrue(exportCCP.Header.SequenceEqual(exportUCP.Header), $"Header data for xport {i + 1} are not identical between compressed/uncompressed packages");
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestBinaryConverters()
+        {
+            GlobalTest.Init();
+
+            // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
+            var packagesPath = GlobalTest.GetTestPackagesDirectory();
+            //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            foreach (var p in packages)
+            {
+                if (p.RepresentsPackageFilePath())
+                {
+                    // Do not use package caching in tests
+                    Debug.WriteLine($"Opening package {p}");
+                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+                    foreach (var export in originalLoadedPackage.Exports)
+                    {
+                        PropertyCollection props = export.GetProperties();
+                        ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
+                        byte[] original = export.Data;
+
+                        export.WriteProperties(props);
+                        export.SetBinaryData(bin);
+                        byte[] changed = export.Data;
+                        Assert.IsTrue(original.SequenceEqual(changed),
+                            $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different result than the input. File: {p}");
                     }
                 }
             }

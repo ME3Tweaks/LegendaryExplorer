@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using Newtonsoft.Json;
 
-namespace ME3Explorer.Soundplorer
+namespace ME3ExplorerCore.Audio
 {
-    class AFCCompactor
+    public class AFCCompactor
     {
-        internal class ReferencedAudio
+        public class ReferencedAudio
         {
             public bool Equals(ReferencedAudio x, ReferencedAudio y)
             {
@@ -35,21 +36,27 @@ namespace ME3Explorer.Soundplorer
             public string afcName { get; set; }
             public long audioOffset { get; set; }
             public long audioSize { get; set; }
-            public string uiSourceName { get; set; }
+            public string uiOriginatingExportName { get; set; }
+            public string uiAFCSourceType { get; set; }
         }
 
-        public static List<ReferencedAudio> GetReferencedAudio(MEGame game, string inputPath)
+        public static List<ReferencedAudio> GetReferencedAudio(MEGame game, string inputPath, bool includeBasegameAudio = false, bool includeOfficialDLCAudio = true)
         {
+            var sizesJsonStr = new StreamReader(Utilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
+            var vanillaSizesMap = JsonConvert.DeserializeObject<CaseInsensitiveDictionary<int>>(sizesJsonStr);
             var pccFiles = Directory.GetFiles(inputPath, "*.pcc", SearchOption.AllDirectories);
-            var afcFiles = Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories);
-            var gameAFCFiles = MELoadedFiles.GetAllFiles(game, includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc");
-            var referencedAFCAudio = new List<ReferencedAudio>();
+            var localFolderAFCFiles = Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories);
 
+            var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
+            var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFiles(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
+
+
+            var referencedAFCAudio = new List<ReferencedAudio>();
             int i = 1;
             foreach (string pccPath in pccFiles)
             {
                 //NotifyStatusUpdate?.Invoke($"Finding all referenced audio ({i}/{pccFiles.Length})");
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
+                using (var pack = MEPackageHandler.OpenMEPackage(pccPath))
                 {
                     List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
                     foreach (ExportEntry exp in wwiseStreamExports)
@@ -57,24 +64,46 @@ namespace ME3Explorer.Soundplorer
                         var afcNameProp = exp.GetProperty<NameProperty>("Filename");
                         if (afcNameProp != null)
                         {
-                            var afcFile = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+                            bool isBasegame = false;
+                            bool isOfficialDLC = false;
+                            var afcFile = localFolderAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
                             if (afcFile == null)
                             {
                                 // Try to find basegame version
-                                afcFile = gameAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+                                afcFile = basegameAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+                                isBasegame = true;
                             }
+
+                            if (afcFile == null)
+                            {
+                                // Try to find official DLC version
+                                afcFile = officialDLCAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+                                isOfficialDLC = true;
+                            }
+
                             if (afcFile != null)
                             {
                                 string afcName = afcNameProp.ToString().ToLower();
                                 int readPos = exp.Data.Length - 8;
                                 int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
                                 int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+
+                                if (isBasegame || isOfficialDLC)
+                                {
+                                    if (vanillaSizesMap.TryGetValue(afcName, out var vanillaSize) && audioOffset < vanillaSize // If offset indicates this is official bioware afc territory
+                                        && ((isOfficialDLC && !includeOfficialDLCAudio) || (isBasegame && !includeBasegameAudio)))
+                                    {
+                                        Debug.WriteLine($"Audio is in basegame/official AFC {afcName}, {audioOffset}, filesize {vanillaSize}, options was not chosen. Skipping");
+                                        continue;
+                                    }
+                                }
                                 referencedAFCAudio.Add(new ReferencedAudio()
                                 {
                                     afcName = afcName,
                                     audioSize = audioSize,
                                     audioOffset = audioOffset,
-                                    uiSourceName = exp.InstancedFullPath
+                                    uiOriginatingExportName = exp.ObjectName,
+                                    uiAFCSourceType = isOfficialDLC ? "Official DLC" : isBasegame ? "Basegame" : "Mod"
                                 });
 
                             }

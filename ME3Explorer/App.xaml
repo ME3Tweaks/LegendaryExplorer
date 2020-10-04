@@ -183,6 +183,8 @@
         <BitmapImage x:Key="iconAnimViewer" UriSource="Resources/animviewer_256x256.ico"/>
         <BitmapImage x:Key="iconAudioLocalizer" UriSource="Resources/audiolocalizer_256x256.ico"/>
         <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/loadingspinner.png"/>
+        <BitmapImage x:Key="iconAFCCompactor" UriSource="Resources/afccompactor_256x256.ico"/>
+        
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList >

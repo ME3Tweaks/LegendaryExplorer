@@ -82,7 +82,7 @@ namespace ME3ExplorerCore.Helpers
         public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
         public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
 
-        private static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
+        internal static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
         {
             if (game == MEGame.ME1)
                 return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using ME3ExplorerCore.Helpers;
 
+// Do not change namespace, its partial class
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
     public partial class WwiseStream

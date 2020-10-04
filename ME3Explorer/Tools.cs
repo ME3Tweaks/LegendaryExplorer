@@ -157,6 +157,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "AFC Compactor",
+                type = typeof(TFCCompactor.TFCCompactor),
+                icon = Application.Current.FindResource("iconAFCCompactor") as ImageSource,
+                open = () =>
+                {
+                    (new AFCCompactorUI.AFCCompactorUI()).Show();
+                },
+                tags = new List<string> { "utility", "deployment", "audio", },
+                subCategory = "Deployment",
+                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
+            });
+            set.Add(new Tool
+            {
                 name = "ASI Manager",
                 type = typeof(ASI.ASIManager),
                 icon = Application.Current.FindResource("iconASIManager") as ImageSource,

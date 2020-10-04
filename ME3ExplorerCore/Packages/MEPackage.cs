@@ -472,6 +472,10 @@ namespace ME3ExplorerCore.Packages
         {
             var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress);
             saveStream.WriteToFile(path);
+            if (!isSaveAs)
+            {
+                mePackage.AfterSave();
+            }
         }
 
         /// <summary>

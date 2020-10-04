@@ -686,79 +686,9 @@ namespace ME3Explorer.Soundplorer
 
         private void CompactAFC_Clicked(object sender, RoutedEventArgs e)
         {
-            var dlg = new CommonOpenFileDialog("Select mod's CookedPCConsole folder")
-            {
-                IsFolderPicker = true
-            };
-
-            if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
-            {
-                return;
-            }
-
-            string[] afcFiles = Directory.GetFiles(dlg.FileName, "*.afc", SearchOption.AllDirectories);
-            string[] pccFiles = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories);
-
-            if (afcFiles.Any() && pccFiles.Any())
-            {
-                string foldername = Path.GetFileName(dlg.FileName);
-                if (foldername.ToLower().StartsWith("cookedpc"))
-                {
-                    foldername = Path.GetFileName(Directory.GetParent(dlg.FileName).FullName);
-                }
-                string result = PromptDialog.Prompt(this, "Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
-                if (result != null)
-                {
-                    var regex = new Regex(@"^[a-zA-Z0-9_]+$");
-
-                    if (regex.IsMatch(result))
-                    {
-                        BusyText = "Finding all referenced audio";
-                        IsBusy = true;
-                        IsBusyTaskbar = true;
-                        soundPanel.FreeAudioResources(); // stop playing
-
-                        var gameString = InputComboBoxWPF.GetValue(this, "Which game are you compacting audio for?",
-                            "Game file converter",
-                            new[] { "ME2", "ME3" }, "ME2");
-                        if (Enum.TryParse(gameString, out MEGame game))
-                        {
-                            List<AFCCompactor.ReferencedAudio> referencedAudio = new List<AFCCompactor.ReferencedAudio>();
-                            //Task.Run(() => AFCCompactor.GetReferencedAudio(game, dlg.FileName)).ContinueWithOnUIThread(prevTask =>
-                            //{
-                            //    IsBusy = false;
-                            //    IsBusyTaskbar = false;
-                            //    ListDialog ld = new ListDialog(prevTask.Result.Select(x => $"{x.uiSourceName} in {x.afcName} @ 0x{x.audioOffset:X8}, length {x.audioSize}"), "Referenced audio", "Here is the list of referenced audio by files in the specified folder.", this);
-                            //    ld.Show();
-                            //});
-
-                            Task.Run(() =>
-                            {
-                                referencedAudio = AFCCompactor.GetReferencedAudio(game, dlg.FileName);
-                                // Determine what audio is not in basegame. We would somehow need to know what the original sizes of AFC are
-                                // Maybe use mem DB?
-                                
-                                return null;
-                            }).ContinueWithOnUIThread(prevTask =>
-                                {
-                                    IsBusy = false;
-                                    IsBusyTaskbar = false;
-                                });
-                        }
-
-                        //Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-                        //{
-                        //    { "Toolname", "AFC Compactor" }
-                        //});
-                    }
-                    else
-                    {
-                        MessageBox.Show("Only alphanumeric characters and underscores are allowed for the AFC filename.", "Error creating AFC");
-                    }
-                }
-            }
-
+            new AFCCompactorUI.AFCCompactorUI().Show();
         }
+
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)
         {
             switch (SoundExports_ListBox.SelectedItem)
