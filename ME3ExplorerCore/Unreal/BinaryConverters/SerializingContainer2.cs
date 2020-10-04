@@ -337,7 +337,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 byte g = (byte)sc.ms.ReadByte();
                 byte r = (byte)sc.ms.ReadByte();
                 byte a = (byte)sc.ms.ReadByte();
-                color = new Color(a, r, g, b);
+                color = new Color(r, g, b, a);
             }
             else
             {
