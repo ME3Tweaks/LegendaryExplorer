@@ -83,7 +83,6 @@ namespace ME3Explorer.Meshplorer
 
         private ModelPreview Preview;
 
-        private float PreviewRotation;
         private bool HasLoaded;
         private WorldMesh STMCollisionMesh;
 
@@ -96,19 +95,19 @@ namespace ME3Explorer.Meshplorer
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
-                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.RotationY(PreviewRotation));
+                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.Identity);
                 }
                 if (Wireframe)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
                 if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
