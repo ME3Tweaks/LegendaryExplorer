@@ -55,7 +55,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
-    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
+    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
     publishTestResults: true
 
 # Find output file
@@ -63,13 +63,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverateReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*"
-
-# - task: reportgenerator@4
-#   inputs:
-#     reports: '**/cobertura.coverage.xml'
-#     targetdir: 'CoverageReport'
-#     title: 'ME3ExplorerCore Code Coverage Report'
+      reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*" -verbosity:Verbose
 
 - task: PublishCodeCoverageResults@1
   inputs:

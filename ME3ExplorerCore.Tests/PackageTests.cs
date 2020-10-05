@@ -19,7 +19,7 @@ namespace ME3ExplorerCore.Tests
             GlobalTest.Init();
             // Loads compressed packages and attempts to enumerate every object's properties.
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
-            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.SFM", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
@@ -56,7 +56,7 @@ namespace ME3ExplorerCore.Tests
             // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
-            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.SFM", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
@@ -119,7 +119,7 @@ namespace ME3ExplorerCore.Tests
             // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
-            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.SFM", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
