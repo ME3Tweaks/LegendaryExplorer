@@ -55,7 +55,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
-    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
+    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly -v normal'
     publishTestResults: true
 
 # Find output file
