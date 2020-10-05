@@ -11,10 +11,10 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-
 variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
+  buildConfiguration: 'WinRelease'
 
 steps:
 # Change artifact name when the version major/minor changes
@@ -41,11 +41,6 @@ steps:
       $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
       Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
-      # Build configuration
-      $buildConfiguration = "Release"
-      if ("$(Build.SourceBranchName)" -eq "librarysplit") { $buildConfiguration = "WinRelease" }
-      Write-Host "##vso[task.setvariable variable=buildConfiguration]$buildConfiguration"
-      Write-Host "Build Configuration: $($buildConfiguration)"
       # Get report generator
       dotnet tool install -g dotnet-reportgenerator-globaltool
 
@@ -60,7 +55,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
-    arguments: '--configuration WinRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
+    arguments: '--configuration WinAzureRelease /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=pdbonly'
     publishTestResults: true
 
 # Find output file

@@ -14,6 +14,12 @@ namespace ME3ExplorerCore.Unreal
 {
     public static class ME2UnrealObjectInfo
     {
+#if AZURE
+        /// <summary>
+        /// Full path to where mini files are stored (Core.u, Engine.pcc, for example) to enable dynamic lookup of property info like struct defaults
+        /// </summary>
+        public static string MiniGameFilesPath { get; set; }
+#endif
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
@@ -314,7 +320,12 @@ namespace ME3ExplorerCore.Unreal
                     }
                     structProps.Add(new NoneProperty());
 
-                    string filepath = Path.Combine(ME2Directory.gamePath, "BioGame", info.pccPath);
+                    string filepath = null;
+                    if (ME2Directory.BioGamePath != null)
+                    {
+                        filepath = Path.Combine(ME2Directory.BioGamePath, info.pccPath);
+                    }
+
                     Stream loadStream = null;
                     if (File.Exists(info.pccPath))
                     {
@@ -326,10 +337,18 @@ namespace ME3ExplorerCore.Unreal
                         filepath = "GAMERESOURCES_ME2";
                         loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME2));
                     }
-                    else if (File.Exists(filepath))
+                    else if (filepath != null && File.Exists(filepath))
                     {
                         loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                     }
+#if AZURE
+                    else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
+                    {
+                        // Load from test minigame folder. This is only really useful on azure where we don't have access to 
+                        // games
+                        loadStream = new MemoryStream(File.ReadAllBytes(Path.Combine(MiniGameFilesPath, info.pccPath)));
+                    }
+#endif
 
                     if (loadStream != null)
                     {

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Tests
 {
@@ -18,6 +19,9 @@ namespace ME3ExplorerCore.Tests
             var sc = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(sc);
             CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
+            ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
+            ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
+            ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
             initialized = true;
         }
         /// <summary>
@@ -37,6 +41,7 @@ namespace ME3ExplorerCore.Tests
             throw new Exception("Could not find testdata directory!");
         }
 
+        public static string GetTestMiniGamePath(MEGame game) => Path.Combine(GetTestDataDirectory(), "dynamiclookupminigame", game.ToString());
 
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
         public static string GetTestMountsdirectory() => Path.Combine(GetTestDataDirectory(), "mounts");

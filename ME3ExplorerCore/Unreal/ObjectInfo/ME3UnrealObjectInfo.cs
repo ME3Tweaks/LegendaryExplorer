@@ -413,6 +413,13 @@ namespace ME3ExplorerCore.Unreal
 
     public static class ME3UnrealObjectInfo
     {
+#if AZURE
+        /// <summary>
+        /// Full path to where mini files are stored (Core.u, Engine.pcc, for example) to enable dynamic lookup of property info like struct defaults
+        /// </summary>
+        public static string MiniGameFilesPath { get; set; }
+#endif
+
 
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
@@ -686,7 +693,12 @@ namespace ME3ExplorerCore.Unreal
                                 props.Add(uProp);
                             }
                         }
-                        string filepath = Path.Combine(ME3Directory.gamePath, "BIOGame", info.pccPath);
+                        string filepath = null;
+                        if (ME3Directory.BIOGamePath != null)
+                        {
+                            filepath = Path.Combine(ME3Directory.BIOGamePath, info.pccPath);
+                        }
+
                         Stream loadStream = null;
                         if (File.Exists(info.pccPath))
                         {
@@ -698,11 +710,18 @@ namespace ME3ExplorerCore.Unreal
                             filepath = "GAMERESOURCES_ME3";
                             loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME3));
                         }
-                        else if (File.Exists(filepath))
+                        else if (filepath != null && File.Exists(filepath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                         }
-
+#if AZURE
+                        else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
+                        {
+                            // Load from test minigame folder. This is only really useful on azure where we don't have access to 
+                            // games
+                            loadStream = new MemoryStream(File.ReadAllBytes(Path.Combine(MiniGameFilesPath, info.pccPath)));
+                        }
+#endif
                         if (loadStream != null)
                         {
                             using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))

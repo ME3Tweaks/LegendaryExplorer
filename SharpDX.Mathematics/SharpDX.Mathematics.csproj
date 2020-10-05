@@ -8,7 +8,7 @@
 		<Description>Assembly providing DirectX - Mathematics managed API.</Description>
 		<PackageTags>$(PackageTags) Mathematics HLSL fx Shaders</PackageTags>
 		<Platforms>x64</Platforms>
-		<Configurations>WinDebug;WinRelease</Configurations>
+		<Configurations>WinDebug;WinRelease;WinAzureRelease</Configurations>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinDebug|netstandard2.0|x64'">
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,6 +16,9 @@
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinRelease|netstandard2.0|x64'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='WinAzureRelease|netstandard2.0|x64'">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.2.0" />

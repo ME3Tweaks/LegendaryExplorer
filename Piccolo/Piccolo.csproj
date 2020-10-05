@@ -44,6 +44,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinRelease|x64'">
     <OutputPath>bin\x64\WinRelease\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureRelease|x64'">
+    <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />

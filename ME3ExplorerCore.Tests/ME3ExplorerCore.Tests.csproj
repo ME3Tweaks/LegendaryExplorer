@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	  <Configurations>WinDebug;WinRelease</Configurations>
+	  <Configurations>WinDebug;WinRelease;WinAzureRelease</Configurations>
 	  <TargetFramework>netcoreapp3.1</TargetFramework>
 	  <Platforms>x64</Platforms>
     <IsPackable>false</IsPackable>

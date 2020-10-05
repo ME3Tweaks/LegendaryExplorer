@@ -668,6 +668,7 @@ namespace ME3ExplorerCore.Packages
         public int propsEnd()
         {
             propsEndOffset ??= GetProperties(true, true).endOffset;
+            if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }
 

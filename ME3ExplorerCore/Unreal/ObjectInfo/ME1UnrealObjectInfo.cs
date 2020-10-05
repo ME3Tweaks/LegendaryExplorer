@@ -14,6 +14,13 @@ namespace ME3ExplorerCore.Unreal
 {
     public static class ME1UnrealObjectInfo
     {
+#if AZURE
+        /// <summary>
+        /// Full path to where mini files are stored (Core.u, Engine.pcc, for example) to enable dynamic lookup of property info like struct defaults
+        /// </summary>
+        public static string MiniGameFilesPath { get; set; }
+#endif
+
         public static Dictionary<string, ClassInfo> Classes = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<NameReference>> Enums = new Dictionary<string, List<NameReference>>();
@@ -298,8 +305,12 @@ namespace ME3ExplorerCore.Unreal
                         }
                     }
                     structProps.Add(new NoneProperty());
+                    string filepath = null;
+                    if (ME1Directory.BioGamePath != null)
+                    {
+                        filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
+                    }
 
-                    string filepath = Path.Combine(ME1Directory.BioGamePath, info.pccPath);
                     Stream loadStream = null;
                     if (File.Exists(info.pccPath)) //dynamic lookup (relative path)
                     {
@@ -311,11 +322,18 @@ namespace ME3ExplorerCore.Unreal
                         filepath = "GAMERESOURCES_ME1"; //used for cache
                         loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
                     }
-                    else if (File.Exists(filepath))
+                    else if (filepath != null && File.Exists(filepath))
                     {
                         loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                     }
-
+#if AZURE
+                    else if (MiniGameFilesPath != null && File.Exists(Path.Combine(MiniGameFilesPath, info.pccPath)))
+                    {
+                        // Load from test minigame folder. This is only really useful on azure where we don't have access to 
+                        // games
+                        loadStream = new MemoryStream(File.ReadAllBytes(Path.Combine(MiniGameFilesPath, info.pccPath)));
+                    }
+#endif
                     if (loadStream == null)
                     {
                         filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
@@ -420,7 +438,7 @@ namespace ME3ExplorerCore.Unreal
             return false;
         }
 
-        #region Generating
+#region Generating
         //call this method to regenerate ME1ObjectInfo.json
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo(string outpath)
@@ -664,6 +682,6 @@ namespace ME3ExplorerCore.Unreal
             bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
-        #endregion
+#endregion
     }
 }
