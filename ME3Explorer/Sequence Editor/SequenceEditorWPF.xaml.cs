@@ -408,8 +408,15 @@ namespace ME3Explorer.Sequence_Editor
 
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
-                    value.IsSelected = true;
-                    LoadSequence((ExportEntry)value.Entry);
+                    if (value.Entry is ExportEntry exportEntry)
+                    {
+                        value.IsSelected = true;
+                        LoadSequence((ExportEntry)value.Entry);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't select an imported sequence");
+                    }
                 }
             }
         }
@@ -439,7 +446,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     LoadFile(d.FileName);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (!App.IsDebug)
                 {
                     MessageBox.Show(this, "Unable to open file:\n" + ex.Message);
                 }
@@ -487,7 +494,7 @@ namespace ME3Explorer.Sequence_Editor
                 variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!App.IsDebug)
             {
                 MessageBox.Show(this, "Error:\n" + ex.Message);
                 Title = "Sequence Editor";
@@ -580,9 +587,21 @@ namespace ME3Explorer.Sequence_Editor
                         var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
                         if (propSequenceReference != null)
                         {
-                            TreeViewEntry t = FindSequences(pcc.GetUExport(propSequenceReference.Value));
-                            SequenceExports.Add(exportEntry);
-                            root.Sublinks.Add(t);
+                            if (pcc.IsUExport(propSequenceReference.Value))
+                            {
+                                TreeViewEntry t = FindSequences(pcc.GetUExport(propSequenceReference.Value));
+                                SequenceExports.Add(exportEntry);
+                                root.Sublinks.Add(t);
+                            }
+                            else
+                            {
+                                var import = pcc.GetImport(propSequenceReference.Value);
+                                var importTreeView = new TreeViewEntry(import, $"#{import.UIndex}: {import.InstancedFullPath}")
+                                {
+                                    IsExpanded = false
+                                };
+                                root.Sublinks.Add(importTreeView);
+                            }
                         }
                     }
                 }
