@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
@@ -9,6 +10,7 @@ using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
+    [DebuggerDisplay("SC2, IsLoading: {IsLoading}, IsSaving: {IsSaving}, Position @ {ms.Position.ToString(\"X8\")}")]
     public class SerializingContainer2
     {
         public readonly EndianReader ms;

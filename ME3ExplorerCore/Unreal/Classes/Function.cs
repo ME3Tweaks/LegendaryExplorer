@@ -99,7 +99,7 @@ namespace ME3ExplorerCore.Unreal.Classes
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
                 {
-                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(export.Data, 0x18);
+                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
                     if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                     {
                         if (paramCount > 0)
@@ -109,7 +109,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
-                            var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
+                            var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
@@ -147,8 +147,9 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         public int GetNatIdx()
         {
+            var nativeBackOffset = export.FileRef.Game < MEGame.ME3 ? 7 : 6;
+            return EndianReader.ToInt16(memory, memsize - nativeBackOffset, export.FileRef.Endian);
 
-            return EndianReader.ToInt16(memory, memsize - 6, export.FileRef.Endian);
         }
 
         public int GetFlagInt()

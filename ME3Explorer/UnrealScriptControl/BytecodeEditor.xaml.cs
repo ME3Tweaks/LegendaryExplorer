@@ -90,7 +90,7 @@ namespace ME3Explorer
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 var func = new Function(data, CurrentLoadedExport, 32);
 
@@ -163,7 +163,8 @@ namespace ME3Explorer
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    pos = data.Length - 6;
+                    var nativeBackOffset = CurrentLoadedExport.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                    pos = data.Length - nativeBackOffset;
                     string flagStr = func.GetFlags();
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
                     pos += 2;

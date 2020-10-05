@@ -14,12 +14,15 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Gammtek.IO
 {
+    [DebuggerDisplay("EndianReader @ {Position.ToString(\"X8\")}, endian is native to platform: {Endian.IsNative}")]
+
     /// <summary>
     ///     BinaryReader that supports reading and writing individual bits from
     ///     the stream and reordering values based on Endian settings between

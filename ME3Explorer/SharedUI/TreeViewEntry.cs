@@ -200,8 +200,8 @@ namespace ME3Explorer
                                         if (fs.HasFlag("Native"))
                                         {
                                             _subtext = "Native";
-                                            var nativeIndex =
-                                                EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                            var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                                            var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
                                             if (nativeIndex > 0)
                                             {
                                                 _subtext += ", index " + nativeIndex;

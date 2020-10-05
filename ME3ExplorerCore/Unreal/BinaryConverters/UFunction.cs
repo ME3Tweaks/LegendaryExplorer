@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
@@ -18,16 +19,16 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         {
             base.Serialize(sc);
             sc.Serialize(ref NativeIndex);
-            if (sc.Game <= MEGame.ME2)
+            if (sc.Game <= MEGame.ME2) //This is present on PS3 ME1/ME2 but not ME3 for some reason.
             {
                 sc.Serialize(ref OperatorPrecedence);
             }
             sc.Serialize(ref FunctionFlags);
-            if (sc.Game <= MEGame.ME2 && FunctionFlags.HasFlag(FunctionFlags.Net))
+            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3 && FunctionFlags.HasFlag(FunctionFlags.Net))
             {
                 sc.Serialize(ref ReplicationOffset);
             }
-            if (sc.Game <= MEGame.ME2)
+            if (sc.Game <= MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref FriendlyName);
             }

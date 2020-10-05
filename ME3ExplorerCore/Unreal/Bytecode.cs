@@ -1306,11 +1306,16 @@ namespace ME3ExplorerCore.Unreal
             Token t = new Token();
             Token a = null, b = null, c = null;
             int count;
+
+            // This doesn't work as the native call IDs seem to maybe have changed
+            // So while some native calls keep same ID, others don't
+            int nativeId = export.Game < MEGame.ME3 ? 0x60 : 0x70;
+
             byte byte1 = memory[start];
             byte byte2 = memory[start + 1];
             int index;
-            if ((byte1 & 0xF0) == 0x70)
-                index = ((byte1 - 0x70) << 8) + byte2;
+            if ((byte1 & 0xF0) == nativeId)
+                index = ((byte1 - nativeId) << 8) + byte2;
             else
                 index = byte1;
             int pos = start;
@@ -3232,6 +3237,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " == " + b.text + ")";
                     break;
+                case 0x77: //PS3 ME1 NotEqual ObjectObject????
                 case (int)ENatives.NATIVE_NotEqual_ObjectObject: // 0x0281
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;

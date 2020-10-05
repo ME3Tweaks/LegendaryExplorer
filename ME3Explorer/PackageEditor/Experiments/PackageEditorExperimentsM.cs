@@ -9,12 +9,14 @@ using MassEffectModder.Images;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using Newtonsoft.Json;
 using SharpDX;
 
 namespace ME3Explorer.PackageEditor
@@ -786,6 +788,200 @@ namespace ME3Explorer.PackageEditor
                         }
                     }
                 }
+            }
+        }
+
+        public static void BuildME1NativeFunctionsInfo()
+        {
+            if (ME1Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
+                var dir = new DirectoryInfo(ME1Directory.gamePath);
+                var filesToSearch = dir.GetFiles( /*"*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles(*/"*.u",
+                    SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
+                    {
+                        Debug.WriteLine(fi.Name);
+                        foreach (ExportEntry export in package.Exports)
+                        {
+                            if (export.ClassName == "Function")
+                            {
+
+                                BinaryReader reader = new BinaryReader(new MemoryStream(export.Data));
+                                reader.ReadBytes(12);
+                                int super = reader.ReadInt32();
+                                int children = reader.ReadInt32();
+                                reader.ReadBytes(12);
+                                int line = reader.ReadInt32();
+                                int textPos = reader.ReadInt32();
+                                int scriptSize = reader.ReadInt32();
+                                byte[] bytecode = reader.ReadBytes(scriptSize);
+                                int nativeIndex = reader.ReadInt16();
+                                int operatorPrecedence = reader.ReadByte();
+                                int functionFlags = reader.ReadInt32();
+                                if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
+                                {
+                                    reader.ReadInt16(); // repOffset
+                                }
+
+                                int friendlyNameIndex = reader.ReadInt32();
+                                reader.ReadInt32();
+                                var function = new UnFunction(export, package.GetNameEntry(friendlyNameIndex),
+                                    new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
+                                    operatorPrecedence);
+
+                                if (nativeIndex != 0)
+                                {
+                                    Debug.WriteLine($">>NATIVE Function {nativeIndex} {export.ObjectName}");
+                                    var newInfo = new CachedNativeFunctionInfo
+                                    {
+                                        nativeIndex = nativeIndex,
+                                        Name = export.ObjectName,
+                                        Filename = fi.Name,
+                                        Operator = function.Operator,
+                                        PreOperator = function.PreOperator,
+                                        PostOperator = function.PostOperator
+                                    };
+                                    newCachedInfo[nativeIndex] = newInfo;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"),
+                    JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                Debug.WriteLine("Done");
+            }
+        }
+
+        public static void FindME1ME22DATables()
+        {
+            if (ME1Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
+                var dir = new DirectoryInfo(Path.Combine(ME1Directory.gamePath /*, "BioGame", "CookedPC", "Maps"*/));
+                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories)
+                    .Union(dir.GetFiles("*.u", SearchOption.AllDirectories))
+                    .Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
+                    {
+                        foreach (ExportEntry export in package.Exports)
+                        {
+                            if ((export.ClassName == "BioSWF"))
+                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                            {
+                                Debug.WriteLine(
+                                    $"{export.ClassName}({export.ObjectName.Instanced}) in {fi.Name} at export {export.UIndex}");
+                            }
+                        }
+                    }
+                }
+
+                //File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                Debug.WriteLine("Done");
+            }
+        }
+
+        public static void FindAllME3PowerCustomActions()
+        {
+            if (ME3Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<string, List<string>>();
+                var dir = new DirectoryInfo(ME3Directory.gamePath);
+                var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    using (var package = MEPackageHandler.OpenME3Package(fi.FullName))
+                    {
+                        foreach (ExportEntry export in package.Exports)
+                        {
+                            if (export.SuperClassName == "SFXPowerCustomAction")
+                            {
+                                Debug.WriteLine(
+                                    $"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                                if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                                {
+                                    instances.Add($"{fi.Name} at export {export.UIndex}");
+                                }
+                                else
+                                {
+                                    newCachedInfo[export.ObjectName] = new List<string>
+                                        {$"{fi.Name} at export {export.UIndex}"};
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                string outstr = "";
+                foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
+                {
+                    outstr += instancelist.Key;
+                    outstr += "\n";
+                    foreach (string str in instancelist.Value)
+                    {
+                        outstr += " - " + str + "\n";
+                    }
+                }
+
+                File.WriteAllText(@"C:\users\public\me3powers.txt", outstr);
+                Debug.WriteLine("Done");
+            }
+        }
+
+        public static void FindAllME2Powers()
+        {
+            if (ME2Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<string, List<string>>();
+                var dir = new DirectoryInfo(ME2Directory.gamePath);
+                var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    using var package = MEPackageHandler.OpenMEPackage(fi.FullName);
+                    foreach (ExportEntry export in package.Exports)
+                    {
+                        if (export.SuperClassName == "SFXPower")
+                        {
+                            Debug.WriteLine(
+                                $"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                            {
+                                instances.Add($"{fi.Name} at export {export.UIndex}");
+                            }
+                            else
+                            {
+                                newCachedInfo[export.ObjectName] = new List<string>
+                                    {$"{fi.Name} at export {export.UIndex}"};
+                            }
+                        }
+                    }
+                }
+
+
+                string outstr = "";
+                foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
+                {
+                    outstr += instancelist.Key;
+                    outstr += "\n";
+                    foreach (string str in instancelist.Value)
+                    {
+                        outstr += " - " + str + "\n";
+                    }
+                }
+
+                File.WriteAllText(@"C:\users\public\me2powers.txt", outstr);
+                Debug.WriteLine("Done");
             }
         }
     }
