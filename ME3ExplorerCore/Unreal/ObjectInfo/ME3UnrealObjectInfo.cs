@@ -719,7 +719,8 @@ namespace ME3ExplorerCore.Unreal
                         {
                             // Load from test minigame folder. This is only really useful on azure where we don't have access to 
                             // games
-                            loadStream = new MemoryStream(File.ReadAllBytes(Path.Combine(MiniGameFilesPath, info.pccPath)));
+                            filepath = Path.Combine(MiniGameFilesPath, info.pccPath);
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                         }
 #endif
                         if (loadStream != null)
