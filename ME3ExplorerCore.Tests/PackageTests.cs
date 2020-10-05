@@ -126,7 +126,6 @@ namespace ME3ExplorerCore.Tests
                 {
                     // Do not use package caching in tests
                     Console.WriteLine($"Opening package {p}");
-                    GlobalTest.GetExpectedTypes(p);
                     (var game, var platform) = GlobalTest.GetExpectedTypes(p);
                     if (platform == MEPackage.GamePlatform.PC) // Will expand in future, but not now.
                     {
