@@ -19,9 +19,11 @@ namespace ME3ExplorerCore.Tests
             var sc = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(sc);
             CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
+#if AZURE
             ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
             ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
             ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
+#endif
             initialized = true;
         }
         /// <summary>
