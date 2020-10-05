@@ -112,7 +112,7 @@ steps:
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. Click this link, then expand the dropdown and download the 7z file. Nightly builds may be unstable and have bugs.",
+        "description": "A new nightly build of ME3Explorer has been built. You can automatically download the latest build with ME3Tweaks Mod Manager by going to Tools > ME3Explorer (Nightly). You can manually download this build by clicking and download the ME3Explorer artifact. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
