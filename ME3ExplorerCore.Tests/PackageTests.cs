@@ -25,7 +25,7 @@ namespace ME3ExplorerCore.Tests
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
-                    Debug.WriteLine($"Opening package {p}");
+                    Console.WriteLine($"Opening package {p}");
 
                     (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) = GlobalTest.GetExpectedTypes(p);
 
@@ -62,7 +62,7 @@ namespace ME3ExplorerCore.Tests
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
-                    Debug.WriteLine($"Opening package {p}");
+                    Console.WriteLine($"Opening package {p}");
                     var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
                     if (originalLoadedPackage.Platform != MEPackage.GamePlatform.PC)
                     {
@@ -119,13 +119,13 @@ namespace ME3ExplorerCore.Tests
             // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
-            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.SFM", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
                 {
                     // Do not use package caching in tests
-                    Debug.WriteLine($"Opening package {p}");
+                    Console.WriteLine($"Opening package {p}");
                     GlobalTest.GetExpectedTypes(p);
                     (var game, var platform) = GlobalTest.GetExpectedTypes(p);
                     if (platform == MEPackage.GamePlatform.PC) // Will expand in future, but not now.
