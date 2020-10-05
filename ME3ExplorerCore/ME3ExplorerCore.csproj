@@ -88,6 +88,12 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>CompressionWrappers.dll</TargetPath>
 		</ContentWithTargetPath>
+		<!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
+		<ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>CompressionWrappers.dll</TargetPath>
+		</ContentWithTargetPath>
+
 		<ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>libCompressionWrappers.so</TargetPath>
