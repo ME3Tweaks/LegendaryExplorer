@@ -31,7 +31,8 @@
                  ItemsSource="{Binding PropertiesView}"
                  MouseDoubleClick="PropertiesListView_MouseDoubleClick" 
                  IsTextSearchEnabled="True" 
-                 TextSearch.TextPath="Key">
+                 TextSearch.TextPath="Key"
+                 SelectedItem="{Binding SelectedProperty}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:AddPropertyDialogWPF+AddPropertyItem}">
                         <StackPanel Orientation="Horizontal">
