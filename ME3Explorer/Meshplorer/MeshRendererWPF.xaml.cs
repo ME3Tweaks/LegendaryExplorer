@@ -587,13 +587,18 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void MeshRenderer_ViewUpdate(object sender, float e)
+        private void MeshRenderer_ViewUpdate(object sender, float timeStep)
         {
             //Todo: Find a way to disable SceneViewer.Context.Update from firing if this control is not visible
             if (Rotating)
             {
-                PreviewRotation += .05f * e;
+                SceneViewer.Context.Camera.Yaw += 0.05f * timeStep;
             }
+            Matrix viewMatrix = SceneViewer.Context.Camera.ViewMatrix;
+            viewMatrix.Invert();
+            Vector3 eyePosition = viewMatrix.TranslationVector;
+            CameraLocation_TextBlock.Text = $"Camera POV: (Pitch= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Pitch)}deg , Yaw= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Yaw)}deg , EyePosition= {eyePosition.X},{eyePosition.Y},{eyePosition.Z} , FOV= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV)}deg )";
+            CameraLocation_TextBlock.ToolTip = CameraLocation_TextBlock.Text;
         }
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
@@ -603,6 +608,11 @@ namespace ME3Explorer.Meshplorer
                 var s = e.NewValue.Value.ToString();
                 SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
+        }
+
+        private void CopyCameraLocation_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(CameraLocation_TextBlock.Text);
         }
 
         public override void UnloadExport()
