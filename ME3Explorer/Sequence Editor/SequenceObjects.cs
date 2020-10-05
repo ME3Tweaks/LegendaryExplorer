@@ -1567,13 +1567,14 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    if (pcc.IsUExport(oSequenceReference.Value))
+                    int referencedIndex = oSequenceReference.Value;
+                    if (pcc.IsUExport(referencedIndex))
                     {
-                        inputLinksProp = pcc.GetUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                        inputLinksProp = pcc.GetUExport(referencedIndex).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                     }
                     else
                     {
-                        var referencedFullPath = pcc.GetEntry(oSequenceReference.Value).InstancedFullPath;
+                        var referencedFullPath = pcc.GetEntry(referencedIndex).InstancedFullPath;
                         Debug.WriteLine($"Can't get input links of {referencedFullPath} because it is an import.");
                     }
                 }

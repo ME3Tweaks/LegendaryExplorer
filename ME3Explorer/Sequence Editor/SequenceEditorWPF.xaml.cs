@@ -411,11 +411,11 @@ namespace ME3Explorer.Sequence_Editor
                     if (value.Entry is ExportEntry exportEntry)
                     {
                         value.IsSelected = true;
-                        LoadSequence((ExportEntry)value.Entry);
+                        LoadSequence(exportEntry);
                     }
                     else
                     {
-                        MessageBox.Show("Can't select an imported sequence");
+                        MessageBox.Show(this, "Can't select an imported sequence");
                     }
                 }
             }
