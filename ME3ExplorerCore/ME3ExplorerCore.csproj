@@ -1,112 +1,119 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!--Version info-->
+    <Description>Core library for ME3Explorer, a toolset for modding the Mass Effect Trilogy</Description>
+    <Company>ME3Tweaks</Company>
+    <Authors>ME3Tweaks</Authors>
+    <Version>5.0.0.0</Version>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
-		<LangVersion>8.0</LangVersion>
-		<Platforms>x64</Platforms>
-		<Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease</Configurations>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
+    <Platforms>x64</Platforms>
+    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease</Configurations>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='WinDebug' or '$(Configuration)'=='WPFDebug'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>WINDOWS</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='WinRelease' or '$(Configuration)'=='WPFRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
 
-	<!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
-	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>WINDOWS;AZURE</DefineConstants>
-	</PropertyGroup>
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;AZURE</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='LinuxDebug'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)'=='LinuxRelease'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>LINUX</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='LinuxDebug'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;LINUX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='LinuxRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='MacDebug'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='MacDebug'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MAC</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='MacRelease'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<PlatformTarget>x64</PlatformTarget>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>MAC</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='MacRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>MAC</DefineConstants>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<None Remove="Embedded\GameResources.zip" />
-		<None Remove="Embedded\Infos.zip" />
-		<None Remove="Embedded\udkdefaultthumb.png" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Remove="Embedded\GameResources.zip" />
+    <None Remove="Embedded\Infos.zip" />
+    <None Remove="Embedded\udkdefaultthumb.png" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Embedded\GameResources.zip" />
-		<EmbeddedResource Include="Embedded\Infos.zip" />
-		<EmbeddedResource Include="Embedded\udkdefaultthumb.png" />
-	</ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Embedded\GameResources.zip" />
+    <EmbeddedResource Include="Embedded\Infos.zip" />
+    <EmbeddedResource Include="Embedded\udkdefaultthumb.png" />
+  </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<Reference Include="System.IO.Compression" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('Win'))">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>CompressionWrappers.dll</TargetPath>
-		</ContentWithTargetPath>
-		<!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
-		<ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>CompressionWrappers.dll</TargetPath>
-		</ContentWithTargetPath>
+  <ItemGroup>
+    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('Win'))">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>CompressionWrappers.dll</TargetPath>
+    </ContentWithTargetPath>
+    <!-- For ALOT Installer, also can't figure out way to make this work in multicondition above-->
+    <ContentWithTargetPath Include="Libraries\Windows\CompressionWrappers.dll" Condition="$(Configuration.StartsWith('WPF'))">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>CompressionWrappers.dll</TargetPath>
+    </ContentWithTargetPath>
 
-		<ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>libCompressionWrappers.so</TargetPath>
-		</ContentWithTargetPath>
-		<!--<Content Include="Libraries\Mac\CompressionWrappers.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
+    <ContentWithTargetPath Include="Libraries\Linux\libCompressionWrappers.so" Condition="$(Configuration.StartsWith('Linux'))">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>libCompressionWrappers.so</TargetPath>
+    </ContentWithTargetPath>
+    <!--<Content Include="Libraries\Mac\CompressionWrappers.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>-->
-	</ItemGroup>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
+  </ItemGroup>
 
 </Project>

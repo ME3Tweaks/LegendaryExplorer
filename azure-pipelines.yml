@@ -15,6 +15,9 @@ variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinRelease'
+  appMajorMin: '4.2'
+  appMajor: '4'
+  appMinor: '2'
 
 steps:
 # Change artifact name when the version major/minor changes
@@ -22,7 +25,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $artifactname = "me3explorernightly_4.2.0.$(Build.BuildId)"
+      $artifactname = "me3explorernightly_$(appMajorMin).0.$(Build.BuildId)"
       # Date--------------------------------------------
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
@@ -37,12 +40,26 @@ steps:
       $author = git log -1 --pretty=format:'%an'
       Write-Host "##vso[task.setvariable variable=author]$author"
       Write-Host "Author: $($author)"
-      # API Keys and versioning--------------------------
-      $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
-      Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
+      # Set version (ME3Explorer)
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
+      # Set version (ME3ExplorerCore)
+      $xml = [xml](Get-Content .\ME3ExplorerCore\ME3ExplorerCore.csproj)
+      $ver = New-Object System.Version($appMajor, $appMinor, 0, [int]$(Build.BuildId))
+      $xml.Project.PropertyGroup.Version = $ver.ToString()
+      $xml.Save(".\ME3ExplorerCore\ME3ExplorerCore.csproj")
+
       # Get report generator
       dotnet tool install -g dotnet-reportgenerator-globaltool
+
+# API keys for telemety (does not trigger on PR)
+- task: PowerShell@2
+  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+  inputs:
+    targetType: 'inline'
+    script: |
+      # API Keys for telemetry--------------------------
+      $apikeysprivatefile = "namespace ME3Explorer`n{`n    public static partial class APIKeys`n    {`n        public static string Private_AppCenter {get;} = `"$(AppCenterKey)`";`n    }`n}"
+      Set-Content -Path "$(Build.Repository.LocalPath)\ME3Explorer\APIKeysPrivate.cs" -Value $apikeysprivatefile
 
 - task: NuGetToolInstaller@1
 
@@ -84,17 +101,18 @@ steps:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_4.2.0.$(Build.BuildId).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_$(appMajorMin).0.$(Build.BuildId).7z'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'me3explorernightly_4.2.0.$(Build.BuildId)'
+    ArtifactName: 'me3explorernightly_$(appMajorMin).0.$(Build.BuildId)'
     publishLocation: 'Container'
 
 # Notify ME3Tweaks that a new beta build has been built
 - task: PowerShell@2
+  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
     script: |
@@ -102,7 +120,9 @@ steps:
       Invoke-WebRequest -Uri $(me3explorerApiEndpoint)
     errorActionPreference: 'continue'
 
+# NOT PULL REQUEST DISCORD WEBHOOK
 - task: ado-discord-webhook@1
+  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     channelId: '$(discord_channel_id)'
     webhookKey: '$(discord_webhook_key)'
@@ -112,7 +132,7 @@ steps:
     embeds: |
       [{
         "title": "ME3Explorer - ME3Tweaks Fork Build Complete",
-        "description": "A new nightly build of ME3Explorer has been built. You can automatically download the latest build with ME3Tweaks Mod Manager by going to Tools > ME3Explorer (Nightly). You can manually download this build by clicking and download the ME3Explorer artifact. Nightly builds may be unstable and have bugs.",
+        "description": "A new nightly build of ME3Explorer has been built. You can automatically download the latest build with ME3Tweaks Mod Manager by going to Tools > ME3Explorer (Nightly). You can manually download this build through this link. Nightly builds may be unstable and have bugs.",
         "thumbnail": {
           "url": "https://i.imgur.com/mUtPj2S.png",
           "height": 64,
@@ -132,7 +152,45 @@ steps:
         },
         {
           "name": "Version",
-          "value": "4.2.0.$(Build.BuildId)"
+          "value": "$(appMajorMin).0.$(Build.BuildId)"
+        }],
+        "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
+        "timestamp": "$(time)"
+      }]
+
+# PULL REQUEST DISCORD WEBHOOK
+- task: ado-discord-webhook@1
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
+  inputs:
+    channelId: '$(discord_channel_id)'
+    webhookKey: '$(discord_webhook_key)'
+    name: 'Azure DevOps CI'
+    avatar: 'https://i.imgur.com/gVl653b.png'
+    messageType: 'embeds'
+    embeds: |
+      [{
+        "title": "ME3Explorer - ME3Tweaks Fork Pull Request Build Complete",
+        "description": "A build of a pull request has just completed. Download and verify this build, or build the project in Visual Studio and test it before merging. This build is NOT available through ME3Tweaks Mod Manager.",
+        "thumbnail": {
+          "url": "https://i.imgur.com/gVl653b.png",
+          "height": 64,
+          "width": 64
+        },
+        "fields": [{
+          "name": "Triggering commit",
+          "value": "$(commitMessageFull)"
+        },
+        {
+          "name": "Author",
+          "value": "$(author)"
+        },
+        {
+          "name": "Branch",
+          "value": "$(Build.SourceBranchName)"
+        },
+        {
+          "name": "Version",
+          "value": "Pull Request $(appMajorMin).0.$(Build.BuildId)"
         }],
         "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"
