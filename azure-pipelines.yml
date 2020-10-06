@@ -22,6 +22,7 @@ variables:
 steps:
 # Change artifact name when the version major/minor changes
 - task: PowerShell@2
+  displayName: 'Prepare for pipeline build'
   inputs:
     targetType: 'inline'
     script: |
@@ -53,6 +54,7 @@ steps:
 
 # API keys for telemety (does not trigger on PR)
 - task: PowerShell@2
+  displayName: 'Set telemetry key'
   condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
@@ -64,11 +66,13 @@ steps:
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
+  displayName: 'Restore Nuget packages'
   inputs:
     restoreSolution: '$(solution)'
 
 # Test ME3ExplorerCore
 - task: DotNetCoreCLI@2
+  displayName: 'Test ME3ExplorerCore'
   inputs:
     command: 'test'
     projects: 'ME3ExplorerCore.Tests/ME3ExplorerCore.Tests.csproj'
@@ -77,12 +81,14 @@ steps:
 
 # Find output file
 - task: PowerShell@2
+  displayName: 'Generate code coverage HTML'
   inputs:
     targetType: 'inline'
     script: |
       reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:"HtmlInline_AzurePipelines;Cobertura" -classfilters:"-*Gammtek*" -verbosity:Verbose
 
 - task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: '**/coverage.cobertura.xml'
@@ -91,12 +97,14 @@ steps:
 
 # Build ME3Explorer UI Application
 - task: VSBuild@1
+  displayName: 'Build ME3Explorer'
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: ArchiveFiles@2
+  displayName: '7z ME3Explorer'
   inputs:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
@@ -105,6 +113,7 @@ steps:
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish ME3Explorer'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'me3explorernightly_$(appMajorMin).0.$(Build.BuildId)'
@@ -112,6 +121,7 @@ steps:
 
 # Notify ME3Tweaks that a new beta build has been built
 - task: PowerShell@2
+  displayName: 'Notify ME3Tweaks'
   condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
@@ -122,6 +132,7 @@ steps:
 
 # NOT PULL REQUEST DISCORD WEBHOOK
 - task: ado-discord-webhook@1
+  displayName: 'Discord - New official nightly'
   condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     channelId: '$(discord_channel_id)'
@@ -160,6 +171,7 @@ steps:
 
 # PULL REQUEST DISCORD WEBHOOK
 - task: ado-discord-webhook@1
+  displayName: 'Discord - Built PR'
   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     channelId: '$(discord_channel_id)'
