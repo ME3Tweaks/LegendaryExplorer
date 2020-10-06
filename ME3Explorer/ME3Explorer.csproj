@@ -95,6 +95,9 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.6, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.6\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="Magick.NET-Q8-x64, Version=7.20.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=AMD64">
       <HintPath>..\packages\Magick.NET-Q8-x64.7.20.0.1\lib\net40\Magick.NET-Q8-x64.dll</HintPath>
     </Reference>
@@ -296,6 +299,7 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="ME3Script\FileLib.cs" />
+    <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
@@ -1378,6 +1382,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
+    <EmbeddedResource Include="Resources\Unrealscript-Mode.xshd" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
