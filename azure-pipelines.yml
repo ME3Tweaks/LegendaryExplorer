@@ -45,7 +45,7 @@ steps:
       # Set version (ME3ExplorerCore)
       $xml = [xml](Get-Content .\ME3ExplorerCore\ME3ExplorerCore.csproj)
       $ver = New-Object System.Version($appMajor, $appMinor, 0, [int]$(Build.BuildId))
-      $xml.Project.PropertyGroup.Version = $ver.ToString()
+      $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
       $xml.Save(".\ME3ExplorerCore\ME3ExplorerCore.csproj")
 
       # Get report generator
