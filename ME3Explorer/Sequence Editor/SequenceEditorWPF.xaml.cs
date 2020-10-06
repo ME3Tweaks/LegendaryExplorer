@@ -36,7 +36,6 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
-using MELoadedFiles = ME3ExplorerCore.Helpers.MELoadedFiles;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 
@@ -2115,15 +2114,24 @@ namespace ME3Explorer.Sequence_Editor
                     string convFilePath = noExtensionPath + loc_int + extension;
                     if (File.Exists(convFilePath))
                     {
-                        using (var convFile = MEPackageHandler.OpenMEPackage(convFilePath))
+                        using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
+                        var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
+                        if (convExport != null)
                         {
-                            var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
-                            if (convExport != null)
-                            {
-                                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                                new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
-                                return;
-                            }
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
+                            return;
+                        }
+                    }
+                    else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+                    {
+                        using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
+                        var convExport = convFile.GetUExport(fauxExport.UIndex);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
+                            return;
                         }
                     }
                 }

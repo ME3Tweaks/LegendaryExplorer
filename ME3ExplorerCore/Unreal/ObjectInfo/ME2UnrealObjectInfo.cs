@@ -35,7 +35,8 @@ namespace ME3ExplorerCore.Unreal
                     var infoText = ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME2);
                     if (infoText != null)
                     {
-                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { Classes, Structs, Enums });
+                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
+                        SequenceObjects = blob.SequenceObjects;
                         Classes = blob.Classes;
                         Structs = blob.Structs;
                         Enums = blob.Enums;

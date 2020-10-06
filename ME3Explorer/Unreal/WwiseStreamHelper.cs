@@ -17,6 +17,10 @@ namespace ME3Explorer.Unreal
         public static bool ExtractRawFromSourceToFile(string outfile, string afcPath, int dataSize, int dataOffset)
         {
             var ms = ExtractRawFromSource(afcPath, dataSize, dataOffset);
+            if (ms is null)
+            {
+                return false;
+            }
             if (File.Exists(outfile)) File.Delete(outfile);
             ms.WriteToFile(outfile);
             return true;
