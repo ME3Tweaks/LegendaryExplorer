@@ -1568,9 +1568,9 @@ namespace ME3Explorer.SequenceObjects
                 if (oSequenceReference != null)
                 {
                     int referencedIndex = oSequenceReference.Value;
-                    if (pcc.IsUExport(referencedIndex))
+                    if (pcc.TryGetUExport(referencedIndex, out var exportRef))
                     {
-                        inputLinksProp = pcc.GetUExport(referencedIndex).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                        inputLinksProp = exportRef.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                     }
                     else
                     {

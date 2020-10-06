@@ -587,20 +587,21 @@ namespace ME3Explorer.Sequence_Editor
                         var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
                         if (propSequenceReference != null)
                         {
-                            if (pcc.IsUExport(propSequenceReference.Value))
+                            TreeViewEntry treeViewEntry = null;
+
+                            if (pcc.TryGetUExport(propSequenceReference.Value, out var exportRef))
                             {
-                                TreeViewEntry t = FindSequences(pcc.GetUExport(propSequenceReference.Value));
+                                treeViewEntry = FindSequences(exportRef);
                                 SequenceExports.Add(exportEntry);
-                                root.Sublinks.Add(t);
                             }
-                            else
+                            else if (pcc.TryGetImport(propSequenceReference.Value, out var importRef))
                             {
-                                var import = pcc.GetImport(propSequenceReference.Value);
-                                var importTreeView = new TreeViewEntry(import, $"#{import.UIndex}: {import.InstancedFullPath}")
-                                {
-                                    IsExpanded = false
-                                };
-                                root.Sublinks.Add(importTreeView);
+                                treeViewEntry = new TreeViewEntry(importRef, $"#{importRef.UIndex}: {importRef.InstancedFullPath}");
+                            }
+
+                            if (treeViewEntry != null)
+                            {
+                                root.Sublinks.Add(treeViewEntry);
                             }
                         }
                     }
