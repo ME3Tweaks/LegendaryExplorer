@@ -6,7 +6,6 @@
 
 trigger:
 - Beta
-- librarysplit
 
 pool:
   vmImage: 'windows-latest'
@@ -111,6 +110,7 @@ steps:
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_$(appMajorMin).0.$(Build.BuildId).7z'
     replaceExistingArchive: true
+    sevenZipCompression: maximum
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish ME3Explorer'
