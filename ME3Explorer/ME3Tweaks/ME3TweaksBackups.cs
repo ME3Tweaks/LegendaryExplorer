@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Packages;
+﻿using System.IO;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.ME3Tweaks
 {

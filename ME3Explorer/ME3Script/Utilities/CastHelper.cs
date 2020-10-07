@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Language.Tree;
 using static ME3Script.Utilities.Keywords;

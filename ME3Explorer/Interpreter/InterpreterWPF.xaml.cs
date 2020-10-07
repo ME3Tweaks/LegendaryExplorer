@@ -10,15 +10,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
-using ME3Explorer.Packages;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
@@ -148,7 +150,7 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
-            MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interpreter WPF Export Loader", new WeakReference(this)));
             LoadCommands();
             InitializeComponent();
             Settings.Default.PropertyChanged += SettingChanged;

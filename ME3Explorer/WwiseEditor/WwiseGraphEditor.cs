@@ -1,17 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Diagnostics;
 using System.Windows.Forms;
 using ME3Explorer.WwiseEditor;
-using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 
 namespace UMD.HCIL.GraphEditor
 {

@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
-using ME3Explorer.Unreal.ME3Enums;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer
 {
@@ -1768,6 +1767,12 @@ namespace ME3Explorer
                 bin.JumpTo(binarystart);
 
                 int count;
+                if (CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                {
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 1 (PS3): {bin.ReadInt32()}"));
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown int 2 (PS3): {bin.ReadInt32()}"));
+                }
+
                 subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
                 subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {count = bin.ReadInt32()}"));
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
@@ -1840,11 +1845,11 @@ namespace ME3Explorer
                 MemoryStream asStream = new MemoryStream(data);
                 asStream.Position = offset;
 
-                while (asStream.Position < asStream.Length)
-                {
-                    Debug.WriteLine("Reading at " + asStream.Position);
-                    ISACT_Parser.ReadStream(asStream);
-                }
+                //while (asStream.Position < asStream.Length)
+                //{
+                //    //Debug.WriteLine("Reading at " + asStream.Position);
+                //    //ISACT_Parser.ReadStream(asStream);
+                //}
                 /*
                 offset = binarystart + 0x18;
 
@@ -4712,7 +4717,7 @@ namespace ME3Explorer
                 HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME3 ? bin.ReadByte() : bin.ReadUInt32());
                 int len = bin.ReadInt32();
                 uint id = bin.ReadUInt32();
-                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
+                var node = new BinInterpNode(startPos, $"{idx}: Type: {WwiseStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
                 {
                     Length = len + 4 + (Pcc.Game == MEGame.ME3 ? 1 : 4)
                 };
@@ -5265,18 +5270,18 @@ namespace ME3Explorer
             {
                 yield return node;
             }
-            if (Pcc.Game <= MEGame.ME2)
+            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "Unknown 1");
             }
             yield return MakeEntryNode(bin, "ChildListStart");
-            if (Pcc.Game <= MEGame.ME2)
+            if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "Unknown 2");
                 yield return MakeInt32Node(bin, "Source file line number");
                 yield return MakeInt32Node(bin, "Source file text position");
             }
-            if (Pcc.Game >= MEGame.ME3)
+            if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
                 yield return MakeInt32Node(bin, "ScriptByteCodeSize");
             }
@@ -5363,14 +5368,14 @@ namespace ME3Explorer
                     }
                 }
 
-                if (Pcc.Game <= MEGame.ME2)
+                if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeByteNode(bin, "Unknown byte"));
                 }
                 subnodes.Add(MakeEntryNode(bin, "Outer Class"));
                 subnodes.Add(MakeNameNode(bin, "Class Config Name"));
 
-                if (Pcc.Game <= MEGame.ME2)
+                if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown name list 1", i => MakeNameNode(bin, $"{i}")));
                 }
@@ -5380,7 +5385,7 @@ namespace ME3Explorer
                 subnodes.Add(MakeArrayNode(bin, "Interface Table", i =>
                                                new BinInterpNode(bin.Position, $"{Pcc.GetEntryString(bin.ReadInt32())} => {Pcc.GetEntryString(bin.ReadInt32())}")));
 
-                if (Pcc.Game >= MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeNameNode(bin, "Unknown Name"));
                     subnodes.Add(MakeUInt32Node(bin, "Unknown"));
@@ -5389,8 +5394,13 @@ namespace ME3Explorer
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}")));
                 }
+
+                if (Pcc.Platform == MEPackage.GamePlatform.PS3 && Pcc.Game == MEGame.ME2)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "PS3 ME2 Unknown"));
+                }
                 subnodes.Add(MakeEntryNode(bin, "Defaults"));
-                if (Pcc.Game >= MEGame.ME3)
+                if (Pcc.Game >= MEGame.ME3/* && Pcc.Platform = MEPackage.GamePlatform.PS3*/) // THIS NEEDS CHECKED AS IT DOESN'T SEEM ACCURATE FOR NON-PC PLATS. ME1 PS3 DOESN'T LIST FULL FUNCTION TABLE DESPITE USING ME3 ENGINE
                 {
                     subnodes.Add(MakeArrayNode(bin, "Full Function List", i => MakeEntryNode(bin, $"{i}: ")));
                 }

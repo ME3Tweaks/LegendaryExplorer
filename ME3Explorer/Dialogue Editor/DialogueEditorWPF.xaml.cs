@@ -1,10 +1,6 @@
-﻿using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Sequence_Editor;
+﻿using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
-using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -26,9 +22,19 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using EConvGUIStyles = ME3Explorer.Dialogue_Editor.BioConversationExtended.EConvGUIStyles;
+using Enums = ME3ExplorerCore.Helpers.Enums;
+using EReplyTypes = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyTypes;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -225,7 +231,7 @@ namespace ME3Explorer.Dialogue_Editor
         #region Startup/Exit
         public DialogueEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Dialogue Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Dialogue Editor" }

@@ -1,14 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {
@@ -19,7 +14,7 @@ namespace ME3Explorer
 
         public PSAViewer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("PSA Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("PSA Viewer", new WeakReference(this)));
             InitializeComponent();
         }
 

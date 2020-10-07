@@ -67,5 +67,6 @@
         public const string INTERFACE = "Interface";     
         public const string NEW = "new";     
         public const string ASSERT = "assert";     
+        public const string GOTO = "goto";     
 	}
 }

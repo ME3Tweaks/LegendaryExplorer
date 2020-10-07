@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Unreal;
-using System.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using SharpDX;
 
 namespace ME3Explorer.CurveEd
@@ -158,7 +156,7 @@ namespace ME3Explorer.CurveEd
                         CurvePoint p = c.CurvePoints.ElementAt(index);
                         if (index == 0)
                         {
-                            curve.CurvePoints.AddFirst(new CurvePoint(p.InVal, curve.CurvePoints.First().OutVal, 0, 0, p.InterpMode));
+                            curve.CurvePoints.AddFirst(new CurvePoint(p.InVal, Enumerable.First(curve.CurvePoints).OutVal, 0, 0, p.InterpMode));
                         }
                         else
                         {

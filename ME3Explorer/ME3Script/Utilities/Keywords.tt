@@ -69,7 +69,8 @@
         "Rotator",
         "Interface",
         "new",
-        "assert"
+        "assert",
+        "goto"
     };
 #>
 namespace ME3Script.Utilities

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,11 +7,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Vlc.DotNet.Forms;
@@ -468,7 +469,7 @@ namespace ME3Explorer.PackageEditor
                         if (bikend > fs.Length)
                             throw new Exception("tfc corrupt");
 
-                        byte[] bikBytes = fs.ReadBytes(length);
+                        byte[] bikBytes = fs.ReadToBuffer(length);
                         bikMovie = new MemoryStream(bikBytes);
 #if DEBUG
                         Debug.WriteLine($"Length: {length:#,#,0}");
@@ -540,7 +541,7 @@ namespace ME3Explorer.PackageEditor
                 byte[] bikarray = bikStream.ToArray();
                 using (FileStream fs = new FileStream(bikfile, FileMode.Create))
                 {
-                    fs.WriteBytes(bikarray);
+                    fs.WriteFromBuffer(bikarray);
                 }
                 return true;
             }

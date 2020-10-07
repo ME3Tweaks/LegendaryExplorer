@@ -1,4 +1,5 @@
-﻿using Gammtek.Conduit.ComponentModel;
+﻿using ME3ExplorerCore.Gammtek;
+using ME3ExplorerCore.Gammtek.ComponentModel;
 
 namespace Gammtek.Conduit.MassEffect3.SFXGame
 {

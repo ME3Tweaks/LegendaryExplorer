@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {
@@ -42,6 +42,12 @@ namespace ME3Explorer
         {
             UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackage(s, this);
+        }
+
+        public void LoadMEPackage(Stream stream, string associatedFilePath = null)
+        {
+            UnLoadMEPackage();
+            Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath);
         }
 
         protected void UnLoadMEPackage()

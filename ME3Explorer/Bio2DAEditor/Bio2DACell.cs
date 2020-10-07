@@ -1,12 +1,6 @@
-﻿using ME3Explorer.Packages;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Unreal;
+﻿using System;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {

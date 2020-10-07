@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using ME3Script.Language.ByteCode;
 using ME3Script.Utilities;
 
@@ -144,9 +140,9 @@ namespace ME3Script.Compiling
                 writer.WriteByte(0);
             }
 
-            public void End()
+            public void End(ushort? position = null)
             {
-                ushort jumpPos = Writer.Position;
+                ushort jumpPos = position ?? Writer.Position;
                 Writer.bytecode.OverwriteRange(placeHolderIdx, BitConverter.GetBytes(jumpPos));
             }
         }

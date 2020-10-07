@@ -4,16 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.MountEditor
 {
@@ -48,13 +46,15 @@ namespace ME3Explorer.MountEditor
 
         public MountEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Mount Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Mount Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Mount Editor" }
             });
+            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG, "0x00 | Mount Flag (Unknown purpose)"));
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_NoSaveFileDependency, "0x01 | No save file dependency on DLC"));
             ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_SaveFileDependency, "0x02 | Save file dependency on DLC"));
+            ME2MountFlags.Add(new UIMountFlag(EMountFileFlag.ME2_UNKNOWNMOUNTFLAG2, "0x03 | Mount Flag (Unknown purpose)"));
 
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_NoSaveFileDependency, "0x08 - SP only | No file dependency on DLC"));
             ME3MountFlags.Add(new UIMountFlag(EMountFileFlag.ME3_SPOnly_SaveFileDependency, "0x09 - SP only | Save file dependency on DLC"));
@@ -117,11 +117,11 @@ namespace ME3Explorer.MountEditor
             HumanReadable_TextBox.Text = IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
             MountIDValues.ClearEx();
             MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
-            var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
-            MountComboBox.SelectedItem = flag;
             TLKID_TextBox.Text = mf.TLKID.ToString();
             MountPriority_TextBox.Text = mf.MountPriority.ToString();
-
+            var flagset = IsME2 ? ME2MountFlags : ME3MountFlags;
+            var flag = flagset.First(x => x.Flag == mf.MountFlag);
+            MountComboBox.SelectedItem = flag;
             CurrentMountFileText = fileName;
         }
 
@@ -215,14 +215,7 @@ namespace ME3Explorer.MountEditor
         {
             if (int.TryParse(TLKID_TextBox.Text, out int tlkValue))
             {
-                if (IsME2)
-                {
-                    CurrentTLKIDString = ME2Explorer.ME2TalkFiles.findDataById(tlkValue);
-                }
-                else
-                {
-                    CurrentTLKIDString = ME3TalkFiles.findDataById(tlkValue);
-                }
+                CurrentTLKIDString = IsME2 ? ME2TalkFiles.findDataById(tlkValue) : ME3TalkFiles.findDataById(tlkValue);
             }
         }
 

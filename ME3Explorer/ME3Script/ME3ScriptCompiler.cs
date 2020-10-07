@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3Explorer;
 using ME3Explorer.ME3Script;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling;
 using ME3Script.Compiling.Errors;
@@ -19,7 +17,7 @@ namespace ME3Script
 {
     public static class ME3ScriptCompiler
     {
-        public static (ASTNode node, string text) DecompileExport(ExportEntry export)
+        public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib = null)
         {
             try
             {
@@ -27,13 +25,13 @@ namespace ME3Script
                 switch (export.ClassName)
                 {
                     case "Class":
-                        astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true);
+                        astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
                         break;
                     case "Function":
-                        astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>());
+                        astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
                         break;
                     case "State":
-                        astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>());
+                        astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
                         break;
                     case "Enum":
                         astNode = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());

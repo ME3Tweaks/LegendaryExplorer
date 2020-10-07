@@ -1,14 +1,9 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Language.ByteCode;
+﻿using ME3Script.Language.ByteCode;
 using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;
 
@@ -87,12 +82,9 @@ namespace ME3Script.Decompiling
                     return stopStatement;
 
                 // Goto label
-                case (byte)OpCodes.GotoLabel: //TODO: make got astnode
+                case (byte)OpCodes.GotoLabel:
                     PopByte();
-                    var labelExpr = DecompileExpression();
-                    var func = new SymbolReference(null, "goto");
-                    var call = new FunctionCall(func, new List<Expression> { labelExpr }, null, null);
-                    var gotoLabel = new ExpressionOnlyStatement(call);
+                    var gotoLabel = new StateGoto(DecompileExpression());
                     StatementLocations.Add(StartPositions.Pop(), gotoLabel);
                     return gotoLabel;
 

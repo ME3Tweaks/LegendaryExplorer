@@ -1,13 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ME3Explorer.Packages;
-using System.Diagnostics;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal.BinaryConverters;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Soundplorer
 {

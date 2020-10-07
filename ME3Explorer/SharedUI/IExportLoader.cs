@@ -1,4 +1,4 @@
-﻿using ME3Explorer.Packages;
+﻿using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

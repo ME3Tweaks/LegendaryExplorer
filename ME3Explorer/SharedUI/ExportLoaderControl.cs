@@ -1,9 +1,6 @@
-﻿using ME3Explorer.Packages;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
 using System.Windows.Controls;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

@@ -1,14 +1,9 @@
 ﻿using ME3Script.Analysis.Visitors;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Script.Parsing;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {

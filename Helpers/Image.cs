@@ -24,11 +24,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using StreamHelpers;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {

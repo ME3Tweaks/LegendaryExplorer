@@ -1,19 +1,11 @@
-﻿using ME3Script.Analysis.Symbols;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language;
+﻿using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
-using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal.BinaryConverters;
-using static ME3Explorer.Unreal.UnrealFlags;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing

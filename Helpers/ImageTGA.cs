@@ -21,7 +21,7 @@
 
 using System;
 using System.IO;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {

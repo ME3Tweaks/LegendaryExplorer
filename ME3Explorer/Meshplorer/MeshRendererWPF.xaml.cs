@@ -9,17 +9,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
 using SlavaGu.ConsoleAppLauncher;
 using Matrix = SharpDX.Matrix;
-using SkeletalMesh = ME3Explorer.Unreal.BinaryConverters.SkeletalMesh;
+using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -80,7 +83,6 @@ namespace ME3Explorer.Meshplorer
 
         private ModelPreview Preview;
 
-        private float PreviewRotation;
         private bool HasLoaded;
         private WorldMesh STMCollisionMesh;
 
@@ -93,19 +95,19 @@ namespace ME3Explorer.Meshplorer
                 if (Solid && CurrentLOD < Preview.LODs.Count)
                 {
                     SceneViewer.Context.Wireframe = false;
-                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.RotationY(PreviewRotation));
+                    Preview.Render(SceneViewer.Context, CurrentLOD, Matrix.Identity);
                 }
                 if (Wireframe)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
                 if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
                 {
                     SceneViewer.Context.Wireframe = true;
-                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderContext.WorldConstants ViewConstants = new SceneRenderContext.WorldConstants(Matrix.Transpose(SceneViewer.Context.Camera.ProjectionMatrix), Matrix.Transpose(SceneViewer.Context.Camera.ViewMatrix), Matrix.Identity);
                     SceneViewer.Context.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
                     SceneViewer.Context.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
@@ -115,21 +117,25 @@ namespace ME3Explorer.Meshplorer
 
         private void CenterView()
         {
-            if (Preview != null && Preview.LODs.Count > 0)
+            if (CurrentLOD >= 0)
             {
-                WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
-                SceneViewer.Context.Camera.Position = m.AABBCenter;
-                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
-                if (SceneViewer.Context.Camera.FirstPerson)
+                if (Preview != null && Preview.LODs.Count > 0)
                 {
-                    SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward * SceneViewer.Context.Camera.FocusDepth;
+                    WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
+                    SceneViewer.Context.Camera.Position = m.AABBCenter;
+                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 7.0f;
+                    if (SceneViewer.Context.Camera.FirstPerson)
+                    {
+                        SceneViewer.Context.Camera.Position -= SceneViewer.Context.Camera.CameraForward *
+                                                               SceneViewer.Context.Camera.FocusDepth;
+                    }
                 }
-            }
-            else
-            {
-                SceneViewer.Context.Camera.Position = Vector3.Zero;
-                SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
-                SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                else
+                {
+                    SceneViewer.Context.Camera.Position = Vector3.Zero;
+                    SceneViewer.Context.Camera.Pitch = -(float)Math.PI / 5.0f;
+                    SceneViewer.Context.Camera.Yaw = (float)Math.PI / 4.0f;
+                }
             }
         }
         #endregion
@@ -538,7 +544,7 @@ namespace ME3Explorer.Meshplorer
 
         private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)
         {
-            var matinst = new Unreal.Classes.MaterialInstanceConstant(entry);
+            var matinst = new MaterialInstanceConstant(entry);
             foreach (var tex in matinst.Textures)
             {
 
@@ -584,13 +590,18 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void MeshRenderer_ViewUpdate(object sender, float e)
+        private void MeshRenderer_ViewUpdate(object sender, float timeStep)
         {
             //Todo: Find a way to disable SceneViewer.Context.Update from firing if this control is not visible
             if (Rotating)
             {
-                PreviewRotation += .05f * e;
+                SceneViewer.Context.Camera.Yaw += 0.05f * timeStep;
             }
+            Matrix viewMatrix = SceneViewer.Context.Camera.ViewMatrix;
+            viewMatrix.Invert();
+            Vector3 eyePosition = viewMatrix.TranslationVector;
+            CameraLocation_TextBlock.Text = $"Camera POV: (Pitch= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Pitch)}deg , Yaw= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Yaw)}deg , EyePosition= {eyePosition.X},{eyePosition.Y},{eyePosition.Z} , FOV= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV)}deg )";
+            CameraLocation_TextBlock.ToolTip = CameraLocation_TextBlock.Text;
         }
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
@@ -600,6 +611,11 @@ namespace ME3Explorer.Meshplorer
                 var s = e.NewValue.Value.ToString();
                 SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
+        }
+
+        private void CopyCameraLocation_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(CameraLocation_TextBlock.Text);
         }
 
         public override void UnloadExport()

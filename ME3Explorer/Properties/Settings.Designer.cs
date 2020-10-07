@@ -12,7 +12,7 @@ namespace ME3Explorer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -182,36 +182,12 @@ namespace ME3Explorer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PropertyParsingME3UnknownArrayAsObject {
+        public bool PropertyParsingUnknownArrayAsObject {
             get {
-                return ((bool)(this["PropertyParsingME3UnknownArrayAsObject"]));
+                return ((bool)(this["PropertyParsingUnknownArrayAsObject"]));
             }
             set {
-                this["PropertyParsingME3UnknownArrayAsObject"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PropertyParsingME2UnknownArrayAsObject {
-            get {
-                return ((bool)(this["PropertyParsingME2UnknownArrayAsObject"]));
-            }
-            set {
-                this["PropertyParsingME2UnknownArrayAsObject"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PropertyParsingME1UnknownArrayAsObject {
-            get {
-                return ((bool)(this["PropertyParsingME1UnknownArrayAsObject"]));
-            }
-            set {
-                this["PropertyParsingME1UnknownArrayAsObject"] = value;
+                this["PropertyParsingUnknownArrayAsObject"] = value;
             }
         }
         

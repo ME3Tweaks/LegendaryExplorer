@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Threading;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Gammtek.Conduit.IO;
-using ME2Explorer;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.TlkManagerNS;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {
@@ -205,8 +200,8 @@ namespace ME3Explorer
                                         if (fs.HasFlag("Native"))
                                         {
                                             _subtext = "Native";
-                                            var nativeIndex =
-                                                EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
+                                            var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                                            var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
                                             if (nativeIndex > 0)
                                             {
                                                 _subtext += ", index " + nativeIndex;

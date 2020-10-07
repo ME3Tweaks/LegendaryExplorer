@@ -1,16 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
-using ME3Explorer.Packages;
 using ME3Explorer.Debugging;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.Classes;
 
 namespace ME3Explorer.ScriptDB
 {

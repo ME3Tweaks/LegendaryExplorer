@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ME3Explorer.Properties;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
 using Microsoft.Win32;
-using StreamHelpers;
 
 namespace ME3Explorer.GameInterop
 {

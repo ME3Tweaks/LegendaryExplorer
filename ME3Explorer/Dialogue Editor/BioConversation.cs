@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using ME3Explorer;
-using ME3Explorer.Packages;
+﻿using System.Collections.Generic;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.Dialogue_Editor.BioConversationExtended
 {

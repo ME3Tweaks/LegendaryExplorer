@@ -10,11 +10,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
@@ -116,7 +119,7 @@ namespace ME3Explorer
 
         public BinaryInterpreterWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Binary Interpreter", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Binary Interpreter", new WeakReference(this)));
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();
@@ -158,7 +161,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null && NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b.Tag))
             {
                 var pos = b.GetPos();
-                //terribly inefficient. I do'nt use endianconverter here as it's static and i don't want static endian setting
+                //terribly inefficient. I don't use endianconverter here as it's static and i don't want static endian setting
                 EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
                 { Endian = CurrentLoadedExport.FileRef.Endian };
                 er.Position = pos;

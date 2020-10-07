@@ -1,12 +1,8 @@
 ﻿using ME3Script.Analysis.Visitors;
 using ME3Script.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Script.Language.Tree
 {

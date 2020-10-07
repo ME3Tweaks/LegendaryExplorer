@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Packages;
 
 namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 {

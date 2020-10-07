@@ -4,13 +4,10 @@ using ME3Script.Language.Tree;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal.BinaryConverters;
-using static ME3Explorer.Unreal.UnrealFlags;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3Script.Analysis.Visitors
 {
@@ -541,7 +538,7 @@ namespace ME3Script.Analysis.Visitors
         #region Unused
         public bool VisitNode(CodeBody node)
         { throw new NotImplementedException(); }
-        public bool VisitNode(StateLabel node)
+        public bool VisitNode(Label node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(VariableIdentifier node)
@@ -580,6 +577,10 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ReturnNothingStatement node)
         { throw new NotImplementedException(); }
         public bool VisitNode(StopStatement node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(StateGoto node)
+        { throw new NotImplementedException(); }
+        public bool VisitNode(Goto node)
         { throw new NotImplementedException(); }
 
         public bool VisitNode(ExpressionOnlyStatement node)

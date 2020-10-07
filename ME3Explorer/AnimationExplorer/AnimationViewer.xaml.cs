@@ -4,29 +4,22 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.AssetDatabase;
-using ME3Explorer.AutoTOC;
 using ME3Explorer.GameInterop;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Win32;
 using SharpDX;
 using Path = System.IO.Path;
 
@@ -73,7 +66,7 @@ namespace ME3Explorer.AnimationExplorer
             }
 
             Instance = this;
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Animation Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Animation Viewer", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Animation Viewer" }
@@ -324,7 +317,7 @@ namespace ME3Explorer.AnimationExplorer
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
         }
 
-        private bool IsDatabaseLoaded() => Animations.Any();
+        private bool IsDatabaseLoaded() => Enumerable.Any(Animations);
 
         private void TryLoadDatabase()
         {
@@ -397,7 +390,7 @@ namespace ME3Explorer.AnimationExplorer
                 SetBusy("Loading Animation", () => LoadingAnimation = false);
                 int animUIndex = 0;
                 string filePath = null;
-                if (anim != null && anim.AnimUsages.Any())
+                if (anim != null && Enumerable.Any(anim.AnimUsages))
                 {
                     //CameraState = ECameraState.Fixed;
                     int fileListIndex;

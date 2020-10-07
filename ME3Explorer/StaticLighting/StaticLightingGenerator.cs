@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
+using Utilities = ME3ExplorerCore.Helpers.Utilities;
 
 namespace ME3Explorer.StaticLighting
 {
@@ -67,7 +66,7 @@ namespace ME3Explorer.StaticLighting
             #endregion
 
             #region Materials
-            using (IMEPackage udkResources = MEPackageHandler.OpenUDKPackage(App.CustomResourceFilePath(MEGame.UDK)))
+            using (IMEPackage udkResources = MEPackageHandler.OpenMEPackageFromStream(Utilities.GetCustomAppResourceStream(MEGame.UDK)))
             {
                 ExportEntry normDiffMat = udkResources.Exports.First(exp => exp.ObjectName == "NormDiffMat");
                 foreach (int matUIndex in allMats)

@@ -1,13 +1,7 @@
-﻿using Gammtek.Conduit.Extensions.IO;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.IO;
-using StreamHelpers;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -147,7 +141,7 @@ namespace ME3Explorer.Soundplorer
                         MemoryStream data = new MemoryStream();
                         ms.BaseStream.CopyToEx(data, (int)chunksize);
                         data.Position = 0;
-                        var str = data.ReadString(4, false);
+                        var str = data.ReadStringASCII(4);
                         isbEntry.DataAsStored = data.ToArray();
                         break;
                     case "FFIR":

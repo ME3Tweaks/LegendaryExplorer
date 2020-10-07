@@ -6,10 +6,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using ClosedXML.Excel;
-using Gammtek.Conduit.Extensions;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.CurveEd

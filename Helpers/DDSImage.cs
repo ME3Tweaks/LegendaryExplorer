@@ -36,13 +36,12 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using StreamHelpers;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using Gammtek.Conduit.IO;
-using Gammtek.Conduit.IO.Converters;
 using MassEffectModder.Images;
+using ME3ExplorerCore.Gammtek.IO.Converters;
+using ME3ExplorerCore.Helpers;
 using PixelFormat = MassEffectModder.Images.PixelFormat;
 
 namespace AmaroK86.ImageFormat

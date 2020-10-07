@@ -6,17 +6,19 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ByteSizeLib;
-using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
-using ME3Explorer.PackageEditorWPFControls;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
@@ -80,7 +82,7 @@ namespace ME3Explorer
         /// </summary>
         public MeshplorerWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Meshplorer WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Meshplorer WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Meshplorer" }
@@ -200,6 +202,7 @@ namespace ME3Explorer
                     MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
+                        bool isAlreadyChanged = CurrentExport.DataChanged;
                         byte[] dataBackup = CurrentExport.Data;
                         ObjectBinary objBin = ObjectBinary.From(CurrentExport);
                         foreach ((UIndex uIndex, _) in objBin.GetUIndexes(CurrentExport.Game))
@@ -211,6 +214,10 @@ namespace ME3Explorer
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, CurrentExport, upk, null, true,
                                                              out IEntry _);
                         CurrentExport.Data = dataBackup;
+                        if (!isAlreadyChanged)
+                        {
+                            CurrentExport.DataChanged = false;
+                        }
 
                         upk.Save();
                     }

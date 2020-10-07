@@ -4,13 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.Extensions;
-using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Lexing;
 using ME3Script.Parsing;
@@ -21,7 +19,7 @@ namespace ME3Script.Decompiling
     public static class ME3ObjectToASTConverter
     {
 
-        public static Class ConvertClass(UClass uClass, bool decompileBytecode)
+        public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null)
         {
             IMEPackage pcc = uClass.Export.FileRef;
 
@@ -110,7 +108,7 @@ namespace ME3Script.Decompiling
             return AST;
         }
 
-        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true)
+        public static State ConvertState(UState obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
         {
             if (containingClass is null)
             {
@@ -159,9 +157,9 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass).Decompile() : null;
+            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass, lib: lib).Decompile() : null;
 
-            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<StateLabel>(), null, null);
+            return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
         }
 
         public static Struct ConvertStruct(UScriptStruct obj)
@@ -420,7 +418,7 @@ namespace ME3Script.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true)
+        public static Function ConvertFunction(UFunction obj, UClass containingClass = null, bool decompileBytecode = true, FileLib lib = null)
         {
             if (containingClass is null)
             {
@@ -481,7 +479,7 @@ namespace ME3Script.Decompiling
             CodeBody body = null;
             if (decompileBytecode)
             {
-                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType).Decompile();
+                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType, lib).Decompile();
             }
 
 

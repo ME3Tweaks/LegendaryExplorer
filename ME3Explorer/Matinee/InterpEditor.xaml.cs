@@ -3,21 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ME3Explorer;
-using ME3Explorer.CurveEd;
-using ME3Explorer.Packages;
-using ME3Explorer.Sequence_Editor;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 
@@ -31,7 +23,7 @@ namespace ME3Explorer.Matinee
 
         public InterpEditor()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interp Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interp Viewer", new WeakReference(this)));
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";

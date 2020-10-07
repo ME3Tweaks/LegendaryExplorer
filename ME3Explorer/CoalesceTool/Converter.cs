@@ -6,11 +6,10 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.IO;
 using MassEffect3.Coalesce.Xml;
 using MassEffect3.FileFormats;
 using MassEffect3.FileFormats.Coalesced;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace MassEffect3.Coalesce
 {

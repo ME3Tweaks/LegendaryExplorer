@@ -1,42 +1,32 @@
 ﻿using ByteSizeLib;
-using ME3Explorer.Debugging;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
-using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using NAudio.Wave;
-using StreamHelpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Xml.Linq;
-using FontAwesome5.WPF;
 using FontAwesome5;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
+using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -85,7 +75,7 @@ namespace ME3Explorer.Soundplorer
 
         public SoundplorerWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundplorer WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundplorer WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Soundplorer" }
@@ -230,7 +220,7 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc|Package files|*.pcc;*.u;*.sfm;*.upk|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
+            OpenFileDialog d = new OpenFileDialog { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
@@ -696,190 +686,7 @@ namespace ME3Explorer.Soundplorer
 
         private void CompactAFC_Clicked(object sender, RoutedEventArgs e)
         {
-            var dlg = new CommonOpenFileDialog("Select mod's CookedPCConsole folder")
-            {
-                IsFolderPicker = true
-            };
-
-            if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
-            {
-                return;
-            }
-
-            string[] afcFiles = Directory.GetFiles(dlg.FileName, "*.afc", SearchOption.AllDirectories);
-            string[] pccFiles = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories);
-
-            if (afcFiles.Any() && pccFiles.Any())
-            {
-                string foldername = Path.GetFileName(dlg.FileName);
-                if (foldername.ToLower() == "cookedpcconsole")
-                {
-                    foldername = Path.GetFileName(Directory.GetParent(dlg.FileName).FullName);
-                }
-                string result = PromptDialog.Prompt(this, "Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
-                if (result != null)
-                {
-                    var regex = new Regex(@"^[a-zA-Z0-9_]+$");
-
-                    if (regex.IsMatch(result))
-                    {
-                        BusyText = "Finding all referenced audio";
-                        IsBusy = true;
-                        IsBusyTaskbar = true;
-                        soundPanel.FreeAudioResources(); // stop playing
-                        BackgroundWorker afcCompactWorker = new BackgroundWorker();
-                        afcCompactWorker.DoWork += CompactAFCBackgroundThread;
-                        afcCompactWorker.RunWorkerCompleted += compactAFCBackgroundThreadCompleted;
-                        afcCompactWorker.RunWorkerAsync((dlg.FileName, result));
-                        Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-                        {
-                            { "Toolname", "AFC Compactor" }
-                        });
-                    }
-                    else
-                    {
-                        MessageBox.Show("Only alphanumeric characters and underscores are allowed for the AFC filename.", "Error creating AFC");
-                    }
-                }
-            }
-
-        }
-
-        private void compactAFCBackgroundThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            IsBusy = false;
-            IsBusyTaskbar = false;
-        }
-
-        private void CompactAFCBackgroundThread(object sender, DoWorkEventArgs e)
-        {
-            (string path, string NewAFCBaseName) = (ValueTuple<string, string>)e.Argument;
-
-            var pccFiles = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
-            var afcFiles = Directory.GetFiles(path, "*.afc", SearchOption.AllDirectories);
-            //.Select(x => System.IO.Path.GetFileNameWithoutExtension(x).ToLower()).ToArray();
-
-            var referencedAFCAudio = new List<(string, int, int)>();
-
-            int i = 1;
-            foreach (string pccPath in pccFiles)
-            {
-                BusyText = $"Finding all referenced audio ({i}/{pccFiles.Length})";
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
-                {
-                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (ExportEntry exp in wwiseStreamExports)
-                    {
-                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
-                        if (afcNameProp != null)
-                        {
-                            var afcFile = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
-                            if (afcFile != null)
-                            {
-                                string afcName = afcNameProp.ToString().ToLower();
-                                int readPos = exp.Data.Length - 8;
-                                int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                                int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
-                                referencedAFCAudio.Add((afcName, audioSize, audioOffset));
-
-                            }
-                        }
-                    }
-                }
-                i++;
-            }
-            referencedAFCAudio = referencedAFCAudio.Distinct().ToList();
-
-            //extract referenced audio
-            BusyText = "Extracting referenced audio";
-            var extractedAudioMap = new Dictionary<(string, int, int), byte[]>();
-            i = 1;
-            foreach ((string afcName, int audioSize, int audioOffset) reference in referencedAFCAudio)
-            {
-                BusyText = $"Extracting referenced audio ({i} / {referencedAFCAudio.Count})";
-                var afcPath = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(reference.afcName, StringComparison.InvariantCultureIgnoreCase));
-                FileStream stream = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
-                stream.Seek(reference.audioOffset, SeekOrigin.Begin);
-                var extractedAudio = new byte[reference.audioSize];
-                stream.Read(extractedAudio, 0, reference.audioSize);
-                stream.Close();
-                extractedAudioMap[reference] = extractedAudio;
-                i++;
-            }
-
-            var newAFCEntryPointMap = new Dictionary<(string, int, int), long>();
-            i = 1;
-            string newAfcPath = Path.Combine(path, NewAFCBaseName + ".afc");
-            if (File.Exists(newAfcPath))
-            {
-                File.Delete(newAfcPath);
-            }
-            FileStream newAFCStream = new FileStream(newAfcPath, FileMode.CreateNew, FileAccess.Write);
-
-            foreach ((string, int, int) reference in referencedAFCAudio)
-            {
-                BusyText = $"Building new AFC file ({i} / {referencedAFCAudio.Count})";
-                newAFCEntryPointMap[reference] = newAFCStream.Position; //save entry point in map
-                newAFCStream.Write(extractedAudioMap[reference], 0, extractedAudioMap[reference].Length);
-                i++;
-            }
-            newAFCStream.Close();
-            extractedAudioMap = null; //clean out ram on next GC
-
-            i = 1;
-            foreach (string pccPath in pccFiles)
-            {
-                BusyText = $"Updating audio references ({i}/{pccFiles.Length})";
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
-                {
-                    bool shouldSave = false;
-                    List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
-                    foreach (ExportEntry exp in wwiseStreamExports)
-                    {
-                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
-                        if (afcNameProp != null)
-                        {
-                            var afcPath = afcFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
-                            if (afcPath != null)
-                            {
-                                //it's in list of AFCs
-                                string afcName = afcNameProp.ToString().ToLower();
-                                int readPos = exp.Data.Length - 8;
-                                int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                                int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
-                                var key = (afcName, audioSize, audioOffset);
-                                if (newAFCEntryPointMap.TryGetValue(key, out long newOffset))
-                                {
-                                    //its a match
-                                    afcNameProp.Value = NewAFCBaseName;
-                                    Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        exp.WriteProperty(afcNameProp);
-                                        byte[] newData = exp.Data;
-                                        Buffer.BlockCopy(BitConverter.GetBytes((int)newOffset), 0, newData, newData.Length - 4, 4); //update AFC audio offset
-                                        exp.Data = newData;
-                                        if (exp.DataChanged)
-                                        {
-                                            //don't mark for saving if the data didn't actually change (e.g. trying to compact a compacted AFC).
-                                            shouldSave = true;
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-
-                    if (shouldSave)
-                    {
-                        // Must run on the UI thread or the tool interop will throw an exception
-                        // because we are on a background thread.
-                        Application.Current.Dispatcher.Invoke(pack.Save);
-                    }
-                }
-                i++;
-            }
-            BusyText = "Rebuild complete";
-            System.Threading.Thread.Sleep(2000);
+            new AFCCompactorUI.AFCCompactorUI().Show();
         }
 
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)
@@ -914,7 +721,7 @@ namespace ME3Explorer.Soundplorer
 
             if (location != null)
             {
-                using (Stream s = WwiseHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
+                using (Stream s = WwiseStreamHelper.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
                 {
                     using (var fileStream = File.Create(location))
                     {
@@ -990,7 +797,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
+                            var w = spExport.Export.GetBinaryData<WwiseStream>();
                             if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
                             {
                                 MessageBox.Show("Done.");
@@ -1013,7 +820,7 @@ namespace ME3Explorer.Soundplorer
                         };
                         if (d.ShowDialog() == true)
                         {
-                            if (WwiseHelper.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
+                            if (WwiseStreamHelper.ExtractRawFromSourceToFile(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -1043,7 +850,7 @@ namespace ME3Explorer.Soundplorer
 
                     if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
                     {
-                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -1075,9 +882,9 @@ namespace ME3Explorer.Soundplorer
                 {
                     string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (WwiseHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
+                    if (WwiseStreamHelper.ExtractRawFromSourceToFile(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
                     {
-                        MemoryStream oggStream = WwiseHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
+                        MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
                         //string outputOggPath = 
                         if (oggStream != null)// && File.Exists(outputOggPath))
                         {
@@ -1336,7 +1143,7 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
             }
-            
+
             return;
             */
             if (SoundExports_ListBox.SelectedItem is SoundplorerExport spExport)
@@ -1697,39 +1504,39 @@ namespace ME3Explorer.Soundplorer
             switch (Export.ClassName)
             {
                 case "WwiseStream":
-                {
-                    WwiseStream w = Export.GetBinaryData<WwiseStream>();
-                    string afcPath = w.GetPathToAFC();
-                    if (afcPath == "")
                     {
-                        SubText = "Could not find AFC";
-                    }
-                    else
-                    {
-                        TimeSpan? time = w.GetSoundLength();
-                        if (time != null)
+                        WwiseStream w = Export.GetBinaryData<WwiseStream>();
+                        string afcPath = w.GetPathToAFC();
+                        if (afcPath == "")
                         {
-                            //here backslash must be present to tell that parser colon is
-                            //not the part of format, it just a character that we want in output
-                            SubText = time.Value.ToString(@"mm\:ss\:fff");
+                            SubText = "Could not find AFC";
                         }
                         else
                         {
-                            SubText = "Error getting length, may be unsupported";
+                            TimeSpan? time = w.GetSoundLength();
+                            if (time != null)
+                            {
+                                //here backslash must be present to tell that parser colon is
+                                //not the part of format, it just a character that we want in output
+                                SubText = time.Value.ToString(@"mm\:ss\:fff");
+                            }
+                            else
+                            {
+                                SubText = "Error getting length, may be unsupported";
+                            }
                         }
+                        NeedsLoading = false;
+                        Icon = EFontAwesomeIcon.Solid_VolumeUp;
+                        break;
                     }
-                    NeedsLoading = false;
-                    Icon = EFontAwesomeIcon.Solid_VolumeUp;
-                    break;
-                }
                 case "WwiseBank":
-                {
-                    var bank = Export.GetBinaryData<WwiseBank>();
-                    SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
-                    NeedsLoading = false;
-                    Icon = EFontAwesomeIcon.Solid_University;
-                    break;
-                }
+                    {
+                        var bank = Export.GetBinaryData<WwiseBank>();
+                        SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
+                        NeedsLoading = false;
+                        Icon = EFontAwesomeIcon.Solid_University;
+                        break;
+                    }
                 case "SoundNodeWave":
                     SubText = "";
                     NeedsLoading = false;

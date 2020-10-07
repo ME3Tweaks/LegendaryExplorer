@@ -1,11 +1,5 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Gammtek.Conduit.MassEffect3.SFXGame;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 

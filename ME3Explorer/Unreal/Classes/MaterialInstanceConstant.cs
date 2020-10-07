@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -30,7 +29,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public MaterialInstanceConstant(ExportEntry export)
         {
-            this.Export = export;
+            Export = export;
             ReadMaterial(export);
 
             //bool me1Parsed = false;
@@ -59,6 +58,7 @@ namespace ME3Explorer.Unreal.Classes
             //}
         }
 
+        // TODO: THIS NEEDS MOVED OUT OF LIBRARY AS ITS FOR RENDERING
         private void ReadMaterial(ExportEntry export)
         {
             if (export.ClassName == "Material")
@@ -198,26 +198,6 @@ namespace ME3Explorer.Unreal.Classes
                 }
 
             }
-        }
-
-        public TreeNode ToTree()
-        {
-            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName.Instanced}\"");
-            for (int i = 0; i < Textures.Count; i++)
-            {
-                string s = $"{Textures[i].FullPath} = #{Textures[i].UIndex}";
-                s += $" \"{Export.FileRef.getObjectName(Textures[i].UIndex)}\"";
-                res.Nodes.Add(s);
-            }
-            TreeNode propsnode = new TreeNode("Properties");
-            res.Nodes.Add(propsnode);
-
-            foreach (var prop in Export.GetProperties())
-            {
-                propsnode.Nodes.Add(new TreeNode($"{prop.Name} | {prop.PropType}"));
-            }
-
-            return res;
         }
     }
 }

@@ -5,21 +5,16 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Be.Windows.Forms;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
-using StreamHelpers;
 using Path = System.IO.Path;
 
 namespace ME3Explorer.FileHexViewer
@@ -31,6 +26,8 @@ namespace ME3Explorer.FileHexViewer
     {
         //DO NOT USE WPFBASE - THIS IS NOT AN EDITOR
         private IMEPackage pcc;
+        private DLCPackage dlcPackage;
+
         private byte[] bytes;
         private List<string> RFiles;
         private readonly string FileHexViewerDataFolder = Path.Combine(App.AppDataFolder, @"FileHexViewerWPF\");
@@ -72,6 +69,10 @@ namespace ME3Explorer.FileHexViewer
             {
                 pcc = MEPackageHandler.OpenMEPackage(fileName);
             }
+            else if (lowerFilename.EndsWith(".sfar"))
+            {
+                dlcPackage = new DLCPackage(fileName);
+            }
 
             bytes = File.ReadAllBytes(fileName);
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(bytes);
@@ -83,158 +84,268 @@ namespace ME3Explorer.FileHexViewer
             UnusedSpaceList.ClearEx();
             if (pcc != null)
             {
-                List<UsedSpace> used = new List<UsedSpace>();
-                used.Add(new UsedSpace
-                {
-                    UsedFor = "Package Header",
-                    UsedSpaceStart = 0,
-                    UsedSpaceEnd = pcc.NameOffset
-                });
-
-                inStream.Seek(pcc.NameOffset, SeekOrigin.Begin);
-                for (int i = 0; i < pcc.NameCount; i++)
-                {
-                    int strLength = inStream.ReadInt32();
-                    if (strLength < 0)
-                    {
-                        inStream.ReadStringUnicodeNull(strLength * -2);
-                        if (pcc.Game == MEGame.ME2)
-                        {
-                            inStream.ReadInt32();
-                        }
-                    }
-                    else if (strLength > 0)
-                    {
-                        inStream.ReadStringASCIINull(strLength); //-1 cause we also read trailing null.
-                        if (pcc.Game != MEGame.ME2)
-                        {
-                            inStream.ReadInt64(); //Read 8 bytes
-                        }
-                        else
-                        {
-                            inStream.ReadInt32(); //4 bytes
-                        }
-                    }
-                }
-
-                used.Add(new UsedSpace
-                {
-                    UsedFor = "Name Table",
-                    UsedSpaceStart = pcc.NameOffset,
-                    UsedSpaceEnd = (int)inStream.Position
-                });
-
-                for (int i = 0; i < pcc.ImportCount; i++)
-                {
-                    inStream.Position += 28;
-                }
-
-                used.Add(new UsedSpace
-                {
-                    UsedFor = "Import Table",
-                    UsedSpaceStart = pcc.ImportOffset,
-                    UsedSpaceEnd = (int)inStream.Position
-                });
-
-                inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
-                foreach (ExportEntry exp in pcc.Exports)
-                {
-                    inStream.Position += exp.Header.Length;
-                }
-
-                used.Add(new UsedSpace
-                {
-                    UsedFor = "Export Metadata Table",
-                    UsedSpaceStart = pcc.ExportOffset,
-                    UsedSpaceEnd = (int)inStream.Position
-                });
-
-                used.Add(new UsedSpace
-                {
-                    UsedFor = "Dependency Table (Unused)",
-                    UsedSpaceStart = ((MEPackage)pcc).DependencyTableOffset,
-                    UsedSpaceEnd = ((MEPackage)pcc).FullHeaderSize
-                });
-
-                List<UsedSpace> usedExportsSpaces = new List<UsedSpace>();
-                inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
-                foreach (ExportEntry exp in pcc.Exports)
-                {
-                    usedExportsSpaces.Add(new UsedSpace
-                    {
-                        UsedFor = $"Export {exp.UIndex} - {exp.ObjectName} ({exp.ClassName})",
-                        UsedSpaceStart = exp.DataOffset,
-                        UsedSpaceEnd = exp.DataOffset + exp.DataSize,
-                        Export = exp
-                    });
-                }
-
-                usedExportsSpaces = usedExportsSpaces.OrderBy(x => x.UsedSpaceStart).ToList();
-                int endOffset = 0;
-                List<UsedSpace> displayedUsedSpace = new List<UsedSpace>();
-                foreach (var usedSpace in usedExportsSpaces)
-                {
-                    if (endOffset != 0 && usedSpace.UsedSpaceStart != endOffset)
-                    {
-                        //unused space
-                        displayedUsedSpace.Add(new UsedSpace()
-                        {
-                            UsedFor = "Unused space",
-                            UsedSpaceStart = endOffset,
-                            UsedSpaceEnd = usedSpace.UsedSpaceStart,
-                            Unused = true
-                        });
-                        endOffset = usedSpace.UsedSpaceStart;
-                    }
-                    displayedUsedSpace.Add(usedSpace);
-                    endOffset = usedSpace.UsedSpaceEnd;
-                }
-
-                //List<UsedSpace> continuousBlocks = new List<UsedSpace>();
-                //UsedSpace continuous = new UsedSpace
-                //{
-                //    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName.Instanced} ({usedExportsSpaces[0].Export.ClassName})",
-                //    UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
-                //    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
-                //    Export = usedExportsSpaces[0].Export
-                //};
-
-                //for (int i = 1; i < usedExportsSpaces.Count; i++)
-                //{
-                //    UsedSpace u = usedExportsSpaces[i];
-                //    if (continuous.UsedSpaceEnd == u.UsedSpaceStart)
-                //    {
-                //        continuous.UsedSpaceEnd = u.UsedSpaceEnd;
-                //    }
-                //    else
-                //    {
-                //        if (continuous.UsedSpaceEnd > u.UsedSpaceStart)
-                //        {
-                //            Debug.WriteLine("Possible overlap detected!");
-                //        }
-                //        continuousBlocks.Add(continuous);
-                //        UsedSpace unused = new UsedSpace()
-                //        {
-                //            UsedFor = "Unused space",
-                //            UsedSpaceStart = continuous.UsedSpaceEnd,
-                //            UsedSpaceEnd = u.UsedSpaceStart,
-                //            Unused = true
-                //        };
-                //        continuousBlocks.Add(unused);
-
-                //        continuous = new UsedSpace
-                //        {
-                //            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName.Instanced} ({u.Export.ClassName})",
-                //            UsedSpaceStart = u.UsedSpaceStart,
-                //            UsedSpaceEnd = u.UsedSpaceEnd,
-                //            Export = u.Export
-                //        };
-                //    }
-                //}
-                //continuousBlocks.Add(continuous);
-                UnusedSpaceList.AddRange(used);
-                UnusedSpaceList.AddRange(displayedUsedSpace);
+                parsePackage(inStream);
             }
+            else if (dlcPackage != null)
+            {
+                parseDLC(inStream);
+            }
+        }
+
+        private void parseDLC(MemoryStream inStream)
+        {
+            var er = EndianReader.SetupForReading(inStream, 0x53464152, out int magic);
+            List<UsedSpace> used = new List<UsedSpace>();
+            used.Add(new UsedSpace
+            {
+                UsedFor = "SFAR Header",
+                UsedSpaceStart = (int)er.Position,
+                UsedSpaceEnd = (int)er.Position + 6 * 4 + 4 //6 uint, 4 compression scheme
+            });
+            er.Position = 8 * 4; //includes magic
+
+            // File entry headers
+            foreach (var fes in dlcPackage.Files)
+            {
+                used.Add(new UsedSpace
+                {
+                    UsedFor = $"SFAR File Entry {Path.GetFileName(fes.FileName)}",
+                    UsedSpaceStart = (int)fes.MyOffset,
+                    UsedSpaceEnd = (int)fes.MyOffset + 0x1E //Header struct item
+                });
+            }
+
+            used.Add(new UsedSpace
+            {
+                UsedFor = $"Block Table",
+                UsedSpaceStart = (int)dlcPackage.Header.BlockTableOffset,
+                UsedSpaceEnd = (int)(dlcPackage.Header.BlockTableOffset + (2 * dlcPackage.Header.FileCount))//Header struct item
+            });
+
+            foreach (var fes in dlcPackage.Files)
+            {
+                er.Position = fes.BlockOffsets[0];
+                int i = 0;
+                long left = fes.RealUncompressedSize;
+                Debug.WriteLine($"{fes.RealDataOffset:X8}");
+
+                while (left > 0)
+                {
+                    var uncompressedBlockSize = (uint)Math.Min(left, fes.Header.MaxBlockSize);
+                    if (fes.BlockSizeTableIndex == 0xFFFFFFFF)
+                    {
+                        used.Add(new UsedSpace
+                        {
+                            UsedFor = $"{Path.GetFileName(fes.FileName)} Data Block {i}",
+                            UsedSpaceStart = (int)er.Position,
+                            UsedSpaceEnd = (int)(er.Position + fes.RealUncompressedSize)
+                        });
+                        er.Position += fes.RealUncompressedSize;
+                        break;
+                    }
+                    else
+                    {
+
+                        used.Add(new UsedSpace
+                        {
+                            UsedFor = $"{Path.GetFileName(fes.FileName)} Data Block {i}",
+                            UsedSpaceStart = (int)er.Position,
+                            UsedSpaceEnd = (int)er.Position + fes.BlockSizes[i]
+                        });
+                        er.Position += fes.BlockSizes[i];
+                    }
+
+                    i++;
+                    left -= uncompressedBlockSize;
+                }
+            }
+
+            used = used.OrderBy(x => x.UsedSpaceStart).ToList();
+            List<UsedSpace> unusedSpace = new List<UsedSpace>();
+            int endOffset = used[0].UsedSpaceEnd;
+            bool first = true;
+            foreach (var usedSpace in used)
+            {
+                if (first)
+                {
+                    first = false;
+                    continue;
+                }
+                if (endOffset != 0 && usedSpace.UsedSpaceStart != endOffset)
+                {
+                    //unused space
+                    unusedSpace.Add(new UsedSpace()
+                    {
+                        UsedFor = "Unused space",
+                        UsedSpaceStart = endOffset,
+                        UsedSpaceEnd = usedSpace.UsedSpaceStart,
+                        Unused = true
+                    });
+                    endOffset = usedSpace.UsedSpaceStart;
+                }
+                //unusedSpace.Add(usedSpace);
+                endOffset = usedSpace.UsedSpaceEnd;
+            }
+
+
+            UnusedSpaceList.AddRange(used);
+            UnusedSpaceList.AddRange(unusedSpace);
+            UnusedSpaceList.Sort(x => x.UsedSpaceStart);
+        }
+
+        private void parsePackage(Stream inStream)
+        {
+            List<UsedSpace> used = new List<UsedSpace>();
+            used.Add(new UsedSpace
+            {
+                UsedFor = "Package Header",
+                UsedSpaceStart = 0,
+                UsedSpaceEnd = pcc.NameOffset
+            });
+
+            inStream.Seek(pcc.NameOffset, SeekOrigin.Begin);
+            for (int i = 0; i < pcc.NameCount; i++)
+            {
+                int strLength = inStream.ReadInt32();
+                if (strLength < 0)
+                {
+                    inStream.ReadStringUnicodeNull(strLength * -2);
+                    if (pcc.Game == MEGame.ME2)
+                    {
+                        inStream.ReadInt32();
+                    }
+                }
+                else if (strLength > 0)
+                {
+                    inStream.ReadStringASCIINull(strLength); //-1 cause we also read trailing null.
+                    if (pcc.Game != MEGame.ME2)
+                    {
+                        inStream.ReadInt64(); //Read 8 bytes
+                    }
+                    else
+                    {
+                        inStream.ReadInt32(); //4 bytes
+                    }
+                }
+            }
+
+            used.Add(new UsedSpace
+            {
+                UsedFor = "Name Table",
+                UsedSpaceStart = pcc.NameOffset,
+                UsedSpaceEnd = (int)inStream.Position
+            });
+
+            for (int i = 0; i < pcc.ImportCount; i++)
+            {
+                inStream.Position += 28;
+            }
+
+            used.Add(new UsedSpace
+            {
+                UsedFor = "Import Table",
+                UsedSpaceStart = pcc.ImportOffset,
+                UsedSpaceEnd = (int)inStream.Position
+            });
+
+            inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
+            foreach (ExportEntry exp in pcc.Exports)
+            {
+                inStream.Position += exp.Header.Length;
+            }
+
+            used.Add(new UsedSpace
+            {
+                UsedFor = "Export Metadata Table",
+                UsedSpaceStart = pcc.ExportOffset,
+                UsedSpaceEnd = (int)inStream.Position
+            });
+
+            used.Add(new UsedSpace
+            {
+                UsedFor = "Dependency Table (Unused)",
+                UsedSpaceStart = ((MEPackage)pcc).DependencyTableOffset,
+                UsedSpaceEnd = ((MEPackage)pcc).FullHeaderSize
+            });
+
+            List<UsedSpace> usedExportsSpaces = new List<UsedSpace>();
+            inStream.Seek(pcc.ExportOffset, SeekOrigin.Begin);
+            foreach (ExportEntry exp in pcc.Exports)
+            {
+                usedExportsSpaces.Add(new UsedSpace
+                {
+                    UsedFor = $"Export {exp.UIndex} - {exp.ObjectName} ({exp.ClassName})",
+                    UsedSpaceStart = exp.DataOffset,
+                    UsedSpaceEnd = exp.DataOffset + exp.DataSize,
+                    Export = exp
+                });
+            }
+
+            usedExportsSpaces = usedExportsSpaces.OrderBy(x => x.UsedSpaceStart).ToList();
+            int endOffset = 0;
+            List<UsedSpace> displayedUsedSpace = new List<UsedSpace>();
+            foreach (var usedSpace in usedExportsSpaces)
+            {
+                if (endOffset != 0 && usedSpace.UsedSpaceStart != endOffset)
+                {
+                    //unused space
+                    displayedUsedSpace.Add(new UsedSpace()
+                    {
+                        UsedFor = "Unused space",
+                        UsedSpaceStart = endOffset,
+                        UsedSpaceEnd = usedSpace.UsedSpaceStart,
+                        Unused = true
+                    });
+                    endOffset = usedSpace.UsedSpaceStart;
+                }
+                displayedUsedSpace.Add(usedSpace);
+                endOffset = usedSpace.UsedSpaceEnd;
+            }
+
+            //List<UsedSpace> continuousBlocks = new List<UsedSpace>();
+            //UsedSpace continuous = new UsedSpace
+            //{
+            //    UsedFor = $"Continuous Export Data {usedExportsSpaces[0].Export.UIndex} {usedExportsSpaces[0].Export.ObjectName.Instanced} ({usedExportsSpaces[0].Export.ClassName})",
+            //    UsedSpaceStart = usedExportsSpaces[0].UsedSpaceStart,
+            //    UsedSpaceEnd = usedExportsSpaces[0].UsedSpaceEnd,
+            //    Export = usedExportsSpaces[0].Export
+            //};
+
+            //for (int i = 1; i < usedExportsSpaces.Count; i++)
+            //{
+            //    UsedSpace u = usedExportsSpaces[i];
+            //    if (continuous.UsedSpaceEnd == u.UsedSpaceStart)
+            //    {
+            //        continuous.UsedSpaceEnd = u.UsedSpaceEnd;
+            //    }
+            //    else
+            //    {
+            //        if (continuous.UsedSpaceEnd > u.UsedSpaceStart)
+            //        {
+            //            Debug.WriteLine("Possible overlap detected!");
+            //        }
+            //        continuousBlocks.Add(continuous);
+            //        UsedSpace unused = new UsedSpace()
+            //        {
+            //            UsedFor = "Unused space",
+            //            UsedSpaceStart = continuous.UsedSpaceEnd,
+            //            UsedSpaceEnd = u.UsedSpaceStart,
+            //            Unused = true
+            //        };
+            //        continuousBlocks.Add(unused);
+
+            //        continuous = new UsedSpace
+            //        {
+            //            UsedFor = $"Continuous Export Data {u.Export.UIndex} {u.Export.ObjectName.Instanced} ({u.Export.ClassName})",
+            //            UsedSpaceStart = u.UsedSpaceStart,
+            //            UsedSpaceEnd = u.UsedSpaceEnd,
+            //            Export = u.Export
+            //        };
+            //    }
+            //}
+            //continuousBlocks.Add(continuous);
+            UnusedSpaceList.AddRange(used);
+            UnusedSpaceList.AddRange(displayedUsedSpace);
         }
 
         private void FileHexViewerWPF_OnLoaded(object sender, RoutedEventArgs e)

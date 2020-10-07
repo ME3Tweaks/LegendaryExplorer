@@ -1,15 +1,10 @@
-﻿using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer.Unreal.Classes;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Gammtek.Conduit.IO;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek.IO;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -79,7 +74,7 @@ namespace ME3Explorer.Soundplorer
             {
                 string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
                 File.WriteAllBytes(basePath, DataAsStored);
-                MemoryStream waveStream = WwiseHelper.ConvertOggToWave(basePath);
+                MemoryStream waveStream = WwiseStreamHelper.ConvertOggToWave(basePath);
                 return waveStream;
             }
             Debug.WriteLine("Unsupported codec for getting wave: " + CodecID);

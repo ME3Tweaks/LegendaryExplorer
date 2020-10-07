@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -109,21 +109,30 @@ namespace ME3Explorer.Sequence_Editor
                     while (classInfo != null && (varLinksProp == null || outLinksProp == null))
                     {
                         string filepath = Path.Combine(MEDirectories.BioGamePath(game), classInfo.pccPath);
+                        Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
-                            filepath = classInfo.pccPath; //Used for dynamic lookup
+                            loadStream = new MemoryStream(File.ReadAllBytes(classInfo.pccPath));
                         }
                         else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            filepath = App.CustomResourceFilePath(game);
+                            loadStream = Utilities.GetCustomAppResourceStream(game);
                         }
                         else if (game == MEGame.ME1)
                         {
                             filepath = Path.Combine(ME1Directory.gamePath, classInfo.pccPath); //for files from ME1 DLC
+                            if (File.Exists(filepath))
+                            {
+                                loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                            }
                         }
-                        if (File.Exists(filepath))
+                        else if (File.Exists(filepath))
                         {
-                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        }
+                        if (loadStream != null)
+                        {
+                            using IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
                             UClass classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
@@ -138,7 +147,7 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -157,7 +166,7 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -211,7 +220,7 @@ namespace ME3Explorer.Sequence_Editor
             var seqObj = new ExportEntry(pcc, properties: GetSequenceObjectDefaults(pcc, className, game))
             {
                 ObjectName = pcc.GetNextIndexedName(className),
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className)
+                Class = EntryImporterExtended.EnsureClassIsInFile(pcc, className)
             };
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);

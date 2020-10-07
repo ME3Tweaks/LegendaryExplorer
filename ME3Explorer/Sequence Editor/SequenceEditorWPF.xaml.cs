@@ -1,15 +1,10 @@
-﻿using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
-using ME3Explorer.SequenceObjects;
+﻿using ME3Explorer.SequenceObjects;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SharedUI.PeregrineTreeView;
-using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -19,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Gammtek.Conduit.Extensions;
 using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -31,10 +25,19 @@ using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.Packages;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -84,7 +87,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Sequence Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {
                 { "Toolname", "Sequence Editor" }
@@ -264,12 +267,12 @@ namespace ME3Explorer.Sequence_Editor
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
                 UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
-                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName);
+                classEntry = EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName);
             }
             else
             {
                 SetBusy($"Adding {info.ClassName}");
-                classEntry = await Task.Run(() => EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
+                classEntry = await Task.Run(() => EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
             }
             if (classEntry is null)
             {
@@ -404,8 +407,15 @@ namespace ME3Explorer.Sequence_Editor
 
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
-                    value.IsSelected = true;
-                    LoadSequence((ExportEntry)value.Entry);
+                    if (value.Entry is ExportEntry exportEntry)
+                    {
+                        value.IsSelected = true;
+                        LoadSequence(exportEntry);
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, "Can't select an imported sequence");
+                    }
                 }
             }
         }
@@ -435,7 +445,7 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     LoadFile(d.FileName);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (!App.IsDebug)
                 {
                     MessageBox.Show(this, "Unable to open file:\n" + ex.Message);
                 }
@@ -444,7 +454,6 @@ namespace ME3Explorer.Sequence_Editor
 
         private bool PackageIsLoaded()
         {
-            Debug.WriteLine("Package Is Loaded.");
             return Pcc != null;
         }
 
@@ -484,7 +493,7 @@ namespace ME3Explorer.Sequence_Editor
                 variablesToolBox.Classes = SequenceObjectCreator.GetSequenceVariables(Pcc.Game).OrderBy(info => info.ClassName).ToList();
 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!App.IsDebug)
             {
                 MessageBox.Show(this, "Error:\n" + ex.Message);
                 Title = "Sequence Editor";
@@ -577,9 +586,22 @@ namespace ME3Explorer.Sequence_Editor
                         var propSequenceReference = exportEntry.GetProperty<ObjectProperty>("oSequenceReference");
                         if (propSequenceReference != null)
                         {
-                            TreeViewEntry t = FindSequences(pcc.GetUExport(propSequenceReference.Value));
-                            SequenceExports.Add(exportEntry);
-                            root.Sublinks.Add(t);
+                            TreeViewEntry treeViewEntry = null;
+
+                            if (pcc.TryGetUExport(propSequenceReference.Value, out var exportRef))
+                            {
+                                treeViewEntry = FindSequences(exportRef);
+                                SequenceExports.Add(exportEntry);
+                            }
+                            else if (pcc.TryGetImport(propSequenceReference.Value, out var importRef))
+                            {
+                                treeViewEntry = new TreeViewEntry(importRef, $"#{importRef.UIndex}: {importRef.InstancedFullPath}");
+                            }
+
+                            if (treeViewEntry != null)
+                            {
+                                root.Sublinks.Add(treeViewEntry);
+                            }
                         }
                     }
                 }
@@ -2092,15 +2114,24 @@ namespace ME3Explorer.Sequence_Editor
                     string convFilePath = noExtensionPath + loc_int + extension;
                     if (File.Exists(convFilePath))
                     {
-                        using (var convFile = MEPackageHandler.OpenMEPackage(convFilePath))
+                        using var convFile = MEPackageHandler.OpenMEPackage(convFilePath);
+                        var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
+                        if (convExport != null)
                         {
-                            var convExport = convFile.Exports.FirstOrDefault(x => x.ObjectName == convImport.ObjectName);
-                            if (convExport != null)
-                            {
-                                AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
-                                new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
-                                return;
-                            }
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
+                            return;
+                        }
+                    }
+                    else if (EntryImporter.ResolveImport(convImport) is ExportEntry fauxExport)
+                    {
+                        using var convFile = MEPackageHandler.OpenMEPackage(fauxExport.FileRef.FilePath);
+                        var convExport = convFile.GetUExport(fauxExport.UIndex);
+                        if (convExport != null)
+                        {
+                            AllowWindowRefocus = false; //prevents flicker effect when windows try to focus and then package editor activates
+                            new Dialogue_Editor.DialogueEditorWPF(convExport).Show();
+                            return;
                         }
                     }
                 }

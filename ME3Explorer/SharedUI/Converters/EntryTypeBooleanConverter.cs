@@ -1,8 +1,7 @@
-﻿using ME3Explorer.Packages;
-using System;
+﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI.Converters
 {

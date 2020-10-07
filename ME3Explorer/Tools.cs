@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using ME3Explorer.Sequence_Editor;
@@ -11,7 +9,10 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
+using ME3Explorer.SFAREditor;
+using ME3ExplorerCore.MEDirectories;
 
 namespace ME3Explorer
 {
@@ -73,11 +74,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Memory Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzerUI),
                 icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
                 open = () =>
                 {
-                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
+                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzerUI()).Show();
                 },
                 tags = new List<string> { "utility", "toolsetdev" },
                 subCategory = "For Toolset Devs Only",
@@ -87,7 +88,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "File Hex Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(FileHexViewerWPF),
                 icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
                 open = () =>
                 {
@@ -156,6 +157,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "AFC Compactor",
+                type = typeof(TFCCompactor.TFCCompactor),
+                icon = Application.Current.FindResource("iconAFCCompactor") as ImageSource,
+                open = () =>
+                {
+                    (new AFCCompactorUI.AFCCompactorUI()).Show();
+                },
+                tags = new List<string> { "utility", "deployment", "audio", },
+                subCategory = "Deployment",
+                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
+            });
+            set.Add(new Tool
+            {
                 name = "ASI Manager",
                 type = typeof(ASI.ASIManager),
                 icon = Application.Current.FindResource("iconASIManager") as ImageSource,
@@ -209,13 +223,13 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "DLC Unpacker",
-                type = typeof(DLCUnpacker.DLCUnpacker),
+                type = typeof(DLCUnpacker.DLCUnpackerUI),
                 icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
                 open = () =>
                 {
                     if (ME3Directory.gamePath != null)
                     {
-                        new DLCUnpacker.DLCUnpacker().Show();
+                        new DLCUnpacker.DLCUnpackerUI().Show();
                     }
                     else
                     {
@@ -254,19 +268,19 @@ namespace ME3Explorer
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
 #if DEBUG
-            set.Add(new Tool
-            {
-                name = "Meshplorer",
-                type = typeof(Meshplorer.Meshplorer),
-                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer.Meshplorer()).Show();
-                },
-                tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
-            });
+            //set.Add(new Tool
+            //{
+            //    name = "Meshplorer",
+            //    type = typeof(Meshplorer.Meshplorer),
+            //    icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new Meshplorer.Meshplorer()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "mesh" },
+            //    subCategory = "Meshes + Textures",
+            //    description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
+            //});
 #endif
             set.Add(new Tool
             {
@@ -558,18 +572,31 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
+            //set.Add(new Tool
+            //{
+            //    name = "SFAR Editor",
+            //    type = typeof(SFAREditor2),
+            //    icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new SFAREditor2()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "dlc" },
+            //    subCategory = other,
+            //    description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+            //});
             set.Add(new Tool
             {
-                name = "SFAR Editor",
-                type = typeof(SFAREditor2),
-                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+                name = "SFAR Explorer",
+                type = typeof(SFARExplorer),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
                 open = () =>
                 {
-                    (new SFAREditor2()).Show();
+                    (new SFARExplorer()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
             set.Add(new Tool
             {

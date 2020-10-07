@@ -1,27 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Be.Windows.Forms;
 using ByteSizeLib;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.Unreal.UnrealFlags;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3Explorer.MetadataEditor
 {
@@ -100,7 +92,13 @@ namespace ME3Explorer.MetadataEditor
         public bool HexChanged
         {
             get => _hexChanged && CurrentLoadedEntry != null;
-            private set => SetProperty(ref _hexChanged, value);
+            private set
+            {
+                if (SetProperty(ref _hexChanged, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         public ICommand SaveHexChangesCommand { get; private set; }
@@ -170,77 +168,92 @@ namespace ME3Explorer.MetadataEditor
         public override void LoadExport(ExportEntry exportEntry)
         {
             loadingNewData = true;
-            //try
-            //{
-            Row_Archetype.Height = new GridLength(24);
-            Row_ExpClass.Height = new GridLength(24);
-            Row_Superclass.Height = new GridLength(24);
-            Row_ImpClass.Height = new GridLength(0);
-            Row_ExpClass.Height = new GridLength(24);
-            Row_Packagefile.Height = new GridLength(0);
-            Row_ObjectFlags.Height = new GridLength(24);
-            Row_ExportDataSize.Height = new GridLength(24);
-            Row_ExportDataOffsetDec.Height = new GridLength(24);
-            Row_ExportDataOffsetHex.Height = new GridLength(24);
-            Row_ExportExportFlags.Height = new GridLength(24);
-            Row_ExportPackageFlags.Height = new GridLength(24);
-            Row_ExportGenerationNetObjectCount.Height = new GridLength(24);
-            Row_ExportGUID.Height = new GridLength(24);
-            InfoTab_Link_TextBlock.Text = "0x08 Link:";
-            InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
-
-            InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName.Name);
-
-            LoadAllEntriesBindedItems(exportEntry);
-
-            InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
-            InfoTab_ObjectnameIndex_TextBox.Text = exportEntry.indexValue.ToString();
-
-            var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
-            //Don't even get me started on how dumb it is that SelectedItems is read only...
-            string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
-
-            InfoTab_Flags_ComboBox.ItemsSource = flagsList;
-            InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
-
-            InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
-            InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
-            InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
-
-            if (exportEntry.HasComponentMap)
+            try
             {
-                OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
-                string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
-                int pairOffset = 44;
-                foreach ((NameReference name, int uIndex) in componentMap)
+                Row_Archetype.Height = new GridLength(24);
+                Row_ExpClass.Height = new GridLength(24);
+                Row_Superclass.Height = new GridLength(24);
+                Row_ImpClass.Height = new GridLength(0);
+                Row_ExpClass.Height = new GridLength(24);
+                Row_Packagefile.Height = new GridLength(0);
+                Row_ObjectFlags.Height = new GridLength(24);
+                Row_ExportDataSize.Height = new GridLength(24);
+                Row_ExportDataOffsetDec.Height = new GridLength(24);
+                Row_ExportDataOffsetHex.Height = new GridLength(24);
+                Row_ExportExportFlags.Height = new GridLength(24);
+                Row_ExportPackageFlags.Height = new GridLength(24);
+                Row_ExportGenerationNetObjectCount.Height = new GridLength(24);
+                Row_ExportGUID.Height = new GridLength(24);
+                InfoTab_Link_TextBlock.Text = "0x08 Link:";
+                InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
+
+                InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName.Name);
+
+                LoadAllEntriesBindedItems(exportEntry);
+
+                InfoTab_Headersize_TextBox.Text = $"{exportEntry.Header.Length} bytes";
+                InfoTab_ObjectnameIndex_TextBox.Text = exportEntry.indexValue.ToString();
+
+                var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
+                //Don't even get me started on how dumb it is that SelectedItems is read only...
+                string selectedFlags = flagsList.Where(flag => exportEntry.ObjectFlags.HasFlag(flag)).StringJoin(" ");
+
+                InfoTab_Flags_ComboBox.ItemsSource = flagsList;
+                InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
+
+                InfoTab_ExportDataSize_TextBox.Text =
+                    $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
+                InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
+                InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
+
+                if (exportEntry.HasComponentMap)
                 {
-                    components += $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
-                    pairOffset += 12;
+                    OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
+                    string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
+                    int pairOffset = 44;
+                    foreach ((NameReference name, int uIndex) in componentMap)
+                    {
+                        components +=
+                            $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                        pairOffset += 12;
+                    }
+
+                    Header_Hexbox_ComponentsLabel.Text = components;
+                }
+                else
+                {
+                    Header_Hexbox_ComponentsLabel.Text = "";
                 }
 
-                Header_Hexbox_ComponentsLabel.Text = components;
+                InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
+                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList()
+                    .Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
+
+                InfoTab_GenerationNetObjectCount_TextBlock.Text =
+                    $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
+                int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
+                InfoTab_GenerationNetObjectCount_TextBox.Text =
+                    $"{generationNetObjectCount.Length} counts: {string.Join(", ", generationNetObjectCount)}";
+
+                InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
+                InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
+                if (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC)
+                {
+                  
+                    InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
+                    InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList()
+                        .Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
+                }
+                else
+                {
+                    InfoTab_PackageFlags_TextBlock.Text = "";
+                    InfoTab_PackageFlags_TextBox.Text = "";
+                }
             }
-            else
+            catch (Exception e)
             {
-                Header_Hexbox_ComponentsLabel.Text = "";
+                //MessageBox.Show("An error occurRed while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
             }
-
-            InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
-            InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList().Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
-
-            InfoTab_GenerationNetObjectCount_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
-            int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
-            InfoTab_GenerationNetObjectCount_TextBox.Text = $"{generationNetObjectCount.Length} counts: {{{string.Join(", ", generationNetObjectCount)}}}";
-
-            InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
-            InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
-            InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
-            InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
-            //}
 
             CurrentLoadedEntry = exportEntry;
             OriginalHeader = CurrentLoadedEntry.Header;

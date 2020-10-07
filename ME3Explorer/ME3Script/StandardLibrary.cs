@@ -7,17 +7,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
-using ME3Script.Lexing;
-using ME3Script.Parsing;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.ME3Script
 {
@@ -72,13 +71,15 @@ namespace ME3Explorer.ME3Script
         {
             try
             {
-                return ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GameFramework.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "GFxUI.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "WwiseAudio.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXOnlineFoundation.pcc"), ref _symbols) &&
-                       ResolveAllClassesInPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"), ref _symbols);
+                var filePaths = new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" }
+                    .Select(f => Path.Combine(ME3Directory.cookedPath, f)).ToList();
+                if (!filePaths.All(File.Exists))
+                {
+                    return false;
+                }
+                using var files = MEPackageHandler.OpenMEPackages(filePaths);
+
+                return files.All(pcc => ResolveAllClassesInPackage(pcc, ref _symbols));
             }
             catch (Exception e)
             {
@@ -86,16 +87,15 @@ namespace ME3Explorer.ME3Script
             }
         }
 
-        public static bool ResolveAllClassesInPackage(string filePath, ref SymbolTable symbols)
+        public static bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols)
         {
+            string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
-            string dumpFolderPath = Path.Combine(ME3Directory.gamePath, "ScriptDump", Path.GetFileNameWithoutExtension(filePath));
+            string dumpFolderPath = Path.Combine(ME3Directory.gamePath, "ScriptDump", fileName);
             Directory.CreateDirectory(dumpFolderPath);
 #endif
             var log = new MessageLog();
-            string fileName = Path.GetFileName(filePath);
             Debug.WriteLine($"{fileName}: Beginning Parse.");
-            using var pcc = MEPackageHandler.OpenMEPackage(filePath);
             var classes = new List<(Class ast, string scriptText)>();
             foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
             {
@@ -160,10 +160,10 @@ namespace ME3Explorer.ME3Script
 
             switch (fileName)
             {
-                case "Core.pcc":
+                case "Core":
                     symbols.InitializeOperators();
                     break;
-                case "Engine.pcc":
+                case "Engine":
                     symbols.ValidateIntrinsics();
                     break;
             }

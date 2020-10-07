@@ -6,13 +6,11 @@ using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Lexing;
 using static ME3Script.Utilities.Keywords;
@@ -24,10 +22,11 @@ namespace ME3Script.Parsing
         private const int NOPRECEDENCE = int.MaxValue;
         private readonly SymbolTable Symbols;
         private readonly string OuterClassScope;
-        private readonly IContainsLocals NodeVariables;
         private readonly ASTNode Node;
         private readonly CodeBody Body;
         private readonly Class Self;
+
+        private readonly CaseInsensitiveDictionary<Label> Labels = new CaseInsensitiveDictionary<Label>();
 
         private readonly Stack<string> ExpressionScopes;
 
@@ -37,9 +36,14 @@ namespace ME3Script.Parsing
         private int _loopCount;
         private bool InLoop => _loopCount > 0;
         private readonly Stack<VariableType> SwitchTypes;
-        private bool InForEachIterator = false;
+        private bool InForEachIterator;
+        private bool InForEachBody;
+        private readonly Stack<List<Label>> LabelNests;
         private bool InSwitch => SwitchTypes.Count > 0;
         private bool InNew;
+
+        //these have to be checked against labels after the whole body is parsed
+        private readonly List<Statement> gotoStatements = new List<Statement>();
 
         public static void ParseFunction(Function func, string source, SymbolTable symbols, MessageLog log = null)
         {
@@ -49,6 +53,12 @@ namespace ME3Script.Parsing
             var bodyParser = new CodeBodyParser(tokenStream, func.Body, symbols, func, log);
 
             var body = bodyParser.ParseBody();
+
+            //remove redundant return;
+            if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement r && r.Value is null)
+            {
+                body.Statements.RemoveAt(body.Statements.Count - 1);
+            }
 
             //parse default parameter values
             if (func.Flags.Has(FunctionFlags.HasOptionalParms))
@@ -74,7 +84,6 @@ namespace ME3Script.Parsing
                     {
                         throw paramParser.Error($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody.StartPos, unparsedBody.EndPos);
                     }
-                    FixType(param.VarType, parsed);
                     AddConversion(param.VarType, ref parsed);
                     param.DefaultParameter = parsed;
                 }
@@ -85,8 +94,26 @@ namespace ME3Script.Parsing
             symbols.PopScope();
         }
 
-        private static void FixType(VariableType paramVarType, Expression parsed)
+        public static void ParseState(State state, string source, SymbolTable symbols, MessageLog log = null)
         {
+            symbols.PushScope(state.Name);
+
+            var tokenStream = new TokenStream<string>(new StringLexer(source, log), state.Body.StartPos, state.Body.EndPos);
+            var bodyParser = new CodeBodyParser(tokenStream, state.Body, symbols, state, log);
+
+            var body = bodyParser.ParseBody();
+
+            //remove redundant stop;
+            if (body.Statements.Count > 0 && body.Statements.Last() is StopStatement stop)
+            {
+                body.Statements.RemoveAt(body.Statements.Count - 1);
+            }
+
+            state.Labels = bodyParser.LabelNests.Pop();
+
+            state.Body = body;
+
+            symbols.PopScope();
         }
 
         public CodeBodyParser(TokenStream<string> tokens, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
@@ -100,14 +127,13 @@ namespace ME3Script.Parsing
             Body = body;
             Self = NodeUtils.GetContainingClass(body);
             OuterClassScope = NodeUtils.GetOuterClassScope(containingNode);
-            // TODO: refactor a better solution to this mess
-            if (IsState)
-                NodeVariables = (containingNode as State);
-            else if (IsFunction)
-                NodeVariables = (containingNode as Function);
+
 
             ExpressionScopes = new Stack<string>();
             ExpressionScopes.Push(Symbols.CurrentScopeName);
+
+            LabelNests = new Stack<List<Label>>();
+            LabelNests.Push(new List<Label>());
         }
 
         public CodeBody ParseBody()
@@ -134,7 +160,28 @@ namespace ME3Script.Parsing
 
             if (Tokens.CurrentItem.Type != TokenType.EOF && !Tokens.CurrentItem.StartPos.Equals(Body.EndPos))
                 throw Error("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
+            var labels = LabelNests.Peek();
+            foreach (Statement stmnt in gotoStatements)
+            {
+                switch (stmnt)
+                {
+                    case Goto g when g.ContainingForEach is null:
+                    {
+                        if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
+                        {
+                            g.Label = label;
+                        }
+                        else
+                        {
+                            throw Error($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)");
+                        }
 
+                        break;
+                    }
+                    case StateGoto sg when sg.LabelExpression is NameLiteral nameLiteral && labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
+                        throw Error($"Could not find label '{nameLiteral.Value}'! (gotos cannot jump out of or into a foreach)");
+                }
+            }
             return Body;
         }
 
@@ -155,6 +202,16 @@ namespace ME3Script.Parsing
                     if (!(current is VariableDeclaration))
                     {
                         pastVarDecls = true;
+
+                        if (current is Label label)
+                        {
+                            if (Labels.ContainsKey(label.Name))
+                            {
+                                throw Error($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label.StartPos, label.EndPos);
+                            }
+                            Labels.Add(label.Name, label);
+                            LabelNests.Peek().Add(label);
+                        }
                         statements.Add(current);
                     }
                     else if (pastVarDecls)
@@ -264,6 +321,11 @@ namespace ME3Script.Parsing
             {
                 return ParseBreak();
             }
+
+            if (CurrentIs(GOTO))
+            {
+                return ParseGoto();
+            }
             if (CurrentIs(STOP))
             {
                 return ParseStop();
@@ -281,6 +343,12 @@ namespace ME3Script.Parsing
             if (CurrentIs(ASSERT))
             {
                 return ParseAssert();
+            }
+
+            if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.Colon)
+            {
+                Token<string> labelToken = Consume(TokenType.Word);
+                return new Label(labelToken.Value, 0, labelToken.StartPos, Consume(TokenType.Colon).EndPos);
             }
 
             Expression expr = ParseExpression();
@@ -309,7 +377,6 @@ namespace ME3Script.Parsing
                 {
                     throw Error($"Cannot assign a value of type '{value.ResolveType()?.Name ?? "None"}' to a variable of type '{exprType?.Name}'.", assign.StartPos, assign.EndPos);
                 }
-                FixType(exprType, value);
                 AddConversion(exprType, ref value);
 
                 return new AssignStatement(expr, value, assign.StartPos, assign.EndPos);
@@ -343,7 +410,14 @@ namespace ME3Script.Parsing
 
             VariableDeclaration varDecl = new VariableDeclaration(type, UnrealFlags.EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
             Symbols.AddSymbol(varDecl.Name, varDecl);
-            NodeVariables.Locals.Add(varDecl);
+            if (Node is Function func)
+            {
+                func.Locals.Add(varDecl);
+            }
+            else
+            {
+                throw Error("States cannot declare variables!", startPos, CurrentPosition);
+            }
             varDecl.Outer = Node;
 
             return varDecl;
@@ -400,7 +474,6 @@ namespace ME3Script.Parsing
                 if (func.ReturnType == null) throw Error("Function should not return a value!", token.StartPos, token.EndPos);
 
                 if (!NodeUtils.TypeCompatible(func.ReturnType, type)) throw Error($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token.StartPos, token.EndPos);
-                FixType(func.ReturnType, value);
                 AddConversion(func.ReturnType, ref value);
 
             }
@@ -537,12 +610,41 @@ namespace ME3Script.Parsing
                 throw Error($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator.StartPos, iterator.EndPos);
             }
 
+            int gotoStatementsIdx = gotoStatements.Count;
+            bool alreadyInForEach = InForEachBody;
+            InForEachBody = true;
             _loopCount++;
+            LabelNests.Push(new List<Label>());
             CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
+
             _loopCount--;
+            InForEachBody = alreadyInForEach;
             if (body == null) return null;
 
-            return new ForEachLoop(iterator, body, token.StartPos, token.EndPos);
+            ForEachLoop forEach = new ForEachLoop(iterator, body, token.StartPos, token.EndPos);
+
+            var labels = LabelNests.Pop();
+            if (gotoStatementsIdx < gotoStatements.Count)
+            {
+                for (; gotoStatementsIdx < gotoStatements.Count; gotoStatementsIdx++)
+                {
+                    var stmnt = gotoStatements[gotoStatementsIdx];
+                    if (stmnt is Goto g && g.ContainingForEach is null)
+                    {
+                        g.ContainingForEach = forEach;
+                        if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
+                        {
+                            g.Label = label;
+                        }
+                        else
+                        {
+                            throw Error($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)");
+                        }
+                    }
+                }
+            }
+
+            return forEach;
         }
 
         public DoUntilLoop ParseDoUntil()
@@ -590,6 +692,34 @@ namespace ME3Script.Parsing
             return new BreakStatement(token.StartPos, token.EndPos);
         }
 
+        public Statement ParseGoto()
+        {
+            var gotoToken = Consume(GOTO);
+            if (gotoToken == null) return null;
+
+            if (IsState && !InForEachBody)
+            {
+                if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.SemiColon)
+                {
+                    throw Error("gotos in State bodies expect an expression that evaluates to a name, not a bare label. Put single quotes around a label name to make it a name literal");
+                }
+                var labelExpr = ParseExpression();
+                if (labelExpr == null)
+                {
+                    throw Error($"Expected a name expression after '{GOTO}'!");
+                }
+
+                var stateGoto = new StateGoto(labelExpr, gotoToken.StartPos, labelExpr.EndPos);
+                gotoStatements.Add(stateGoto);
+                return stateGoto;
+            }
+
+            var labelToken = Consume(TokenType.Word) ?? throw Error($"Expected a label after '{GOTO}'!");
+            var gotoStatement = new Goto(labelToken.Value, gotoToken.StartPos, labelToken.EndPos);
+            gotoStatements.Add(gotoStatement);
+            return gotoStatement;
+        }
+
         public StopStatement ParseStop()
         {
             var token = Consume(STOP);
@@ -618,7 +748,7 @@ namespace ME3Script.Parsing
             {
                 throw Error("Case expression must evaluate to the same type as the switch expression!", value.StartPos, value.EndPos);
             }
-            FixType(switchType, value);
+            AddConversion(switchType, ref value);
             if (Consume(TokenType.Colon) == null) throw Error("Expected colon after case expression!", CurrentPosition);
 
             return new CaseStatement(value, token.StartPos, token.EndPos);
@@ -714,8 +844,6 @@ namespace ME3Script.Parsing
                 {
                     throw Error("True and false results in conditional expression must match types!");
                 }
-                FixType(trueType, falseExpr);
-                FixType(falseType, trueExpr);
             }
 
             return expr;
@@ -1349,7 +1477,6 @@ namespace ME3Script.Parsing
                         throw Error($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.Name}'!");
                     }
                 }
-                FixType(expectedType, arg);
                 AddConversion(expectedType, ref arg);
                 return arg;
             }
@@ -1480,7 +1607,6 @@ namespace ME3Script.Parsing
                             throw Error($"Expected a parameter of type '{p.VarType.Name}'!", paramStartPos, currentParam?.EndPos);
                         }
                         AddConversion(p.VarType, ref currentParam);
-                        FixType(p.VarType, currentParam);
                         if (p.IsOut && !(currentParam is SymbolReference) 
                                     && !(currentParam is ConditionalExpression condExpr && condExpr.TrueExpression is SymbolReference 
                                                                                         && condExpr.FalseExpression is SymbolReference))

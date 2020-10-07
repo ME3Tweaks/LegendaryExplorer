@@ -5,9 +5,7 @@
  */
 
 using ClosedXML.Excel;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Concurrent;
@@ -21,6 +19,12 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
@@ -198,7 +202,7 @@ namespace ME3Explorer.DialogueDumper
 
         public DialogueDumper(Window owner = null)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Dialogue Dumper", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Dialogue Dumper", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Dialogue Dumper" }

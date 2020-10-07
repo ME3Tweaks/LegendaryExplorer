@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI
 {
@@ -21,7 +13,7 @@ namespace ME3Explorer.SharedUI
     public partial class ListDialog : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<object> Items { get; } = new ObservableCollectionExtended<object>();
-        public Action<EntryItem> DoubleClickEntryHandler { get; set; }
+        public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
         private string topText;
 
         public string TopText
@@ -47,7 +39,7 @@ namespace ME3Explorer.SharedUI
         }
 
 
-        public ListDialog(IEnumerable<EntryItem> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        public ListDialog(IEnumerable<EntryStringPair> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);
             TopText = message;
@@ -74,38 +66,9 @@ namespace ME3Explorer.SharedUI
             }
         }
 
-        /// <summary>
-        /// Class used for associating an item in the dialog with an entry. This object will be passed through the
-        /// double click handler, if one is assigned.
-        /// </summary>
-        public class EntryItem
-        {
-            public string Message { get; }
-            public IEntry ReferencedEntry { get; }
-
-            public EntryItem(IEntry entry, string message)
-            {
-                Message = message;
-                ReferencedEntry = entry;
-            }
-
-            public override string ToString() => Message;
-
-            public static implicit operator EntryItem(ExportEntry entry)
-            {
-                return new EntryItem(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
-            }
-
-            public static implicit operator EntryItem(ImportEntry entry)
-            {
-                return new EntryItem(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
-            }
-        }
-
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as EntryItem;
-            if (item != null && item.ReferencedEntry != null)
+            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && item.Entry != null)
             {
                 if (DoubleClickEntryHandler == null)
                 {

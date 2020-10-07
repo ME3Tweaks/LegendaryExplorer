@@ -1,22 +1,16 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK.ME1;
+using ME3ExplorerCore.TLK.ME2ME3;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using HuffmanCompression = ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression;
 
 namespace ME3Explorer.TlkManagerNS
 {
@@ -103,7 +97,7 @@ namespace ME3Explorer.TlkManagerNS
                         {
                             using (IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
-                                ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(pcc, tlk.exportNumber);
+                                ME1TalkFile talkfile = new ME1TalkFile(pcc, tlk.exportNumber);
                                 talkfile.saveToFile(saveFileDialog.FileName);
                             }
                         };
@@ -147,7 +141,7 @@ namespace ME3Explorer.TlkManagerNS
                         //ME1
                         replacingWork.DoWork += delegate
                         {
-                            ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
+                            ME3ExplorerCore.TLK.ME1.HuffmanCompression compressor = new ME3ExplorerCore.TLK.ME1.HuffmanCompression();
                             compressor.LoadInputData(openFileDialog.FileName);
                             using (IMEPackage pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {

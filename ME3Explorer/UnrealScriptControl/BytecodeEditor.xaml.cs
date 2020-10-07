@@ -4,13 +4,16 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Be.Windows.Forms;
-using Gammtek.Conduit.IO;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
-using static ME3Explorer.ME1.Unreal.UnhoodBytecode.BytecodeReader;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
+using Token = ME3ExplorerCore.Unreal.Token;
 
 namespace ME3Explorer
 {
@@ -87,9 +90,9 @@ namespace ME3Explorer
             ScriptHeaderBlocks.ClearEx();
             ScriptFooterBlocks.ClearEx();
             DecompiledScriptBoxTitle = "Decompiled Script";
-            if (Pcc.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
-                var func = new Unreal.Classes.Function(data, CurrentLoadedExport, 32);
+                var func = new Function(data, CurrentLoadedExport, 32);
 
 
                 func.ParseFunction();
@@ -121,7 +124,7 @@ namespace ME3Explorer
 
 
                 List<int> objRefPositions = func.ScriptBlocks.SelectMany(tok => tok.inPackageReferences)
-                                                .Where(tup => tup.type == Unreal.Token.INPACKAGEREFTYPE_ENTRY)
+                                                .Where(tup => tup.type == Token.INPACKAGEREFTYPE_ENTRY)
                                                 .Select(tup => tup.position).ToList();
                 int calculatedLength = diskSize + 4 * objRefPositions.Count;
                 DiskToMemPosMap = func.DiskToMemPosMap;
@@ -160,9 +163,10 @@ namespace ME3Explorer
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
-                    pos = data.Length - 6;
+                    var nativeBackOffset = CurrentLoadedExport.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                    pos = data.Length - nativeBackOffset;
                     string flagStr = func.GetFlags();
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos) { length = 2 });
                     pos += 2;
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian):X8} {func.GetFlags().Substring(6)}", pos));
                 }
@@ -173,13 +177,13 @@ namespace ME3Explorer
                     var footerstartpos = 0x20 + diskSize;
                     var footerdata = CurrentLoadedExport.Data.Slice(0x20 + diskSize, (int)CurrentLoadedExport.Data.Length - (0x20 + diskSize));
                     var fpos = 0;
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos) { length = 8 });
                     fpos += 0x8;
 
-                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2 bytes", "??", fpos + footerstartpos));
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", "??", fpos + footerstartpos) { length = 2 });
                     fpos += 0x2;
 
 
@@ -347,7 +351,7 @@ namespace ME3Explorer
                             }
                             if (Pcc.Game == MEGame.ME1)
                             {
-                                ME1OpCodes m = (ME1OpCodes)currentData[start];
+                                BytecodeReader.ME1OpCodes m = (BytecodeReader.ME1OpCodes)currentData[start];
                                 s += $", OpCode: {m}";
                             }
 

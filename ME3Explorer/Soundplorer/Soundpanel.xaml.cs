@@ -18,15 +18,18 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome5;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
-using WwiseStream = ME3Explorer.Unreal.BinaryConverters.WwiseStream;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
+using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
 {
@@ -110,7 +113,7 @@ namespace ME3Explorer
 
         public Soundpanel()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundpanel Export Loader", new WeakReference(this)));
 
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();
@@ -417,7 +420,7 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedAFCFileEntry != null)
             {
-                return WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                return WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
             else
             {
@@ -902,7 +905,7 @@ namespace ME3Explorer
             MemoryStream convertedStream;
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
-                convertedStream = WwiseHelper.ConvertWwiseOggToME3Ogg(fileStream);
+                convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(fileStream);
             }
 
             //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
@@ -1238,7 +1241,7 @@ namespace ME3Explorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    Stream s = WwiseHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                    Stream s = WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))
                     {
                         s.Seek(0, SeekOrigin.Begin);

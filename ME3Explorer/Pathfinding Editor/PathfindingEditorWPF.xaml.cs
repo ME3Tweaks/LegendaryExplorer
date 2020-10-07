@@ -1,11 +1,8 @@
 ﻿using ME3Explorer.ActorNodes;
-using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SplineNodes;
-using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -18,7 +15,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ME3Explorer.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -27,7 +23,17 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.Packages;
+using ME3Explorer.SharedUI.Interfaces;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
+using ME3ExplorerCore.Helpers;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -561,7 +567,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #region Load+I/O
         public PathfindingEditorWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Pathfinding Editor WPF", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Pathfinding Editor" }
@@ -2593,7 +2599,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
-            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent");
+            var splineComponentClass = EntryImporterExtended.EnsureClassIsInFile(Pcc, "SplineComponent");
             var splineComponent = new ExportEntry(Pcc, new byte[8])
             {
                 Class = splineComponentClass,
@@ -3770,45 +3776,45 @@ namespace ME3Explorer.Pathfinding_Editor
                 switch (exp.ObjectName.Name)
                 {
                     case "StaticMeshCollectionActor":
-                    {
-                        var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
-                        foreach (UIndex uIndex in smca.Components)
                         {
-                            if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
+                            var smca = exp.GetBinaryData<StaticMeshCollectionActor>();
+                            foreach (UIndex uIndex in smca.Components)
                             {
-                                InvertScalingOnExport(smComponent, "Scale3D");
+                                if (exp.FileRef.TryGetUExport(uIndex, out ExportEntry smComponent))
+                                {
+                                    InvertScalingOnExport(smComponent, "Scale3D");
+                                }
                             }
-                        }
 
-                        for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
-                        {
-                            Matrix m = smca.LocalToWorldTransforms[i];
-                            m.TranslationVector *= -1;
-                            smca.LocalToWorldTransforms[i] = m;
+                            for (int i = 0; i < smca.LocalToWorldTransforms.Count; i++)
+                            {
+                                Matrix m = smca.LocalToWorldTransforms[i];
+                                m.TranslationVector *= -1;
+                                smca.LocalToWorldTransforms[i] = m;
+                            }
+                            exp.SetBinaryData(smca);
+                            break;
                         }
-                        exp.SetBinaryData(smca);
-                        break;
-                    }
                     default:
-                    {
-                        var props = exp.GetProperties();
-                        StructProperty locationProp = props.GetProp<StructProperty>("location");
-                        if (locationProp != null)
                         {
-                            FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
-                            FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
-                            FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                            Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
+                            var props = exp.GetProperties();
+                            StructProperty locationProp = props.GetProp<StructProperty>("location");
+                            if (locationProp != null)
+                            {
+                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                                Debug.WriteLine($"{exp.UIndex} {exp.ObjectName.Instanced} Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                            xProp.Value *= -1;
-                            yProp.Value *= -1;
-                            zProp.Value *= -1;
+                                xProp.Value *= -1;
+                                yProp.Value *= -1;
+                                zProp.Value *= -1;
 
-                            exp.WriteProperty(locationProp);
-                            InvertScalingOnExport(exp, "DrawScale3D");
+                                exp.WriteProperty(locationProp);
+                                InvertScalingOnExport(exp, "DrawScale3D");
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
             MessageBox.Show("Items flipped.", "Flipping complete");
@@ -4778,7 +4784,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return new SharpDX.Vector3(groupX / actorcount, groupY / actorcount, groupZ / actorcount);
         }
 
-        public async void RecookPersistantLevel() 
+        public async void RecookPersistantLevel()
         {
             var chkdlg = MessageBox.Show($"WARNING: Confirm you wish to recook this file?\n" +
                          $"\nThis will remove all references that current actors do not need.\nIt will then trash any entry that isn't being used.\n\n" +

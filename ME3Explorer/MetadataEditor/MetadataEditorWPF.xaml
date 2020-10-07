@@ -9,9 +9,9 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
-    Loaded="MetadataEditor_Loaded"   
-    xmlns:Packages="clr-namespace:ME3Explorer.Packages"
+    Loaded="MetadataEditor_Loaded"
     xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+    xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
     d:DesignHeight="730" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>

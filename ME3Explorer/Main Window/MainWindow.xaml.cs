@@ -10,10 +10,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
-using ME3Explorer.Packages;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using FontAwesome5.WPF;
+using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer
 {
@@ -131,35 +134,20 @@ namespace ME3Explorer
                 }
 
                 // load TLK strings
+                // todo: this loads them all. Just do one call i guess.
+
                 try
                 {
-                    ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+                    TLKLoader.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-                }
-                catch
-                {
-                    //?
-                }
-
-                try
-                {
-                    ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-                }
-                catch
-                {
-                    //?
-                }
-
-                try
-                {
-                    ME3TalkFiles.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
                 }
                 catch
                 {
                     //?
                 }
+
                 App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {

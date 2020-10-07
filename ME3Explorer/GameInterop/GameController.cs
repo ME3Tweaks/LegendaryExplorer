@@ -4,11 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 using Keys = System.Windows.Forms.Keys;
 
 namespace ME3Explorer.GameInterop

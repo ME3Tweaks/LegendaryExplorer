@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX;
-using SharpDX.Direct3D11;
-using ME3Explorer.Packages;
 using ME3Explorer.Unreal.Classes;
-using static ME3Explorer.TextureViewerExportLoader;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.Classes;
+using SharpDX.Direct3D11;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace ME3Explorer.Scene3D
@@ -134,7 +130,7 @@ namespace ME3Explorer.Scene3D
             //using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
             //{
             PreviewTextureEntry entry = new PreviewTextureEntry(export);
-            Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(export);
+            ME3ExplorerCore.Unreal.Classes.Texture2D metex = new ME3ExplorerCore.Unreal.Classes.Texture2D(export);
             try
             {
                 if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();

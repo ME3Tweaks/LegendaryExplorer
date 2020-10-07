@@ -4,12 +4,7 @@
  * (c) Mgamerz 2019
  */
 
-using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -17,13 +12,18 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
-using ME3Explorer.Unreal.Classes;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.PackageDumper
@@ -68,9 +68,9 @@ namespace ME3Explorer.PackageDumper
                 EnsureFileExists = true,
                 Title = "Select files to dump",
             };
-            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc;*.xxx"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
@@ -178,7 +178,7 @@ namespace ME3Explorer.PackageDumper
 
         public PackageDumper(Window owner = null)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Package Dumper", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
             {
                 { "Toolname", "Package Dumper" }
@@ -543,7 +543,7 @@ namespace ME3Explorer.PackageDumper
                         for (int x = 0; x < pcc.Imports.Count; x++)
                         {
                             ImportEntry imp = pcc.Imports[x];
-                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
+                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
                         }
                         stringoutput.WriteLine("--End of Imports");
                         //}

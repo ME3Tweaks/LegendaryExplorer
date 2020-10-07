@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script;
-using ME3Script.Analysis.Symbols;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling;
 using ME3Script.Compiling.Errors;
@@ -164,44 +160,69 @@ namespace ME3Explorer.ME3Script
             CurrentLoadedExport = export;
             if (IsStandardLibFile())
             {
-                CurrentFileLib = null;
+                UnloadFileLib();
                 FullyInitialized = StandardLibrary.IsInitialized;
             }
             else if (Pcc != CurrentFileLib?.Pcc)
             {
                 FullyInitialized = false;
                 IsBusy = true;
+                BusyText = "Compiling local classes";
+                UnloadFileLib();
                 CurrentFileLib = new FileLib(Pcc);
-                CurrentFileLib.Initialized += CurrentFileLibOnInitialized;
-                if (IsVisible && CurrentFileLib?.IsInitialized == false)
+                CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
+                if (IsVisible)
                 {
                     CurrentFileLib?.Initialize();
                 }
             }
             if (!IsBusy)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
             }
         }
 
-        private void CurrentFileLibOnInitialized(object sender, EventArgs e)
+        private void UnloadFileLib()
         {
-            if (IsBusy)
+            if (CurrentFileLib is {})
             {
-                IsBusy = false;
-                if (CurrentFileLib?.HadInitializationError == true)
+                CurrentFileLib.Dispose();
+                CurrentFileLib.InitializationStatusChange -= CurrentFileLibOnInitialized;
+                CurrentFileLib = null;
+            }
+        }
+
+        private void CurrentFileLibOnInitialized(bool initialized)
+        {
+            if (initialized)
+            {
+                if (IsBusy)
                 {
-                    FullyInitialized = false;
-                    MessageBox.Show("Could not build script database for this file!\n\n" +
-                                    "Functionality will be limited to script decompilation.");
+                    IsBusy = false;
+                    if (CurrentFileLib?.HadInitializationError == true)
+                    {
+                        FullyInitialized = false;
+                        MessageBox.Show("Could not build script database for this file!\n\n" +
+                                        "Functionality will be limited to script decompilation.");
+                    }
+                    else
+                    {
+                        FullyInitialized = CurrentFileLib?.IsInitialized == true;
+                    }
+                    if (CurrentLoadedExport != null)
+                    {
+                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                    }
                 }
-                else
+            }
+            else
+            {
+                IsBusy = true;
+                BusyText = "Recompiling local classes";
+                FullyInitialized = false;
+                if (IsVisible)
                 {
-                    FullyInitialized = CurrentFileLib?.IsInitialized == true;
-                }
-                if (CurrentLoadedExport != null)
-                {
-                    (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                    CurrentFileLib?.Initialize();
                 }
             }
         }
@@ -299,7 +320,11 @@ namespace ME3Explorer.ME3Script
 
         public override void Dispose()
         {
-            //
+            if (progressBarTimer != null)
+            {
+                progressBarTimer.IsEnabled = false; //Stop timer
+                progressBarTimer.Tick -= ProgressBarTimer_Tick;
+            }
         }
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -318,6 +343,7 @@ namespace ME3Explorer.ME3Script
                 if (CurrentLoadedExport.ClassName != "Function")
                 {
                     outputListBox.ItemsSource = new[] {$"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."};
+                    return;
                 }
                 (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
                 outputListBox.ItemsSource = log?.Content;
@@ -328,7 +354,7 @@ namespace ME3Explorer.ME3Script
         {
             if (CurrentLoadedExport != null)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
             }
         }
 
@@ -351,6 +377,15 @@ namespace ME3Explorer.ME3Script
                 }
 
                 outputListBox.ItemsSource = log.Content;
+            }
+        }
+
+        private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window window = Window.GetWindow(this);
+            if (window is { })
+            {
+                window.Closed += (o, args) => UnloadFileLib();
             }
         }
     }

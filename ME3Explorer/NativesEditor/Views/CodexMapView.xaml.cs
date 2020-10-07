@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek;
+using ME3ExplorerCore.Packages;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace MassEffect.NativesEditor.Views

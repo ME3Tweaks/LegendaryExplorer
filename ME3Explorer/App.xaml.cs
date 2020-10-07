@@ -6,23 +6,23 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using ME1Explorer.Unreal;
-using ME2Explorer.Unreal;
 using ME3Explorer.ASI;
 using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.GameInterop;
 using ME3Explorer.ME3Script;
 using ME3Explorer.MountEditor;
-using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {
@@ -52,15 +52,6 @@ namespace ME3Explorer
         public const string ME1FileFilter = "*.u;*.upk;*sfm;*.xxx|*.u;*.upk;*sfm;*.xxx";
         public const string ME3ME2FileFilter = "*.pcc*;.xxx|*.pcc;*.xxx";
 
-        public static string CustomResourceFilePath(MEGame game) => Path.Combine(ExecFolder, game switch
-        {
-            MEGame.ME3 => "ME3Resources.pcc",
-            MEGame.ME2 => "ME2Resources.pcc",
-            MEGame.ME1 => "ME1Resources.upk",
-            MEGame.UDK => "UDKResources.upk",
-            _ => "ME3Resources.pcc"
-        });
-
         public static string Version => GetVersion();
 
         public static Visibility IsDebugVisibility => IsDebug ? Visibility.Visible : Visibility.Collapsed;
@@ -82,7 +73,6 @@ namespace ME3Explorer
             return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
-        public static TaskScheduler SYNCHRONIZATION_CONTEXT;
         public static int CoreCount;
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -102,7 +92,9 @@ namespace ME3Explorer
 #endif
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
-            SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
+            initCoreLib();
+
+
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -126,18 +118,17 @@ namespace ME3Explorer
             //}
             //Be.Windows.Forms.HexBox.SetColors((IsDarkMode ? Color.FromArgb(255, 55, 55, 55) : Colors.White).ToWinformsColor(), SystemColors.ControlTextColor.ToWinformsColor());
 
-            Parallel.Invoke(
-                            ME1UnrealObjectInfo.loadfromJSON,
-                            ME2UnrealObjectInfo.loadfromJSON,
-                            ME3UnrealObjectInfo.loadfromJSON
-                );
+            //Parallel.Invoke(
+            //                ME1UnrealObjectInfo.loadfromJSON,
+            //                ME2UnrealObjectInfo.loadfromJSON,
+            //                ME3UnrealObjectInfo.loadfromJSON
+            //    );
 
 
 
             //static class setup
             Tools.Initialize();
-            MEPackageHandler.Initialize();
-            PackageSaver.Initialize();
+
 
 
             System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
@@ -176,6 +167,31 @@ namespace ME3Explorer
             }
         }
 
+        private void initCoreLib()
+        {
+#if DEBUG
+            MemoryAnalyzer.IsTrackingMemory = true;
+#endif
+            void packageSaveFailed(string message)
+            {
+                // I'm not sure if this requires ui thread since it's win32 but i'll just make sure
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show(message);
+                });
+            }
+            CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+            CoreLibSettingsBridge.MapSettingsIntoBridge();
+            PackageSaver.CheckME3Running = () =>
+            {
+                GameController.TryGetME3Process(out var me3Proc);
+                return me3Proc != null;
+            };
+            PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendTOCUpdateMessage;
+            PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip());
+            TLKLoader.LoadSavedTlkList();
+        }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             ME3Explorer.Properties.Settings.Default.Save();
@@ -186,7 +202,7 @@ namespace ME3Explorer
             exitCode = 0;
             if (args.Length < 2)
             {
-                return ()=>{}; //do nothing delgate. Will do nothing when main UI loads
+                return () => { }; //do nothing delgate. Will do nothing when main UI loads
             }
 
             string arg = args[1];
@@ -269,7 +285,7 @@ namespace ME3Explorer
             {
                 return () =>
                 {
-                    DLCUnpacker.DLCUnpacker dlcUnpacker = new DLCUnpacker.DLCUnpacker();
+                    DLCUnpacker.DLCUnpackerUI dlcUnpacker = new DLCUnpacker.DLCUnpackerUI();
                     dlcUnpacker.Show();
                     dlcUnpacker.Activate();
                 };
@@ -331,4 +347,6 @@ namespace ME3Explorer
             e.Handled = eh.Handled;
         }
     }
+
+
 }

@@ -1,7 +1,6 @@
 ﻿using ME3Script.Language.Tree;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +8,9 @@ using ME3Explorer;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Language.Util;
 using ME3Script.Utilities;
-using static ME3Explorer.Unreal.UnrealFlags;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Analysis.Symbols

@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3Explorer.AutoTOC;
-using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.ME3Enums;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using SharpDX;
-using StreamHelpers;
 
 namespace ME3Explorer.GameInterop
 {

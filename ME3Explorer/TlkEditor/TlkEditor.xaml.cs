@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ME3ExplorerCore.TLK.ME2ME3;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace ME3Explorer

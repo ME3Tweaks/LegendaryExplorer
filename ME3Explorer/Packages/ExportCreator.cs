@@ -1,4 +1,7 @@
 ﻿using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.Packages
 {
@@ -9,7 +12,7 @@ namespace ME3Explorer.Packages
             var exp = new ExportEntry(pcc)
             {
                 ObjectName = pcc.GetNextIndexedName(packageName),
-                Class = EntryImporter.EnsureClassIsInFile(pcc, "Package"),
+                Class = EntryImporterExtended.EnsureClassIsInFile(pcc, "Package"),
                 Parent = parent
             };
             exp.ObjectFlags |= UnrealFlags.EObjectFlags.Public;
@@ -23,7 +26,7 @@ namespace ME3Explorer.Packages
             var exp = new ExportEntry(pcc)
             {
                 ObjectName = pcc.GetNextIndexedName(name),
-                Class = EntryImporter.EnsureClassIsInFile(pcc, className),
+                Class = EntryImporterExtended.EnsureClassIsInFile(pcc, className),
                 Parent = parent
             };
             pcc.AddExport(exp);

@@ -5,18 +5,16 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Packages;
-
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
-using Gammtek.Conduit.Extensions;
-using ME1Explorer;
 using ME3Explorer.Sequence_Editor;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.SequenceObjects
 {
@@ -1569,7 +1567,16 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    inputLinksProp = pcc.GetUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    int referencedIndex = oSequenceReference.Value;
+                    if (pcc.TryGetUExport(referencedIndex, out var exportRef))
+                    {
+                        inputLinksProp = exportRef.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    }
+                    else
+                    {
+                        var referencedFullPath = pcc.GetEntry(referencedIndex).InstancedFullPath;
+                        Debug.WriteLine($"Can't get input links of {referencedFullPath} because it is an import.");
+                    }
                 }
             }
 
