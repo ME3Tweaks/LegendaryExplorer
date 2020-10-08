@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 
@@ -52,6 +53,12 @@ namespace ME3ExplorerCore.Packages
 
         #region Names
         protected uint namesAdded;
+
+
+        // Used to make name lookups quick when doing a contains operation as this method is called
+        // quite often
+        protected CaseInsensitiveDictionary<int> nameLookupTable = new CaseInsensitiveDictionary<int>();
+
         protected List<string> names = new List<string>();
         public IReadOnlyList<string> Names => names;
 
@@ -59,28 +66,32 @@ namespace ME3ExplorerCore.Packages
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
 
+
         public int FindNameOrAdd(string name)
         {
-            for (int i = 0; i < names.Count; i++)
+            if (nameLookupTable.TryGetValue(name, out var index))
             {
-                if (string.Equals(names[i], name, StringComparison.OrdinalIgnoreCase))
-                    return i;
+                return index;
             }
-
-            addName(name);
+            
+            addName(name, true); //Don't bother doing a lookup as we just did one. 
+            // If this was an issue it'd be a multithreading issue that still could occur and is an
+            // issue in the user code
             return names.Count - 1;
         }
 
-        protected void addName(string name)
+        protected void addName(string name, bool skipLookup = false)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
             {
-                throw new Exception("Cannot add a null name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
+                throw new Exception("Cannot add a null/empty name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
             }
-            if (!names.Contains(name, StringComparer.OrdinalIgnoreCase))
+
+            if (skipLookup || !nameLookupTable.TryGetValue(name, out var index))
             {
                 names.Add(name);
                 namesAdded++;
+                nameLookupTable[name] = (int) namesAdded; //This should be correct...?
                 NameCount = names.Count;
 
                 updateTools(PackageChange.NameAdd, NameCount - 1);
@@ -92,7 +103,10 @@ namespace ME3ExplorerCore.Packages
         {
             if (IsName(idx))
             {
+                nameLookupTable.Remove(names[idx]);
                 names[idx] = newName;
+                nameLookupTable[newName] = idx;
+
                 updateTools(PackageChange.NameEdit, idx);
             }
         }
@@ -105,10 +119,9 @@ namespace ME3ExplorerCore.Packages
         /// <returns></returns>
         public int findName(string nameToFind)
         {
-            for (int i = 0; i < names.Count; i++)
+            if (nameLookupTable.TryGetValue(nameToFind, out var index))
             {
-                if (string.Equals(nameToFind, names[i], StringComparison.OrdinalIgnoreCase))
-                    return i;
+                return index;
             }
             return -1;
         }
@@ -116,7 +129,19 @@ namespace ME3ExplorerCore.Packages
         public void restoreNames(List<string> list)
         {
             names = list;
+            mapNames();
             NameCount = names.Count;
+        }
+
+        private void mapNames()
+        {
+            nameLookupTable.Clear();
+            int i = 0;
+            foreach (var name in names)
+            {
+                nameLookupTable[name] = i;
+                i++;
+            }
         }
 
         public int GetNextIndexForName(string name)
@@ -435,7 +460,7 @@ namespace ME3ExplorerCore.Packages
             if (user != null)
             {
                 user = Users.FirstOrDefault(x => x == user);
-                if (user != null) 
+                if (user != null)
                 {
                     ReleaseUser(user);
                 }
@@ -537,22 +562,22 @@ namespace ME3ExplorerCore.Packages
                                 case PackageChange.ExportAdd:
                                 case PackageChange.ExportData:
                                 case PackageChange.ExportHeader:
-                                {
-                                    if (!removedExports.Contains(upd.Index))
                                     {
-                                        pendingUpdatesList.Add(upd);
+                                        if (!removedExports.Contains(upd.Index))
+                                        {
+                                            pendingUpdatesList.Add(upd);
+                                        }
+                                        break;
                                     }
-                                    break;
-                                }
                                 case PackageChange.ImportAdd:
                                 case PackageChange.ImportHeader:
-                                {
-                                    if (!removedImports.Contains(upd.Index))
                                     {
-                                        pendingUpdatesList.Add(upd);
+                                        if (!removedImports.Contains(upd.Index))
+                                        {
+                                            pendingUpdatesList.Add(upd);
+                                        }
+                                        break;
                                     }
-                                    break;
-                                }
                                 default:
                                     pendingUpdatesList.Add(upd);
                                     break;
