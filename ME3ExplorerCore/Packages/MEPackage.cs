@@ -389,7 +389,9 @@ namespace ME3ExplorerCore.Packages
             inStream.JumpTo(NameOffset);
             for (int i = 0; i < NameCount; i++)
             {
-                names.Add(packageReader.ReadUnrealString());
+                var name = packageReader.ReadUnrealString();
+                names.Add(name);
+                nameLookupTable[name] = i;
                 if (Game == MEGame.ME1 && Platform != GamePlatform.PS3)
                     inStream.Skip(8);
                 else if (Game == MEGame.ME2 && Platform != GamePlatform.PS3)

@@ -171,7 +171,9 @@ namespace ME3ExplorerCore.Packages
             inStream.JumpTo(NameOffset);
             for (int i = 0; i < NameCount; i++)
             {
-                names.Add(inStream.ReadUnrealString());
+                var name = inStream.ReadUnrealString();
+                names.Add(name);
+                nameLookupTable[name] = i;
                 inStream.Skip(8);
             }
 
