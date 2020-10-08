@@ -91,7 +91,7 @@ namespace ME3ExplorerCore.Packages
             {
                 names.Add(name);
                 namesAdded++;
-                nameLookupTable[name] = (int) namesAdded; //This should be correct...?
+                nameLookupTable[name] = names.Count - 1;
                 NameCount = names.Count;
 
                 updateTools(PackageChange.NameAdd, NameCount - 1);
