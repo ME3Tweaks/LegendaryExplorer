@@ -51,7 +51,7 @@ namespace ME3Explorer.Unreal
         {
             if (File.Exists(LoadedTLKsPathME2))
             {
-                List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME3));
+                List<string> files = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(LoadedTLKsPathME2));
                 foreach (string filePath in files)
                 {
                     try

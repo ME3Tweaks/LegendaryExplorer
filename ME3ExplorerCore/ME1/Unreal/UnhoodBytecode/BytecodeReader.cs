@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
 using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
 
@@ -329,6 +330,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             EX_DefaultParmValue = 0x49,
             EX_EmptyParmValue = 0x4A,
             EX_InstanceDelegate = 0x4B,
+            EX_StringRefConst = 0x4F,
             EX_GoW_DefaultValue = 0x50,
             EX_InterfaceContext = 0x51,
             EX_InterfaceCast = 0x52,
@@ -814,6 +816,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_NotEqual_DelDel:
                     return CompareDelegates("!=");
 
+                case ME1OpCodes.EX_StringRefConst:
+                    return ReadStringRefConst(readerpos);
+
                 default:
                     if ((int)b >= 0x60)
                     {
@@ -821,6 +826,35 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     }
                     return ErrToken("// unknown bytecode " + ((byte)b).ToString("X2"), (int)b);
             }
+        }
+
+        private BytecodeToken ReadStringRefConst(int start)
+        {
+            var initPos = start;
+            int index = _reader.ReadInt32();
+
+            string text = null;
+            switch (_package.Game)
+            {
+                case MEGame.ME1:
+                    text = ME1TalkFiles.findDataById(index, _package);
+                    break;
+                case MEGame.ME2:
+                    text = ME2TalkFiles.findDataById(index);
+                    break;
+                default:
+                    text = "ME3Explorer message: N/A";
+                    Debug.WriteLine($"Reading EX_StringRefConst for {_package.Game.ToString()}");
+                    break;
+            }
+
+            var token = new BytecodeToken($"${index}({text})", start)
+            {
+                NativeIndex = 0,
+                OpCode = ME1OpCodes.EX_StringRefConst
+            };
+
+            return token;
         }
 
         private BytecodeToken CompareDelegates(string op)
