@@ -256,7 +256,6 @@ namespace ME3Explorer
                     closeTaskPane(100);
                 }
                 CICOpen = true;
-                Logo.Source = (ImageSource)Logo.FindResource("LogoOnImage");
                 if (SearchBox.Text.Trim() != string.Empty)
                 {
                     SearchOpen = true;
@@ -269,7 +268,6 @@ namespace ME3Explorer
         private void closeCIC(int duration = 300)
         {
             CICOpen = false;
-            Logo.Source = (ImageSource)Logo.FindResource("LogoOffImage");
             if (SearchOpen)
             {
                 closeSearch(duration / 3);

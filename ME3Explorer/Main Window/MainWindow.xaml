@@ -54,19 +54,8 @@
                 </Button>
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
-            <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand" ToolTip="Shrink/Enlarge this toolbox">
-                <Image.Resources>
-                    <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_OFF.png"/>
-                    <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_ON.png"/>
-                    <Style TargetType="{x:Type Image}">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="1"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Resources>
-            </Image>
+            <Image Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand" 
+                   ToolTip="Shrink/Enlarge this toolbox" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/logo_ON.png"/>
             <DockPanel Height="36">
                 <DockPanel.Resources>
                     <Style x:Key="VersioningBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
