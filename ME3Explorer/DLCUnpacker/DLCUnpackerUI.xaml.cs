@@ -16,7 +16,6 @@
     along with program.  If not, see<https://www.gnu.org/licenses/>.
 */
 
-using ByteSizeLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +26,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
@@ -216,7 +216,7 @@ namespace ME3Explorer.DLCUnpacker
                 var parts = ME3Directory.gamePath.Split(':');
                 DriveInfo info = new DriveInfo(parts[0]);
                 AvailableSpace = info.AvailableFreeSpace;
-                AvailableSpaceText = ByteSize.FromBytes(AvailableSpace).ToString();
+                AvailableSpaceText = FileSize.FormatSize((long)AvailableSpace);
                 if (AvailableSpace < RequiredSpace)
                 {
                     CurrentOverallOperationText = NotEnoughSpaceStr;
@@ -255,7 +255,7 @@ namespace ME3Explorer.DLCUnpacker
                 RequiredSpace = GetRequiredSize();
                 if (RequiredSpace >= 0)
                 {
-                    RequiredSpaceText = ByteSize.FromBytes(RequiredSpace).ToString();
+                    RequiredSpaceText = FileSize.FormatSize((long)RequiredSpace);
                 }
                 else
                 {

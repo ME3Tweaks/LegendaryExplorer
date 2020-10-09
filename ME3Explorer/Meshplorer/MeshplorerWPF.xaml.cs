@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ByteSizeLib;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.SharedUI;
@@ -664,7 +663,7 @@ namespace ME3Explorer
                 //BusyText = "Loading " + Path.GetFileName(s);
                 //IsBusy = true;
                 StatusBar_LeftMostText.Text =
-                    $"Loading {Path.GetFileName(s)} ({ByteSize.FromBytes(new FileInfo(s).Length)})";
+                    $"Loading {Path.GetFileName(s)} ({FileSize.FormatSize(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 

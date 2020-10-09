@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Be.Windows.Forms;
-using ByteSizeLib;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
@@ -202,7 +201,7 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
 
                 InfoTab_ExportDataSize_TextBox.Text =
-                    $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
+                    $"{exportEntry.DataSize} bytes ({FileSize.FormatSize(exportEntry.DataSize)})";
                 InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
 
