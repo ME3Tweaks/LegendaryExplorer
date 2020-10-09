@@ -47,9 +47,8 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 }
                 if (bc == null /*|| bc is EndOfScriptToken*/) break;
                 statements.Add(new Statement(startOffset, (int)s.Position, bc, bcReader));
-                if (bc is ErrorBytecodeToken)
+                if (bc is ErrorBytecodeToken errorToken)
                 {
-                    var errorToken = (ErrorBytecodeToken)bc;
                     int bytecode = errorToken.UnknownBytecode;
                     if (bytecode >= 0)
                     {

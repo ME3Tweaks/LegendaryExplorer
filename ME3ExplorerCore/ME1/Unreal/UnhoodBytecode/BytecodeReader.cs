@@ -384,7 +384,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             VectorToString = 0x58,
             RotatorToString = 0x59,
             DelegateToString = 0x5A,
-            StringToDelegate = 0x5B,
+            StringRefToInt = 0x5B,
+            StringRefToString = 0x5C,
+            IntToStringRef = 0x5D,
             StringToName = 0x60
         };
 
@@ -773,6 +775,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_DynArrayInsert:
                     return ReadDynArray2ArgMethod("Insert", false);
 
+                case ME1OpCodes.EX_DynArrayAdd:
+                    return ReadDynArray1ArgMethod("Add");
+
                 case ME1OpCodes.EX_DynArrayAddItem:
                     return ReadDynArray1ArgMethod("AddItem");
 
@@ -814,6 +819,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     return CompareDelegates("==");
 
                 case ME1OpCodes.EX_NotEqual_DelDel:
+                case ME1OpCodes.EX_NotEqual_DelFunc:
                     return CompareDelegates("!=");
 
                 case ME1OpCodes.EX_StringRefConst:
@@ -830,23 +836,14 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadStringRefConst(int start)
         {
-            var initPos = start;
             int index = _reader.ReadInt32();
 
-            string text = null;
-            switch (_package.Game)
+            string text = _package.Game switch
             {
-                case MEGame.ME1:
-                    text = ME1TalkFiles.findDataById(index, _package);
-                    break;
-                case MEGame.ME2:
-                    text = ME2TalkFiles.findDataById(index);
-                    break;
-                default:
-                    text = "ME3Explorer message: N/A";
-                    Debug.WriteLine($"Reading EX_StringRefConst for {_package.Game.ToString()}");
-                    break;
-            }
+                MEGame.ME1 => ME1TalkFiles.findDataById(index, _package),
+                MEGame.ME2 => ME2TalkFiles.findDataById(index),
+                _ => "ME3Explorer message: N/A"
+            };
 
             var token = new BytecodeToken($"${index}({text})", start)
             {

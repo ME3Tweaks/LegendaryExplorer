@@ -102,11 +102,12 @@ namespace ME3Explorer.Sequence_Editor
                 ArrayProperty<StructProperty> varLinksProp = null;
                 ArrayProperty<StructProperty> outLinksProp = null;
                 ArrayProperty<StructProperty> eventLinksProp = null;
+                ArrayProperty<StructProperty> inLinksProp = null;
                 Dictionary<string, ClassInfo> classes = UnrealObjectInfo.GetClasses(game);
                 try
                 {
                     ClassInfo classInfo = info;
-                    while (classInfo != null && (varLinksProp == null || outLinksProp == null))
+                    while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || game == MEGame.ME1 && inLinksProp is null))
                     {
                         string filepath = Path.Combine(MEDirectories.BioGamePath(game), classInfo.pccPath);
                         Stream loadStream = null;
@@ -118,6 +119,10 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             loadStream = Utilities.GetCustomAppResourceStream(game);
                         }
+                        else if (File.Exists(filepath))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
+                        }
                         else if (game == MEGame.ME1)
                         {
                             filepath = Path.Combine(ME1Directory.gamePath, classInfo.pccPath); //for files from ME1 DLC
@@ -125,10 +130,6 @@ namespace ME3Explorer.Sequence_Editor
                             {
                                 loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                             }
-                        }
-                        else if (File.Exists(filepath))
-                        {
-                            loadStream = new MemoryStream(File.ReadAllBytes(filepath));
                         }
                         if (loadStream != null)
                         {
@@ -172,6 +173,11 @@ namespace ME3Explorer.Sequence_Editor
                                         }
                                     }
                                 }
+
+                                if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
+                                {
+                                    inLinksProp = ilp;
+                                }
                             }
                         }
                         classes.TryGetValue(classInfo.baseClass, out classInfo);
@@ -193,6 +199,10 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     defaults.Add(eventLinksProp);
                 }
+                if (inLinksProp != null)
+                {
+                    defaults.Add(inLinksProp);
+                }
 
                 //remove links if empty
                 if (defaults.GetProp<ArrayProperty<StructProperty>>("OutputLinks") is { } outLinks && outLinks.IsEmpty())
@@ -206,6 +216,10 @@ namespace ME3Explorer.Sequence_Editor
                 if (defaults.GetProp<ArrayProperty<StructProperty>>("EventLinks") is { } eventLinks && eventLinks.IsEmpty())
                 {
                     defaults.Remove(eventLinks);
+                }
+                if (defaults.GetProp<ArrayProperty<StructProperty>>("InputLinks") is { } inputLinks && inputLinks.IsEmpty())
+                {
+                    defaults.Remove(inputLinks);
                 }
             }
 

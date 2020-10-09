@@ -140,7 +140,7 @@ namespace ME3ExplorerCore.Helpers
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
                 // Suggest using M3's DuplicatingIni class instead
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"]);
+                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }
