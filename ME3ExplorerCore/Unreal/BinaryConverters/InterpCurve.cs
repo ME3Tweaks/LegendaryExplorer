@@ -6,7 +6,7 @@ using ME3ExplorerCore.SharpDX;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
-    //works when T is float, Vector3 or Vector2
+    //ONLY WORKS WHEN T is float, ME3ExplorerCore.SharpDX.Vector3 or ME3ExplorerCore.SharpDX.Vector2
     public class InterpCurvePoint<T>
     {
         public float InVal { get; set; }
@@ -135,7 +135,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    //works when T is float, Vector3 or Vector2
+    //ONLY WORKS WHEN T is float, ME3ExplorerCore.SharpDX.Vector3 or ME3ExplorerCore.SharpDX.Vector2
     public class InterpCurve<T>
     {
         public List<InterpCurvePoint<T>> Points = new List<InterpCurvePoint<T>>();

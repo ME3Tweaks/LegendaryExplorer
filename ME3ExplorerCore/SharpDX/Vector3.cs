@@ -293,9 +293,9 @@ namespace ME3ExplorerCore.SharpDX
         /// Creates an array containing the elements of the vector.
         /// </summary>
         /// <returns>A three-element array containing the components of the vector.</returns>
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
-            return new float[] { X, Y, Z };
+            return new[] { X, Y, Z };
         }
 
         /// <summary>

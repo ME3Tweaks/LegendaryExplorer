@@ -147,18 +147,21 @@ namespace ME3Explorer.CurveEd
         private void btnInterpMode_Click(object sender, RoutedEventArgs e)
         {
             CurvePoint selectedPoint = graph.SelectedPoint;
-            selectedPoint.InterpMode = (sender as RadioButton)?.Name switch
+            if (selectedPoint != null)
             {
-                "btnLinear" => CurveMode.CIM_Linear,
-                "btnAuto" => CurveMode.CIM_CurveAuto,
-                "btnConstant" => CurveMode.CIM_Constant,
-                "btnUser" => CurveMode.CIM_CurveUser,
-                "btnBreak" => CurveMode.CIM_CurveBreak,
-                "btnClamped" => CurveMode.CIM_CurveAutoClamped,
-                _ => selectedPoint.InterpMode
-            };
-            graph.Paint();
-            graph.SelectedPoint = selectedPoint;
+                selectedPoint.InterpMode = (sender as RadioButton)?.Name switch
+                {
+                    "btnLinear" => CurveMode.CIM_Linear,
+                    "btnAuto" => CurveMode.CIM_CurveAuto,
+                    "btnConstant" => CurveMode.CIM_Constant,
+                    "btnUser" => CurveMode.CIM_CurveUser,
+                    "btnBreak" => CurveMode.CIM_CurveBreak,
+                    "btnClamped" => CurveMode.CIM_CurveAutoClamped,
+                    _ => selectedPoint.InterpMode
+                };
+                graph.Paint();
+                graph.SelectedPoint = selectedPoint;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

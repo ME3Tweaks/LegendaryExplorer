@@ -8,11 +8,11 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
-using SharpDX;
 
 namespace ME3Explorer.GameInterop
 {
