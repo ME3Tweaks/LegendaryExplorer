@@ -127,11 +127,24 @@ namespace ME3Explorer
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                var image = new Image(selectDDS.FileName);
                 //Check aspect ratios
                 var props = CurrentLoadedExport.GetProperties();
-                var listedWidth = props.GetProp<IntProperty>("SizeX");
-                var listedHeight = props.GetProp<IntProperty>("SizeY");
+                var listedWidth = props.GetProp<IntProperty>("SizeX")?.Value ?? 0;
+                var listedHeight = props.GetProp<IntProperty>("SizeY")?.Value ?? 0;
+                var noMipmaps = props.GetProp<BoolProperty>("CompressionNoMipmaps")?.Value ?? false;
+
+                bool requirePowerOfTwo = !(noMipmaps && !(Image.IsPowerOfTwo(listedHeight) && Image.IsPowerOfTwo(listedWidth)));
+
+                Image image;
+                try
+                {
+                    image = new Image(selectDDS.FileName, requirePowerOfTwo: requirePowerOfTwo);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != listedWidth / listedHeight)
                 {

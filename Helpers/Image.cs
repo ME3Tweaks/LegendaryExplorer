@@ -128,15 +128,16 @@ namespace MassEffectModder.Images
         public List<MipMap> mipMaps { get; set; }
         public PixelFormat pixelFormat { get; private set; } = PixelFormat.Unknown;
 
-        public Image(string fileName, ImageFormat format = ImageFormat.Unknown)
+        private readonly bool RequireSizeToBePowerOfTwo;
+
+        public Image(string fileName, ImageFormat format = ImageFormat.Unknown, bool requirePowerOfTwo = true)
         {
+            RequireSizeToBePowerOfTwo = requirePowerOfTwo;
             if (format == ImageFormat.Unknown)
                 format = DetectImageByFilename(fileName);
 
-            using (FileStream stream = File.OpenRead(fileName))
-            {
-                LoadImage(new MemoryStream(stream.ReadToBuffer(stream.Length)), format);
-            }
+            using FileStream stream = File.OpenRead(fileName);
+            LoadImage(new MemoryStream(stream.ReadToBuffer(stream.Length)), format);
         }
 
         public Image(MemoryStream stream, ImageFormat format)
@@ -165,12 +166,12 @@ namespace MassEffectModder.Images
             pixelFormat = pixelFmt;
         }
 
-        private ImageFormat DetectImageByFilename(string fileName)
+        private static ImageFormat DetectImageByFilename(string fileName)
         {
             return DetectImageByExtension(Path.GetExtension(fileName));
         }
 
-        private ImageFormat DetectImageByExtension(string extension)
+        private static ImageFormat DetectImageByExtension(string extension)
         {
             switch (extension.ToLowerInvariant())
             {
@@ -213,14 +214,11 @@ namespace MassEffectModder.Images
                 case ImageFormat.PNG:
                 case ImageFormat.JPEG:
                     {
-                        BitmapSource frame = null;
-                        if (format == ImageFormat.PNG)
-                            frame = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
-                        else if (format == ImageFormat.JPEG)
-                            frame = new JpegBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
+                        BitmapSource frame = format == ImageFormat.PNG
+                            ? new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0]
+                            : new JpegBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
 
-                        if (!checkPowerOfTwo(frame.PixelWidth) ||
-                            !checkPowerOfTwo(frame.PixelHeight))
+                        if (!checkPowerOfTwo(frame.PixelWidth) || !checkPowerOfTwo(frame.PixelHeight))
                             throw new Exception("dimensions not power of two");
 
                         FormatConvertedBitmap srcBitmap = new FormatConvertedBitmap();
@@ -634,13 +632,17 @@ namespace MassEffectModder.Images
             }
         }
 
-        public static bool checkPowerOfTwo(int n)
+        public bool checkPowerOfTwo(int n)
         {
-            if ((n & (n - 1)) == 0)
-                return true;
-            else
-                return false;
+            if (RequireSizeToBePowerOfTwo)
+            {
+                return IsPowerOfTwo(n);
+            }
+
+            return true;
         }
+
+        public static bool IsPowerOfTwo(int n) => (n & (n - 1)) == 0;
 
         public static int returnPowerOfTwo(int n)
         {

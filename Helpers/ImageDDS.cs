@@ -181,7 +181,6 @@ namespace MassEffectModder.Images
             }
             stream.Skip(5 * 4); // dwCaps, dwCaps2, dwCaps3, dwCaps4, dwReserved2
 
-            byte[] tempData;
             for (int i = 0; i < dwMipMapCount; i++)
             {
                 int w = dwWidth >> i;
@@ -205,6 +204,7 @@ namespace MassEffectModder.Images
                         h = 4;
                 }
 
+                byte[] tempData;
                 try
                 {
                     tempData = stream.ReadToBuffer(MipMap.getBufferSize(w, h, pixelFormat));
@@ -371,7 +371,10 @@ namespace MassEffectModder.Images
 
             int dataSize = 0;
             for (int i = 0; i < mipMaps.Count; i++)
+            {
                 dataSize += MipMap.getBufferSize(mipMaps[i].width, mipMaps[i].height, format == PixelFormat.Unknown ? pixelFormat : format);
+            }
+
             stream.WriteInt32(dataSize);
 
             stream.WriteUInt32(0); // dwDepth
