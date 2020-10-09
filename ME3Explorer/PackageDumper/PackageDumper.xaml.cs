@@ -285,18 +285,69 @@ namespace ME3Explorer.PackageDumper
 
             AllDumpingItems = new List<PackageDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
+
+            // Calculate what files have duplicate names so we can avoid same-file accessing/writing
+            CaseInsensitiveDictionary<List<string>> inputMapping = new CaseInsensitiveDictionary<List<string>>();
             foreach (var item in files)
             {
-                string outfolder = outputfolder;
-                if (outfolder != null)
+                var fname = Path.GetFileName(item);
+                if (!inputMapping.TryGetValue(fname, out var listOfSameNamedFiles))
                 {
-                    string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
-                    outfolder = Path.Combine(outfolder, relative);
+                    listOfSameNamedFiles = new List<string>();
+                    inputMapping[fname] = listOfSameNamedFiles;
                 }
+                listOfSameNamedFiles.Add(item);
+            }
 
-                var threadtask = new PackageDumperSingleFileTask(item, outfolder);
-                AllDumpingItems.Add(threadtask); //For setting cancelation value
-                ProcessingQueue.Post(threadtask); // Post all items to the block
+
+            foreach (var item in inputMapping)
+            {
+                int i = 0;
+                foreach (var packageF in item.Value)
+                {
+                    var outputFilename = Path.GetFileNameWithoutExtension(item.Key);
+                    if (item.Value.Count > 1)
+                    {
+                        // we need to change names
+                        string dlcName = null;
+                        DirectoryInfo parentPath = Directory.GetParent(packageF);
+                        while (parentPath != null)
+                        {
+                            if (parentPath.Name.StartsWith("CookedPC", StringComparison.InvariantCultureIgnoreCase)
+                                && parentPath.Parent != null
+                                && parentPath.Parent.Name.Equals("BioGame", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                outputFilename += "_Basegame";
+                                break;
+                            }
+                            else if (parentPath.Name.StartsWith("DLC_"))
+                            {
+                                outputFilename += $"_{parentPath.Name}";
+                                break;
+                            }
+                            parentPath = parentPath.Parent;
+                        }
+
+                        if (parentPath == null)
+                        {
+                            // Didn't find it
+                            outputFilename += $"_Instance{i}"; // We could use some logic to find a better name, but it's probably not that useful.
+                        }
+                    }
+
+
+                    string outfolder = outputfolder;
+                    if (outfolder != null)
+                    {
+                        string relative = GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
+                        outfolder = Path.Combine(outfolder, relative);
+                    }
+
+                    var threadtask = new PackageDumperSingleFileTask(packageF, outputFilename, outfolder);
+                    AllDumpingItems.Add(threadtask); //For setting cancelation value
+                    ProcessingQueue.Post(threadtask); // Post all items to the block
+                    i++;
+                }
             }
 
             ProcessingQueue.Complete(); // Signal completion
@@ -490,16 +541,16 @@ namespace ME3Explorer.PackageDumper
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public PackageDumperSingleFileTask(string file, string outputfolder = null)
+        public PackageDumperSingleFileTask(string packageToDump, string outputFilenameNoExtension = null, string outputfolder = null)
         {
-            this.File = file;
-            this.ShortFileName = Path.GetFileNameWithoutExtension(file);
+            this._packageToDump = packageToDump;
+            this.ShortFileName = outputFilenameNoExtension ?? Path.GetFileNameWithoutExtension(packageToDump);
             this.OutputFolder = outputfolder;
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
         public bool DumpCanceled;
-        private string File;
+        private string _packageToDump;
         private string OutputFolder;
 
         /// <summary>
@@ -514,24 +565,19 @@ namespace ME3Explorer.PackageDumper
             //}
             //try
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(_packageToDump))
                 {
                     var GameBeingDumped = pcc.Game;
                     CurrentFileProgressMaximum = pcc.ExportCount;
-                    string outfolder = OutputFolder ?? Directory.GetParent(File).ToString();
-
-                    if (!outfolder.EndsWith(@"\"))
-                    {
-                        outfolder += @"\";
-                    }
+                    string outfolder = OutputFolder ?? Directory.GetParent(_packageToDump).ToString();
 
                     //if (properties)
                     //{
                     //    UnrealObjectInfo.loadfromJSON();
                     //}
                     //dumps data.
-                    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + ".txt";
-                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
+                    string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
+                    Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
                     using (StreamWriter stringoutput = new StreamWriter(savepath))
                     {
@@ -551,7 +597,7 @@ namespace ME3Explorer.PackageDumper
                         string datasets = "Exports Coalesced ";
                         //if (GameBeingDumped != MEGame.ME2)
                         //{
-                            datasets += " Functions";
+                        datasets += " Functions";
                         //}
 
                         stringoutput.WriteLine("--Start of " + datasets);
@@ -559,7 +605,7 @@ namespace ME3Explorer.PackageDumper
 
                         int numDone = 1;
                         //writeVerboseLine("Enumerating exports");
-                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
+                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
                         foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
