@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ImageMagick;
+using System.Windows;
+//using ImageMagick;
 using MassEffectModder.Images;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
@@ -697,32 +698,33 @@ namespace ME3Explorer.PackageEditor
         /// <param name="Pcc"></param>
         public static void TintAllNormalizedAverageColors(IMEPackage Pcc)
         {
-            var normalizedExports = Pcc.Exports
-                .Where(x => x.ClassName == "LightMapTexture2D" && x.ObjectName.Name.StartsWith("NormalizedAverageColor")).ToList();
-            foreach (var v in normalizedExports)
-            {
-                MemoryStream pngImage = new MemoryStream();
-                Texture2D t2d = new Texture2D(v);
-                t2d.ExportToPNG(outStream: pngImage);
-                pngImage.Position = 0; //reset
-                MemoryStream outStream = new MemoryStream();
-                using (var image = new MagickImage(pngImage))
-                {
+            MessageBox.Show("This is not implemented, code must be uncommented out");
+            //var normalizedExports = Pcc.Exports
+            //    .Where(x => x.ClassName == "LightMapTexture2D" && x.ObjectName.Name.StartsWith("NormalizedAverageColor")).ToList();
+            //foreach (var v in normalizedExports)
+            //{
+            //    MemoryStream pngImage = new MemoryStream();
+            //    Texture2D t2d = new Texture2D(v);
+            //    t2d.ExportToPNG(outStream: pngImage);
+            //    pngImage.Position = 0; //reset
+            //    MemoryStream outStream = new MemoryStream();
+            //    using (var image = new MagickImage(pngImage))
+            //    {
 
-                    var tintColor = MagickColor.FromRgb((byte)128, (byte)0, (byte)0);
-                    //image.Colorize(tintColor, new Percentage(80), new Percentage(5), new Percentage(5) );
-                    //image.Settings.FillColor = tintColor;
-                    //image.Tint("30%", tintColor);
-                    image.Modulate(new Percentage(82), new Percentage(100), new Percentage(0));
-                    //image.Colorize(tintColor, new Percentage(100), new Percentage(0), new Percentage(0) );
-                    image.Write(outStream, MagickFormat.Png32);
-                }
-                //outStream = pngImage;
-                outStream.Position = 0;
-                outStream.WriteToFile(Path.Combine(Directory.CreateDirectory(@"C:\users\mgame\desktop\normalizedCols").FullName, v.ObjectName.Instanced + ".png"));
-                var convertedBackImage = new MassEffectModder.Images.Image(outStream, Image.ImageFormat.PNG);
-                t2d.Replace(convertedBackImage, t2d.Export.GetProperties());
-            }
+            //        var tintColor = MagickColor.FromRgb((byte)128, (byte)0, (byte)0);
+            //        //image.Colorize(tintColor, new Percentage(80), new Percentage(5), new Percentage(5) );
+            //        //image.Settings.FillColor = tintColor;
+            //        //image.Tint("30%", tintColor);
+            //        image.Modulate(new Percentage(82), new Percentage(100), new Percentage(0));
+            //        //image.Colorize(tintColor, new Percentage(100), new Percentage(0), new Percentage(0) );
+            //        image.Write(outStream, MagickFormat.Png32);
+            //    }
+            //    //outStream = pngImage;
+            //    outStream.Position = 0;
+            //    outStream.WriteToFile(Path.Combine(Directory.CreateDirectory(@"C:\users\mgame\desktop\normalizedCols").FullName, v.ObjectName.Instanced + ".png"));
+            //    var convertedBackImage = new MassEffectModder.Images.Image(outStream, Image.ImageFormat.PNG);
+            //    t2d.Replace(convertedBackImage, t2d.Export.GetProperties());
+            //}
         }
 
         /// <summary>
