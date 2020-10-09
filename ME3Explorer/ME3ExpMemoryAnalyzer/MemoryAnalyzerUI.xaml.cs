@@ -1,13 +1,11 @@
-﻿using ByteSizeLib;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
@@ -63,7 +61,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             MemoryAnalyzer.Refresh();
 
             LastRefreshText = "Last refreshed: " + DateTime.Now;
-            CurrentMemoryUsageText = "Current process allocation: " + ByteSize.FromBytes(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
+            CurrentMemoryUsageText = "Current process allocation: " + FileSize.FormatSize(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
             //foreach (var item in InstancedTrackedMemoryObjects)
             //{
             //    item.RefreshStatus();

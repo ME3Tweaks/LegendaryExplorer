@@ -1,5 +1,4 @@
-﻿using ByteSizeLib;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -241,7 +240,7 @@ namespace ME3Explorer.Soundplorer
             {
                 soundPanel.FreeAudioResources(); //stop playback
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
-                TaskbarText = $"Loading {Path.GetFileName(fileName)} ({ByteSize.FromBytes(new FileInfo(fileName).Length)})";
+                TaskbarText = $"Loading {Path.GetFileName(fileName)} ({FileSize.FormatSize(new FileInfo(fileName).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;

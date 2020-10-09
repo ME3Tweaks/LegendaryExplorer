@@ -24,7 +24,6 @@ using ME3Explorer.ME3Tweaks;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.PackageEditor;
 using ME3Explorer.StaticLighting;
-using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using Newtonsoft.Json;
@@ -2368,7 +2367,7 @@ namespace ME3Explorer
             BackwardsIndexes = new Stack<int>();
             ForwardsIndexes = new Stack<int>();
             StatusBar_LeftMostText.Text =
-                $"Loading {loadingName} ({ByteSize.FromBytes(loadingSize)})";
+                $"Loading {loadingName} ({FileSize.FormatSize(loadingSize)})";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
