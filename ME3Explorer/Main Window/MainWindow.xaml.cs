@@ -17,6 +17,7 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
@@ -240,9 +241,14 @@ namespace ME3Explorer
             if (CICOpen)
             {
                 closeCIC();
+
             }
             else
             {
+                Analytics.TrackEvent("CIC Window Size Changed", new Dictionary<string, string>()
+                {
+                    {"New State", "Maximized"}
+                });
                 if (CreateModsOpen)
                 {
                     closeCreateMods(100);
@@ -265,7 +271,7 @@ namespace ME3Explorer
             }
         }
 
-        private void closeCIC(int duration = 300)
+        private void closeCIC(int duration = 300, bool triggerAnalytics = true)
         {
             CICOpen = false;
             if (SearchOpen)
@@ -284,6 +290,15 @@ namespace ME3Explorer
             {
                 closeGamePaths();
             }
+
+            if (triggerAnalytics)
+            {
+                Analytics.TrackEvent("CIC Window Size Changed", new Dictionary<string, string>()
+                {
+                    {"New State", "Minimized"}
+                });
+            }
+
             CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
@@ -426,10 +441,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Tab Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "Utilities"}
+                });
                 UtilitiesOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (CreateModsOpen)
                 {
@@ -450,6 +469,10 @@ namespace ME3Explorer
             {
                 closeToolInfo();
             }
+            Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            {
+                {"Tab Name Closed", "Utilities"}
+            });
             UtilitiesOpen = false;
             utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             utilitiesButton.OpacityMask = LabelTextBrush;
@@ -463,10 +486,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "Create Mods"}
+                });
                 CreateModsOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (UtilitiesOpen)
                 {
@@ -487,6 +514,10 @@ namespace ME3Explorer
             {
                 closeToolInfo();
             }
+            Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            {
+                {"Tab Name Closed", "Create Mods"}
+            });
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             createModsButton.OpacityMask = LabelTextBrush;
@@ -678,10 +709,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "TaskPane"}
+                });
                 TaskPaneOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (UtilitiesOpen)
                 {
@@ -700,6 +735,10 @@ namespace ME3Explorer
         {
             if (TaskPaneInfoPanelOpen)
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Closed", "TaskPane"}
+                });
                 closeTaskPaneInfoPanel();
             }
             TaskPaneOpen = false;
