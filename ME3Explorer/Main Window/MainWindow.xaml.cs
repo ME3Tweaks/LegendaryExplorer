@@ -441,7 +441,7 @@ namespace ME3Explorer
             }
             else
             {
-                Analytics.TrackEvent("Tab Window Tab Changed", new Dictionary<string, string>()
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
                 {
                     {"Tab Name Opened", "Utilities"}
                 });
