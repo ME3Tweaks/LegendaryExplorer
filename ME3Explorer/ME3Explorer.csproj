@@ -1456,7 +1456,6 @@
     <Resource Include="Resources\minimize_icon.ico" />
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
-    <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Page Include="CurveEd\CurveEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1534,14 +1533,12 @@
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
     <Resource Include="Resources\error_x.png" />
-    <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\me3tweaks_fork.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_texture2d.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_sound.png" />
     <Resource Include="Resources\dlc_unpacker_256x256.ico" />
     <Resource Include="Resources\packagedumper_256x256.ico" />
-    <Resource Include="Resources\packageeditorclassic_256x256.ico" />
     <Resource Include="Resources\mounteditor_256x256.ico" />
     <Resource Include="Resources\tlkmanager_256x256.ico" />
     <Resource Include="Resources\autotoc_256x256.ico" />
@@ -1556,7 +1553,6 @@
     <Resource Include="Resources\meshplorer_256x256.ico" />
     <Resource Include="Resources\ploteditor_256x256.ico" />
     <Resource Include="Resources\plotdatabase_256x256.ico" />
-    <Resource Include="Resources\facefxa_256x256.ico" />
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
     <Resource Include="Resources\BikExtractor_256x256.ico" />
     <Resource Include="Resources\InterpViewer_256x256.ico" />
@@ -1564,7 +1560,6 @@
     <Resource Include="Resources\tpftools_256x256.ico" />
     <Resource Include="Resources\animationexplorer_256x256.ico" />
     <Resource Include="Resources\psaviewer_256x256.ico" />
-    <Resource Include="Resources\scriptdatabase_256x256.ico" />
     <Resource Include="Resources\modmaker_256x256.ico" />
     <Resource Include="Resources\coalescededitor_256x256.ico" />
     <Resource Include="Resources\me2me3tlkeditor_256x256.ico" />
