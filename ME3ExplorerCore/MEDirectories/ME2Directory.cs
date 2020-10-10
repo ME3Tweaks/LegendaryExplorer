@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Misc;
 using Microsoft.Win32;
 
 namespace ME3ExplorerCore.MEDirectories
@@ -72,7 +73,7 @@ namespace ME3ExplorerCore.MEDirectories
             }
         }
 
-        public static Dictionary<string, string> OfficialDLCNames = new Dictionary<string, string>
+        public static CaseInsensitiveDictionary<string> OfficialDLCNames = new CaseInsensitiveDictionary<string>
         {
             ["DLC_CER_02"] = "Aegis Pack",
             ["DLC_CER_Arc"] = "Arc Projector",

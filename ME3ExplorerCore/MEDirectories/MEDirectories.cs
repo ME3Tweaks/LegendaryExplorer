@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.MEDirectories
@@ -211,6 +212,21 @@ namespace ME3ExplorerCore.MEDirectories
             }
 
             return files.Where(t => predicate(t)).ToList();
+        }
+
+        public static CaseInsensitiveDictionary<string> OfficialDLCNames(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1Directory.OfficialDLCNames;
+                case MEGame.ME2:
+                    return ME2Directory.OfficialDLCNames;
+                case MEGame.ME3:
+                    return ME3Directory.OfficialDLCNames;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
         }
     }
 }

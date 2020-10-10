@@ -29,7 +29,7 @@ namespace ME3ExplorerCore.Audio
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
                 if (obj.GetType() != this.GetType()) return false;
-                return Equals((ReferencedAudio) obj);
+                return Equals((ReferencedAudio)obj);
             }
 
             public override int GetHashCode()
@@ -48,9 +48,13 @@ namespace ME3ExplorerCore.Audio
             public long audioSize { get; set; }
             public string uiOriginatingExportName { get; set; }
             public string uiAFCSourceType { get; set; }
+            /// <summary>
+            /// If AFC is available. If not, this is broken audio
+            /// </summary>
+            public bool isAvailable { get; set; }
         }
 
-        public static List<ReferencedAudio> GetReferencedAudio(MEGame game, string inputPath, bool includeBasegameAudio = false, bool includeOfficialDLCAudio = true, Action<string> currentScanningFileCallback = null)
+        public static (List<ReferencedAudio> missingAFCReferences, List<ReferencedAudio> availableAFCReferences) GetReferencedAudio(MEGame game, string inputPath, Action<string> currentScanningFileCallback = null)
         {
             var sizesJsonStr = new StreamReader(Utilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
             var vanillaSizesMap = JsonConvert.DeserializeObject<CaseInsensitiveDictionary<int>>(sizesJsonStr);
@@ -59,6 +63,7 @@ namespace ME3ExplorerCore.Audio
 
 
             var referencedAFCAudio = new List<ReferencedAudio>();
+            var missingAFCReferences = new List<ReferencedAudio>();
             int i = 1;
 
             var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
@@ -111,12 +116,12 @@ namespace ME3ExplorerCore.Audio
                                 isOfficialDLC = afcFile != null;
                             }
 
+                            string afcName = afcNameProp.ToString().ToLower();
+                            int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
+                            int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+
                             if (afcFile != null)
                             {
-                                string afcName = afcNameProp.ToString().ToLower();
-                                int readPos = exp.Data.Length - 8;
-                                int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
-                                int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
                                 var source = !isBasegame && !isOfficialDLC ? "Modified" : null;
                                 if (isBasegame || isOfficialDLC)
                                 {
@@ -126,29 +131,11 @@ namespace ME3ExplorerCore.Audio
                                     {
                                         if (isOfficialDLC)
                                         {
-                                            if (includeOfficialDLCAudio)
-                                            {
-                                                source = "Official DLC";
-                                            }
-                                            else
-                                            {
-                                                Debug.WriteLine(
-                                                    $"Audio is contained in official DLC AFC {afcName}, {audioOffset}, filesize {vanillaSize}, option was not chosen. Skipping");
-                                                continue;
-                                            }
+                                            source = "Official DLC";
                                         }
                                         else if (isBasegame)
                                         {
-                                            if (includeBasegameAudio)
-                                            {
-                                                source = "Basegame";
-                                            }
-                                            else
-                                            {
-                                                Debug.WriteLine(
-                                                    $"Audio is in basegame AFC {afcName}, {audioOffset}, filesize {vanillaSize}, option was not chosen. Skipping");
-                                                continue;
-                                            }
+                                            continue; //Fully basegame audio is never returned as it will always be available
                                         }
                                     }
                                     else
@@ -165,7 +152,17 @@ namespace ME3ExplorerCore.Audio
                                     uiOriginatingExportName = exp.ObjectName,
                                     uiAFCSourceType = source
                                 });
-
+                            }
+                            else
+                            {
+                                missingAFCReferences.Add(new ReferencedAudio()
+                                {
+                                    afcName = afcNameProp.Value,
+                                    audioSize = audioSize,
+                                    audioOffset = audioOffset,
+                                    uiOriginatingExportName = exp.ObjectName,
+                                    uiAFCSourceType = "AFC unavailable"
+                                });
                             }
                         }
                     }
@@ -173,12 +170,12 @@ namespace ME3ExplorerCore.Audio
                 i++;
             }
             referencedAFCAudio = referencedAFCAudio.Distinct().ToList();
-            return referencedAFCAudio;
+            return (missingAFCReferences, referencedAFCAudio);
         }
 
-        public static bool CompactAFC(MEGame game, string inputPath, string newAFCBaseName, List<ReferencedAudio> referencesToCompact, Action<string> NotifyStatusUpdate = null)
+        public static bool CompactAFC(MEGame game, string inputPath, string newAFCBaseName, List<ReferencedAudio> referencesToCompact, Func<List<(ReferencedAudio, string)>, bool> notifyBrokenAudio, Action<string> notifyStatusUpdate = null)
         {
-            NotifyStatusUpdate?.Invoke("Preparing to compact AFC");
+            notifyStatusUpdate?.Invoke("Preparing to compact AFC");
             var localFolderAFCFiles = Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories).ToList();
             var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
             var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFiles(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
@@ -205,12 +202,13 @@ namespace ME3ExplorerCore.Audio
             string currentOpenAfc = null;
             Stream currentOpenAfcStream = null;
 
-            NotifyStatusUpdate?.Invoke("Creating reference map to new AFC");
+            notifyStatusUpdate?.Invoke("Creating reference map to new AFC");
 
             // Mapping of old reference => new reference
             var referenceMap = new Dictionary<AFCCompactor.ReferencedAudio, AFCCompactor.ReferencedAudio>();
 
             MemoryStream memoryNewAfc = new MemoryStream();
+            var brokenAudio = new List<(ReferencedAudio brokenRef, string brokenReason)>();
             foreach (var referencedAudio in referencesToCompact)
             {
                 if (referencedAudio.afcName != currentOpenAfc)
@@ -223,24 +221,62 @@ namespace ME3ExplorerCore.Audio
                 if (currentOpenAfcStream == null)
                 {
                     Debug.WriteLine($"AFC could not be found: {referencedAudio.afcName}");
-                    return false;
+                    brokenAudio.Add((referencedAudio, $"AFC could not be found:  {referencedAudio.afcName}"));
+                    continue;
                 }
 
                 var referencePos = memoryNewAfc.Position;
-                currentOpenAfcStream.Position = referencedAudio.audioOffset;
-                currentOpenAfcStream.CopyToEx(memoryNewAfc, (int)referencedAudio.audioSize);
-
-                referenceMap[referencedAudio] = new ReferencedAudio()
+                try
                 {
-                    afcName = newAFCBaseName,
-                    audioOffset = referencePos,
-                    audioSize = referencedAudio.audioSize,
-                };
+                    if (currentOpenAfcStream.Length <= referencedAudio.audioOffset)
+                    {
+                        brokenAudio.Add((referencedAudio, $"Audio pointer is outside of AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8}"));
+                        continue;
+                    }
+
+                    if (currentOpenAfcStream.Length < referencedAudio.audioOffset + referencedAudio.audioSize)
+                    {
+                        brokenAudio.Add((referencedAudio, $"Audio size causes reference to extend beyond end of AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8} for length 0x{referencedAudio.audioSize:X6}. The AFC is only 0x{currentOpenAfcStream.Length:X8} in size"));
+                        continue;
+                    }
+
+                    // Read header
+                    currentOpenAfcStream.Position = referencedAudio.audioOffset;
+                    var header = currentOpenAfcStream.ReadStringASCII(4);
+                    if (header != "RIFF")
+                    {
+                        brokenAudio.Add((referencedAudio, $"Audio pointer doesn't point to data that doesn't start with the RIFF tag. This is an invalid pointer as all audio will start with RIFF. AFC {referencedAudio.afcName} @ 0x{referencedAudio.audioOffset:X8}"));
+                        continue;
+                    }
+
+                    currentOpenAfcStream.Position = referencedAudio.audioOffset;
+                    currentOpenAfcStream.CopyToEx(memoryNewAfc, (int)referencedAudio.audioSize);
+
+                    referenceMap[referencedAudio] = new ReferencedAudio()
+                    {
+                        afcName = newAFCBaseName,
+                        audioOffset = referencePos,
+                        audioSize = referencedAudio.audioSize,
+                    };
+                }
+                catch (Exception e)
+                {
+                    brokenAudio.Add((referencedAudio, $"AFC could not be found:  {referencedAudio.afcName}"));
+                }
 
                 var test = referenceMap[referencedAudio];
             }
             currentOpenAfcStream?.Dispose();
             Debug.WriteLine($"New AFC size: 0x{memoryNewAfc.Length:X8} ({FileSize.FormatSize(memoryNewAfc.Length)})");
+
+            if (brokenAudio.Any())
+            {
+                var shouldContinue = notifyBrokenAudio?.Invoke(brokenAudio);
+                if (!shouldContinue.HasValue || !shouldContinue.Value)
+                {
+                    return false;
+                }
+            }
 
             // Write temp to make sure we don't update references and then find out we can't actually write to disk
             var finalAfcPath = Path.Combine(inputPath, $"{newAFCBaseName}.afc");
@@ -249,13 +285,13 @@ namespace ME3ExplorerCore.Audio
             #endregion
 
             #region UPDATE AUDIO REFERENCES
-            NotifyStatusUpdate?.Invoke("Updating audio references to point to new AFC");
+            notifyStatusUpdate?.Invoke("Updating audio references to point to new AFC");
             var pccFiles = Directory.GetFiles(inputPath, "*.pcc", SearchOption.AllDirectories);
 
             // Update audio references
             foreach (string pccPath in pccFiles)
             {
-                NotifyStatusUpdate?.Invoke($"Updating {Path.GetFileName(pccPath)}");
+                notifyStatusUpdate?.Invoke($"Updating {Path.GetFileName(pccPath)}");
                 using var pack = MEPackageHandler.OpenMEPackage(pccPath);
                 bool shouldSave = false;
                 List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();

@@ -7,12 +7,15 @@
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:audio="clr-namespace:ME3ExplorerCore.Audio;assembly=ME3ExplorerCore"
+        xmlns:afcCompactorUi="clr-namespace:ME3Explorer.AFCCompactorUI"
         mc:Ignorable="d"
-        Title="Audio File Cache (AFC) Compactor" Height="450" Width="800"
+        Title="Audio File Cache (AFC) Compactor" Height="550" Width="1000"
         ContentRendered="AFCCompactorUI_OnContentRendered"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <converters:FilePathToFileNameConverter x:Key="FilePathToFileNameConverter"/>
+        <converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
     </Window.Resources>
     <DockPanel>
         <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" 
@@ -26,33 +29,53 @@
 
             </DockPanel>
 
-            <StackPanel DockPanel.Dock="Left" Margin="0,0,5,5" MinWidth="200" MaxWidth="200">
+            <StackPanel DockPanel.Dock="Left" Margin="0,0,5,5" MinWidth="250" MaxWidth="250" IsEnabled="{Binding IsBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
                 <StackPanel>
-                    <TextBlock Text="References scan" FontWeight="Bold" DockPanel.Dock="Top"/>
+                    <TextBlock Text="Step 1: References scan" FontWeight="Bold" DockPanel.Dock="Top"/>
+                    <TextBlock Text="Scans mod and compiles list of all audio references" TextWrapping="Wrap"/>
                     <StackPanel>
-                        <TextBlock Text="{Binding DLCInputFolder}" TextWrapping="Wrap"
-                                    Visibility="{Binding DLCInputFolder, Converter={StaticResource NullVisibilityConverter}}"/>
-                        <TextBlock Text="Select input folder" TextWrapping="Wrap" 
-                                    Visibility="{Binding DLCInputFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                        <TextBlock FontStyle="Italic" Text="{Binding DLCInputFolder, Converter={StaticResource FilePathToFileNameConverter}}" TextWrapping="Wrap"
+                                    Visibility="{Binding DLCInputFolder, Converter={StaticResource NullVisibilityConverter}}" ToolTip="{Binding DLCInputFolder}"/>
+                        <TextBlock FontStyle="Italic" Text="Select input folder" TextWrapping="Wrap" 
+                                   Visibility="{Binding DLCInputFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                         <Button Content="Select folder" Command="{Binding SelectDLCInputFolderCommand}" HorizontalAlignment="Right"/>
 
                     </StackPanel>
-                    <CheckBox Content="Include official basegame audio" 
+                    <!--<CheckBox Content="Include official basegame audio" 
                               IsChecked="{Binding IncludeBasegameAudio}"
                               ToolTip="Audio that is fully contained in a vanilla, basegame AFC will always be available to users. You often don't need to package this with your mod."/>
                     <CheckBox Content="Include official DLC audio" 
                               IsChecked="{Binding IncludeOfficialDLCAudio}"
-                              ToolTip="Audio that is fully contained in an official DLC AFC. You don't need to include these if your mod depends on this DLC being installed, if it does not, you should check this box so the audio is packaged with your mod."/>
+                              ToolTip="Audio that is fully contained in an official DLC AFC. You don't need to include these if your mod depends on this DLC being installed, if it does not, you should check this box so the audio is packaged with your mod."/>-->
                     <DockPanel>
                         <Button DockPanel.Dock="Right"  Content="Scan for references" HorizontalAlignment="Right" Padding="3" Command="{Binding ScanForReferencesCommand}"/>
                         <ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding GameOptions}"/>
                     </DockPanel>
                 </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Step 2: Select what audio to include" FontWeight="Bold" DockPanel.Dock="Top"/>
+                    <TextBlock Text="Select which DLCs you mod SHOULD NOT depend on. Uncheck DLCs that your mod DOES DEPEND on." TextWrapping="Wrap"/>
+                    <ListBox ItemsSource="{Binding DLCDependencies}" Height="150">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type afcCompactorUi:AFCCompactorUI+DLCDependency}">
+                                <DockPanel>
+                                    <CheckBox IsChecked="{Binding IsDependedOn}">
+                                        <CheckBox.Content>
+                                            <TextBlock Text="{Binding UIString}"/>
+                                        </CheckBox.Content>
+                                        </CheckBox>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
+                </StackPanel>
                 <StackPanel Margin="0,5,0,0" IsEnabled="{Binding AudioReferences.IsNotEmpty}">
-                    <TextBlock Text="Compaction options" FontWeight="Bold" DockPanel.Dock="Top"/>
-                    <TextBlock Text="New AFC name" DockPanel.Dock="Top"/>
+                    <TextBlock Text="Step 3: Compact AFC" FontWeight="Bold" DockPanel.Dock="Top"/>
+                    <TextBlock Text="Choose AFC name, begin compaction" TextWrapping="Wrap"/>
                     <xctk:WatermarkTextBox Watermark="New AFC name" Text="{Binding NewAFCName}" 
                                            ToolTip="Suggest name follows your folder name, e.g. DLC_MOD_XXX_Audio. Can be same as existing AFC in your mod folder"/>
+                    
+                    
                     <Button Content="Compact AFC" HorizontalAlignment="Right" Padding="3" DockPanel.Dock="Right"
                             Command="{Binding CompactAFCCommand}"/>
                 </StackPanel>
@@ -60,9 +83,11 @@
             <DockPanel>
                 <TextBlock Text="Audio to be built into new AFC" FontWeight="Bold" DockPanel.Dock="Top"/>
                 <DockPanel Dock="Bottom">
-                    <xctk:WatermarkTextBox Watermark="Type to filter"  ToolTip="Filter shown items. Note this only filters the interface and not what will actually be compacted"></xctk:WatermarkTextBox>
+                    <xctk:WatermarkTextBox Watermark="Type to filter" 
+                                           Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                                           ToolTip="Filter shown items. Note this only filters the interface and not what will actually be compacted"/>
                 </DockPanel>
-                <ListBox ItemsSource="{Binding AudioReferences}" HorizontalContentAlignment="Stretch">
+                <ListBox ItemsSource="{Binding AudioReferencesView}" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type audio:AFCCompactor+ReferencedAudio}">
                             <Grid>

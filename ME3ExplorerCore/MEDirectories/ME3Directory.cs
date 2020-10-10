@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.Misc;
 #if WINDOWS
 using Microsoft.Win32;
 #endif
@@ -75,7 +76,7 @@ namespace ME3ExplorerCore.MEDirectories
             }
         }
 
-        public static Dictionary<string, string> OfficialDLCNames = new Dictionary<string, string>
+        public static CaseInsensitiveDictionary<string> OfficialDLCNames = new CaseInsensitiveDictionary<string>
         {
             ["DLC_HEN_PR"] = "From Ashes",
             ["DLC_OnlinePassHidCE"] = "Collectors Edition Content",
