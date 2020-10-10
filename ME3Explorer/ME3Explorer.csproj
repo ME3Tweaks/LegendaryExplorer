@@ -429,6 +429,7 @@
     <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsK.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsM.cs" />
+    <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsO.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsS.cs" />
     <Compile Include="Packages\EntryImporterExtended.cs" />
     <Compile Include="Packages\ExportCreator.cs" />

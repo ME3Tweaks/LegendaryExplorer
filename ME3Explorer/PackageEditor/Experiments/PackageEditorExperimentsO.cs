@@ -13,7 +13,7 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// <summary>
     /// Class for 'Others' package experiments who aren't main devs
     /// </summary>
-    public class PackageEditorExperimentsO
+    class PackageEditorExperimentsO
     {
         public static void DumpPackageToT3D(IMEPackage package)
         {

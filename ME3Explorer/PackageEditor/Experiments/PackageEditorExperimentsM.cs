@@ -16,7 +16,8 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
-using SharpDX; //using ImageMagick;
+using SharpDX; 
+//using ImageMagick;
 
 namespace ME3Explorer.PackageEditor.Experiments
 {
