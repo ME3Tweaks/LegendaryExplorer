@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-//using ImageMagick;
-using MassEffectModder.Images;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Helpers;
@@ -18,9 +16,9 @@ using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
-using SharpDX;
+using SharpDX; //using ImageMagick;
 
-namespace ME3Explorer.PackageEditor
+namespace ME3Explorer.PackageEditor.Experiments
 {
     /// <summary>
     /// Class where Mgamerz can put debug/dev/experimental code

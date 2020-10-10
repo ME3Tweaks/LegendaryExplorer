@@ -276,8 +276,9 @@
                         <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
                         <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
                     </MenuItem>
-
-
+                    <MenuItem Header="Other people's box of Legos">
+                        <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

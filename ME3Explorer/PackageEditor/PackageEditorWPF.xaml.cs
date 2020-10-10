@@ -5266,5 +5266,10 @@ namespace ME3Explorer
         {
             PackageEditorExperimentsS.ScanStuff(this);
         }
+
+        private void ExportLevelToT3D_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.DumpPackageToT3D(Pcc);
+        }
     }
 }
