@@ -69,7 +69,7 @@ namespace MassEffectModder.Images
         private DDS_PF ddsPixelFormat = new DDS_PF();
         private uint DDSflags;
 
-        private void LoadImageDDS(MemoryStream stream, ImageFormat format)
+        private void LoadImageDDS(MemoryStream stream)
         {
             if (stream.ReadUInt32() != DDS_TAG)
                 throw new Exception("not DDS tag");
@@ -81,9 +81,9 @@ namespace MassEffectModder.Images
 
             int dwHeight = stream.ReadInt32();
             int dwWidth = stream.ReadInt32();
-            if (!checkPowerOfTwo(dwWidth) ||
-                !checkPowerOfTwo(dwHeight))
-                throw new Exception("dimensions not power of two");
+            if (!IsPowerOfTwo(dwWidth) ||
+                !IsPowerOfTwo(dwHeight))
+                throw new TextureSizeNotPowerOf2Exception();
 
             stream.Skip(8); // dwPitchOrLinearSize, dwDepth
 

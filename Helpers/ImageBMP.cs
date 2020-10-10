@@ -29,7 +29,7 @@ namespace MassEffectModder.Images
     {
         private const int BMP_TAG = 0x4D42;
 
-        private int getShiftFromMask(uint mask)
+        private static int getShiftFromMask(uint mask)
         {
             int shift = 0;
 
@@ -45,7 +45,7 @@ namespace MassEffectModder.Images
             return shift;
         }
 
-        private void LoadImageBMP(MemoryStream stream, ImageFormat format)
+        private void LoadImageBMP(MemoryStream stream)
         {
             ushort tag = stream.ReadUInt16();
             if (tag != BMP_TAG)
@@ -64,9 +64,8 @@ namespace MassEffectModder.Images
                 imageHeight = -imageHeight;
                 downToTop = false;
             }
-            if (!checkPowerOfTwo(imageWidth) ||
-                !checkPowerOfTwo(imageHeight))
-                throw new Exception("dimensions not power of two");
+            if (!IsPowerOfTwo(imageWidth) || !IsPowerOfTwo(imageHeight))
+                throw new TextureSizeNotPowerOf2Exception();
 
             stream.Skip(2);
 
@@ -76,7 +75,6 @@ namespace MassEffectModder.Images
 
             bool hasAlphaMask = false;
             uint Rmask = 0xFF0000, Gmask = 0xFF00, Bmask = 0xFF, Amask = 0xFF000000;
-            int Rshift, Gshift, Bshift, Ashift;
 
             if (headerSize >= 40)
             {
@@ -100,10 +98,10 @@ namespace MassEffectModder.Images
                 stream.JumpTo(headerSize + 14);
             }
 
-            Rshift = getShiftFromMask(Rmask);
-            Gshift = getShiftFromMask(Gmask);
-            Bshift = getShiftFromMask(Bmask);
-            Ashift = getShiftFromMask(Amask);
+            int Rshift = getShiftFromMask(Rmask);
+            int Gshift = getShiftFromMask(Gmask);
+            int Bshift = getShiftFromMask(Bmask);
+            int Ashift = getShiftFromMask(Amask);
 
             byte[] buffer = new byte[imageWidth * imageHeight * 4];
             int pos = downToTop ? imageWidth * (imageHeight - 1) * 4 : 0;

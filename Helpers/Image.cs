@@ -116,8 +116,9 @@ namespace MassEffectModder.Images
         }
     }
 
-    [DebuggerDisplay("MEM Image | Num Mips: {mipMaps.Count}")]
+    public class TextureSizeNotPowerOf2Exception : Exception { }
 
+    [DebuggerDisplay("MEM Image | Num Mips: {mipMaps.Count}")]
     public partial class Image
     {
         public enum ImageFormat
@@ -128,11 +129,8 @@ namespace MassEffectModder.Images
         public List<MipMap> mipMaps { get; set; }
         public PixelFormat pixelFormat { get; private set; } = PixelFormat.Unknown;
 
-        private readonly bool RequireSizeToBePowerOfTwo;
-
-        public Image(string fileName, ImageFormat format = ImageFormat.Unknown, bool requirePowerOfTwo = true)
+        public Image(string fileName, ImageFormat format = ImageFormat.Unknown)
         {
-            RequireSizeToBePowerOfTwo = requirePowerOfTwo;
             if (format == ImageFormat.Unknown)
                 format = DetectImageByFilename(fileName);
 
@@ -198,17 +196,17 @@ namespace MassEffectModder.Images
             {
                 case ImageFormat.DDS:
                     {
-                        LoadImageDDS(stream, format);
+                        LoadImageDDS(stream);
                         break;
                     }
                 case ImageFormat.TGA:
                     {
-                        LoadImageTGA(stream, format);
+                        LoadImageTGA(stream);
                         break;
                     }
                 case ImageFormat.BMP:
                     {
-                        LoadImageBMP(stream, format);
+                        LoadImageBMP(stream);
                         break;
                     }
                 case ImageFormat.PNG:
@@ -218,8 +216,8 @@ namespace MassEffectModder.Images
                             ? new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0]
                             : new JpegBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
 
-                        if (!checkPowerOfTwo(frame.PixelWidth) || !checkPowerOfTwo(frame.PixelHeight))
-                            throw new Exception("dimensions not power of two");
+                        if (!IsPowerOfTwo(frame.PixelWidth) || !IsPowerOfTwo(frame.PixelHeight))
+                            throw new TextureSizeNotPowerOf2Exception();
 
                         FormatConvertedBitmap srcBitmap = new FormatConvertedBitmap();
                         srcBitmap.BeginInit();
@@ -227,7 +225,7 @@ namespace MassEffectModder.Images
                         srcBitmap.DestinationFormat = PixelFormats.Bgra32;
                         srcBitmap.EndInit();
 
-                        byte[] pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
+                        var pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
                         frame.CopyPixels(pixels, srcBitmap.PixelWidth * 4, 0);
 
                         pixelFormat = PixelFormat.ARGB;
@@ -630,16 +628,6 @@ namespace MassEffectModder.Images
                 default:
                     throw new Exception("invalid texture format");
             }
-        }
-
-        public bool checkPowerOfTwo(int n)
-        {
-            if (RequireSizeToBePowerOfTwo)
-            {
-                return IsPowerOfTwo(n);
-            }
-
-            return true;
         }
 
         public static bool IsPowerOfTwo(int n) => (n & (n - 1)) == 0;

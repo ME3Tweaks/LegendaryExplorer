@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AmaroK86.ImageFormat;
+using MassEffectModder.Images;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
@@ -131,14 +132,17 @@ namespace ME3Explorer
                 var props = CurrentLoadedExport.GetProperties();
                 var listedWidth = props.GetProp<IntProperty>("SizeX")?.Value ?? 0;
                 var listedHeight = props.GetProp<IntProperty>("SizeY")?.Value ?? 0;
-                var noMipmaps = props.GetProp<BoolProperty>("CompressionNoMipmaps")?.Value ?? false;
-
-                bool requirePowerOfTwo = !(noMipmaps && !(Image.IsPowerOfTwo(listedHeight) && Image.IsPowerOfTwo(listedWidth)));
 
                 Image image;
                 try
                 {
-                    image = new Image(selectDDS.FileName, requirePowerOfTwo: requirePowerOfTwo);
+                    image = new Image(selectDDS.FileName);
+                }
+                catch (TextureSizeNotPowerOf2Exception)
+                {
+                    MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, etc)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
                 catch (Exception e)
                 {
