@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ME3Explorer.Scene3D;
@@ -216,11 +217,100 @@ namespace ME3Explorer.Meshplorer
             get => _showCollisionMesh;
             set => SetProperty(ref _showCollisionMesh, value);
         }
+
+        private float _cameraPitch, _cameraYaw, _cameraX, _cameraY, _cameraZ, _cameraFOV, _cameraZNear, _cameraZFar;
+        public float CameraPitch
+        {
+            get => _cameraPitch;
+            set => SetProperty(ref _cameraPitch, value);
+        }
+
+        public float CameraYaw
+        {
+            get => _cameraYaw;
+            set => SetProperty(ref _cameraYaw, value);
+        }
+
+        public float CameraX
+        {
+            get => _cameraX;
+            set => SetProperty(ref _cameraX, value);
+        }
+
+        public float CameraY
+        {
+            get => _cameraY;
+            set => SetProperty(ref _cameraY, value);
+        }
+
+        public float CameraZ
+        {
+            get => _cameraZ;
+            set => SetProperty(ref _cameraZ, value);
+        }
+
+        public float CameraFOV
+        {
+            get => _cameraFOV;
+            set
+            {
+                if (SetProperty(ref _cameraFOV, value))
+                {
+                    SceneViewer.Context.Camera.FOV = MathUtil.DegreesToRadians(value);
+                }
+            }
+        }
+
+        public float CameraZNear
+        {
+            get => _cameraZNear;
+            set
+            {
+                if (SetProperty(ref _cameraZNear, value))
+                {
+                    SceneViewer.Context.Camera.ZNear = value;
+                }
+            }
+        }
+
+        public float CameraZFar
+        {
+            get => _cameraZFar;
+            set
+            {
+                if (SetProperty(ref _cameraZFar, value))
+                {
+                    SceneViewer.Context.Camera.ZFar = value;
+                }
+            }
+        }
+
+        private bool _useDegrees = true, _useRadians, _useUnreal;
+
+        public bool UseDegrees
+        {
+            get => _useDegrees;
+            set => SetProperty(ref _useDegrees, value);
+        }
+
+        public bool UseRadians
+        {
+            get => _useRadians;
+            set => SetProperty(ref _useRadians, value);
+        }
+
+        public bool UseUnreal
+        {
+            get => _useUnreal;
+            set => SetProperty(ref _useUnreal, value);
+        }
+
         #endregion
 
-        private bool startingUp = true;
+        private bool startingUp;
         public MeshRendererWPF()
         {
+            startingUp = true;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -489,6 +579,16 @@ namespace ME3Explorer.Meshplorer
                 bw.RunWorkerAsync();
             }
         }
+
+        private void CameraPropsMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock t)
+            {
+                var text = t.Text.Substring(t.Text.IndexOf(':') + 1).Trim();
+                Clipboard.SetText(text);
+            }
+        }
+
         public void EnsureUModel_BackgroundThread(object sender, DoWorkEventArgs args)
         {
             void progressCallback(long bytesDownloaded, long bytesToDownload)
@@ -596,12 +696,38 @@ namespace ME3Explorer.Meshplorer
             if (Rotating)
             {
                 SceneViewer.Context.Camera.Yaw += 0.05f * timeStep;
+                if (SceneViewer.Context.Camera.Yaw > 6.28) //It's in radians 
+                    SceneViewer.Context.Camera.Yaw -= 6.28f; // Subtract so we don't overflow if this is open too long
             }
+
             Matrix viewMatrix = SceneViewer.Context.Camera.ViewMatrix;
             viewMatrix.Invert();
             Vector3 eyePosition = viewMatrix.TranslationVector;
-            CameraLocation_TextBlock.Text = $"Camera POV: (Pitch= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Pitch)}deg , Yaw= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Yaw)}deg , EyePosition= {eyePosition.X},{eyePosition.Y},{eyePosition.Z} , FOV= {MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV)}deg )";
-            CameraLocation_TextBlock.ToolTip = CameraLocation_TextBlock.Text;
+
+            if (UseDegrees)
+            {
+                CameraPitch = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Pitch);
+                CameraYaw = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.Yaw);
+            }
+            else if (UseRadians)
+            {
+
+                CameraPitch = SceneViewer.Context.Camera.Pitch;
+                CameraYaw = SceneViewer.Context.Camera.Yaw;
+            }
+            else if (UseUnreal)
+            {
+                CameraPitch = SceneViewer.Context.Camera.Pitch.RadiansToUnrealRotationUnits();
+                CameraYaw = SceneViewer.Context.Camera.Yaw.RadiansToUnrealRotationUnits();
+            }
+
+            CameraX = eyePosition.X;
+            CameraY = eyePosition.X;
+            CameraZ = eyePosition.Z;
+
+            CameraFOV = MathUtil.RadiansToDegrees(SceneViewer.Context.Camera.FOV);
+            CameraZNear = SceneViewer.Context.Camera.ZNear;
+            CameraZFar = SceneViewer.Context.Camera.ZFar;
         }
 
         private void BackgroundColorPicker_Changed(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
@@ -615,7 +741,7 @@ namespace ME3Explorer.Meshplorer
 
         private void CopyCameraLocation_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CameraLocation_TextBlock.Text);
+            //Clipboard.SetText(CameraLocation_TextBlock.Text);
         }
 
         public override void UnloadExport()

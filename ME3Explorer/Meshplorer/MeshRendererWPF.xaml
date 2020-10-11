@@ -8,6 +8,7 @@
              xmlns:scene3D="clr-namespace:ME3Explorer.Scene3D"
                                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                                  xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+                                 xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
                                  mc:Ignorable="d" 
              Loaded="MeshRenderer_Loaded"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -44,16 +45,56 @@
                     <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0">
                         <Image Source="/Meshplorer/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Button>
-                    <TextBlock x:Name="CameraLocation_TextBlock">
-                        <TextBlock.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Copy" Click="CopyCameraLocation_MenuItem_Click" />
-                            </ContextMenu>
-                        </TextBlock.ContextMenu>
-                    </TextBlock>
                 </StackPanel>
             </StatusBar>
-            <scene3D:SceneRenderControlWPF x:Name="SceneViewer" Render="SceneViewer_Render" />
+            <Grid>
+                <Expander Canvas.ZIndex="3" VerticalAlignment="Top" HorizontalAlignment="Left" ExpandDirection="Down" IsExpanded="False" Background="Transparent" Header="Camera info" Padding="3">
+                    <StackPanel>
+                        <Grid Margin="3,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="FOV:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraFOV}"
+                                               Increment="1"
+                                               Minimum="1"
+                                               Maximum="170"/>
+                        </Grid>
+                        <Grid Margin="3,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="ZNear:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraZNear}"
+                                               Increment="0.01"
+                                               Maximum="1"
+                                               Minimum="0.00000001"/>
+                        </Grid>
+                        <Grid Margin="3,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="ZFar:" Margin="0,0,3,0" VerticalAlignment="Center"/>
+                            <xctk:DoubleUpDown Grid.Column="1" Value="{Binding CameraZFar}"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Degrees" GroupName="UnitType" IsChecked="{Binding UseDegrees}"/>
+                            <RadioButton Content="Radians" GroupName="UnitType"  IsChecked="{Binding UseRadians}" Margin="3,0"/>
+                            <RadioButton Content="Unreal" GroupName="UnitType" IsChecked="{Binding UseUnreal}"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding CameraX, StringFormat='X: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        <TextBlock Text="{Binding CameraY, StringFormat='Y: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        <TextBlock Text="{Binding CameraZ, StringFormat='Z: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        <TextBlock Text="{Binding CameraPitch, StringFormat='Pitch: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        <TextBlock Text="{Binding CameraYaw, StringFormat='Yaw: {0}'}" Margin="3,2" MouseDown="CameraPropsMouseDown" ToolTip="Double click to copy value"/>
+                        
+                    </StackPanel>
+                </Expander>
+                <scene3D:SceneRenderControlWPF Canvas.ZIndex="0"  x:Name="SceneViewer" Render="SceneViewer_Render" />
+            </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
 </me3Explorer:ExportLoaderControl>
