@@ -165,6 +165,7 @@ namespace ME3Script.Language.Tree
     {
         public Expression MemberNameArg;
         public Expression ValueArg;
+        public VariableType MemberType;
 
         public DynArrayFindStructMember(Expression dynArrayExpression, Expression memberNameArg, Expression valueArg, SourcePosition start = null, SourcePosition end = null) : base(dynArrayExpression, start, end)
         {

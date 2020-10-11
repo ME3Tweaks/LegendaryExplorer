@@ -84,7 +84,7 @@ namespace ME3Script.Parsing
                     {
                         throw paramParser.Error($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody.StartPos, unparsedBody.EndPos);
                     }
-                    AddConversion(param.VarType, ref parsed);
+                    //AddConversion(param.VarType, ref parsed); Done in compiler
                     param.DefaultParameter = parsed;
                 }
             }
@@ -377,7 +377,7 @@ namespace ME3Script.Parsing
                 {
                     throw Error($"Cannot assign a value of type '{value.ResolveType()?.Name ?? "None"}' to a variable of type '{exprType?.Name}'.", assign.StartPos, assign.EndPos);
                 }
-                AddConversion(exprType, ref value);
+                //AddConversion(exprType, ref value); Done in Compiler
 
                 return new AssignStatement(expr, value, assign.StartPos, assign.EndPos);
             }
@@ -474,8 +474,7 @@ namespace ME3Script.Parsing
                 if (func.ReturnType == null) throw Error("Function should not return a value!", token.StartPos, token.EndPos);
 
                 if (!NodeUtils.TypeCompatible(func.ReturnType, type)) throw Error($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token.StartPos, token.EndPos);
-                AddConversion(func.ReturnType, ref value);
-
+                //AddConversion(func.ReturnType, ref value); Done in Compiler
             }
 
             return new ReturnStatement(value, token.StartPos, token.EndPos);
@@ -748,7 +747,7 @@ namespace ME3Script.Parsing
             {
                 throw Error("Case expression must evaluate to the same type as the switch expression!", value.StartPos, value.EndPos);
             }
-            AddConversion(switchType, ref value);
+            //AddConversion(switchType, ref value); Done in Compiler
             if (Consume(TokenType.Colon) == null) throw Error("Expected colon after case expression!", CurrentPosition);
 
             return new CaseStatement(value, token.StartPos, token.EndPos);
@@ -960,6 +959,7 @@ namespace ME3Script.Parsing
                 }
                 else
                 {
+                    /* Done in Compiler
                     if (bestMatch.LeftOperand.VarType is Class c && c.IsInterface)
                     {
                         VariableType varType = lhs.ResolveType() ?? rhs.ResolveType() ?? c;
@@ -971,6 +971,7 @@ namespace ME3Script.Parsing
                         AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
                         AddConversion(bestMatch.RightOperand.VarType, ref rhs);
                     }
+                    */
                     expr = new InOpReference(bestMatch, lhs, rhs, lhs.StartPos, rhs.EndPos);
                 }
             }
@@ -1096,65 +1097,65 @@ namespace ME3Script.Parsing
             return expr;
         }
 
-        static void AddConversion(VariableType destType, ref Expression expr)
-        {
+        //static void AddConversion(VariableType destType, ref Expression expr)
+        //{
 
-            if (expr is NoneLiteral noneLit)
-            {
-                if (destType.PropertyType == EPropertyType.Delegate)
-                {
-                    noneLit.IsDelegateNone = true;
-                }
-                else if (destType.PropertyType == EPropertyType.Interface)
-                {
-                    expr = new PrimitiveCast(ECast.ObjectToInterface, destType, noneLit, noneLit.StartPos, noneLit.EndPos);
-                    return;
-                }
-            }
-            if (expr?.ResolveType() is { } type && type.PropertyType != destType.PropertyType)
-            {
-                ECast cast = CastHelper.PureCastType(CastHelper.GetConversion(destType, type));
-                switch (expr)
-                {
-                    case IntegerLiteral intLit:
-                        switch (cast)
-                        {
-                            case ECast.ByteToInt:
-                                intLit.NumType = INT;
-                                return;
-                            case ECast.IntToByte:
-                                intLit.NumType = BYTE;
-                                return;
-                            case ECast.IntToFloat:
-                                expr = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
-                                return;
-                            case ECast.ByteToFloat:
-                                expr = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
-                                return;
-                        }
-                        break;
-                    case FloatLiteral floatLit:
-                        switch (cast)
-                        {
-                            case ECast.FloatToByte:
-                                expr = new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = BYTE };
-                                return;
-                            case ECast.FloatToInt:
-                                expr = new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = INT };
-                                return;
-                        }
-                        break;
-                    case ConditionalExpression condExpr:
-                        AddConversion(destType, ref condExpr.TrueExpression);
-                        AddConversion(destType, ref condExpr.FalseExpression);
-                        return;
-                }
-                if ((byte)cast != 0 && cast != ECast.Max)
-                {
-                    expr = new PrimitiveCast(cast, destType, expr, expr.StartPos, expr.EndPos);
-                }
-            }
-        }
+        //    if (expr is NoneLiteral noneLit)
+        //    {
+        //        if (destType.PropertyType == EPropertyType.Delegate)
+        //        {
+        //            noneLit.IsDelegateNone = true;
+        //        }
+        //        else if (destType.PropertyType == EPropertyType.Interface)
+        //        {
+        //            expr = new PrimitiveCast(ECast.ObjectToInterface, destType, noneLit, noneLit.StartPos, noneLit.EndPos);
+        //            return;
+        //        }
+        //    }
+        //    if (expr?.ResolveType() is { } type && type.PropertyType != destType.PropertyType)
+        //    {
+        //        ECast cast = CastHelper.PureCastType(CastHelper.GetConversion(destType, type));
+        //        switch (expr)
+        //        {
+        //            case IntegerLiteral intLit:
+        //                switch (cast)
+        //                {
+        //                    case ECast.ByteToInt:
+        //                        intLit.NumType = INT;
+        //                        return;
+        //                    case ECast.IntToByte:
+        //                        intLit.NumType = BYTE;
+        //                        return;
+        //                    case ECast.IntToFloat:
+        //                        expr = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
+        //                        return;
+        //                    case ECast.ByteToFloat:
+        //                        expr = new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
+        //                        return;
+        //                }
+        //                break;
+        //            case FloatLiteral floatLit:
+        //                switch (cast)
+        //                {
+        //                    case ECast.FloatToByte:
+        //                        expr = new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = BYTE };
+        //                        return;
+        //                    case ECast.FloatToInt:
+        //                        expr = new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = INT };
+        //                        return;
+        //                }
+        //                break;
+        //            case ConditionalExpression condExpr:
+        //                AddConversion(destType, ref condExpr.TrueExpression);
+        //                AddConversion(destType, ref condExpr.FalseExpression);
+        //                return;
+        //        }
+        //        if ((byte)cast != 0 && cast != ECast.Max)
+        //        {
+        //            expr = new PrimitiveCast(cast, destType, expr, expr.StartPos, expr.EndPos);
+        //        }
+        //    }
+        //}
 
         public Expression CompositeRef()
         {
@@ -1398,7 +1399,10 @@ namespace ME3Script.Parsing
                             ExpectComma();
                             Expression valueArg = ValidateArgument("value", FIND, variableDeclaration.VarType);
                             ExpectRightParen();
-                            return new DynArrayFindStructMember(dynArrayRef, memberNameArg, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
+                            return new DynArrayFindStructMember(dynArrayRef, memberNameArg, valueArg, dynArrayRef.StartPos, PrevToken.EndPos)
+                            {
+                                MemberType = variableDeclaration.VarType
+                            };
                         }
 
                         throw Error($"Struct '{s.Name}' does not have a member named '{nameLiteral.Value}'!");
@@ -1477,7 +1481,7 @@ namespace ME3Script.Parsing
                         throw Error($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.Name}'!");
                     }
                 }
-                AddConversion(expectedType, ref arg);
+                //AddConversion(expectedType, ref arg); Done in Compiler
                 return arg;
             }
         }
@@ -1541,7 +1545,7 @@ namespace ME3Script.Parsing
                 {
                     throw Error("Array index cannot be negative!");
                 }
-                if (exprType is StaticArrayType staticArrayType && intLiteral.Value >= staticArrayType.Size)
+                if (exprType is StaticArrayType staticArrayType && intLiteral.Value >= staticArrayType.Length)
                 {
                     throw Error("Array index cannot be outside bounds of static array size!");
                 }
@@ -1606,12 +1610,18 @@ namespace ME3Script.Parsing
                         {
                             throw Error($"Expected a parameter of type '{p.VarType.Name}'!", paramStartPos, currentParam?.EndPos);
                         }
-                        AddConversion(p.VarType, ref currentParam);
-                        if (p.IsOut && !(currentParam is SymbolReference) 
-                                    && !(currentParam is ConditionalExpression condExpr && condExpr.TrueExpression is SymbolReference 
-                                                                                        && condExpr.FalseExpression is SymbolReference))
+                        //AddConversion(p.VarType, ref currentParam); Done in Compiler
+                        if (p.IsOut)
                         {
-                            throw Error("Argument given to an out parameter must be an lvalue!", currentParam.StartPos, currentParam.EndPos);
+                            if (!(currentParam is SymbolReference) && !(currentParam is ConditionalExpression condExpr && condExpr.TrueExpression is SymbolReference 
+                                                                                                                       && condExpr.FalseExpression is SymbolReference))
+                            {
+                                throw Error("Argument given to an out parameter must be an lvalue!", currentParam.StartPos, currentParam.EndPos);
+                            }
+                            if (!NodeUtils.TypeEqual(p.VarType, currentParam.ResolveType()))
+                            {
+                                throw Error($"Expected a parameter of type '{p.VarType.Name}'!", currentParam.StartPos, currentParam.EndPos);
+                            }
                         }
 
                         parameters.Add(currentParam);
@@ -1658,7 +1668,7 @@ namespace ME3Script.Parsing
                         //ugly hack
                         var builder = new CodeBuilderVisitor();
                         dynArrType.ElementType.AcceptVisitor(builder);
-                        string elementType = builder.GetCodeString();
+                        string elementType = builder.GetOutput();
                         throw Error($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'");
                     }
                     if (!(valueArg is SymbolReference))
@@ -1917,12 +1927,11 @@ namespace ME3Script.Parsing
         {
             Class superClass;
             State state = null;
-            string superSpecifier = null;
+            Class superSpecifier = null;
             if (Matches(TokenType.LeftParenth))
             {
                 if (Consume(TokenType.Word) is {} className)
                 {
-                    superSpecifier = className.Value;
                     if (!Symbols.TryGetType(className.Value, out VariableType vartype))
                     {
                         throw Error($"No class named '{className.Value}' found!", className.StartPos, className.EndPos);
@@ -1932,7 +1941,7 @@ namespace ME3Script.Parsing
                     {
                         throw Error($"'{vartype.Name}' is not a class!", className.StartPos, className.EndPos);
                     }
-
+                    superSpecifier = super;
                     superClass = super;
                     if (!Self.SameAsOrSubClassOf(superClass.Name))
                     {

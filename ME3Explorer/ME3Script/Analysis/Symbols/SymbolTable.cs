@@ -28,6 +28,8 @@ namespace ME3Script.Analysis.Symbols
         public static readonly VariableType StringRefType = new VariableType(STRINGREF) { PropertyType = EPropertyType.StringRef };
         public static readonly VariableType NameType = new VariableType(NAME) { PropertyType = EPropertyType.Name };
 
+        public static bool IsPrimitive(VariableType vt) =>
+            vt == IntType || vt == FloatType || vt == BoolType || vt == ByteType || vt == BioMask4Type || vt == StringType || vt == StringRefType || vt == NameType;
         #endregion
 
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;

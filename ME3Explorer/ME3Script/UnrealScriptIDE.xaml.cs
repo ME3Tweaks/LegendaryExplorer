@@ -68,8 +68,6 @@ namespace ME3Explorer.ME3Script.IDE
                     StandardLibrary_Initialized(null, EventArgs.Empty);
                 }
             }
-
-            textEditor.TextArea.IndentationStrategy = new CSharpIndentationStrategy(textEditor.Options);
         }
 
         static UnrealScriptIDE()
@@ -403,7 +401,7 @@ namespace ME3Explorer.ME3Script.IDE
                     }
                     var codeBuilder = new CodeBuilderVisitor();
                     RootNode.AcceptVisitor(codeBuilder);
-                    ScriptText = codeBuilder.GetCodeString();
+                    ScriptText = codeBuilder.GetOutput();
                 }
 
                 outputListBox.ItemsSource = log.Content;
@@ -422,7 +420,7 @@ namespace ME3Explorer.ME3Script.IDE
         }
 
         private FoldingManager foldingManager;
-        private BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
+        private readonly BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
 
         #endregion
     }

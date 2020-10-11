@@ -56,7 +56,7 @@ namespace ME3Script
                 {
                     var codeBuilder = new CodeBuilderVisitor();
                     astNode.AcceptVisitor(codeBuilder);
-                    return (astNode, codeBuilder.GetCodeString());
+                    return (astNode, codeBuilder.GetOutput());
                 }
             }
             catch (Exception e) when (!App.IsDebug)

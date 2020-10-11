@@ -7,10 +7,10 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
-    public class Function : ASTNode, IContainsLocals
+    public class Function : ASTNode, IContainsByteCode
     {
         public string Name { get; }
-        public CodeBody Body;
+        public CodeBody Body { get; set; }
         public List<VariableDeclaration> Locals { get; set; }
         public VariableType ReturnType;
         public bool CoerceReturn;

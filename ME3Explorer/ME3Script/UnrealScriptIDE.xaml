@@ -43,9 +43,9 @@
                     Text="Compilation is currently only supported for Functions. When editing a Function, DO NOT edit the signature or the local variable declarations, as compiling those is not yet supported."/>
             </StackPanel>
             <!--Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"-->
-            <avalonedit:TextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
-                                    
-                                   FontFamily="Consolas" ShowLineNumbers="True">
+            <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
+                                    Background="White"
+                                    FontFamily="Consolas" ShowLineNumbers="True">
                 <avalonedit:TextEditor.Resources>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -187,7 +187,7 @@
                         </Setter>
                     </Style>
                 </avalonedit:TextEditor.Resources>
-            </avalonedit:TextEditor>
+            </ide:UnrealScriptTextEditor>
             <!--<TextBox Name="scriptTextBox" IsReadOnly="False" Text="{Binding ScriptText}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                      FontFamily="Consolas" IsInactiveSelectionHighlightEnabled="True" AcceptsReturn="True"/>-->
             <!--<TreeView DockPanel.Dock="Right" Visibility="{x:Static me3Explorer:App.IsDebugVisibility}" ItemsSource="{Binding RootNode.ChildNodes}">

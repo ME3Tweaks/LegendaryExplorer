@@ -11,12 +11,12 @@ namespace ME3Script.Language.Tree
     public class StaticArrayType : VariableType, IEquatable<StaticArrayType>
     {
         public VariableType ElementType;
-        public int Size;
+        public int Length;
 
-        public StaticArrayType(VariableType elementType, int size, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
+        public StaticArrayType(VariableType elementType, int length, SourcePosition start = null, SourcePosition end = null) : base(elementType.Name, start, end)
         {
             ElementType = elementType;
-            Size = size;
+            Length = length;
         }
 
         public override bool AcceptVisitor(IASTVisitor visitor)
@@ -37,7 +37,7 @@ namespace ME3Script.Language.Tree
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(ElementType, other.ElementType) && Size == other.Size;
+            return Equals(ElementType, other.ElementType) && Length == other.Length;
         }
 
         public override bool Equals(object obj)
@@ -52,7 +52,7 @@ namespace ME3Script.Language.Tree
         {
             unchecked
             {
-                return ((ElementType != null ? ElementType.GetHashCode() : 0) * 397) ^ Size;
+                return ((ElementType != null ? ElementType.GetHashCode() : 0) * 397) ^ Length;
             }
         }
 

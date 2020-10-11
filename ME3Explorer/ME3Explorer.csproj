@@ -299,7 +299,10 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="ME3Script\FileLib.cs" />
+    <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
+    <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
     <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
+    <Compile Include="ME3Script\IDE\UnrealScriptTextEditor.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
@@ -374,7 +377,7 @@
     <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
     <Compile Include="ME3Script\Language\Tree\VectorLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\WhileLoop.cs" />
-    <Compile Include="ME3Script\Language\Util\IContainsLocals.cs" />
+    <Compile Include="ME3Script\Language\Util\IContainsByteCode.cs" />
     <Compile Include="ME3Script\Language\Util\NodeUtils.cs" />
     <Compile Include="ME3Script\Lexing\LexerBase.cs" />
     <Compile Include="ME3Script\Lexing\Matching\ITokenMatcher.cs" />

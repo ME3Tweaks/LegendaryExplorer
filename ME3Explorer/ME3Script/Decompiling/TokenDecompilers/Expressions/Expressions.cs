@@ -644,7 +644,7 @@ namespace ME3Script.Decompiling
             PopByte();
             string funcName;
             bool isSuper = false;
-            string superSpecifier = null;
+            VariableType superSpecifier = null;
             if (byName)
             {
                 funcName = ReadNameReference();
@@ -689,7 +689,7 @@ namespace ME3Script.Decompiling
                     isSuper = true;
                     if (currentClass == null || currentClass.SuperClass == 0 || currentClass.SuperClass.GetEntry(PCC).ObjectName.Instanced != funcOuterClass)
                     {
-                        superSpecifier = funcOuterClass;
+                        superSpecifier = new VariableType(funcOuterClass);
                     }
                 }
             }

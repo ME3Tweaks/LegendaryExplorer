@@ -10,7 +10,7 @@ namespace ME3Script.Language.Tree
 
         public bool IsGlobal;
         public bool IsSuper;
-        public string SuperSpecifier;
+        public VariableType SuperSpecifier;
 
         public SymbolReference(ASTNode symbol, string name = "", SourcePosition start = null, SourcePosition end = null) 
             : base(ASTNodeType.SymbolReference, start, end)

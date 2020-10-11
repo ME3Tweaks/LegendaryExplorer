@@ -713,14 +713,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 filesToCheck.Add(Path.GetFileName(efxPath));
             }
 
-            if (entry.Game == MEGame.ME3)
-            {
-                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-                {
-                    filesToCheck.Add(Path.GetFileName(efPath));
-                }
-            }
+            //if (entry.Game == MEGame.ME3)
+            //{
+            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efPath));
+            //    }
+            //}
 
 
             //add base definition files that are always loaded (Core, Engine, etc.)
@@ -831,6 +831,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
                     nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
                 }
+            }
+
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
 
             return associatedFiles;
