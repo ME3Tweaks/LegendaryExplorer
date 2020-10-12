@@ -325,6 +325,8 @@ namespace ME3Explorer.ME3Script
                 progressBarTimer.IsEnabled = false; //Stop timer
                 progressBarTimer.Tick -= ProgressBarTimer_Tick;
             }
+            StandardLibrary.Initialized -= StandardLibrary_Initialized;
+
         }
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
