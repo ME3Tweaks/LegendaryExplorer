@@ -211,6 +211,8 @@ namespace ME3Explorer
         public ICommand ImportBinaryDataCommand { get; set; }
         public ICommand CloneCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
+        public ICommand MultiCloneCommand { get; set; }
+        public ICommand MultiCloneTreeCommand { get; set; }
         public ICommand FindEntryViaOffsetCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
@@ -229,8 +231,6 @@ namespace ME3Explorer
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
         public ICommand PopoutCurrentViewCommand { get; set; }
-        public ICommand MultidropRelinkingCommand { get; set; }
-        public ICommand PerformMultiRelinkCommand { get; set; }
         public ICommand BulkExportSWFCommand { get; set; }
         public ICommand BulkImportSWFCommand { get; set; }
         public ICommand OpenFileCommand { get; set; }
@@ -265,8 +265,10 @@ namespace ME3Explorer
             ExportBinaryDataCommand = new GenericCommand(ExportBinaryData, ExportIsSelected);
             ImportAllDataCommand = new GenericCommand(ImportAllData, ExportIsSelected);
             ImportBinaryDataCommand = new GenericCommand(ImportBinaryData, ExportIsSelected);
-            CloneCommand = new GenericCommand(CloneEntry, EntryIsSelected);
-            CloneTreeCommand = new GenericCommand(CloneTree, TreeEntryIsSelected);
+            CloneCommand = new GenericCommand(() => CloneEntry(1), EntryIsSelected);
+            CloneTreeCommand = new GenericCommand(() => CloneTree(1), TreeEntryIsSelected);
+            MultiCloneCommand = new GenericCommand(CloneEntryMultiple, EntryIsSelected);
+            MultiCloneTreeCommand = new GenericCommand(CloneTreeMultiple, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             CheckForInvalidObjectPropertiesCommand =
@@ -1898,23 +1900,51 @@ namespace ME3Explorer
             }
         }
 
-        private void CloneTree()
+        private void CloneTree(int numClones)
         {
             if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
-                IEntry newTreeRoot = EntryCloner.CloneTree(entry);
-                TryAddToPersistentLevel(newTreeRoot);
-                GoToNumber(newTreeRoot.UIndex);
+                int lastTreeRoot = 0;
+                for (int i = 0; i < numClones; i++)
+                {
+                    IEntry newTreeRoot = EntryCloner.CloneTree(entry);
+                    TryAddToPersistentLevel(newTreeRoot);
+                    lastTreeRoot = newTreeRoot.UIndex;
+                }
+                GoToNumber(lastTreeRoot);
             }
         }
 
-        private void CloneEntry()
+        private void CloneEntryMultiple()
+        {
+            var result = PromptDialog.Prompt(this, "How many times do you want to clone this entry?", "Multiple entry cloning", "2", true);
+            if (int.TryParse(result, out var howManyTimes) && howManyTimes > 0)
+            {
+                CloneEntry(howManyTimes);
+            }
+        }
+
+        private void CloneTreeMultiple()
+        {
+            var result = PromptDialog.Prompt(this, "How many times do you want to clone this tree?", "Multiple tree cloning", "2", true);
+            if (int.TryParse(result, out var howManyTimes) && howManyTimes > 0)
+            {
+                CloneTree(howManyTimes);
+            }
+        }
+
+        private void CloneEntry(int numClones)
         {
             if (TryGetSelectedEntry(out IEntry entry))
             {
-                IEntry newEntry = EntryCloner.CloneEntry(entry);
-                TryAddToPersistentLevel(newEntry);
-                GoToNumber(newEntry.UIndex);
+                int lastClonedUIndex = 0;
+                for (int i = 0; i < numClones; i++)
+                {
+                    IEntry newEntry = EntryCloner.CloneEntry(entry);
+                    TryAddToPersistentLevel(newEntry);
+                    lastClonedUIndex = newEntry.UIndex;
+                }
+                GoToNumber(lastClonedUIndex);
             }
         }
 

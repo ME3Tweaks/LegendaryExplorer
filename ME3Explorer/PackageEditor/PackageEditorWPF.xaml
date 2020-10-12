@@ -64,6 +64,10 @@
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
+            <MenuItem Header="Multi-cloning">
+                <MenuItem Header="Multi-clone entry" ToolTip="Clone only this entry multiple times" Command="{Binding MultiCloneEntryCommand}"/>
+                <MenuItem Header="Multi-clone Tree" ToolTip="Clone this entry and all children multiple times" Command="{Binding MultiCloneTreeCommand}"/>
+            </MenuItem>
             <MenuItem Header="Go to Archetype" ToolTip="Go to this object's archetype" Command="{Binding GoToArchetypecommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Package utilities" Command="{Binding PackageExportIsSelectedCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
