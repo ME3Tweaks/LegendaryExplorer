@@ -233,13 +233,13 @@ namespace ME3Explorer
         public ICommand PerformMultiRelinkCommand { get; set; }
         public ICommand BulkExportSWFCommand { get; set; }
         public ICommand BulkImportSWFCommand { get; set; }
-
         public ICommand OpenFileCommand { get; set; }
         public ICommand NewFileCommand { get; set; }
         public ICommand NewLevelFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
         public ICommand FindCommand { get; set; }
+        public ICommand FindAllClassInstancesCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand TabRightCommand { get; set; }
         public ICommand TabLeftCommand { get; set; }
@@ -314,6 +314,12 @@ namespace ME3Explorer
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame,
                 () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
+            FindAllClassInstancesCommand = new GenericCommand(FindAllInstancesofClass, PackageIsLoaded);
+        }
+
+        private void FindAllInstancesofClass()
+        {
+            
         }
 
         private void SetIndicesInTreeToZero()

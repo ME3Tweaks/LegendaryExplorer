@@ -27,10 +27,10 @@ namespace ME3Explorer.Unreal.Classes
         //    public string Desc;
         //}
 
-        public MaterialInstanceConstant(ExportEntry export)
+        public MaterialInstanceConstant(ExportEntry export, List<IMEPackage> cachedPackages = null)
         {
             Export = export;
-            ReadMaterial(export);
+            ReadMaterial(export, cachedPackages);
 
             //bool me1Parsed = false;
             //if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
@@ -59,7 +59,7 @@ namespace ME3Explorer.Unreal.Classes
         }
 
         // TODO: THIS NEEDS MOVED OUT OF LIBRARY AS ITS FOR RENDERING
-        private void ReadMaterial(ExportEntry export)
+        private void ReadMaterial(ExportEntry export, List<IMEPackage> cachedPackages = null)
         {
             if (export.ClassName == "Material")
             {
@@ -88,7 +88,7 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
-                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null, cachedPackages);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);
@@ -140,7 +140,7 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
-                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null, null);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);
