@@ -1215,6 +1215,7 @@ namespace ME3Explorer.Soundplorer
                     if (BindedItemsList.FirstOrDefault(obj => obj is SoundplorerExport sExport && sExport.Export == ExportQueuedForFocusing) is SoundplorerExport soundExport)
                     {
                         SoundExports_ListBox.SelectedItem = soundExport;
+                        SoundExports_ListBox.ScrollIntoView(soundExport);
                     }
                     ExportQueuedForFocusing = null;
 

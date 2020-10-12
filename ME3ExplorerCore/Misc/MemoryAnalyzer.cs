@@ -18,6 +18,7 @@ namespace ME3ExplorerCore.Misc
 
         public static ObservableCollectionExtended<MemoryAnalyzerObject> TrackedMemoryObjects { get; } = new ObservableCollectionExtended<MemoryAnalyzerObject>();
 
+        [Conditional("DEBUG")]
         public static void AddTrackedMemoryItem(string objectname, WeakReference reference)
         {
             if (IsTrackingMemory)
@@ -28,6 +29,7 @@ namespace ME3ExplorerCore.Misc
             }
         }
 
+        [Conditional("DEBUG")]
         public static void AddTrackedMemoryItem(MemoryAnalyzerObject obj)
         {
             if (IsTrackingMemory)

@@ -4024,7 +4024,7 @@ namespace ME3Explorer.Dialogue_Editor
                     break;
             }
         }
-        private void OpenInToolkit(string tool, int export = 0, string filename = null, string param = null)
+        private void OpenInToolkit(string tool, int uIndex = 0, string filename = null, string param = null)
         {
             string filePath = null;
             if (filename != null)  //If file is a new loaded file need to find path.
@@ -4069,13 +4069,13 @@ namespace ME3Explorer.Dialogue_Editor
             {
 
                 case "FaceFXEditor":
-                    if (Pcc.IsUExport(export) && param != null)
+                    if (Pcc.IsUExport(uIndex) && param != null)
                     {
-                        new FaceFX.FaceFXEditor(Pcc.GetUExport(export), param).Show();
+                        new FaceFX.FaceFXEditor(Pcc.GetUExport(uIndex), param).Show();
                     }
-                    else if (Pcc.IsUExport(export))
+                    else if (Pcc.IsUExport(uIndex))
                     {
-                        new FaceFX.FaceFXEditor(Pcc.GetUExport(export)).Show();
+                        new FaceFX.FaceFXEditor(Pcc.GetUExport(uIndex)).Show();
                     }
                     else
                     {
@@ -4087,9 +4087,9 @@ namespace ME3Explorer.Dialogue_Editor
                 case "PackageEditor":
                     var packEditor = new PackageEditorWPF();
                     packEditor.Show();
-                    if (Pcc.IsUExport(export))
+                    if (Pcc.IsUExport(uIndex))
                     {
-                        packEditor.LoadFile(Pcc.FilePath, export);
+                        packEditor.LoadFile(Pcc.FilePath, uIndex);
                     }
                     else
                     {
@@ -4097,18 +4097,21 @@ namespace ME3Explorer.Dialogue_Editor
                     }
                     break;
                 case "SoundplorerWPF":
-                    var soundplorerWPF = new Soundplorer.SoundplorerWPF();
-                    soundplorerWPF.LoadFile(Pcc.FilePath);
-                    soundplorerWPF.Show();
-                    if (Pcc.IsUExport(export))
+                    if (Pcc.TryGetUExport(uIndex, out ExportEntry soundplorerExp))
                     {
-                        soundplorerWPF.soundPanel.LoadExport(Pcc.GetUExport(export));
+                        new Soundplorer.SoundplorerWPF(soundplorerExp).Show();
+                    }
+                    else
+                    {
+                        var soundplorerWPF = new Soundplorer.SoundplorerWPF();
+                        soundplorerWPF.LoadFile(Pcc.FilePath);
+                        soundplorerWPF.Show();
                     }
                     break;
                 case "SequenceEditor":
-                    if (Pcc.IsUExport(export))
+                    if (Pcc.IsUExport(uIndex))
                     {
-                        new SequenceEditorWPF(Pcc.GetUExport(export)).Show();
+                        new SequenceEditorWPF(Pcc.GetUExport(uIndex)).Show();
                     }
                     else
                     {

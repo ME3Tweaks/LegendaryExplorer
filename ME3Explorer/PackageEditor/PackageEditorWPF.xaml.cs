@@ -397,35 +397,34 @@ namespace ME3Explorer
                         {
                             new DialogueEditorWPF(exp).Show();
                         }
-
                         break;
                     case "FaceFXEditor":
                         if (exp.ClassName == "FaceFXAnimSet")
                         {
                             new FaceFX.FaceFXEditor(exp).Show();
                         }
-
                         break;
                     case "Meshplorer":
                         if (MeshRendererWPF.CanParseStatic(exp))
                         {
                             new MeshplorerWPF(exp).Show();
                         }
-
                         break;
                     case "Soundplorer":
                         if (Soundpanel.CanParseStatic(exp))
                         {
                             new Soundplorer.SoundplorerWPF(exp).Show();
                         }
-
                         break;
                     case "SequenceEditor":
                         if (exp.IsA("SequenceObject"))
                         {
+                            if (exp.IsA("Sequence") && exp.Parent is ExportEntry parent && parent.IsA("SequenceReference"))
+                            {
+                                exp = parent;
+                            }
                             new Sequence_Editor.SequenceEditorWPF(exp).Show();
                         }
-
                         break;
                     case "InterpViewer":
                         if (exp.ClassName == "InterpData")
@@ -438,7 +437,6 @@ namespace ME3Explorer
                                 p.SelectedInterpData = exp;
                             }
                         }
-
                         break;
                     case "PathfindingEditor":
                         if (PathfindingEditorWPF.CanParseStatic(exp))
@@ -447,7 +445,6 @@ namespace ME3Explorer
                             pf.Show();
 
                         }
-
                         break;
                     case "WwiseEditor":
                         if (exp.ClassName == "WwiseBank")
@@ -455,7 +452,6 @@ namespace ME3Explorer
                             var w = new WwiseEditor.WwiseEditorWPF(exp);
                             w.Show();
                         }
-
                         break;
                 }
             }
