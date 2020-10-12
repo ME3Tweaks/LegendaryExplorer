@@ -672,6 +672,8 @@ namespace ME3Explorer.Meshplorer
             {
                 p?.Dispose();
             }
+
+            cachedPackages = null;
         }
 
         /// <summary>

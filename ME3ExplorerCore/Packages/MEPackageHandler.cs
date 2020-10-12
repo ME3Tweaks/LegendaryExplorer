@@ -30,6 +30,8 @@ namespace ME3ExplorerCore.Packages
             MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
         }
 
+        public static IReadOnlyList<string> GetOpenPackages() => openPackages.Select(x => x.Key).ToList();
+
         /// <summary>
         /// Opens a package from a stream. Ensure the position is correctly set to the start of the package.
         /// </summary>
@@ -205,6 +207,10 @@ namespace ME3ExplorerCore.Packages
                 if (openPackages.TryRemove(packagePath, out IMEPackage _))
                 {
                     Debug.WriteLine($"Released from package cache: {packagePath}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Failed to remove package from cache: {packagePath}");
                 }
             }
         }
