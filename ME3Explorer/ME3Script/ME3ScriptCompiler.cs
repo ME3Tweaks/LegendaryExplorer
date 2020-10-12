@@ -21,36 +21,7 @@ namespace ME3Script
         {
             try
             {
-                ASTNode astNode = null;
-                switch (export.ClassName)
-                {
-                    case "Class":
-                        astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
-                        break;
-                    case "Function":
-                        astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
-                        break;
-                    case "State":
-                        astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
-                        break;
-                    case "Enum":
-                        astNode = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
-                        break;
-                    case "ScriptStruct":
-                        astNode = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
-                        break;
-                    default:
-                        if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
-                        {
-                            astNode = ME3ObjectToASTConverter.ConvertVariable(uProp);
-                        }
-                        else
-                        {
-                            astNode = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
-                        }
-
-                        break;
-                }
+                ASTNode astNode = ExportToAstNode(export, lib);
 
                 if (astNode != null)
                 {
@@ -65,6 +36,42 @@ namespace ME3Script
             }
 
             return (null, "Could not decompile!");
+        }
+
+        public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib = null)
+        {
+            ASTNode astNode;
+            switch (export.ClassName)
+            {
+                case "Class":
+                    astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
+                    break;
+                case "Function":
+                    astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
+                    break;
+                case "State":
+                    astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
+                    break;
+                case "Enum":
+                    astNode = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
+                    break;
+                case "ScriptStruct":
+                    astNode = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
+                    break;
+                default:
+                    if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
+                    {
+                        astNode = ME3ObjectToASTConverter.ConvertVariable(uProp);
+                    }
+                    else
+                    {
+                        astNode = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
+                    }
+
+                    break;
+            }
+
+            return astNode;
         }
 
         public static Function CompileFunctionBodyAST(ExportEntry parentExport, string scriptText, Function func, MessageLog log, FileLib lib = null)

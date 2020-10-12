@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -118,7 +119,7 @@ namespace ME3Explorer.ME3Script.IDE
             }
             if (!IsBusy)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                Decompile();
             }
         }
 
@@ -264,7 +265,8 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (IsStandardLibFile())
                     {
-                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                        CurrentFileLib = null;
+                        Decompile();
                     }
                     else
                     {
@@ -316,7 +318,7 @@ namespace ME3Explorer.ME3Script.IDE
                     }
                     if (CurrentLoadedExport != null)
                     {
-                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                        Decompile();
                     }
                 }
             }
@@ -382,7 +384,29 @@ namespace ME3Explorer.ME3Script.IDE
         {
             if (CurrentLoadedExport != null)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                Decompile();
+            }
+        }
+
+        private void Decompile()
+        {
+            try
+            {
+                ASTNode ast = ME3ScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib);
+                if (ast is null)
+                {
+                    (RootNode, ScriptText) = (null, "Could not decompile!");
+                    return;
+                }
+                var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                ast.AcceptVisitor(codeBuilder);
+                (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                Dispatcher.Invoke(() => textEditor.SyntaxHighlighting = syntaxInfo);
+                ScriptText = text;
+            }
+            catch (Exception e) when (!App.IsDebug)
+            {
+                (RootNode, ScriptText) = (null, $"Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
         }
 
@@ -399,9 +423,9 @@ namespace ME3Explorer.ME3Script.IDE
                     {
                         RootNode = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
                     }
-                    var codeBuilder = new CodeBuilderVisitor();
+                    var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);
-                    ScriptText = codeBuilder.GetOutput();
+                    (ScriptText, _) = codeBuilder.GetOutput();
                 }
 
                 outputListBox.ItemsSource = log.Content;

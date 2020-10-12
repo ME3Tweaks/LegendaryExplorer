@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ME3Script.Analysis.Visitors;
 using ME3Script.Language.Tree;
 
 namespace ME3Explorer.ME3Script.IDE
@@ -16,24 +17,50 @@ namespace ME3Explorer.ME3Script.IDE
         public HighlightingColor DefaultTextColor => null;
         readonly WeakLineTracker weakLineTracker;
 
-        private ASTNode AST; //TODO: initialize this somehow?
+        private readonly SyntaxInfo SyntaxInfo;
 
-        public ASTHighlighter(TextDocument document)
+        public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
         {
+            SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo)); ;
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
-            weakLineTracker = WeakLineTracker.Register(document, this);
-
+            //weakLineTracker = WeakLineTracker.Register(document, this);
         }
 
         public HighlightedLine HighlightLine(int lineNumber)
         {
-            throw new NotImplementedException();
+            IDocumentLine line = Document.GetLineByNumber(lineNumber);
+            var highlightedLine = new HighlightedLine(Document, line);
+            lineNumber--;
+            if (lineNumber >= SyntaxInfo.Count)
+            {
+                return highlightedLine;
+            }
+            int lineOffset = line.Offset;
+            int pos = 0;
+            List<SyntaxSpan> spans = SyntaxInfo[lineNumber];
+
+            foreach (SyntaxSpan span in spans)
+            {
+                if (pos >= line.Length)
+                {
+                    break;
+                }
+                highlightedLine.Sections.Add(new HighlightedSection
+                {
+                    Offset = pos + lineOffset,
+                    Length = Math.Min(span.Length, line.Length - pos),
+                    Color = SyntaxInfo.Colors[span.FormatType]
+                });
+                pos += span.Length;
+            }
+
+            return highlightedLine;
         }
 
         public void UpdateHighlightingState(int lineNumber)
         {
-            throw new NotImplementedException();
+            
         }
 
         public event HighlightingStateChangedEventHandler HighlightingStateChanged;

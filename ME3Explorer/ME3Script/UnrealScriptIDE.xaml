@@ -44,13 +44,13 @@
             </StackPanel>
             <!--Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"-->
             <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
-                                    Background="White"
-                                    FontFamily="Consolas" ShowLineNumbers="True">
+                                        Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
+                                        FontFamily="Consolas" ShowLineNumbers="True">
                 <avalonedit:TextEditor.Resources>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
-                        <Setter Property="Background" Value="White"/>
-                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Background" Value="#1E1E1E"/>
+                        <Setter Property="Foreground" Value="#DBDBDB"/>
                         <Setter Property="LineNumbersForeground" Value="Black"/>
                         <Setter Property="Template">
                             <Setter.Value>

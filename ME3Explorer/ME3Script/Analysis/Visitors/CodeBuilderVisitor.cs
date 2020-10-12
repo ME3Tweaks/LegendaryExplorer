@@ -1862,8 +1862,10 @@ namespace ME3Script.Analysis.Visitors
 
         #endregion
     }
+    public class CodeBuilderVisitor<TFormatter> : CodeBuilderVisitor<TFormatter, string> where TFormatter : class, ICodeFormatter<string>, new()
+    { }
 
-    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter, string> {}
+    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter> {}
 
     public interface ICodeFormatter<out TOutput>
     {
@@ -1888,8 +1890,8 @@ namespace ME3Script.Analysis.Visitors
         public int ForcedAlignment { get; set; }
         public bool ForceNoNewLines { get; set; }
 
-        private readonly List<string> Lines = new List<string>();
-        private string currentLine;
+        protected readonly List<string> Lines = new List<string>();
+        protected string currentLine;
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
 
@@ -1907,7 +1909,7 @@ namespace ME3Script.Analysis.Visitors
             Append(text, _);
         }
 
-        public void Append(string text, EF _)
+        public virtual void Append(string text, EF _)
         {
             currentLine += text;
         }
