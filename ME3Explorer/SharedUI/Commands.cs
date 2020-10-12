@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ME3Explorer.SharedUI
@@ -63,13 +64,13 @@ namespace ME3Explorer.SharedUI
     {
         private readonly Action _fulfill;
         private readonly Func<bool> _isFulfilled;
-
         public RequirementCommand(Func<bool> isFulfilled, Action fulfill = null)
         {
             _fulfill = fulfill;
             _isFulfilled = isFulfilled;
         }
-        public bool CanExecute(object parameter) => !_isFulfilled.Invoke();
+
+        public bool CanExecute(object parameter) => _isFulfilled.Invoke();
 
         public void Execute(object parameter) => _fulfill?.Invoke();
 
