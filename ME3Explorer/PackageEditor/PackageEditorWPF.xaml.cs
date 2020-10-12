@@ -4157,6 +4157,11 @@ namespace ME3Explorer
             PackageEditorExperimentsM.BuildME1NativeFunctionsInfo();
         }
 
+        private void FindAllFilesWithSpecificClass(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindAllFilesWithClass(this);
+        }
+
         private void FindME12DATables_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindME1ME22DATables();

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
@@ -15,8 +18,9 @@ using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
-using SharpDX; 
+using SharpDX;
 //using ImageMagick;
 
 namespace ME3Explorer.PackageEditor.Experiments
@@ -774,11 +778,11 @@ namespace ME3Explorer.PackageEditor.Experiments
             foreach (var wwevent in wwevents)
             {
                 var eventbin = wwevent.GetBinaryData<WwiseEvent>();
-                if(!eventbin.Links.IsEmpty() && !eventbin.Links[0].WwiseStreams.IsEmpty())
+                if (!eventbin.Links.IsEmpty() && !eventbin.Links[0].WwiseStreams.IsEmpty())
                 {
                     var wwstream = Pcc.GetUExport(eventbin.Links[0].WwiseStreams[0]);
                     var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
-                    if(streambin != null)
+                    if (streambin != null)
                     {
                         var duration = streambin.GetSoundLength();
                         var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
@@ -876,7 +880,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                         foreach (ExportEntry export in package.Exports)
                         {
                             if ((export.ClassName == "BioSWF"))
-                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                             {
                                 Debug.WriteLine(
                                     $"{export.ClassName}({export.ObjectName.Instanced}) in {fi.Name} at export {export.UIndex}");
@@ -983,6 +987,50 @@ namespace ME3Explorer.PackageEditor.Experiments
 
                 File.WriteAllText(@"C:\users\public\me2powers.txt", outstr);
                 Debug.WriteLine("Done");
+            }
+        }
+
+        public static void FindAllFilesWithClass(PackageEditorWPF packageEditorWpf)
+        {
+            var classToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the class you want to search for in files", "Class finder");
+            if (!string.IsNullOrWhiteSpace(classToFind))
+            {
+                var dlg = new CommonOpenFileDialog("Pick a folder to scan (includes subdirectories)")
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    packageEditorWpf.IsBusy = true;
+                    Task.Run(() =>
+                    {
+                        ConcurrentDictionary<string, string> threadSafeList = new ConcurrentDictionary<string, string>();
+                        packageEditorWpf.BusyText = "Getting list of all package files";
+                        int numPackageFiles = 0;
+                        var files = Directory.GetFiles(dlg.FileName, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+                        var totalfiles = files.Count;
+                        long filesDone = 0;
+                        Parallel.ForEach(files, pf =>
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(pf);
+                            var hasClass = package.Exports.Any(x => x.ClassName.Equals(classToFind, StringComparison.InvariantCultureIgnoreCase));
+                            if (hasClass)
+                            {
+                                threadSafeList.TryAdd(pf, pf);
+                            }
+
+                            long v = Interlocked.Increment(ref filesDone);
+                            packageEditorWpf.BusyText = $"Scanning files [{v}/{totalfiles}]";
+                        });
+                        return threadSafeList;
+                    }).ContinueWithOnUIThread(filesWithClass =>
+                    {
+                        packageEditorWpf.IsBusy = false;
+                        ListDialog ld = new ListDialog(filesWithClass.Result.Select(x => x.Value), "Class scan", "Here is the list of files that have this objects of this class within them.", packageEditorWpf);
+                        ld.Show();
+                    });
+                }
             }
         }
     }

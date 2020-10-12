@@ -360,6 +360,18 @@ namespace ME3ExplorerCore.Helpers
             return s.Split(new[] { Environment.NewLine }, options);
         }
 
+        public static bool RepresentsPackageFilePath(this string path)
+        {
+            string extension = Path.GetExtension(path);
+            if (extension.Equals(@".pcc", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (extension.Equals(@".sfm", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (extension.Equals(@".u", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (extension.Equals(@".upk", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (extension.Equals(@".udk", StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (extension.Equals(@".xxx", StringComparison.InvariantCultureIgnoreCase)) return true;
+            return false;
+        }
+
         public static bool isNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
