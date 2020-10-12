@@ -445,6 +445,7 @@
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
+    <Compile Include="SharedUI\TaskbarHelper.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />

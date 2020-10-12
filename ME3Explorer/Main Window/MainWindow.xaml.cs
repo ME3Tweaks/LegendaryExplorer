@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using FontAwesome5.WPF;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
