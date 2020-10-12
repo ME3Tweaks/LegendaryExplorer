@@ -89,12 +89,12 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FindCommand}"/>
-        <KeyBinding Key="F" Modifiers="Shift+Control" Command="{Binding FindAllClassInstancesCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control+Shift" Command="{Binding FindAllClassInstancesCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
         <KeyBinding Key="Right" Modifiers="Alt" Command="{Binding TabRightCommand}"/>
         <KeyBinding Key="Left" Modifiers="Alt" Command="{Binding TabLeftCommand}"/>
         <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding PopoutCurrentViewCommand}"/>
-        <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding AddNameCommand}"/>
+        <KeyBinding Key="A" Modifiers="Ctrl+Shift" Command="{Binding AddNameCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -145,20 +145,20 @@
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
-                    <MenuItem Header="Find all instances of class in package" Command="{Binding FindAllClassInstancesCommand}" InputGestureText="CTRL + SHIFT + F"/>
+                    <MenuItem Header="Find all instances of class in package" Command="{Binding FindAllClassInstancesCommand}" InputGestureText="CTRL+Shift+F"/>
 
-                    <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowr" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
+                    <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
-                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL + A"/>
+                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
                         <MenuItem Header="Bulk export...">
                             <MenuItem Header="GFX/SWF files"  Command="{Binding BulkExportSWFCommand}" ToolTip="Export all GFxMovieInfo/BioSWF files in this package to a folder"/>
                         </MenuItem>
                         <MenuItem Header="Bulk import...">
-                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkImportSWFCommand}" ToolTip="Imports a folder of Gfx/SWF files from a folder and replaces exports matching the path by the name of the file"/>
+                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkImportSWFCommand}" ToolTip="Imports a folder of GFx/SWF files from a folder and replaces exports matching the path by the name of the file"/>
                         </MenuItem>
-                        <MenuItem Header="Compact SeekFreeShaderCache" ToolTip="Removes unused data from ShaderCaches in this file. Only neccesary if you've been porting shaders"
+                        <MenuItem Header="Compact SeekFreeShaderCache" ToolTip="Removes unused data from ShaderCaches in this file. Only necessary if you've been porting shaders"
                                   Command="{Binding CompactShaderCacheCommand}"/>
                         <MenuItem Header="Search and Replace Names" ToolTip="Replaces every instance or part of a Name selected with new text"
                                   Command="{Binding ReplaceNamesCommand}"/>
@@ -317,11 +317,11 @@
                         <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
-                        <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
+                        <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center" ToolTip="Press CTRL+F to automatically jump to this box"/>
                         <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}"  Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
-                        <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center"/>
+                        <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center" ToolTip="Press CTRL+G to automatically jump to this box"/>
                         <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
                     </StackPanel>
                     <!--This is outside so that it doesn't hide the whole box if it is too long to show -->

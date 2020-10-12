@@ -319,7 +319,19 @@ namespace ME3Explorer
 
         private void FindAllInstancesofClass()
         {
-            
+            var classes = Pcc.Exports.Select(x => x.ClassName).NonNull().Distinct().ToList().OrderBy(p => p).ToList();
+            var chosenClass = InputComboBoxWPF.GetValue(this, "Select a class to list all instances of.", "Class selector", classes, classes.FirstOrDefault());
+            if (chosenClass != null)
+            {
+                var foundExports = Pcc.Exports.Where(x => x.ClassName == chosenClass).ToList();
+                // Have to make new EntryStringPair as Entry can be casted into String
+                ListDialog ld = new ListDialog(foundExports.Select(x => new EntryStringPair(x, x.InstancedFullPath)),
+                    $"Instances of {chosenClass}", $"These are all the exports in this package file that have a class of type {chosenClass}.", this)
+                {
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                ld.Show();
+            }
         }
 
         private void SetIndicesInTreeToZero()
@@ -4102,7 +4114,7 @@ namespace ME3Explorer
         {
             if (Pcc == null) return;
             var funcs = new List<string>();
-            foreach(var v in Pcc.Exports.Where(x=>x.ClassName == "Function"))
+            foreach (var v in Pcc.Exports.Where(x => x.ClassName == "Function"))
             {
                 var func = ObjectBinary.From<UFunction>(v);
                 if (func.NativeIndex > 0)
