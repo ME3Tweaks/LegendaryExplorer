@@ -60,19 +60,19 @@ namespace ME3Explorer.SharedUI
         }
     }
 
-    public class RequirementCommand : ICommand
+    public class EnableCommand : ICommand
     {
-        private readonly Action _fulfill;
-        private readonly Func<bool> _isFulfilled;
-        public RequirementCommand(Func<bool> isFulfilled, Action fulfill = null)
+        private readonly Func<bool> _isEnabled;
+
+        public EnableCommand(Func<bool> isEnabled)
         {
-            _fulfill = fulfill;
-            _isFulfilled = isFulfilled;
+            _isEnabled = isEnabled;
         }
+        public bool CanExecute(object parameter) => _isEnabled.Invoke();
 
-        public bool CanExecute(object parameter) => _isFulfilled.Invoke();
-
-        public void Execute(object parameter) => _fulfill?.Invoke();
+        public void Execute(object parameter)
+        {
+        }
 
         public event EventHandler CanExecuteChanged
         {

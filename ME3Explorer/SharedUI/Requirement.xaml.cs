@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome5;
 using ME3Explorer.SharedUI;
@@ -21,13 +22,13 @@ namespace ME3Explorer.AnimationExplorer
         }
         public static readonly DependencyProperty IsFullfilledProperty = DependencyProperty.Register(
             nameof(IsFullfilled), typeof(bool), typeof(Requirement), new PropertyMetadata(default(bool)));
-        public RequirementCommand RequirementCommand
+        public RequirementCommand Command
         {
-            get => (RequirementCommand)GetValue(RequirementCommandProperty);
-            set => SetValue(RequirementCommandProperty, value);
+            get => (RequirementCommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
-        public static readonly DependencyProperty RequirementCommandProperty = DependencyProperty.Register(
-            nameof(RequirementCommand), typeof(RequirementCommand), typeof(Requirement), new PropertyMetadata(default(RequirementCommand)));
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+            nameof(Command), typeof(RequirementCommand), typeof(Requirement), new PropertyMetadata(default(RequirementCommand)));
         public Requirement()
         {
             DataContext = this;
@@ -51,6 +52,39 @@ namespace ME3Explorer.AnimationExplorer
         public string ButtonText
         {
             get => _buttonText; set => SetProperty(ref _buttonText, value);
+        }
+
+        /// <summary>
+        /// Should only be used with the Requirement Control
+        /// </summary>
+        public class RequirementCommand : ICommand
+        {
+            private readonly Action _fulfill;
+            private readonly Func<bool> _isFulfilled;
+            /// <summary>
+            /// </summary>
+            /// <param name="isFulfilled">Returns true if the requirement is fulfilled</param>
+            /// <param name="fulfill">Either does what is needed to fulfill the requirement, or instructs the user on how to fulfill it</param>
+            public RequirementCommand(Func<bool> isFulfilled, Action fulfill = null)
+            {
+                _fulfill = fulfill;
+                _isFulfilled = isFulfilled;
+            }
+
+            /// <summary>
+            /// The fulfill action can only be executed when the requirement has NOT been fulfilled.
+            /// </summary>
+            /// <param name="parameter"></param>
+            /// <returns></returns>
+            public bool CanExecute(object parameter) => !_isFulfilled.Invoke();
+
+            public void Execute(object parameter) => _fulfill?.Invoke();
+
+            public event EventHandler CanExecuteChanged
+            {
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
+            }
         }
     }
 

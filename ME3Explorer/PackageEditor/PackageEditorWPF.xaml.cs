@@ -285,7 +285,7 @@ namespace ME3Explorer
             SetIndicesInTreeToZeroCommand = new GenericCommand(SetIndicesInTreeToZero, TreeEntryIsSelected);
             TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
             PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
-            PackageExportIsSelectedCommand = new RequirementCommand(PackageExportIsSelected);
+            PackageExportIsSelectedCommand = new EnableCommand(PackageExportIsSelected);
             CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand =
                 new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);

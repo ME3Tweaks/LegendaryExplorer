@@ -303,17 +303,17 @@ namespace ME3Explorer.AnimationExplorer
 
         #region Commands
 
-        public RequirementCommand ME3InstalledRequirementCommand { get; set; }
-        public RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
-        public RequirementCommand ME3ClosedRequirementCommand { get; set; }
-        public RequirementCommand DatabaseLoadedRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ME3InstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ME3ClosedRequirementCommand { get; set; }
+        public Requirement.RequirementCommand DatabaseLoadedRequirementCommand { get; set; }
         public ICommand StartME3Command { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
-            ASILoaderInstalledRequirementCommand = new RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
-            ME3ClosedRequirementCommand = new RequirementCommand(InteropHelper.IsME3Closed, InteropHelper.KillME3);
-            DatabaseLoadedRequirementCommand = new RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
+            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
+            ME3ClosedRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Closed, InteropHelper.KillME3);
+            DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
         }
 
