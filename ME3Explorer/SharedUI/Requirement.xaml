@@ -27,7 +27,7 @@
                    Visibility="{Binding Visibility, ElementName=fulfillButton, Converter={StaticResource InverseVisibilityConverter}}"/>
         <StackPanel Grid.Column="1" Orientation="Horizontal" Visibility="{Binding Visibility, ElementName=fulfillButton}">
             <TextBlock Text="{Binding UnFullfilledText}" VerticalAlignment="Center" Margin="0 5 10 5"/>
-            <Button Name="fulfillButton" Content="{Binding ButtonText}" Command="{Binding RequirementCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <Button Name="fulfillButton" Content="{Binding ButtonText}" Command="{Binding Command}" SharedUI:Bindings.VisibilityToEnabled="True"/>
         </StackPanel>
     </Grid>
 </global:NotifyPropertyChangedControlBase>

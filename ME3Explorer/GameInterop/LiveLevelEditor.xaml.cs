@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using FontAwesome5;
+using ME3Explorer.AnimationExplorer;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
@@ -92,18 +93,18 @@ namespace ME3Explorer.GameInterop
             Instance = null;
         }
 
-        public RequirementCommand ME3InstalledRequirementCommand { get; set; }
-        public RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
-        public RequirementCommand SupportFilesInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ME3InstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand SupportFilesInstalledRequirementCommand { get; set; }
         public ICommand LoadLiveEditorCommand { get; set; }
         public ICommand OpenPackageCommand { get; set; }
         public ICommand OpenActorInPackEdCommand { get; set; }
         public ICommand RegenActorListCommand { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
-            ASILoaderInstalledRequirementCommand = new RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
-            SupportFilesInstalledRequirementCommand = new RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
+            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
+            SupportFilesInstalledRequirementCommand = new Requirement.RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);

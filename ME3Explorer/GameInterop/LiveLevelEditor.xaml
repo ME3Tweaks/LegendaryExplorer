@@ -38,13 +38,13 @@
                                                        FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
                                                        UnFullfilledText="Can't find Mass Effect 3 installation!"
                                                        ButtonText="Set ME3 path"
-                                                       RequirementCommand="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
+                                                       Command="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                     <animationExplorer:Requirement x:Name="asiLoaderInstalledReq"
                                                        FullfilledText="Binkw32 asi loader is installed"
                                                        Margin="0,5,0,5"
                                                        UnFullfilledText="Binkw32 asi loader is not installed!"
                                                        ButtonText="Get dlls"
-                                                       RequirementCommand="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
+                                                       Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                     <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and 2 ASIs, ME3ExplorerInterop.asi and ConsoleExtension.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc, and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                     <animationExplorer:Requirement x:Name="supportFilesInstalledReq"
@@ -52,7 +52,7 @@
                                                                    Margin="0,5,0,5"
                                                                    UnFullfilledText="Support files are not installed or are out of date!"
                                                                    ButtonText="Install support files"
-                                                                   RequirementCommand="{Binding SupportFilesInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
+                                                                   Command="{Binding SupportFilesInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                     <TextBlock Text="Once the above requirements are fulfilled, start Mass Effect 3, load into the level you want to edit, and press the button below."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                 </StackPanel>
