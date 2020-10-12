@@ -259,9 +259,22 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="device"></param>
         /// <param name="mesh"></param>
-        public ModelPreview(Device device, WorldMesh mesh)
+        public ModelPreview(Device device, WorldMesh mesh, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
         {
-            LODs.Add(new ModelPreviewLOD(mesh, new List<ModelPreviewSection>()));
+            //Preloaded
+            List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+            if (preloadedData != null)
+            {
+                sections = preloadedData.sections;
+                var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
+                foreach (var mat in uniqueMaterials)
+                {
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
+                    AddMaterial(mat.ObjectName.Name, material);
+                }
+            }
+            LODs.Add(new ModelPreviewLOD(mesh, sections));
+
         }
 
         /// <summary>

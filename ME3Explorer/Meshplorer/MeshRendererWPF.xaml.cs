@@ -32,7 +32,7 @@ namespace ME3Explorer.Meshplorer
     /// </summary>
     public partial class MeshRendererWPF : ExportLoaderControl
     {
-        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh", "BioSocketSupermodel", "ModelComponent" };
+        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh", "BioSocketSupermodel", "ModelComponent", "Model" };
 
         #region 3D
 
@@ -477,7 +477,7 @@ namespace ME3Explorer.Meshplorer
                             if (package.IsUExport(material.value))
                             {
                                 ExportEntry entry = package.GetUExport(material.value);
-                                Debug.WriteLine("Getting material assets " + entry.InstancedFullPath);
+                                Debug.WriteLine("Getting material asset " + entry.InstancedFullPath);
 
                                 AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
 
@@ -530,11 +530,14 @@ namespace ME3Explorer.Meshplorer
 
                     foreach (var element in modelComp.Elements)
                     {
+
                         if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
                         {
                             ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
                             Debug.WriteLine("Getting material asset " + entry.InstancedFullPath);
                             AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+                            pmd.sections.Add(new ModelPreviewSection(entry.ObjectName, 0, 3)); //???
+
                         }
                         else if (CurrentLoadedExport.FileRef.IsImport(element.Material))
                         {
@@ -551,7 +554,50 @@ namespace ME3Explorer.Meshplorer
                             }
                         }
                     }
-                    
+
+                    return pmd;
+                };
+            }
+            else if (CurrentLoadedExport.ClassName == "Model")
+            {
+                IsModel = true;
+                loadMesh = () =>
+                {
+                    var modelComp = ObjectBinary.From<Model>(CurrentLoadedExport);
+                    ModelPreview.PreloadedModelData pmd = new ModelPreview.PreloadedModelData
+                    {
+                        meshObject = modelComp,
+                        sections = new List<ModelPreviewSection>(),
+                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                    };
+                    /*
+                    foreach (var element in modelComp.Elements)
+                    {
+
+                        if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
+                        {
+                            ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
+                            Debug.WriteLine("Getting material asset " + entry.InstancedFullPath);
+                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+                            pmd.sections.Add(new ModelPreviewSection(entry.ObjectName, 0, 3)); //???
+
+                        }
+                        else if (CurrentLoadedExport.FileRef.IsImport(element.Material))
+                        {
+                            var extMaterialExport = ModelPreview.FindExternalAsset(CurrentLoadedExport.FileRef.GetImport(element.Material), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                            if (extMaterialExport != null)
+                            {
+                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                            }
+                            else
+                            {
+
+                                Debug.WriteLine("Could not find import material from section.");
+                                Debug.WriteLine("Import material: " + CurrentLoadedExport.FileRef.GetEntryString(element.Material));
+                            }
+                        }
+                    }*/
+
                     return pmd;
                 };
             }
@@ -580,11 +626,15 @@ namespace ME3Explorer.Meshplorer
                                 SceneViewer.Context.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                                 break;
                             case StructProperty structProp: //BrushComponent
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp));
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromAggGeom(structProp), SceneViewer.Context.TextureCache, pmd);
                                 SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                             case ModelComponent mc:
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelComponent(mc));
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelComponent(mc), SceneViewer.Context.TextureCache, pmd);
+                                //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                break;
+                            case Model m:
+                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelSubcomponents(m), SceneViewer.Context.TextureCache, pmd);
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                         }
@@ -693,11 +743,60 @@ namespace ME3Explorer.Meshplorer
             return null;
         }
 
+        private WorldMesh GetMeshFromModelSubcomponents(Model model)
+        {
+            // LOL this will run terribly i'm sure
+            var vertices = new List<WorldVertex>();
+            var triangles = new List<Triangle>();
+
+            foreach (var point in model.Points)
+            {
+                vertices.Add(new WorldVertex(new Vector3(-point.X, point.Z, point.Y), Vector3.Zero, Vector2.Zero));
+            }
+
+            foreach (var mcExp in model.Export.FileRef.Exports.Where(x=>x.ClassName == "ModelComponent" && !x.IsDefaultObject))
+            {
+                var mc = ObjectBinary.From<ModelComponent>(mcExp);
+                if (mc.Model == model.Self)
+                {
+                    foreach (var modelElement in mc.Elements)
+                    {
+                        foreach (var node in modelElement.Nodes)
+                        {
+                            var matchingNode = model.Nodes[node];
+                            //var surface = parentModel.Surfs[matchingNode.iSurf];
+                            //var nodeVertices = new List<ME3ExplorerCore.SharpDX.Vector3>(matchingNode.NumVertices);
+
+                            var vert0 = model.Verts[matchingNode.iVertPool];
+
+                            for (uint i = 2; i < matchingNode.NumVertices; i++)
+                            {
+                                var tri = new Triangle((uint)vert0.pVertex, (uint)model.Verts[matchingNode.iVertPool + i - 1].pVertex, (uint)model.Verts[matchingNode.iVertPool + i].pVertex);
+                                //Debug.WriteLine($"Node {node} tri {i - 2}");
+                                //Debug.WriteLine($"{tri.Vertex1} => {vertices[(int)tri.Vertex1].Position}");
+                                //Debug.WriteLine($"{tri.Vertex2} => {vertices[(int)tri.Vertex2].Position}");
+                                //Debug.WriteLine($"{tri.Vertex3} => {vertices[(int)tri.Vertex3].Position}");
+                                triangles.Add(tri); // 0 is the base point. The rest of the triangles share this point
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
+        }
+
         private WorldMesh GetMeshFromModelComponent(ModelComponent mc)
         {
 
             var parentModel = ObjectBinary.From<Model>(mc.Export.FileRef.GetUExport(mc.Model));
             var vertices = new List<WorldVertex>();
+
+            foreach (var point in parentModel.Points)
+            {
+                vertices.Add(new WorldVertex(new Vector3(-point.X, point.Z, point.Y), Vector3.Zero, Vector2.Zero));
+            }
+
             var triangles = new List<Triangle>();
 
             foreach (var modelElement in mc.Elements)
@@ -705,58 +804,24 @@ namespace ME3Explorer.Meshplorer
                 foreach (var node in modelElement.Nodes)
                 {
                     var matchingNode = parentModel.Nodes[node];
-                    var surface = parentModel.Surfs[matchingNode.iSurf];
+                    //var surface = parentModel.Surfs[matchingNode.iSurf];
                     //var nodeVertices = new List<ME3ExplorerCore.SharpDX.Vector3>(matchingNode.NumVertices);
-                    for (int i = 0; i < matchingNode.NumVertices; i++)
-                    {
-                        var parentVert = parentModel.Verts[matchingNode.iVertPool + i];
-                        var position = parentModel.VertexBuffer[parentVert.pVertex];
-                        //var normal = surface.;
-                        //var uv = parentModel.Surfs;
 
-                        WorldVertex wv = new WorldVertex(position.Position, parentModel.Vectors[surface.vNormal], Vector2.Zero);
-                        vertices.Add(wv);
-                        //Debug.WriteLine(position.ToString());
-                    }
+                    var vert0 = parentModel.Verts[matchingNode.iVertPool];
 
                     for (uint i = 2; i < matchingNode.NumVertices; i++)
                     {
-                        triangles.Add(new Triangle(0, i - 1, i));
+                        var tri = new Triangle((uint)vert0.pVertex, (uint)parentModel.Verts[matchingNode.iVertPool + i - 1].pVertex, (uint)parentModel.Verts[matchingNode.iVertPool + i].pVertex);
+                        Debug.WriteLine($"Node {node} tri {i - 2}");
+                        Debug.WriteLine($"{tri.Vertex1} => {vertices[(int)tri.Vertex1].Position}");
+                        Debug.WriteLine($"{tri.Vertex2} => {vertices[(int)tri.Vertex2].Position}");
+                        Debug.WriteLine($"{tri.Vertex3} => {vertices[(int)tri.Vertex3].Position}");
+                        triangles.Add(tri); // 0 is the base point. The rest of the triangles share this point
                     }
                 }
             }
 
             return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
-
-            /*
-            if (aggGeom?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is ArrayProperty<StructProperty> convexElems)
-            {
-                var vertices = new List<WorldVertex>();
-                var triangles = new List<Triangle>();
-                int vertTotal = 0;
-                foreach (StructProperty convexElem in convexElems)
-                {
-                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                    for (int i = 0; i < faceTriData.Count; i += 3)
-                    {
-                        triangles.Add(new Triangle((uint)(faceTriData[i].Value + vertTotal), (uint)(faceTriData[i + 1].Value + vertTotal), (uint)(faceTriData[i + 2].Value + vertTotal)));
-                    }
-
-                    var vertexData = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                    foreach (StructProperty vertex in vertexData)
-                    {
-                        float x = vertex.GetProp<FloatProperty>("X").Value;
-                        float y = vertex.GetProp<FloatProperty>("Y").Value;
-                        float z = vertex.GetProp<FloatProperty>("Z").Value;
-                        vertices.Add(new WorldVertex(new Vector3(-x, z, y), Vector3.Zero, Vector2.Zero));
-                        ++vertTotal;
-                    }
-                }
-
-                return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
-            }*/
-
-            return null;
         }
 
         private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry)

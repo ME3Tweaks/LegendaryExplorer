@@ -133,7 +133,7 @@ namespace ME3Explorer
                     if (oldIndex.HasValue && oldIndex.Value != 0 && !IsBackForwardsNavigationEvent)
                     {
                         // 0 = tree root
-                        Debug.WriteLine("Push onto backwards: " + oldIndex);
+                        //Debug.WriteLine("Push onto backwards: " + oldIndex);
                         BackwardsIndexes.Push(oldIndex.Value);
                         ForwardsIndexes.Clear(); //forward list is no longer valid
                     }
@@ -4994,7 +4994,7 @@ namespace ME3Explorer
             {
                 if (SelectedItem != null && SelectedItem.UIndex != 0 && ForwardsIndexes.Peek() != SelectedItem.UIndex)
                 {
-                    Debug.WriteLine("Push onto backwards: " + SelectedItem.UIndex);
+                    //Debug.WriteLine("Push onto backwards: " + SelectedItem.UIndex);
                     BackwardsIndexes.Push(SelectedItem.UIndex);
                 }
 
@@ -5014,7 +5014,7 @@ namespace ME3Explorer
             {
                 if (SelectedItem != null && SelectedItem.UIndex != 0 && BackwardsIndexes.Peek() != SelectedItem.UIndex)
                 {
-                    Debug.WriteLine("Push onto forwards: " + SelectedItem.UIndex);
+                    //Debug.WriteLine("Push onto forwards: " + SelectedItem.UIndex);
                     ForwardsIndexes.Push(SelectedItem.UIndex);
                 }
 
