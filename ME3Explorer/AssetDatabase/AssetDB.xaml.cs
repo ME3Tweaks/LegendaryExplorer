@@ -326,8 +326,12 @@ namespace ME3Explorer.AssetDatabase
             MeshRendererTab_MeshRenderer.UnloadExport();
             SoundpanelWPF_ADB.UnloadExport();
             SoundpanelWPF_ADB.FreeAudioResources();
+
             MeshRendererTab_MeshRenderer.Dispose();
             SoundpanelWPF_ADB.Dispose();
+            BIKExternalExportLoaderTab_BIKExternalExportLoader.Dispose();
+            EmbeddedTextureViewerTab_EmbeddedTextureViewer.Dispose();
+
             audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
