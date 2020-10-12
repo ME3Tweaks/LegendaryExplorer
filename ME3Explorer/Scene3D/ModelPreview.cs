@@ -600,11 +600,27 @@ namespace ME3Explorer.Scene3D
                 }
 
                 //Check Startup
-                string startupPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "Startup.pcc");
+                string startupPath = Path.Combine(MEDirectories.CookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc");
                 if (File.Exists(startupPath))
                 {
                     //This is not in using statement as we have to keep this in memory.
                     IMEPackage pcc = MEPackageHandler.OpenMEPackage(startupPath);
+                    if (openedPackages != null && !openedPackages.Contains(pcc))
+                    {
+                        openedPackages.Add(pcc);
+                    }
+                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
+                    if (foundExp != null) return foundExp;
+                    //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
+                    if (openedPackages == null) pcc.Dispose(); //Dump from memory
+                }
+
+                //Check Engine
+                string enginePath = Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.pcc"); //will contain default material
+                if (File.Exists(enginePath))
+                {
+                    //This is not in using statement as we have to keep this in memory.
+                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(enginePath);
                     if (openedPackages != null && !openedPackages.Contains(pcc))
                     {
                         openedPackages.Add(pcc);
