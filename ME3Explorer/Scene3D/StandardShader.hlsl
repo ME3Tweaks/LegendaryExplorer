@@ -55,7 +55,16 @@ PS_OUT PSMain(PS_IN input) {
 
 	// use the texture
 	//result.color = tex2D(sam, input.uv);
-	result.color = tex.Sample(samstate, input.uv);
+	
+	// use the texture with some primitive lambert shading
+	float4 textureValue = tex.Sample(samstate, input.uv);
+	float3 toLight = normalize(float3(0.6, 1, 0.3)); // the direction to the fake directional light
+	float lambert = saturate(dot(toLight, input.normal));
+	lambert = lambert * 0.5 + 0.5; // a super simple way to fake some ambient lighting in. wildly inaccurate though.
+	result.color = float4(textureValue.xyz * lambert, 1.0);
+	
+	// use the input normal (negative values are clamped to zero (black))
+	//result.color = float4(input.normal, 1.0);
 
 	return result;
 }

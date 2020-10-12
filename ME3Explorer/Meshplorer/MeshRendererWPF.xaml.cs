@@ -570,33 +570,38 @@ namespace ME3Explorer.Meshplorer
                         sections = new List<ModelPreviewSection>(),
                         texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
                     };
-                    /*
-                    foreach (var element in modelComp.Elements)
+
+                    foreach (var mcExp in modelComp.Export.FileRef.Exports.Where(x => x.ClassName == "ModelComponent" && !x.IsDefaultObject))
                     {
-
-                        if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
+                        var mc = ObjectBinary.From<ModelComponent>(mcExp);
+                        if (mc.Model == modelComp.Self)
                         {
-                            ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
-                            Debug.WriteLine("Getting material asset " + entry.InstancedFullPath);
-                            AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
-                            pmd.sections.Add(new ModelPreviewSection(entry.ObjectName, 0, 3)); //???
-
-                        }
-                        else if (CurrentLoadedExport.FileRef.IsImport(element.Material))
-                        {
-                            var extMaterialExport = ModelPreview.FindExternalAsset(CurrentLoadedExport.FileRef.GetImport(element.Material), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
-                            if (extMaterialExport != null)
-                            {
-                                AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
-                            }
-                            else
+                            foreach (var element in mc.Elements)
                             {
 
-                                Debug.WriteLine("Could not find import material from section.");
-                                Debug.WriteLine("Import material: " + CurrentLoadedExport.FileRef.GetEntryString(element.Material));
+                                if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
+                                {
+                                    ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
+                                    Debug.WriteLine("Getting material asset " + entry.InstancedFullPath);
+                                    AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, entry);
+                                }
+                                else if (CurrentLoadedExport.FileRef.IsImport(element.Material))
+                                {
+                                    var extMaterialExport = ModelPreview.FindExternalAsset(CurrentLoadedExport.FileRef.GetImport(element.Material), pmd.texturePreviewMaterials.Select(x => x.Mip.Export).ToList());
+                                    if (extMaterialExport != null)
+                                    {
+                                        AddMaterialBackgroundThreadTextures(pmd.texturePreviewMaterials, extMaterialExport);
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine("Could not find import material from section.");
+                                        Debug.WriteLine("Import material: " + CurrentLoadedExport.FileRef.GetEntryString(element.Material));
+                                    }
+                                }
                             }
                         }
-                    }*/
+                    }
+                    
 
                     return pmd;
                 };
@@ -634,7 +639,10 @@ namespace ME3Explorer.Meshplorer
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                             case Model m:
-                                Preview = new ModelPreview(SceneViewer.Context.Device, GetMeshFromModelSubcomponents(m), SceneViewer.Context.TextureCache, pmd);
+                                List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+                                WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
+                                pmd.sections = sections;
+                                Preview = new ModelPreview(SceneViewer.Context.Device, mesh, SceneViewer.Context.TextureCache, pmd);
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
                         }
@@ -743,15 +751,16 @@ namespace ME3Explorer.Meshplorer
             return null;
         }
 
-        private WorldMesh GetMeshFromModelSubcomponents(Model model)
+        private WorldMesh GetMeshFromModelSubcomponents(Model model, List<ModelPreviewSection> sections)
         {
             // LOL this will run terribly i'm sure
             var vertices = new List<WorldVertex>();
             var triangles = new List<Triangle>();
 
-            foreach (var point in model.Points)
+            foreach (var vertex in model.VertexBuffer)
             {
-                vertices.Add(new WorldVertex(new Vector3(-point.X, point.Z, point.Y), Vector3.Zero, Vector2.Zero));
+                // We don't know the normal vectors yet
+                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.TexCoord.X, vertex.TexCoord.Y)));
             }
 
             foreach (var mcExp in model.Export.FileRef.Exports.Where(x=>x.ClassName == "ModelComponent" && !x.IsDefaultObject))
@@ -764,19 +773,18 @@ namespace ME3Explorer.Meshplorer
                         foreach (var node in modelElement.Nodes)
                         {
                             var matchingNode = model.Nodes[node];
-                            //var surface = parentModel.Surfs[matchingNode.iSurf];
-                            //var nodeVertices = new List<ME3ExplorerCore.SharpDX.Vector3>(matchingNode.NumVertices);
-
-                            var vert0 = model.Verts[matchingNode.iVertPool];
+                            var surface = model.Surfs[matchingNode.iSurf];
+                            sections.Add(new ModelPreviewSection(model.Export.FileRef.getObjectName(surface.Material), (uint)triangles.Count * 3, ((uint)matchingNode.NumVertices - 2) * 3));
 
                             for (uint i = 2; i < matchingNode.NumVertices; i++)
                             {
-                                var tri = new Triangle((uint)vert0.pVertex, (uint)model.Verts[matchingNode.iVertPool + i - 1].pVertex, (uint)model.Verts[matchingNode.iVertPool + i].pVertex);
-                                //Debug.WriteLine($"Node {node} tri {i - 2}");
-                                //Debug.WriteLine($"{tri.Vertex1} => {vertices[(int)tri.Vertex1].Position}");
-                                //Debug.WriteLine($"{tri.Vertex2} => {vertices[(int)tri.Vertex2].Position}");
-                                //Debug.WriteLine($"{tri.Vertex3} => {vertices[(int)tri.Vertex3].Position}");
-                                triangles.Add(tri); // 0 is the base point. The rest of the triangles share this point
+                                triangles.Add(new Triangle((uint)matchingNode.iVertexIndex, (uint)matchingNode.iVertexIndex + i - 1, (uint)matchingNode.iVertexIndex + i));
+                            }
+                            // Overwrite the normal vectors of the included vertices now that we know them
+                            Vector3 normal = model.Vectors[model.Surfs[matchingNode.iSurf].vNormal];
+                            for (int i = 0; i < matchingNode.NumVertices; i++)
+                            {
+                                vertices[matchingNode.iVertexIndex + i].Normal = new Vector3(-normal.X, normal.Z, normal.Y);
                             }
                         }
                     }
