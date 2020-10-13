@@ -32,7 +32,6 @@ namespace ME3Explorer.Scene3D
         private void InitializeComponent()
         {
             D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image();
-
             D3DImage.OnRender = this.D3DImage_OnRender;
             Image = new Image();
             Image.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -173,6 +172,22 @@ namespace ME3Explorer.Scene3D
             this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
             this.KeyUp -= OnKeyUp;
             this.KeyDown -= OnKeyDown;
+        }
+
+        private bool _shouldRender = true;
+
+        public void SetShouldRender(bool shouldRender)
+        {
+            if (!_shouldRender && shouldRender) //Not rendering, but we should start
+            {
+                D3DImage.OnRender = D3DImage_OnRender;
+            }
+            else if (_shouldRender && !shouldRender) //Currently rendering, but we should stop
+            {
+                D3DImage.OnRender = null;
+            }
+
+            _shouldRender = shouldRender;
         }
     }
 }

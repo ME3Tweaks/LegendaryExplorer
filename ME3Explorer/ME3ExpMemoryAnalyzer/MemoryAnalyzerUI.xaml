@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Closing="MemoryAnalyzer_Closing"
         SizeToContent="Width"
-        Title="ME3Explorer Memory Analyzer" MinHeight="445" Height="440" MinWidth="800"
+        Title="ME3Explorer Memory Analyzer" MinHeight="445" Height="440" MinWidth="800" Width="800"
     DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <xctk:BusyIndicator
         IsBusy="{Binding IsBusy}"

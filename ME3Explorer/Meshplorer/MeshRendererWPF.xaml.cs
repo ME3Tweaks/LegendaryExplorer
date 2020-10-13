@@ -583,7 +583,7 @@ namespace ME3Explorer.Meshplorer
                         {
                             foreach (var element in mc.Elements)
                             {
-
+                                if (CurrentLoadedExport == null) return pmd;
                                 if (CurrentLoadedExport.FileRef.IsUExport(element.Material))
                                 {
                                     ExportEntry entry = CurrentLoadedExport.FileRef.GetUExport(element.Material);
@@ -898,6 +898,10 @@ namespace ME3Explorer.Meshplorer
         {
             if (!HasLoaded)
             {
+                if (Parent is TabItem ti && ti.Parent is TabControl tc)
+                {
+                    tc.SelectionChanged += MeshRendererWPF_HostingTabSelectionChanged;
+                }
                 HasLoaded = true;
                 SceneViewer.Context.Update += MeshRenderer_ViewUpdate;
             }
@@ -905,7 +909,6 @@ namespace ME3Explorer.Meshplorer
 
         private void MeshRenderer_ViewUpdate(object sender, float timeStep)
         {
-            //Todo: Find a way to disable SceneViewer.Context.Update from firing if this control is not visible
             if (Rotating)
             {
                 SceneViewer.Context.Camera.Yaw += 0.05f * timeStep;
@@ -954,11 +957,6 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
-        private void CopyCameraLocation_MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            //Clipboard.SetText(CameraLocation_TextBlock.Text);
-        }
-
         public override void UnloadExport()
         {
             IsBrush = false;
@@ -978,11 +976,30 @@ namespace ME3Explorer.Meshplorer
 
         public override void Dispose()
         {
+            if (Parent is TabItem ti && ti.Parent is TabControl tc)
+            {
+                tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
+            }
             Preview?.Dispose();
             SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
             SceneViewer.Dispose();
             CurrentLoadedExport = null;
             SceneViewer = null;
+        }
+
+        private void MeshRendererWPF_HostingTabSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Parent is TabItem ti)
+            {
+                if (e.AddedItems.Contains(ti))
+                {
+                    SceneViewer?.SetShouldRender(true);
+                }
+                else if (e.RemovedItems.Contains(ti))
+                {
+                    SceneViewer?.SetShouldRender(false);
+                }
+            }
         }
 
         private void MeshRendererWPF_OnKeyUp(object sender, KeyEventArgs e)
