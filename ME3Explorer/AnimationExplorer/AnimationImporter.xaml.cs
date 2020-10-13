@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -23,7 +24,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for AnimationImporter.xaml
     /// </summary>
-    public partial class AnimationImporter : WPFBase
+    public partial class AnimationImporter : WPFBase, IRecents
     {
         public const string PSAFilter = "*.psa|*.psa";
 
@@ -38,10 +39,7 @@ namespace ME3Explorer
             LoadCommands();
             InitializeComponent();
 
-
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
         }
 
         public AnimationImporter(ExportEntry exportToLoad) : this()
@@ -122,7 +120,7 @@ namespace ME3Explorer
                     Filter = PSAFilter,
                     FileName = $"{sequenceName}.psa",
                     AddExtension = true,
-                    
+
                 };
                 if (dlg.ShowDialog(this) == true)
                 {
@@ -155,7 +153,7 @@ namespace ME3Explorer
                     var curSeq = CurrentExport.GetBinaryData<AnimSequence>();
                     if (!curSeq.Bones.SequenceEqual(psaSeqs[0].Bones))
                     {
-                        MessageBox.Show("This PSA contains no compatible Animations! Bone names must be identical to replace this animation.", 
+                        MessageBox.Show("This PSA contains no compatible Animations! Bone names must be identical to replace this animation.",
                                         "", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
@@ -296,9 +294,9 @@ namespace ME3Explorer
                     return;
                 }
 
-                ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset", 
+                ExportEntry selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset",
                                                                                  entry => animSets.Contains(entry) || entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
-                
+
 
                 List<AnimSequence> selectedAnimSequences = new List<AnimSequence>();
                 ExportEntry animSet;
@@ -388,9 +386,6 @@ namespace ME3Explorer
                 {
 #endif
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -417,9 +412,8 @@ namespace ME3Explorer
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Animation Importer - {s}";
 
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(s, false);
+                RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
                     CurrentExport = AnimSequenceExports.FirstOrDefault(x => x.UIndex == goToIndex);
@@ -432,119 +426,6 @@ namespace ME3Explorer
                 MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
             }
         }
-        #region Recents
-        public static readonly string DataFolder = Path.Combine(App.AppDataFolder, @"AnimImporter\");
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
-        readonly List<Button> RecentButtons = new List<Button>();
-        private void LoadRecentList()
-        {
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = DataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(DataFolder))
-            {
-                Directory.CreateDirectory(DataFolder);
-            }
-            string path = DataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is AnimationImporter wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            Recents_MenuItem.IsEnabled = RFiles.Count > 0;
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
@@ -651,5 +532,12 @@ namespace ME3Explorer
                 p.Activate(); //bring to front
             }
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "AnimImporter";
     }
 }

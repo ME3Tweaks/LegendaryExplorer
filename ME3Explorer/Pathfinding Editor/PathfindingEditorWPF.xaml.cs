@@ -4898,9 +4898,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void PropogateRecentsChange(IEnumerable<string> newRecents)
         {
-            throw new NotImplementedException();
+            RecentsController.PropogateRecentsChange(false, newRecents);
         }
 
-        public string Toolname { get; }
+        public string Toolname => "PathfindingEditor";
     }
 }

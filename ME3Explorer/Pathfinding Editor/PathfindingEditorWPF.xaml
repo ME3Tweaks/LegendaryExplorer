@@ -445,7 +445,7 @@
                     </TabItem>
                 </TabControl>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MinHeight="200" MaxHeight="200" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
+            <DockPanel DockPanel.Dock="Bottom" MinHeight="230" MaxHeight="230" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
                 <StackPanel DockPanel.Dock="Left">
                     <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">

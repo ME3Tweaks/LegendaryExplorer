@@ -445,7 +445,6 @@
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
-    <Compile Include="SharedUI\Converters\IntComparisonsToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Interfaces\IRecents.cs" />
     <Compile Include="SharedUI\RecentsControl.xaml.cs">
       <DependentUpon>RecentsControl.xaml</DependentUpon>
