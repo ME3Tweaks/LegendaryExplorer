@@ -445,6 +445,11 @@
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
+    <Compile Include="SharedUI\Interfaces\IRecents.cs" />
+    <Compile Include="SharedUI\RecentsControl.xaml.cs">
+      <DependentUpon>RecentsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\TaskbarHelper.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />
@@ -474,6 +479,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SFAREditor\SFARExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\RecentsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

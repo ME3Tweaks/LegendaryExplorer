@@ -73,7 +73,7 @@ namespace ME3ExplorerCore.Packages
             {
                 return index;
             }
-            
+
             addName(name, true); //Don't bother doing a lookup as we just did one. 
             // If this was an issue it'd be a multithreading issue that still could occur and is an
             // issue in the user code
@@ -446,6 +446,8 @@ namespace ME3ExplorerCore.Packages
 
         public void RegisterTool(IPackageUser user)
         {
+            // DEBUGGING MEMORY LEAK CODE
+            //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1} due to RegisterTool()");
             RefCount++;
             Users.Add(user);
             user.RegisterClosed(() =>
@@ -594,9 +596,17 @@ namespace ME3ExplorerCore.Packages
         }
 
         public event MEPackageEventHandler noLongerUsed;
-        private int RefCount;
+        /// <summary>
+        /// Amount of known tracked references to this object that were acquired through OpenMEPackage(). Manual references are not tracked
+        /// </summary>
+        public int RefCount { get; private set; }
 
-        public void RegisterUse() => RefCount++;
+        public void RegisterUse()
+        {
+            // DEBUGGING MEMORY LEAK CODE
+            //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1}");
+            RefCount++;
+        }
 
         /// <summary>
         /// Doesn't neccesarily dispose the object.
@@ -605,7 +615,11 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         public void Dispose()
         {
+            // DEBUGGING MEMORY LEAK CODE
+            //Debug.WriteLine($"{FilePath} RefCount decrementing from {RefCount} to {RefCount - 1}");
+
             RefCount--;
+
             if (RefCount == 0)
             {
                 noLongerUsed?.Invoke(this);

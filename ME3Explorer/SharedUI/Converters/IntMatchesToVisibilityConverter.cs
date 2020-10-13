@@ -13,11 +13,7 @@ namespace ME3Explorer.SharedUI.Converters
             if (parameter is string str)
             {
                 var items = str.Split(';');
-                bool inverse = false;
-                if (items.Length == 2 && items[1].Equals("not", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    inverse = true;
-                }
+                bool inverse = items.Length == 2 && items[1].Equals("not", StringComparison.InvariantCultureIgnoreCase);
                 if (int.TryParse(items[0], out var val))
                 {
                     if (inverse)

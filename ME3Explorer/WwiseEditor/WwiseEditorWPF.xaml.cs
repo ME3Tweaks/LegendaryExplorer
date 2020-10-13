@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -33,7 +34,7 @@ namespace ME3Explorer.WwiseEditor
     /// <summary>
     /// Interaction logic for WwiseEditorWPF.xaml
     /// </summary>
-    public partial class WwiseEditorWPF : WPFBase
+    public partial class WwiseEditorWPF : WPFBase, IRecents
     {
         private struct SaveData
         {
@@ -54,7 +55,7 @@ namespace ME3Explorer.WwiseEditor
             LoadCommands();
             InitializeComponent();
 
-            LoadRecentList();
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName=>LoadFile(fileName));
 
             graphEditor = (WwiseGraphEditor)GraphHost.Child;
             graphEditor.BackColor = GraphEditorBackColor;
@@ -184,9 +185,6 @@ namespace ME3Explorer.WwiseEditor
 #endif
 
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -232,9 +230,8 @@ namespace ME3Explorer.WwiseEditor
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Wwise Editor - {s}";
 
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(s, false);
+                RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
                     CurrentExport = WwiseBankExports.FirstOrDefault(x => x.UIndex == goToIndex);
@@ -796,122 +793,6 @@ namespace ME3Explorer.WwiseEditor
             }
         }
 
-        #region Recents
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
-        readonly List<Button> RecentButtons = new List<Button>();
-        private void LoadRecentList()
-        {
-            RecentButtons.Clear();
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = Path.Combine(WwiseEditorDataFolder, RECENTFILES_FILE);
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-            RefreshRecent(false);
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(WwiseEditorDataFolder))
-            {
-                Directory.CreateDirectory(WwiseEditorDataFolder);
-            }
-            string path = Path.Combine(WwiseEditorDataFolder, RECENTFILES_FILE);
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is WwiseEditorWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            Recents_MenuItem.IsEnabled = RFiles.Count > 0;
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion
-
         #region Busy
 
         private bool _isBusy;
@@ -970,5 +851,12 @@ namespace ME3Explorer.WwiseEditor
             soundPanel.HIRCObjectSelected -= SoundPanel_HIRCObjectSelected;
             soundPanel.Dispose();
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "WwiseEditor";
     }
 }

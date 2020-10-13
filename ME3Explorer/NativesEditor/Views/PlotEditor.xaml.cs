@@ -10,6 +10,7 @@ using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -18,7 +19,7 @@ using Microsoft.Win32;
 
 namespace MassEffect.NativesEditor.Views
 {
-    public partial class PlotEditor : WPFBase
+    public partial class PlotEditor : WPFBase, IRecents
     {
         public PlotEditor()
         {
@@ -28,8 +29,8 @@ namespace MassEffect.NativesEditor.Views
                 { "Toolname", "Plot Editor" }
             });
             InitializeComponent();
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+            
             FindObjectUsagesControl.parentRef = this;
         }
 
@@ -68,9 +69,8 @@ namespace MassEffect.NativesEditor.Views
 
             StateEventMapControl?.Open(Pcc);
 
-            AddRecent(path, false);
-            SaveRecentList();
-            RefreshRecent(true, RFiles);
+            RecentsController.AddRecent(path, false);
+            RecentsController.SaveRecentList(true);
             Title = $"Plot Editor - {path}";
             OnPropertyChanged(nameof(CurrentFile));
 
@@ -187,128 +187,6 @@ namespace MassEffect.NativesEditor.Views
             OpenFile();
         }
 
-        #region Recents
-        private readonly List<Button> RecentButtons = new List<Button>();
-        public List<string> RFiles;
-        public static readonly string NativesEditorDataFolder = Path.Combine(App.AppDataFolder, @"NativesEditor\");
-        private readonly string RECENTFILES_FILE = "RECENTFILES";
-
-        private void LoadRecentList()
-        {
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = NativesEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(NativesEditorDataFolder))
-            {
-                Directory.CreateDirectory(NativesEditorDataFolder);
-            }
-            string path = NativesEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of PathEd
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is PlotEditor wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach ((string filepath, Button recentButton) in RFiles.ZipTuple(RecentButtons))
-            {
-                MenuItem fr = new MenuItem
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                recentButton.Visibility = Visibility.Visible;
-                recentButton.Content = Path.GetFileName(filepath.Replace("_", "__"));
-                recentButton.Click -= RecentFile_click;
-                recentButton.Click += RecentFile_click;
-                recentButton.Tag = filepath;
-                recentButton.ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show($"File does not exist: {s}");
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion
-
         private void Window_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -351,5 +229,11 @@ namespace MassEffect.NativesEditor.Views
             StateEventMapControl.StateEventMapListBox.Focus();
         }
 
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "NativesEditor";
     }
 }

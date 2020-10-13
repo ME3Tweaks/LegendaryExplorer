@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.Win32;
@@ -18,18 +19,17 @@ namespace ME3Explorer.Matinee
     /// <summary>
     /// Interaction logic for InterpEditor.xaml
     /// </summary>
-    public partial class InterpEditor : WPFBase
+    public partial class InterpEditor : WPFBase, IRecents
     {
 
         public InterpEditor()
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interp Viewer", new WeakReference(this)));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interp Editor", new WeakReference(this)));
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";
             InitializeComponent();
-
-            LoadRecentList();
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
 
             timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
         }
@@ -138,144 +138,18 @@ namespace ME3Explorer.Matinee
 
         #endregion Properties and Bindings
 
-        #region Recents
-
-        private static readonly string InterpEditorDataFolder = Path.Combine(App.AppDataFolder, @"InterpEditor\");
-        private readonly List<Button> RecentButtons = new List<Button>();
-        public List<string> RFiles;
-        private const string RECENTFILES_FILE = "RECENTFILES";
-
-        private void LoadRecentList()
-        {
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = InterpEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-            RefreshRecent(false);
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(InterpEditorDataFolder))
-            {
-                Directory.CreateDirectory(InterpEditorDataFolder);
-            }
-            string path = InterpEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of InterpEd
-                foreach (var window in Application.Current.Windows)
-                {
-                    if (window is InterpEditor wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                foreach (Button recentButton in RecentButtons)
-                {
-                    recentButton.Visibility = Visibility.Collapsed;
-                }
-                return;
-            }
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList = false)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-            SaveRecentList();
-        }
-
-        #endregion Recents
-
         public void LoadFile(string fileName)
         {
+            Properties_InterpreterWPF?.UnloadExport();
             InterpDataExports.ClearEx();
             Animations.ClearEx();
             LoadMEPackage(fileName);
-            AddRecent(fileName);
+            RecentsController.AddRecent(fileName, false);
+            RecentsController.SaveRecentList(true);
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
             Title = $"Interp Viewer - {Pcc.FilePath}";
+            StatusText = Path.GetFileName(fileName);
         }
 
         private void LoadInterpData(ExportEntry value)
@@ -327,5 +201,12 @@ namespace ME3Explorer.Matinee
 
             timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "InterpEditor";
     }
 }

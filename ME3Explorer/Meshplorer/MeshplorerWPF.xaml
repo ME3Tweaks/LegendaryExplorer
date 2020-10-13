@@ -7,11 +7,11 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-               xmlns:fa="http://schemas.fontawesome.com/icons/"
-               xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
-               xmlns:scene3d="clr-namespace:ME3Explorer.Scene3D"
-               xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
-               mc:Ignorable="d"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
+        xmlns:scene3d="clr-namespace:ME3Explorer.Scene3D"
+        xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -92,7 +92,7 @@
                                 -  0 indicates null, empty, or "Class", depending on the context
                              <LineBreak/>
                              <LineBreak/>
-                                Meshplorer WPF is still relatively new, if you have issues, please report them to one of the following places:
+                                If you have issues with Meshplorer, please report them to one of the following places:
                                 <LineBreak/>
                                  - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
                                 <LineBreak/>
@@ -101,32 +101,7 @@
                                     <Run Text="{Binding Source={x:Static local:App.BugReportURL}, Mode=OneTime}"/>
                                 </Hyperlink>
                     </TextBlock>
-
-                    <Grid HorizontalAlignment="Left" Margin="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="280"/>
-                            <ColumnDefinition Width="280"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
-                        <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                    </Grid>
+                    <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left"/>
                 </StackPanel>
 
                 <DockPanel Grid.Row="0" Grid.Column="0"                              
@@ -142,7 +117,7 @@
                             <DataTemplate DataType="{x:Type packages:ExportEntry}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
 
-                                    <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
+                                    <fa:ImageAwesome x:Name="FAImageIcon" Width="18" Height="18" Margin="2,0,4,0"/>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding UIndex}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" ToolTip="Export index"/>

@@ -621,6 +621,15 @@ namespace ME3Explorer.Meshplorer
             {
                 Task.Run(loadMesh).ContinueWithOnUIThread(prevTask =>
                 {
+                    Debug.WriteLine("CACHED PACKAGE DISPOSAL");
+                    foreach (var p in cachedPackages)
+                    {
+                        Debug.WriteLine($"Disposing package from asset lookup cache {p.FilePath}");
+                        p?.Dispose();
+                    }
+
+                    cachedPackages = null;
+
                     IsBusy = false;
                     if (CurrentLoadedExport == null)
                     {
@@ -667,13 +676,6 @@ namespace ME3Explorer.Meshplorer
                 });
 
             }
-
-            foreach (var p in cachedPackages)
-            {
-                p?.Dispose();
-            }
-
-            cachedPackages = null;
         }
 
         /// <summary>
@@ -946,6 +948,8 @@ namespace ME3Explorer.Meshplorer
             if (!startingUp && e.NewValue.HasValue)
             {
                 var s = e.NewValue.Value.ToString();
+                Properties.Settings.Default.MeshplorerBackgroundColor = s;
+                Properties.Settings.Default.Save();
                 SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
         }

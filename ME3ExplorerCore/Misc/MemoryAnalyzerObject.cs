@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
+using ME3ExplorerCore.Packages;
 using PropertyChanged;
 
 namespace ME3ExplorerCore.Misc
@@ -24,6 +26,18 @@ namespace ME3ExplorerCore.Misc
             {
                 if (reference.IsAlive)
                 {
+                    if (reference.Target is UnrealPackageFile upf && (upf.FilePath == null || Path.GetFileNameWithoutExtension(upf.FilePath) != "Core"))
+                    {
+                        if (upf.RefCount > 0)
+                        {
+                            return $"{upf.RefCount} PH refs";
+                        }
+                        else
+                        {
+                            return "0 PH refs, should GC";
+                        }
+                    }
+
                     return "In Memory";
                 }
                 return "Garbage Collected";

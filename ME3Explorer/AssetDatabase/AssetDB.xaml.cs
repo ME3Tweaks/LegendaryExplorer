@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Shell;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -34,6 +35,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3ExplorerCore.TLK;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.AssetDatabase
 {
@@ -156,7 +158,14 @@ namespace ME3Explorer.AssetDatabase
         public int OverallProgressValue
         {
             get => _overallProgressValue;
-            set => SetProperty(ref _overallProgressValue, value);
+            set
+            {
+                if (SetProperty(ref _overallProgressValue, value) && OverallProgressMaximum > 0)
+                {
+                    TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
+                    TaskbarHelper.SetProgress(value, OverallProgressMaximum);
+                }
+            }
         }
 
         private int _overallProgressMaximum;
@@ -800,10 +809,18 @@ namespace ME3Explorer.AssetDatabase
         #endregion
 
         #region UserCommands
+
         public void GenerateDatabase()
         {
-            ScanGame();
+            var shouldGenerate = MessageBox.Show($"Generate a new database for {CurrentGame}?", "Generating new DB",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes;
+            if (shouldGenerate)
+            {
+                ScanGame();
+            }
         }
+
         public void SwitchGame(object param)
         {
             var p = param as string;
@@ -864,7 +881,7 @@ namespace ME3Explorer.AssetDatabase
                         var warn = MessageBox.Show($"This database is out of date (v {CurrentDataBase.DataBaseversion} versus v {dbCurrentBuild})\nA new version is required. Do you wish to rebuild?", "Warning", MessageBoxButton.OKCancel);
                         if (warn != MessageBoxResult.Cancel)
                         {
-                            GenerateDatabase();
+                            ScanGame();
                             return false;
                         }
                         ClearDataBase();
@@ -2600,6 +2617,7 @@ namespace ME3Explorer.AssetDatabase
                 BusyHeader = "Dump completed. Processing Queue.";
             }
             _dbqueue.CompleteAdding();
+            TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
         }
         private async void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
