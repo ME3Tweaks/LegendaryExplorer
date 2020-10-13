@@ -41,7 +41,7 @@ namespace ME3Explorer.Pathfinding_Editor
     /// <summary>
     /// Interaction logic for PathfindingEditorWPF.xaml
     /// </summary>
-    public partial class PathfindingEditorWPF : WPFBase, IBusyUIHost
+    public partial class PathfindingEditorWPF : WPFBase, IBusyUIHost, IRecents
     {
         #region ActorCategories
         public static string[] pathfindingNodeClasses =
@@ -100,6 +100,11 @@ namespace ME3Explorer.Pathfinding_Editor
         #endregion
 
         #region Properties and Bindings
+        public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
+        public static readonly string OptionsPath = Path.Combine(PathfindingEditorDataFolder, "PathEditorOptions.JSON");
+        private bool IsCombatZonesSingleSelecting;
+        private bool IsReadingLevel;
+
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
         private bool ChangingSelectionByGraphClick;
@@ -581,8 +586,7 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             AllowRefresh = true;
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName=>LoadFile(fileName));
             zoomController = new PathingZoomController(graphEditor);
             SharedPathfinding.LoadClassesDB();
             List<PathfindingDB_ExportType> types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
@@ -748,9 +752,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     NodeName = "No node selected";
                 }
                 CurrentFile = Path.GetFileName(fileName);
-                AddRecent(fileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(fileName, false);
+                RecentsController.SaveRecentList(true);
                 Title = $"Pathfinding Editor WPF - {fileName}";
                 StatusText = null; //Nothing to prepend.
                 PathfindingEditorWPF_ValidationPanel.SetLevel(PersistentLevelExport);
@@ -807,131 +810,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 p.Activate(); //bring to front
             }
         }
-        #endregion
-
-        #region Recents
-        private readonly List<Button> RecentButtons = new List<Button>();
-        public List<string> RFiles;
-        private bool IsCombatZonesSingleSelecting;
-        private bool IsReadingLevel;
-        public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
-        public static readonly string OptionsPath = Path.Combine(PathfindingEditorDataFolder, "PathEditorOptions.JSON");
-        private readonly string RECENTFILES_FILE = "RECENTFILES";
-
-        private void LoadRecentList()
-        {
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(PathfindingEditorDataFolder))
-            {
-                Directory.CreateDirectory(PathfindingEditorDataFolder);
-            }
-            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of PathEd
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is PathfindingEditorWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach ((string filepath, Button recentButton) in RFiles.ZipTuple(RecentButtons))
-            {
-                MenuItem fr = new MenuItem
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                recentButton.Visibility = Visibility.Visible;
-                recentButton.Content = Path.GetFileName(filepath.Replace("_", "__"));
-                recentButton.Click -= RecentFile_click;
-                recentButton.Click += RecentFile_click;
-                recentButton.Tag = filepath;
-                recentButton.ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show($"File does not exist: {s}");
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
-
         #endregion
 
         #region GraphGeneration
@@ -5018,5 +4896,11 @@ namespace ME3Explorer.Pathfinding_Editor
         #endregion
 
 
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Toolname { get; }
     }
 }
