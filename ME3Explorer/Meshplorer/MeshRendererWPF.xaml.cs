@@ -980,5 +980,15 @@ namespace ME3Explorer.Meshplorer
             CurrentLoadedExport = null;
             SceneViewer = null;
         }
+
+        private void MeshRendererWPF_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            SceneViewer?.OnKeyUp(sender, e);
+        }
+
+        private void MeshRendererWPF_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            SceneViewer?.OnKeyDown(sender, e);
+        }
     }
 }

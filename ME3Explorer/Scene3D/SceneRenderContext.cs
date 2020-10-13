@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
 using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D11;
@@ -72,13 +74,7 @@ namespace ME3Explorer.Scene3D
         public bool Panning { get; private set; } = false;
         public bool Zooming { get; private set; } = false;
         public float Time { get; private set; } = 0;
-        public bool Ready
-        {
-            get
-            {
-                return Device != null;
-            }
-        }
+        public bool Ready => Device != null;
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -105,11 +101,13 @@ namespace ME3Explorer.Scene3D
             }
         }
 
-        public void UpdateScene(float dt)
+        public DateTime UpdateScene(float dt)
         {
+            //Debug.WriteLine($"Delta time {dt}");
             Time += dt;
             OnUpdate(dt);
             Update?.Invoke(null, dt);
+            return DateTime.Now; //Update invocation time
         }
 
         public event System.EventHandler<float> Update;
@@ -327,6 +325,66 @@ namespace ME3Explorer.Scene3D
         {
             Camera.FocusDepth *= (float)Math.Pow(1.2, -Math.Sign(delta)); // kinda hacky because this moves in constant increments regardless of how far the user scrolls.
         }
+
+        // WPF
+        /// <summary>
+        /// Handles key down events. Returns true if the key was accepted.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool KeyDown(Key key)
+        {
+            switch (key)
+            {
+                case Key.W:
+                    KeyW = true;
+                    break;
+                case Key.S:
+                    KeyS = true;
+                    break;
+                case Key.A:
+                    KeyA = true;
+                    break;
+                case Key.D:
+                    KeyD = true;
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Handles key up events. Returns true if the key was accepted.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool KeyUp(Key key)
+        {
+            switch (key)
+            {
+                case Key.W:
+                    KeyW = false;
+                    break;
+                case Key.S:
+                    KeyS = false;
+                    break;
+                case Key.A:
+                    KeyA = false;
+                    break;
+                case Key.D:
+                    KeyD = false;
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+
+        // WINFORMS
 
         public void KeyDown(System.Windows.Forms.Keys key)
         {
