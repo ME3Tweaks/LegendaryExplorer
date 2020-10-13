@@ -18,7 +18,7 @@
                 Loaded="WwiseEditorWPF_OnLoaded"
                 Closing="WwiseEditorWPF_OnClosing"
                 d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/ME3Explorrer;component/Resources/WwiseEditor_256x256.ico">
+                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/ME3Explorer;component/Resources/WwiseEditor_256x256.ico">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
