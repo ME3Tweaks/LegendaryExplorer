@@ -23,6 +23,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
@@ -44,7 +45,7 @@ namespace ME3Explorer.Dialogue_Editor
     /// <summary>
     /// Interaction logic for DialogueEditorWPF.xaml
     /// </summary>
-    public partial class DialogueEditorWPF : WPFBase
+    public partial class DialogueEditorWPF : WPFBase, IRecents
     {
         #region Declarations
         private struct SaveData
@@ -242,8 +243,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
             InitializeComponent();
-
-            LoadRecentList();
+            RecentsController.InitRecentControl(Toolname,Recents_MenuItem, fileName=>LoadFile(fileName));
 
             graphEditor = (ConvGraphEditor)GraphHost.Child;
             graphEditor.BackColor = Color.FromArgb(130, 130, 130);
@@ -563,9 +563,8 @@ namespace ME3Explorer.Dialogue_Editor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
 
-                AddRecent(fileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(fileName, false);
+                RecentsController.SaveRecentList(true);
 
                 Title = $"Dialogue Editor - {fileName}";
                 StatusText = null;
@@ -1891,136 +1890,6 @@ namespace ME3Explorer.Dialogue_Editor
         }
 
         #endregion Handling-updates
-
-        #region Recents
-
-        private readonly List<Button> RecentButtons = new List<Button>();
-        public List<string> RFiles;
-        private const string RECENTFILES_FILE = "RECENTFILES";
-
-        private void LoadRecentList()
-        {
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = Path.Combine(DialogueEditorDataFolder, RECENTFILES_FILE);
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-
-            RefreshRecent(false);
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(DialogueEditorDataFolder))
-            {
-                Directory.CreateDirectory(DialogueEditorDataFolder);
-            }
-
-            string path = Path.Combine(DialogueEditorDataFolder, RECENTFILES_FILE);
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of SeqEd
-                foreach (var window in Application.Current.Windows)
-                {
-                    if (window is DialogueEditorWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion Recents
 
         #region CreateGraph
 
@@ -4132,7 +4001,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (!string.IsNullOrEmpty(searchtext))
             {
                 var selectedObj = SelectedObjects.FirstOrDefault();
-                DiagNode tgt = CurrentObjects.AfterThenBefore(selectedObj).OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext) 
+                DiagNode tgt = CurrentObjects.AfterThenBefore(selectedObj).OfType<DiagNode>().FirstOrDefault(d => d.Node.LineStrRef.ToString().Contains(searchtext)
                                                                                                                || d.Node.Line.Contains(searchtext, StringComparison.InvariantCultureIgnoreCase));
                 if (tgt != null)
                 {
@@ -4417,5 +4286,14 @@ namespace ME3Explorer.Dialogue_Editor
 
 
         #endregion Helpers
+
+        #region IRecents interface
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "DialogueEditor";
+        #endregion
     }
 }

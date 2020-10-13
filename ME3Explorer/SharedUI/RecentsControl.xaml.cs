@@ -10,7 +10,7 @@ using ME3ExplorerCore.Misc;
 namespace ME3Explorer.SharedUI
 {
     /// <summary>
-    /// Interaction logic for RecentsControl.xaml
+    /// Control that handles the 'Recents' system, including the main no-open-file panel and the menu system for windows. All calls must be done from a UI thread.
     /// </summary>
     public partial class RecentsControl : NotifyPropertyChangedControlBase
     {
@@ -102,7 +102,7 @@ namespace ME3Explorer.SharedUI
         }
 
         /// <summary>
-        /// Adds a new item to the recents list in the appropriate position
+        /// Adds a new item to the recents list in the appropriate position.
         /// </summary>
         /// <param name="newRecent"></param>
         /// <param name="isLoading"></param>
