@@ -68,7 +68,7 @@
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+            <StackPanel Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                 <TextBlock Margin="5" Text="Welcome to Animation Importer" FontWeight="Bold" TextWrapping="Wrap"/>
                 <TextBlock Margin="5" TextWrapping="Wrap">
                             

@@ -82,7 +82,8 @@
                     </TextBlock>
 
                 </StackPanel>
-                <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" Grid.Column="3" Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:InterpEditor}}, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" Grid.Column="3" 
+                                         Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}}, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                 <TabControl Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <TabItem Header="Matinees">
                         <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}"

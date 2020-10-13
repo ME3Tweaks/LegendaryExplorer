@@ -18,7 +18,7 @@
                 Loaded="WwiseEditorWPF_OnLoaded"
                 Closing="WwiseEditorWPF_OnClosing"
                 d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/ME3Explorer;component/Resources/WwiseEditor_256x256.ico">
+                Title="WwiseEditorWPF" Height="750" Width="1300" MinWidth="900" MinHeight="200" Icon="/ME3Explorrer;component/Resources/WwiseEditor_256x256.ico">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -115,13 +115,13 @@
                         </TextBlock>
                     </StackPanel>
                     <sharedUi:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3"
-                                             Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                                             Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type me3Explorer:WPFBase}}, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <ListBox Name="WwiseBanks_ListBox" Grid.Column="0" Grid.Row="0"
-                            ItemsSource="{Binding WwiseBankExports}"
-                            SelectedItem="{Binding CurrentExport}"
-                            HorizontalContentAlignment="Stretch"
-                            SelectionMode="Extended"
-                            Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                             ItemsSource="{Binding WwiseBankExports}"
+                             SelectedItem="{Binding CurrentExport}"
+                             HorizontalContentAlignment="Stretch"
+                             SelectionMode="Extended"
+                             Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type packages:ExportEntry}">
                                 <Grid Margin="0,0,5,0">

@@ -788,7 +788,7 @@
                     </TextBlock>
                 </StackPanel>
                 <SharedUI:RecentsControl x:Name="RecentsController" Grid.Column="3"
-                      Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                                         Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
 
                 <!-- Conversation Box-->
                 <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseLeftButtonUp="ListBox_MouseLeftButtonUp" HorizontalContentAlignment="Stretch"

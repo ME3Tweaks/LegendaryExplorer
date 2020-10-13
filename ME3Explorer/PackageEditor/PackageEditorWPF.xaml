@@ -478,7 +478,8 @@
                                 </Hyperlink>
                             </TextBlock>
 
-                            <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                            <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left" 
+                                                     Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                         </StackPanel>
                     </TabItem>
                     <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
