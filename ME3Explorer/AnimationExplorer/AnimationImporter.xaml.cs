@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -539,5 +540,11 @@ namespace ME3Explorer
         }
 
         public string Toolname => "AnimImporter";
+
+        private void AnimationImporter_OnClosing(object sender, CancelEventArgs e)
+        {
+            InterpreterTab_Interpreter?.Dispose();
+            BinaryInterpreterTab_BinaryInterpreter?.Dispose();
+        }
     }
 }
