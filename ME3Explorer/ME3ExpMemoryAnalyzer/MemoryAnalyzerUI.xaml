@@ -17,7 +17,7 @@
         BusyContent="{Binding IsBusyText}">
     <DockPanel LastChildFill="True" Margin="5">
             <StackPanel DockPanel.Dock="Top">
-                <TextBlock Text="This tool is for toolset developers only."/>
+                <TextBlock TextWrapping="Wrap"   Text="This tool is for toolset developers only. References are tracked and their disposal state is shown. Windows and objects that are no longer in use and are expected to be garbage collected should become garbage collected when clicking 'Force Large GC'. If they do not, a memory leak is likely. You can trace memory leaks in dotMemory (must be installed already on system)."/>
                 <TextBlock Text="Tracked references:" FontWeight="Bold" Margin="0,10,0,0"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Bottom">
@@ -30,12 +30,12 @@
                 <TextBlock TextWrapping="Wrap" Text="{Binding LastRefreshText}" Grid.Column="1" HorizontalAlignment="Right"/>
             </Grid>
             <DockPanel>
-                <Button Content="Clear garbage collected references" Padding="5,3,5,3" Margin="0,5,0,5" Click="CleanUpOldRefs_Click" DockPanel.Dock="Left"/>
-                <Button Content="Show package handler open packages"  Margin="5,3" Padding="5,3,5,3" Click="ShowOpenPackages_Click" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                <Button Content="dotMemory: Take Snapshot"  Margin="5,3" Padding="5,3,5,3" Click="TakeSnapshot_Click" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                <Button Content="Clear garbage collected references" Padding="5,3,5,3" Margin="0,5,0,5" Click="CleanUpOldRefs_Click" DockPanel.Dock="Left" ToolTip="Clears items in the 'Garbage Collected' state from the list. After 10 seconds, these items will automatically be removed"/>
+                <Button Content="Show package handler open packages"  Margin="5,3" Padding="5,3,5,3" Click="ShowOpenPackages_Click" DockPanel.Dock="Left" VerticalAlignment="Center" ToolTip="Shows the list of Package Handler open packages"/>
+                <Button Content="dotMemory: Take Snapshot"  Margin="5,3" Padding="5,3,5,3" Click="TakeSnapshot_Click" DockPanel.Dock="Left" VerticalAlignment="Center" ToolTip="Generates a memory dump of the process and opens dotMemory to analyze it. Ensure you've installed dotMemory beforehand"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Force Large GC" Margin="2,5" Padding="5,3,5,3" Click="ForceLargeGC_Click"/>
-                    <Button Content="Force GC" Margin="2,5" Padding="3,3,3,3" Click="ForceGC_Click"/>
+                    <Button Content="Force Large GC" Margin="2,5" Padding="5,3,5,3" Click="ForceLargeGC_Click" ToolTip="Forces a large object heap garbage collection. This should clear any unreferenced items"/>
+                    <Button Content="Force GC" Margin="2,5" Padding="3,3,3,3" Click="ForceGC_Click" ToolTip="Forces a basic garbage collection"/>
                 </StackPanel>
             </DockPanel>
 
