@@ -177,31 +177,17 @@ namespace ME3Explorer.Unreal
             if (!File.Exists(afcPath))
                 return null;
 
-            Stream embeddedStream = null;
-            if (afcPath.EndsWith(".pcc"))
-            {
-                using IMEPackage package = MEPackageHandler.OpenMEPackage(afcPath);
-                if (package.IsCompressed)
-                {
-                    // Todo: Add method to package class that will get the decompressed data stream
-                    using var compressStream = File.OpenRead(afcPath);
-
-                    //embeddedStream = CompressionHelper.DecompressPackage(package.IsCompressed);
-                }
-            }
-
-            using (Stream fs = embeddedStream ?? new FileStream(afcPath, FileMode.Open, FileAccess.Read))
-            {
-                if (DataOffset + DataSize > fs.Length)
-                    return null; //invalid pointer, outside bounds
-                MemoryStream ms = new MemoryStream();
-                fs.Seek(DataOffset, SeekOrigin.Begin);
-                //for (int i = 0; i < DataSize; i++)
-                //    fs2.WriteByte((byte)fs.ReadByte());
-                fs.CopyToEx(ms, DataSize);
-                ms.Position = 0;
-                return ms;
-                /*
+            using Stream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
+            if (DataOffset + DataSize > fs.Length)
+                return null; //invalid pointer, outside bounds
+            MemoryStream ms = new MemoryStream();
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            //for (int i = 0; i < DataSize; i++)
+            //    fs2.WriteByte((byte)fs.ReadByte());
+            fs.CopyToEx(ms, DataSize);
+            ms.Position = 0;
+            return ms;
+            /*
                 if (File.Exists(outputFile))
                     File.Delete(outputFile);
                 using (FileStream fs2 = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
@@ -213,7 +199,6 @@ namespace ME3Explorer.Unreal
                     fs.Read(dataToCopy, 0, DataSize);
                     fs2.Write(dataToCopy, 0, DataSize);
                 }*/
-            }
             //            return true;
         }
 

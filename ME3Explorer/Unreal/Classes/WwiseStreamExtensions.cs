@@ -25,22 +25,18 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (ws.Filename == "")
                 return;
-            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+            if (ws.IsPCCStored)
             {
-                if (pathtoafc != "")
-                {
-                    if (File.Exists(pathtoafc))
-                        ws.ImportWwiseOgg(pathtoafc, stream);
-                    else if (File.Exists(pathtoafc + ws.Filename + ".afc")) //legacy code for old soundplorer
-                        ws.ImportWwiseOgg(pathtoafc + ws.Filename + ".afc", stream);
-                    else
-                    {
-                        OpenFileDialog d = new OpenFileDialog();
-                        d.Filter = ws.Filename + ".afc|" + ws.Filename + ".afc";
-                        if (d.ShowDialog() == DialogResult.OK)
-                            ws.ImportWwiseOgg(d.FileName, stream);
-                    }
-                }
+                ws.ImportWwiseOgg(pathtoafc, stream);
+            }
+            else if (pathtoafc != "")
+            {
+                if (File.Exists(pathtoafc))
+                    ws.ImportWwiseOgg(pathtoafc, stream);
+                else if (File.Exists(pathtoafc + ws.Filename + ".afc")) //legacy code for old soundplorer
+                    ws.ImportWwiseOgg(pathtoafc + ws.Filename + ".afc", stream);
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
@@ -49,21 +45,18 @@ namespace ME3Explorer.Unreal.Classes
                         ws.ImportWwiseOgg(d.FileName, stream);
                 }
             }
+            else
+            {
+                OpenFileDialog d = new OpenFileDialog();
+                d.Filter = ws.Filename + ".afc|" + ws.Filename + ".afc";
+                if (d.ShowDialog() == DialogResult.OK)
+                    ws.ImportWwiseOgg(d.FileName, stream);
+            }
         }
 
         public static TimeSpan? GetSoundLength(this WwiseStream ws)
         {
-            string path;
-            if (ws.IsPCCStored)
-            {
-                path = ws.Export.FileRef.FilePath; //we must load it decompressed.
-            }
-            else
-            {
-                path = ws.GetPathToAFC();
-            }
-
-            Stream waveStream = ws.CreateWaveStream(path); 
+            Stream waveStream = ws.CreateWaveStream(); 
             if (waveStream != null)
             {
                 //Check it is RIFF
@@ -86,18 +79,17 @@ namespace ME3Explorer.Unreal.Classes
         /// <summary>
         /// Creates wav file in temp directory
         /// </summary>
-        /// <param name="afcPath"></param>
+        /// <param name="ws"></param>
         /// <returns></returns>
-        public static string CreateWave(this WwiseStream ws, string afcPath)
+        public static string CreateWave(this WwiseStream ws)
         {
             string basePath = WwiseStreamHelper.GetATempSoundPath();
-            if (WwiseStreamHelper.ExtractRawFromSourceToFile(basePath + ".wem", ws.GetPathToAFC(), ws.DataSize, ws.DataOffset))
+            string wavPath = basePath + ".wav";
+            if (ws.CreateWaveStream() is MemoryStream dataStream)
             {
-                var dataStream = ISBankEntry.ConvertAudioToWave(basePath + ".wem");
-                //MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
-                File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
+                File.WriteAllBytes(wavPath, dataStream.ToArray());
             }
-            return basePath + ".wav";
+            return wavPath;
         }
 
         /// <summary>
@@ -105,20 +97,32 @@ namespace ME3Explorer.Unreal.Classes
         /// </summary>
         /// <param name="afcPath"></param>
         /// <returns></returns>
-        public static Stream CreateWaveStream(this WwiseStream ws, string afcPath)
+        public static MemoryStream CreateWaveStream(this WwiseStream ws)
         {
             string basePath = WwiseStreamHelper.GetATempSoundPath();
-            if (WwiseStreamHelper.ExtractRawFromSourceToFile(basePath + ".wem", afcPath, ws.DataSize, ws.DataOffset))
+            string wemPath = basePath + ".wem";
+            if (ws.ExtractRawFromSourceToFile(wemPath))
             {
-                return ISBankEntry.ConvertAudioToWave(basePath + ".wem");
-                //return ConvertRiffToWav(basePath + ".wem", export.FileRef.Game == MEGame.ME2);
+                return null;
             }
-            return null;
+
+            return ISBankEntry.ConvertAudioToWave(wemPath);
+            //return ConvertRiffToWav(basePath + ".wem", export.FileRef.Game == MEGame.ME2);
         }
 
-        public static bool ExtractRawFromSourceToFile(this WwiseStream ws, string outputFile, string afcPath)
+        public static bool ExtractRawFromSourceToFile(this WwiseStream ws, string outputFile)
         {
-            return WwiseStreamHelper.ExtractRawFromSourceToFile(outputFile, afcPath, ws.DataSize, ws.DataOffset);
+            if (ws.IsPCCStored)
+            {
+                if (ws.EmbeddedData is null || ws.EmbeddedData.Length == 0)
+                {
+                    return false;
+                }
+                if (File.Exists(outputFile)) File.Delete(outputFile);
+                File.WriteAllBytes(outputFile, ws.EmbeddedData);
+                return true;
+            }
+            return WwiseStreamHelper.ExtractRawFromSourceToFile(outputFile, ws.GetPathToAFC(), ws.DataSize, ws.DataOffset);
         }
 
         private static void ImportWwiseOgg(this WwiseStream ws, string pathafc, Stream wwiseOggStream)
@@ -128,6 +132,16 @@ namespace ME3Explorer.Unreal.Classes
             //Convert wwiseoggstream
             MemoryStream convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
             byte[] newWavfile = convertedStream.ToArray();
+
+            if (ws.IsPCCStored)
+            {
+                ws.EmbeddedData = newWavfile;
+                //DataSize and DataOffset are automatically calculated during serialization
+                //when EmbeddedData != null
+                return;
+            }
+
+
             //Open AFC
             FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
             var Header = new byte[94];
@@ -147,6 +161,7 @@ namespace ME3Explorer.Unreal.Classes
 
             ws.DataSize = newWavSize;
             ws.DataOffset = newWavDataOffset;
+            ws.EmbeddedData = null;
         }
     }
 }

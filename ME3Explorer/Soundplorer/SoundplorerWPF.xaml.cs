@@ -759,7 +759,7 @@ namespace ME3Explorer.Soundplorer
                 }
 
                 WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
-                Stream source = w.CreateWaveStream(w.GetPathToAFC());
+                Stream source = w.CreateWaveStream();
                 if (source != null)
                 {
                     using (var fileStream = File.Create(outputLocation))
@@ -797,7 +797,7 @@ namespace ME3Explorer.Soundplorer
                         if (d.ShowDialog() == true)
                         {
                             var w = spExport.Export.GetBinaryData<WwiseStream>();
-                            if (w.ExtractRawFromSourceToFile(d.FileName, w.GetPathToAFC()))
+                            if (w.ExtractRawFromSourceToFile(d.FileName))
                             {
                                 MessageBox.Show("Done.");
                             }
@@ -847,7 +847,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = spExport.Export.GetBinaryData<WwiseStream>();
                     string riffOutputFile = Path.Combine(Directory.GetParent(d.FileName).FullName, Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (w.ExtractRawFromSourceToFile(riffOutputFile, w.GetPathToAFC()))
+                    if (w.ExtractRawFromSourceToFile(riffOutputFile))
                     {
                         MemoryStream oggStream = WwiseStreamHelper.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 

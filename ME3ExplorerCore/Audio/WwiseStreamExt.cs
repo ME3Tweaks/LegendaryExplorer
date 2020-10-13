@@ -12,7 +12,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public string GetPathToAFC()
         {
             //Check if pcc-stored
-            if (Filename == null)
+            if (IsPCCStored)
             {
                 return null; //it's pcc stored. we will return null for this case since we already coded for "".
             }

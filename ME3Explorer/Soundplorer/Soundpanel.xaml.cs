@@ -430,19 +430,10 @@ namespace ME3Explorer
                     if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                     {
                         wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
-                        string path;
-                        if (wwiseStream.IsPCCStored)
-                        {
-                            path = localCurrentExport.FileRef.FilePath;
-                        }
-                        else
-                        {
-                            path = wwiseStream.GetPathToAFC(); // only to check if AFC exists.
-                        }
 
-                        if (path != "")
+                        if (wwiseStream.IsPCCStored || wwiseStream.GetPathToAFC() != "")
                         {
-                            return wwiseStream.CreateWaveStream(path);
+                            return wwiseStream.CreateWaveStream();
                         }
                     }
 
@@ -1177,7 +1168,7 @@ namespace ME3Explorer
                     if (d.ShowDialog() == true)
                     {
                         WwiseStream w = CurrentLoadedExport.GetBinaryData<WwiseStream>();
-                        string wavPath = w.CreateWave(w.GetPathToAFC());
+                        string wavPath = w.CreateWave();
                         if (wavPath != null && File.Exists(wavPath))
                         {
                             File.Copy(wavPath, d.FileName, true);
@@ -1557,13 +1548,6 @@ namespace ME3Explorer
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
                 WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
-                if (w.IsPCCStored)
-                {
-                    //TODO: enable replacing of PCC-stored sounds
-                    MessageBox.Show("Cannot replace pcc-stored sounds yet.");
-                    return;
-                }
-
                 if (oggPath == null)
                 {
                     OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
