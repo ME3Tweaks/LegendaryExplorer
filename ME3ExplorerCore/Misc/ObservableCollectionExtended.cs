@@ -160,6 +160,7 @@ namespace ME3ExplorerCore.Misc
             get { return Count; }
             private set
             {
+                // Will trigger property changed
                 if (_bindableCount != Count)
                 {
                     _bindableCount = Count;
