@@ -67,6 +67,9 @@ namespace ME3Explorer
         public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
         public static string BugReportURL => $"{RepositoryURL}issues/";
 
+        public static string DiscordInviteURL = "https://discord.gg/s8HA6dc";
+
+
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;

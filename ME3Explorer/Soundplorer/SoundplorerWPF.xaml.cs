@@ -5,6 +5,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -32,7 +33,7 @@ namespace ME3Explorer.Soundplorer
     /// <summary>
     /// Interaction logic for SoundplorerWPF.xaml
     /// </summary>
-    public partial class SoundplorerWPF : WPFBase, IBusyUIHost
+    public partial class SoundplorerWPF : WPFBase, IBusyUIHost, IRecents
     {
         private string LoadedISBFile;
         private string LoadedAFCFile;
@@ -79,12 +80,9 @@ namespace ME3Explorer.Soundplorer
             {
                 { "Toolname", "Soundplorer" }
             });
-            DataContext = this;
             LoadCommands();
             InitializeComponent();
-
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
         }
 
         public SoundplorerWPF(ExportEntry export) : this()
@@ -105,117 +103,6 @@ namespace ME3Explorer.Soundplorer
         }
 
         private bool ExportIsSelected() => SoundExports_ListBox.SelectedItem is SoundplorerExport;
-
-        #region Recents
-
-        public static readonly string SoundplorerDataFolder = Path.Combine(App.AppDataFolder, @"Soundplorer\");
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
-        private void LoadRecentList()
-        {
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = SoundplorerDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(SoundplorerDataFolder))
-            {
-                Directory.CreateDirectory(SoundplorerDataFolder);
-            }
-            string path = SoundplorerDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                foreach (var window in Application.Current.Windows)
-                {
-                    if (window is SoundplorerWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-            Recents_MenuItem.IsEnabled = true;
-
-
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((MenuItem)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion
-
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -299,9 +186,8 @@ namespace ME3Explorer.Soundplorer
                 }
                 Title = $"Soundplorer - {Path.GetFileName(fileName)}";
                 OnPropertyChanged(nameof(AudioFileLoaded));
-                AddRecent(fileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(fileName, false);
+                RecentsController.SaveRecentList(true);
             }
             catch (Exception ex)
             {
@@ -353,11 +239,32 @@ namespace ME3Explorer.Soundplorer
             var entries = new List<AFCFileEntry>();
             using (FileStream fileStream = new FileStream((string)e.Argument, FileMode.Open, FileAccess.Read))
             {
+                // Get endianness
+                Endian endianness = null;
+
+                if (fileStream.Position < fileStream.Length - 4)
+                {
+                    var firstMagic = fileStream.ReadStringASCII(4);
+                    if (firstMagic == "RIFX") endianness = Endian.Big;
+                    if (firstMagic == "RIFF") endianness = Endian.Little;
+                    if (endianness == null)
+                        Debug.WriteLine("Malformed AFC! It must start with RIFF/RIFX");
+                }
+
+                if (endianness == null)
+                {
+                    Debug.WriteLine("Malformed AFC! It must start with RIFF/RIFX");
+                    endianness = Endian.Little; //just ignore it anyways
+                }
+
+                fileStream.Position = 0;
+                EndianReader reader = new EndianReader(fileStream) {Endian = endianness};
+
                 while (fileStream.Position < fileStream.Length - 4)
                 {
                     int offset = (int)fileStream.Position;
-
                     TaskbarText = $"Loading AFC: {Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
+
                     string readStr = fileStream.ReadStringASCII(4);
                     if (readStr != "RIFF" && readStr != "RIFX")
                     {
@@ -366,8 +273,6 @@ namespace ME3Explorer.Soundplorer
                         continue;
                     }
 
-                    EndianReader reader = new EndianReader(fileStream);
-                    if (readStr == "RIFX") reader.Endian = Endian.Big;
                     //Found header
                     int size = reader.ReadInt32();
                     fileStream.Seek(8, SeekOrigin.Current); //skip WAVE and fmt
@@ -1223,6 +1128,13 @@ namespace ME3Explorer.Soundplorer
                 }));
             }
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "Soundplorer";
     }
 
     public class AFCFileEntry : NotifyPropertyChangedBase
@@ -1300,17 +1212,16 @@ namespace ME3Explorer.Soundplorer
 
         public void LoadData()
         {
-            using FileStream rawRiff = new FileStream(AFCPath, FileMode.Open);
-            EndianReader reader = new EndianReader(rawRiff);
-            reader.Endian = Endian;
-            rawRiff.Position = Offset;
+            using FileStream _rawRiff = new FileStream(AFCPath, FileMode.Open);
+            EndianReader reader = new EndianReader(_rawRiff) {Endian = Endian};
+            reader.Position = Offset;
             //Parse RIFF header a bit
-            var riffTag = rawRiff.ReadStringASCII(4); //RIFF
+            var riffTag = reader.ReadStringASCII(4); //RIFF
             reader.ReadInt32();//size
-            var wavetype = rawRiff.ReadStringASCII(4);
-            rawRiff.ReadInt32();//'fmt '/
+            var wavetype = reader.ReadStringASCII(4);
+            reader.ReadInt32();//'fmt '/
             var fmtsize = reader.ReadInt32(); //data should directly follow fmt
-            var fmtPos = rawRiff.Position;
+            var fmtPos = reader.Position;
             var riffFormat = reader.ReadUInt16();
             var channels = reader.ReadInt16();
             var sampleRate = reader.ReadInt32();
@@ -1321,27 +1232,33 @@ namespace ME3Explorer.Soundplorer
             if (riffFormat == 0xFFFF)
             {
                 double seconds = 0;
-                if (extraSize == 0x30)
-                {
+                
+                //if (extraSize == 0x30 || extraSize == 0x06) //0x30 on PC, 0x06 on PS3 ?
+                //{
                     //find 'vorb' chunk (ME2)
-                    rawRiff.Seek(extraSize, SeekOrigin.Current);
-                    var chunkName = rawRiff.ReadStringASCII(4);
+                    reader.Seek(extraSize, SeekOrigin.Current);
+                    var chunkName = reader.ReadStringASCII(4);
                     uint numSamples = 1; //to prevent division by 0
                     if (chunkName == "vorb")
                     {
                         //ME2 Vorbis
-                        var vorbsize = rawRiff.ReadInt32();
-                        numSamples = rawRiff.ReadUInt32();
+                        var vorbsize = reader.ReadInt32();
+                        numSamples = reader.ReadUInt32();
                     }
                     else if (chunkName == "data")
                     {
                         //ME3 Vorbis
-                        var numSamplesOffset = rawRiff.Position = fmtPos + 0x18;
+                        var numSamplesOffset = reader.Position = fmtPos + 0x18;
                         numSamples = reader.ReadUInt32();
                     }
 
                     seconds = (double)numSamples / sampleRate;
-                }
+                //}
+                //else
+                //{
+                //    // !!??
+                //    Debug.WriteLine($"Unknown extra size in wwiseheader: 0x{extraSize:X2}");
+                //}
 
                 SubText = TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss\:fff");
             }

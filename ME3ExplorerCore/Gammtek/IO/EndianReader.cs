@@ -457,7 +457,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public long Length => BaseStream.Length;
 
         /// <summary>
-        /// Generates an EndianReader object that takes a stream that uses the specified magic number to set the endianness. The stream is advanced by 4 and the out variable is set to what the value would be if itw as read in the correct endianness.
+        /// Generates an EndianReader object that takes a stream that uses the specified LITTLE ENDIAN (PC) magic number to set the endianness. The stream is advanced by 4 and the out variable is set to what the value would be if it was read in the correct endianness.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

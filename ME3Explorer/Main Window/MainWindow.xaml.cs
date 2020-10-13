@@ -781,16 +781,15 @@ namespace ME3Explorer
 
         private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
         {
-            const string link = "https://discordapp.com/invite/s8HA6dc";
             try
             {
-                System.Diagnostics.Process.Start(link);
+                System.Diagnostics.Process.Start(App.DiscordInviteURL);
             }
             catch (Exception)
             {
                 try
                 {
-                    Clipboard.SetText(link);
+                    Clipboard.SetText(App.DiscordInviteURL);
                 }
                 catch
                 {
