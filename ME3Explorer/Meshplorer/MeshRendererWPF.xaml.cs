@@ -948,6 +948,8 @@ namespace ME3Explorer.Meshplorer
             if (!startingUp && e.NewValue.HasValue)
             {
                 var s = e.NewValue.Value.ToString();
+                Properties.Settings.Default.MeshplorerBackgroundColor = s;
+                Properties.Settings.Default.Save();
                 SceneViewer.Context.BackgroundColor = new SharpDX.Color(e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B);
             }
         }
