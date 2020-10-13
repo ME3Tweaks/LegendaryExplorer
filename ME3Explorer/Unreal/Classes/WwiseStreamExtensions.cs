@@ -103,11 +103,10 @@ namespace ME3Explorer.Unreal.Classes
             string wemPath = basePath + ".wem";
             if (ws.ExtractRawFromSourceToFile(wemPath))
             {
-                return null;
+                return ISBankEntry.ConvertAudioToWave(wemPath);
             }
 
-            return ISBankEntry.ConvertAudioToWave(wemPath);
-            //return ConvertRiffToWav(basePath + ".wem", export.FileRef.Game == MEGame.ME2);
+            return null;
         }
 
         public static bool ExtractRawFromSourceToFile(this WwiseStream ws, string outputFile)
