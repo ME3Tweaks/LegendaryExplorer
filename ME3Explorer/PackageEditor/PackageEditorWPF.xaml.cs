@@ -51,7 +51,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for PackageEditorWPF.xaml
     /// </summary>
-    public partial class PackageEditorWPF : WPFBase, IDropTarget, IBusyUIHost
+    public partial class PackageEditorWPF : WPFBase, IDropTarget, IBusyUIHost, IRecents
     {
         public enum CurrentViewMode
         {
@@ -75,7 +75,6 @@ namespace ME3Explorer
         /// </summary>
         List<string> AllEntriesList;
 
-        readonly List<Button> RecentButtons = new List<Button>();
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
         readonly Dictionary<ExportLoaderControl, TabItem>
@@ -143,10 +142,6 @@ namespace ME3Explorer
             }
         }
 
-
-        public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
 
         /// <summary>
         /// PCC map that maps values from a source PCC to values in this PCC. Used extensively during relinking.
@@ -728,9 +723,9 @@ namespace ME3Explorer
                 {
 #endif
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                //AddRecent(d.FileName, false);
+                //SaveRecentList();
+                //RefreshRecent(true, RFiles);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -760,9 +755,8 @@ namespace ME3Explorer
                 {
                     MEPackageHandler.CreateAndSavePackage(dlg.FileName, game);
                     LoadFile(dlg.FileName);
-                    AddRecent(dlg.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
+                    RecentsController.AddRecent(dlg.FileName, false);
+                    RecentsController.SaveRecentList(true);
                 }
             }
         }
@@ -800,9 +794,8 @@ namespace ME3Explorer
                 package.PackageGUID = packguid;
                 Pcc.PackageGuid = packguid;
                 SaveFile();
-                AddRecent(dlg.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(dlg.FileName, false);
+                RecentsController.SaveRecentList(true);
             }
         }
 
@@ -2331,13 +2324,7 @@ namespace ME3Explorer
             InterpreterTab_Interpreter.HideHexBox = Properties.Settings.Default.PackageEditor_HideInterpreterHexBox;
             InterpreterTab_Interpreter.ToggleHexbox_Button.Visibility = Visibility.Visible;
 
-            RecentButtons.AddRange(new[]
-            {
-                RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7,
-                RecentButton8, RecentButton9, RecentButton10
-            });
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
         }
 
         public void LoadFile(string s, int goToIndex = 0)
@@ -2348,9 +2335,8 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 postloadPackage(Path.GetFileName(s), s, goToIndex);
 
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(s, false);
+                RecentsController.SaveRecentList(true);
             }
             catch (Exception e) when (!App.IsDebug)
             {
@@ -2502,131 +2488,6 @@ namespace ME3Explorer
             Task.Run(InitializeTreeViewBackground)
                 .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
         }
-
-        #region Recents
-
-        private void LoadRecentList()
-        {
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
-
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(PackageEditorDataFolder))
-            {
-                Directory.CreateDirectory(PackageEditorDataFolder);
-            }
-
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
-
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of packed
-
-                //This code can be removed when non-WPF package editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is PackageEditorWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-
-            Recents_MenuItem.IsEnabled = true;
-
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
-
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-
-            Recents_MenuItem.IsEnabled = true;
-        }
-
-        #endregion
 
         /// <summary>
         /// Updates the data bindings for tree/list view and chagnes visibility of the tree/list view depending on what the currentview mode is. Also forces refresh of all treeview display names
@@ -5315,5 +5176,12 @@ namespace ME3Explorer
         {
             PackageEditorExperimentsO.DumpPackageToT3D(Pcc);
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "PackageEditor";
     }
 }

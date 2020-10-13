@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Meshplorer;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Helpers;
@@ -34,7 +35,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for MeshplorerWPF.xaml
     /// </summary>
-    public partial class MeshplorerWPF : WPFBase
+    public partial class MeshplorerWPF : WPFBase, IRecents
     {
         private bool _isRendererBusy;
         public bool IsRendererBusy
@@ -43,10 +44,6 @@ namespace ME3Explorer
             set => SetProperty(ref _isRendererBusy, value);
         }
 
-        public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"Meshplorer\");
-        private const string RECENTFILES_FILE = "RECENTFILES";
-        public List<string> RFiles;
-        readonly List<Button> RecentButtons = new List<Button>();
         public ObservableCollectionExtended<ExportEntry> MeshExports { get; } = new ObservableCollectionExtended<ExportEntry>();
         private ExportEntry _currentExport;
         public ExportEntry CurrentExport
@@ -77,7 +74,7 @@ namespace ME3Explorer
 
 
         /// <summary>
-        /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constuctor instead.
+        /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constructor instead.
         /// </summary>
         public MeshplorerWPF()
         {
@@ -91,10 +88,7 @@ namespace ME3Explorer
             InitializeComponent();
             Mesh3DViewer.IsBusyChanged += RendererIsBusyChanged;
             MeshesView.Filter = FilterExportList;
-
-            RecentButtons.AddRange(new[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10 });
-            LoadRecentList();
-            RefreshRecent(false);
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileToOpen => LoadFile(fileToOpen));
         }
 
         private void RendererIsBusyChanged(object sender, EventArgs e)
@@ -500,9 +494,8 @@ namespace ME3Explorer
                 {
 #endif
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(d.FileName, false);
+                RecentsController.SaveRecentList(true);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -514,121 +507,93 @@ namespace ME3Explorer
         }
 
         #region Recents
-        private void LoadRecentList()
-        {
-            Recents_MenuItem.IsEnabled = false;
-            RFiles = new List<string>();
-            RFiles.Clear();
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-            {
-                string[] recents = File.ReadAllLines(path);
-                foreach (string recent in recents)
-                {
-                    if (File.Exists(recent))
-                    {
-                        AddRecent(recent, true);
-                    }
-                }
-            }
-        }
+        //private void LoadRecentList()
+        //{
+        //    Recents_MenuItem.IsEnabled = false;
+        //    RFiles = new List<string>();
+        //    RFiles.Clear();
+        //    string path = MeshplorerDataFolder + RECENTFILES_FILE;
+        //    if (File.Exists(path))
+        //    {
+        //        string[] recents = File.ReadAllLines(path);
+        //        foreach (string recent in recents)
+        //        {
+        //            if (File.Exists(recent))
+        //            {
+        //                AddRecent(recent, true);
+        //            }
+        //        }
+        //    }
+        //}
 
-        private void SaveRecentList()
-        {
-            if (!Directory.Exists(PackageEditorDataFolder))
-            {
-                Directory.CreateDirectory(PackageEditorDataFolder);
-            }
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
-            if (File.Exists(path))
-                File.Delete(path);
-            File.WriteAllLines(path, RFiles);
-        }
+        //public void RefreshRecent(bool propogate, IEnumerable<string> recents = null)
+        //{
+            //if (propogate && recents != null)
+            //{
+            //    //we are posting an update to other instances of packed
 
-        public void RefreshRecent(bool propogate, List<string> recents = null)
-        {
-            if (propogate && recents != null)
-            {
-                //we are posting an update to other instances of packed
+            //    //This code can be removed when non-WPF package editor is removed.
+            //    var forms = System.Windows.Forms.Application.OpenForms;
+            //    foreach (var form in Application.Current.Windows)
+            //    {
+            //        if (form is MeshplorerWPF wpf && this != wpf)
+            //        {
+            //            wpf.RefreshRecent(false, RFiles);
+            //        }
+            //    }
+            //}
+            //else if (recents != null)
+            //{
+            //    //we are receiving an update
+            //    RFiles = new List<string>(recents);
+            //}
+            //Recents_MenuItem.Items.Clear();
+            //if (RFiles.Count <= 0)
+            //{
+            //    Recents_MenuItem.IsEnabled = false;
+            //    return;
+            //}
+            //Recents_MenuItem.IsEnabled = true;
 
-                //This code can be removed when non-WPF package editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is MeshplorerWPF wpf && this != wpf)
-                    {
-                        wpf.RefreshRecent(false, RFiles);
-                    }
-                }
-            }
-            else if (recents != null)
-            {
-                //we are receiving an update
-                RFiles = new List<string>(recents);
-            }
-            Recents_MenuItem.Items.Clear();
-            if (RFiles.Count <= 0)
-            {
-                Recents_MenuItem.IsEnabled = false;
-                return;
-            }
-            Recents_MenuItem.IsEnabled = true;
+            //int i = 0;
+            //foreach (string filepath in RFiles)
+            //{
+            //    MenuItem fr = new MenuItem()
+            //    {
+            //        Header = filepath.Replace("_", "__"),
+            //        Tag = filepath
+            //    };
+            //    RecentButtons[i].Visibility = Visibility.Visible;
+            //    RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
+            //    RecentButtons[i].Click -= RecentFile_click;
+            //    RecentButtons[i].Click += RecentFile_click;
+            //    RecentButtons[i].Tag = filepath;
+            //    RecentButtons[i].ToolTip = filepath;
+            //    fr.Click += RecentFile_click;
+            //    Recents_MenuItem.Items.Add(fr);
+            //    i++;
+            //}
+            //while (i < 10)
+            //{
+            //    RecentButtons[i].Visibility = Visibility.Collapsed;
+            //    i++;
+            //}
+        //}
 
-            int i = 0;
-            foreach (string filepath in RFiles)
-            {
-                MenuItem fr = new MenuItem()
-                {
-                    Header = filepath.Replace("_", "__"),
-                    Tag = filepath
-                };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
-                fr.Click += RecentFile_click;
-                Recents_MenuItem.Items.Add(fr);
-                i++;
-            }
-            while (i < 10)
-            {
-                RecentButtons[i].Visibility = Visibility.Collapsed;
-                i++;
-            }
-        }
+        //private void RecentFile_click(object sender, EventArgs e)
+        //{
+        //    string s = ((FrameworkElement)sender).Tag.ToString();
+        //    if (File.Exists(s))
+        //    {
+        //        LoadFile(s);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("File does not exist: " + s);
+        //    }
+        //}
 
-        private void RecentFile_click(object sender, EventArgs e)
-        {
-            string s = ((FrameworkElement)sender).Tag.ToString();
-            if (File.Exists(s))
-            {
-                LoadFile(s);
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        public void AddRecent(string s, bool loadingList)
-        {
-            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (loadingList)
-            {
-                RFiles.Add(s); //in order
-            }
-            else
-            {
-                RFiles.Insert(0, s); //put at front
-            }
-            if (RFiles.Count > 10)
-            {
-                RFiles.RemoveRange(10, RFiles.Count - 10);
-            }
-            Recents_MenuItem.IsEnabled = true;
-        }
+        
 
         #endregion
         #region Busy variables
@@ -672,9 +637,8 @@ namespace ME3Explorer
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Meshplorer WPF - {s}";
 
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                RecentsController.AddRecent(s, false);
+                RecentsController.SaveRecentList(true);
                 if (goToIndex != 0)
                 {
                     CurrentExport = MeshExports.FirstOrDefault(x => x.UIndex == goToIndex);
@@ -802,5 +766,12 @@ namespace ME3Explorer
                 }));
             }
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "Meshplorer";
     }
 }

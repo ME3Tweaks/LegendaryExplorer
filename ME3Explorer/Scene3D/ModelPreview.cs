@@ -486,9 +486,14 @@ namespace ME3Explorer.Scene3D
                 if (preloadedPackageEntry == null && MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).TryGetValue(baseName, out string packagePath))
                 {
                     var package = MEPackageHandler.OpenMEPackage(packagePath);
+                    if (openedPackages != null && !openedPackages.Contains(package))
+                    {
+                        openedPackages.Add(package);
+                    }
+
                     var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
-                    package.Dispose();
+                    if (openedPackages == null) package.Dispose();
                 }
                 else
                 {
