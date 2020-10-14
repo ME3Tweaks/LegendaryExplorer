@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 
@@ -21,13 +22,15 @@ namespace ME3Explorer
         /// </summary>
         public TrackingNotifyPropertyChangedWindowBase(string trackingName, bool trackTelemetry)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem($"[TrackingWindow] {trackingName}", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[TrackingWindow] {trackingName}", new WeakReference(this)));
             if (trackTelemetry)
             {
+#if !DEBUG
                 Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
                 {
                     {"Toolname", trackingName}
                 });
+#endif
             }
         }
     }

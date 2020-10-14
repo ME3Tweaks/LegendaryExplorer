@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
@@ -12,7 +13,7 @@ namespace ME3Explorer
     {
         protected ExportLoaderControl(string memoryTrackerName)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem($"[EL] {memoryTrackerName}", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[EL] {memoryTrackerName}", new WeakReference(this)));
         }
         /// <summary>
         /// Method to determine if an export is parsable by this control

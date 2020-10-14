@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using JetBrains.Profiler.Api;
 #if DEBUG
 using JetBrains.Profiler.SelfApi;
 #endif
@@ -64,8 +65,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
         private void ForceLargeGC_Click(object sender, RoutedEventArgs e)
         {
-            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-            GC.Collect();
+            MemoryProfiler.ForceGc();
         }
 
         private void ForceGC_Click(object sender, RoutedEventArgs e)
@@ -113,7 +113,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             conf.SaveToDir(Path.GetTempPath());
             conf.OpenDotMemory();
             await DotMemory.EnsurePrerequisiteAsync();
-            IsBusyText = "Taking snapshot";
+            IsBusyText = "Taking snapshot (app will freeze for a moment)";
             await Task.Run(() => Thread.Sleep(1000));
             DotMemory.GetSnapshotOnce(conf);
             IsBusyText = "Opening dotMemory";

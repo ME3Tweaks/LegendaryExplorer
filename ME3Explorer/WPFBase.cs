@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
@@ -27,7 +28,7 @@ namespace ME3Explorer
 
         protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem($"[WPFBase] {memoryTrackerName}", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[WPFBase] {memoryTrackerName}", new WeakReference(this)));
             if (submitTelemetry)
             {
                 Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
