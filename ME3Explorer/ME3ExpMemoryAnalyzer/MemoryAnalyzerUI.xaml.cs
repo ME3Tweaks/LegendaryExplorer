@@ -78,10 +78,6 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
             LastRefreshText = "Last refreshed: " + DateTime.Now;
             CurrentMemoryUsageText = "Current process allocation: " + FileSize.FormatSize(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
-            //foreach (var item in InstancedTrackedMemoryObjects)
-            //{
-            //    item.RefreshStatus();
-            //}
         }
 
         private void CleanUpOldRefs_Click(object sender, RoutedEventArgs e)
