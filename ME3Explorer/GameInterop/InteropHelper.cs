@@ -61,8 +61,8 @@ namespace ME3Explorer.GameInterop
         //https://stackoverflow.com/a/10520086
         public static string CalculateMD5(string filename)
         {
-            using var stream = File.OpenRead(filename);
             using var md5 = MD5.Create();
+            using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             byte[] hash = md5.ComputeHash(stream);
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }

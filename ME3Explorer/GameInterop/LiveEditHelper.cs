@@ -19,7 +19,7 @@ namespace ME3Explorer.GameInterop
     public static class LiveEditHelper
     {
         //INCREMENT THIS WHEN CHANGES ARE MADE THAT WOULD REQUIRE REGENERATION OF DLC_MOD_Interop
-        public const int CURRENT_VERSION = 5;
+        public const int CURRENT_VERSION = 6;
 
         const string liveEditorFileName = "ME3LiveEditor";
 
@@ -265,6 +265,6 @@ namespace ME3Explorer.GameInterop
         public int Index { get; set; }
         public bool IsZero => Position.IsZero && Rotation.IsZero && FOV == 0f;
 
-        public string Str => $"Position: {Position}, Rotation: Roll:{Rotation.X}, Pitch:{Rotation.Y}, Yaw:{Rotation.Z}";
+        public string Str => $"Position: {Position}, Rotation: Roll:{Rotation.X}, Pitch:{Rotation.Y}, Yaw:{Rotation.Z}, FOV: {FOV}";
     }
 }

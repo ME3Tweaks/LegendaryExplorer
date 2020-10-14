@@ -133,7 +133,14 @@
                     <StackPanel>
                         <Label Content="Curve Editor" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5" Height="438">
-                            <curveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                            <TabControl TabStripPlacement="Bottom" >
+                                <TabItem Header="Position/Rotation">
+                                    <curveEd:CurveEditor x:Name="Move_CurveEditor"/>
+                                </TabItem>
+                                <TabItem Header="FOV">
+                                    <curveEd:CurveEditor x:Name="FOV_CurveEditor"/>
+                                </TabItem>
+                            </TabControl>
                         </Border>
                         <Label Content="Controls" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5">

@@ -555,10 +555,15 @@ namespace ME3Explorer.GameInterop
         #endregion
 
         #region CamPath
+        private const int CamPath_InterpDataIDX = 63;
+        private const int CamPath_LoopGateIDX = 77;
+        private const int CamPath_InterpTrackMoveIDX = 70;
+        private const int CamPath_FOVTrackIDX = 82;
 
         private IMEPackage camPathPackage;
 
         public ExportEntry interpTrackMove { get; set; }
+        public ExportEntry fovTrackExport { get; set; }
 
         private FileSystemWatcher savedCamsFileWatcher;
 
@@ -629,8 +634,8 @@ namespace ME3Explorer.GameInterop
 
         private void SaveCamPath(object sender, RoutedEventArgs e)
         {
-            camPathPackage.GetUExport(63).WriteProperty(new FloatProperty(CurveTab_CurveEditor.Time, "InterpLength"));
-            camPathPackage.GetUExport(77).WriteProperty(new BoolProperty(ShouldLoop, "bOpen"));
+            camPathPackage.GetUExport(CamPath_InterpDataIDX).WriteProperty(new FloatProperty(Math.Max(Move_CurveEditor.Time, FOV_CurveEditor.Time), "InterpLength"));
+            camPathPackage.GetUExport(CamPath_LoopGateIDX).WriteProperty(new BoolProperty(ShouldLoop, "bOpen"));
             camPathPackage.Save();
             LiveEditHelper.PadCamPathFile();
             GameController.ExecuteME3ConsoleCommands("ce stopcam", "ce LoadCamPath");
@@ -641,14 +646,21 @@ namespace ME3Explorer.GameInterop
         private void InitializeCamPath()
         {
             camPathPackage = MEPackageHandler.OpenME3Package(LiveEditHelper.CamPathFilePath);
-            interpTrackMove = camPathPackage.GetUExport(70);
-            CurveTab_CurveEditor.LoadExport(interpTrackMove);
+            interpTrackMove = camPathPackage.GetUExport(CamPath_InterpTrackMoveIDX);
+            fovTrackExport = camPathPackage.GetUExport(CamPath_FOVTrackIDX);
+            ReloadCurveEdExports();
 
             savedCamsFileWatcher = new FileSystemWatcher(ME3Directory.BinariesPath, "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
             savedCamsFileWatcher.Changed += SavedCamsFileWatcher_Changed;
             savedCamsFileWatcher.EnableRaisingEvents = true;
 
             ReloadCams();
+        }
+
+        private void ReloadCurveEdExports()
+        {
+            Move_CurveEditor.LoadExport(interpTrackMove);
+            FOV_CurveEditor.LoadExport(fovTrackExport);
         }
 
         private void SavedCamsFileWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -686,7 +698,12 @@ namespace ME3Explorer.GameInterop
                 props.AddOrReplaceProp(interpCurvePos.ToStructProperty(MEGame.ME3, "PosTrack"));
                 props.AddOrReplaceProp(interpCurveRot.ToStructProperty(MEGame.ME3, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
-                CurveTab_CurveEditor.LoadExport(interpTrackMove);
+
+                var floatTrack = InterpCurve<float>.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
+                floatTrack.AddPoint(time, pov.FOV, 0, 0, EInterpCurveMode.CIM_CurveUser);
+                fovTrackExport.WriteProperty(floatTrack.ToStructProperty(MEGame.ME3, "FloatTrack"));
+
+                ReloadCurveEdExports();
             }
         }
 
@@ -694,13 +711,16 @@ namespace ME3Explorer.GameInterop
 
         private void ClearKeys(object sender, RoutedEventArgs e)
         {
-            if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editor?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editors?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
                 var props = interpTrackMove.GetProperties();
                 props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "PosTrack"));
                 props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
-                CurveTab_CurveEditor.LoadExport(interpTrackMove);
+
+                fovTrackExport.WriteProperty(new InterpCurve<float>().ToStructProperty(MEGame.ME3, "FloatTrack"));
+
+                ReloadCurveEdExports();
             }
         }
     }
