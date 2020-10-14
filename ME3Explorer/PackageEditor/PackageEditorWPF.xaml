@@ -468,14 +468,17 @@
                             Check the menus for keyboard shortcuts. Check out CTRL+P: It pops out the currently viewed tab!
                             <LineBreak/>
                             <LineBreak/>
-                                If you have issues, please report them to one of the following places:
-                                <LineBreak/>
-                                 - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
-                                <LineBreak/>
-                                 - The issues list on GitHub at 
-                                <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
-                                    <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
-                                </Hyperlink>
+
+                            If you have issues, please report them to one of the following places:
+                            <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            - The issues list on GitHub at 
+                            <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                            </Hyperlink>
                             </TextBlock>
 
                             <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left" 

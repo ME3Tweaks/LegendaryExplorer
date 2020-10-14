@@ -94,8 +94,9 @@
                              <LineBreak/>
                                 If you have issues with Meshplorer, please report them to one of the following places:
                                 <LineBreak/>
-                                 - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
-                                <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static local:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>                                <LineBreak/>
                                  - The issues list on GitHub at 
                                 <Hyperlink NavigateUri="{Binding Source={x:Static local:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">
                                     <Run Text="{Binding Source={x:Static local:App.BugReportURL}, Mode=OneTime}"/>
