@@ -40,7 +40,7 @@
                     <ColumnDefinition Width="47*"/>
                     <ColumnDefinition Width="48*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TextureCRC, StringFormat='CRC: 0x{0:X8}', FallbackValue=CRC: 0x00000000}" VerticalAlignment="Center" Margin="3,6"/>
                 <CheckBox Grid.Row="1" Grid.Column="1" Content="Scale image" IsChecked="True" VerticalContentAlignment="Center" Margin="3" Checked="ScalingTurnOn" Unchecked="ScalingTurnOff"/>
                 <Button Grid.Row="0" Grid.Column="2" Content="Export to PNG" Command="{Binding ExportToPNGCommand}" Padding="5,2" Margin="3"/>
                 <Button Grid.Row="1" Grid.Column="2" Content="Replace from File" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="3" />
