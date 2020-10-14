@@ -126,7 +126,7 @@ namespace ME3Explorer.Unreal.Classes
 
         private static void ImportWwiseOgg(this WwiseStream ws, string pathafc, Stream wwiseOggStream)
         {
-            if (!File.Exists(pathafc) || wwiseOggStream == null)
+            if ((!ws.IsPCCStored && !File.Exists(pathafc)) || wwiseOggStream == null)
                 return;
             //Convert wwiseoggstream
             MemoryStream convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(wwiseOggStream);
