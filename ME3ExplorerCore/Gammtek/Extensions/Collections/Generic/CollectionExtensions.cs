@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace ME3ExplorerCore.Gammtek.Extensions.Collections.Generic
@@ -85,5 +86,15 @@ namespace ME3ExplorerCore.Gammtek.Extensions.Collections.Generic
 
 			return removedItems.Count;
 		}
+
+        /// <summary> 
+        /// Replaces all elements in existing collection with specified collection.
+        /// </summary> 
+        public static void ReplaceAll<TSource>(this ICollection<TSource> oldCollection, IEnumerable<TSource> newCollection)
+        {
+            if (newCollection == null) throw new ArgumentNullException(nameof(newCollection));
+			oldCollection.Clear();
+            oldCollection.AddRange(newCollection);
+        }
 	}
 }

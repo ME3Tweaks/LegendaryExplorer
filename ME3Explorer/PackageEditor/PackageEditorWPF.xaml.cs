@@ -39,6 +39,7 @@ using UsefulThings;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using Guid = System.Guid;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
@@ -2042,9 +2043,50 @@ namespace ME3Explorer
                         return;
                     }
 
-                    ComparePackage(d.FileName);
+                    CompareToPackageWrapper(diskPath: d.FileName);
                 }
             }
+        }
+
+        private void CompareToPackageWrapper(IMEPackage package = null, string diskPath = null, Stream packageStream = null)
+        {
+            Task.Run(() =>
+                    {
+                        BusyText = "Comparing packages...";
+                        IsBusy = true;
+                        try
+                        {
+                            if (package != null) return (object)Pcc.CompareToPackage(package);
+                            if (diskPath != null) return (object)Pcc.CompareToPackage(diskPath);
+                            if (packageStream != null) return (object)Pcc.CompareToPackage(packageStream);
+                            return "CompareToPackageWrapper() requires at least one parameter be set!";
+                        }
+                        catch (Exception e)
+                        {
+                            return e.Message;
+                        }
+                    }).ContinueWithOnUIThread(result =>
+                    {
+                        IsBusy = false;
+                        if (result.Result is string errorMessage)
+                        {
+                            MessageBox.Show(errorMessage, "Error comparing packages");
+                        }
+                        else if (result.Result is List<EntryStringPair> results)
+                        {
+                            if (results.Any())
+                            {
+                                ListDialog ld = new ListDialog(results, "Changed exports/imports/names between files",
+                                        "The following exports, imports, and names are different between the files.", this)
+                                { DoubleClickEntryHandler = entryDoubleClick };
+                                ld.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("No changes between names/imports/exports were found between the files.", "Packages seem identical");
+                            }
+                        }
+                    });
         }
 
         private bool CanCompareToUnmodded() => PackageIsLoaded() && Pcc.Game != MEGame.UDK &&
@@ -2058,226 +2100,140 @@ namespace ME3Explorer
                 return;
             }
 
-            string firstLookupName = Path.GetFileName(Pcc.FilePath);
-            string dlcPath = MEDirectories.DLCPath(Pcc.Game);
-
-            List<string> unModdedLookup(string filename)
+            Task.Run(() =>
             {
-                List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
-                    .Select(dlcName => Path.Combine(dlcPath, dlcName))
-                    .Prepend(MEDirectories.CookedPath(Pcc.Game))
-                    .Where(Directory.Exists)
-                    .Select(cookedPath =>
-                        Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                            .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                    .NonNull().ToList();
+                BusyText = "Finding unmodded candidates...";
+                IsBusy = true;
+                string lookupFilename = Path.GetFileName(Pcc.FilePath);
+                string dlcPath = MEDirectories.DLCPath(Pcc.Game);
                 var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
-                if (backupPath != null)
+                var unmoddedCandidates = new UnmoddedCandidatesLookup();
+
+                // Lookup unmodded ON DISK files
+                List<string> unModdedFileLookup(string filename)
                 {
-                    var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
-                    inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
-                        .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
-                        .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                    List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
+                        .Select(dlcName => Path.Combine(dlcPath, dlcName))
+                        .Prepend(MEDirectories.CookedPath(Pcc.Game))
                         .Where(Directory.Exists)
                         .Select(cookedPath =>
                             Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
                                 .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                        .NonNull());
+                        .NonNull().ToList();
+
+                    if (backupPath != null)
+                    {
+                        var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
+                        inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
+                            .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
+                            .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                            .Where(Directory.Exists)
+                            .Select(cookedPath =>
+                                Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                                    .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                            .NonNull());
+                    }
+
+                    return inGameCandidates;
                 }
 
-                return inGameCandidates;
-            }
-
-            var filecandidates = unModdedLookup(firstLookupName);
-            if (filecandidates.IsEmpty())
-            {
-                //Try to lookup using info in this file
-                var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
-                foreach (var p in packages)
+                unmoddedCandidates.DiskFiles.AddRange(unModdedFileLookup(lookupFilename));
+                if (unmoddedCandidates.DiskFiles.IsEmpty())
                 {
-                    if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
+                    //Try to lookup using info in this file
+                    var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
+                    foreach (var p in packages)
                     {
-                        //try this one
-                        var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
-                        filecandidates =
-                            unModdedLookup(
-                                cookedPackageName); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
-                        break;
+                        if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
+                        {
+                            //try this one
+                            var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
+                            unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
+                            break;
+                        }
                     }
                 }
 
-                if (filecandidates.IsEmpty())
+                //if (filecandidates.Any())
+                //{
+                //    // Use em'
+                //    string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
+                //        "Unmodified file comparison", filecandidates, filecandidates.Last());
+
+                //    if (string.IsNullOrEmpty(filePath))
+                //    {
+                //        return null;
+                //    }
+
+                //    ComparePackage(filePath);
+                //    return true;
+                //}
+
+                if (Pcc.Game == MEGame.ME3 && backupPath != null)
                 {
-                    MessageBox.Show(this, "Cannot find any candidates for this file!");
-                    return;
+                    var backupDlcPath = Path.Combine(backupPath, "BIOGame", "DLC");
+                    if (Directory.Exists(dlcPath))
+                    {
+                        var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
+
+                        var testPatch = Path.Combine(backupDlcPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
+                        if (File.Exists(testPatch))
+                        {
+                            sfars.Add(testPatch);
+                        }
+
+                        foreach (var sfar in sfars)
+                        {
+                            DLCPackage dlc = new DLCPackage(sfar);
+                            // Todo: Port in M3's better SFAR lookup code
+                            var sfarIndex = dlc.FindFileEntry(Path.GetFileName(lookupFilename));
+                            if (sfarIndex >= 0)
+                            {
+                                var uiName = Path.GetFileName(sfar) == "Patch_001.sfar" ? "TestPatch" : Directory.GetParent(sfar).Parent.Name;
+                                unmoddedCandidates.SFARPackageStreams[$"{uiName} SFAR"] = dlc.DecompressEntry(sfarIndex);
+                            }
+                        }
+                    }
                 }
-            }
 
-            string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
-                "Unmodified file comparison", filecandidates, filecandidates.Last());
+                return unmoddedCandidates;
+            }).ContinueWithOnUIThread(foundCandidates =>
+           {
+               IsBusy = false;
+               if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
 
-            if (string.IsNullOrEmpty(filePath))
-            {
-                return;
-            }
+               var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+               choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
 
-            ComparePackage(filePath);
+               var choice = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
+               if (string.IsNullOrEmpty(choice))
+               {
+                   return;
+               }
+
+               if (foundCandidates.Result.DiskFiles.Contains(choice))
+               {
+                   CompareToPackageWrapper(diskPath: choice);
+               }
+               else if (foundCandidates.Result.SFARPackageStreams.TryGetValue(choice, out var packageStream))
+               {
+                   CompareToPackageWrapper(packageStream: packageStream);
+               }
+               else
+               {
+                   MessageBox.Show("Selected candidate not found in the lists! This is a bug", "OH NO");
+               }
+           });
         }
 
-        private void ComparePackage(string packagePath)
+        private class UnmoddedCandidatesLookup
         {
-            using IMEPackage compareFile = MEPackageHandler.OpenMEPackage(packagePath);
-            if (Pcc.Game != compareFile.Game)
-            {
-                MessageBox.Show("Files are for different games.");
-                return;
-            }
-
-            var changedImports = new List<EntryStringPair>();
-            var changedNames = new List<EntryStringPair>();
-            var changedExports = new List<EntryStringPair>();
-            {
-                #region Exports Comparison
-
-                int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
-
-                for (int i = 0; i < numExportsToEnumerate; i++)
-                {
-                    ExportEntry exp1 = Pcc.Exports[i];
-                    ExportEntry exp2 = compareFile.Exports[i];
-
-                    //make data offset and data size the same, as the exports could be the same even if it was appended later.
-                    //The datasize being different is a data difference not a true header difference so we won't list it here.
-                    byte[] header1 = exp1.Header.TypedClone();
-                    byte[] header2 = exp2.Header.TypedClone();
-                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                    Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
-
-                    //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                    if (!header1.SequenceEqual(header2))
-
-                    {
-                        //foreach (byte b in header1)
-                        //{
-                        //    Debug.Write(" " + b.ToString("X2"));
-                        //}
-                        //Debug.WriteLine("");
-                        //foreach (byte b in header2)
-                        //{
-                        //    //Debug.Write(" " + b.ToString("X2"));
-                        //}
-                        //Debug.WriteLine("");
-                        changedExports.Add(new EntryStringPair(exp1,
-                            $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
-                    }
-
-                    if (!exp1.Data.SequenceEqual(exp2.Data))
-                    {
-                        changedExports.Add(new EntryStringPair(exp1,
-                            $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
-                    }
-                }
-
-                IMEPackage enumerateExtras = Pcc;
-                string file = "this file";
-                if (compareFile.ExportCount > numExportsToEnumerate)
-                {
-                    file = "other file";
-                    enumerateExtras = compareFile;
-                }
-
-                for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
-                {
-                    Debug.WriteLine(
-                        $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}");
-                    changedExports.Add(new EntryStringPair(
-                        enumerateExtras.Exports[i].FileRef == Pcc ? enumerateExtras.Exports[i] : null,
-                        $"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].InstancedFullPath}"));
-                }
-
-                #endregion
-            }
-
-            #region Imports
-
-            {
-                int numImportsToEnumerate = Math.Min(Pcc.ImportCount, compareFile.ImportCount);
-
-                for (int i = 0; i < numImportsToEnumerate; i++)
-                {
-                    ImportEntry imp1 = Pcc.Imports[i];
-                    ImportEntry imp2 = compareFile.Imports[i];
-                    if (!imp1.Header.SequenceEqual(imp2.Header))
-                    {
-                        changedImports.Add(new EntryStringPair(imp1,
-                            $"Import header has changed: {imp1.UIndex} {imp1.InstancedFullPath}"));
-                    }
-                }
-
-                IMEPackage enumerateExtras = Pcc;
-                string file = "this file";
-                if (compareFile.ExportCount > numImportsToEnumerate)
-                {
-                    file = "other file";
-                    enumerateExtras = compareFile;
-                }
-
-                for (int i = numImportsToEnumerate; i < enumerateExtras.ImportCount; i++)
-                {
-                    Debug.WriteLine(
-                        $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}");
-                    changedImports.Add(new EntryStringPair(
-                        enumerateExtras.Imports[i].FileRef == Pcc ? enumerateExtras.Imports[i] : null,
-                        $"Import only exists in {file}: {-i - 1} {enumerateExtras.Imports[i].InstancedFullPath}"));
-                }
-            }
-
-            #endregion
-
-            #region Names
-
-            {
-                int numNamesToEnumerate = Math.Min(Pcc.NameCount, compareFile.NameCount);
-                for (int i = 0; i < numNamesToEnumerate; i++)
-                {
-                    var name1 = Pcc.Names[i];
-                    var name2 = compareFile.Names[i];
-
-                    //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                    if (!name1.Equals(name2, StringComparison.InvariantCultureIgnoreCase))
-
-                    {
-                        changedNames.Add(new EntryStringPair(null, $"Name {i} is different: {name1} |vs| {name2}"));
-                    }
-                }
-
-                IMEPackage enumerateExtras = Pcc;
-                string file = "this file";
-                if (compareFile.NameCount > numNamesToEnumerate)
-                {
-                    file = "other file";
-                    enumerateExtras = compareFile;
-                }
-
-                for (int i = numNamesToEnumerate; i < enumerateExtras.NameCount; i++)
-                {
-                    Debug.WriteLine($"Name only exists in {file}: {i} {enumerateExtras.Names[i]}");
-                    changedNames.Add(new EntryStringPair(null,
-                        $"Name only exists in {file}: {i} {enumerateExtras.Names[i]}"));
-                }
-            }
-
-            #endregion
-
-            var fullList = new List<EntryStringPair>();
-            fullList.AddRange(changedExports);
-            fullList.AddRange(changedImports);
-            fullList.AddRange(changedNames);
-            ListDialog ld = new ListDialog(fullList, "Changed exports/imports/names between files",
-                    "The following exports, imports and names are different between the files.", this)
-            { DoubleClickEntryHandler = entryDoubleClick };
-            ld.Show();
+            public List<string> DiskFiles = new List<string>();
+            public Dictionary<string, Stream> SFARPackageStreams = new Dictionary<string, Stream>();
+            public bool Any() => DiskFiles.Any() || SFARPackageStreams.Any();
         }
+
+
 
         #endregion
 

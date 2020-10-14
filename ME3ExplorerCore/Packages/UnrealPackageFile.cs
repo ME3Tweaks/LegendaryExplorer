@@ -13,7 +13,7 @@ using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages
 {
-    public abstract class UnrealPackageFile : INotifyPropertyChanged
+    public abstract partial class UnrealPackageFile : INotifyPropertyChanged
     {
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;

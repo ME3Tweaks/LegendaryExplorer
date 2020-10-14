@@ -216,5 +216,23 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
         MemoryStream SaveToStream(bool compress);
         List<ME1TalkFile> LocalTalkFiles { get; }
+        /// <summary>
+        /// Compares this package against the one located on disk at the specified path
+        /// </summary>
+        /// <param name="packagePath"></param>
+        /// <returns></returns>
+        List<EntryStringPair> CompareToPackage(string packagePath);
+        /// <summary>
+        /// Compares this package against the specified other one
+        /// </summary>
+        /// <param name="compareFile"></param>
+        /// <returns></returns>
+        List<EntryStringPair> CompareToPackage(IMEPackage compareFile);
+        /// <summary>
+        /// Compares this package against the one in the specified stream
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        List<EntryStringPair> CompareToPackage(Stream stream);
     }
 }
