@@ -85,13 +85,8 @@ namespace ME3Explorer.Sequence_Editor
         public static readonly string ME2ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME2SequenceViews\");
         public static readonly string ME1ViewsPath = Path.Combine(SequenceEditorDataFolder, @"ME1SequenceViews\");
 
-        public SequenceEditorWPF()
+        public SequenceEditorWPF() : base("Sequence Editor")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Sequence Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Sequence Editor" }
-            });
             LoadCommands();
             DataContext = this;
             StatusText = "Select package file to load";

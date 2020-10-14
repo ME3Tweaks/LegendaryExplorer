@@ -17,7 +17,7 @@ namespace ME3Explorer.TlkManagerNS
     /// <summary>
     /// Interaction logic for TLKManagerWPF_ExportReplaceDialog.xaml
     /// </summary>
-    public partial class TLKManagerWPF_ExportReplaceDialog : NotifyPropertyChangedWindowBase, IBusyUIHost
+    public partial class TLKManagerWPF_ExportReplaceDialog : TrackingNotifyPropertyChangedWindowBase, IBusyUIHost
     {
         public ICommand ReplaceSelectedTLK { get; private set; }
         public ICommand ExportSelectedTLK { get; private set; }
@@ -42,7 +42,7 @@ namespace ME3Explorer.TlkManagerNS
         }
         #endregion
 
-        public TLKManagerWPF_ExportReplaceDialog(List<LoadedTLK> loadedTLKs)
+        public TLKManagerWPF_ExportReplaceDialog(List<LoadedTLK> loadedTLKs) : base("TLKManager Export Replace Dialog", false)
         {
             TLKSources.AddRange(loadedTLKs);
             DataContext = this;

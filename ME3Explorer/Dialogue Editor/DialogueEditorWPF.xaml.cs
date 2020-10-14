@@ -230,13 +230,8 @@ namespace ME3Explorer.Dialogue_Editor
         #endregion Declarations
 
         #region Startup/Exit
-        public DialogueEditorWPF()
+        public DialogueEditorWPF() : base("Dialogue Editor")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Dialogue Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Dialogue Editor" }
-            });
             LoadCommands();
             StatusText = "Select package file to load";
             SelectedSpeaker = new SpeakerExtended(-3, "None");

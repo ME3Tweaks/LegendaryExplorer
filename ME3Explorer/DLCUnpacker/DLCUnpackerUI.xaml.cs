@@ -24,12 +24,9 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
-using ME3ExplorerCore.Misc;
-using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.DLCUnpacker
@@ -37,7 +34,7 @@ namespace ME3Explorer.DLCUnpacker
     /// <summary>
     /// Interaction logic for DLCUnpacker.xaml
     /// </summary>
-    public partial class DLCUnpackerUI : NotifyPropertyChangedWindowBase
+    public partial class DLCUnpackerUI : TrackingNotifyPropertyChangedWindowBase
     {
         public ICommand UnpackDLCCommand { get; set; }
         public ICommand CancelUnpackCommand { get; set; }
@@ -55,15 +52,9 @@ namespace ME3Explorer.DLCUnpacker
         private string _unpackingPercentString;
         public string UnpackingPercentString
         {
-            get { return _unpackingPercentString; }
-            set
-            {
-                if (value != _unpackingPercentString)
-                {
-                    _unpackingPercentString = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _unpackingPercentString;
+            set => SetProperty(ref _unpackingPercentString, value);
+
         }
         private string _requiredSpaceText;
 
@@ -72,124 +63,64 @@ namespace ME3Explorer.DLCUnpacker
 
         public string RequiredSpaceText
         {
-            get { return _requiredSpaceText; }
-            set
-            {
-                if (value != _requiredSpaceText)
-                {
-                    _requiredSpaceText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _requiredSpaceText;
+            set => SetProperty(ref _requiredSpaceText, value);
         }
         private string _availableSpaceText;
         public string AvailableSpaceText
         {
-            get { return _availableSpaceText; }
-            set
-            {
-                if (value != _availableSpaceText)
-                {
-                    _availableSpaceText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _availableSpaceText;
+            set => SetProperty(ref _availableSpaceText, value);
         }
+
         private double _currentOverallProgressValue;
         public double CurrentOverallProgressValue
         {
-            get { return _currentOverallProgressValue; }
-            set
-            {
-                if (value != _currentOverallProgressValue)
-                {
-                    _currentOverallProgressValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentOverallProgressValue;
+            set => SetProperty(ref _currentOverallProgressValue, value);
         }
 
         private int _overallProgressValue;
         public int OverallProgressValue
         {
-            get { return _overallProgressValue; }
-            set
-            {
-                if (value != _overallProgressValue)
-                {
-                    _overallProgressValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _overallProgressValue;
+            set => SetProperty(ref _overallProgressValue, value);
         }
 
         //Used for the current operation (e.g. which DLC is being unpacked, it's %)
         private int _currentOperationProgressValue;
         public int CurrentOperationPercentValue
         {
-            get { return _currentOperationProgressValue; }
-            set
-            {
-                if (value != _currentOperationProgressValue)
-                {
-                    _currentOperationProgressValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentOperationProgressValue;
+            set => SetProperty(ref _currentOperationProgressValue, value);
         }
 
         private bool _progressBarIndeterminate;
         public bool ProgressBarIndeterminate
         {
-            get { return _progressBarIndeterminate; }
-            set
-            {
-                if (value != _progressBarIndeterminate)
-                {
-                    _progressBarIndeterminate = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _progressBarIndeterminate;
+            set => SetProperty(ref _progressBarIndeterminate, value);
         }
         private string _currentOperationText;
         public string CurrentOperationText
         {
-            get { return _currentOperationText; }
-            set
-            {
-                if (value != _currentOperationText)
-                {
-                    _currentOperationText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentOperationText;
+            set => SetProperty(ref _currentOperationText, value);
         }
 
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
         {
-            get { return _currentOverallOperationText; }
-            set
-            {
-                if (value != _currentOverallOperationText)
-                {
-                    _currentOverallOperationText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentOverallOperationText;
+            set => SetProperty(ref _currentOverallOperationText, value);
         }
 
         #endregion
         List<SFARUnpacker> sfarsToUnpack = new List<SFARUnpacker>();
         private DispatcherTimer backgroundticker;
 
-        public DLCUnpackerUI()
+        public DLCUnpackerUI() : base("DLC Unpacker", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("DLC Unpacker", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "DLC Unpacker" }
-            });
             LoadCommands();
             RequiredSpaceText = "Calculating...";
             InitializeComponent();

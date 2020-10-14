@@ -15,21 +15,16 @@ namespace MassEffect3.CoalesceTool
     /// <summary>
     ///     Interaction logic for CoalescedEditor.xaml
     /// </summary>
-    public partial class CoalescedEditor : NotifyPropertyChangedWindowBase
+    public partial class CoalescedEditor : TrackingNotifyPropertyChangedWindowBase
 	{
 		private string _destinationPath;
 		private CoalescedType _destinationType;
 		private string _sourcePath;
 		private CoalescedType _sourceType;
 
-		public CoalescedEditor()
+		public CoalescedEditor() : base("Coalesced Editor", true)
 		{
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Coalesced Editor", new WeakReference(this)));
-			Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Coalesced Editor" }
-            });
-			InitializeComponent();
+            InitializeComponent();
 
 			DataContext = this;
 		}

@@ -29,13 +29,8 @@ namespace ME3Explorer
     {
         public const string PSAFilter = "*.psa|*.psa";
 
-        public AnimationImporter()
+        public AnimationImporter() : base("Animation Importer")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Animation Importer", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Animation Importer" }
-            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();

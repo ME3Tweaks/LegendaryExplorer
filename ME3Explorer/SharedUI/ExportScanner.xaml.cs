@@ -15,7 +15,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Dialog that has copy button, designed for showing lists of short lines of text
     /// </summary>
-    public partial class ExportScanner : NotifyPropertyChangedWindowBase
+    public partial class ExportScanner : TrackingNotifyPropertyChangedWindowBase
     {
         struct ExportOfInterest
         {
@@ -44,7 +44,7 @@ namespace ME3Explorer.SharedUI
 
         private readonly List<string> filePaths;
 
-        public ExportScanner(Func<ExportEntry, bool> exportSelector, Func<ExportEntry, string> exportTransformer)
+        public ExportScanner(Func<ExportEntry, bool> exportSelector, Func<ExportEntry, string> exportTransformer) : base("Export Scanner", false)
         {
             InitializeComponent();
             filePaths = MELoadedFiles.GetEnabledDLCFiles(MEGame.ME3).Append(ME3Directory.BIOGamePath)

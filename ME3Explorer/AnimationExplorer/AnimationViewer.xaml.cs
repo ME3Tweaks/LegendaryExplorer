@@ -28,7 +28,7 @@ namespace ME3Explorer.AnimationExplorer
     /// <summary>
     /// Interaction logic for AnimationExplorerWPF.xaml
     /// </summary>
-    public partial class AnimationViewer : NotifyPropertyChangedWindowBase
+    public partial class AnimationViewer : TrackingNotifyPropertyChangedWindowBase
     {
         public static AnimationViewer Instance;
 
@@ -58,7 +58,7 @@ namespace ME3Explorer.AnimationExplorer
             SquadMember = 1
         }
 
-        public AnimationViewer()
+        public AnimationViewer() : base("Animation Viewer", true)
         {
             if (Instance != null)
             {
@@ -66,11 +66,6 @@ namespace ME3Explorer.AnimationExplorer
             }
 
             Instance = this;
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Animation Viewer", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Animation Viewer" }
-            });
             DataContext = this;
             InitializeComponent();
             LoadCommands();

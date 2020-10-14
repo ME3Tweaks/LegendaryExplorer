@@ -24,20 +24,15 @@ namespace ME3Explorer.AutoTOC
     /// <summary>
     /// Interaction logic for AutoTOCWPF.xaml
     /// </summary>
-    public partial class AutoTOCWPF : NotifyPropertyChangedWindowBase
+    public partial class AutoTOCWPF : TrackingNotifyPropertyChangedWindowBase
     {
         private readonly object _myCollectionLock = new object();
 
         public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
 
-        public AutoTOCWPF()
+        public AutoTOCWPF() : base("AutoTOC", true)
         {
             DataContext = this;
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("AutoTOC WPF", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "AutoTOC" }
-            });
             LoadCommands();
             InitializeComponent();
             BindingOperations.EnableCollectionSynchronization(TOCTasks, _myCollectionLock);

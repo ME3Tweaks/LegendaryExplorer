@@ -10,7 +10,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for NamePromptDialogPromptDialog.xaml
     /// </summary>
-    public partial class NamePromptDialog : NotifyPropertyChangedWindowBase
+    public partial class NamePromptDialog : TrackingNotifyPropertyChangedWindowBase
     {
         private List<IndexedName> _nameList;
         public List<IndexedName> NameList
@@ -31,7 +31,7 @@ namespace ME3Explorer.SharedUI
             set => SetProperty(ref _number, value);
         }
 
-        public NamePromptDialog(string question, string title, List<IndexedName> NameList, int defaultValue = 0)
+        public NamePromptDialog(string question, string title, List<IndexedName> NameList, int defaultValue = 0) : base("Name Prompt Dialog", false)
         {
             this.NameList = NameList;
             DataContext = this;

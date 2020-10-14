@@ -52,7 +52,7 @@ namespace ME3Explorer
 
         public bool HexBoxSelectionChanging { get; private set; }
 
-        public BytecodeEditor()
+        public BytecodeEditor() : base("BytecodeEditor")
         {
             InitializeComponent();
         }

@@ -20,7 +20,7 @@ namespace ME3Explorer.ParticleSystems
             public ObservableCollectionExtended<ParticleSystemNode> Children { get; } = new ObservableCollectionExtended<ParticleSystemNode>();
         }
 
-        public ParticleSystemExportLoader()
+        public ParticleSystemExportLoader() : base("Particle System Viewer")
         {
             DataContext = this;
             InitializeComponent();

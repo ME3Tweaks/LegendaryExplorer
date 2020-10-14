@@ -19,6 +19,7 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.AFCCompactorUI
@@ -26,7 +27,7 @@ namespace ME3Explorer.AFCCompactorUI
     /// <summary>
     /// Interaction logic for AFCCompactor.xaml
     /// </summary>
-    public partial class AFCCompactorUI : NotifyPropertyChangedWindowBase
+    public partial class AFCCompactorUI : TrackingNotifyPropertyChangedWindowBase
     {
         public class DLCDependency : NotifyPropertyChangedBase
         {
@@ -54,7 +55,7 @@ namespace ME3Explorer.AFCCompactorUI
             public bool IsDependedOn { get => _isDependedOn; set => SetProperty(ref _isDependedOn, value); }
         }
 
-        public AFCCompactorUI()
+        public AFCCompactorUI() : base("AFC Compactor", true)
         {
             LoadCommands();
             AudioReferencesView.Filter = FilterReferences;
@@ -152,6 +153,7 @@ namespace ME3Explorer.AFCCompactorUI
                     StatusText = "Compaction aborted or failed";
                 }
                 IsBusy = false;
+                Analytics.TrackEvent("Compacted AFC");
             });
 
         }
@@ -303,11 +305,6 @@ namespace ME3Explorer.AFCCompactorUI
                         }
                         IsBusy = false;
                     });
-
-                    //Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-                    //{
-                    //    { "Toolname", "AFC Compactor" }
-                    //});
                 }
             }
         }
@@ -350,6 +347,7 @@ namespace ME3Explorer.AFCCompactorUI
             return dependencies;
         }
 
+        // Property changed for dependency object. Not the xaml type of DependencyProperty
         private void DependencyPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(DLCDependency.IsDependedOn))

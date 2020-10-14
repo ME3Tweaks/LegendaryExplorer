@@ -76,13 +76,8 @@ namespace ME3Explorer
         /// <summary>
         /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constructor instead.
         /// </summary>
-        public MeshplorerWPF()
+        public MeshplorerWPF() : base("Meshplorer")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Meshplorer WPF", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Meshplorer" }
-            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();

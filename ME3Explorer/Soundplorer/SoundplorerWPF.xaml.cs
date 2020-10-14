@@ -73,13 +73,8 @@ namespace ME3Explorer.Soundplorer
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
 
-        public SoundplorerWPF()
+        public SoundplorerWPF() : base("Soundplorer")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundplorer WPF", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Soundplorer" }
-            });
             LoadCommands();
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));

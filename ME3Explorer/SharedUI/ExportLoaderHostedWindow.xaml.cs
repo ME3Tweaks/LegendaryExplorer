@@ -54,7 +54,7 @@ namespace ME3Explorer.SharedUI
         /// </summary>
         /// <param name="hostedControl"></param>
         /// <param name="exportToLoad"></param>
-        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad)
+        public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, ExportEntry exportToLoad) : base($"ELHW for {hostedControl.GetType()}")
         {
             DataContext = this;
             this.HostedControl = hostedControl;
@@ -77,7 +77,7 @@ namespace ME3Explorer.SharedUI
         /// </summary>
         /// <param name="hostedControl"></param>
         /// <param name="file"></param>
-        public ExportLoaderHostedWindow(FileExportLoaderControl hostedControl, string file = null)
+        public ExportLoaderHostedWindow(FileExportLoaderControl hostedControl, string file = null) : base($"ELHW for {hostedControl.GetType()}")
         {
             DataContext = this;
             this.HostedControl = hostedControl;

@@ -1,10 +1,4 @@
-﻿/**
- * Dialogue Dumper is based on ME3Tweaks Mass Effect 3 Mod Manager Command Line Tools
- * TransplanterLib. This is a modified version provided by Mgamerz
- * (c) Mgamerz 2019
- */
-
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -19,13 +13,11 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
-using Microsoft.AppCenter.Analytics;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 
 namespace ME3Explorer.DialogueDumper
@@ -33,7 +25,7 @@ namespace ME3Explorer.DialogueDumper
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class DialogueDumper : NotifyPropertyChangedWindowBase
+    public partial class DialogueDumper : TrackingNotifyPropertyChangedWindowBase
     {
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -200,13 +192,8 @@ namespace ME3Explorer.DialogueDumper
 
         #endregion
 
-        public DialogueDumper(Window owner = null)
+        public DialogueDumper(Window owner = null) : base ("Dialogue Dumper", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Dialogue Dumper", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Dialogue Dumper" }
-            });
             Owner = owner;
             LoadCommands();
             ListViewHeight = 25 * App.CoreCount;

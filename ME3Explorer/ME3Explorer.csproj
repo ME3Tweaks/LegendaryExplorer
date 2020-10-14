@@ -450,6 +450,7 @@
       <DependentUpon>RecentsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\TaskbarHelper.cs" />
+    <Compile Include="TrackingBase.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
     <Compile Include="Unreal\Classes\WwiseStreamExtensions.cs" />

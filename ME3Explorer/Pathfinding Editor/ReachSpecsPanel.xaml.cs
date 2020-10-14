@@ -90,7 +90,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool CreateReturningReachSpec { get => _createReturningReachSpec; set => SetProperty(ref _createReturningReachSpec, value); }
 
 
-        public ReachSpecsPanel()
+        public ReachSpecsPanel() : base("ReachSpecsPanel")
         {
             DataContext = this;
             ReachSpecSizeToText = "Select a reachspec above";

@@ -39,7 +39,7 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
-        public ME1TlkEditorWPF()
+        public ME1TlkEditorWPF() : base("TLKEditor")
         {
             DataContext = this;
             LoadCommands();

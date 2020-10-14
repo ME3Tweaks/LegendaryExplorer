@@ -18,7 +18,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for AddPropertyDialogWPF.xaml
     /// </summary>
-    public partial class AddPropertyDialogWPF : NotifyPropertyChangedWindowBase
+    public partial class AddPropertyDialogWPF : TrackingNotifyPropertyChangedWindowBase
     {
         public class AddPropertyItem
         {
@@ -34,7 +34,7 @@ namespace ME3Explorer.SharedUI
             public PropertyInfo PropInfo { get; }
         }
 
-        public AddPropertyDialogWPF(List<ClassInfo> classList, List<string> _existingProperties)
+        public AddPropertyDialogWPF(List<ClassInfo> classList, List<string> _existingProperties) : base ("Add Property Dialog", false)
         {
             _classHierarchy.ReplaceAll(classList.Select(x => x.ClassName));
             existingProperties = _existingProperties;

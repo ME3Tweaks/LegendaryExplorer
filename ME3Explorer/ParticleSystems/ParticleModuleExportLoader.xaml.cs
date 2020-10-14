@@ -16,7 +16,7 @@ namespace ME3Explorer.ParticleSystems
     /// </summary>
     public partial class ParticleModuleExportLoader : ExportLoaderControl
     {
-        public ParticleModuleExportLoader()
+        public ParticleModuleExportLoader() : base("Particle Module Viewer")
         {
             DataContext = this;
             LoadCommands();

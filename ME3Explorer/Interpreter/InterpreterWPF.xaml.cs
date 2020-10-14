@@ -148,9 +148,8 @@ namespace ME3Explorer
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
 
-        public InterpreterWPF()
+        public InterpreterWPF() : base("Interpreter")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interpreter WPF Export Loader", new WeakReference(this)));
             LoadCommands();
             InitializeComponent();
             Settings.Default.PropertyChanged += SettingChanged;

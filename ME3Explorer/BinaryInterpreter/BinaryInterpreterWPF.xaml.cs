@@ -117,9 +117,8 @@ namespace ME3Explorer
         private InterpreterMode interpreterMode = InterpreterMode.Objects;
         private bool LoadingNewData;
 
-        public BinaryInterpreterWPF()
+        public BinaryInterpreterWPF() : base("Binary Interpreter")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Binary Interpreter", new WeakReference(this)));
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();

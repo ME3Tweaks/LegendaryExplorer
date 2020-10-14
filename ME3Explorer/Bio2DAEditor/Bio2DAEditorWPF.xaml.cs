@@ -26,7 +26,7 @@ namespace ME3Explorer
 
         public ICommand CommitCommand { get; set; }
 
-        public Bio2DAEditorWPF()
+        public Bio2DAEditorWPF() : base("Bio2DA Editor")
         {
             DataContext = this;
             LoadCommands();

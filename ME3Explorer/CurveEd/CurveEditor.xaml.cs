@@ -42,7 +42,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        public CurveEditor()
+        public CurveEditor() : base("EL Curve Editor")
         {
             InitializeComponent();
         }
@@ -70,7 +70,7 @@ namespace ME3Explorer.CurveEd
             }
         }
 
-        public CurveEditor(ExportEntry exp)
+        public CurveEditor(ExportEntry exp) : base("Curve Editor")
         {
             InitializeComponent();
             LoadExport(exp);

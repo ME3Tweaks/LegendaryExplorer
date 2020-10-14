@@ -10,7 +10,7 @@ namespace ME3Explorer.SFAREditor
     /// <summary>
     /// Interaction logic for SFARExplorer.xaml
     /// </summary>
-    public partial class SFARExplorer : NotifyPropertyChangedWindowBase
+    public partial class SFARExplorer : TrackingNotifyPropertyChangedWindowBase
     {
         private string _bottomLeftText = "Open or drop SFAR";
 
@@ -27,7 +27,7 @@ namespace ME3Explorer.SFAREditor
             set => SetProperty(ref _dlcPackage, value);
         }
 
-        public SFARExplorer()
+        public SFARExplorer() : base("SFAR Explorer", true)
         {
             DataContext = this;
             LoadCommands();
@@ -73,7 +73,7 @@ namespace ME3Explorer.SFAREditor
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFileFromStream(packageStream, fes.FileName);
-                p.Activate(); 
+                p.Activate();
             }
         }
 

@@ -570,13 +570,8 @@ namespace ME3Explorer.Pathfinding_Editor
         #endregion
 
         #region Load+I/O
-        public PathfindingEditorWPF()
+        public PathfindingEditorWPF() : base($"Pathfinding Editor")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Pathfinding Editor WPF", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Pathfinding Editor" }
-            });
             DataContext = this;
             StatusText = "Select package file to load";
             LoadCommands();

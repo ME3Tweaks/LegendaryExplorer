@@ -8,13 +8,13 @@ namespace ME3Explorer.Soundplorer
     /// <summary>
     /// Interaction logic for SoundReplaceOptionsDialog.xaml
     /// </summary>
-    public partial class SoundReplaceOptionsDialog : NotifyPropertyChangedWindowBase
+    public partial class SoundReplaceOptionsDialog : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
         private static readonly int[] AcceptedSampleRates = {24000, 32000}; //may add more later
         public WwiseConversionSettingsPackage ChosenSettings; 
 
-        public SoundReplaceOptionsDialog()
+        public SoundReplaceOptionsDialog() : base("Sound Replace Options Dialog", false)
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);

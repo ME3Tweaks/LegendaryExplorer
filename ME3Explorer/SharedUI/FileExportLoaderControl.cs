@@ -12,6 +12,11 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public abstract class FileExportLoaderControl : ExportLoaderControl
     {
+        protected FileExportLoaderControl(string memoryTrackerName) : base(memoryTrackerName)
+        {
+
+        }
+
         public abstract void LoadFile(string filepath);
         public string LoadedFile;
         public abstract bool CanLoadFile();

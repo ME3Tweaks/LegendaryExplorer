@@ -43,13 +43,8 @@ namespace ME3Explorer.WwiseEditor
             public float Y;
         }
         private readonly WwiseGraphEditor graphEditor;
-        public WwiseEditorWPF()
+        public WwiseEditorWPF() : base("Wwise Editor")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Wwise Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Wwise Editor" }
-            });
             DataContext = this;
             StatusText = "Select package file to load";
             LoadCommands();

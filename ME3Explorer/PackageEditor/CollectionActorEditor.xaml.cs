@@ -83,7 +83,7 @@ namespace ME3Explorer.PackageEditor
 
         #endregion
 
-        public CollectionActorEditor()
+        public CollectionActorEditor() : base("CollectionActorEditor")
         {
             DataContext = this;
             InitializeComponent();

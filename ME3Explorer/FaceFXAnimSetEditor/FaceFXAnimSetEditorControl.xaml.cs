@@ -58,7 +58,7 @@ namespace ME3Explorer.FaceFX
         }
 
 
-        public FaceFXAnimSetEditorControl()
+        public FaceFXAnimSetEditorControl() : base("FaceFXAnimSetEditor")
         {
             InitializeComponent();
             DataContext = this;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Interaction logic for DPIAwareSplashScreen.xaml
     /// </summary>
-    public partial class DPIAwareSplashScreen : NotifyPropertyChangedWindowBase
+    public partial class DPIAwareSplashScreen : TrackingNotifyPropertyChangedWindowBase
     {
         private string _splashScreenText;
 
@@ -12,7 +12,7 @@
             get => _splashScreenText;
             set => SetProperty(ref _splashScreenText, value);
         }
-        public DPIAwareSplashScreen()
+        public DPIAwareSplashScreen() : base("DPIAwareSplashScreen", false)
         {
             InitializeComponent();
         }

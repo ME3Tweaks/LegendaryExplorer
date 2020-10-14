@@ -129,7 +129,7 @@ namespace ME3Explorer.PackageEditor
         #endregion
 
         #region StartUp
-        public BIKExternalExportLoader()
+        public BIKExternalExportLoader() : base("BIKExternal")
         {
             DataContext = this;
             GetRADInstallationStatus();
@@ -174,7 +174,7 @@ namespace ME3Explorer.PackageEditor
             }
         }
 
-        public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false)
+        public BIKExternalExportLoader(bool autoplayPopout, bool showcontrols = false) : base("BIKExternal")
         {
             if (!showcontrols)
             {

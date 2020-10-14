@@ -4,10 +4,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
+    /// <summary>
+    /// Window subclass that allows the window to operate on a single package, and subscribe to package updates for that package.
+    /// </summary>
     public abstract class WPFBase : NotifyPropertyChangedWindowBase, IPackageUser
     {
         private IMEPackage pcc;
@@ -20,8 +25,17 @@ namespace ME3Explorer
             private set => SetProperty(ref pcc, value);
         }
 
-        protected WPFBase()
+        protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
+            MemoryAnalyzer.AddTrackedMemoryItem($"[WPFBase] {memoryTrackerName}", new WeakReference(this));
+            if (submitTelemetry)
+            {
+                Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
+                {
+                    {"Toolname", memoryTrackerName}
+                });
+            }
+
             this.Closing += WPFBase_Closing;
         }
 

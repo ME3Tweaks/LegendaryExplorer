@@ -44,7 +44,7 @@ namespace ME3Explorer.Sequence_Editor
 
         public void LoadLog(MEGame game, IMEPackage pcc = null, ExportEntry filterToSequence = null)
         {
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>() { { "Toolname", "Kismet Logger for " + game } });
+            Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
             Pcc = pcc;
             SequenceToFilterTo = filterToSequence;
             Game = game;

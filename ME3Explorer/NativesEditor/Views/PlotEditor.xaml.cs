@@ -21,13 +21,8 @@ namespace MassEffect.NativesEditor.Views
 {
     public partial class PlotEditor : WPFBase, IRecents
     {
-        public PlotEditor()
+        public PlotEditor() : base("Plot Editor")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Plot Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Plot Editor" }
-            });
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
             

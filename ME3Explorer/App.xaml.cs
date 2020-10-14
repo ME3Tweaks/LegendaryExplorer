@@ -148,7 +148,7 @@ namespace ME3Explorer
                 ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
                 {
-                    new PackageEditorWPF().Close(); //pre-parse xaml to improve PackEd startup time
+                    new PackageEditorWPF(false).Close(); //pre-parse xaml to improve PackEd startup time
                 }
                 GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 GC.Collect();

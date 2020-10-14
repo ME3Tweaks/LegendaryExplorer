@@ -10,7 +10,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Dialog that has copy button, designed for showing lists of short lines of text
     /// </summary>
-    public partial class ListDialog : NotifyPropertyChangedWindowBase
+    public partial class ListDialog : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<object> Items { get; } = new ObservableCollectionExtended<object>();
         public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
@@ -22,7 +22,7 @@ namespace ME3Explorer.SharedUI
             set => SetProperty(ref topText, value);
         }
 
-        private ListDialog(string title, string message, Window owner, int width = 0, int height = 0)
+        private ListDialog(string title, string message, Window owner, int width = 0, int height = 0) : base("List Dialog", false)
         {
             DataContext = this;
             InitializeComponent();

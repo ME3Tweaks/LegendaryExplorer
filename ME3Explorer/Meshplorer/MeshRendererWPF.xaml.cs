@@ -315,7 +315,7 @@ namespace ME3Explorer.Meshplorer
         #endregion
 
         private bool startingUp;
-        public MeshRendererWPF()
+        public MeshRendererWPF() : base("Mesh Renderer")
         {
             startingUp = true;
             DataContext = this;

@@ -26,7 +26,7 @@ namespace ME3Explorer.GameInterop
     /// <summary>
     /// Interaction logic for LiveLevelEditor.xaml
     /// </summary>
-    public partial class LiveLevelEditor : NotifyPropertyChangedWindowBase
+    public partial class LiveLevelEditor : TrackingNotifyPropertyChangedWindowBase
     {
         public static LiveLevelEditor Instance;
         private enum FloatVarIndexes
@@ -62,7 +62,7 @@ namespace ME3Explorer.GameInterop
             set => SetProperty(ref _readyToInitialize, value);
         }
 
-        public LiveLevelEditor()
+        public LiveLevelEditor() : base("Live Level Editor", true)
         {
             if (Instance != null)
             {
@@ -73,11 +73,6 @@ namespace ME3Explorer.GameInterop
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Live Level Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Live Level Editor" }
-            });
             GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
             ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             ME3OpenTimer.Tick += CheckIfME3Open;

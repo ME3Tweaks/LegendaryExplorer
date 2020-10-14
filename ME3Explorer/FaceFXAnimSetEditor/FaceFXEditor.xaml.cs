@@ -31,7 +31,7 @@ namespace ME3Explorer.FaceFX
         private ExportEntry ExportQueuedForFocusing;
         private string LineQueuedForFocusing;
 
-        public FaceFXEditor()
+        public FaceFXEditor() : base("FaceFX Editor")
         {
             InitializeComponent();
             LoadCommands();

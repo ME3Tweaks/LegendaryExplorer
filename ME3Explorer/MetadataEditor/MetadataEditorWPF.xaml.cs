@@ -77,7 +77,7 @@ namespace ME3Explorer.MetadataEditor
 
         public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
 
-        public MetadataEditorWPF()
+        public  MetadataEditorWPF() : base("Metadata Editor")
         {
             DataContext = this;
             LoadCommands();

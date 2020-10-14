@@ -43,7 +43,7 @@ namespace ME3Explorer.MaterialViewer
             set => SetProperty(ref _topInfoText, value);
         }
 
-        public MaterialExportLoader()
+        public MaterialExportLoader() : base("Material")
         {
             InitializeComponent();
             DataContext = this;

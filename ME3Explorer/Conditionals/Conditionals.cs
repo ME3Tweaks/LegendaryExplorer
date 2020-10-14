@@ -36,6 +36,7 @@ namespace ME3Explorer
         public List<int> currefbool = new List<int>();
         public Conditionals()
         {
+            // Gross, Windows forms! Can't use tracking base
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Conditionals Editor", new WeakReference(this)));
             Analytics.TrackEvent("Used tool", new Dictionary<string, string>
             {

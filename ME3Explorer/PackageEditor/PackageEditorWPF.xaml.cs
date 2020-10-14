@@ -2281,13 +2281,8 @@ namespace ME3Explorer
 
         #endregion
 
-        public PackageEditorWPF()
+        public PackageEditorWPF(bool submitTelemetry = true) : base("Package Editor", submitTelemetry)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Package Editor", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                {"Toolname", "Package Editor WPF"}
-            });
             CurrentView = CurrentViewMode.Tree;
             LoadCommands();
 

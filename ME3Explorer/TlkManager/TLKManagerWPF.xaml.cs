@@ -26,7 +26,7 @@ namespace ME3Explorer.TlkManagerNS
     /// <summary>
     /// Interaction logic for TLKManagerWPF.xaml
     /// </summary>
-    public partial class TLKManagerWPF : NotifyPropertyChangedWindowBase
+    public partial class TLKManagerWPF : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<LoadedTLK> ME1TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
@@ -36,13 +36,8 @@ namespace ME3Explorer.TlkManagerNS
         private bool bSaveNeededME2 = false;
         private bool bSaveNeededME3 = false;
 
-        public TLKManagerWPF()
+        public TLKManagerWPF() : base("TLK Manager", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("TLK Manager WPF", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "TLK Manager" }
-            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();

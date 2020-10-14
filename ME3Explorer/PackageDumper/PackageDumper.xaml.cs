@@ -1,5 +1,5 @@
 ﻿/**
- * Package Dumper is based on ME3Tweaks Mass Effect 3 Mod Manager Command Line Tools
+ * Package Dumper is based on ME3Tweaks' Mass Effect 3 Mod Manager Command Line Tools
  * TransplanterLib. This is a modified version provided by Mgamerz
  * (c) Mgamerz 2019
  */
@@ -31,7 +31,7 @@ namespace ME3Explorer.PackageDumper
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class PackageDumper : NotifyPropertyChangedWindowBase
+    public partial class PackageDumper : TrackingNotifyPropertyChangedWindowBase
     {
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -176,13 +176,8 @@ namespace ME3Explorer.PackageDumper
 
         #endregion
 
-        public PackageDumper(Window owner = null)
+        public PackageDumper(Window owner = null) : base("Package Dumper", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Package Dumper", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Package Dumper" }
-            });
             Owner = owner;
             DataContext = this;
             LoadCommands();

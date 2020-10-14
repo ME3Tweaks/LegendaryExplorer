@@ -111,10 +111,8 @@ namespace ME3Explorer
             }
         }
 
-        public Soundpanel()
+        public Soundpanel() : base("Soundpanel")
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Soundpanel Export Loader", new WeakReference(this)));
-
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();
             CurrentVolume = 0.65f;

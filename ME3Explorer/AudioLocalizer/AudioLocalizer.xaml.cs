@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome5;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Helpers;
@@ -17,7 +16,6 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer
@@ -25,7 +23,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for AudioLocalizer.xaml
     /// </summary>
-    public partial class AudioLocalizer : NotifyPropertyChangedWindowBase
+    public partial class AudioLocalizer : TrackingNotifyPropertyChangedWindowBase
     {
         private readonly object _localizationTasksLock = new object();
 
@@ -60,14 +58,8 @@ namespace ME3Explorer
 
         private bool IsLocalizing;
 
-        public AudioLocalizer()
+        public AudioLocalizer() : base("Audio Localizer", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Audio Localizer", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
-            {
-                { "Toolname", "Audio Localizer" }
-            });
-
             DataContext = this;
             LoadCommands();
             InitializeComponent();

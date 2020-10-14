@@ -26,11 +26,11 @@ namespace ME3Explorer.TFCCompactor
     /// <summary>
     /// Interaction logic for TFCCompactor.xaml
     /// </summary>
-    public partial class TFCCompactor : NotifyPropertyChangedWindowBase
+    public partial class TFCCompactor : TrackingNotifyPropertyChangedWindowBase
     {
         private BackgroundWorker backgroundWorker;
 
-        public TFCCompactor()
+        public TFCCompactor() : base("TFC Compactor", true)
         {
             DataContext = this;
             LoadCommands();

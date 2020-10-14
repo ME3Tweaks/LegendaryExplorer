@@ -44,7 +44,7 @@ namespace ME3Explorer.AssetDatabase
     /// <summary>
     /// Interaction logic for AssetDB
     /// </summary>
-    public partial class AssetDB : NotifyPropertyChangedWindowBase
+    public partial class AssetDB : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
         public const string dbCurrentBuild = "4.0"; //If changes are made that invalidate old databases edit this.
@@ -261,13 +261,8 @@ namespace ME3Explorer.AssetDatabase
 
         #region Startup/Exit
 
-        public AssetDB()
+        public AssetDB() : base("Asset Database", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Asset Database", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Asset Database" }
-            });
             LoadCommands();
 
             //Get default db / gane

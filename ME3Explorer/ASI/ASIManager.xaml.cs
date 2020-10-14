@@ -20,7 +20,7 @@ namespace ME3Explorer.ASI
     /// <summary>
     /// Interaction logic for ASIManager.xaml
     /// </summary>
-    public partial class ASIManager : NotifyPropertyChangedWindowBase
+    public partial class ASIManager : TrackingNotifyPropertyChangedWindowBase
     {
 
         #region Busy variables
@@ -131,13 +131,8 @@ namespace ME3Explorer.ASI
         /// Please do not change the logic for this code (at least, for Mass Effect 3) as it may break compatibility with Mass
         /// Effect 3 Mod Manager (e.g. dual same ASIs are installed) and the ME3Tweaks serverside components.
         /// </summary>
-        public ASIManager()
+        public ASIManager() : base("ASI Manager", true)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("ASI Manager", new WeakReference(this)));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "ASI Manager" }
-            });
             DataContext = this;
 
             if (!Directory.Exists(ASIManagerDataFolder))

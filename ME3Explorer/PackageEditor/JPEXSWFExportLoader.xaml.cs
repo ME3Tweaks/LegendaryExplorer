@@ -39,7 +39,7 @@ namespace ME3Explorer.PackageEditor
         private string JPEXExecutableLocation;
         private string CurrentJPEXExportedFilepath;
 
-        public JPEXExternalExportLoader()
+        public JPEXExternalExportLoader() : base("JPEX External Launcher")
         {
             DataContext = this;
             GetJPEXInstallationStatus();

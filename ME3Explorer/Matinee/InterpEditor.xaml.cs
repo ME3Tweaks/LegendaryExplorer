@@ -22,7 +22,7 @@ namespace ME3Explorer.Matinee
     public partial class InterpEditor : WPFBase, IRecents
     {
 
-        public InterpEditor()
+        public InterpEditor() : base("Interp Editor")
         {
             MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Interp Editor", new WeakReference(this)));
             LoadCommands();

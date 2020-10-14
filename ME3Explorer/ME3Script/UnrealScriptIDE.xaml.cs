@@ -49,7 +49,7 @@ namespace ME3Explorer.ME3Script
 
         private FileLib CurrentFileLib;
 
-        public UnrealScriptIDE()
+        public UnrealScriptIDE() : base("UnrealScript IDE")
         {
             InitializeComponent();
             DataContext = this;
