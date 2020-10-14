@@ -1,4 +1,4 @@
-﻿<global:NotifyPropertyChangedWindowBase
+﻿<global:TrackingNotifyPropertyChangedWindowBase
     xmlns:global="clr-namespace:ME3Explorer" x:Class="ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzerUI"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -32,10 +32,9 @@
                 <DockPanel>
                     <Button Content="Clear garbage collected references" Padding="5,3,5,3" Margin="0,5,0,5" Click="CleanUpOldRefs_Click" DockPanel.Dock="Left" ToolTip="Clears items in the 'Garbage Collected' state from the list. After 10 seconds, these items will automatically be removed"/>
                     <Button Content="Show package handler open packages"  Margin="5,3" Padding="5,3,5,3" Click="ShowOpenPackages_Click" DockPanel.Dock="Left" VerticalAlignment="Center" ToolTip="Shows the list of Package Handler open packages"/>
-                    <Button Content="dotMemory: Take Snapshot"  Margin="5,3" Padding="5,3,5,3" Click="TakeSnapshot_Click" DockPanel.Dock="Left" VerticalAlignment="Center" ToolTip="Generates a memory dump of the process and opens dotMemory to analyze it. Ensure you've installed dotMemory beforehand"/>
+                    <Button Content="dotMemory: Take Snapshot"  Margin="0,3" Padding="5,3,5,3" Click="TakeSnapshot_Click" DockPanel.Dock="Left" VerticalAlignment="Center" ToolTip="Generates a memory dump of the process and opens dotMemory to analyze it. Ensure you've installed dotMemory beforehand"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Force Large GC" Margin="2,5" Padding="5,3,5,3" Click="ForceLargeGC_Click" ToolTip="Forces a large object heap garbage collection. This should clear any unreferenced items"/>
-                        <Button Content="Force GC" Margin="2,5" Padding="3,3,3,3" Click="ForceGC_Click" ToolTip="Forces a basic garbage collection"/>
+                        <Button Content="Force GC" Margin="2,5" Padding="10,3,10,3" Click="ForceGC_Click" ToolTip="Forces a full garbage collection. Due to how .NET works, this doesn't always GC everything, unfortunately"/>
                     </StackPanel>
                 </DockPanel>
             </StackPanel>
@@ -56,4 +55,4 @@
         </DockPanel>
     </xctk:BusyIndicator>
 
-</global:NotifyPropertyChangedWindowBase>
+</global:TrackingNotifyPropertyChangedWindowBase>

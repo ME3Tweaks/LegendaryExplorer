@@ -21,7 +21,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
     /// <summary>
     /// Interaction logic for MemoryAnalyzer.xaml
     /// </summary>
-    public partial class MemoryAnalyzerUI : NotifyPropertyChangedWindowBase
+    public partial class MemoryAnalyzerUI : TrackingNotifyPropertyChangedWindowBase
     {
         readonly DispatcherTimer dispatcherTimer;
 
@@ -38,9 +38,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             set => SetProperty(ref _isBusyText, value);
         }
 
-        public MemoryAnalyzerUI()
+        public MemoryAnalyzerUI() : base("Memory Analyzer", false)
         {
-            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Memory Analyzer", new WeakReference(this)));
             Refresh();
             InitializeComponent();
 
@@ -63,15 +62,15 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             Refresh();
         }
 
-        private void ForceLargeGC_Click(object sender, RoutedEventArgs e)
-        {
-            MemoryProfiler.ForceGc();
-        }
-
         private void ForceGC_Click(object sender, RoutedEventArgs e)
         {
-            GC.Collect();
-        }
+            // This should promote things into future generations and clear out. This is how jetbrains seems to do it in dotMemory according to stackoverflow
+            // https://stackoverflow.com/questions/42022723/what-exactly-happens-when-i-ask-dotmemory-to-force-garbage-collection
+            for (int i = 0; i < 4; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true);
+                GC.WaitForPendingFinalizers();
+            }}
 
         private void Refresh()
         {
