@@ -329,7 +329,7 @@ namespace ME3Explorer
                             case "WwiseStream":
                                 {
                                     //parse out tlk id?
-                                    var splits = Entry.ObjectName.Name.Split('_');
+                                    var splits = Entry.ObjectName.Name.Split('_',',');
                                     for (int i = splits.Length - 1; i > 0; i--)
                                     {
                                         //backwards is faster

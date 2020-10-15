@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.TlkManagerNS;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
@@ -253,7 +254,7 @@ namespace ME3Explorer.Soundplorer
                 }
 
                 fileStream.Position = 0;
-                EndianReader reader = new EndianReader(fileStream) {Endian = endianness};
+                EndianReader reader = new EndianReader(fileStream) { Endian = endianness };
 
                 while (fileStream.Position < fileStream.Length - 4)
                 {
@@ -1208,7 +1209,7 @@ namespace ME3Explorer.Soundplorer
         public void LoadData()
         {
             using FileStream _rawRiff = new FileStream(AFCPath, FileMode.Open);
-            EndianReader reader = new EndianReader(_rawRiff) {Endian = Endian};
+            EndianReader reader = new EndianReader(_rawRiff) { Endian = Endian };
             reader.Position = Offset;
             //Parse RIFF header a bit
             var riffTag = reader.ReadStringASCII(4); //RIFF
@@ -1227,27 +1228,27 @@ namespace ME3Explorer.Soundplorer
             if (riffFormat == 0xFFFF)
             {
                 double seconds = 0;
-                
+
                 //if (extraSize == 0x30 || extraSize == 0x06) //0x30 on PC, 0x06 on PS3 ?
                 //{
-                    //find 'vorb' chunk (ME2)
-                    reader.Seek(extraSize, SeekOrigin.Current);
-                    var chunkName = reader.ReadStringASCII(4);
-                    uint numSamples = 1; //to prevent division by 0
-                    if (chunkName == "vorb")
-                    {
-                        //ME2 Vorbis
-                        var vorbsize = reader.ReadInt32();
-                        numSamples = reader.ReadUInt32();
-                    }
-                    else if (chunkName == "data")
-                    {
-                        //ME3 Vorbis
-                        var numSamplesOffset = reader.Position = fmtPos + 0x18;
-                        numSamples = reader.ReadUInt32();
-                    }
+                //find 'vorb' chunk (ME2)
+                reader.Seek(extraSize, SeekOrigin.Current);
+                var chunkName = reader.ReadStringASCII(4);
+                uint numSamples = 1; //to prevent division by 0
+                if (chunkName == "vorb")
+                {
+                    //ME2 Vorbis
+                    var vorbsize = reader.ReadInt32();
+                    numSamples = reader.ReadUInt32();
+                }
+                else if (chunkName == "data")
+                {
+                    //ME3 Vorbis
+                    var numSamplesOffset = reader.Position = fmtPos + 0x18;
+                    numSamples = reader.ReadUInt32();
+                }
 
-                    seconds = (double)numSamples / sampleRate;
+                seconds = (double)numSamples / sampleRate;
                 //}
                 //else
                 //{
@@ -1389,6 +1390,14 @@ namespace ME3Explorer.Soundplorer
             get => _displayString;
             set => SetProperty(ref _displayString, value);
         }
+
+        public string _tlkString;
+        public string TLKString
+        {
+            get => _tlkString;
+            set => SetProperty(ref _tlkString, value);
+        }
+
         public SoundplorerExport(ExportEntry export)
         {
             Export = export;
@@ -1417,6 +1426,23 @@ namespace ME3Explorer.Soundplorer
             {
                 case "WwiseStream":
                     {
+                        // Check if there is TLK string in the export name
+                        var splits = Export.ObjectName.Name.Split('_',',');
+                        for (int i = splits.Length - 1; i > 0; i--)
+                        {
+                            //backwards is faster
+                            if (int.TryParse(splits[i], out var parsed))
+                            {
+                                //Lookup TLK
+                                var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, Export.FileRef);
+                                if (data != "No Data")
+                                {
+                                    TLKString = data;
+                                }
+                            }
+                        }
+
+
                         WwiseStream w = Export.GetBinaryData<WwiseStream>();
                         string afcPath = w.GetPathToAFC();
                         if (afcPath == "")
