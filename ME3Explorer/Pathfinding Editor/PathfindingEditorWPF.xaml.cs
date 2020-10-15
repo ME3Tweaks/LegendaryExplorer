@@ -581,7 +581,7 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             AllowRefresh = true;
-            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName=>LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
             zoomController = new PathingZoomController(graphEditor);
             SharedPathfinding.LoadClassesDB();
             List<PathfindingDB_ExportType> types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
@@ -3317,7 +3317,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 ActiveNodes_ListBox.SelectedItem = newNode;
             }
         }
-        private ExportEntry cloneNode(ExportEntry nodeEntry)
+        private ExportEntry cloneNode(ExportEntry nodeEntry, int locationSetOffset = 0)
         {
             if (nodeEntry != null)
             {
@@ -3427,7 +3427,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
 
                     var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
-                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
+                    SharedPathfinding.SetLocation(newNodeEntry, (float)oldloc.X + 50 + locationSetOffset, (float)oldloc.Y + 50 + locationSetOffset, (float)oldloc.Z);
 
                     SharedPathfinding.GenerateNewNavGUID(newNodeEntry);
                     //Add cloned node to persistentlevel
@@ -4897,5 +4897,24 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         public string Toolname => "PathfindingEditor";
+
+        private void MultiCloneNode_Clicked(object sender, RoutedEventArgs e)
+        {
+            var result = PromptDialog.Prompt(this, "How many times do you want to clone this node?", "Multiple node cloning", "2", true);
+            if (int.TryParse(result, out var howManyTimes) && howManyTimes > 0)
+            {
+                var nodeToClone = ActiveNodes_ListBox.SelectedItem as ExportEntry;
+                ExportEntry lastNewNode = null;
+                for (int i = 0; i < howManyTimes; i++)
+                {
+                    lastNewNode = cloneNode(nodeToClone, i * 50);
+                }
+
+                if (lastNewNode != null)
+                {
+                    ActiveNodes_ListBox.SelectedItem = lastNewNode;
+                }
+            }
+        }
     }
 }

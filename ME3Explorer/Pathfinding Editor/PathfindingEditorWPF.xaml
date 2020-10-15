@@ -36,6 +36,7 @@
             <MenuItem Header="Break Connection" Click="BreakSplineConnectionClick" ToolTip="Breaks connection to another SplineActor" 
                       Visibility="{Binding SplineNodeSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
+            <MenuItem Header="Multi clone node" Click="MultiCloneNode_Clicked" ToolTip="Create multiple clones of this node" />
             <MenuItem Header="Remove from level" Command="{Binding RemoveFromLevelCommand}" ToolTip="Removes this object from the level"/>
             <MenuItem Header="Trash and Remove from level" Command="{Binding TrashAndRemoveFromLevelCommand}" ToolTip="Removes this object from the level and Trashes it"/>
             <MenuItem Header="Generate new nav GUID" Click="RegenerateGUID_Clicked" ToolTip="Generates a new GUID for this navigation point. If there are external nodes referencing this node, they will no longer work"/>
