@@ -494,6 +494,18 @@ namespace ME3Script.Compiling
             return true;
         }
 
+        public bool VisitNode(ErrorStatement node)
+        {
+            //an ast with errors should never be passed to the compiler
+            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+        }
+
+        public bool VisitNode(ErrorExpression node)
+        {
+            //an ast with errors should never be passed to the compiler
+            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+        }
+
         private static Function GetAffector(Expression expr) =>
             expr switch
             {

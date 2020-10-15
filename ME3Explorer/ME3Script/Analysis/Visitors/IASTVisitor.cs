@@ -44,6 +44,8 @@ namespace ME3Script.Analysis.Visitors
         bool VisitNode(Goto node);
 
         bool VisitNode(ExpressionOnlyStatement node);
+        bool VisitNode(ErrorStatement node);
+        bool VisitNode(ErrorExpression node);
 
         bool VisitNode(InOpReference node);
         bool VisitNode(PreOpReference node);

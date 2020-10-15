@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
@@ -401,8 +403,32 @@ namespace ME3Explorer.ME3Script.IDE
                 var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                 ast.AcceptVisitor(codeBuilder);
                 (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
-                Dispatcher.Invoke(() => textEditor.SyntaxHighlighting = syntaxInfo);
+                Dispatcher.Invoke(() =>
+                {
+                    textEditor.SyntaxHighlighting = syntaxInfo;
+                });
+                RootNode = ast;
                 ScriptText = text;
+                Dispatcher.Invoke(() =>
+                {
+                    if (RootNode is Function func)
+                    {
+                        textEditor.IsReadOnly = false;
+                        int numLocals = func.Locals.Count;
+                        int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
+                        var segments = new TextSegmentCollection<TextSegment>
+                        {
+                            new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) },
+                            new TextSegment { StartOffset = Document.GetOffset(Document.LineCount, 0), Length = 1}
+                        };
+                        textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
+                    }
+                    else
+                    {
+                        textEditor.IsReadOnly = true;
+                    }
+                });
+
             }
             catch (Exception e) when (!App.IsDebug)
             {

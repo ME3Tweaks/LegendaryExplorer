@@ -153,7 +153,7 @@ namespace ME3Script
                     {
                         astNode = CompileFunctionBodyAST(parent, scriptText, func, log, lib);
                     }
-                    catch (ParseError)
+                    catch (ParseException)
                     {
                         log.LogError("Parse failed!");
                         return (astNode, log);
@@ -174,11 +174,16 @@ namespace ME3Script
                             {
                                 log.LogMessage("Compiled!");
                             }
+                            else
+                            {
+                                log.LogError("Compilation failed!");
+                            }
                             return (astNode, log);
                         }
                         catch (Exception exception)
                         {
-                            log.LogError(exception.Message);
+                            log.LogError($"Compilation failed! Exception: {exception}");
+                            return (astNode, log);
                         }
                     }
                 }

@@ -10,6 +10,7 @@ using static ME3Script.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
 using ME3Script.Analysis.Symbols;
+using ME3Script.Lexing.Tokenizing;
 
 namespace ME3Script.Analysis.Visitors
 {
@@ -58,9 +59,11 @@ namespace ME3Script.Analysis.Visitors
 
         public TOutput GetOutput() => Formatter.GetOutput();
 
-        private void Write(string text = "", EF formatType = EF.None) => Formatter.Write(text, formatType);
+        private EF? ForcedFormatType = null;
 
-        private void Append(string text, EF formatType = EF.None) => Formatter.Append(text, formatType);
+        private void Write(string text = "", EF formatType = EF.None) => Formatter.Write(text, ForcedFormatType ?? formatType);
+
+        private void Append(string text, EF formatType = EF.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
         private void Space() => Formatter.Space();
 
         private void ForceAlignment() => Formatter.ForceAlignment();
@@ -923,6 +926,56 @@ namespace ME3Script.Analysis.Visitors
             // expression;
             Write();
             node.Value.AcceptVisitor(this);
+            return true;
+        }
+
+        public bool VisitNode(ErrorStatement node)
+        {
+            // expression;
+            Write();
+            if (node.InnerStatement != null)
+            {
+                ForcedFormatType = EF.ERROR;
+                node.InnerStatement.AcceptVisitor(this);
+                ForcedFormatType = null;
+            }
+            else if (node.ErrorTokens != null)
+            {
+                foreach (Token<string> errorToken in node.ErrorTokens)
+                {
+                    Append(errorToken.Value, EF.ERROR);
+                }
+            }
+            else
+            {
+                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                Append(new string('_', len), EF.ERROR);
+            }
+
+            return true;
+        }
+
+        public bool VisitNode(ErrorExpression node)
+        {
+            if (node.InnerExpression != null)
+            {
+                ForcedFormatType = EF.ERROR;
+                node.InnerExpression.AcceptVisitor(this);
+                ForcedFormatType = null;
+            }
+            else if (node.ErrorTokens != null)
+            {
+                foreach (Token<string> errorToken in node.ErrorTokens)
+                {
+                    Append(errorToken.Value, EF.ERROR);
+                }
+            }
+            else
+            {
+                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                Append(new string('_', len), EF.ERROR);
+            }
+
             return true;
         }
 

@@ -332,6 +332,7 @@
     <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
     <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
     <Compile Include="ME3Script\Language\Tree\EnumValue.cs" />
+    <Compile Include="ME3Script\Language\Tree\ErrorProductions.cs" />
     <Compile Include="ME3Script\Language\Tree\Expression.cs" />
     <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\FloatLiteral.cs" />
