@@ -14,9 +14,9 @@ variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinRelease'
-  appMajorMin: '4.2'
-  appMajor: '4'
-  appMinor: '2'
+  appMajorMin: '5.0'
+  appMajor: '5'
+  appMinor: '0'
 
 steps:
 # Change artifact name when the version major/minor changes
