@@ -61,7 +61,7 @@ namespace ME3ExplorerCore.MEDirectories
                 if (test != null)
                 {
                     gamePath = test;
-                    CoreLibSettings.Instance.ME2Directory = gamePath;
+                    CoreLibSettings.Instance.ME3Directory = gamePath;
                     return;
                 }
 
@@ -70,7 +70,7 @@ namespace ME3ExplorerCore.MEDirectories
                 if (gamePath != null)
                 {
                     gamePath += Path.DirectorySeparatorChar;
-                    CoreLibSettings.Instance.ME2Directory = gamePath;
+                    CoreLibSettings.Instance.ME3Directory = gamePath;
                 }
 #endif
             }
