@@ -468,7 +468,11 @@
                             Check the menus for keyboard shortcuts. Check out CTRL+P: It pops out the currently viewed tab!
                             <LineBreak/>
                             <LineBreak/>
-
+                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="View the Package Editor basics wiki article"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
                             - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">

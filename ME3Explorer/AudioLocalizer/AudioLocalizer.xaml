@@ -10,7 +10,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
-        Title="AudioLocalizer" Height="450" Width="800">
+        Title="Audio Localizer" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>

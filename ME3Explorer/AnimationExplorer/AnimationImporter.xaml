@@ -12,7 +12,7 @@
         Closing="AnimationImporter_OnClosing"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
-        Title="AnimationImporter" Height="600" Width="900" Loaded="AnimationImporter_OnLoaded">
+        Title="Animation Importer/Exporter" Height="600" Width="900" Loaded="AnimationImporter_OnLoaded">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
