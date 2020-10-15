@@ -78,13 +78,13 @@ namespace ME3ExplorerCore.Packages
                         if (!header1.SequenceEqual(header2))
                         {
                             changedExports.Add(new EntryStringPair(exp1,
-                                $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
+                                $"Export header has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName})"));
                         }
 
                         if (!exp1.Data.SequenceEqual(exp2.Data))
                         {
                             changedExports.Add(new EntryStringPair(exp1,
-                                $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath}"));
+                                $"Export data has changed: {exp1.UIndex} {exp1.InstancedFullPath} ({exp1.ClassName})"));
                         }
                     }
 
