@@ -149,7 +149,6 @@ namespace ME3Explorer.ME1TlkEditor
             CurrentLoadedExport = exportEntry;
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
             FileModified = false;
-
         }
 
         public string CurrentLoadedFile { get; set; }
@@ -157,7 +156,6 @@ namespace ME3Explorer.ME1TlkEditor
         public override void UnloadExport()
         {
             FileModified = false;
-
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -377,7 +375,6 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadFile(string filepath)
         {
-            //throw new NotImplementedException();
             UnloadExport();
             CurrentLoadedFile = filepath;
             CurrentME2ME3TalkFile = new TalkFile();

@@ -97,13 +97,28 @@ namespace ME3Explorer.SharedUI
         public ICommand SaveAsCommand { get; set; }
         public ICommand LoadFileCommand { get; set; }
         public ICommand OpenFileCommand { get; set; }
+        public ICommand ReloadCurrentExportCommand { get; set; }
         private void LoadCommands()
         {
             SaveCommand = new GenericCommand(SavePackage, CanSave);
             SaveAsCommand = new GenericCommand(SavePackageAs, CanSave);
             LoadFileCommand = new GenericCommand(LoadFile, CanLoadFile);
             OpenFileCommand = new GenericCommand(OpenFile, CanLoadFile);
+            ReloadCurrentExportCommand = new GenericCommand(ReloadCurrentExport, IsExportLoaded);
+        }
 
+        private void ReloadCurrentExport()
+        {
+            var exp = HostedControl.CurrentLoadedExport;
+            HostedControl.UnloadExport();
+            HostedControl.LoadExport(exp);
+        }
+
+        private bool IsExportLoaded()
+        {
+            if (HostedControl is FileExportLoaderControl felc && felc.LoadedFile != null) return false;
+            if (HostedControl.CurrentLoadedExport != null) return true;
+            return false;
         }
 
         private bool CanSave()

@@ -33,6 +33,7 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             <MenuItem Header="_File" Padding="4">
+                <MenuItem Header="Reload current export" InputGestureText="Ctrl+R" Command="{Binding ReloadCurrentExportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Open" x:Name="OpenFileMenuItem" InputGestureText="Ctrl+O" Command="{Binding OpenFileCommand}" />
                 <MenuItem Header="Save" x:Name="SaveFileMenuItem" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}" />
                 <MenuItem Header="Save As" x:Name="SaveFileAsMenuItem" InputGestureText="Ctrl+Shift+S" Command="{Binding SaveAsCommand}" />
