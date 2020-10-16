@@ -4,8 +4,9 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
-trigger:
-- Beta
+# Trigger on all branches. Only some branches however will run certain steps
+#trigger:
+#- *
 
 pool:
   vmImage: 'windows-latest'
@@ -122,7 +123,7 @@ steps:
 # Notify ME3Tweaks that a new beta build has been built
 - task: PowerShell@2
   displayName: 'Notify ME3Tweaks'
-  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
   inputs:
     targetType: 'inline'
     script: |
@@ -133,7 +134,7 @@ steps:
 # NOT PULL REQUEST DISCORD WEBHOOK
 - task: ado-discord-webhook@1
   displayName: 'Discord - New official nightly'
-  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'Beta'))
   inputs:
     channelId: '$(discord_channel_id)'
     webhookKey: '$(discord_webhook_key)'
