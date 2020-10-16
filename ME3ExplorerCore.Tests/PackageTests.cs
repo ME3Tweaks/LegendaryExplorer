@@ -175,16 +175,19 @@ namespace ME3ExplorerCore.Tests
             {
                 if (p.RepresentsPackageFilePath())
                 {
-                    // Do not use package caching in tests
-                    Console.WriteLine($"Opening package {p}");
                     (var game, var platform) = GlobalTest.GetExpectedTypes(p);
 
                     // Use to skip
-                    if (platform != MEPackage.GamePlatform.PC) continue;
-                    if (game != MEGame.ME3) continue;
+                    //if (platform == MEPackage.GamePlatform.P) continue;
+                    //if (game >= MEGame.ME3) continue;
+
+                    Console.WriteLine($"Opening package {p}");
+
+                    // Do not use package caching in tests
                     var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
                     foreach (var export in originalLoadedPackage.Exports.Where(x => x.ClassName == "Function" || x.ClassName == "State"))
                     {
+                        //Console.WriteLine($" >> Decompiling {export.InstancedFullPath}");
                         var data = export.Data;
                         var funcBin = ObjectBinary.From<UFunction>(export); //parse it out 
                         if (export.FileRef.Game == MEGame.ME3 || export.FileRef.Platform == MEPackage.GamePlatform.PS3)
@@ -192,7 +195,6 @@ namespace ME3ExplorerCore.Tests
                             var func = new Function(data, export);
                             func.ParseFunction();
                             func.GetSignature();
-
                             if (export.ClassName == "Function")
                             {
                                 var nativeBackOffset = export.FileRef.Game < MEGame.ME3 ? 7 : 6;

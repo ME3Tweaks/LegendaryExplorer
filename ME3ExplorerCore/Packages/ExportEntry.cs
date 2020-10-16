@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -477,6 +478,11 @@ namespace ME3ExplorerCore.Packages
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
+
+        /// <summary>
+        /// Returns a read-only copy of Data. This is a much more efficient than cloning with Data. Experimentally supported for now
+        /// </summary>
+        public ReadOnlyCollection<byte> DataReadOnly => Array.AsReadOnly(_data);
 
         /// <summary>
         /// RETURNS A CLONE

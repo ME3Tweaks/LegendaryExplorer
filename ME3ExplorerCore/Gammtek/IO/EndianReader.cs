@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -72,9 +73,9 @@ namespace ME3ExplorerCore.Gammtek.IO
             : this(input, Encoding.UTF8)
         {
         }/// <summary>
-        ///     Initializes a new instance of the <see cref="EndianReader" /> class
-        ///     using a MemoryStream.
-        /// </summary>
+         ///     Initializes a new instance of the <see cref="EndianReader" /> class
+         ///     using a MemoryStream.
+         /// </summary>
         public EndianReader()
             : this(new MemoryStream(), Encoding.UTF8)
         {
@@ -639,6 +640,23 @@ namespace ME3ExplorerCore.Gammtek.IO
         }
 
         /// <summary>
+        /// Reads an int32 from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static int ToInt32(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
+        {
+
+            var readMagic = (buffer[offset] << 24) + (buffer[offset + 1] << 16) + (buffer[offset + 2] <<
+                            8) + buffer[offset + 3];
+            if (IO.Endian.Native != endianness)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
         /// Reads an int16 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
@@ -669,12 +687,35 @@ namespace ME3ExplorerCore.Gammtek.IO
         }
 
         /// <summary>
-        /// Reads an uint32 from the buffer at the specified position with the specified endianness.
+        /// Reads an uint64 from the buffer at the specified position with the specified endianness.
         /// </summary>
         /// <returns></returns>
         public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt64(buffer, offset);
+            if (IO.Endian.Native != endianness)
+            {
+                //swap
+                return Endian.Native.To(Endian.NonNative).Convert(readMagic);
+            }
+            return readMagic;
+        }
+
+        /// <summary>
+        /// Reads an ulong from the buffer at the specified position with the specified endianness.
+        /// </summary>
+        /// <returns></returns>
+        public static ulong ToUInt64(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
+        {
+
+            ulong readMagic = (ulong) ((buffer[offset] << 56) + 
+                              (buffer[offset + 1] << 48) +
+                              (buffer[offset + 2] << 40) +
+                              (buffer[offset + 3] << 32) +
+                              (buffer[offset + 4] << 24) +
+                              (buffer[offset + 5] << 16) +
+                              (buffer[offset + 6] << 8) +
+                              buffer[offset + 7]);
             if (IO.Endian.Native != endianness)
             {
                 //swap

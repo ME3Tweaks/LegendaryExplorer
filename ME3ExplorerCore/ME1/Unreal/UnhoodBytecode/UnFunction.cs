@@ -96,7 +96,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             Tokens = new List<BytecodeSingularToken>();
             Statements = ReadBytecode(out var bytecodeReader);
 
-            //UI only
+            // UI only
             // Man this code is bad
             // sorry
             try
@@ -119,23 +119,29 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Excpetion..");
+                Debug.WriteLine("Exception..");
             }
-
-
 
             NameReferences = bytecodeReader.NameReferences;
             EntryReferences = bytecodeReader.EntryReferences;
-            List<ExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
-            childrenReversed.Reverse();
+            //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
+            var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+            var children = new List<ExportEntry>();
+            while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+            {
+                children.Add(parsingExp);
+                //childIdx = EndianReader.ToInt32(parsingExp.DataReadOnly, 0x10, Export.FileRef.Endian);
+                childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, Export.FileRef.Endian);
+            }
 
             //Get local children of this function
-            foreach (ExportEntry export in childrenReversed)
+            foreach (ExportEntry export in children)
             {
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
                 {
                     UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
+                    //UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.DataReadOnly, 0x18, export.FileRef.Endian);
                     if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                     {
                         if (paramCount > 0)
@@ -145,6 +151,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
+                            //var uindexOfOuter = EndianReader.ToInt32(export.DataReadOnly, export.DataSize - 4, export.FileRef.Endian);
                             var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
@@ -272,10 +279,12 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         private string GetReturnType()
         {
+            //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);
             var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
 
             while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
             {
+                //var data = parsingExp.DataReadOnly;
                 var data = parsingExp.Data;
                 if (parsingExp.ObjectName == "ReturnValue")
                 {
@@ -292,7 +301,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
                     return parsingExp.ClassName;
                 }
-                childIdx = EndianReader.ToInt32(data, 0x18, Export.FileRef.Endian);
+                childIdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
             }
 
             return null;
