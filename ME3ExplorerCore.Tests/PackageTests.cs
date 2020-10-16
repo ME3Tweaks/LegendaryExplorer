@@ -155,6 +155,16 @@ namespace ME3ExplorerCore.Tests
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different sized byte array than the input. Original size: {original.Length}, reserialized: {changed.Length}, difference: 0x{(changed.Length - original.Length):X8} bytes. File: {p}");
                             Assert.IsTrue(original.SequenceEqual(changed),
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
+
+                            bin.GetNames(game);
+                            var uindexes = bin.GetUIndexes(game);
+                            foreach (var uindex in uindexes)
+                            {
+                                if (uindex.Item1 != 0)
+                                {
+                                    originalLoadedPackage.GetEntry(uindex.Item1);
+                                }
+                            }
                         }
                     }
                 }
