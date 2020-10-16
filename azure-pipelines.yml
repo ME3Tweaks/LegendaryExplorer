@@ -18,6 +18,7 @@ variables:
   appMajorMin: '5.0'
   appMajor: '5'
   appMinor: '0'
+  disable.coverage.autogenerate: 'true'
 
 steps:
 # Change artifact name when the version major/minor changes
