@@ -47,13 +47,19 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 var function = CachedNativeFunctionInfo.GetNativeFunction(NativeIndex); //this could be done dynamically. But if you're able to add native functions to the exe you probably know more about the engine than me
                 if (function != null)
                 {
-                    opcodetext = function.Name;
+                    opcodetext = $"NATIVE_{function.Name}";
                 }
+                //else
+                //{
+                //    throw new Exception($"Native opcode not found for index {NativeIndex}!");
+                //}
             }
+            if (opcodetext == "91") Debugger.Break();
             opcodetext = $"[{((byte)OpCode):X2}] {opcodetext}";
             bcst.CurrentStack = _text;
             bcst.OpCodeString = opcodetext;
             bcst.StartPos = _offset + scriptStartOffset;
+
             return bcst;
         }
 
@@ -329,7 +335,8 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             EX_LocalOutVariable = 0x48,
             EX_DefaultParmValue = 0x49,
             EX_EmptyParmValue = 0x4A,
-            EX_InstanceDelegate = 0x4B,
+            EX_InstanceDelegate = 0x4B, //PC ONLY!
+            EX_ME1XBox_DynArrayAdd = 0x4B,
             EX_StringRefConst = 0x4F,
             EX_GoW_DefaultValue = 0x50,
             EX_InterfaceContext = 0x51,
@@ -466,7 +473,11 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_Switch:
                     {
-                        byte b1 = _reader.ReadByte();
+                        if (_package.Platform != MEPackage.GamePlatform.Xenon || _package.Game != MEGame.ME1)
+                        {
+                            //ME1 Xbox this is occurs before the EX_Switch token...
+                            _reader.ReadByte(); //This is a workaround for EX_Switch, maybe
+                        }
                         BytecodeToken switchExpr = ReadNext();
                         return new SwitchToken(switchExpr.ToString(), switchExpr, readerpos);
                     }
@@ -658,7 +669,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     {
                         var field = ReadEntryRef(out var _1);
                         var structType = ReadEntryRef(out var _2);
-                        int wSkip = _reader.ReadInt16();
+                        int wSkip = field.FileRef.Platform == MEPackage.GamePlatform.Xenon ? _reader.ReadByte() : _reader.ReadInt16(); //ME1 Xenon seems to only use 1 byte?
                         var token = ReadNext();
                         if (IsInvalid(token)) return token;
                         return Token($"{token}.{field.ObjectName.Instanced}", readerpos);
@@ -775,6 +786,8 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_DynArrayInsert:
                     return ReadDynArray2ArgMethod("Insert", false);
 
+                case ME1OpCodes.EX_ME1XBox_DynArrayAdd when _package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1:
+                // Dybuk discovered that DynArrayAdd is 0x4B in ME1 Xbox. Not sure about ME2 PC uses different opcode
                 case ME1OpCodes.EX_DynArrayAdd:
                     return ReadDynArray1ArgMethod("Add");
 
@@ -799,7 +812,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     }
 
                 case ME1OpCodes.EX_DelegateProperty:
-                case ME1OpCodes.EX_InstanceDelegate:
+                case ME1OpCodes.EX_InstanceDelegate when _package.Platform != MEPackage.GamePlatform.Xenon: // might need scoped to ME1 only
                     return Token(ReadName(), readerpos);
 
                 case ME1OpCodes.EX_DelegateFunction:
@@ -872,6 +885,10 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
             var array = ReadNext();
             if (IsInvalid(array)) return array;
+            if (_package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1)
+            {
+                _reader.ReadByte(); //This is a workaround for EX_Switch, maybe
+            }
             //var exprSize = _reader.ReadInt16();
             var indexer = ReadNext();
             if (IsInvalid(indexer)) return WrapErrToken(array + "." + methodName + "(" + indexer, indexer);
@@ -1090,7 +1107,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 ReadNext();  // end of parms
                 return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos, nativeIndex);
             }
-            return ReadCall(pos, function.Name);
+            var totalToken = ReadCall(pos, function.Name);
+            totalToken.NativeIndex = nativeIndex;
+            return totalToken;
         }
     }
 

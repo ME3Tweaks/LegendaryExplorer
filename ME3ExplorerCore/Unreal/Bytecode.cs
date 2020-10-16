@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
@@ -97,18 +98,19 @@ namespace ME3ExplorerCore.Unreal
              { 0x57, "EX_DynArrayInsertItem" },
              { 0x58, "EX_DynArrayIterator" },
              { 0x59, "EX_DynArraySort" },
-             { 0x5E, "EX_LocalObjectVariable" },
+             { 0x5A, "EX_FilterEditorOnly" },
              { 0x5B, "EX_LocalFloatVariable" },
-             { 0x61, "EX_InstanceByteVariable" },
-             { 0x62, "EX_InstanceObjectVariable" },
              { 0x5C, "EX_LocalIntVariable" },
-             { 0x65, "EX_NamedFunction" },
-             { 0x64, "EX_OptIfInstance" },
-             { 0x63, "EX_OptIfLocal" },
              { 0x5D, "EX_LocalByteVariable" },
+             { 0x5E, "EX_LocalObjectVariable" },
              { 0x5F, "EX_InstanceFloatVariable" },
              { 0x60, "EX_InstanceIntVariable" },
-             { 0x5A, "EX_FilterEditorOnly" },
+             { 0x61, "EX_InstanceByteVariable" },
+             { 0x62, "EX_InstanceObjectVariable" },
+             { 0x63, "EX_OptIfLocal" },
+             { 0x64, "EX_OptIfInstance" },
+             { 0x65, "EX_NamedFunction" },
+
              { 0x0218, "NATIVE_SaveConfig" },
              { 0x0076, "NATIVE_Disable" },
              { 0x0075, "NATIVE_Enable" },
@@ -423,6 +425,26 @@ namespace ME3ExplorerCore.Unreal
 
         enum ENatives
         {
+            #region PS3 Only (Only checked against ME1)
+            NATIVE_PS3_Concat_StrStr = 0x70,
+            NATIVE_PS3_GotoState = 0x71,
+            NATIVE_PS3_EqualEqual_ObjectObject = 0x72,
+            NATIVE_PS3_Less_StrStr = 0x73,
+            NATIVE_PS3_Greater_StrStr = 0x74,
+            NATIVE_PS3_Enable = 0x75,
+            NATIVE_PS3_Disable = 0x76,
+            NATIVE_PS3_NotEqual_ObjectObject = 0x77,
+            NATIVE_PS3_LessEqual_StrStr = 0x78,
+            NATIVE_PS3_GreaterEqual_StrStr = 0x79,
+            NATIVE_PS3_EqualEqual_StrStr = 0x7A,
+            NATIVE_PS3_NotEqual_StrStr = 0x7B,
+            NATIVE_PS3_ComplementEqual_StrStr = 0x7C,
+            NATIVE_PS3_Len = 0x7D,
+            NATIVE_PS3_InStr = 0x7E,
+            NATIVE_PS3_Mid = 0x7F,
+            NATIVE_PS3_Left = 0x80,
+            #endregion
+
             NATIVE_SaveConfig = 0x0218,
             NATIVE_Disable = 0x0076,
             NATIVE_Enable = 0x0075,
@@ -445,6 +467,7 @@ namespace ME3ExplorerCore.Unreal
 
             NATIVE_Sleep = 0x0100, //ME3 Engine.pcc
             NATIVE_ClassIsChildOf = 0x0102,
+            NATIVE_PS3_ClassIsChildOf = 0x0258,
             NATIVE_NotEqual_ObjectObject = 0x0281,
             NATIVE_EqualEqual_ObjectObject = 0x0280,
             NATIVE_Repl = 0x00C9,
@@ -715,25 +738,32 @@ namespace ME3ExplorerCore.Unreal
         {
             var res = new List<Token>();
             int pos = start;
-           
-            Token t = ReadToken(pos, export);
-            res.Add(t);
-
-            while (!t.stop)
+            try
             {
-                try
-                {
-                    pos += t.raw.Length;
-                    t = ReadToken(pos, export);
-                    res.Add(t);
-                }
-                catch (Exception e)
-                {
-                    res.Add(new Token { text = "Exception: " + e.Message, raw = new byte[] { } });
-                }
-            }
+                Token t = ReadToken(pos, export);
+                res.Add(t);
 
-            // rest is part of footer
+                while (!t.stop)
+                {
+                    try
+                    {
+                        pos += t.raw.Length;
+                        t = ReadToken(pos, export);
+                        res.Add(t);
+                    }
+                    catch (Exception e)
+                    {
+                        res.Add(new Token { text = "Exception: " + e.Message, raw = new byte[] { } });
+                    }
+                }
+
+                // rest is part of footer
+            }
+            catch (Exception e)
+            {
+                // ????
+                res.Add(new Token() { text = $"Final parsing pos: 0x{pos:X5}, Exception parsing bytecode: {e.Message}", raw = new byte[] { } });
+            }
 
             return res;
         }
@@ -753,7 +783,8 @@ namespace ME3ExplorerCore.Unreal
             byte t = memory[start];
             Token newTok = new Token { op = t };
             int end = start;
-            if (t <= 0x65)
+            if ((t <= 0x65 && export.Game == MEGame.ME3) 
+                || (t < 0x60 && export.FileRef.Platform == MEPackage.GamePlatform.PS3 && export.FileRef.Game <= MEGame.ME2)) //PS3 uses ME3 engine but ME1/ME2 use PC native index which are different
             {
                 switch (t)
                 {
@@ -1267,7 +1298,7 @@ namespace ME3ExplorerCore.Unreal
                         break;
                 }
             }
-            else if (t < 0x70)
+            else if (t < (export.Game < MEGame.ME3 ? 0x60 : 0x70)) //PS3 uses 0x60 as native table
             {
                 //Never reached?
                 newTok = ReadExtNative(start, export);
@@ -2430,8 +2461,9 @@ namespace ME3ExplorerCore.Unreal
                     //}
 
                     pos += 1;//skip EndFuncParams
-                    //t.text += ")";
+                             //t.text += ")";
                     break;
+                //case (int)ENatives.NATIVE_PS3_ClassIsChildOf when export.FileRef.Platform == MEPackage.GamePlatform.PS3: //0x0258
                 case (int)ENatives.NATIVE_ClassIsChildOf:// 0x0102
                     t.text = "ClassIsChildOf(";
                     count = 0;
@@ -3137,6 +3169,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_Concat_StrStr:
                 case (int)ENatives.NATIVE_Concat_StrStr: // 0x0258
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3146,6 +3179,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = a.text + " $ " + b.text;
                     break;
+                case (int)ENatives.NATIVE_PS3_Less_StrStr:
                 case (int)ENatives.NATIVE_Less_StrStr: // 0x0259
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3155,6 +3189,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " < " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_Greater_StrStr:
                 case (int)ENatives.NATIVE_Greater_StrStr: // 0x025A
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3164,6 +3199,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " > " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_LessEqual_StrStr:
                 case (int)ENatives.NATIVE_LessEqual_StrStr: // 0x025B
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3173,6 +3209,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " <= " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_GreaterEqual_StrStr:
                 case (int)ENatives.NATIVE_GreaterEqual_StrStr: // 0x025C
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3182,6 +3219,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " >= " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_EqualEqual_StrStr:
                 case (int)ENatives.NATIVE_EqualEqual_StrStr: // 0x025D
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3200,6 +3238,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " != " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_ComplementEqual_StrStr:
                 case (int)ENatives.NATIVE_ComplementEqual_StrStr: //0x025F  
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3209,6 +3248,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = a.text + " ~= " + b.text;
                     break;
+                case (int)ENatives.NATIVE_PS3_GotoState:
                 case (int)ENatives.NATIVE_GotoState: // 0x026C
                     t.text = "GotoState(";
                     count = 0;
@@ -3228,6 +3268,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_EqualEqual_ObjectObject:
                 case (int)ENatives.NATIVE_EqualEqual_ObjectObject: // 0x0280
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3237,7 +3278,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " == " + b.text + ")";
                     break;
-                case 0x77: //PS3 ME1 NotEqual ObjectObject????
+                case (int)ENatives.NATIVE_PS3_NotEqual_ObjectObject:
                 case (int)ENatives.NATIVE_NotEqual_ObjectObject: // 0x0281
                     a = ReadToken(pos, export);
                     pos += a.raw.Length;
@@ -3247,6 +3288,7 @@ namespace ME3ExplorerCore.Unreal
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " != " + b.text + ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_Len:
                 case (int)ENatives.NATIVE_Len: // 0x028A
                     t.text = "Len(";
                     count = 0;
@@ -3266,6 +3308,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_InStr:
                 case (int)ENatives.NATIVE_InStr: // 0x028B
                     t.text = "InStr(";
                     count = 0;
@@ -3285,6 +3328,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_Mid:
                 case (int)ENatives.NATIVE_Mid: // 0x028C
                     t.text = "Mid(";
                     count = 0;
@@ -3304,6 +3348,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     t.text += ")";
                     break;
+                case (int)ENatives.NATIVE_PS3_Left:
                 case (int)ENatives.NATIVE_Left: // 0x028D
                     t.text = "Left(";
                     count = 0;
@@ -4848,7 +4893,10 @@ namespace ME3ExplorerCore.Unreal
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
         public int TokenIndex { get; set; }
+        private string str;
+
         public string OpCodeString { get; set; }
+
         public string CurrentStack { get; set; }
         public int StartPos { get; set; }
 
