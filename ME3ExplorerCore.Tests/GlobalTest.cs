@@ -48,6 +48,8 @@ namespace ME3ExplorerCore.Tests
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
         public static string GetTestMountsdirectory() => Path.Combine(GetTestDataDirectory(), "mounts");
         public static string GetTestTLKdirectory() => Path.Combine(GetTestDataDirectory(), "tlk");
+        public static string GetTestDataMiscDirectory() => Path.Combine(GetTestDataDirectory(), "misc");
+        public static string GetTestCRCdirectory() => Path.Combine(GetTestDataMiscDirectory(), "crc");
 
 
         public static (MEGame expectedGame, MEPackage.GamePlatform expectedPlatform) GetExpectedTypes(string p)
