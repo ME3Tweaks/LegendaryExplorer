@@ -57,6 +57,7 @@ namespace ME3Explorer.PackageEditor
                 OnPropertyChanged(nameof(VLCNotInstalled));
             }
         }
+
         public bool VLCNotInstalled => !VLCIsInstalled;
         private bool _isexternallyCached;
         public bool IsExternallyCached { get => _isexternallyCached; set => SetProperty(ref _isexternallyCached, value); }
@@ -107,6 +108,13 @@ namespace ME3Explorer.PackageEditor
         {
             get => (bool)GetValue(ViewerModeOnlyProperty);
             set => SetValue(ViewerModeOnlyProperty, value);
+        }
+
+        private int _movieCRC;
+        public int MovieCRC
+        {
+            get => _movieCRC;
+            set => SetProperty(ref _movieCRC, value);
         }
         /// <summary>
         /// Set to true to hide all of the editor controls
@@ -242,6 +250,7 @@ namespace ME3Explorer.PackageEditor
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            MovieCRC = 0; //reset
             if (VLCIsInstalled)
             {
                 MoviePlayer.Stop();
@@ -268,9 +277,14 @@ namespace ME3Explorer.PackageEditor
                 AvailableTFCNames.Add(TfcName);
             }
             TextureCacheComboBox.SelectedItem = TfcName;
+            Task.Run(() =>
+            {
+                MovieCRC = ParallelCRC.Compute(GetMovie().ToArray());
+            });
         }
         public override void UnloadExport()
         {
+            MovieCRC = 0;
             if (VLCIsInstalled)
             {
                 MoviePlayer.Stop();
@@ -1003,8 +1017,15 @@ namespace ME3Explorer.PackageEditor
             Process.Start("https://www.videolan.org/vlc/");
         }
 
+
         #endregion
 
-
+        private void CRC_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (MovieCRC != 0 && e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+            {
+                Clipboard.SetText(MovieCRC.ToString("X8"));
+            }
+        }
     }
 }
