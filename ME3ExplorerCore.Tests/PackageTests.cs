@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Tests.helpers;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ME3ExplorerCore.Tests
@@ -14,7 +19,7 @@ namespace ME3ExplorerCore.Tests
     public class PackageTests
     {
         [TestMethod]
-        public void TestPackages()
+        public void TestPlatformsGamesAndProperties()
         {
             GlobalTest.Init();
             // Loads compressed packages and attempts to enumerate every object's properties.
@@ -122,9 +127,7 @@ namespace ME3ExplorerCore.Tests
         {
             GlobalTest.Init();
 
-            // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
-            //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             foreach (var p in packages)
             {
@@ -154,6 +157,177 @@ namespace ME3ExplorerCore.Tests
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
                         }
                     }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestFunctionParsing()
+        {
+            // This method is essentially test of the BytecodeEditor parser with the actual ui logic all removed
+            GlobalTest.Init();
+
+            // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
+            var packagesPath = GlobalTest.GetTestPackagesDirectory();
+            //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            foreach (var p in packages)
+            {
+                if (p.RepresentsPackageFilePath())
+                {
+                    // Do not use package caching in tests
+                    Console.WriteLine($"Opening package {p}");
+                    (var game, var platform) = GlobalTest.GetExpectedTypes(p);
+
+                    // Use to skip
+                    if (platform != MEPackage.GamePlatform.PC) continue;
+                    if (game != MEGame.ME3) continue;
+                    var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+                    foreach (var export in originalLoadedPackage.Exports.Where(x => x.ClassName == "Function" || x.ClassName == "State"))
+                    {
+                        var data = export.Data;
+                        var funcBin = ObjectBinary.From<UFunction>(export); //parse it out 
+                        if (export.FileRef.Game == MEGame.ME3 || export.FileRef.Platform == MEPackage.GamePlatform.PS3)
+                        {
+                            var func = new Function(data, export);
+                            func.ParseFunction();
+                            func.GetSignature();
+
+                            if (export.ClassName == "Function")
+                            {
+                                var nativeBackOffset = export.FileRef.Game < MEGame.ME3 ? 7 : 6;
+                                var pos = data.Length - nativeBackOffset;
+                                string flagStr = func.GetFlags();
+                                var nativeIndex = EndianReader.ToInt16(data, pos, export.FileRef.Endian);
+                                pos += 2;
+                                var flags = EndianReader.ToInt16(data, pos, export.FileRef.Endian);
+                            }
+                            else
+                            {
+                                //State
+                                //parse remaining
+                                var footerstartpos = 0x20 + funcBin.ScriptStorageSize;
+                                var footerdata = data.Slice(footerstartpos, (int)data.Length - (footerstartpos));
+                                var fpos = 0;
+                                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Probemask?", "??", fpos + footerstartpos) { length = 8 });
+                                fpos += 0x8;
+
+                                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 8 FF's", "??", fpos + footerstartpos) { length = 8 });
+                                fpos += 0x8;
+
+                                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", "??", fpos + footerstartpos) { length = 2 });
+                                fpos += 0x2;
+
+                                var stateFlagsBytes = footerdata.Slice(fpos, 0x4);
+                                var stateFlags = (StateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, export.FileRef.Endian);
+                                var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                fpos += 0x4;
+
+                                var numMappedFunctions = EndianReader.ToInt32(footerdata, fpos, export.FileRef.Endian);
+                                fpos += 4;
+                                for (int i = 0; i < numMappedFunctions; i++)
+                                {
+                                    var name = EndianReader.ToInt32(footerdata, fpos, export.FileRef.Endian);
+                                    var uindex = EndianReader.ToInt32(footerdata, fpos + 8, export.FileRef.Endian);
+                                    var funcMapText = $"{export.FileRef.GetNameEntry(name)} => {export.FileRef.GetEntry(uindex)?.FullPath}()";
+                                    fpos += 12;
+                                }
+                            }
+                        }
+                        else if (export.FileRef.Game == MEGame.ME1 || export.FileRef.Game == MEGame.ME2)
+                        {
+                            //Header
+                            int pos = 16;
+
+                            var nextItemCompilingChain = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            //ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? export : null));
+
+                            pos += 8;
+                            nextItemCompilingChain = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            //ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? export : null));
+
+                            pos += 8;
+                            var line = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            //ScriptHeaderBlocks.Add(new ScriptHeaderItem("Line", EndianReader.ToInt32(data, pos, export.FileRef.Endian), pos));
+
+                            pos += 4;
+                            //EndianReader.ToInt32(data, pos, export.FileRef.Endian)
+                            //ScriptHeaderBlocks.Add(new ScriptHeaderItem("TextPos", EndianReader.ToInt32(data, pos, export.FileRef.Endian), pos));
+
+                            pos += 4;
+                            int scriptSize = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            //ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
+                            pos += 4;
+                            var BytecodeStart = pos;
+                            var func = export.ClassName == "State" ? UE3FunctionReader.ReadState(export, data) : UE3FunctionReader.ReadFunction(export, data);
+                            func.Decompile(new TextBuilder(), false); //parse bytecode
+
+                            bool defined = func.HasFlag("Defined");
+                            //if (defined)
+                            //{
+                            //    DecompiledScriptBlocks.Add(func.FunctionSignature + " {");
+                            //}
+                            //else
+                            //{
+                            //    //DecompiledScriptBlocks.Add(func.FunctionSignature);
+                            //}
+                            for (int i = 0; i < func.Statements.statements.Count; i++)
+                            {
+                                Statement s = func.Statements.statements[i];
+                                s.SetPaddingForScriptSize(scriptSize);
+                                if (s.Reader != null && i == 0)
+                                {
+                                    //Add tokens read from statement. All of them point to the same reader, so just do only the first one.
+                                    s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x => x.StartPos);
+                                }
+                            }
+
+                            //if (defined)
+                            //{
+                            //    DecompiledScriptBlocks.Add("}");
+                            //}
+
+                            //Footer
+                            pos = data.Length - (func.HasFlag("Net") ? 17 : 15);
+                            string flagStr = func.GetFlags();
+                            //ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, export.FileRef.Endian), pos));
+                            pos += 2;
+
+                            //ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", data[pos], pos));
+                            pos++;
+
+                            int functionFlags = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            //ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags:X8} {flagStr}", pos));
+                            pos += 4;
+
+                            //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
+                            //{
+                            //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(data, pos, export.FileRef.Endian), pos));
+                            //pos += 2;
+                            //}
+
+                            int friendlyNameIndex = EndianReader.ToInt32(data, pos, export.FileRef.Endian);
+                            var friendlyName = export.FileRef.GetNameEntry(friendlyNameIndex);
+                            //ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name", Pcc.GetNameEntry(friendlyNameIndex), pos) { length = 8 });
+                            pos += 8;
+
+                            //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, export.FileRef as ME1Package);
+                            //try
+                            //{
+                            //    Function_TextBox.Text = func.ToRawText();
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    Function_TextBox.Text = "Error parsing function: " + e.Message;
+                            //}
+                        }
+                        else
+                        {
+                            //Function_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                        }
+
+                    }
+                    //}
                 }
             }
         }
