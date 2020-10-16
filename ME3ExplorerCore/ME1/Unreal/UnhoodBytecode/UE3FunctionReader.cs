@@ -5,6 +5,7 @@
  */
 
 using System.IO;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 
@@ -62,7 +63,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
             if (dataOverride == null) dataOverride = export.Data;
-            using BinaryReader reader = new BinaryReader(new MemoryStream(dataOverride));
+            using var reader = new EndianReader(dataOverride) { Endian = export.FileRef.Endian };
             reader.ReadBytes(12); //netindex?, none
             int super = reader.ReadInt32();
             int nextCompilingChainItem = reader.ReadInt32();

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -134,7 +135,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 //Reading parameters info...
                 if (export.ClassName.EndsWith("Property"))
                 {
-                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(export.Data, 0x18);
+                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(export.Data, 0x18, export.FileRef.Endian);
                     if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
                     {
                         if (paramCount > 0)
@@ -144,7 +145,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
                         if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
-                            var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
+                            var uindexOfOuter = EndianReader.ToInt32(export.Data, export.Data.Length - 4, export.FileRef.Endian);
                             IEntry entry = export.FileRef.GetEntry(uindexOfOuter);
                             if (entry != null)
                             {
@@ -271,20 +272,29 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         private string GetReturnType()
         {
-            var returnValue = _self.FileRef.Exports.SingleOrDefault(e => e.ObjectName == "ReturnValue" && e.idxLink == _self.UIndex);
-            if (returnValue != null)
+            var childIdx = EndianReader.ToInt32(Export.Data, 0x18, Export.FileRef.Endian);
+
+            while (Export.FileRef.TryGetUExport(childIdx, out var parsingExp))
             {
-                if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
+                var data = parsingExp.Data;
+                if (parsingExp.ObjectName == "ReturnValue")
                 {
-                    var uindexOfOuter = BitConverter.ToInt32(returnValue.Data, returnValue.Data.Length - 4);
-                    IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
-                    if (entry != null)
+                    if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
                     {
-                        return entry.ObjectName;
+                        var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
+                            _self.FileRef.Endian);
+                        IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
+                        if (entry != null)
+                        {
+                            return entry.ObjectName;
+                        }
                     }
+
+                    return parsingExp.ClassName;
                 }
-                return returnValue.ClassName;
+                childIdx = EndianReader.ToInt32(data, 0x18, Export.FileRef.Endian);
             }
+
             return null;
         }
     }

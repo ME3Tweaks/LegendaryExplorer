@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
@@ -26,7 +27,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         protected StatementList ReadBytecode(out BytecodeReader bcReader)
         {
             var s = new MemoryStream(_bytecode);
-            var reader = new BinaryReader(s);
+            var reader = new EndianReader(s) { Endian = _self.FileRef.Endian };
             bcReader = new BytecodeReader(_self.FileRef, reader);
             var statements = new StatementList((Statement)null);
             bool keepParsing = true;

@@ -90,8 +90,19 @@ namespace ME3ExplorerCore.Unreal.Classes
 
             //Tokens = new List<BytecodeSingularToken>();
             //Statements = ReadBytecode();
-            List<ExportEntry> childrenReversed = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).ToList();
-            childrenReversed.Reverse();
+
+            // OLD CODE
+            //List<ExportEntry> childrenReversed = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).ToList();
+            //childrenReversed.Reverse();
+
+            // NEW CODE
+            List<ExportEntry> childrenReversed = new List<ExportEntry>();
+            var childIdx = EndianReader.ToInt32(export.Data, 0x14, export.FileRef.Endian);
+            while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
+            {
+                childrenReversed.Add(parsingExp);
+                childIdx = EndianReader.ToInt32(parsingExp.Data, 0x10, export.FileRef.Endian);
+            }
 
             //Get local children of this function
             foreach (ExportEntry export in childrenReversed)
@@ -173,21 +184,48 @@ namespace ME3ExplorerCore.Unreal.Classes
         internal bool Native { get { return HasFlag("Native"); } }
         private string GetReturnType()
         {
-            var returnValue = export.FileRef.Exports.SingleOrDefault(e => e.ObjectName == "ReturnValue" && e.idxLink == export.UIndex);
-            if (returnValue != null)
+            // NEW CODE
+            var childIdx = EndianReader.ToInt32(export.Data, 0x14, export.FileRef.Endian);
+
+            while (export.FileRef.TryGetUExport(childIdx, out var parsingExp))
             {
-                if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
+                var data = parsingExp.Data;
+                if (parsingExp.ObjectName == "ReturnValue")
                 {
-                    var uindexOfOuter = EndianReader.ToInt32(returnValue.Data, returnValue.Data.Length - 4, export.FileRef.Endian);
-                    IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
-                    if (entry != null)
+                    if (parsingExp.ClassName == "ObjectProperty" || parsingExp.ClassName == "StructProperty")
                     {
-                        return entry.ObjectName;
+                        var uindexOfOuter = EndianReader.ToInt32(data, parsingExp.DataSize - 4,
+                            export.FileRef.Endian);
+                        IEntry entry = parsingExp.FileRef.GetEntry(uindexOfOuter);
+                        if (entry != null)
+                        {
+                            return entry.ObjectName;
+                        }
                     }
+
+                    return parsingExp.ClassName;
                 }
-                return returnValue.ClassName;
+                childIdx = EndianReader.ToInt32(data, 0x10, export.FileRef.Endian);
             }
+
             return null;
+
+            // OLD CODE
+            //var returnValue = export.FileRef.Exports.SingleOrDefault(e => e.ObjectName == "ReturnValue" && e.idxLink == export.UIndex);
+            //if (returnValue != null)
+            //{
+            //    if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
+            //    {
+            //        var uindexOfOuter = EndianReader.ToInt32(returnValue.Data, returnValue.Data.Length - 4, export.FileRef.Endian);
+            //        IEntry entry = returnValue.FileRef.GetEntry(uindexOfOuter);
+            //        if (entry != null)
+            //        {
+            //            return entry.ObjectName;
+            //        }
+            //    }
+            //    return returnValue.ClassName;
+            //}
+            //return null;
         }
 
         public void ReadHeader()
@@ -216,7 +254,8 @@ namespace ME3ExplorerCore.Unreal.Classes
             {
                 HeaderText += $"Next Item in loading chain: {_ni.UIndex} {_ni.InstancedFullPath}\n";
             }
-            if (export.FileRef.TryGetEntry(ChildProbeStart, out var _cps)){
+            if (export.FileRef.TryGetEntry(ChildProbeStart, out var _cps))
+            {
                 HeaderText += $"Child Probe Start: {_cps.UIndex} {_cps.InstancedFullPath}\n";
             }
             HeaderText += $"Script Disk Size: {DiskSize}\n";
