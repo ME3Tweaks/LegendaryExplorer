@@ -227,9 +227,20 @@ namespace ME3Explorer
                                         }
                                         else if (fs.HasFlag("Native"))
                                         {
-                                            var nativeIndex =
-                                                EndianReader.ToInt16(data, data.Length - 6, ee.FileRef.Endian);
-                                            _subtext = "Native, index " + nativeIndex;
+                                            var nativeBackOffset = ee.FileRef.Game == MEGame.ME3 ? 6 : 7;
+                                            if (ee.Game < MEGame.ME3 &&
+                                                ee.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                                                nativeBackOffset = 0xF;
+                                            var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset,
+                                                ee.FileRef.Endian);
+                                            if (nativeIndex > 0)
+                                            {
+                                                _subtext = "Native, index " + nativeIndex;
+                                            }
+                                            else
+                                            {
+                                                _subtext = "Native";
+                                            }
                                         }
                                     }
 
@@ -259,7 +270,8 @@ namespace ME3Explorer
                                 }
                             case "ClassProperty":
                                 {
-                                    var typeRef = EndianReader.ToInt32(ee.Data, 0x30, ee.FileRef.Endian);
+                                    var data = ee.Data;
+                                    var typeRef = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
                                     if (ee.FileRef.TryGetEntry(typeRef, out var type))
                                     {
                                         _subtext = $"Class: {type.ObjectName}";
@@ -329,7 +341,7 @@ namespace ME3Explorer
                             case "WwiseStream":
                                 {
                                     //parse out tlk id?
-                                    var splits = Entry.ObjectName.Name.Split('_',',');
+                                    var splits = Entry.ObjectName.Name.Split('_', ',');
                                     for (int i = splits.Length - 1; i > 0; i--)
                                     {
                                         //backwards is faster
