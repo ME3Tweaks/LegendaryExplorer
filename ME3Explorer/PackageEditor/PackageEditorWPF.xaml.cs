@@ -3954,19 +3954,12 @@ namespace ME3Explorer
 
         private void BuildME1NativeFunctionsInfo_Click(object sender, RoutedEventArgs e)
         {
-            if (Pcc == null) return;
-            var funcs = new List<string>();
-            foreach (var v in Pcc.Exports.Where(x => x.ClassName == "Function"))
-            {
-                var func = ObjectBinary.From<UFunction>(v);
-                if (func.NativeIndex > 0)
-                {
-                    Debug.WriteLine($"{func.NativeIndex} {func.Export.UIndex} {func.Export.ObjectName}");
-                }
-            }
-
-            return;
             PackageEditorExperimentsM.BuildME1NativeFunctionsInfo();
+        }
+
+        private void PrintNatives(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(Pcc);
         }
 
         private void FindAllFilesWithSpecificClass(object sender, RoutedEventArgs e)

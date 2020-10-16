@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.MEDirectories;
@@ -793,6 +794,33 @@ namespace ME3Explorer.PackageEditor.Experiments
                         }
                     }
                 }
+            }
+        }
+
+        public static void PrintAllNativeFuncsToDebug(IMEPackage package)
+        {
+            Dictionary<int,string> nativeMap = new Dictionary<int, string>();
+            foreach (var ee in package.Exports.Where(x => x.ClassName == "Function"))
+            {
+                var data = ee.Data;
+                var flags = EndianReader.ToInt32(data, data.Length - (package.Game == MEGame.ME3 || package.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12), ee.FileRef.Endian);
+                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+                if (fs.HasFlag("Native"))
+                {
+                    var nativeBackOffset = ee.FileRef.Game == MEGame.ME3 ? 6 : 7;
+                    if (ee.Game < MEGame.ME3 && ee.FileRef.Platform != MEPackage.GamePlatform.PS3) nativeBackOffset = 0xF;
+                    var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
+                    if (nativeIndex > 0)
+                    {
+                        nativeMap[nativeIndex] = ee.ObjectName;
+                    }
+                }
+            }
+
+            var natives = nativeMap.OrderBy(x => x.Key).Select(x => $"NATIVE_{x.Value} = 0x{x.Key:X2}");
+            foreach (var n in natives)
+            {
+                Debug.WriteLine(n);
             }
         }
 

@@ -246,6 +246,7 @@
                         <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
 
                         <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
+                        <MenuItem Header="Print native function indices from current file" Click="PrintNatives"/>
                         <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
                         <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
                         <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
