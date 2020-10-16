@@ -128,7 +128,7 @@ namespace ME3Explorer.ME3Script
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game == MEGame.ME3 && (exportEntry.ClassName switch
+            exportEntry.Game == MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,
