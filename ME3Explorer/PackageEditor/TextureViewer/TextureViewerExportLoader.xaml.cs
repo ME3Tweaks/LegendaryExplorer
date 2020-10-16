@@ -244,6 +244,7 @@ namespace ME3Explorer
             TextureImage.Source = null;
             try
             {
+                MipList.ClearEx();
                 AvailableTFCNames.ClearEx();
                 PropertyCollection properties = exportEntry.GetProperties();
                 var format = properties.GetProp<EnumProperty>("Format");
@@ -275,41 +276,44 @@ namespace ME3Explorer
                 }
 
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
-
-                var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-
-                if (exportEntry.FileRef.Game == MEGame.ME1)
+                if (mips.Any())
                 {
-                    string baseName = exportEntry.FileRef.FollowLink(exportEntry.idxLink).Split('.')[0].ToUpper();
-                    if (mips.Exists(s => s.storageType == StorageTypes.extLZO) ||
-                        mips.Exists(s => s.storageType == StorageTypes.extZlib) ||
-                        mips.Exists(s => s.storageType == StorageTypes.extUnc))
+                    var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+
+                    if (exportEntry.FileRef.Game == MEGame.ME1)
                     {
-                        CurrentLoadedBasePackageName = baseName;
-                    }
-                    else
-                    {
-                        if (baseName != "" && !neverStream)
+                        string baseName = exportEntry.FileRef.FollowLink(exportEntry.idxLink).Split('.')[0].ToUpper();
+                        if (mips.Exists(s => s.storageType == StorageTypes.extLZO) ||
+                            mips.Exists(s => s.storageType == StorageTypes.extZlib) ||
+                            mips.Exists(s => s.storageType == StorageTypes.extUnc))
                         {
-                            List<string> gameFiles = MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
-                            if (gameFiles.Exists(s => Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
+                            CurrentLoadedBasePackageName = baseName;
+                        }
+                        else
+                        {
+                            if (baseName != "" && !neverStream)
                             {
-                                CurrentLoadedBasePackageName = baseName;
+                                List<string> gameFiles =
+                                    MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
+                                if (gameFiles.Exists(s =>
+                                    Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
+                                {
+                                    CurrentLoadedBasePackageName = baseName;
+                                }
                             }
                         }
+                    }
+
+                    CurrentLoadedFormat = format.Value.Name;
+                    MipList.ReplaceAll(mips);
+                    TextureCRC = Texture2D.GetTextureCRC(exportEntry);
+                    if (Settings.Default.EmbeddedTextureViewer_AutoLoad || ViewerModeOnly)
+                    {
+                        Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
                     }
                 }
 
                 CurrentLoadedExport = exportEntry;
-                CurrentLoadedFormat = format.Value.Name;
-                MipList.ReplaceAll(mips);
-                TextureCRC = Texture2D.GetTextureCRC(exportEntry);
-                if (Settings.Default.EmbeddedTextureViewer_AutoLoad || ViewerModeOnly)
-                {
-                    Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
-                }
-                //
-                //LoadMip(topmip);
             }
             catch (Exception e)
             {
