@@ -273,7 +273,7 @@ namespace ME3ExplorerCore.TLK.ME1
             HuffmanNode root = nodes[0];
             HuffmanNode curNode = root;
 
-            string curString = "";
+            var builder = new StringBuilder();
             int i;
             for (i = bitOffset; i < Bits.Length; i++)
             {
@@ -290,7 +290,7 @@ namespace ME3ExplorerCore.TLK.ME1
                     if (c != '\0')
                     {
                         /* it's not NULL */
-                        curString += c;
+                        builder.Append(c);
                         curNode = root;
                         i--;
                     }
@@ -298,7 +298,7 @@ namespace ME3ExplorerCore.TLK.ME1
                     {
                         /* it's a NULL terminating processed string, we're done */
                         //skip ahead approximately 9 bytes to the next string
-                        return curString;
+                        return builder.ToString();
                     }
                 }
             }
@@ -310,14 +310,14 @@ namespace ME3ExplorerCore.TLK.ME1
                 if (c != '\0')
                 {
                     /* it's not NULL */
-                    curString += c;
+                    builder.Append(c);
                     curNode = root;
                 }
                 else
                 {
                     /* it's a NULL terminating processed string, we're done */
                     //skip ahead approximately 9 bytes to the next string
-                    return curString;
+                    return builder.ToString();
                 }
             }
 

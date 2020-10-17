@@ -295,7 +295,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             HuffmanNode root = CharacterTree[0];
             HuffmanNode curNode = root;
 
-            string curString = "";
+            var builder = new StringBuilder();
             int i;
             for (i = bitOffset; i < Bits.Length; i++)
             {
@@ -312,22 +312,24 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                 else
                 /* it's a leaf! */
                 {
-                    char c = BitConverter.ToChar(BitConverter.GetBytes(0xffff - nextNodeID), 0);
+                    char c = (char)(0xffff - nextNodeID);
                     if (c != '\0')
                     {
                         /* it's not NULL */
-                        curString += c;
+                        builder.Append(c);
                         curNode = root;
                     }
                     else
                     {
                         /* it's a NULL terminating processed string, we're done */
                         bitOffset = i + 1;
-                        return curString;
+                        return builder.ToString();
                     }
                 }
             }
+
             bitOffset = i + 1;
+
             return null;
         }
 
