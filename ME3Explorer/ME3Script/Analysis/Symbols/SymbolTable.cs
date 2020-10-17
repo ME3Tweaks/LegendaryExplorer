@@ -755,7 +755,7 @@ namespace ME3Script.Analysis.Symbols
                 }
             }
 
-            return null;
+            return new PreOpDeclaration(name, null, 0, null);
         }
 
         public IEnumerable<InOpDeclaration> GetInfixOperators(string name)
@@ -795,7 +795,7 @@ namespace ME3Script.Analysis.Symbols
                 }
             }
 
-            return null;
+            return new PostOpDeclaration(name, null, 0, null);
         }
 
         public bool TryGetType<T>(string nameValue, out T variableType) where T : VariableType

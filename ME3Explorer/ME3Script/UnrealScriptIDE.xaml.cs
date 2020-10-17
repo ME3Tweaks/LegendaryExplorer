@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using ICSharpCode.AvalonEdit.Document;
@@ -21,6 +22,7 @@ using ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
+using ME3Script.Parsing;
 
 namespace ME3Explorer.ME3Script.IDE
 {
@@ -34,6 +36,7 @@ namespace ME3Explorer.ME3Script.IDE
             get => Document?.Text;
             set => Dispatcher.Invoke(() =>
             {
+                textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
                 if (foldingManager != null)
                 {
                     FoldingManager.Uninstall(foldingManager);
@@ -152,6 +155,8 @@ namespace ME3Explorer.ME3Script.IDE
                 progressBarTimer.IsEnabled = false; //Stop timer
                 progressBarTimer.Tick -= ProgressBarTimer_Tick;
             }
+
+            textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
         }
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
@@ -422,6 +427,7 @@ namespace ME3Explorer.ME3Script.IDE
                             new TextSegment { StartOffset = Document.GetOffset(Document.LineCount, 0), Length = 1}
                         };
                         textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
+                        textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
                     }
                     else
                     {
@@ -434,6 +440,37 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 (RootNode, ScriptText) = (null, $"Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
+        }
+
+        private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+            try
+            {
+
+                if (ast != null && log.AllErrors.IsEmpty())
+                {
+                    if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                    {
+                        ast = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                    }
+
+                    var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                    ast.AcceptVisitor(codeBuilder);
+                    (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    textEditor.SyntaxHighlighting = syntaxInfo;
+                }
+            }
+            catch (ParseException)
+            {
+                log.LogError("Parse Failed!");
+            }
+            catch (Exception exception)
+            {
+                log.LogError($"Exception: {exception.Message}");
+            }
+
+            outputListBox.ItemsSource = log.Content;
         }
 
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
@@ -451,7 +488,8 @@ namespace ME3Explorer.ME3Script.IDE
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);
-                    (ScriptText, _) = codeBuilder.GetOutput();
+                    (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    textEditor.SyntaxHighlighting = syntaxInfo;
                 }
 
                 outputListBox.ItemsSource = log.Content;

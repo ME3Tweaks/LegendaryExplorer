@@ -86,5 +86,21 @@ namespace ME3Script.Parsing
         }
 
         public override Token<T> CurrentItem => AtEnd() ? EndToken : base.CurrentItem;
+
+        public IEnumerable<Token<T>> GetTokensInRange(SourcePosition start, SourcePosition end)
+        {
+            foreach (Token<T> token in Data)
+            {
+                if (token.StartPos.CharIndex >= start.CharIndex)
+                {
+                    yield return token;
+
+                    if (token.EndPos.CharIndex >= end.CharIndex)
+                    {
+                        yield break;
+                    }
+                }
+            }
+        }
     }
 }
