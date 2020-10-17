@@ -24,8 +24,15 @@ namespace ME3Explorer.SharedUI
 
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (e.OldValue is TreeViewEntry oldNode)
+            {
+                oldNode.IsSelected = false;
+            }
+
             var newNode = e.NewValue as TreeViewEntry;
             if (newNode == null) return;
+            
+            
             var behavior = (NodeTreeSelectionBehavior)d;
             var tree = behavior.AssociatedObject;
 
