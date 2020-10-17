@@ -349,10 +349,14 @@ namespace ME3Explorer
                             {
                                 s += $", Name: {CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                             }
-                            if (Pcc.Game == MEGame.ME1)
+                            if (Pcc.Platform != MEPackage.GamePlatform.PS3 && Pcc.Game <= MEGame.ME2)
                             {
                                 BytecodeReader.ME1OpCodes m = (BytecodeReader.ME1OpCodes)currentData[start];
                                 s += $", OpCode: {m}";
+                            } else if (Pcc.Platform == MEPackage.GamePlatform.PS3 || Pcc.Game == MEGame.ME2)
+                            {
+                                Bytecode.byteOpnameMap.TryGetValue(currentData[start], out var opcodeName);
+                                s += $", OpCode: {opcodeName ?? currentData[start].ToString()}";
                             }
 
                             if (CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
