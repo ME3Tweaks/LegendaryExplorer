@@ -268,13 +268,13 @@ namespace ME3Explorer.PackageDumper
             ProcessingQueue = new ActionBlock<PackageDumperSingleFileTask>(x =>
             {
                 if (x.DumpCanceled) { OverallProgressValue++; return; }
-                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
                 x.dumpPackageFile(); // What to do on each item
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     OverallProgressValue++; //Concurrency
                     CurrentDumpingItems.Remove(x);
-                }));
+                });
             },
             new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
 
@@ -294,7 +294,7 @@ namespace ME3Explorer.PackageDumper
                 listOfSameNamedFiles.Add(item);
             }
 
-
+            // Prevent multithreading conflicts by making unique names
             foreach (var item in inputMapping)
             {
                 int i = 0;
@@ -330,6 +330,7 @@ namespace ME3Explorer.PackageDumper
                         }
                     }
 
+                    outputFilename += ".txt";
 
                     string outfolder = outputfolder;
                     if (outfolder != null)
@@ -362,6 +363,8 @@ namespace ME3Explorer.PackageDumper
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed";
             }
+
+            ProcessingQueue = null;
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -538,6 +541,7 @@ namespace ME3Explorer.PackageDumper
 
         public PackageDumperSingleFileTask(string packageToDump, string outputFilenameNoExtension = null, string outputfolder = null)
         {
+            MemoryAnalyzer.AddTrackedMemoryItem($"PDSFT for {packageToDump}", new WeakReference(this));
             this._packageToDump = packageToDump;
             this.ShortFileName = outputFilenameNoExtension ?? Path.GetFileNameWithoutExtension(packageToDump);
             this.OutputFolder = outputfolder;
@@ -574,7 +578,8 @@ namespace ME3Explorer.PackageDumper
                     string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                     Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                    using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    //using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
                     {
 
                         //if (imports)
