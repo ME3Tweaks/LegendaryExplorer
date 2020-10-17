@@ -188,8 +188,8 @@ namespace ME3ExplorerCore.Tests
                     (var game, var platform) = GlobalTest.GetExpectedTypes(p);
 
                     // Use to skip
-                    //if (platform == MEPackage.GamePlatform.P) continue;
-                    //if (game >= MEGame.ME3) continue;
+                    if (platform != MEPackage.GamePlatform.PC) continue;
+                    if (game != MEGame.ME2) continue;
 
                     Console.WriteLine($"Opening package {p}");
 

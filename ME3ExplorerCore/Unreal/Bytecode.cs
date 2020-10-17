@@ -4603,7 +4603,7 @@ namespace ME3ExplorerCore.Unreal
             pos += 2;
             int unkRef = EndianReader.ToInt32(memory, pos, export.FileRef.Endian); //property corresponding to the return value 
             t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_ENTRY, unkRef));
-            pos += 5;
+            pos += 5; //skip trailing byte
             Token b = ReadToken(pos, export);
             t.inPackageReferences.AddRange(b.inPackageReferences);
 

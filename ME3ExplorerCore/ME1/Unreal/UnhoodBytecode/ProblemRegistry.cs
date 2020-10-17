@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ME3ExplorerCore.Packages;
+#if AZURE
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 {
@@ -65,6 +68,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         public static void RegisterBytecodeError(UnBytecodeOwner function, string message)
         {
             _bytecodeErrors.Add(new BytecodeError(function, message));
+#if AZURE
+            Assert.Fail($"There was a problem parsing ME1/ME2 bytecode! Issue was in {function.Export.FileRef.FilePath}, export {function.Export.UIndex} {function.Export.InstancedFullPath}");
+#endif
         }
 
         public static void RegisterIncompleteControlFlow(UnBytecodeOwner function)

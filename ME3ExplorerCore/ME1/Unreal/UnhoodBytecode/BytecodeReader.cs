@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.TLK;
 using ME3ExplorerCore.Unreal;
 using Newtonsoft.Json;
@@ -406,9 +408,6 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             _reader = reader;
         }
 
-
-
-
         private readonly ME1OpCodes[] OpCodesThatReturnNextToken = { ME1OpCodes.EX_Skip, ME1OpCodes.EX_EatReturnValue, ME1OpCodes.EX_ReturnNothing, ME1OpCodes.EX_BoolVariable, ME1OpCodes.EX_InterfaceContext };
         /// <summary>
         /// ME3Explorer intercepting function to build the token list. As tokens are read the tokens list will be updated.
@@ -598,6 +597,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_ClassContext:
                 case ME1OpCodes.EX_Context:
                     {
+                        Debug.WriteLine($"Reading EX_Context at 0x{_reader.BaseStream.Position:X8}");
                         var context = ReadNext();
                         if (IsInvalid(context)) return context;
                         int exprSize = _reader.ReadInt16();
@@ -889,7 +889,44 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             {
                 _reader.ReadByte(); //This is a workaround for EX_Switch, maybe
             }
-            //var exprSize = _reader.ReadInt16();
+
+            //array.
+            //if (_package.Platform == MEPackage.GamePlatform.PC && _package.Game == MEGame.ME1)
+
+            //    if (array.OpCode == ME1OpCodes.EX_LocalVariable ||
+            //        array.OpCode == ME1OpCodes.EX_Context)
+            //    {
+            //        var arrayObj = EntryReferences[EntryReferences.Max(x => x.Key)]; //Get the last read reference (what a hack)
+            //        if (arrayObj.ClassName == "ArrayProperty")
+            //        {
+            //            We have to look this up to see if we need to skip 2 bytes
+            //            Because they couldn't just use the right opcode
+            //            ExportEntry ee = arrayObj as ExportEntry;
+            //            if (ee == null && arrayObj is ImportEntry ie)
+            //            {
+            //                ee = EntryImporter.ResolveImport(ie);
+            //            }
+
+            //            if (ee != null)
+            //            {
+            //                var holdsItemsOfTypeIdx = EndianReader.ToInt32(ee.Data, ee.DataSize - 4, _package.Endian);
+            //                var itemOfType = _package.GetEntry(holdsItemsOfTypeIdx);
+            //                if (itemOfType.ClassName == "StructProperty" || itemOfType.ClassName == "NameProperty")
+            //                {
+            //                    var exprSize = _reader.ReadInt16();
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Debug.WriteLine("ERROR: COULD NOT FIND CLASS TO CHECK AGAINST! Not skipping 2 bytes");
+            //            }
+
+            //            Debug.WriteLine($"Entry type: {arrayObj.ClassName}");
+            //        }
+
+            //    }
+
+
             var indexer = ReadNext();
             if (IsInvalid(indexer)) return WrapErrToken(array + "." + methodName + "(" + indexer, indexer);
             return Token(array + "." + methodName + "(" + indexer + ")", readerpos);
@@ -1075,7 +1112,6 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         private BytecodeToken ReadNativeCall(byte b)
         {
             int pos = (int)_reader.BaseStream.Position - 1;
-
             int nativeIndex;
             if ((b & 0xF0) == 0x60)
             {
