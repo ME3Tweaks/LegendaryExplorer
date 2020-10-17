@@ -90,7 +90,7 @@ namespace ME3Explorer.Pathfinding_Editor
             "PostProcessVolume", "LightVolume", "LightmassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
-            "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnviromentVolume", "WwiseMusicVolume"
+            "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnvironmentVolume", "WwiseMusicVolume"
         };
 
         public static string[] ignoredobjectnames =
