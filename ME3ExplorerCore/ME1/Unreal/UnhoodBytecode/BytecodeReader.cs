@@ -472,11 +472,13 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_Switch:
                     {
-                        if (_package.Platform != MEPackage.GamePlatform.Xenon || _package.Game != MEGame.ME1)
-                        {
-                            //ME1 Xbox this is occurs before the EX_Switch token...
-                            _reader.ReadByte(); //This is a workaround for EX_Switch, maybe
-                        }
+                        //if (_package.Game == MEGame.ME1 && _package.Platform != MEPackage.GamePlatform.PS3)
+                        //                        if (_package.Platform == MEPackage.GamePlatform.Xenon || _package.Game != MEGame.ME1)
+                        //{
+                        //ME1 Xbox this is occurs before the EX_Switch token...
+                        _reader.ReadByte(); //Property type or something
+                        //This is a workaround for EX_Switch, maybe
+                        //}
                         BytecodeToken switchExpr = ReadNext();
                         return new SwitchToken(switchExpr.ToString(), switchExpr, readerpos);
                     }
@@ -597,12 +599,28 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_ClassContext:
                 case ME1OpCodes.EX_Context:
                     {
-                        Debug.WriteLine($"Reading EX_Context at 0x{_reader.BaseStream.Position:X8}");
+                        var contextId = _reader.BaseStream.Position - 1;
+                        //Debug.WriteLine($"Reading EX_Context START at 0x{(contextId):X8} (ID {contextId})");
                         var context = ReadNext();
                         if (IsInvalid(context)) return context;
+
+                        //if (_package.Platform != MEPackage.GamePlatform.PC && _reader.BaseStream.Position % 2 != 0)
+                        //{
+                        //    _reader.ReadByte(); //Byte align
+                        //}
+
                         int exprSize = _reader.ReadInt16();
+                       //Debug.WriteLine($" >> {contextId}: ExprSize {exprSize} at 0x{(_reader.BaseStream.Position - 2):X8}");
+
+
                         int bSize = _reader.ReadByte();
+                        //Debug.WriteLine($" >> {contextId}: bSize {bSize} at 0x{(_reader.BaseStream.Position - 1):X8}");
+
+                        //Debug.WriteLine($" >> {contextId}: Value at 0x{(_reader.BaseStream.Position):X8}");
                         var value = ReadNext();
+
+                        //Debug.WriteLine($" >> {contextId}: END OF EX_Context 0x{(_reader.BaseStream.Position):X8}");
+
                         if (IsInvalid(value)) return WrapErrToken($"{context}.{value}", value);
                         return Token($"{context}.{value}", readerpos);
                     }
@@ -775,7 +793,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     }
 
                 case ME1OpCodes.EX_DynArrayFind:
-                    return ReadDynArray1ArgMethod("Find");
+                    return ReadDynArray1ArgMethodSpecial("Find");
 
                 case ME1OpCodes.EX_DynArrayFindStruct:
                     return ReadDynArray2ArgMethod("Find", true);
@@ -806,7 +824,9 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                         if (IsInvalid(array)) return array;
                         var iteratorVar = ReadNext();
                         if (IsInvalid(iteratorVar)) return iteratorVar;
-                        _reader.ReadInt16();
+                        //_reader.ReadInt16(); //Num bytes to skip if null
+                        byte indexParmPrecense = _reader.ReadByte();
+                        var indexParm = ReadNext();
                         var endOffset = _reader.ReadInt16();
                         return new ForeachToken(endOffset, array, iteratorVar, readerpos);
                     }
@@ -879,57 +899,114 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             return Token(operand1 + " " + op + " " + operand2, readerpos);
         }
 
+        private BytecodeToken ReadDynArray1ArgMethodSpecial(string methodName)
+        {
+            Debug.WriteLine("SPECIAL");
+            int readerpos = (int)_reader.BaseStream.Position - 1;
+
+            var arrayExpression = ReadNext();
+            if (IsInvalid(arrayExpression)) return arrayExpression;
+            if (_package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1)
+            {
+                _reader.ReadByte(); //This is a workaround for EX_Switch, maybe?
+            }
+
+            var numBytesToSkipIfExpressionNull = _reader.ReadUInt16();
+
+            ////array.
+            //if (_package.Platform == MEPackage.GamePlatform.PC && _package.Game == MEGame.ME2)
+            //{
+            //    //if (array.OpCode == ME1OpCodes.EX_LocalVariable ||
+            //    //    array.OpCode == ME1OpCodes.EX_Context)
+            //    //{
+            //    var arrayObj = EntryReferences[EntryReferences.Max(x => x.Key)]; //Get the last read reference (what a hack)
+            //    if (arrayObj.ClassName == "ArrayProperty")
+            //    {
+            //        //We have to look this up to see if we need to skip 2 bytes
+            //        //    Because they couldn't just use the right opcode
+            //        ExportEntry ee = arrayObj as ExportEntry;
+            //        if (ee == null && arrayObj is ImportEntry ie)
+            //        {
+            //            ee = EntryImporter.ResolveImport(ie);
+            //        }
+
+            //        if (ee != null)
+            //        {
+            //            var holdsItemsOfTypeIdx = EndianReader.ToInt32(ee.Data, ee.DataSize - 4, _package.Endian);
+            //            var itemOfType = _package.GetEntry(holdsItemsOfTypeIdx);
+            //            if (/*itemOfType.ClassName == "StructProperty" || */itemOfType.ClassName == "NameProperty")
+            //            {
+            //                var exprSize = _reader.ReadInt16();
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Debug.WriteLine("ERROR: COULD NOT FIND CLASS TO CHECK AGAINST! Not skipping 2 bytes");
+            //        }
+
+            //        Debug.WriteLine($"Entry type: {arrayObj.ClassName}");
+            //    }
+            //}
+            var indexer = ReadNext();
+            if (IsInvalid(indexer)) return WrapErrToken(arrayExpression + "." + methodName + "(" + indexer, indexer);
+            return Token(arrayExpression + "." + methodName + "(" + indexer + ")", readerpos);
+        }
+
         private BytecodeToken ReadDynArray1ArgMethod(string methodName)
         {
             int readerpos = (int)_reader.BaseStream.Position - 1;
 
-            var array = ReadNext();
-            if (IsInvalid(array)) return array;
-            if (_package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1)
+            var arrayExpression = ReadNext();
+            if (IsInvalid(arrayExpression)) return arrayExpression;
+            //if (_package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1)
+            //{
+            //    _reader.ReadByte(); //This is a workaround for EX_Switch, maybe?
+            //}
+
+            if (_package.Game == MEGame.ME2 && _package.Platform != MEPackage.GamePlatform.PS3)
             {
-                _reader.ReadByte(); //This is a workaround for EX_Switch, maybe
+                var numBytesToSkipIfExpressionNull = _reader.ReadUInt16();
             }
-
             //array.
-            //if (_package.Platform == MEPackage.GamePlatform.PC && _package.Game == MEGame.ME1)
-
-            //    if (array.OpCode == ME1OpCodes.EX_LocalVariable ||
-            //        array.OpCode == ME1OpCodes.EX_Context)
+            //if (_package.Platform == MEPackage.GamePlatform.PC && _package.Game == MEGame.ME2)
+            //{
+            //    //if (array.OpCode == ME1OpCodes.EX_LocalVariable ||
+            //    //    array.OpCode == ME1OpCodes.EX_Context)
+            //    //{
+            //    var arrayObj = EntryReferences[EntryReferences.Max(x => x.Key)]; //Get the last read reference (what a hack)
+            //    if (arrayObj.ClassName == "ArrayProperty")
             //    {
-            //        var arrayObj = EntryReferences[EntryReferences.Max(x => x.Key)]; //Get the last read reference (what a hack)
-            //        if (arrayObj.ClassName == "ArrayProperty")
+            //        //We have to look this up to see if we need to skip 2 bytes
+            //        //    Because they couldn't just use the right opcode
+            //        ExportEntry ee = arrayObj as ExportEntry;
+            //        if (ee == null && arrayObj is ImportEntry ie)
             //        {
-            //            We have to look this up to see if we need to skip 2 bytes
-            //            Because they couldn't just use the right opcode
-            //            ExportEntry ee = arrayObj as ExportEntry;
-            //            if (ee == null && arrayObj is ImportEntry ie)
-            //            {
-            //                ee = EntryImporter.ResolveImport(ie);
-            //            }
-
-            //            if (ee != null)
-            //            {
-            //                var holdsItemsOfTypeIdx = EndianReader.ToInt32(ee.Data, ee.DataSize - 4, _package.Endian);
-            //                var itemOfType = _package.GetEntry(holdsItemsOfTypeIdx);
-            //                if (itemOfType.ClassName == "StructProperty" || itemOfType.ClassName == "NameProperty")
-            //                {
-            //                    var exprSize = _reader.ReadInt16();
-            //                }
-            //            }
-            //            else
-            //            {
-            //                Debug.WriteLine("ERROR: COULD NOT FIND CLASS TO CHECK AGAINST! Not skipping 2 bytes");
-            //            }
-
-            //            Debug.WriteLine($"Entry type: {arrayObj.ClassName}");
+            //            ee = EntryImporter.ResolveImport(ie);
             //        }
 
+            //        if (ee != null)
+            //        {
+            //            var holdsItemsOfTypeIdx = EndianReader.ToInt32(ee.Data, ee.DataSize - 4, _package.Endian);
+            //            var itemOfType = _package.GetEntry(holdsItemsOfTypeIdx);
+            //            if (/*itemOfType.ClassName == "StructProperty" || */itemOfType.ClassName == "NameProperty")
+            //            {
+            //                var exprSize = _reader.ReadInt16();
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Debug.WriteLine("ERROR: COULD NOT FIND CLASS TO CHECK AGAINST! Not skipping 2 bytes");
+            //        }
+
+            //        Debug.WriteLine($"Entry type: {arrayObj.ClassName}");
             //    }
+            //}
+            // }
 
 
             var indexer = ReadNext();
-            if (IsInvalid(indexer)) return WrapErrToken(array + "." + methodName + "(" + indexer, indexer);
-            return Token(array + "." + methodName + "(" + indexer + ")", readerpos);
+            if (IsInvalid(indexer)) return WrapErrToken(arrayExpression + "." + methodName + "(" + indexer, indexer);
+            return Token(arrayExpression + "." + methodName + "(" + indexer + ")", readerpos);
         }
 
         private BytecodeToken ReadDynArray2ArgMethod(string methodName, bool skip2Bytes)
@@ -1113,18 +1190,19 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         {
             int pos = (int)_reader.BaseStream.Position - 1;
             int nativeIndex;
-            if ((b & 0xF0) == 0x60)
+            if ((b & 0xF0) == 0x60) //Extended Native
             {
                 byte b2 = _reader.ReadByte();
                 nativeIndex = ((b - 0x60) << 8) + b2;
             }
             else
             {
-                nativeIndex = b;
+                nativeIndex = b; //Native
             }
 
             var function = CachedNativeFunctionInfo.GetNativeFunction(nativeIndex); //have to figure out how to do this, it's looking up name of native function
-            if (function == null) return ErrToken("// invalid native function " + nativeIndex);
+            if (function == null)
+                return ErrToken("// invalid native function " + nativeIndex);
             if (function.PreOperator || function.PostOperator)
             {
                 var p = ReadNext();
@@ -1161,7 +1239,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         public string Filename;
         public string HumanReadableControlToken; //like ==, ++, etc
 
-        internal static CachedNativeFunctionInfo GetNativeFunction(int index)
+        public static CachedNativeFunctionInfo GetNativeFunction(int index)
         {
             CachedNativeFunctionInfo result;
             if (NativeFunctionInfo == null)

@@ -799,29 +799,94 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void PrintAllNativeFuncsToDebug(IMEPackage package)
         {
-            Dictionary<int,string> nativeMap = new Dictionary<int, string>();
-            foreach (var ee in package.Exports.Where(x => x.ClassName == "Function"))
+            var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
+            foreach (ExportEntry export in package.Exports)
             {
-                var data = ee.Data;
-                var flags = EndianReader.ToInt32(data, data.Length - (package.Game == MEGame.ME3 || package.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12), ee.FileRef.Endian);
-                FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
-                if (fs.HasFlag("Native"))
+                if (export.ClassName == "Function")
                 {
-                    var nativeBackOffset = ee.FileRef.Game == MEGame.ME3 ? 6 : 7;
-                    if (ee.Game < MEGame.ME3 && ee.FileRef.Platform != MEPackage.GamePlatform.PS3) nativeBackOffset = 0xF;
-                    var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
-                    if (nativeIndex > 0)
+
+                    BinaryReader reader = new EndianReader(new MemoryStream(export.Data)) { Endian = package.Endian };
+                    reader.ReadBytes(12);
+                    int super = reader.ReadInt32();
+                    int children = reader.ReadInt32();
+                    reader.ReadBytes(12);
+                    int line = reader.ReadInt32();
+                    int textPos = reader.ReadInt32();
+                    int scriptSize = reader.ReadInt32();
+                    byte[] bytecode = reader.ReadBytes(scriptSize);
+                    int nativeIndex = reader.ReadInt16();
+                    int operatorPrecedence = reader.ReadByte();
+                    int functionFlags = reader.ReadInt32();
+                    if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
                     {
-                        nativeMap[nativeIndex] = ee.ObjectName;
+                        reader.ReadInt16(); // repOffset
+                    }
+
+                    int friendlyNameIndex = reader.ReadInt32();
+                    reader.ReadInt32();
+                    var function = new UnFunction(export, package.GetNameEntry(friendlyNameIndex),
+                        new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
+                        operatorPrecedence);
+
+                    if (nativeIndex != 0 && CachedNativeFunctionInfo.GetNativeFunction(nativeIndex) == null)
+                    {
+                        Debug.WriteLine($">>NATIVE Function {nativeIndex} {export.ObjectName}");
+                        var newInfo = new CachedNativeFunctionInfo
+                        {
+                            nativeIndex = nativeIndex,
+                            Name = export.ObjectName,
+                            Filename = Path.GetFileName(package.FilePath),
+                            Operator = function.Operator,
+                            PreOperator = function.PreOperator,
+                            PostOperator = function.PostOperator
+                        };
+                        newCachedInfo[nativeIndex] = newInfo;
                     }
                 }
             }
+            Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
 
-            var natives = nativeMap.OrderBy(x => x.Key).Select(x => $"NATIVE_{x.Value} = 0x{x.Key:X2}");
-            foreach (var n in natives)
-            {
-                Debug.WriteLine(n);
-            }
+            //Dictionary<int, string> nativeMap = new Dictionary<int, string>();
+            //foreach (var ee in package.Exports.Where(x => x.ClassName == "Function"))
+            //{
+            //    int nativeIndex = 0;
+            //    var data = ee.Data;
+            //    var offset = data.Length - (package.Game == MEGame.ME3 || package.Platform == MEPackage.GamePlatform.PS3 ? 4 : 12);
+            //    if (package.Platform == MEPackage.GamePlatform.Xenon && package.Game == MEGame.ME1)
+            //    {
+            //        if (ee.ObjectName.Name == "ClientWeaponSet")
+            //            Debugger.Break();
+            //        // It's byte aligned. We have to read front to back
+            //        int scriptSize = EndianReader.ToInt32(data, 0x28, ee.FileRef.Endian);
+            //        nativeIndex = EndianReader.ToInt16(data, scriptSize + 0x2C, ee.FileRef.Endian);
+            //        if (nativeIndex == 0) nativeIndex = -1;
+            //    }
+            //    var flags = nativeIndex == 0 ? EndianReader.ToInt32(data, offset, ee.FileRef.Endian) : 0; // if we calced it don't use it's value
+            //    FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
+            //    if (nativeIndex >= 0 || fs.HasFlag("Native"))
+            //    {
+            //        if (nativeIndex == 0)
+            //        {
+            //            var nativeBackOffset = ee.FileRef.Game == MEGame.ME3 ? 6 : 7;
+            //            if (ee.Game < MEGame.ME3 && ee.FileRef.Platform != MEPackage.GamePlatform.PS3) nativeBackOffset = 0xF;
+            //            nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
+            //        }
+            //        if (nativeIndex > 0)
+            //        {
+            //            nativeMap[nativeIndex] = ee.ObjectName;
+            //        }
+            //    }
+            //}
+
+            //var natives = nativeMap.OrderBy(x => x.Key).Select(x => $"NATIVE_{x.Value} = 0x{x.Key:X2}");
+            //foreach (var n in nativeMap)
+            //{
+            //    var function = CachedNativeFunctionInfo.GetNativeFunction(n.Key); //have to figure out how to do this, it's looking up name of native function
+            //    if (function == null)
+            //    {
+            //        Debug.WriteLine($"NATIVE_{n.Value} = 0x{n.Key:X2}");
+            //    }
+            //}
         }
 
         public static void BuildME1NativeFunctionsInfo()
@@ -866,7 +931,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                                     new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex,
                                     operatorPrecedence);
 
-                                if (nativeIndex != 0)
+                                if (nativeIndex != 0 && CachedNativeFunctionInfo.GetNativeFunction(nativeIndex) == null)
                                 {
                                     Debug.WriteLine($">>NATIVE Function {nativeIndex} {export.ObjectName}");
                                     var newInfo = new CachedNativeFunctionInfo
@@ -884,9 +949,10 @@ namespace ME3Explorer.PackageEditor.Experiments
                         }
                     }
                 }
+                Debug.WriteLine(JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
 
-                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"),
-                    JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                //File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"),
+                //    JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
             }
         }
