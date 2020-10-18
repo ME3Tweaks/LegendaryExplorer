@@ -142,13 +142,14 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             Dictionary<int, string> rawStrings = new Dictionary<int, string>();
             int offset = 0;
             // int maxOffset = 0;
+            var builder = new StringBuilder(); //reuse the same stringbuilder to avoid allocations
             while (offset < Bits.Length)
             {
                 int key = offset;
                 // if (key > maxOffset)
                 // maxOffset = key;
                 /* read the string and update 'offset' variable to store NEXT string offset */
-                string s = GetString(ref offset);
+                string s = GetString(ref offset, builder);
                 rawStrings.Add(key, s);
             }
 
@@ -171,7 +172,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                     if (!rawStrings.ContainsKey(sref.BitOffset))
                     {
                         int tmpOffset = sref.BitOffset;
-                        string partString = GetString(ref tmpOffset);
+                        string partString = GetString(ref tmpOffset, builder);
 
                         /* actually, it should store the fullString and subStringOffset,
                          * but as we don't have to use this compression feature,
@@ -282,6 +283,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// 'bitOffset' variable is updated with last read bit PLUS ONE (first unread bit).
         /// </summary>
         /// <param name="bitOffset"></param>
+        /// <param name="builder"></param>
         /// <returns>
         /// decoded string or null if there's an error (last string's bit code is incomplete)
         /// </returns>
@@ -290,12 +292,11 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// List(of HuffmanNodes) CharacterTree
         /// BitArray Bits
         /// </remarks>
-        private string GetString(ref int bitOffset)
+        private string GetString(ref int bitOffset, StringBuilder builder)
         {
             HuffmanNode root = CharacterTree[0];
             HuffmanNode curNode = root;
-
-            var builder = new StringBuilder();
+            builder.Clear();
             int i;
             for (i = bitOffset; i < Bits.Length; i++)
             {

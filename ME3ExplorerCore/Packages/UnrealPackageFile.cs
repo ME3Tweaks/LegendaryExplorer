@@ -84,7 +84,7 @@ namespace ME3ExplorerCore.Packages
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new Exception("Cannot add a null/empty name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
+                throw new Exception("Cannot add a null/empty name to the list of names for a package file.\nThis is a bug in ME3ExplorerCore.");
             }
 
             if (skipLookup || !nameLookupTable.TryGetValue(name, out var index))
