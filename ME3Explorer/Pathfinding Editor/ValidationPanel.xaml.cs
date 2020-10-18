@@ -210,48 +210,57 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
                         bool isBad = false;
-                        ExportEntry spec = Pcc.GetUExport(reachSpecObj.Value);
-                        var specProps = spec.GetProperties();
-                        ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
-                        if (start.Value != exp.UIndex)
+                        var expGood = Pcc.TryGetUExport(reachSpecObj.Value, out ExportEntry spec);
+                        if (expGood)
                         {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start value does not match the node that references it ({exp.UIndex})");
-                        }
-
-                        //get end
-                        StructProperty end = specProps.GetProp<StructProperty>("End");
-                        ObjectProperty endActorObj = end.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec));
-                        if (endActorObj.Value == start.Value)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
-                        }
-
-                        var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
-                        if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has no external guid and has no endactor.");
-                        }
-                        if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has invalid end property (past end of bounds or less than 0).");
-                        }
-                        /*if (endActorObj.Value > 0)
-                        {
-                            ExportEntry expo = cc.Exports[endActorObj.Value - 1];
-                            names.Add(expo.ClassName);
-                        }*/
-                        //
-                        if (!isBad)
-                        {
-                            if (calculateReachSpec(spec))
+                            var specProps = spec.GetProperties();
+                            ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
+                            if (start.Value != exp.UIndex)
                             {
-                                numRecalculated++;
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start value does not match the node that references it ({exp.UIndex})");
+                            }
+
+                            //get end
+                            StructProperty end = specProps.GetProp<StructProperty>("End");
+                            ObjectProperty endActorObj = end.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec));
+                            if (endActorObj.Value == start.Value)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
+                            }
+
+                            var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
+                            if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has no external guid and has no endactor.");
+                            }
+                            if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has invalid end property (past end of bounds or less than 0).");
+                            }
+                            /*if (endActorObj.Value > 0)
+                            {
+                                ExportEntry expo = cc.Exports[endActorObj.Value - 1];
+                                names.Add(expo.ClassName);
+                            }*/
+                            //
+                            if (!isBad)
+                            {
+                                Debug.WriteLine($"Calculating {spec.UIndex.ToString()} {spec.ClassName}");
+                                if (calculateReachSpec(spec))
+                                {
+                                    numRecalculated++;
+                                }
                             }
                         }
+                        else
+                        {
+                            badSpecs.Add($"{reachSpecObj.Value} is incorrectly included in the path list.");
+                        }
+
                     }
 
                 }
