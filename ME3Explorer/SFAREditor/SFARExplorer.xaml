@@ -7,10 +7,12 @@
         xmlns:unreal="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
         xmlns:sfarEditor="clr-namespace:ME3Explorer.SFAREditor"
         xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         AllowDrop="True"
         mc:Ignorable="d"
-        Title="SFARExplorer" Height="450" Width="800">
+        Title="SFAR Explorer" Height="450" Width="800">
     <Window.Resources>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <sfarEditor:FilesizeToHumanSizeConverter x:Key="FilesizeToHumanSizeConverter"/>
         <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </Window.Resources>
@@ -18,6 +20,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Command="{Binding LoadDLCCommand}" Header="Open SFAR"/>
+                <MenuItem x:Name="Recents_MenuItem" Command="{Binding LoadDLCCommand}" Header="REcent"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
@@ -25,7 +28,16 @@
                 <TextBlock Text="{Binding BottomLeftText}"/>
             </StatusBarItem>
         </StatusBar>
-        <ListBox ItemsSource="{Binding LoadedDLCPackage.Files}">
+        <Grid>
+        <sharedUi:RecentsControl x:Name="RecentsController" VerticalAlignment="Center" HorizontalContentAlignment="Center" 
+                                     Visibility="{Binding LoadedDLCPackage, 
+                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sfarEditor:SFARExplorer}},
+                                                Converter={StaticResource NullVisibilityConverter}, 
+                                                ConverterParameter='Reversed'}"/>
+        <ListBox ItemsSource="{Binding LoadedDLCPackage.Files}" 
+                 Visibility="{Binding LoadedDLCPackage,      
+                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type sfarEditor:SFARExplorer}},
+                            Converter={StaticResource NullVisibilityConverter}}">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type unreal:DLCPackage+FileEntryStruct}">
                     <DockPanel>
@@ -33,7 +45,7 @@
                         <TextBlock Text ="{Binding FileName}"/>
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-
+                                <MenuItem Header="Extract file" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExtractFileCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                                 <MenuItem Header="Open in TLK Editor" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInTLKEditorCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                                 <MenuItem Header="Open in Package Editor" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInPackageEditorCommand}" CommandParameter="{Binding}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                             </ContextMenu>
@@ -45,5 +57,7 @@
 
             </ListBox.Resources>
         </ListBox>
+        </Grid>
+
     </DockPanel>
 </me3Explorer:TrackingNotifyPropertyChangedWindowBase>

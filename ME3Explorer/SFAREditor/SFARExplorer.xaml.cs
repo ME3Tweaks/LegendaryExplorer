@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
@@ -10,7 +14,7 @@ namespace ME3Explorer.SFAREditor
     /// <summary>
     /// Interaction logic for SFARExplorer.xaml
     /// </summary>
-    public partial class SFARExplorer : TrackingNotifyPropertyChangedWindowBase
+    public partial class SFARExplorer : TrackingNotifyPropertyChangedWindowBase, IRecents
     {
         private string _bottomLeftText = "Open or drop SFAR";
 
@@ -32,17 +36,41 @@ namespace ME3Explorer.SFAREditor
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
+
         }
 
         public GenericCommand LoadDLCCommand { get; set; }
         public RelayCommand OpenInPackageEditorCommand { get; set; }
         public RelayCommand OpenInTLKEditorCommand { get; set; }
+        public RelayCommand ExtractFileCommand { get; set; }
 
         private void LoadCommands()
         {
             LoadDLCCommand = new GenericCommand(PromptForDLC, CanLoadDLC);
             OpenInPackageEditorCommand = new RelayCommand(openInPackageEditor, canOpenInPackageEditor);
             OpenInTLKEditorCommand = new RelayCommand(openInTlkEditor, canOpenInTlkEditor);
+            ExtractFileCommand = new RelayCommand(extractSingleFile, canExtractFile);
+        }
+
+        private bool canExtractFile(object obj) => obj is DLCPackage.FileEntryStruct;
+
+        private void extractSingleFile(object obj)
+        {
+            if (obj is DLCPackage.FileEntryStruct fes)
+            {
+                var recommendedName = Path.GetFileName(fes.FileName);
+                var dlg = new SaveFileDialog
+                {
+                    FileName = recommendedName
+                };
+                var result = dlg.ShowDialog(this);
+                if (result.HasValue && result.Value)
+                {
+                    var outpath = dlg.FileName;
+                    LoadedDLCPackage?.DecompressEntry(fes).WriteToFile(outpath);
+                }
+            }
         }
 
         private bool canOpenInPackageEditor(object obj)
@@ -107,15 +135,18 @@ namespace ME3Explorer.SFAREditor
             var result = ofd.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                loadSfar(ofd.FileName);
+                LoadFile(ofd.FileName);
             }
         }
 
-        private void loadSfar(string sfarPath)
+        private void LoadFile(string sfarPath)
         {
             LoadedDLCPackage = new DLCPackage(sfarPath);
             BottomLeftText =
                 $"{Path.GetFileName(sfarPath)}, compression scheme: {LoadedDLCPackage.Header.CompressionScheme}";
+
+            RecentsController.AddRecent(sfarPath, false);
+            RecentsController.SaveRecentList(true);
         }
 
         protected override void OnDrop(DragEventArgs e)
@@ -127,11 +158,18 @@ namespace ME3Explorer.SFAREditor
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 if (files.Length != 1) return;
                 var file = files[0];
-                if (file.EndsWith(".sfar"))
+                if (file.EndsWith(".sfar", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    loadSfar(file);
+                    LoadFile(file);
                 }
             }
         }
+
+        public void PropogateRecentsChange(IEnumerable<string> newRecents)
+        {
+            RecentsController.PropogateRecentsChange(false, newRecents);
+        }
+
+        public string Toolname => "SFARExplorer";
     }
 }

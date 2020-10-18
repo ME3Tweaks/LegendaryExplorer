@@ -208,23 +208,31 @@ namespace ME3ExplorerCore.Unreal
             fFile.FileName = "Filenames.txt (this file has no real name)";
             fFile.isActualFile = false;
             Files[f] = fFile;
-            MemoryStream m = DecompressEntry(f);
-            m.Seek(0, 0);
-            StreamReader r = new StreamReader(m);
-            while (!r.EndOfStream)
+            try
             {
-                string line = r.ReadLine();
-                byte[] hash = ComputeHash(line);
-                f = -1;
-                for (int i = 0; i < Header.FileCount; i++)
-                    if (Files[i].Hash.SequenceEqual(hash))
-                        f = i;
-                if (f != -1)
+                MemoryStream m = DecompressEntry(f);
+                m.Seek(0, 0);
+                StreamReader r = new StreamReader(m);
+                while (!r.EndOfStream)
                 {
-                    e = Files[f];
-                    e.FileName = line;
-                    Files[f] = e;
+                    string line = r.ReadLine();
+                    byte[] hash = ComputeHash(line);
+                    f = -1;
+                    for (int i = 0; i < Header.FileCount; i++)
+                        if (Files[i].Hash.SequenceEqual(hash))
+                            f = i;
+                    if (f != -1)
+                    {
+                        e = Files[f];
+                        e.FileName = line;
+                        Files[f] = e;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Can't read names
+
             }
         }
 
@@ -326,11 +334,24 @@ namespace ME3ExplorerCore.Unreal
                         }
 
                         inputBlock = new byte[compressedBlockSize];
-                        //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
+                        Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
                         fs.Read(inputBlock, 0, (int)compressedBlockSize);
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
-                        if (Header.CompressionScheme == "amzl")
+                        if (Header.CompressionScheme == "amzl"  /*PC*/|| Header.CompressionScheme == "lzma" /* PS3 */)
                         {
+                            if (Header.CompressionScheme == "lzma")
+                            {
+                                //PS3 - This doesn't work. I'm not sure what kind of LZMA this uses but it has seemingly no header
+                                var attachedHeader = new byte[inputBlock.Length + 5];
+                                attachedHeader[0] = 0x5D;
+                                attachedHeader[1] = 0x00;
+                                attachedHeader[2] = 0x10;
+                                attachedHeader[3] = 0x00;
+                                attachedHeader[4] = 0x00;
+                                Buffer.BlockCopy(inputBlock,0,attachedHeader,5, inputBlock.Length);
+                                inputBlock = attachedHeader;
+                            }
+
                             var outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                             if (outputBlock.Length != actualUncompressedBlockSize)
                                 throw new Exception("SFAR LZMA Decompression Error");
@@ -339,7 +360,7 @@ namespace ME3ExplorerCore.Unreal
                             //continue;
                         }
 
-                        if (Header.CompressionScheme == "lzx")
+                        if (Header.CompressionScheme == "lzx") //Xbox
                         {
                             var outputBlock = new byte[actualUncompressedBlockSize];
                             var decompResult = LZX.Decompress(inputBlock, (uint)inputBlock.Length, outputBlock);
