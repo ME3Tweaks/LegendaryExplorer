@@ -455,16 +455,20 @@ namespace ME3ExplorerCore.Packages
         //        //    return output;
         //        //}
 
-        ///
-        /// Decompresses a fully compressed package file. These can be found on console platforms
-        /// 
-        public static MemoryStream DecompressFullyCompressedPackage(EndianReader raw, UnrealPackageFile.CompressionType compressionType)
+
+        /// <summary>
+        /// Decompresses a fully compressed package file. These only occur on console platforms. 
+        /// </summary>
+        /// <param name="rawInput">Input stream to read from</param>
+        /// <param name="compressionType">Known compression type of package. If this is not known, it will attempt to be determined, and this variable will be updated.</param>
+        /// <returns></returns>
+        public static MemoryStream DecompressFullyCompressedPackage(EndianReader rawInput, ref UnrealPackageFile.CompressionType compressionType)
         {
-            raw.Position = 0;
-            var magic = raw.ReadInt32();
-            var blockSize = raw.ReadInt32();
-            var compressedSize = raw.ReadInt32();
-            var decompressedSize = raw.ReadInt32();
+            rawInput.Position = 0;
+            var magic = rawInput.ReadInt32();
+            var blockSize = rawInput.ReadInt32();
+            var compressedSize = rawInput.ReadInt32();
+            var decompressedSize = rawInput.ReadInt32();
 
             var blockCount = 0;
             if (decompressedSize < blockSize)
@@ -486,7 +490,7 @@ namespace ME3ExplorerCore.Packages
             int i = 0;
             while (i < blockCount)
             {
-                blockTable.Add((raw.ReadInt32(), raw.ReadInt32()));
+                blockTable.Add((rawInput.ReadInt32(), rawInput.ReadInt32()));
                 i++;
             }
 
@@ -495,7 +499,7 @@ namespace ME3ExplorerCore.Packages
             {
                 // Decompress
                 //Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
-                var datain = raw.ReadToBuffer(btInfo.blockCompressedSize);
+                var datain = rawInput.ReadToBuffer(btInfo.blockCompressedSize);
                 if (compressionType == UnrealPackageFile.CompressionType.None)
                 {
                     // We have to determine if it's LZMA or LZX based on first few bytes

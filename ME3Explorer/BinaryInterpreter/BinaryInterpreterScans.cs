@@ -231,7 +231,8 @@ namespace ME3Explorer
             PCDirect3D_ShaderModel3 = 0,
             PS3 = 1,
             XBOXDirect3D = 2,
-            PCDirect3D_ShaderModel4 = 3
+            PCDirect3D_ShaderModel4 = 3,
+            WiiU = 5
         }
 
         private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")

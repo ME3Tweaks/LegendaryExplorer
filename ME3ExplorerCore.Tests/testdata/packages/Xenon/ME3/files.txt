@@ -1,2 +1,3 @@
 Startup_INT => Fully compressed package
 BioD_Nor.xxx => Not fully compressed pacakge
+BioD_MPRays => Decompressed package. Test it doesn't show up as PS3 platform

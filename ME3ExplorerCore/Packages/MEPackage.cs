@@ -191,6 +191,9 @@ namespace ME3ExplorerCore.Packages
             // This is stored as integer by cooker as it is flipped by size word in big endian
             var versionLicenseePacked = packageReader.ReadUInt32();
 
+            GamePlatform platformOverride = GamePlatform.Unknown; //Used to help differentiate beteween PS3 and Xenon ME3
+            CompressionType fcCompressionType = CompressionType.None;
+
             if ((versionLicenseePacked == 0x00020000 || versionLicenseePacked == 0x00010000) && Endian == Endian.Little)
             {
                 if (versionLicenseePacked == 0x20000)
@@ -200,16 +203,15 @@ namespace ME3ExplorerCore.Packages
                     // LZMA always starts with 0x5D and then is followed by a dictionary size of size word (32) (in ME it looks like 0x10000)
 
                     // This is done in the decompress fully compressed package method when we pass it None type
-                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.None);
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, ref fcCompressionType);
+                    platformOverride = fcCompressionType == CompressionType.LZX ? GamePlatform.Xenon : GamePlatform.WiiU;
                 }
                 else if (versionLicenseePacked == 0x10000)
                 {
                     //PS3, LZMA
-                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, CompressionType.LZMA);
-                }
-                else
-                {
-                    
+                    fcCompressionType = CompressionType.LZMA; // Known already
+                    fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, ref fcCompressionType);
+                    platformOverride = GamePlatform.PS3;
                 }
                 packageReader = EndianReader.SetupForPackageReading(fs);
                 packageReader.SkipInt32(); //skip magic as we have already read it
@@ -234,10 +236,14 @@ namespace ME3ExplorerCore.Packages
                     Game = MEGame.ME1;
                     Platform = GamePlatform.PS3;
                     break;
-                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion:
+                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && Endian == Endian.Little:
                 case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
                     Game = MEGame.ME2;
                     Platform = GamePlatform.PC;
+                    break;
+                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && Endian == Endian.Big:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.Xenon;
                     break;
                 case ME2PS3UnrealVersion when licenseeVersion == ME2PS3LicenseeVersion:
                     Game = MEGame.ME2;
@@ -255,11 +261,25 @@ namespace ME3ExplorerCore.Packages
                     }
                     else
                     {
-                        Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
-                        // Should we adjust constructor to allow us to pass an expected type for package? OR should we have callback to determine type
-                        platformNeedsResolved = true; // Not sure what we can use in package file to determine this since it determines header parsing...
-                        Platform = GamePlatform.PS3;
-                    } 
+                        // If the package is not compressed or fully compressed we cannot determine if this is PS3 or Xenon.
+                        // PS3 and Xbox use same engine versions on the ME3 game (ME1/2 use same one but has slight differences for some reason)
+
+                        // Code above determines platform if it's fully compressed, and code below determines platform based on compression type
+                        // However if neither exist we don't have an easy way to differentiate files (such as files from SFAR)
+
+                        // Might have to see if there is some other platform indicator, like SeekFreeShaderCache that seems to exist
+                        // in every single console file (vs PC's DLC only). The shader format will be different between platforms for sure
+                        if (platformOverride == GamePlatform.Unknown)
+                        {
+                            Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
+                            platformNeedsResolved = true;
+                            Platform = GamePlatform.PS3; //This is placeholder as Xenon and PS3 use same header format
+                        }
+                        else
+                        {
+                            Platform = platformOverride; // Used for fully compressed packages
+                        }
+                    }
                     break;
                 case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
                     Game = MEGame.ME3;
@@ -283,7 +303,6 @@ namespace ME3ExplorerCore.Packages
             {
                 //Consoles are always cooked.
                 PackageTypeId = packageReader.ReadInt32(); //0 = standard, 1 = patch ? Not entirely sure. patch_001 files with byte = 0 => game does not load
-
             }
 
             NameCount = packageReader.ReadInt32();
@@ -341,6 +360,12 @@ namespace ME3ExplorerCore.Packages
             //COMPRESSION AND COMPRESSION CHUNKS
             var compressionFlagPosition = packageReader.Position;
             var compressionType = (UnrealPackageFile.CompressionType)packageReader.ReadInt32();
+            if (platformNeedsResolved && compressionType != CompressionType.None)
+            {
+                Platform = compressionType == CompressionType.LZX ? GamePlatform.Xenon : GamePlatform.PS3;
+                platformNeedsResolved = false;
+            }
+
             //Debug.WriteLine($"Compression type {filePath}: {compressionType}");
             int numChunks = packageReader.ReadInt32();
 
@@ -365,7 +390,6 @@ namespace ME3ExplorerCore.Packages
             if (Game == MEGame.ME2 || Game == MEGame.ME3 || Platform == GamePlatform.PS3)
             {
                 int additionalPackagesToCookCount = packageReader.ReadInt32();
-                //var additionalPackagesToCook = new string[additionalPackagesToCookCount];
                 for (int i = 0; i < additionalPackagesToCookCount; i++)
                 {
                     var packageStr = packageReader.ReadUnrealString();
@@ -414,6 +438,37 @@ namespace ME3ExplorerCore.Packages
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
+                if (platformNeedsResolved && e.ClassName == "ShaderCache")
+                {
+                    // Read the first binary byte, it's a platform flag
+                    // 0 = PC
+                    // 1 = PS3
+                    // 2 = Xenon
+                    // 5 = WiiU
+                    // See ME3Explorer's EShaderPlatform enum in it's binary interpreter scans
+                    var resetPos = packageReader.Position;
+                    packageReader.Position = e.DataOffset + 0xC; // Skip 4 byte + "None"
+                    var platform = packageReader.ReadByte();
+                    if (platform == 1)
+                    {
+                        Platform = GamePlatform.PS3;
+                        platformNeedsResolved = false;
+                    }
+                    else if (platform == 2)
+                    {
+                        Platform = GamePlatform.Xenon;
+                        platformNeedsResolved = false;
+                    }
+                    else if (platform == 5)
+                    {
+                        // I think this won't ever occur
+                        // as we have engine version diff
+                        // But might as well just make sure
+                        Platform = GamePlatform.WiiU;
+                        platformNeedsResolved = false;
+                    }
+                    packageReader.Position = resetPos;
+                }
             }
 
             if (Game == MEGame.ME1 && Platform == GamePlatform.PC)
@@ -458,6 +513,11 @@ namespace ME3ExplorerCore.Packages
                         Localization = MELocalization.None;
                         break;
                 }
+            }
+
+            if (platformNeedsResolved)
+            {
+                // Todo: Find something that is unique to Xenon vs PS3 ME3 files
             }
         }
 
