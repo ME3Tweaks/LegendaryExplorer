@@ -13,7 +13,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public static T From<T>(ExportEntry export) where T : ObjectBinary, new()
         {
             var t = new T { Export = export };
-            t.Serialize(new SerializingContainer2(new MemoryStream(export.GetBinaryData()), export.FileRef, true, export.DataOffset + export.propsEnd()));
+            t.Serialize(new SerializingContainer2(export.GetReadOnlyBinaryStream(), export.FileRef, true, export.DataOffset + export.propsEnd()));
             return t;
         }
 

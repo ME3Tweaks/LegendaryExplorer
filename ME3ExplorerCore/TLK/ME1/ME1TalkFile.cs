@@ -211,7 +211,7 @@ namespace ME3ExplorerCore.TLK.ME1
         #region Load Data
         public void LoadTlkData(EndianReader r = null)
         {
-            r ??= new EndianReader(new MemoryStream(pcc.GetUExport(uindex).GetBinaryData()), Encoding.Unicode)
+            r ??= new EndianReader(pcc.GetUExport(uindex).GetReadOnlyBinaryStream(), Encoding.Unicode)
             {
                 Endian = pcc.Endian
             };

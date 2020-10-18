@@ -610,7 +610,8 @@ namespace ME3ExplorerCore.Packages
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.Write(_data, 0, GetPropertyStart());
             props.WriteTo(m.Writer, FileRef);
-            m.Writer.WriteBytes(GetBinaryData());
+            int binStart = propsEnd();
+            m.Writer.Write(_data, binStart, _data.Length - binStart);
             Data = m.ToArray();
         }
 
@@ -682,6 +683,12 @@ namespace ME3ExplorerCore.Packages
         {
             int start = propsEnd();
             return _data.Slice(start, _data.Length - start);
+        }
+
+        public MemoryStream GetReadOnlyBinaryStream()
+        {
+            int start = propsEnd();
+            return new MemoryStream(_data, start, _data.Length - start, false);
         }
 
         public void SetBinaryData(byte[] binaryData)

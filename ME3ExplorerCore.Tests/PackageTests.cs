@@ -135,7 +135,7 @@ namespace ME3ExplorerCore.Tests
                 {
                     // Do not use package caching in tests
                     Console.WriteLine($"Opening package {p}");
-                    (var game, var platform) = GlobalTest.GetExpectedTypes(p);
+                    var (game, platform) = GlobalTest.GetExpectedTypes(p);
                     if (platform == MEPackage.GamePlatform.PC) // Will expand in future, but not now.
                     {
                         var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
@@ -148,8 +148,7 @@ namespace ME3ExplorerCore.Tests
                                 continue; // No point testing converting things to UDK in this fashion
 
                             byte[] original = export.Data;
-                            export.WriteProperties(props);
-                            export.SetBinaryData(bin);
+                            export.WritePropertiesAndBinary(props, bin);
                             byte[] changed = export.Data;
                             Assert.AreEqual(original.Length, changed.Length,
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different sized byte array than the input. Original size: {original.Length}, reserialized: {changed.Length}, difference: 0x{(changed.Length - original.Length):X8} bytes. File: {p}");

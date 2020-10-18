@@ -27,10 +27,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				throw new ArgumentNullException(nameof(export));
 			}
 
-            using (var stream = new MemoryStream(export.GetBinaryData()))
-            {
-                return Load(stream);
-            }
+            return Load(export.GetReadOnlyBinaryStream());
 		}
 
 		public static BinaryBioStateEventMap Load(Stream stream)
@@ -40,31 +37,29 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 				throw new ArgumentNullException(nameof(stream));
 			}
 
-			using (var reader = new BioStateEventMapReader(stream))
-			{
-				var map = new BinaryBioStateEventMap();
+            using var reader = new BioStateEventMapReader(stream);
+            var map = new BinaryBioStateEventMap();
 
-				var eventsCount = reader.ReadInt32();
-				map.StateEvents = new Dictionary<int, BioStateEvent>();
+            var eventsCount = reader.ReadInt32();
+            map.StateEvents = new Dictionary<int, BioStateEvent>();
 
-				for (var i = 0; i < eventsCount; i++)
-				{
-					var id = reader.ReadInt32();
-					var stateEvent = reader.ReadStateEvent();
+            for (var i = 0; i < eventsCount; i++)
+            {
+                var id = reader.ReadInt32();
+                var stateEvent = reader.ReadStateEvent();
 
-					if (!map.StateEvents.ContainsKey(id))
-					{
-						map.StateEvents.Add(id, stateEvent);
-					}
-					else
-					{
-						map.StateEvents[id] = stateEvent;
-					}
-				}
+                if (!map.StateEvents.ContainsKey(id))
+                {
+                    map.StateEvents.Add(id, stateEvent);
+                }
+                else
+                {
+                    map.StateEvents[id] = stateEvent;
+                }
+            }
 
-				return map;
-			}
-		}
+            return map;
+        }
 
 		public void Save(string path)
 		{
