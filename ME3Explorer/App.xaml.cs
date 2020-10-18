@@ -146,10 +146,6 @@ namespace ME3Explorer
             else
             {
                 ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
-                {
-                    new PackageEditorWPF(false).Close(); //pre-parse xaml to improve PackEd startup time
-                }
                 GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 GC.Collect();
                 PendingAppLoadedAction = actionDelegate;
@@ -165,12 +161,12 @@ namespace ME3Explorer
                 PendingAppLoadedAction?.Invoke();
 
 #if DEBUG
-                StandardLibrary.InitializeStandardLib();
+                //StandardLibrary.InitializeStandardLib();
 #endif
             }
         }
 
-        private void initCoreLib()
+        private static void initCoreLib()
         {
 #if DEBUG
             MemoryAnalyzer.IsTrackingMemory = true;
@@ -192,7 +188,6 @@ namespace ME3Explorer
             };
             PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendTOCUpdateMessage;
             PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip());
-            TLKLoader.LoadSavedTlkList();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

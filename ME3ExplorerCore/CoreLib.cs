@@ -46,11 +46,11 @@ namespace ME3ExplorerCore
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;
             Action[] jsonLoaders =
             {
-                () => ME1UnrealObjectInfo.loadfromJSON(),
-                () => ME2UnrealObjectInfo.loadfromJSON(),
-                () => ME3UnrealObjectInfo.loadfromJSON()
+                ME1UnrealObjectInfo.loadfromJSON,
+                ME2UnrealObjectInfo.loadfromJSON,
+                ME3UnrealObjectInfo.loadfromJSON
             };
-            Parallel.ForEach(jsonLoaders, (action, state, arg3) => action());
+            Parallel.ForEach(jsonLoaders, action => action());
             CoreLibSettings.Instance = new CoreLibSettings();
             initialized = true;
         }
