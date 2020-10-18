@@ -25,6 +25,7 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.PackageDumper
 {
@@ -105,7 +106,21 @@ namespace ME3Explorer.PackageDumper
         public int OverallProgressValue
         {
             get => _overallProgressValue;
-            set => SetProperty(ref _overallProgressValue, value);
+            set
+            {
+                if (SetProperty(ref _overallProgressValue, value))
+                {
+                    if (value > 0)
+                    {
+                        TaskbarHelper.SetProgress(value, OverallProgressMaximum);
+                        TaskbarHelper.SetProgressState(TaskbarProgressBarState.Normal);
+                    }
+                    else
+                    {
+                        TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
+                    }
+                }
+            }
         }
 
         private ActionBlock<PackageDumperSingleFileTask> ProcessingQueue;
@@ -152,10 +167,7 @@ namespace ME3Explorer.PackageDumper
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -340,16 +352,16 @@ namespace ME3Explorer.PackageDumper
                     }
 
                     var threadtask = new PackageDumperSingleFileTask(packageF, outputFilename, outfolder);
-                    AllDumpingItems.Add(threadtask); //For setting cancelation value
+                    AllDumpingItems.Add(threadtask); //For setting cancellation value
                     ProcessingQueue.Post(threadtask); // Post all items to the block
                     i++;
                 }
             }
 
-            ProcessingQueue.Complete(); // Signal completion
+            ProcessingQueue.Complete(); // Signal completion of adding items
             CommandManager.InvalidateRequerySuggested();
-            await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
-
+            await ProcessingQueue.Completion; // Asynchronously wait for completion.
+            AllDumpingItems = null; // Let the garbage collector clear stuff
             if (DumpCanceled)
             {
                 DumpCanceled = false;
@@ -365,6 +377,7 @@ namespace ME3Explorer.PackageDumper
             }
 
             ProcessingQueue = null;
+            TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -412,7 +425,10 @@ namespace ME3Explorer.PackageDumper
 
             Uri relativeUri = fromUri.MakeRelativeUri(toUri);
             string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
+            if (relativePath == "./")
+            {
+                return toPath;
+            }
             if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
             {
                 relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
@@ -436,10 +452,8 @@ namespace ME3Explorer.PackageDumper
         private void PackageDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
+            AllDumpingItems = null;
         }
 
         private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
@@ -578,8 +592,8 @@ namespace ME3Explorer.PackageDumper
                     string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                     Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                    using (StreamWriter stringoutput = new StreamWriter(savepath))
-                    //using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
+                    //using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
                     {
 
                         //if (imports)
