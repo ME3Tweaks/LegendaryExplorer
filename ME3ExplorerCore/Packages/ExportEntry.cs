@@ -589,21 +589,21 @@ namespace ME3ExplorerCore.Packages
                 parsingClass = Class; //class we are defaults of
             }
 
-            if (!includeNoneProperties)
-            {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(this, stream, ClassName, false, false, this); //do not set properties as this may interfere with some other code. may change later.
-            }
-            else
-            {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                // Do not cache
-                return PropertyCollection.ReadProps(this, stream, ClassName, true, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
-            }
+            //if (!includeNoneProperties)
+            //{
+            //    int start = GetPropertyStart();
+            //    MemoryStream stream = new MemoryStream(_data, false);
+            //    stream.Seek(start, SeekOrigin.Current);
+            //    return properties = PropertyCollection.ReadProps(this, stream, ClassName, false, false, this); //do not set properties as this may interfere with some other code. may change later.
+            //}
+            //else
+            //{
+            int start = GetPropertyStart();
+            MemoryStream stream = new MemoryStream(_data, false);
+            stream.Seek(start, SeekOrigin.Current);
+            // Do not cache
+            return PropertyCollection.ReadProps(this, stream, ClassName, true, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            //}
         }
 
         public void WriteProperties(PropertyCollection props)
