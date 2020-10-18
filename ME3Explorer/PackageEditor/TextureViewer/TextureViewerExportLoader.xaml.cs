@@ -276,6 +276,8 @@ namespace ME3Explorer
                 }
 
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
+                CurrentLoadedExport = exportEntry;
+
                 if (mips.Any())
                 {
                     var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
@@ -313,7 +315,6 @@ namespace ME3Explorer
                     }
                 }
 
-                CurrentLoadedExport = exportEntry;
             }
             catch (Exception e)
             {
