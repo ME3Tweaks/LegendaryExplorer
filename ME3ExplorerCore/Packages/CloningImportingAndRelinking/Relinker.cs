@@ -83,7 +83,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Properties
             PropertyCollection props = relinkingExport.GetProperties();
             relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies));
-            relinkingExport.WriteProperties(props);
 
             //Relink Binary
             try
@@ -91,10 +90,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
                 {
                     relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
-                    return relinkFailedReport;
                 }
-
-                if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
+                else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
                     List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
 
@@ -144,33 +141,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             }
                         }
                     }
-                    relinkingExport.SetBinaryData(objBin);
+                    relinkingExport.WritePropertiesAndBinary(props, objBin);
                     return relinkFailedReport;
-                }
-
-                byte[] binarydata = relinkingExport.GetBinaryData();
-
-                if (binarydata.Length > 0)
-                {
-                    switch (relinkingExport.ClassName)
-                    {
-                        case "FaceFXAnimSet":
-                        case "TextureMovie":
-                        case "TextureCube":
-                        case "FaceFXAsset":
-                        case "ForceFeedbackWaveform":
-                            //these classes have binary but do not need relinking
-                            break;
-                        default:
-                            if (binarydata.Any(b => b != 0))
-                            {
-                                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} has unparsed binary. " +
-                                                                                                 $"This binary may contain items that need to be relinked. Come to the Discord server " +
-                                                                                                 $"(click ME3Tweaks logo in main window for invite) and ask devs to parse this class."));
-                            }
-
-                            break;
-                    }
                 }
             }
             catch (Exception e) when (!CoreLib.IsDebug)
@@ -178,6 +150,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
+            relinkingExport.WriteProperties(props);
             return relinkFailedReport;
         }
 

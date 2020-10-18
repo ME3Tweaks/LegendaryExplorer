@@ -97,13 +97,13 @@ namespace ME3Explorer.Unreal
 
         public static void LoadSavedTlkList()
         {
-            Action[] jsonLoaders =
+            Action[] loaders =
             {
                 loadME1Tlk,
                 loadME2Tlk,
                 loadME3Tlk
             };
-            Parallel.ForEach(jsonLoaders, (action, state, arg3) => action());
+            Parallel.ForEach(loaders, action => action());
         }
 
         public static void SaveTLKList(MEGame game = MEGame.Unknown)

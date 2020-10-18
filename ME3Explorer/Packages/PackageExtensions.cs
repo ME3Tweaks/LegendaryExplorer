@@ -339,7 +339,7 @@ namespace ME3Explorer.Packages
                             {
                                 var masterTxt = resourcePCC.GetEntry(texidx);
                                 IEntry newTxtEnt = masterTxt;
-                                switch (masterTxt?.ObjectName)
+                                switch (masterTxt?.ObjectName.Name)
                                 {
                                     case "DefaultDiffuse":
                                         if (diff != null)
