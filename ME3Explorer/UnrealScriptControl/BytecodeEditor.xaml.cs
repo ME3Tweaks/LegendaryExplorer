@@ -268,41 +268,37 @@ namespace ME3Explorer
                 }
 
                 //Footer
-                pos = data.Length - (func.HasFlag("Net") ? 17 : 15);
-                string flagStr = func.GetFlags();
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
-                pos += 2;
+                if (CurrentLoadedExport.ClassName == "Function")
+                {
+                    pos = data.Length - (func.HasFlag("Net") ? 17 : 15);
+                    string flagStr = func.GetFlags();
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index",
+                        EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    pos += 2;
 
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", data[pos], pos));
-                pos++;
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", data[pos], pos));
+                    pos++;
 
-                int functionFlags = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags:X8} {flagStr}", pos));
-                pos += 4;
+                    int functionFlags = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
+                    ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags:X8} {flagStr}", pos));
+                    pos += 4;
 
-                //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
-                //{
-                //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
-                //pos += 2;
-                //}
+                    //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
+                    //{
+                    //ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", EndianReader.ToInt16(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
+                    //pos += 2;
+                    //}
 
-                int friendlyNameIndex = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
-                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name", Pcc.GetNameEntry(friendlyNameIndex), pos) { length = 8 });
-                pos += 8;
-
-                //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
-                //try
-                //{
-                //    Function_TextBox.Text = func.ToRawText();
-                //}
-                //catch (Exception e)
-                //{
-                //    Function_TextBox.Text = "Error parsing function: " + e.Message;
-                //}
-            }
-            else
-            {
-                //Function_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                    int friendlyNameIndex = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
+                    ScriptFooterBlocks.Add(
+                        new ScriptHeaderItem("Friendly Name", Pcc.GetNameEntry(friendlyNameIndex), pos) { length = 8 });
+                    pos += 8;
+                } else if (CurrentLoadedExport.ClassName == "State")
+                {
+                    // There's labeltable offset but not very useful otherwise. Would probably use objectbinary to just get it.
+                    // Maybe this will be overhauled someday
+                    // Probably not
+                }
             }
         }
 
@@ -353,7 +349,8 @@ namespace ME3Explorer
                             {
                                 BytecodeReader.ME1OpCodes m = (BytecodeReader.ME1OpCodes)currentData[start];
                                 s += $", OpCode: {m}";
-                            } else if (Pcc.Platform == MEPackage.GamePlatform.PS3 || Pcc.Game == MEGame.ME2)
+                            }
+                            else if (Pcc.Platform == MEPackage.GamePlatform.PS3 || Pcc.Game == MEGame.ME2)
                             {
                                 Bytecode.byteOpnameMap.TryGetValue(currentData[start], out var opcodeName);
                                 s += $", OpCode: {opcodeName ?? currentData[start].ToString()}";

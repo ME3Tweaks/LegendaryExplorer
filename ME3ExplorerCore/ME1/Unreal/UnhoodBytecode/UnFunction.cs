@@ -99,29 +99,32 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             // UI only
             // Man this code is bad
             // sorry
+#if RELEASE || AZURE
             try
             {
-                var s = bytecodeReader._reader;
-                if (Export.ClassName == "State")
+#endif
+            var s = bytecodeReader._reader;
+            if (Export.ClassName == "State")
+            {
+                s.BaseStream.Skip(0x10); //Unknown
+                var stateFlags = s.ReadInt32();
+                var unknown = s.ReadInt16();
+                var functionMapCount = s.ReadInt32();
+                for (int i = 0; i < functionMapCount; i++)
                 {
-                    s.BaseStream.Skip(0x10); //Unknown
-                    var stateFlags = s.ReadInt32();
-                    var unknown = s.ReadInt16();
-                    var functionMapCount = s.ReadInt32();
-                    for (int i = 0; i < functionMapCount; i++)
-                    {
-                        int spos = (int)s.BaseStream.Position;
-                        var name = bytecodeReader.ReadName();
-                        var entry = bytecodeReader.ReadEntryRef(out var _);
-                        Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
-                    }
+                    int spos = (int)s.BaseStream.Position;
+                    var name = bytecodeReader.ReadName();
+                    var entry = bytecodeReader.ReadEntryRef(out var _);
+                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
                 }
+            }
+#if RELEASE || AZURE
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Exception..");
             }
-
+#endif
             NameReferences = bytecodeReader.NameReferences;
             EntryReferences = bytecodeReader.EntryReferences;
             //var childIdx = EndianReader.ToInt32(Export.DataReadOnly, 0x18, Export.FileRef.Endian);

@@ -336,9 +336,10 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             EX_DynArrayFindStruct = 0x47,
             EX_LocalOutVariable = 0x48,
             EX_DefaultParmValue = 0x49,
-            EX_EmptyParmValue = 0x4A,
+            EX_EmptyParmValue = 0x4A, //PC ONLY!
+            EX_ME1XBox_StrRefConst = 0x4A, //XBOX ME1
             EX_InstanceDelegate = 0x4B, //PC ONLY!
-            EX_ME1XBox_DynArrayAdd = 0x4B,
+            EX_ME1XBox_DynArrayAdd = 0x4B, //XBOX ME1
             EX_StringRefConst = 0x4F,
             EX_GoW_DefaultValue = 0x50,
             EX_InterfaceContext = 0x51,
@@ -610,7 +611,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                         //}
 
                         int exprSize = _reader.ReadInt16();
-                       //Debug.WriteLine($" >> {contextId}: ExprSize {exprSize} at 0x{(_reader.BaseStream.Position - 2):X8}");
+                        //Debug.WriteLine($" >> {contextId}: ExprSize {exprSize} at 0x{(_reader.BaseStream.Position - 2):X8}");
 
 
                         int bSize = _reader.ReadByte();
@@ -715,7 +716,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_EndOfScript:
                     return new EndOfScriptToken(readerpos);
 
-                case ME1OpCodes.EX_EmptyParmValue:
+                case ME1OpCodes.EX_EmptyParmValue when _package.Platform != MEPackage.GamePlatform.Xenon || _package.Game != MEGame.ME1:
                 case ME1OpCodes.EX_GoW_DefaultValue:
                     return new DefaultValueToken("", readerpos);
 
@@ -856,6 +857,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     return CompareDelegates("!=");
 
                 case ME1OpCodes.EX_StringRefConst:
+                case ME1OpCodes.EX_ME1XBox_StrRefConst when _package.Platform == MEPackage.GamePlatform.Xenon && _package.Game == MEGame.ME1:
                     return ReadStringRefConst(readerpos);
 
                 default:
@@ -901,7 +903,6 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadDynArray1ArgMethodSpecial(string methodName)
         {
-            Debug.WriteLine("SPECIAL");
             int readerpos = (int)_reader.BaseStream.Position - 1;
 
             var arrayExpression = ReadNext();
