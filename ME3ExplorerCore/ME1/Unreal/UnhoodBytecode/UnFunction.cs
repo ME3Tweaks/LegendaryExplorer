@@ -99,7 +99,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             // UI only
             // Man this code is bad
             // sorry
-#if RELEASE || AZURE
+#if !DEBUG && !AZURE
             try
             {
 #endif
@@ -118,7 +118,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
                 }
             }
-#if RELEASE || AZURE
+#if !DEBUG && !AZURE
             }
             catch (Exception e)
             {
