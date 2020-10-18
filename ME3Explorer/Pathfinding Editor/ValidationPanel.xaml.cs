@@ -210,8 +210,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
                         bool isBad = false;
-                        var expGood = Pcc.TryGetUExport(reachSpecObj.Value, out ExportEntry spec);
-                        if (expGood)
+                        if (Pcc.TryGetUExport(reachSpecObj.Value, out ExportEntry spec))
                         {
                             var specProps = spec.GetProperties();
                             ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
@@ -558,6 +557,7 @@ namespace ME3Explorer.Pathfinding_Editor
                  && exportEntry.GetProperty<StructProperty>("NavGuid") is StructProperty navGuid)
                 {
                     UnrealGUID nav = new UnrealGUID(navGuid);
+                    nav.export = exportEntry;
                     navGuidLists.AddToListAt(nav.ToString(), nav);
                 }
             }
@@ -576,7 +576,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         duplicateGuids.Add(guid);
                         ValidationTasks.Add(new ListBoxTask
                         {
-                            Header = $"Duplicate GUID found on export {guid.export.UIndex} {guid.export.ObjectName.Instanced}",
+                            Header = $"Duplicate GUID found on export {guid.export?.UIndex} {guid.export?.ObjectName.Instanced}",
                             Icon = EFontAwesomeIcon.Solid_Times,
                             Spinning = false,
                             Foreground = Brushes.Red
