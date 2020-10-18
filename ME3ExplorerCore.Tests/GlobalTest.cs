@@ -46,6 +46,7 @@ namespace ME3ExplorerCore.Tests
         public static string GetTestMiniGamePath(MEGame game) => Path.Combine(GetTestDataDirectory(), "dynamiclookupminigame", game.ToString());
 
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
+        public static string GetTestSFARsDirectory() => Path.Combine(GetTestDataDirectory(), "sfars");
         public static string GetTestMountsdirectory() => Path.Combine(GetTestDataDirectory(), "mounts");
         public static string GetTestTLKdirectory() => Path.Combine(GetTestDataDirectory(), "tlk");
         public static string GetTestDataMiscDirectory() => Path.Combine(GetTestDataDirectory(), "misc");

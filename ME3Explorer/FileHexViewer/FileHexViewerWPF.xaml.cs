@@ -98,10 +98,47 @@ namespace ME3Explorer.FileHexViewer
             List<UsedSpace> used = new List<UsedSpace>();
             used.Add(new UsedSpace
             {
-                UsedFor = "SFAR Header",
                 UsedSpaceStart = (int)er.Position,
-                UsedSpaceEnd = (int)er.Position + 6 * 4 + 4 //6 uint, 4 compression scheme
+                UsedFor = $"SFAR Version {er.ReadInt32()}", //Is this actually the version?
+                UsedSpaceEnd = (int)er.Position,
             });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedSpaceEnd = (int)er.Position + 4,
+                UsedFor = $"Data Offset 0x{er.ReadInt32():X8}",
+            });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedFor = $"Entry Offset 0x{er.ReadInt32():X8}",
+                UsedSpaceEnd = (int)er.Position,
+            });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedFor = $"File count {er.ReadInt32()}",
+                UsedSpaceEnd = (int)er.Position,
+            });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedFor = $"Block Table offset 0x{er.ReadInt32():X8}",
+                UsedSpaceEnd = (int)er.Position,
+            });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedFor = $"Max block size 0x{er.ReadInt32():X8}",
+                UsedSpaceEnd = (int)er.Position,
+            });
+            used.Add(new UsedSpace
+            {
+                UsedSpaceStart = (int)er.Position,
+                UsedFor = $"Compression scheme {er.ReadStringASCII(4)}",
+                UsedSpaceEnd = (int)er.Position,
+            });
+
             er.Position = 8 * 4; //includes magic
 
             // File entry headers
