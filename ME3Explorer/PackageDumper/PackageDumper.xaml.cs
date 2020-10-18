@@ -592,8 +592,8 @@ namespace ME3Explorer.PackageDumper
                     string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                     Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                    //using (StreamWriter stringoutput = new StreamWriter(savepath))
-                    using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
+                    using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    //using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
                     {
 
                         //if (imports)
