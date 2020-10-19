@@ -14,6 +14,7 @@ using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3ExplorerCore.Packages
@@ -96,7 +97,7 @@ namespace ME3ExplorerCore.Packages
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
-        public GamePlatform Platform { get; } = GamePlatform.Unknown;
+        public GamePlatform Platform { get; private set; } = GamePlatform.Unknown;
 
         public enum GamePlatform
         {
@@ -515,11 +516,15 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
+#if AZURE
             if (platformNeedsResolved)
             {
-                // Todo: Find something that is unique to Xenon vs PS3 ME3 files
+                Assert.Fail($"Package platform was not resolved! Package file: {FilePath}");
             }
+#endif
         }
+
+
 
         public static Action<MEPackage, string, bool, bool> RegisterSaver() => saveByReconstructing;
 
@@ -1129,6 +1134,16 @@ namespace ME3ExplorerCore.Packages
         public void setGame(MEGame newGame)
         {
             Game = newGame;
+        }
+
+        /// <summary>
+        /// Sets the platform for this MEPackage. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.
+        /// CHANGING THE PLATFORM TO ATTEMPT TO SAVE A CONSOLE FILE WILL NOT PRODUCE A USABLE CONSOLE FILE
+        /// </summary>
+        /// <param name="newPlatform"></param>
+        internal void setPlatform(GamePlatform newPlatform)
+        {
+            Platform = newPlatform;
         }
     }
 }

@@ -117,7 +117,7 @@ namespace ME3Explorer.Matinee
 
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

@@ -207,7 +207,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void LoadExternalFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

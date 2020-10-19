@@ -89,7 +89,7 @@ namespace ME3Explorer.FaceFX
 
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

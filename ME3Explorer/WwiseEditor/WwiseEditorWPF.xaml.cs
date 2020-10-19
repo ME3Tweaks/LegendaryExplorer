@@ -171,7 +171,7 @@ namespace ME3Explorer.WwiseEditor
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

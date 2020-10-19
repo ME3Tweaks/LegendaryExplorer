@@ -194,7 +194,9 @@ namespace ME3ExplorerCore.Packages
                 case MEGame.Unknown:
                     throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
                 default:
-                    MEConstructorDelegate(path, game).Save();
+                    var package = MEConstructorDelegate(path, game);
+                    package.setPlatform(MEPackage.GamePlatform.PC); //Platform must be set or saving code will throw exception (cannot save non-PC platforms)
+                    package.Save();
                     break;
             }
         }

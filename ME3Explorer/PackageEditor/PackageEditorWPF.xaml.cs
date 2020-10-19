@@ -689,11 +689,11 @@ namespace ME3Explorer
             switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    fileFilter = App.ME1FileFilter;
+                    fileFilter = App.ME1SaveFileFilter;
                     break;
                 case MEGame.ME2:
                 case MEGame.ME3:
-                    fileFilter = App.ME3ME2FileFilter;
+                    fileFilter = App.ME3ME2SaveFileFilter;
                     break;
                 default:
                     string extension = Path.GetExtension(Pcc.FilePath);
@@ -716,7 +716,7 @@ namespace ME3Explorer
 
         private void OpenFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -748,8 +748,8 @@ namespace ME3Explorer
                     Filter = game switch
                     {
                         MEGame.UDK => App.UDKFileFilter,
-                        MEGame.ME1 => App.ME1FileFilter,
-                        _ => App.ME3ME2FileFilter
+                        MEGame.ME1 => App.ME1SaveFileFilter,
+                        _ => App.ME3ME2SaveFileFilter
                     }
                 };
                 if (dlg.ShowDialog() == true)
@@ -766,7 +766,7 @@ namespace ME3Explorer
         {
             var dlg = new SaveFileDialog
             {
-                Filter = "*.pcc|*.pcc",
+                Filter = "ME3 package file|*.pcc",
                 OverwritePrompt = true
             };
 

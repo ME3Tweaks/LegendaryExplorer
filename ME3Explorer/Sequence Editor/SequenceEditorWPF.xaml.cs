@@ -433,7 +433,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

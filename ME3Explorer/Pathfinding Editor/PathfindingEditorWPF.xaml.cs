@@ -90,7 +90,7 @@ namespace ME3Explorer.Pathfinding_Editor
             "PostProcessVolume", "LightVolume", "LightmassImportanceVolume", "FogVolumeHalfspaceDensityInfo", "FogVolumeSphericalDensityInfo",
             "DecalActor", "Emitter", "Terrain", "HeightFog",
             "BlockingVolume", "BioBlockingVolume", "SFXBlockingVolume_Ledge",
-            "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnvironmentVolume", "WwiseMusicVolume"
+            "WwiseAmbientSound", "WwiseAudioVolume", "WwiseEnviromentVolume", "WwiseMusicVolume"
         };
 
         public static string[] ignoredobjectnames =
@@ -767,7 +767,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void SavePackage() => Pcc.Save();
         private void OpenPackage()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -3533,7 +3533,7 @@ namespace ME3Explorer.Pathfinding_Editor
         #region Experiments
         private void LoadOverlay()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

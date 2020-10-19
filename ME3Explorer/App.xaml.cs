@@ -47,10 +47,10 @@ namespace ME3Explorer
         public static string HexConverterPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HexConverter.exe");
 
         public static bool TlkFirstLoadDone; //Set when the TLK loading at startup is finished.
-        public const string FileFilter = "*.pcc;*.u;*.upk;*sfm;*udk;*.xxx|*.pcc;*.u;*.upk;*sfm;*udk;*.xxx|All Files (*.*)|*.*";
-        public const string UDKFileFilter = "*.upk;*udk|*.upk;*udk";
-        public const string ME1FileFilter = "*.u;*.upk;*sfm;*.xxx|*.u;*.upk;*sfm;*.xxx";
-        public const string ME3ME2FileFilter = "*.pcc*;.xxx|*.pcc;*.xxx";
+        public const string OpenFileFilter = "Supported package files|*.pcc;*.u;*.upk;*sfm;*udk;*.xxx|All files (*.*)|*.*";
+        public const string UDKFileFilter = "UDK package files|*.upk;*udk";
+        public const string ME1SaveFileFilter = "ME1 package files|*.u;*.upk;*sfm";
+        public const string ME3ME2SaveFileFilter = "ME2/ME3 package files|*.pcc";
 
         public static string Version => GetVersion();
 
