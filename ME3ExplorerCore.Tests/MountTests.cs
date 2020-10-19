@@ -19,7 +19,7 @@ namespace ME3ExplorerCore.Tests
         {
             GlobalTest.Init();
             // Loads compressed packages and attempts to enumerate every object's properties.
-            var packagesPath = GlobalTest.GetTestMountsdirectory();
+            var packagesPath = GlobalTest.GetTestMountsDirectory();
             var mounts = Directory.GetFiles(packagesPath, "*.dlc", SearchOption.AllDirectories);
             foreach (var mountFilePath in mounts)
             {

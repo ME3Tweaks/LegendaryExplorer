@@ -15,7 +15,7 @@ namespace ME3ExplorerCore.Tests
         {
             GlobalTest.Init();
             // Loads compressed packages and attempts to enumerate every object's properties.
-            var filesPath = GlobalTest.GetTestCRCdirectory();
+            var filesPath = GlobalTest.GetTestCRCDirectory();
             var files = Directory.GetFiles(filesPath, "*.*", SearchOption.AllDirectories);
             foreach (var f in files)
             {

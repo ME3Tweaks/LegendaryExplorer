@@ -20,7 +20,7 @@ namespace ME3ExplorerCore.Tests
         {
             GlobalTest.Init();
             // Loads compressed packages and attempts to enumerate every object's properties.
-            var tlkDataPath = GlobalTest.GetTestTLKdirectory();
+            var tlkDataPath = GlobalTest.GetTestTLKDirectory();
 
             //ME1
             var packages = Directory.GetFiles(tlkDataPath, "*.*", SearchOption.AllDirectories)
