@@ -46,6 +46,8 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal.Classes;
 using ME3Script;
+using JetBrains.Profiler.Api;
+using JetBrains.Profiler.SelfApi;
 
 namespace ME3Explorer
 {
@@ -3109,6 +3111,10 @@ namespace ME3Explorer
                     return;
                 }
 
+                // To profile this, run dotTrace and attach to the process, make sure to choose option to profile via API
+                //MeasureProfiler.StartCollectingData(); // Start profiling
+                //var sw = new Stopwatch();
+                //sw.Start();
                 IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
 
@@ -3120,6 +3126,9 @@ namespace ME3Explorer
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
 
                 crossPCCObjectMap.Clear();
+                //sw.Stop();
+                //MessageBox.Show($"Took {sw.ElapsedMilliseconds}ms");
+                //MeasureProfiler.SaveData(); // End profiling
                 if ((relinkResults?.Count ?? 0) > 0)
                 {
                     ListDialog ld = new ListDialog(relinkResults, "Relink report",

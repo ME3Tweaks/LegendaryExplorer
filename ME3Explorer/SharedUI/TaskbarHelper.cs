@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Shell;
-using Microsoft.WindowsAPICodePack.Taskbar;
+﻿using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.SharedUI
 {
@@ -12,7 +9,6 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public static class TaskbarHelper
     {
-        private static bool initialized;
         public static void SetProgress(int currentvalue, int maxvalue)
         {
             try
