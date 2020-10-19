@@ -6,16 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Gammtek.Paths;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
-using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3ExplorerCore.Unreal.Classes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
+#if AZURE
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace ME3ExplorerCore.Packages
 {
@@ -117,7 +115,7 @@ namespace ME3ExplorerCore.Packages
             return ms.ToArray();
         }
 
-        #region HeaderMisc
+#region HeaderMisc
         private int Gen0ExportCount;
         private int Gen0NameCount;
         private int Gen0NetworkedObjectCount;
@@ -128,7 +126,7 @@ namespace ME3ExplorerCore.Packages
         private uint packageSource;
         private int unknown4;
         private int unknown6;
-        #endregion
+#endregion
 
         static bool isLoaderRegistered;
         static bool isStreamLoaderRegistered;
@@ -181,7 +179,7 @@ namespace ME3ExplorerCore.Packages
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
-            #region Header
+#region Header
 
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
             packageReader.SkipInt32(); //skip magic as we have already read it
@@ -406,7 +404,7 @@ namespace ME3ExplorerCore.Packages
             }
 
 
-            #endregion
+#endregion
 
             var endian = packageReader.Endian;
             packageReader = new EndianReader(inStream) { Endian = endian };
@@ -577,7 +575,7 @@ namespace ME3ExplorerCore.Packages
             chunk.uncompressedSize = package.FullHeaderSize - package.NameOffset;
             chunk.uncompressedOffset = package.NameOffset;
 
-            #region DEBUG STUFF
+#region DEBUG STUFF
             //string firstElement = "Tables";
             //string lastElement = firstElement;
 
@@ -586,7 +584,7 @@ namespace ME3ExplorerCore.Packages
             //uncompressedStream.Position = NameOffset;
             //m2.WriteFromStream(uncompressedStream, chunk.uncompressedSize);
             //uncompressedStream.Position = pos;
-            #endregion
+#endregion
 
             //Export data chunks
             int chunkNum = 0;
