@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Loaded="AutoTOCWPF_Loaded"
     Icon="/Resources/autotoc_256x256.ico"
-    Title="AutoTOC WPF" MinHeight="400" Height="400" Width="700">
+    Title="AutoTOC" MinHeight="400" Height="400" Width="700">
     <DockPanel >
         <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="AutoTOC generates table of content (TOC) files for Mass Effect 3. These files list the filesize of all files that can be loaded and are used so the engine can allocate the correct amount of memory when loading the file.&#10;AutoTOC can be safely run at any time. AutoTOC must only be run before game launch as only at run time do TOC files matter."/>
 

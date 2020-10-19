@@ -284,7 +284,7 @@ namespace ME3Explorer
 #endif
             set.Add(new Tool
             {
-                name = "Meshplorer WPF",
+                name = "Meshplorer",
                 type = typeof(MeshplorerWPF),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
                 open = () =>
