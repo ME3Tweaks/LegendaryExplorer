@@ -511,9 +511,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             ImportEntry matchingSourceImport = null;
             if (relinkerCache != null)
             {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullName, out var me))
+                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullName, out var me) && me is ImportEntry imp)
                 {
-                    matchingSourceImport = (ImportEntry)me; // Like this for testing. Hopefully doesn't throw exceptions!
+                    matchingSourceImport = imp;
                 }
             }
             else
@@ -555,9 +555,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry matchingSourceExport = null;
             if (relinkerCache != null)
             {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullName, out var me))
+                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullName, out var me) && me is ExportEntry exp)
                 {
-                    matchingSourceExport = (ExportEntry)me; // Like this for testing. Hopefully doesn't throw exceptions!
+                    matchingSourceExport = exp;
                 }
             }
             else
@@ -579,7 +579,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     idxLink = parent?.UIndex ?? 0,
                     ClassName = matchingSourceExport.ClassName,
                     ObjectName = matchingSourceExport.ObjectName,
-                    PackageFile = "Core" //No clue how to figure out what this should be. Might not even matter?
+                    PackageFile = "Core" //This should be the file that the Class of this object is in, but I don't think it actually matters
                 };
                 destinationPCC.AddImport(newImport);
                 if (objectMapping != null)
