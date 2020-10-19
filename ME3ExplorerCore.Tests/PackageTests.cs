@@ -419,9 +419,7 @@ namespace ME3ExplorerCore.Tests
         public void TestTextureOperations()
         {
             GlobalTest.Init();
-            // Loads compressed packages, save them uncompressed. Load package, save re-compressed, compare results
             var packagesPath = GlobalTest.GetTestTexturesDirectory();
-            //var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
             foreach (var p in packages)
             {

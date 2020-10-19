@@ -31,8 +31,8 @@ namespace ME3ExplorerCore.MEDirectories
             }
         }
         public static string BioGamePath => gamePath != null ? Path.Combine(gamePath, @"BioGame\") : null;
-        public static string cookedPath => gamePath != null ? Path.Combine(gamePath, @"BioGame\CookedPC\") : "Not Found";
-        public static string DLCPath => gamePath != null ? Path.Combine(gamePath, @"DLC\") : "Not Found";
+        public static string cookedPath => gamePath != null ? Path.Combine(gamePath, @"BioGame\CookedPC\") : "Not Found"; //Should this return Not found instead of null?
+        public static string DLCPath => gamePath != null ? Path.Combine(gamePath, @"DLC\") : "Not Found"; //Should this return Not found instead of null?
 
         // "C:\...\MyDocuments\BioWare\Mass Effect\" folder
         public static string BioWareDocPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), @"\BioWare\Mass Effect\");

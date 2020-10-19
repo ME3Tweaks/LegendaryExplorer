@@ -52,12 +52,16 @@ namespace ME3ExplorerCore.Helpers
                 return loadedFiles;
             }
 
-            foreach (string directory in GetEnabledDLCFiles(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.MEDirectories.BioGamePath(game)))
+            var bgPath = MEDirectories.MEDirectories.BioGamePath(game);
+            if (bgPath != null)
             {
-                foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
+                foreach (string directory in GetEnabledDLCFiles(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
                 {
-                    string fileName = Path.GetFileName(filePath);
-                    if (fileName != null) loadedFiles[fileName] = filePath;
+                    foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
+                    {
+                        string fileName = Path.GetFileName(filePath);
+                        if (fileName != null) loadedFiles[fileName] = filePath;
+                    }
                 }
             }
 
@@ -70,16 +74,22 @@ namespace ME3ExplorerCore.Helpers
 
         public static IEnumerable<string> GetDLCFiles(MEGame game, string dlcName)
         {
-            string dlcPath = Path.Combine(MEDirectories.MEDirectories.DLCPath(game), dlcName);
-            if (Directory.Exists(dlcPath))
+            var dlcPath = MEDirectories.MEDirectories.DLCPath(game);
+            if (dlcPath != null)
             {
-                return GetCookedFiles(game, dlcPath);
+                string specificDlcPath = Path.Combine(dlcPath, dlcName);
+                if (Directory.Exists(specificDlcPath))
+                {
+                    return GetCookedFiles(game, specificDlcPath);
+                }
             }
 
             return Enumerable.Empty<string>();
         }
 
+        // this should have a null check on Biogamepath to avoid throwing an exception
         public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        // this should have a null check on Biogamepath to void throwing an exception
         public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
 
         internal static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
@@ -94,6 +104,9 @@ namespace ME3ExplorerCore.Helpers
             //includeTFC or includeAFC.
             return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC"), pattern, SearchOption.AllDirectories));
         }
+
+
+        // These methods show check DLCpath to avoid throwing exception
 
         /// <summary>
         /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
@@ -139,8 +152,7 @@ namespace ME3ExplorerCore.Helpers
                 //is mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
                 var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                // Suggest using M3's DuplicatingIni class instead
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
+                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value); // Should we  try catch this to avoid hitting an exception on malformed mods? Like DLC_xMeow
             }
             return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
         }
