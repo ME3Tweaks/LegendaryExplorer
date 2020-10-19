@@ -1562,10 +1562,8 @@
     <Resource Include="Resources\BikExtractor_256x256.ico" />
     <Resource Include="Resources\InterpViewer_256x256.ico" />
     <Resource Include="Resources\wwisebankeditor_256x256.ico" />
-    <Resource Include="Resources\tpftools_256x256.ico" />
     <Resource Include="Resources\animationexplorer_256x256.ico" />
     <Resource Include="Resources\psaviewer_256x256.ico" />
-    <Resource Include="Resources\modmaker_256x256.ico" />
     <Resource Include="Resources\coalescededitor_256x256.ico" />
     <Resource Include="Resources\me2me3tlkeditor_256x256.ico" />
     <Resource Include="Resources\filehexanalyzer_256x256.ico" />
