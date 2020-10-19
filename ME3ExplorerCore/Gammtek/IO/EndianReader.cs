@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ME3ExplorerCore.Gammtek.IO.Converters;
 using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Gammtek.IO
@@ -34,6 +35,7 @@ namespace ME3ExplorerCore.Gammtek.IO
     {
         private readonly BinaryReader _source;
         public readonly EndianWriter Writer;
+        private bool NoConvert;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EndianReader" /> class
@@ -49,6 +51,8 @@ namespace ME3ExplorerCore.Gammtek.IO
             }
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
 
+            _endianConverter = Endian.To(Endian.Native);
+            NoConvert = _endianConverter.NoConvert;
         }
 
         /// <summary>
@@ -63,6 +67,8 @@ namespace ME3ExplorerCore.Gammtek.IO
                 Writer = new EndianWriter(input);
             }
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
+            _endianConverter = Endian.To(Endian.Native);
+            NoConvert = _endianConverter.NoConvert;
         }
 
         /// <summary>
@@ -95,6 +101,8 @@ namespace ME3ExplorerCore.Gammtek.IO
         }
 
         private Endian _endian;
+        private EndianConverter _endianConverter;
+
         /// <summary>
         ///     The Endian setting of the stream.
         /// </summary>
@@ -104,8 +112,12 @@ namespace ME3ExplorerCore.Gammtek.IO
             set
             {
                 _endian = value;
+                _endianConverter = _endian.To(Endian.Native);
+                NoConvert = _endianConverter.NoConvert;
                 if (Writer != null)
+                {
                     Writer.Endian = Endian;
+                }
             }
 
         }
@@ -305,7 +317,12 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override double ReadDouble()
         {
-            var val = Endian.To(Endian.Native).Convert(_source.ReadDouble());
+            var val = _source.ReadDouble();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
             LittleEndianStream?.WriteDouble(val);
             return val;
         }
@@ -318,7 +335,12 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override short ReadInt16()
         {
-            var val = Endian.To(Endian.Native).Convert(_source.ReadInt16());
+            var val = _source.ReadInt16();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
             LittleEndianStream?.WriteInt16(val);
             return val;
         }
@@ -331,7 +353,12 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override int ReadInt32()
         {
-            var val = Endian.To(Endian.Native).Convert(_source.ReadInt32());
+            var val = _source.ReadInt32();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
             LittleEndianStream?.WriteInt32(val);
             return val;
         }
@@ -344,7 +371,12 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override long ReadInt64()
         {
-            var val = Endian.To(Endian.Native).Convert(_source.ReadInt64());
+            var val = _source.ReadInt64();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
             LittleEndianStream?.WriteInt64(val);
             return val;
         }
@@ -371,9 +403,14 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override float ReadSingle()
         {
-            var readvalue = Endian.To(Endian.Native).Convert(_source.ReadSingle());
-            LittleEndianStream?.WriteFloat(readvalue);
-            return readvalue;
+            var val = _source.ReadSingle();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
+            LittleEndianStream?.WriteFloat(val);
+            return val;
         }
 
         public float ReadFloat() => ReadSingle();
@@ -399,9 +436,14 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override ushort ReadUInt16()
         {
-            var readvalue = Endian.To(Endian.Native).Convert(_source.ReadUInt16());
-            LittleEndianStream?.WriteUInt16(readvalue);
-            return readvalue;
+            var val = _source.ReadUInt16();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
+            LittleEndianStream?.WriteUInt16(val);
+            return val;
         }
 
         /// <summary>
@@ -412,9 +454,14 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override uint ReadUInt32()
         {
-            var readvalue = Endian.To(Endian.Native).Convert(_source.ReadUInt32());
-            LittleEndianStream?.WriteUInt32(readvalue);
-            return readvalue;
+            var val = _source.ReadUInt32();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
+            LittleEndianStream?.WriteUInt32(val);
+            return val;
         }
 
         /// <summary>
@@ -425,7 +472,12 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </returns>
         public override ulong ReadUInt64()
         {
-            var val = Endian.To(Endian.Native).Convert(_source.ReadUInt64());
+            var val = _source.ReadUInt64();
+            if (NoConvert)
+            {
+                return val;
+            }
+            val = _endianConverter.Convert(val);
             LittleEndianStream?.WriteUInt64(val);
             return val;
         }
@@ -441,7 +493,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public void Seek(long offset, SeekOrigin origin)
         {
             _source.BaseStream.Seek(offset, origin);
-            if (LittleEndianStream != null) LittleEndianStream.Seek(offset, origin);
+            LittleEndianStream?.Seek(offset, origin);
         }
 
         public long Position
@@ -474,7 +526,7 @@ namespace ME3ExplorerCore.Gammtek.IO
             else
             {
                 //cast to int to ensure we have some comparisons.
-                var reversed = (int)IO.Endian.Native.To(Endian.NonNative).Convert(readMagic);
+                var reversed = (int)Endian.Native.To(Endian.NonNative).Convert(readMagic);
                 if (reversed != magic)
                 {
                     throw new Exception($"Magic number {readMagic:X8} does not match either big or little endianness for expected value 0x{magic:X8}");
@@ -605,7 +657,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static float ToSingle(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToSingle(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -616,7 +668,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static ushort ToUInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt16(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -631,7 +683,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static int ToInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt32(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -648,7 +700,7 @@ namespace ME3ExplorerCore.Gammtek.IO
 
             var readMagic = (buffer[offset] << 24) + (buffer[offset + 1] << 16) + (buffer[offset + 2] <<
                             8) + buffer[offset + 3];
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -663,7 +715,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static short ToInt16(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToInt16(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -678,7 +730,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static uint ToUInt32(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt32(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -693,7 +745,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static ulong ToUInt64(byte[] buffer, int offset, Endian endianness)
         {
             var readMagic = BitConverter.ToUInt64(buffer, offset);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);
@@ -716,7 +768,7 @@ namespace ME3ExplorerCore.Gammtek.IO
                               (buffer[offset + 5] << 16) +
                               (buffer[offset + 6] << 8) +
                               buffer[offset + 7]);
-            if (IO.Endian.Native != endianness)
+            if (Endian.Native != endianness)
             {
                 //swap
                 return Endian.Native.To(Endian.NonNative).Convert(readMagic);

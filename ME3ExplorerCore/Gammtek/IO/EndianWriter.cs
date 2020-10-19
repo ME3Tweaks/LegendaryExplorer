@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ME3ExplorerCore.Gammtek.IO.Converters;
 using ME3ExplorerCore.Helpers;
 
 namespace ME3ExplorerCore.Gammtek.IO
@@ -32,6 +33,9 @@ namespace ME3ExplorerCore.Gammtek.IO
     public class EndianWriter : BinaryWriter
     {
         private readonly BinaryWriter _source;
+        private EndianConverter _endianConverter;
+        private bool NoConvert;
+        private Endian _endian;
 
         public new Stream BaseStream => _source.BaseStream;
         /// <summary>
@@ -41,6 +45,8 @@ namespace ME3ExplorerCore.Gammtek.IO
         {
             _source = source;
             Endian = BitConverter.IsLittleEndian ? Endian.Little : Endian.Big;
+            _endianConverter = Endian.Native.To(Endian);
+            NoConvert = _endianConverter.NoConvert;
         }
 
         /// <summary>
@@ -66,7 +72,15 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// <summary>
         ///     The Endian setting of the stream.
         /// </summary>
-        public Endian Endian { get; set; }
+        public Endian Endian
+        {
+            get => _endian;
+            set { 
+                _endian = value;
+                _endianConverter = Endian.Native.To(_endian);
+                NoConvert = _endianConverter.NoConvert;
+            }
+        }
 
         /// <summary>
         ///     Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
@@ -148,7 +162,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(double value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(_endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -157,7 +171,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public override void Write(float value)
         {
             // We use bitconverter here to do -0 values (yes, -0)
-            _source.Write(BitConverter.GetBytes(Endian.Native.To(Endian).Convert(value)));
+            _source.Write(BitConverter.GetBytes(NoConvert ? value : _endianConverter.Convert(value)));
         }
 
         /// <summary>
@@ -165,7 +179,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(int value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -173,7 +187,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(long value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -189,7 +203,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(short value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -206,7 +220,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(uint value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -214,7 +228,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(ulong value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>
@@ -222,7 +236,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public override void Write(ushort value)
         {
-            _source.Write(Endian.Native.To(Endian).Convert(value));
+            _source.Write(NoConvert ? value : _endianConverter.Convert(value));
         }
 
         /// <summary>

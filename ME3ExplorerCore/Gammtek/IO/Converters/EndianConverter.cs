@@ -28,10 +28,11 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         private static readonly EndianConverter ReverseCopier;
 
         private readonly RawCopierDelegate _rawCopier;
+        public bool NoConvert;
 
         static EndianConverter()
         {
-            LinearCopier = new EndianConverter(CopyLinear);
+            LinearCopier = new EndianConverter(CopyLinear) { NoConvert = true };
             ReverseCopier = new EndianConverter(CopyReverse);
         }
 
@@ -329,6 +330,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public char Convert(char data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(char);
             char result;
             var dst = (byte*)&result;
@@ -342,6 +347,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public double Convert(double data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(double);
             double result;
             var dst = (byte*)&result;
@@ -355,6 +364,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public float Convert(float data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(float);
             float result;
             var dst = (byte*)&result;
@@ -368,6 +381,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public short Convert(short data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(short);
             short result;
             var dst = (byte*)&result;
@@ -381,6 +398,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public int Convert(int data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(int);
             int result;
             var dst = (byte*)&result;
@@ -394,6 +415,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public long Convert(long data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(long);
             long result;
             var dst = (byte*)&result;
@@ -407,6 +432,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public ushort Convert(ushort data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(ushort);
             ushort result;
             var dst = (byte*)&result;
@@ -420,6 +449,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public uint Convert(uint data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(uint);
             uint result;
             var dst = (byte*)&result;
@@ -433,6 +466,10 @@ namespace ME3ExplorerCore.Gammtek.IO.Converters
         /// </summary>
         public ulong Convert(ulong data)
         {
+            if (NoConvert)
+            {
+                return data;
+            }
             const int size = sizeof(ulong);
             ulong result;
             var dst = (byte*)&result;
