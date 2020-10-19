@@ -150,7 +150,19 @@ namespace ME3ExplorerCore.Packages
         public bool HeaderChanged { get; set; }
 
 
-        public bool EntryHasPendingChanges { get; set; }
+        private bool _entryHasPendingChanges;
+        public bool EntryHasPendingChanges
+        {
+            get => _entryHasPendingChanges;
+            set
+            {
+                if (_entryHasPendingChanges != value)
+                {
+                    _entryHasPendingChanges = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EntryHasPendingChanges)));
+                }
+            }
+        }
         public bool IsClass => ClassName == "Class";
 
         public ImportEntry Clone()
