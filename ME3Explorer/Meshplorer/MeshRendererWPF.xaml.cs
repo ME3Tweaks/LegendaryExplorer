@@ -840,10 +840,6 @@ namespace ME3Explorer.Meshplorer
                     for (uint i = 2; i < matchingNode.NumVertices; i++)
                     {
                         var tri = new Triangle((uint)vert0.pVertex, (uint)parentModel.Verts[matchingNode.iVertPool + i - 1].pVertex, (uint)parentModel.Verts[matchingNode.iVertPool + i].pVertex);
-                        Debug.WriteLine($"Node {node} tri {i - 2}");
-                        Debug.WriteLine($"{tri.Vertex1} => {vertices[(int)tri.Vertex1].Position}");
-                        Debug.WriteLine($"{tri.Vertex2} => {vertices[(int)tri.Vertex2].Position}");
-                        Debug.WriteLine($"{tri.Vertex3} => {vertices[(int)tri.Vertex3].Position}");
                         triangles.Add(tri); // 0 is the base point. The rest of the triangles share this point
                     }
                 }
