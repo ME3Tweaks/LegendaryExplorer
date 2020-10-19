@@ -688,7 +688,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     {
                         var field = ReadEntryRef(out var _1);
                         var structType = ReadEntryRef(out var _2);
-                        int wSkip = field.FileRef.Platform == MEPackage.GamePlatform.Xenon ? _reader.ReadByte() : _reader.ReadInt16(); //ME1 Xenon seems to only use 1 byte?
+                        int wSkip = field.FileRef.Platform == MEPackage.GamePlatform.Xenon && field.FileRef.Game == MEGame.ME1 ? _reader.ReadByte() : _reader.ReadInt16(); //ME1 Xenon seems to only use 1 byte?
                         var token = ReadNext();
                         if (IsInvalid(token)) return token;
                         return Token($"{token}.{field.ObjectName.Instanced}", readerpos);
