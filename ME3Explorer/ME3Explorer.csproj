@@ -1507,12 +1507,6 @@
     <Resource Include="Resources\settings.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\logo_ON.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\logo_OFF.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\elipsis_icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -1608,6 +1602,7 @@
     <Resource Include="Resources\placeholder_256x256.ico" />
     <Resource Include="Resources\sfarexplorer_256x256.ico" />
     <Resource Include="Resources\afccompactor_256x256.ico" />
+    <Resource Include="Resources\minilogo.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>

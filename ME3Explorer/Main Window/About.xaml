@@ -8,7 +8,7 @@
         Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" SizeToContent="Height">
     <StackPanel Width="600" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
-            <Image Width="249" Height="109" Source="../Resources/me3exp_smallbanner_v1.png"/>
+            <Image Width="249" Height="109" Source="../Resources/minilogo.png"/>
             <Grid Width="351" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="ME3Explorer&#10;ME3Tweaks Fork" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
@@ -35,14 +35,13 @@
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <TextBlock Text="Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
-                <TextBlock Text="ME3Tweaks Fork" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
+                <TextBlock Text="Main contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• Mgamerz - Developer"/>
-
+                    <Run Text="• Mgamerz - Developer&#10;• SirCxyrtyx - Developer&#10;• Kinkojiro - Developer"/>
                 </TextBlock>
                 <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• SirCxyrtyx - Developer&#10;• Aquadran - Developer&#10;• Benji - 3D Developer&#10;• Kinkojiro - Developer"/>
+                    <Run Text="• Aquadran - Developer&#10;• Benji - 3D Developer"/>
                 </TextBlock>
 
             </StackPanel>
@@ -95,6 +94,7 @@
                         Heff          <LineBreak/>
                         Benji         <LineBreak/>
                         Kinkojiro     <LineBreak/>
+                        4rterius      <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -104,7 +104,7 @@
                         Bernhard Elbl - Be.Windows.Forms.HexBox         <LineBreak/>
                         Eliot, UnHood - UnrealScript Bytecode Decompiler<LineBreak/>
                         Gibbed - variety of tools                       <LineBreak/>
-                        Gildor - UModel and others                      <LineBreak/>
+                        Gildor - LZX, UModel and others                 <LineBreak/>
                         DerPlaya - ME2 TLK Tool                         <LineBreak/>
                         Gocek - ME2 TLK Tool                            <LineBreak/>
                         Hcs64 - ww2ogg                                  <LineBreak/>
@@ -112,16 +112,16 @@
                         John33 - Oggdec                                 <LineBreak/>
                         Newtonsoft - JSON.NET                           <LineBreak/>
                         NAudio - NAudio sound system                    <LineBreak/>
-                        Nvidia - Real Time DXT                          <LineBreak/>
                         Peregrine66 - WPF Tree View Helpers             <LineBreak/>
                         Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
-                        RS - Texmod                                     <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
                         Aquadran - Mass Effect Modder  (Textures)       <LineBreak/>
                         VGMStream - Audio decoding                      <LineBreak/>
                         AppCenter (Microsoft) - Crash telemetry         <LineBreak/>
                         Xceed WPF Toolkit - UI controls                 <LineBreak/>
+                        ZeBobo5 - VLC.DotNet                            <LineBreak/>
+                        JetBrains - Debugging licenses &amp; tools      <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -140,7 +140,13 @@
                         <TextBlock>
                         Toolset Splashscreen artwork (Antares) by JoeyJazz                         <LineBreak/>
                         Used with permission for ME3Explorer - ME3Tweaks Fork                      <LineBreak/>
-                        Derivatives of this product must acquire their own license                 <LineBreak/>
+                        <Underline>Derivatives of this product must acquire their own license.</Underline><LineBreak/>
+                        
+                        <LineBreak/>
+                        Toolset splash screen (not artwork) designed by Jade                       <LineBreak/>
+                        Minilogo designed by Audemus                                               <LineBreak/>
+                        Tool icons designed by Mgamerz, SirCyxrtyx, Kinkojiro                      <LineBreak/>
+                        Outline icons © Flaticon.com                                               <LineBreak/>
                                                                                                    <LineBreak/>
                         Main Window Design by Giftfish                                             <LineBreak/>
                                                                                                    <LineBreak/>
@@ -150,11 +156,13 @@
                         Korataki © Ray Larabie                                                     <LineBreak/>
                         Slider, Creator Unknown                                                    <LineBreak/>
                         Titillium Web © Accademia di Belle Arti di Urbino                          <LineBreak/>
-                                                                                                   <LineBreak/>
-                        GRAPHICS                                                                   <LineBreak/>
-                        “3”, “M”, &amp; Splash Background © BioWare Corp. and Electronic Arts, Inc.<LineBreak/>
-                        Hex Code Background © Maksim Kabakou, Shutterstock                         <LineBreak/>
-                        Outline icons © Flaticon.com                                               <LineBreak/>
+                        </TextBlock>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Legal">
+                    <ScrollViewer>
+                        <TextBlock>
+                            Mass Effect is a trademark of Electronic Arts.
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>

@@ -55,7 +55,7 @@
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
             <Image Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand" 
-                   ToolTip="Shrink/Enlarge this toolbox" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/logo_ON.png"/>
+                   ToolTip="Shrink/Enlarge this toolbox" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/minilogo.png"/>
             <DockPanel Height="36">
                 <DockPanel.Resources>
                     <Style x:Key="VersioningBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">

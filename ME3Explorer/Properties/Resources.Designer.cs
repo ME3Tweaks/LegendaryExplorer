@@ -71,26 +71,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap logo_OFF {
-            get {
-                object obj = ResourceManager.GetObject("logo_OFF", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap logo_ON {
-            get {
-                object obj = ResourceManager.GetObject("logo_ON", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
         ///struct VS_IN {
         ///	float3 pos : POSITION;
