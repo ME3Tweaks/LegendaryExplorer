@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" Width="616" SizeToContent="Height">
-    <StackPanel Width="600" Margin="0,0,0,10">
+        Title="About ME3Explorer" ResizeMode="CanMinimize" Background="#FFD8D8D8" WindowStartupLocation="CenterOwner" 
+        Width="616" SizeToContent="Height">
+    <StackPanel Width="608" Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal">
             <Image Width="249" Height="109" Source="../Resources/minilogo.png"/>
-            <Grid Width="351" Height="109" Background="#FF1F283C">
+            <Grid Width="362" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="ME3Explorer&#10;ME3Tweaks Fork" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
                     <TextBlock Text="{Binding Source={x:Static local:App.Version}}" Foreground="White" FontSize="26" 
@@ -17,7 +18,7 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
-        <Rectangle Height="6" Fill="#FFF3F3F3"/>
+        <!--<Rectangle Height="6" Fill="#FFF3F3F3"/>-->
         <TextBlock FontFamily="{StaticResource Exo-SemiBold}" Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Margin="0,9">
             <Run Text="Source code available at "/>
             <Hyperlink NavigateUri="{Binding Source={x:Static local:App.RepositoryURL}, Mode=OneTime}" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">
@@ -176,7 +177,7 @@
             <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Margin="0,3,0,0">
                 <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">ME3Explorer</Run> is licensed under GPLv3.
             </TextBlock>
-            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="175" Margin="0,3,0,6">
+            <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="181" Margin="0,3,0,6">
                 <RichTextBox.Document>
                     <FlowDocument>
                         <Paragraph>
