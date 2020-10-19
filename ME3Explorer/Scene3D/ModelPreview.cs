@@ -475,6 +475,7 @@ namespace ME3Explorer.Scene3D
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
+        // Todo: ME3Exp 5.1: Get rid of this and use the import resolver. It must support a cache so we don't constnatly open packages
         internal static ExportEntry FindExternalAsset(ImportEntry entry, List<ExportEntry> alreadyLoadedPackageEntries, List<IMEPackage> openedPackages)
         {
             //Debug.WriteLine("Finding external asset " + entry.GetFullPath);
@@ -546,98 +547,55 @@ namespace ME3Explorer.Scene3D
                     }
                 }
 
+                // Add globals
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "SFXGame.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.u")); //ME1
+
                 foreach (string packagePath in packagesToCheck)
                 {
-                    var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
-                    if (preloadedPackageEntry == null)
+                    if (File.Exists(packagePath))
                     {
-                        //Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
-                        var package = MEPackageHandler.OpenMEPackage(packagePath);
-                        if (openedPackages != null && !openedPackages.Contains(package))
+                        var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
+                        if (preloadedPackageEntry == null)
                         {
-                            openedPackages.Add(package);
+                            var sentry = searchPackageForEntry(packagePath, entry.FullPath, entry.ClassName, openedPackages);
+                            if (sentry != null) return sentry;
                         }
-                        var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                        if (foundExp != null) return foundExp;
-                        //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
-                        if (openedPackages == null) package.Dispose();
+                        else
+                        {
+                            Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
+                            var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
+                            if (foundExp != null) return foundExp;
+                        }
                     }
-                    else
-                    {
-                        Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
-                        var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                        if (foundExp != null) return foundExp;
-                    }
-                }
-
-                //Check SFXGame
-                string sfxgamePath = Path.Combine(MEDirectories.CookedPath(entry.Game), "SFXGame.pcc");
-                if (File.Exists(sfxgamePath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(sfxgamePath);
-                    if (openedPackages != null && !openedPackages.Contains(pcc))
-                    {
-                        openedPackages.Add(pcc);
-                    }
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not SFXGame, disposing");
-
-                    if (openedPackages == null) pcc.Dispose(); //Dump from memory
-                }
-
-                //Check EntryMenu
-                string entryMenuPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc");
-                if (File.Exists(entryMenuPath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(entryMenuPath);
-                    if (openedPackages != null && !openedPackages.Contains(pcc))
-                    {
-                        openedPackages.Add(pcc);
-                    }
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not EntryMenu, disposing");
-
-                    if (openedPackages == null) pcc.Dispose(); //Dump from memory
-                }
-
-                //Check Startup
-                string startupPath = Path.Combine(MEDirectories.CookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc");
-                if (File.Exists(startupPath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(startupPath);
-                    if (openedPackages != null && !openedPackages.Contains(pcc))
-                    {
-                        openedPackages.Add(pcc);
-                    }
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
-                    if (openedPackages == null) pcc.Dispose(); //Dump from memory
-                }
-
-                //Check Engine
-                string enginePath = Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.pcc"); //will contain default material
-                if (File.Exists(enginePath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(enginePath);
-                    if (openedPackages != null && !openedPackages.Contains(pcc))
-                    {
-                        openedPackages.Add(pcc);
-                    }
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
-                    if (openedPackages == null) pcc.Dispose(); //Dump from memory
                 }
             }
+
             Debug.WriteLine("Could not find external asset: " + entry.FullPath);
             return null;
+        }
+
+        private static ExportEntry searchPackageForEntry(string packagePath, string fullPath, string className, List<IMEPackage> openedPackages)
+        {
+
+            //Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
+            IMEPackage package = null;
+            if (openedPackages != null)
+            {
+                package = openedPackages.FirstOrDefault(x => x.FilePath == packagePath);
+            }
+            package ??= MEPackageHandler.OpenMEPackage(packagePath);
+            if (openedPackages != null && !openedPackages.Contains(package))
+            {
+                openedPackages.Add(package);
+            }
+            var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == fullPath && exp.ClassName == className);
+            if (openedPackages == null) package.Dispose();
+            return foundExp;
+            //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
         }
 
 
