@@ -218,7 +218,7 @@ namespace ME3Explorer.PackageEditor
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BinaryInterpreterWPF(), CurrentLoadedExport)
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new JPEXExternalExportLoader(), CurrentLoadedExport)
                 {
                     Title = $"JPEX Launcher - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
