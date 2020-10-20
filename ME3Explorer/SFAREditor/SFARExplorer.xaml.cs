@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
@@ -8,6 +9,7 @@ using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.SFAREditor
 {
@@ -42,6 +44,7 @@ namespace ME3Explorer.SFAREditor
 
         public GenericCommand LoadDLCCommand { get; set; }
         public RelayCommand OpenInPackageEditorCommand { get; set; }
+        public GenericCommand UnpackDLCCommand { get; set; }
         public RelayCommand OpenInTLKEditorCommand { get; set; }
         public RelayCommand ExtractFileCommand { get; set; }
 
@@ -51,6 +54,37 @@ namespace ME3Explorer.SFAREditor
             OpenInPackageEditorCommand = new RelayCommand(openInPackageEditor, canOpenInPackageEditor);
             OpenInTLKEditorCommand = new RelayCommand(openInTlkEditor, canOpenInTlkEditor);
             ExtractFileCommand = new RelayCommand(extractSingleFile, canExtractFile);
+            UnpackDLCCommand = new GenericCommand(extractDLC, () => LoadedDLCPackage != null);
+        }
+
+        private void extractDLC()
+        {
+            var dlg = new CommonOpenFileDialog("Select output folder")
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true
+            };
+
+            if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
+            {
+                Task.Run(() =>
+                {
+                    foreach (var f in LoadedDLCPackage.Files)
+                    {
+                        if (f.isActualFile)
+                        {
+                            var decompressedFile = LoadedDLCPackage.DecompressEntry(f);
+                            var outPath = Path.Combine(dlg.FileName, f.FileName.TrimStart('/'));
+                            Directory.CreateDirectory(Directory.GetParent(outPath).FullName);
+                            decompressedFile.WriteToFile(outPath);
+                        }
+                    }
+                    return null;
+                }).ContinueWithOnUIThread(result =>
+                {
+                    MessageBox.Show("Done extracting");
+                });
+            }
         }
 
         private bool canExtractFile(object obj) => obj is DLCPackage.FileEntryStruct;

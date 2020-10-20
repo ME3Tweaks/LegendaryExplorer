@@ -19,8 +19,9 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Command="{Binding LoadDLCCommand}" Header="Open SFAR"/>
-                <MenuItem x:Name="Recents_MenuItem" Command="{Binding LoadDLCCommand}" Header="REcent"/>
+                <MenuItem Command="{Binding LoadDLCCommand}" Header="Open SFAR" ToolTip="Opens an SFAR for viewing"/>
+                <MenuItem Command="{Binding UnpackDLCCommand}" Header="Extract SFAR contents" ToolTip="Extracts the contents of the open SFAR. Does not modify the original source SFAR"/>
+                <MenuItem x:Name="Recents_MenuItem" Command="{Binding LoadDLCCommand}" Header="Recent"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">

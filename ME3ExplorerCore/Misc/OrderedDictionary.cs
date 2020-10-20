@@ -87,7 +87,7 @@ namespace ME3ExplorerCore.Misc
             }
             set
             {
-                int idx = Keys().IndexOf(key);
+                int idx = Count > 0 ? Keys().IndexOf(key) : -1;
                 if (idx == -1)
                 {
                     Add(key, value);
