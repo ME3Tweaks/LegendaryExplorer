@@ -302,7 +302,14 @@ namespace ME3Explorer.PackageEditor
         }
         public override void PopOut()
         {
-            //throw new NotImplementedException();
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BIKExternalExportLoader(), CurrentLoadedExport)
+                {
+                    Title = $"BIK Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
+                elhw.Show();
+            }
         }
 
         public override void Dispose()

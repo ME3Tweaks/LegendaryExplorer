@@ -967,8 +967,16 @@ namespace ME3Explorer.Meshplorer
 
         public override void PopOut()
         {
-            //throw new NotImplementedException();
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new MeshRendererWPF(), CurrentLoadedExport)
+                {
+                    Title = $"Mesh Renderer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
+                elhw.Show();
+            }
         }
+    
 
         public override void Dispose()
         {

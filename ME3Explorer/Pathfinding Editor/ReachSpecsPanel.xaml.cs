@@ -56,6 +56,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public override void PopOut()
         {
             //This loader is coupled with Pathfinding Editor's UI and cannot be popped out.
+            throw new Exception("ReachSpecsPanel cannot be popped out. You shouldn't see this error!");
         }
 
         private bool _toExternalNodeChecked;
