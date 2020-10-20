@@ -76,9 +76,9 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Meshplorer WPF, the rewritten version of Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Margin="5" Text="Welcome to Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
                     <TextBlock Margin="5" TextWrapping="Wrap">
-                            Meshplorer WPF is a bit different from the classic Meshplorer.
+                            The new Meshplorer is a bit different from the classic Meshplorer.
                                 <LineBreak/>
                                 Indexes are done strictly by UIndex, which is how they appear in game code. 
                                 <LineBreak/>

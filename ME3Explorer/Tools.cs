@@ -267,21 +267,6 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
-#if DEBUG
-            //set.Add(new Tool
-            //{
-            //    name = "Meshplorer",
-            //    type = typeof(Meshplorer.Meshplorer),
-            //    icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-            //    open = () =>
-            //    {
-            //        (new Meshplorer.Meshplorer()).Show();
-            //    },
-            //    tags = new List<string> { "developer", "mesh" },
-            //    subCategory = "Meshes + Textures",
-            //    description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
-            //});
-#endif
             set.Add(new Tool
             {
                 name = "Meshplorer",
@@ -293,7 +278,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
             });
             set.Add(new Tool
             {

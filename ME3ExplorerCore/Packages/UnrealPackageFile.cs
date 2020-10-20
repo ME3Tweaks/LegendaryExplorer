@@ -539,7 +539,6 @@ namespace ME3ExplorerCore.Packages
                 taskCompletion[task.Id] = false;
                 tasks.Add(task);
 
-                // TODO: This won't work in a library as there is no UI
                 task.ContinueWithOnUIThread(x =>
                 {
                     taskCompletion[x.Id] = true;

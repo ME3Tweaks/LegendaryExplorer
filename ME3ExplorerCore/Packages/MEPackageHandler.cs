@@ -17,7 +17,7 @@ namespace ME3ExplorerCore.Packages
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
-        static Func<Stream, string, bool, UDKPackage> UDKStreamConstructorDelegate;
+        static Func<Stream, string, UDKPackage> UDKStreamConstructorDelegate;
 
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
         static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
@@ -168,7 +168,7 @@ namespace ME3ExplorerCore.Packages
             {
                 //UDK
                 stream.Position -= 8; //reset to start
-                pkg = UDKStreamConstructorDelegate(stream, filePath, false);
+                pkg = UDKStreamConstructorDelegate(stream, filePath);
                 MemoryAnalyzer.AddTrackedMemoryItem($"UDKPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else

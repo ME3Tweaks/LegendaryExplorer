@@ -63,12 +63,19 @@ namespace ME3ExplorerCore.Packages
             else
             {
                 isLoaderRegistered = true;
-                return (fileName, shouldCreate) => new UDKPackage(new MemoryStream(File.ReadAllBytes(fileName)), fileName, shouldCreate);
+                return (fileName, shouldCreate) =>
+                {
+                    if (shouldCreate)
+                    {
+                        return new UDKPackage(fileName);
+                    }
+                    return new UDKPackage(new MemoryStream(File.ReadAllBytes(fileName)), fileName);
+                };
             }
         }
 
         private static bool isStreamLoaderRegistered;
-        internal static Func<Stream, string, bool, UDKPackage> RegisterStreamLoader()
+        internal static Func<Stream, string, UDKPackage> RegisterStreamLoader()
         {
 
             if (isStreamLoaderRegistered)
@@ -77,28 +84,32 @@ namespace ME3ExplorerCore.Packages
             }
 
             isStreamLoaderRegistered = true;
-            return (s, associatedFilePath, create) => new UDKPackage(s, associatedFilePath, create);
+            return (s, associatedFilePath) => new UDKPackage(s, associatedFilePath);
         }
 
 
         public static Action<UDKPackage, string, bool> RegisterSaver() => saveByReconstructing;
 
+
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
-        /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
-        /// <param name="create">Create a file instead of reading from stream. In this instance you can pass the stream as null</param>
-        private UDKPackage(Stream fs, string filePath, bool create = false) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        /// <param name="filePath">full path + file name of desired udk file.</param>
+        private UDKPackage(string filePath) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
-            if (create)
-            {
-                folderName = "None";
-                engineVersion = 12791;
-                //reasonable defaults?
-                Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
-                return;
-            }
+            folderName = "None";
+            engineVersion = 12791;
+            //reasonable defaults?
+            Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
+            return;
+        }
 
+        /// <summary>
+        ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
+        /// </summary>
+        /// <param name="filePath">full path + file name of desired udk file.</param>
+        private UDKPackage(Stream fs, string filePath) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        {
             #region Header
 
             uint magic = fs.ReadUInt32();

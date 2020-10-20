@@ -20,12 +20,9 @@ using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
-using Application = System.Windows.Application;
-using Button = System.Windows.Controls.Button;
 using DataFormats = System.Windows.DataFormats;
 using DragDropEffects = System.Windows.DragDropEffects;
 using DragEventArgs = System.Windows.DragEventArgs;
-using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -540,7 +537,7 @@ namespace ME3Explorer
                 MeshExports.ReplaceAll(Pcc.Exports.Where(Mesh3DViewer.CanParse));
 
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
-                Title = $"Meshplorer WPF - {s}";
+                Title = $"Meshplorer - {s}";
 
                 RecentsController.AddRecent(s, false);
                 RecentsController.SaveRecentList(true);
