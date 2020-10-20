@@ -5911,6 +5911,11 @@ namespace ME3Explorer
 
         private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
+        private static BinInterpNode MakeInt32Node(EndianReader bin, string name, out int val)
+        {
+            return new BinInterpNode(bin.Position, $"{name}: {val = bin.ReadInt32()}", NodeType.StructLeafInt) {Length = 4};
+        }
+
         private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
 
         private static BinInterpNode MakeInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt16()}") { Length = 2 };
@@ -6403,6 +6408,7 @@ namespace ME3Explorer
                 subnodes.Add(MakeInt32Node(bin, "SkeletalDepth"));
                 int rawPointIndicesCount;
                 bool useFullPrecisionUVs = true;
+                int numTexCoords = 1;
                 subnodes.Add(MakeArrayNode(bin, "LODModels", i =>
                 {
                     BinInterpNode node = new BinInterpNode(bin.Position, $"{i}");
@@ -6516,7 +6522,7 @@ namespace ME3Explorer
                         node.Items.Add(item);
                         item.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, () => new List<ITreeItem>
                         {
-                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords", out numTexCoords)),
                             MakeBoolIntNode(bin, "bUseFullPrecisionUVs", out useFullPrecisionUVs),
                             ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
                             {
@@ -6541,7 +6547,9 @@ namespace ME3Explorer
                                 ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1,
                                                               () => ListInitHelper.ConditionalAddOne<ITreeItem>(useFullPrecisionUVs,
                                                                                                                 () => MakeVector2DNode(bin, "UV"),
-                                                                                                                () => MakeVector2DHalfNode(bin, "UV")))
+                                                                                                                () => MakeVector2DHalfNode(bin, "UV"))),
+                                ListInitHelper.ConditionalAddOne<ITreeItem>(numTexCoords > 1, () => MakeArrayNode(numTexCoords - 1, bin, "Additional UVs", 
+                                                                                                                         i => useFullPrecisionUVs ? MakeVector2DNode(bin, "UV") : MakeVector2DHalfNode(bin, "UV")))
                             }
                         }));
                         int vertexInfluenceSize;
