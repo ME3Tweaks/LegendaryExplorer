@@ -18,11 +18,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Shell;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using AnimSequence = ME3ExplorerCore.Unreal.BinaryConverters.AnimSequence;
 using ME3ExplorerCore.MEDirectories;
@@ -50,6 +47,7 @@ namespace ME3Explorer.AssetDatabase
         public const string dbCurrentBuild = "4.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
+        private bool hadException;
         public int currentView { get => _currentView; set { previousView = _currentView; SetProperty(ref _currentView, value); } }
         public enum dbTableType
         {
@@ -314,7 +312,12 @@ namespace ME3Explorer.AssetDatabase
             else
             {
                 CurrentDBPath = null;
-                SwitchGame(MEGame.ME3.ToString());
+                var gameDbToLoad = "ME3";
+                if (Enum.TryParse<MEGame>(Properties.Settings.Default.AssetDB_DefaultGame, out var game))
+                {
+                    gameDbToLoad = game.ToString();
+                }
+                SwitchGame(gameDbToLoad);
             }
             Activate();
         }
@@ -839,6 +842,7 @@ namespace ME3Explorer.AssetDatabase
             btn_LinePlaybackToggle.Content = "Toggle Line Playback";
             menu_fltrPerf.IsEnabled = false;
             btn_LinePlaybackToggle.IsEnabled = true;
+            bool updateDefaultDB = CurrentGame != MEGame.Unknown;
             switch (p)
             {
                 case "ME1":
@@ -856,12 +860,17 @@ namespace ME3Explorer.AssetDatabase
                     menu_fltrPerf.IsEnabled = true;
                     break;
             }
+
+            if (updateDefaultDB)
+            {
+                Properties.Settings.Default.AssetDB_DefaultGame = CurrentGame.ToString();
+            }
             CurrentDBPath = GetDBPath(CurrentGame);
 
             if (CurrentDBPath != null && File.Exists(CurrentDBPath))
             {
                 CurrentOverallOperationText = "Loading database";
-                BusyHeader = "Loading database";
+                BusyHeader = $"Loading database for {CurrentGame}";
                 BusyText = "Please wait...";
                 BusyBarInd = true;
                 IsBusy = true;
@@ -2486,7 +2495,7 @@ namespace ME3Explorer.AssetDatabase
         #region Scan
         private async void ScanGame()
         {
-
+            hadException = false;
             string outputDir = CurrentDBPath;
             if (CurrentDBPath == null)
             {
@@ -2595,67 +2604,97 @@ namespace ME3Explorer.AssetDatabase
 
             }
 
-            ProcessingQueue.Complete(); // Signal completion
-            CommandManager.InvalidateRequerySuggested();
-            await ProcessingQueue.Completion;
-            isProcessing = true;
+            Exception caughtException = null;
+            try
+            {
+                ProcessingQueue.Complete(); // Signal completion
+                CommandManager.InvalidateRequerySuggested();
+                await ProcessingQueue.Completion;
+                isProcessing = true;
+            }
+            catch (Exception e)
+            {
+                caughtException = e;
+            }
+            finally
+            {
 
-            if (DumpCanceled)
-            {
-                DumpCanceled = false;
-                BusyHeader = $"Dump canceled. Processing Queue.";
+
+                if (DumpCanceled)
+                {
+                    DumpCanceled = false;
+                    BusyHeader = $"Dump canceled. Processing Queue.";
+                }
+                else
+                {
+                    OverallProgressValue = 100;
+                    OverallProgressMaximum = 100;
+                    BusyHeader = "Dump completed. Processing Queue.";
+                }
+
+                _dbqueue.CompleteAdding();
+                TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
             }
-            else
+
+            if (caughtException != null)
             {
-                OverallProgressValue = 100;
-                OverallProgressMaximum = 100;
-                BusyHeader = "Dump completed. Processing Queue.";
+                hadException = true;
+                throw caughtException;
             }
-            _dbqueue.CompleteAdding();
-            TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
         }
         private async void dbworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            BusyHeader = "Collating and sorting the database";
-            BusyText = "Please wait...";
-            BusyBarInd = true;
-            dbworker.CancelAsync();
-            CommandManager.InvalidateRequerySuggested();
-
-            PropsDataBase pdb = await CollateDataBase();
-            //Add and sort Classes
-            CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
-            CurrentDataBase.Animations.AddRange(pdb.Animations);
-            CurrentDataBase.Materials.AddRange(pdb.Materials);
-            CurrentDataBase.Meshes.AddRange(pdb.Meshes);
-            CurrentDataBase.Particles.AddRange(pdb.Particles);
-            CurrentDataBase.Textures.AddRange(pdb.Textures);
-            CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
-            CurrentDataBase.Conversations.AddRange(pdb.Conversations);
-            CurrentDataBase.Lines.AddRange(pdb.Lines);
-
-            foreach (var f in CurrentDataBase.FileList)
+            if (e.Error == null && !hadException)
             {
-                var cd = CurrentDataBase.ContentDir[f.Item2];
-                FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
+                BusyHeader = "Collating and sorting the database";
+                BusyText = "Please wait...";
+                BusyBarInd = true;
+                dbworker.CancelAsync();
+                CommandManager.InvalidateRequerySuggested();
+
+                PropsDataBase pdb = await CollateDataBase();
+                //Add and sort Classes
+                CurrentDataBase.ClassRecords.AddRange(pdb.ClassRecords);
+                CurrentDataBase.Animations.AddRange(pdb.Animations);
+                CurrentDataBase.Materials.AddRange(pdb.Materials);
+                CurrentDataBase.Meshes.AddRange(pdb.Meshes);
+                CurrentDataBase.Particles.AddRange(pdb.Particles);
+                CurrentDataBase.Textures.AddRange(pdb.Textures);
+                CurrentDataBase.GUIElements.AddRange(pdb.GUIElements);
+                CurrentDataBase.Conversations.AddRange(pdb.Conversations);
+                CurrentDataBase.Lines.AddRange(pdb.Lines);
+
+                foreach (var f in CurrentDataBase.FileList)
+                {
+                    var cd = CurrentDataBase.ContentDir[f.Item2];
+                    FileListExtended.Add(new Tuple<string, string>(f.Item1, cd));
+                }
+
+                ClearGenerationDictionaries();
+                isProcessing = false;
+                SaveDatabase();
+                TopDock.IsEnabled = true;
+                MidDock.IsEnabled = true;
+                IsBusy = false;
+                MessageBox.Show("Done");
+
+                if (CurrentGame != MEGame.ME1 && ParseConvos)
+                {
+                    GetConvoLinesBackground();
+                }
             }
-
-            ClearGenerationDictionaries();
-            isProcessing = false;
-            SaveDatabase();
-            IsBusy = false;
-            TopDock.IsEnabled = true;
-            MidDock.IsEnabled = true;
-            MessageBox.Show("Done");
-
-            if (CurrentGame != MEGame.ME1 && ParseConvos)
+            else
             {
-                GetConvoLinesBackground();
+                ClearGenerationDictionaries();
+                CurrentOverallOperationText = "Database generation failed";
+                IsBusy = false;
+                isProcessing = false;
+                TopDock.IsEnabled = true;
+                MidDock.IsEnabled = true;
             }
         }
         private void DBProcessor(object sender, DoWorkEventArgs e) //Background worker to clean up class data.
         {
-
             foreach (ClassRecord record in _dbqueue.GetConsumingEnumerable(CancellationToken.None))
             {
                 try
@@ -2698,11 +2737,7 @@ namespace ME3Explorer.AssetDatabase
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
-
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
         private DirectoryInfo GetContentPath(DirectoryInfo directory)

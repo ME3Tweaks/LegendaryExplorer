@@ -454,5 +454,17 @@ namespace ME3Explorer.Properties {
                 this["PackageEditorWPF_ShowSubText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AssetDB_DefaultGame {
+            get {
+                return ((string)(this["AssetDB_DefaultGame"]));
+            }
+            set {
+                this["AssetDB_DefaultGame"] = value;
+            }
+        }
     }
 }
