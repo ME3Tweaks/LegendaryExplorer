@@ -7499,7 +7499,7 @@ namespace ME3Explorer
                     int length = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        Header = $"{(pos - binarystart):X4} Uncompressed size: {length} (0x{length:X})",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt
@@ -7508,7 +7508,8 @@ namespace ME3Explorer
                     length = BitConverter.ToInt32(data, pos);
                     subnodes.Add(new BinInterpNode
                     {
-                        Header = $"{(pos - binarystart):X4} bik length: {length} (0x{length:X})",
+                        // Note: Bik's can't be compressed.
+                        Header = $"{(pos - binarystart):X4} Compressed size: {length} (0x{length:X})",
                         Name = "_" + pos,
 
                         Tag = NodeType.StructLeafInt

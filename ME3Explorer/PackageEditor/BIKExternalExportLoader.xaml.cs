@@ -279,7 +279,14 @@ namespace ME3Explorer.PackageEditor
             TextureCacheComboBox.SelectedItem = TfcName;
             Task.Run(() =>
             {
-                MovieCRC = ParallelCRC.Compute(GetMovie().ToArray());
+                try
+                {
+                    MovieCRC = ~ParallelCRC.Compute(GetMovieBytes());
+                }
+                catch (Exception e)
+                {
+                    // Do nothing
+                }
             });
         }
         public override void UnloadExport()
@@ -379,8 +386,7 @@ namespace ME3Explorer.PackageEditor
         {
             try
             {
-                MemoryStream bikMovie = GetMovie();
-                byte[] data = bikMovie.ToArray();
+                byte[] data = GetMovieBytes();
                 string writeoutPath = Path.Combine(Path.GetTempPath(), CurrentLoadedExport.FullPath + ".bik");
 
                 File.WriteAllBytes(writeoutPath, data);
@@ -410,7 +416,7 @@ namespace ME3Explorer.PackageEditor
             }
             else
             {
-                MemoryStream bikMovie = GetMovie();
+                MemoryStream bikMovie = GetMovieStream();
                 if (bikMovie != null)
                 {
                     MoviePlayer.Play(bikMovie);
@@ -435,11 +441,11 @@ namespace ME3Explorer.PackageEditor
                 bik.Dispose();
             }
         }
-        private MemoryStream GetMovie()
+
+        private byte[] GetMovieBytes()
         {
             try
             {
-                MemoryStream bikMovie = new MemoryStream();
                 if (IsExternalFile)
                 {
                     string filename = $"{BikFileName}.bik";
@@ -449,6 +455,7 @@ namespace ME3Explorer.PackageEditor
                         MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
                         return null;
                     }
+
                     string filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
                     if (filePath == null || !File.Exists(filePath))
                     {
@@ -457,7 +464,7 @@ namespace ME3Explorer.PackageEditor
                     }
 
                     using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                    fs.CopyTo(bikMovie);
+                    return fs.ReadToBuffer(fs.Length);
                 }
                 else
                 {
@@ -473,6 +480,7 @@ namespace ME3Explorer.PackageEditor
                             MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
                             return null;
                         }
+
                         string filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault();
                         if (filePath == null || !File.Exists(filePath))
                         {
@@ -491,14 +499,14 @@ namespace ME3Explorer.PackageEditor
                             throw new Exception("tfc corrupt");
 
                         byte[] bikBytes = fs.ReadToBuffer(length);
-                        bikMovie = new MemoryStream(bikBytes);
 #if DEBUG
                         Debug.WriteLine($"Length: {length:#,#,0}");
                         Debug.WriteLine($"Offset (bik start): {offset:#,#,0}");
                         Debug.WriteLine($"Bik End at: {bikend:#,#,0}");
                         Debug.WriteLine($"File End at: {fs.Length:#,#,0}");
-                        Debug.WriteLine($"Bik ms size: {bikMovie.Length:#,#,0} Should be same as length {length:#,#,0}");
+                        Debug.WriteLine($"Bik ms size: {bikBytes.Length:#,#,0} Should be same as length {length:#,#,0}");
 #endif
+                        return bikBytes;
                     }
                     else if (IsLocallyCached) //is locally contained
                     {
@@ -508,26 +516,41 @@ namespace ME3Explorer.PackageEditor
                             MessageBox.Show($"Embedded texture movie has not been found.");
                             return null;
                         }
-                        bikMovie = new MemoryStream(bikBytes);
+
+                        return bikBytes;
                     }
                     else
                     {
                         return null;
                     }
                 }
-
-                return bikMovie;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.WriteLine("Error loading movie: " + ex.FlattenException());
+                // Should we do something here?
+                Debug.WriteLine($"Error loading movie: {e.Message}");
+            }
 
+            return null;
+        }
+
+        private MemoryStream GetMovieStream()
+        {
+            var movieBytes = GetMovieBytes();
+            if (movieBytes != null)
+            {
+                return new MemoryStream(movieBytes);
+            }
+            else
+            {
                 Warning_text.Visibility = Visibility.Visible;
                 video_Panel.IsEnabled = false;
-                return null;
+
             }
 
+            return null;
         }
+
         public async void MediaEndReached(object sender, EventArgs args)
         {
             Debug.WriteLine("Reached End");
@@ -542,7 +565,11 @@ namespace ME3Explorer.PackageEditor
         private void SaveBikToFile()
         {
             bool saved = false;
-            SaveFileDialog d = new SaveFileDialog { Filter = "Bik Movie File (*.bik) |*.bik" };
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Bik Movie File (*.bik) |*.bik",
+                FileName = $"{CurrentLoadedExport.ObjectName.Instanced}.bik"
+            };
             if (d.ShowDialog() == true)
             {
                 saved = ExportBikToFile(d.FileName);
@@ -555,14 +582,12 @@ namespace ME3Explorer.PackageEditor
         }
         private bool ExportBikToFile(string bikfile)
         {
-            var bikStream = GetMovie();
-            if (bikStream != null)
+            var bikBytes = GetMovieBytes();
+            if (bikBytes != null)
             {
-                bikStream.Seek(0, SeekOrigin.Begin);
-                byte[] bikarray = bikStream.ToArray();
                 using (FileStream fs = new FileStream(bikfile, FileMode.Create))
                 {
-                    fs.WriteFromBuffer(bikarray);
+                    fs.WriteFromBuffer(bikBytes);
                 }
                 return true;
             }
@@ -746,7 +771,7 @@ namespace ME3Explorer.PackageEditor
                         {
                             var possibleTFCs = AvailableTFCNames.Where(x => x.StartsWith("Movies_DLC_MOD_") || x.StartsWith("Textures_DLC_MOD_")).ToList();
                             var owner = Window.GetWindow(this);
-                            var tdlg = InputComboBoxWPF.GetValue(owner, "Select a Movie TFC", "TFC Selector",possibleTFCs);
+                            var tdlg = InputComboBoxWPF.GetValue(owner, "Select a Movie TFC", "TFC Selector", possibleTFCs);
                             if (tdlg == null)
                             {
                                 TextureCacheComboBox.SelectedItem = oldselection;
