@@ -101,7 +101,7 @@ namespace ME3ExplorerCore.Compression
             return fixedBytes;
         }
 
-        internal static byte[] DecompressLZMAFile(byte[] lzmaFile)
+        public static byte[] DecompressLZMAFile(byte[] lzmaFile)
         {
             int len = (int)BitConverter.ToInt32(lzmaFile, 5); //this is technically a 64-bit value, but since MEM code can't handle 64 bit sizes we are just going to use 32bit. We aren't going to have a 2GB+ single LZMA file
 
