@@ -466,6 +466,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     }
                 }
             }
+
+            if (sc.IsLoading)
+            {
+                svb.NumTexCoords = 1;
+            }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticLODModel slm)
         {
