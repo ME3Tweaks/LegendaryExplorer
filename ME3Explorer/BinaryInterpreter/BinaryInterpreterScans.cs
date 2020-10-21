@@ -195,6 +195,14 @@ namespace ME3Explorer
 
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
+
+                int numShaderCachePayloads = bin.ReadInt32();
+                var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
+                subnodes.Add(shaderCachePayloads);
+                for (int i = 0; i < numShaderCachePayloads; i++)
+                {
+                    shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}"));
+                }
             }
             catch (Exception ex)
             {
