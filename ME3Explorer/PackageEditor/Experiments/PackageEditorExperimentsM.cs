@@ -34,7 +34,7 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void PortWiiUBSP()
         {
-
+            // This will be useful when we attempt to port Xenon 2011 code into ME3 PC or other console platform items.
 
             //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
             //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
@@ -71,7 +71,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             //Debug.WriteLine("Roll: " + cameraEuler.Z);
 
             return;
-            var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
+            /*var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
             var pcc = MEPackageHandler.OpenMEPackage(inputfile, forceLoadFromDisk: true);
             var trackprops = pcc.Exports.Where(x => x.ClassName == "BioEvtSysTrackProp").ToList();
             foreach (var trackprop in trackprops)
@@ -277,7 +277,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             pcEntry.Save(@"D:\origin games\mass effect 3\biogame\cookedpcconsole\entrybsp.pcc");
 
 
-            Debug.WriteLine("Done porting");
+            Debug.WriteLine("Done porting");*/
         }
 
 

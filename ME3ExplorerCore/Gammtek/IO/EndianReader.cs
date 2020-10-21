@@ -487,7 +487,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public void SkipInt32()
         {
-            ReadInt32();
+            Seek(4, SeekOrigin.Current);
         }
 
         public void Seek(long offset, SeekOrigin origin)
@@ -786,6 +786,10 @@ namespace ME3ExplorerCore.Gammtek.IO
             LittleEndianStream = new MemoryStream();
         }
 
+        /// <summary>
+        /// Stream that will write out little endian values of data read in. If this item is not set, the stream is never initialized or written to.
+        /// Only use this if you are trying to write-out a little endian version of big endian data. ADVANCED USE ONLY!
+        /// </summary>
         public MemoryStream LittleEndianStream { get; private set; }
     }
 }
