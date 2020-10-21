@@ -175,7 +175,7 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
-        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath: null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");

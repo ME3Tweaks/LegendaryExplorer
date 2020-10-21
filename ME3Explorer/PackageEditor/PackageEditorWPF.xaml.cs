@@ -3571,7 +3571,6 @@ namespace ME3Explorer
                 }
 
                 LeftSideList_ItemsSource.ClearEx();
-                //LeftSide_TreeView = null; //peregrine treeview dispatcher leak //we don't use peregrine tree view anymore
                 AllTreeViewNodesX.ClearEx();
             }
         }
@@ -5102,18 +5101,18 @@ namespace ME3Explorer
             PackageEditorExperimentsM.PortWiiUBSP();
         }
 
-        public void LoadFileFromStream(Stream packageStream, string s, int goToIndex = 0)
+        public void LoadFileFromStream(Stream packageStream, string associatedFilePath, int goToIndex = 0)
         {
             try
             {
-                preloadPackage(Path.GetFileName(s), packageStream.Length);
-                LoadMEPackage(packageStream, s);
-                postloadPackage(Path.GetFileName(s), s, goToIndex);
+                preloadPackage(Path.GetFileName(associatedFilePath), packageStream.Length);
+                LoadMEPackage(packageStream, associatedFilePath);
+                postloadPackage(Path.GetFileName(associatedFilePath), associatedFilePath, goToIndex);
             }
             catch (Exception e) when (!App.IsDebug)
             {
-                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
-                MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
+                StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(associatedFilePath);
+                MessageBox.Show($"Error loading {Path.GetFileName(associatedFilePath)}:\n{e.Message}");
                 IsBusy = false;
                 IsBusyTaskbar = false;
                 //throw e;
