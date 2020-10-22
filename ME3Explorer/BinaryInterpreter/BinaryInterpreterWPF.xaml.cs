@@ -588,8 +588,10 @@ namespace ME3Explorer
                         subNodes.AddRange(StartWorldScan(data, ref binarystart));
                         break;
                     case "ShaderCache":
-                    case "ShaderCachePayload": //this is wrong for consoles. Will have to investigate what's different
                         subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
+                        break;
+                    case "ShaderCachePayload": //Consoles
+                        subNodes.AddRange(StartShaderCachePayloadScanStream(data, ref binarystart));
                         break;
                     case "Model":
                         subNodes.AddRange(StartModelScan(data, ref binarystart));

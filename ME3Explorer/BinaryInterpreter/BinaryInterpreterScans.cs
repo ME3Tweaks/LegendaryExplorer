@@ -19,6 +19,294 @@ namespace ME3Explorer
 {
     public partial class BinaryInterpreterWPF
     {
+        private List<ITreeItem> StartShaderCachePayloadScanStream(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var export = CurrentLoadedExport; //Prevents losing the reference
+                int dataOffset = export.DataOffset;
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+
+                var platform = (EShaderPlatform) bin.ReadByte();
+                subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {platform}") { Length = 1 });
+
+                //if (platform != EShaderPlatform.XBOXDirect3D){
+                int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
+                if (platform == EShaderPlatform.XBOXDirect3D) mapCount = 1;
+                for (; mapCount > 0; mapCount--)
+                {
+                    int vertexMapCount = bin.ReadInt32();
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"Name Mapping {mapCount}, {vertexMapCount} items");
+                    subnodes.Add(mappingNode);
+
+                    for (int i = 0; i < vertexMapCount; i++)
+                    {
+                        NameReference shaderName = bin.ReadNameReference(Pcc);
+                        int shaderCRC = bin.ReadInt32();
+                        mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
+                    }
+                }
+
+
+                //if (export.FileRef.Platform != MEPackage.GamePlatform.Xenon && export.FileRef.Game == MEGame.ME3)
+                //{
+                //    subnodes.Add(MakeInt32Node(bin, "PS3/WiiU Count of something??"));
+                //}
+
+                //subnodes.Add(MakeInt32Node(bin, "???"));
+                //subnodes.Add(MakeInt32Node(bin, "Shader File Count?"));
+
+                int embeddedShaderFileCount = bin.ReadInt32();
+                var embeddedShaderCount = new BinInterpNode(bin.Position - 4, $"Embedded Shader File Count: {embeddedShaderFileCount}");
+                subnodes.Add(embeddedShaderCount);
+                for (int i = 0; i < embeddedShaderFileCount; i++)
+                {
+
+                    NameReference shaderName = bin.ReadNameReference(Pcc);
+                    var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
+                    try
+                    {
+
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
+                            {Length = 8});
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
+                            {Length = 16});
+                        if (Pcc.Game == MEGame.UDK)
+                        {
+                            shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
+                            shaderNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                        }
+
+                        int shaderEndOffset = bin.ReadInt32();
+                        shaderNode.Items.Add(
+                            new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") {Length = 4});
+
+
+                        shaderNode.Items.Add(
+                            new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform) bin.ReadByte()}")
+                                {Length = 1});
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position,
+                            $"Frequency: {(EShaderFrequency) bin.ReadByte()}") {Length = 1});
+
+                        int shaderSize = bin.ReadInt32();
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}")
+                            {Length = 4});
+
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") {Length = shaderSize});
+                        bin.Skip(shaderSize);
+
+                        shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
+
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
+                            {Length = 16});
+
+                        shaderNode.Items.Add(
+                            new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") {Length = 8});
+
+                        shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
+
+                        shaderNode.Items.Add(
+                            new BinInterpNode(bin.Position,
+                                    $"Unknown shader bytes ({shaderEndOffset - (dataOffset + bin.Position)} bytes)")
+                                {Length = (int) (shaderEndOffset - (dataOffset + bin.Position))});
+
+                        embeddedShaderCount.Items.Add(shaderNode);
+
+
+                        bin.JumpTo(shaderEndOffset - dataOffset);
+                    }
+                    catch (Exception e)
+                    {
+                        embeddedShaderCount.Items.Add(shaderNode);
+                        break;
+                    }
+                }
+
+                /*
+                int mapCount = Pcc.Game >= MEGame.ME3 ? 2 : 1;
+                for (; mapCount > 0; mapCount--)
+                {
+                    int vertexMapCount = bin.ReadInt32();
+                    var mappingNode = new BinInterpNode(bin.Position - 4, $"Name Mapping {mapCount}, {vertexMapCount} items");
+                    subnodes.Add(mappingNode);
+
+                    for (int i = 0; i < vertexMapCount; i++)
+                    {
+                        NameReference shaderName = bin.ReadNameReference(Pcc);
+                        int shaderCRC = bin.ReadInt32();
+                        mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
+                    }
+                }
+                
+                if (Pcc.Game == MEGame.ME1)
+                {
+                    ReadVertexFactoryMap();
+                }
+
+                int embeddedShaderFileCount = bin.ReadInt32();
+                var embeddedShaderCount = new BinInterpNode(bin.Position - 4, $"Embedded Shader File Count: {embeddedShaderFileCount}");
+                subnodes.Add(embeddedShaderCount);
+                for (int i = 0; i < embeddedShaderFileCount; i++)
+                {
+                    NameReference shaderName = bin.ReadNameReference(Pcc);
+                    var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
+
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}") { Length = 16 });
+                    if (Pcc.Game == MEGame.UDK)
+                    {
+                        shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
+                        shaderNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                    }
+                    int shaderEndOffset = bin.ReadInt32();
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
+
+
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}") { Length = 1 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Frequency: {(EShaderFrequency)bin.ReadByte()}") { Length = 1 });
+
+                    int shaderSize = bin.ReadInt32();
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}") { Length = 4 });
+
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") { Length = shaderSize });
+                    bin.Skip(shaderSize);
+
+                    shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
+
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
+
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+
+                    shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
+
+                    embeddedShaderCount.Items.Add(shaderNode);
+
+                    bin.JumpTo(shaderEndOffset - dataOffset);
+                }
+
+                void ReadVertexFactoryMap()
+                {
+                    int vertexFactoryMapCount = bin.ReadInt32();
+                    var factoryMapNode = new BinInterpNode(bin.Position - 4, $"Vertex Factory Name Mapping, {vertexFactoryMapCount} items");
+                    subnodes.Add(factoryMapNode);
+
+                    for (int i = 0; i < vertexFactoryMapCount; i++)
+                    {
+                        NameReference shaderName = bin.ReadNameReference(Pcc);
+                        int shaderCRC = bin.ReadInt32();
+                        factoryMapNode.Items.Add(new BinInterpNode(bin.Position - 12, $"{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
+                    }
+                }
+                if (Pcc.Game == MEGame.ME2 || Pcc.Game == MEGame.ME3)
+                {
+                    ReadVertexFactoryMap();
+                }
+
+                int materialShaderMapcount = bin.ReadInt32();
+                var materialShaderMaps = new BinInterpNode(bin.Position - 4, $"Material Shader Maps, {materialShaderMapcount} items");
+                subnodes.Add(materialShaderMaps);
+                for (int i = 0; i < materialShaderMapcount; i++)
+                {
+                    var nodes = new List<ITreeItem>();
+                    materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
+                    nodes.Add(ReadFStaticParameterSet(bin));
+
+                    if (Pcc.Game >= MEGame.ME3)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unreal Version {bin.ReadInt32()}") { Length = 4 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Licensee Version {bin.ReadInt32()}") { Length = 4 });
+                    }
+
+                    int shaderMapEndOffset = bin.ReadInt32();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Material Shader Map end offset {shaderMapEndOffset}") { Length = 4 });
+
+                    int unkCount = bin.ReadInt32();
+                    var unkNodes = new List<ITreeItem>();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Shaders {unkCount}") { Length = 4, Items = unkNodes });
+                    for (int j = 0; j < unkCount; j++)
+                    {
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadGuid()}") { Length = 16 });
+                        unkNodes.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc).Instanced}") { Length = 8 });
+                    }
+
+                    int meshShaderMapsCount = bin.ReadInt32();
+                    var meshShaderMaps = new BinInterpNode(bin.Position - 4, $"Mesh Shader Maps, {meshShaderMapsCount} items") { Length = 4 };
+                    nodes.Add(meshShaderMaps);
+                    for (int j = 0; j < meshShaderMapsCount; j++)
+                    {
+                        var nodes2 = new List<ITreeItem>();
+                        meshShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Mesh Shader Map {j}") { Items = nodes2 });
+
+                        int shaderCount = bin.ReadInt32();
+                        var shaders = new BinInterpNode(bin.Position - 4, $"Shaders, {shaderCount} items") { Length = 4 };
+                        nodes2.Add(shaders);
+                        for (int k = 0; k < shaderCount; k++)
+                        {
+                            var nodes3 = new List<ITreeItem>();
+                            shaders.Items.Add(new BinInterpNode(bin.Position, $"Shader {k}") { Items = nodes3 });
+
+                            nodes3.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                            nodes3.Add(new BinInterpNode(bin.Position, $"GUID: {bin.ReadGuid()}") { Length = 16 });
+                            nodes3.Add(new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                        }
+                        nodes2.Add(new BinInterpNode(bin.Position, $"Vertex Factory Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+                        if (Pcc.Game == MEGame.ME1)
+                        {
+                            nodes2.Add(MakeUInt32Node(bin, "Unk"));
+                        }
+                    }
+
+                    nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadGuid()}") { Length = 16 });
+
+                    nodes.Add(MakeStringNode(bin, "Friendly Name"));
+
+                    nodes.Add(ReadFStaticParameterSet(bin));
+
+                    if (Pcc.Game >= MEGame.ME3)
+                    {
+                        string[] uniformExpressionArrays =
+                        {
+                            "UniformPixelVectorExpressions",
+                            "UniformPixelScalarExpressions",
+                            "Uniform2DTextureExpressions",
+                            "UniformCubeTextureExpressions",
+                            "UniformVertexVectorExpressions",
+                            "UniformVertexScalarExpressions"
+                        };
+
+                        foreach (string uniformExpressionArrayName in uniformExpressionArrays)
+                        {
+                            int expressionCount = bin.ReadInt32();
+                            nodes.Add(new BinInterpNode(bin.Position - 4, $"{uniformExpressionArrayName}, {expressionCount} expressions")
+                            {
+                                Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
+                            });
+                        }
+                        nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadInt32()}") { Length = 4 });
+                    }
+
+                    bin.JumpTo(shaderMapEndOffset - dataOffset);
+                }
+
+                int numShaderCachePayloads = bin.ReadInt32();
+                var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
+                subnodes.Add(shaderCachePayloads);
+                for (int i = 0; i < numShaderCachePayloads; i++)
+                {
+                    shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}"));
+                } */
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartShaderCacheScanStream(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
