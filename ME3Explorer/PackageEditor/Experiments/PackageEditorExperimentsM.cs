@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
@@ -31,13 +32,80 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
-
-        public static void PortWiiUBSP()
+        public static void PortME1EntryMenuToME3ViaBioPChar(IMEPackage entryMenuPackage)
         {
-            // This will be useful when we attempt to port Xenon 2011 code into ME3 PC or other console platform items.
+            // Open packages
+            using var biopChar = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioP_Char.pcc");
+            using var me1em = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\EntryMenu.sfm");
 
-            //var me1emf = @"D:\Origin Games\Mass Effect\BioGame\CookedPC\Maps\entrymenu.sfm";
-            //var me1em = MEPackageHandler.OpenMEPackage(me1emf);
+            // Vars
+            var targetLink = entryMenuPackage.GetUExport(197); //PersistentLevel
+
+            // Items that need ported in:
+            List<ExportEntry> itemsToPort = new List<ExportEntry>();
+            var me3UncPlanet = biopChar.GetUExport(6276);
+
+
+
+            itemsToPort.Add(me3UncPlanet); //UNC53Planet
+            itemsToPort.Add(biopChar.GetUExport(6279)); //Corona
+            itemsToPort.Add(biopChar.GetUExport(6280)); //GXMPlanet
+            itemsToPort.Add(biopChar.GetUExport(28403)); //Lights. Might need to cut down on these as it affects main menu too
+
+            foreach (var item in itemsToPort)
+            {
+                var newEntry = portEntry(item, targetLink);
+                ReindexAllSAmeNamedObjects(newEntry); // this is experiment, who cares how fast it is
+            }
+
+
+
+            IEntry portEntry(IEntry sourceEntry, IEntry targetLinkEntry)
+            {
+                Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
+
+                int numExports = entryMenuPackage.ExportCount;
+                //Import!
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceEntry, entryMenuPackage,
+                    targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
+
+                TryAddToPersistentLevel2(entryMenuPackage.Exports.Skip(numExports));
+                return newEntry;
+            }
+
+            bool TryAddToPersistentLevel2(IEnumerable<IEntry> newEntries)
+            {
+                ExportEntry[] actorsToAdd = newEntries.OfType<ExportEntry>()
+                    .Where(exp => exp.Parent?.ClassName == "Level" && exp.IsA("Actor")).ToArray();
+                int num = actorsToAdd.Length;
+                if (num > 0 && actorsToAdd.First().FileRef.AddToLevelActorsIfNotThere(actorsToAdd))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            void ReindexAllSAmeNamedObjects(IEntry entry)
+            {
+                string prefixToReindex = entry.ParentInstancedFullPath;
+                string objectname = entry.ObjectName.Name;
+
+                int index = 1; //we'll start at 1.
+                foreach (ExportEntry export in entry.FileRef.Exports)
+                {
+                    //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
+                    if (objectname == export.ObjectName.Name && export.ParentInstancedFullPath == prefixToReindex &&
+                        !export.IsClass)
+                    {
+                        export.indexValue = index;
+                        index++;
+                    }
+                }
+            }
+            // UPDATE THE CAMERA POSITION
+
+            // >> Read position data from ME1
             //var gmplanet01 = me1em.GetUExport(940);
             //var itm = me1em.GetUExport(966);
             //var moon = me1em.GetUExport(936);
@@ -46,6 +114,42 @@ namespace ME3Explorer.PackageEditor.Experiments
             //var cameraPoint = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
             //var cameraEuler = SharedPathfinding.GetLocationFromVector(itm.GetProperty<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
 
+            // Positions are same as ME2, use ME2 instead.
+
+
+
+            // >> Set camera position data ME3
+            var rotPitch = 5704;
+            var rotYaw = 29546;
+            var rotRoll = 309;
+
+            // Fixes for ME3?
+            //rotPitch -= 150;
+            //rotRoll = 309;
+            //rotYaw = -36062;
+            //rotYaw += short.MaxValue / 2; //16K, 90 degrees
+            //rotRoll += short.MaxValue / 2; // 90 degrees
+
+            var cameraActorExp = entryMenuPackage.GetUExport(111);
+            var camProps = cameraActorExp.GetProperties();
+            SharedPathfinding.SetLocation(camProps.GetProp<StructProperty>("location"), -4926, 13212, -39964);
+            var rotStruct = camProps.GetProp<StructProperty>("Rotation");
+            rotStruct.GetProp<IntProperty>("Pitch").Value = rotPitch;
+            rotStruct.GetProp<IntProperty>("Yaw").Value = rotYaw;
+            rotStruct.GetProp<IntProperty>("Roll").Value = rotRoll;
+            camProps.AddOrReplaceProp(new FloatProperty(40, "FOVAngle"));
+            cameraActorExp.WriteProperties(camProps);
+
+            var cameraInterpTrackMove1 = entryMenuPackage.GetUExport(195);
+            var properties = cameraInterpTrackMove1.GetProperties();
+            //var cameraEuler = SharedPathfinding.GetLocationFromVector(properties.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"));
+
+            SharedPathfinding.SetLocation(properties.GetProp<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"), -4926, 13212, -39964);
+            // This is a hack: It's actually rotation but it's all just vectors anyways.
+            SharedPathfinding.SetLocation(properties.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"), 0, 0, 0);
+            //SharedPathfinding.SetRotation(properties.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"), rotRoll, rotYaw, rotPitch);
+            properties.AddOrReplaceProp(new EnumProperty("IMF_RelativeToInitial", "EInterpTrackMoveFrame", MEGame.ME3, "MoveFrame"));
+            cameraInterpTrackMove1.WriteProperties(properties);
             //Point3D me2planetPos = new Point3D()
             //{
             //    X = -5402.598,
@@ -68,8 +172,13 @@ namespace ME3Explorer.PackageEditor.Experiments
 
             //Debug.WriteLine("Pitch: " + cameraEuler.X);
             //Debug.WriteLine("Yaw: " + cameraEuler.Y);
-            //Debug.WriteLine("Roll: " + cameraEuler.Z);
+            //Debug.WriteLine("Roll: " + cameraEuler.Z);}
 
+        }
+
+        public static void PortWiiUBSP()
+        {
+            // This will be useful when we attempt to port Xenon 2011 code into ME3 PC or other console platform items.
             return;
             /*var inputfile = @"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\BioD_Kro002_925shroud_LOC_INT.pcc";
             var pcc = MEPackageHandler.OpenMEPackage(inputfile, forceLoadFromDisk: true);

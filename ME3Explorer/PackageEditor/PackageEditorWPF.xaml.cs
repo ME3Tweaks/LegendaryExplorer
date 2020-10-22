@@ -5135,5 +5135,10 @@ namespace ME3Explorer
         }
 
         public string Toolname => "PackageEditor";
+
+        private void PortME1EntryMenu_Clicked(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PortME1EntryMenuToME3ViaBioPChar(Pcc);
+        }
     }
 }
