@@ -661,6 +661,11 @@ namespace ME3Explorer.Meshplorer
                                 List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
                                 WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
                                 pmd.sections = sections;
+                                if (mesh.Vertices.Any())
+                                {
+                                    SceneViewer.Context.Camera.Position = mesh.Vertices[0].Position;
+                                }
+
                                 Preview = new ModelPreview(SceneViewer.Context.Device, mesh, SceneViewer.Context.TextureCache, cachedPackages, pmd);
                                 //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                 break;
