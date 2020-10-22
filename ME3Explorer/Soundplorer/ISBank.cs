@@ -117,7 +117,7 @@ namespace ME3Explorer.Soundplorer
                         chunksize = ms.ReadUInt32();
                         var pos = ms.BaseStream.Position;
                         ms.ReadInt64(); //skip 8
-                        isbEntry.sampleRate = ms.ReadUInt32();
+                        isbEntry.sampleRate = ms.ReadUInt32(); // This is actually codec dependent. e.g. this can list 48K but actual samplerate is 44.1K
                         isbEntry.pcmBytes = ms.ReadUInt32();
                         isbEntry.bps = ms.ReadInt16();
                         ms.BaseStream.Position = pos + chunksize; //skip to next chunk

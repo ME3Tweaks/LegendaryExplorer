@@ -72,6 +72,7 @@ namespace ME3Explorer.Soundplorer
             }
             if (CodecID == 0x2)
             {
+                // Ogg Vorbis
                 string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString() + ".ogg";
                 File.WriteAllBytes(basePath, DataAsStored);
                 MemoryStream waveStream = WwiseStreamHelper.ConvertOggToWave(basePath);
@@ -225,6 +226,14 @@ namespace ME3Explorer.Soundplorer
             else if (CodecID == 0x5)
             {
                 //Sony MSF (PS3 ME1)
+                // Get actual samplerate (stored in audio container)
+                //var datasize = EndianReader.ToUInt32(DataAsStored, 0x0C, FileEndianness);
+                var actualSampleRate = EndianReader.ToUInt32(DataAsStored, 0x10, FileEndianness);
+
+
+                var seconds = (double)pcmBytes / actualSampleRate / (bps / 8);
+                //var seconds = (double)samplecount / actualSampleRate;
+                return TimeSpan.FromSeconds(seconds);
             }
             return new TimeSpan(0);
         }
