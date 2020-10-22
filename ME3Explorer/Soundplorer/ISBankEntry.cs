@@ -124,7 +124,6 @@ namespace ME3Explorer.Soundplorer
             writer.BaseStream.Position = 0x4;
             writer.Write((uint)writer.BaseStream.Length - 0x8);
             FullData = outStream.ToArray();
-            File.WriteAllBytes(@"C:\users\mgame\desktop\fakedata.isb", FullData);
         }
 
         /// <summary>
