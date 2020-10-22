@@ -8,8 +8,15 @@ using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
 
 namespace ME3Explorer.Soundplorer
 {
-    public class ISBankEntry
+    public class ISBankEntry : NotifyPropertyChangedBase
     {
+        public string _tlkString;
+        public string TLKString
+        {
+            get => _tlkString;
+            set => SetProperty(ref _tlkString, value);
+        }
+
         public string FileName { get; set; }
         public Endian FileEndianness { get; set; }
         public uint numberOfChannels = 0;
