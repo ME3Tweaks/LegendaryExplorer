@@ -281,7 +281,11 @@ namespace ME3Explorer.PackageEditor
             {
                 try
                 {
-                    MovieCRC = ~ParallelCRC.Compute(GetMovieBytes());
+                    var movieBytes = GetMovieBytes();
+                    if (movieBytes != null)
+                    {
+                        MovieCRC = ~ParallelCRC.Compute(movieBytes);
+                    }
                 }
                 catch (Exception e)
                 {
