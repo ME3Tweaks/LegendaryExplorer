@@ -267,20 +267,29 @@ namespace ME3Explorer
                     TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(cache.Value);
                     AvailableTFCNames.Add(CREATE_NEW_TFC_STRING);
                 }
-                else
-                {
-                    AvailableTFCNames.Add(PACKAGE_STORED_STRING);
-                    AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
-                    TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(PACKAGE_STORED_STRING);
 
-                }
-
+                
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
                 CurrentLoadedExport = exportEntry;
 
                 if (mips.Any())
                 {
                     var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+
+                    // Some textures list a tfc but are stored locally still
+                    // so the tfc is never actually used
+                    if (topmip.storageType == StorageTypes.pccUnc)
+                    {
+                        AvailableTFCNames.Insert(0,PACKAGE_STORED_STRING);
+                        TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(PACKAGE_STORED_STRING);
+                    }
+
+                    if (cache == null && exportEntry.Game > MEGame.ME1)
+                    {
+                        AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
+                    }
+
+
 
                     if (exportEntry.FileRef.Game == MEGame.ME1)
                     {
