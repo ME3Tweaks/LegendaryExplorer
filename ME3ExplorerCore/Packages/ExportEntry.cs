@@ -602,7 +602,7 @@ namespace ME3ExplorerCore.Packages
             MemoryStream stream = new MemoryStream(_data, false);
             stream.Seek(start, SeekOrigin.Current);
             // Do not cache
-            return PropertyCollection.ReadProps(this, stream, ClassName, true, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
             //}
         }
 
