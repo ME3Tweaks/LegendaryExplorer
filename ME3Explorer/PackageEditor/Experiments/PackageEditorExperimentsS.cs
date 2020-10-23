@@ -598,6 +598,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             bin.WriteTo(ms.Writer, export.FileRef, export.DataOffset);
 
             byte[] changed = ms.ToArray();
+            //export.Data = changed;
             if (original.SequenceEqual(changed))
             {
                 MessageBox.Show("reserialized identically!");

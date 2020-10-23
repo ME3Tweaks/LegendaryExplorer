@@ -98,21 +98,28 @@ namespace ME3Explorer.PackageEditor.Experiments
 
             // Fix the second stage interpolation where the camera moves up
             var panUpITM = entryMenuPackage.GetUExport(196); //InterpTrackMove for camera
-            var panUpITMProps = panUpITM.GetProperties();
-            foreach (var point in panUpITMProps.GetProp<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points"))
-            {
-                SharedPathfinding.SetLocation(point.GetProp<StructProperty>("OutVal"), 0, 0, 0);
-            }
+            var panUpITF = entryMenuPackage.GetUExport(194); //FOV
+            // Just port this from the ME2 file. It'll be much easier
 
-            foreach (var point in panUpITMProps.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points"))
-            {
-                // todo: figure out how to code this so it doesn't take 1000 lines
-                //SharedPathfinding.SetLocation(point.GetProp<StructProperty>("OutVal"), 0, 0, 0);
-            }
+            using var me2em = MEPackageHandler.OpenMEPackage(@"E:\Documents\BioWare\Mass Effect 2\BIOGame\Published\CookedPC\entrymenu.pcc");
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me2em.GetUExport(198), entryMenuPackage, panUpITF, true, out _); // Copy FOV ITF
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me2em.GetUExport(205), entryMenuPackage, panUpITM, true, out _); // Copy movement ITM
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular, me2em.GetUExport(205), entryMenuPackage, panUpITM, true, out _); // Copy movement ITM
 
-            // Set to relative so it doesn't move
-            panUpITMProps.AddOrReplaceProp(new EnumProperty("IMF_RelativeToInitial", "EInterpTrackMoveFrame", MEGame.ME3, "MoveFrame"));
-            panUpITM.WriteProperties(panUpITMProps);
+            var fadeOutTime = 5;
+            entryMenuPackage.GetUExport(167).WriteProperty(new FloatProperty(fadeOutTime, "InterpLength"));
+
+            // Fix the fade timing
+            var fadeITF = entryMenuPackage.GetUExport(190);
+            var fadeProps = fadeITF.GetProperties();
+            fadeProps.GetProp<StructProperty>("FloatTrack").GetProp<ArrayProperty<StructProperty>>("Points")[1].GetProp<FloatProperty>("InVal").Value = fadeOutTime / 2; //when fade starts
+            fadeProps.GetProp<StructProperty>("FloatTrack").GetProp<ArrayProperty<StructProperty>>("Points")[2].GetProp<FloatProperty>("InVal").Value = fadeOutTime; //end fade time
+
+            fadeITF.WriteProperties(fadeProps);
+
+            // Fix playrate for pan up to 1
+            entryMenuPackage.GetUExport(668).RemoveProperty("PlayRate");
+
 
             #region internalMethods
             IEntry portEntry(IEntry sourceEntry, IEntry targetLinkEntry)
@@ -176,7 +183,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                 }
 
                 var scmaProps = sca.Export.GetProperties();
-                var components = scmaProps.GetProp<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                var components = scmaProps.GetProp<ArrayProperty<ObjectProperty>>(sca.ComponentPropName);
                 //var componentsToRemove = components.Where(x => uindicesToRemove.Contains(x.Value)).ToList();
 
                 // Trash the useless children
@@ -230,7 +237,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             rotStruct.GetProp<IntProperty>("Pitch").Value = rotPitch;
             rotStruct.GetProp<IntProperty>("Yaw").Value = rotYaw;
             rotStruct.GetProp<IntProperty>("Roll").Value = rotRoll;
-            camProps.AddOrReplaceProp(new FloatProperty(40, "FOVAngle"));
+            camProps.AddOrReplaceProp(new FloatProperty(35, "FOVAngle"));
             cameraActorExp.WriteProperties(camProps);
 
             var cameraInterpTrackMove1 = entryMenuPackage.GetUExport(195);

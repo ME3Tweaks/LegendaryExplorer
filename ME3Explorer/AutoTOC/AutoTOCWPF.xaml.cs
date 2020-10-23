@@ -67,7 +67,7 @@ namespace ME3Explorer.AutoTOC
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
             foreach (string dlcDir in dlcList)
             {
-                if (dlcDir.EndsWith("DLC_UNC",StringComparison.InvariantCultureIgnoreCase))
+                if (dlcDir.EndsWith("DLC_UNC", StringComparison.InvariantCultureIgnoreCase))
                 {
                     dlcTable.Add(1, "DLC_UNC");
                 }
@@ -103,8 +103,8 @@ namespace ME3Explorer.AutoTOC
                 MessageBox.Show($"BioEngine not found. Run config or game to set it up. {e.FlattenException()}");
                 return;
             }
-            
-            
+
+
             var BioEngine = new IniFile(bioEnginePath);
 
             //Clean out seekfreepaths and moviepaths
@@ -130,14 +130,14 @@ namespace ME3Explorer.AutoTOC
                 else
                 {
                     BioEngine.WriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
-                    if(Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
+                    if (Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
                     {
                         BioEngine.WriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
                     }
                 }
             }
 
-            
+
 
 
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
@@ -161,7 +161,7 @@ namespace ME3Explorer.AutoTOC
             // DO NOT ADD DUPLICATES
             TOCTasks.ClearEx();
 
-            var masterList = new List<string>(); 
+            var masterList = new List<string>();
             foreach (KeyValuePair<int, string> fileListStem in dlcTable.OrderByDescending(k => k.Key))
             {
                 if (fileListStem.Value == "BioGame")
@@ -438,7 +438,7 @@ namespace ME3Explorer.AutoTOC
         public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
         {
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
-            folders.Add(ME3Directory.gamePath + @"BIOGame\");
+            folders.Add(Path.Combine(ME3Directory.gamePath, "BIOGame"));
             folders.ForEach(consoletocFile => prepareToCreateTOC(consoletocFile, tocTasks));
         }
 
