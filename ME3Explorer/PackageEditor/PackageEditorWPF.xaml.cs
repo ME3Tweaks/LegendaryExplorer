@@ -1558,7 +1558,13 @@ namespace ME3Explorer
 
             void recursiveCheckProperty(IEntry entry, Property property)
             {
-                if (property is ObjectProperty op)
+                if (property is UnknownProperty up)
+                {
+                    badReferences.Add(new EntryStringPair(entry,
+                        $"Export {entry.UIndex} had broken property data! Detected unknown properties: {entry.InstancedFullPath}"));
+
+                }
+                else if (property is ObjectProperty op)
                 {
                     if (op.Value > 0 && op.Value > Pcc.ExportCount)
                     {
@@ -1706,6 +1712,16 @@ namespace ME3Explorer
                             {
                                 badReferences.Add(new EntryStringPair(exp,
                                     $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                            }
+                        }
+
+                        var nameIndicies = objBin.GetNames(exp.FileRef.Game);
+                        foreach (var ni in nameIndicies)
+                        {
+                            if (ni.Item1 == "")
+                            {
+                                badReferences.Add(new EntryStringPair(exp,
+                                    $"Binary name reference is invalid in Export #{exp.UIndex} {exp.InstancedFullPath}"));
                             }
                         }
                     }
