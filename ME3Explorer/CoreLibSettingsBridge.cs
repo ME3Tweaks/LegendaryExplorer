@@ -19,6 +19,9 @@ namespace ME3Explorer
             CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Properties.Settings.Default.PropertyParsingUnknownArrayAsObject;
             CoreLibSettings.Instance.TLKDefaultLanguage = Properties.Settings.Default.TLKLanguage;
             CoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
+            CoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
+            CoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
+            CoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
 
             Properties.Settings.Default.PropertyChanged += ME3ExpSettingChanged;
             CoreLibSettings.Instance.PropertyChanged += CoreLibSettingChanged;
@@ -37,6 +40,15 @@ namespace ME3Explorer
                 case nameof(Properties.Settings.Default.TLKGender_IsMale):
                     CoreLibSettings.Instance.TLKGenderIsMale = Properties.Settings.Default.TLKGender_IsMale;
                     break;
+                case nameof(Properties.Settings.Default.ME1Directory):
+                    CoreLibSettings.Instance.ME1Directory = Properties.Settings.Default.ME1Directory;
+                    break;
+                case nameof(Properties.Settings.Default.ME2Directory):
+                    CoreLibSettings.Instance.ME2Directory = Properties.Settings.Default.ME2Directory;
+                    break;
+                case nameof(Properties.Settings.Default.ME3Directory):
+                    CoreLibSettings.Instance.ME3Directory = Properties.Settings.Default.ME3Directory;
+                    break;
             }
         }
 
@@ -46,17 +58,26 @@ namespace ME3Explorer
             {
                 case nameof(CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject):
                     Properties.Settings.Default.PropertyParsingUnknownArrayAsObject = CoreLibSettings.Instance.ParseUnknownArrayTypesAsObject;
-                    Properties.Settings.Default.Save();
                     break;
                 case nameof(CoreLibSettings.Instance.TLKDefaultLanguage):
                     Properties.Settings.Default.TLKLanguage = CoreLibSettings.Instance.TLKDefaultLanguage;
-                    Properties.Settings.Default.Save();
                     break;
                 case nameof(CoreLibSettings.Instance.TLKGenderIsMale):
                     Properties.Settings.Default.TLKGender_IsMale = CoreLibSettings.Instance.TLKGenderIsMale;
-                    Properties.Settings.Default.Save();
                     break;
+                case nameof(CoreLibSettings.Instance.ME1Directory):
+                    Properties.Settings.Default.ME1Directory = CoreLibSettings.Instance.ME1Directory;
+                    break;
+                case nameof(CoreLibSettings.Instance.ME2Directory):
+                    Properties.Settings.Default.ME2Directory = CoreLibSettings.Instance.ME2Directory;
+                    break;
+                case nameof(CoreLibSettings.Instance.ME3Directory):
+                    Properties.Settings.Default.ME3Directory = CoreLibSettings.Instance.ME3Directory;
+                    break;
+                default:
+                    return;
             }
+            Properties.Settings.Default.Save();
         }
     }
 }

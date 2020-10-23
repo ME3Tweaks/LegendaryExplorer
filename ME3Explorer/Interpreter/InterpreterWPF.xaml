@@ -82,7 +82,7 @@
         </StatusBar>
         <Grid Margin="0,1,0,-1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MaxHeight="1080"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />

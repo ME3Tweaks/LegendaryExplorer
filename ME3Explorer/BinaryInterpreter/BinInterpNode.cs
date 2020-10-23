@@ -50,17 +50,8 @@ namespace ME3Explorer
             Header = header;
         }
 
-        public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown, EndianReader bin = null, List<(int, int)> itemsToClip = null) : this()
+        public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown) : this()
         {
-            //used for rewriting endianness
-            //For clipping we will be 4 ahead of where we will want for these. The value 4 previous will be length of a list.
-            //if (bin != null && itemsToClip != null)
-            //{
-            //    bin.Seek(-4, SeekOrigin.Current);
-            //    var amountToSkip = bin.ReadInt32() * 4;
-            //    itemsToClip.Add(((int)bin.Position - 4, (int)bin.Position + amountToSkip));
-            //}
-
             Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;
             if (pos >= 0)
             {

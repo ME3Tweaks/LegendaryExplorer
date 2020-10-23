@@ -416,7 +416,7 @@ namespace ME3Explorer.ActorNodes
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(10, 10), new PointF(10, 20), new PointF(10, 25), new PointF(50, 25), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(40, 40), new PointF(40, 30), new PointF(0, 30) };
 
         public SFXStuntActor(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
         }
 
@@ -431,7 +431,7 @@ namespace ME3Explorer.ActorNodes
         private static readonly PointF[] outlineShape = { new PointF(0, 0), new PointF(5, 0), new PointF(5, 20), new PointF(45, 0), new PointF(50, 0), new PointF(10, 25), new PointF(50, 50), new PointF(45, 50), new PointF(5, 35), new PointF(5, 50), new PointF(0, 50) };
 
         public SkeletalMeshActor(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
         }
 
@@ -884,7 +884,7 @@ namespace ME3Explorer.ActorNodes
             };
 
         public EmitterNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, x, y, p, grapheditor, drawRotationLine: false)
+            : base(idx, x, y, p, grapheditor, drawRotationLine: true)
         {
             ObjectProperty psc = export.GetProperty<ObjectProperty>("ParticleSystemComponent");
             if (psc != null)

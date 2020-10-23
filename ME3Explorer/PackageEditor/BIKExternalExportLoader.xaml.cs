@@ -281,7 +281,11 @@ namespace ME3Explorer.PackageEditor
             {
                 try
                 {
-                    MovieCRC = ~ParallelCRC.Compute(GetMovieBytes());
+                    var movieBytes = GetMovieBytes();
+                    if (movieBytes != null)
+                    {
+                        MovieCRC = ~ParallelCRC.Compute(movieBytes);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -965,11 +969,12 @@ namespace ME3Explorer.PackageEditor
             string outputTFC = Path.Combine(m.FileName, $"{nprompt}.tfc");
             bool createTFC = true;
 
-            if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(outputTFC)))
-            {
-                MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
-                return null;
-            }
+
+            //if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(outputTFC)))
+            //{
+            //    MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
+            //    return null;
+            //}
 
             if (File.Exists(outputTFC))
             {

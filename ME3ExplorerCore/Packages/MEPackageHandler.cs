@@ -72,6 +72,26 @@ namespace ME3ExplorerCore.Packages
         }
 
         /// <summary>
+        /// Opens an already open package package, registering it for use in a tool.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static IMEPackage OpenMEPackage(IMEPackage package, IPackageUser user = null)
+        {
+            if (user != null)
+            {
+                package.RegisterTool(user);
+                addToPackagesInTools(package);
+            }
+            else
+            {
+                package.RegisterUse();
+            }
+            return package;
+        }
+
+        /// <summary>
         /// Opens a Mass Effect package file. By default, this call will attempt to return an existing open (non-disposed) package at the same path if it is opened twice. Use the forceLoadFromDisk parameter to ignore this behavior.
         /// </summary>
         /// <param name="pathToFile">Path to the file to open</param>
@@ -80,7 +100,10 @@ namespace ME3ExplorerCore.Packages
         /// <returns></returns>
         public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
-            pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
+            if (File.Exists(pathToFile))
+            {
+                pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
+            }
 
             IMEPackage package;
             if (forceLoadFromDisk)

@@ -53,6 +53,17 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Registers use of an already open package. Releases the existing one, if any.
+        /// This is the same as LoadMEPackage, but the package is already loaded
+        /// </summary>
+        /// <param name="package"></param>
+        public void RegisterPackage(IMEPackage package)
+        {
+            UnLoadMEPackage();
+            Pcc = MEPackageHandler.OpenMEPackage(package, this);
+        }
+
         public void LoadMEPackage(string s)
         {
             UnLoadMEPackage();
@@ -62,7 +73,7 @@ namespace ME3Explorer
         public void LoadMEPackage(Stream stream, string associatedFilePath = null)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath);
+            Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath, user: this);
         }
 
         protected void UnLoadMEPackage()

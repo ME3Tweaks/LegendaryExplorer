@@ -175,7 +175,7 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
-        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
+        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath: null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
@@ -212,6 +212,10 @@ namespace ME3ExplorerCore.Packages
                     fs = CompressionHelper.DecompressFullyCompressedPackage(packageReader, ref fcCompressionType);
                     platformOverride = GamePlatform.PS3;
                 }
+                // Fully compressed packages use little endian magic in them 
+                // so we need to re-setup the endian reader
+                // Why do they use different endians on the same processor platform?
+                // Who the hell knows!
                 packageReader = EndianReader.SetupForPackageReading(fs);
                 packageReader.SkipInt32(); //skip magic as we have already read it
                 Endian = packageReader.Endian;
@@ -266,11 +270,12 @@ namespace ME3ExplorerCore.Packages
                         // Code above determines platform if it's fully compressed, and code below determines platform based on compression type
                         // However if neither exist we don't have an easy way to differentiate files (such as files from SFAR)
 
-                        // Might have to see if there is some other platform indicator, like SeekFreeShaderCache that seems to exist
-                        // in every single console file (vs PC's DLC only). The shader format will be different between platforms for sure
+                        // We attempt to resolve the platfrom later using SeekFreeShaderCache which is present
+                        // in every single console file (vs PC's DLC only).
+                        // Not 100% sure it's in every file. But hopefully it is.
                         if (platformOverride == GamePlatform.Unknown)
                         {
-                            Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
+                            //Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
                             platformNeedsResolved = true;
                             Platform = GamePlatform.PS3; //This is placeholder as Xenon and PS3 use same header format
                         }
@@ -297,8 +302,9 @@ namespace ME3ExplorerCore.Packages
 
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
-            //Xenon Demo ME3 doesn't read this
-            if (Game == MEGame.ME3 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && Platform != GamePlatform.Xenon)
+            //Xenon Demo ME3 doesn't read this. Xenon ME3 Retail does
+            if (Game == MEGame.ME3 
+                && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
             {
                 //Consoles are always cooked.
                 PackageTypeId = packageReader.ReadInt32(); //0 = standard, 1 = patch ? Not entirely sure. patch_001 files with byte = 0 => game does not load

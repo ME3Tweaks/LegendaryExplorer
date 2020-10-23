@@ -5,6 +5,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -1335,6 +1336,24 @@ namespace ME3Explorer.Soundplorer
 
         public void LoadData()
         {
+            // Check if there is TLK string in the export name
+            var splits = Entry.FileName.Split('_', ',');
+            for (int i = splits.Length - 1; i > 0; i--)
+            {
+                //backwards is faster
+                if (int.TryParse(splits[i], out var parsed))
+                {
+                    //Lookup TLK
+                    var data = TLKManagerWPF.GlobalFindStrRefbyID(parsed, MEGame.ME1, null);
+                    if (data != "No Data")
+                    {
+                        Entry.TLKString = data;
+                    }
+                }
+            }
+
+
+
             if (Entry.DataAsStored != null)
             {
                 //Debug.WriteLine("getting time for " + Entry.FileName + " Ogg: " + Entry.isOgg);

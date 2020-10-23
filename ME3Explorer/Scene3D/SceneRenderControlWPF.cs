@@ -46,9 +46,6 @@ namespace ME3Explorer.Scene3D
             this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
-            // TODO: Hook up keyboard events
-            // TODO: Hook up some sort of dispose event
-
             this.KeyDown += OnKeyDown;
             this.KeyUp += OnKeyUp;
         }

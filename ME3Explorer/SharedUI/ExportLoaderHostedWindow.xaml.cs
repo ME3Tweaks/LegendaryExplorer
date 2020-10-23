@@ -213,7 +213,9 @@ namespace ME3Explorer.SharedUI
             {
                 if (LoadedExport != null)
                 {
-                    LoadMEPackage(LoadedExport.FileRef.FilePath); //This will register the tool and assign a reference to it. Since this export is already in memory we will just reference the existing package instead.
+                    // This will register the tool and assign a reference to it.
+                    // Since this export is already in memory we will just reference the existing package instead.
+                    RegisterPackage(LoadedExport.FileRef); 
                     HostedControl.LoadExport(LoadedExport);
                     OnPropertyChanged(nameof(CurrentFile));
                 }

@@ -134,7 +134,7 @@ namespace ME3Explorer.SFAREditor
                 var packageStream = LoadedDLCPackage.DecompressEntry(fes);
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFileFromStream(packageStream, fes.FileName);
+                p.LoadFileFromStream(packageStream, $"SFAR {fes.FileName}");
                 p.Activate();
             }
         }

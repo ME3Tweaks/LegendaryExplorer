@@ -307,6 +307,7 @@ namespace ME3Explorer
             "SFXMorphFaceFrontEndDataSource",
             "ScriptStruct",
             "ShaderCache",
+            "ShaderCachePayload",
             "ShadowMap1D",
             "ShadowMapTexture2D",
             "SkeletalMesh",
@@ -589,8 +590,11 @@ namespace ME3Explorer
                     case "ShaderCache":
                         subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
                         break;
+                    case "ShaderCachePayload": //Consoles
+                        subNodes.AddRange(StartShaderCachePayloadScanStream(data, ref binarystart));
+                        break;
                     case "Model":
-                        subNodes.AddRange(StartModelScan(data, ref binarystart, null, null, out var _));
+                        subNodes.AddRange(StartModelScan(data, ref binarystart));
                         break;
                     case "Polys":
                         subNodes.AddRange(StartPolysScan(data, ref binarystart));
@@ -701,7 +705,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartBrushComponentScan(data, ref binarystart));
                         break;
                     case "ModelComponent":
-                        subNodes.AddRange(StartModelComponentScan(data, ref binarystart, null, null, null, out var _));
+                        subNodes.AddRange(StartModelComponentScan(data, ref binarystart));
                         break;
                     case "BioPawn":
                         subNodes.AddRange(StartBioPawnScan(data, ref binarystart));
