@@ -11,6 +11,7 @@ using System.Windows;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -57,6 +58,50 @@ namespace ME3Explorer.PackageEditor.Experiments
                 var newEntry = portEntry(item, targetLink);
                 ReindexAllSAmeNamedObjects(newEntry); // this is experiment, who cares how fast it is
             }
+
+            // We need to add a star field like ME1/ME2 has
+
+            // Port in sky sphere
+            using var skySphereSourcePackage = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect 3\BioGame\CookedPCConsole\BioA_Cat004_000Global.pcc");
+            var sphereExportToPortIn = skySphereSourcePackage.GetUExport(983); //it's an SMC so we need to dump the other stuff
+            var ssSmcaExp = skySphereSourcePackage.GetUExport(977);
+
+            // remove childrren of SMAC that we don't want to port in
+            var scScma = ObjectBinary.From<StaticMeshCollectionActor>(ssSmcaExp);
+            for (int i = scScma.Components.Count - 1; i >= 0; i--)
+            {
+                if (scScma.Components[i].value != sphereExportToPortIn.UIndex)
+                {
+                    scScma.Components.RemoveAt(i);
+                    scScma.LocalToWorldTransforms.RemoveAt(i);
+                }
+            }
+
+            if (scScma.Components.Count != 1)
+            {
+                Debugger.Break();
+            }
+            var scmaProps = ssSmcaExp.GetProperties();
+            var components = scmaProps.GetProp<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+            var removedComponents = components.RemoveAll(x => x.Value != sphereExportToPortIn.UIndex);
+
+            if (components.Count != 1)
+            {
+                Debugger.Break();
+            }
+
+            ssSmcaExp.WriteProperties(scmaProps);
+            ssSmcaExp.SetBinaryData(scScma);
+
+            var skySphereSMACEntry = portEntry(ssSmcaExp, targetLink); //Port in object
+            var planetLoc = SharedPathfinding.GetLocation(me3UncPlanet);
+            var scScmaNew = ObjectBinary.From<StaticMeshCollectionActor>(skySphereSMACEntry as ExportEntry);
+
+            SharedPathfinding.SetLocation(entryMenuPackage.GetUExport(scScmaNew.Components[0]), (float)planetLoc.X, (float)planetLoc.Y, (float)planetLoc.Z);
+            //var textureToClone = entryMenuPackage.GetUExport(0); //new backdrop
+            //var materialToClone = entryMenuPackage.GetUExport(0); //new material for mesh that links it to the texture
+            //var meshToClone = entryMenuPackage.GetUExport(0); //clone of the mesh since it already has a material
+
 
 
 
@@ -1234,6 +1279,23 @@ namespace ME3Explorer.PackageEditor.Experiments
                         ld.Show();
                     });
                 }
+            }
+        }
+
+        public static void RandomizeTerrain(IMEPackage Pcc)
+        {
+            ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
+            if (terrain != null)
+            {
+                Random r = new Random();
+
+                var terrainBin = terrain.GetBinaryData<Terrain>();
+                for (int i = 0; i < terrainBin.Heights.Length; i++)
+                {
+                    terrainBin.Heights[i] = (ushort)(r.Next(2000) + 13000);
+                }
+
+                terrain.SetBinaryData(terrainBin);
             }
         }
     }

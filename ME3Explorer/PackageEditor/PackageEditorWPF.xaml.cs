@@ -4267,131 +4267,18 @@ namespace ME3Explorer
         private void CreateDynamicLighting(object sender, RoutedEventArgs e)
         {
             if (Pcc == null) return;
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("MeshComponent") || exp.IsA("BrushComponent")))
-            {
-                PropertyCollection props = exp.GetProperties();
-                if (props.GetProp<ObjectProperty>("StaticMesh")?.Value != 11483 &&
-                    (props.GetProp<BoolProperty>("bAcceptsLights")?.Value == false ||
-                     props.GetProp<BoolProperty>("CastShadow")?.Value == false))
-                {
-                    // shadows/lighting has been explicitly forbidden, don't mess with it.
-                    continue;
-                }
-
-                props.AddOrReplaceProp(new BoolProperty(false, "bUsePreComputedShadows"));
-                props.AddOrReplaceProp(new BoolProperty(false, "bBioForcePreComputedShadows"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bCastDynamicShadow"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "CastShadow"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicDominantLightShadows"));
-                props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsLights"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bAcceptsDynamicLights"));
-
-                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
-                                       new StructProperty("LightingChannelContainer", false,
-                                           new BoolProperty(true, "bIsInitialized"))
-                                       {
-                                           Name = "LightingChannels"
-                                       };
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
-                props.AddOrReplaceProp(lightingChannels);
-
-                exp.WriteProperties(props);
-            }
-
-            foreach (ExportEntry exp in Pcc.Exports.Where(exp => exp.IsA("LightComponent")))
-            {
-                PropertyCollection props = exp.GetProperties();
-                //props.AddOrReplaceProp(new BoolProperty(true, "bCanAffectDynamicPrimitivesOutsideDynamicChannel"));
-                //props.AddOrReplaceProp(new BoolProperty(true, "bForceDynamicLight"));
-
-                var lightingChannels = props.GetProp<StructProperty>("LightingChannels") ??
-                                       new StructProperty("LightingChannelContainer", false,
-                                           new BoolProperty(true, "bIsInitialized"))
-                                       {
-                                           Name = "LightingChannels"
-                                       };
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Static"));
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "Dynamic"));
-                lightingChannels.Properties.AddOrReplaceProp(new BoolProperty(true, "CompositeDynamic"));
-                props.AddOrReplaceProp(lightingChannels);
-
-                exp.WriteProperties(props);
-            }
-
-            MessageBox.Show(this, "Done!");
+            PackageEditorExperimentsS.CreateDynamicLighting(Pcc);
         }
 
         private void RandomizeTerrain_Click(object sender, RoutedEventArgs e)
         {
-            ExportEntry terrain = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Terrain");
-            if (terrain != null)
-            {
-                Random r = new Random();
-
-                var terrainBin = terrain.GetBinaryData<Terrain>();
-                for (int i = 0; i < terrainBin.Heights.Length; i++)
-                {
-                    terrainBin.Heights[i] = (ushort)(r.Next(2000) + 13000);
-                }
-
-                terrain.SetBinaryData(terrainBin);
-            }
+            if (Pcc == null) return;
+            PackageEditorExperimentsM.RandomizeTerrain(Pcc);
         }
 
         private void ConvertAllDialogueToSkippable_Click(object sender, RoutedEventArgs e)
         {
-            var gameString = InputComboBoxWPF.GetValue(this,
-                "Select which game's files you want converted to having skippable dialogue",
-                "Game selector", new[] { "ME1", "ME2", "ME3" }, "ME1");
-            if (Enum.TryParse(gameString, out MEGame game) && MessageBoxResult.Yes ==
-                MessageBox.Show(this,
-                    $"WARNING! This will edit every dialogue-containing file in {gameString}, including in DLCs and installed mods. Do you want to begin?",
-                    "", MessageBoxButton.YesNo))
-            {
-                IsBusy = true;
-                BusyText = $"Making all {gameString} dialogue skippable";
-                Task.Run(() =>
-                {
-                    foreach (string file in MELoadedFiles.GetAllFiles(game))
-                    {
-                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
-                        bool hasConv = false;
-                        foreach (ExportEntry conv in pcc.Exports.Where(exp => exp.ClassName == "BioConversation"))
-                        {
-                            hasConv = true;
-                            PropertyCollection props = conv.GetProperties();
-                            if (props.GetProp<ArrayProperty<StructProperty>>("m_EntryList") is
-                                ArrayProperty<StructProperty> entryList)
-                            {
-                                foreach (StructProperty entryNode in entryList)
-                                {
-                                    entryNode.Properties.AddOrReplaceProp(new BoolProperty(true, "bSkippable"));
-                                }
-                            }
-
-                            if (props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") is
-                                ArrayProperty<StructProperty> replyList)
-                            {
-                                foreach (StructProperty entryNode in replyList)
-                                {
-                                    entryNode.Properties.AddOrReplaceProp(new BoolProperty(false, "bUnskippable"));
-                                }
-                            }
-
-                            conv.WriteProperties(props);
-                        }
-
-                        if (hasConv)
-                            pcc.Save();
-                    }
-                }).ContinueWithOnUIThread(prevTask =>
-                {
-                    IsBusy = false;
-                    MessageBox.Show(this, "Done!");
-                });
-            }
+            PackageEditorExperimentsS.ConvertAllDialogueToSkippable(this);
         }
 
         private void ConvertToDifferentGameFormat_Click(object sender, RoutedEventArgs e)
@@ -4424,67 +4311,23 @@ namespace ME3Explorer
             Properties.Settings.Default.PackageEditorWPF_ShowExportIcons =
                 !Properties.Settings.Default.PackageEditorWPF_ShowExportIcons;
             Properties.Settings.Default.Save();
-            //todo: refire bindings
+
+            // this triggers binding updates
             LeftSide_TreeView.DataContext = null;
             LeftSide_TreeView.DataContext = this;
         }
 
         private void DumpAllShaders()
         {
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheExport)
-            {
-                var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
-                {
-                    IsFolderPicker = true,
-                    EnsurePathExists = true
-                };
-                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                    foreach (Shader shader in shaderCache.Shaders.Values())
-                    {
-                        string shaderType = shader.ShaderType;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName,
-                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
-                        File.WriteAllText(pathWithoutInvalids,
-                            SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                                .Disassemble());
-                    }
-
-                    MessageBox.Show(this, "Done!");
-                }
-            }
+            if (Pcc == null) return;
+            PackageEditorExperimentsS.DumpAllShaders(Pcc);
         }
 
         private void DumpMaterialShaders()
         {
             if (TryGetSelectedExport(out ExportEntry matExport) && matExport.IsA("MaterialInterface"))
             {
-                var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
-                {
-                    IsFolderPicker = true,
-                    EnsurePathExists = true
-                };
-                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    var matInst = new MaterialInstanceConstant(matExport);
-                    matInst.GetShaders();
-                    foreach (Shader shader in matInst.Shaders)
-                    {
-                        string shaderType = shader.ShaderType;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName,
-                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - OFFICIAL.txt");
-                        File.WriteAllText(pathWithoutInvalids,
-                            SharpDX.D3DCompiler.ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                                .Disassemble());
-
-                        pathWithoutInvalids = Path.Combine(dlg.FileName,
-                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid} - SirCxyrtyx.txt");
-                        File.WriteAllText(pathWithoutInvalids, shader.ShaderDisassembly);
-                    }
-
-                    MessageBox.Show(this, "Done!");
-                }
+                PackageEditorExperimentsS.DumpMaterialShaders(matExport);
 
             }
         }
@@ -4552,178 +4395,20 @@ namespace ME3Explorer
         {
             if (TryGetSelectedExport(out ExportEntry export))
             {
-                PropertyCollection props = export.GetProperties();
-                ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
-                byte[] original = export.Data;
-
-                export.WriteProperties(props);
-
-                EndianReader ms = new EndianReader(new MemoryStream()) { Endian = export.FileRef.Endian };
-                ms.Writer.Write(export.Data, 0, export.propsEnd());
-                bin.WriteTo(ms.Writer, export.FileRef, export.DataOffset);
-
-                byte[] changed = ms.ToArray();
-                if (original.SequenceEqual(changed))
-                {
-                    MessageBox.Show(this, "reserialized identically!");
-                }
-                else
-                {
-                    string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
-                    File.WriteAllBytes(Path.Combine(userFolder, "converted.bin"), changed);
-                    File.WriteAllBytes(Path.Combine(userFolder, "original.bin"), original);
-                    if (original.Length != changed.Length)
-                    {
-                        MessageBox.Show(this, $"Differences detected: Lengths are not the same. Original {original.Length}, Reserialized {changed.Length}");
-                    }
-                    else
-                    {
-                        for (int i = 0; i < Math.Min(changed.Length, original.Length); i++)
-                        {
-                            if (original[i] != changed[i])
-                            {
-                                MessageBox.Show(this, $"Differences detected: Bytes differ first at 0x{i:X8}");
-                                break;
-                            }
-                        }
-                    }
-                }
+                PackageEditorExperimentsS.ReserializeExport(export);
             }
         }
 
         private void RunPropertyCollectionTest(object sender, RoutedEventArgs e)
         {
-            var filePaths = /*MELoadedFiles.GetOfficialFiles(MEGame.ME3).Concat*/
-                (MELoadedFiles.GetOfficialFiles(MEGame.ME2)).Concat(MELoadedFiles.GetOfficialFiles(MEGame.ME1));
-
-            IsBusy = true;
-            BusyText = "Scanning";
-            Task.Run(() =>
-            {
-                foreach (string filePath in filePaths)
-                {
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                    Debug.WriteLine(filePath);
-                    foreach (ExportEntry export in pcc.Exports)
-                    {
-                        try
-                        {
-                            byte[] originalData = export.Data;
-                            PropertyCollection props = export.GetProperties();
-                            export.WriteProperties(props);
-                            byte[] resultData = export.Data;
-                            if (!originalData.SequenceEqual(resultData))
-                            {
-                                string userFolder = Path.Combine(@"C:\Users", Environment.UserName);
-                                File.WriteAllBytes(Path.Combine(userFolder, $"c.bin"), resultData);
-                                File.WriteAllBytes(Path.Combine(userFolder, $"o.bin"), originalData);
-                                return (filePath, export.UIndex);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            return (filePath, export.UIndex);
-                        }
-                    }
-                }
-
-                return (null, 0);
-
-            }).ContinueWithOnUIThread(prevTask =>
-            {
-                IsBusy = false;
-                (string filePath, int uIndex) = prevTask.Result;
-                if (filePath == null)
-                {
-                    MessageBox.Show(this, "No errors occured!");
-                }
-                else
-                {
-                    LoadFile(filePath, uIndex);
-                    MessageBox.Show(this, $"Error at #{uIndex} in {filePath}!");
-                }
-            });
+            PackageEditorExperimentsS.RunPropertyCollectionTest(this);
         }
 
         private void UDKifyTest(object sender, RoutedEventArgs e)
         {
             if (Pcc != null)
             {
-                var udkPath = Properties.Settings.Default.UDKCustomPath;
-                if (udkPath == null || !Directory.Exists(udkPath))
-                {
-                    var udkDlg = new System.Windows.Forms.FolderBrowserDialog();
-                    udkDlg.Description = @"Select UDK\Custom folder";
-                    System.Windows.Forms.DialogResult result = udkDlg.ShowDialog();
-
-                    if (result != System.Windows.Forms.DialogResult.OK ||
-                        string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
-                        return;
-                    udkPath = udkDlg.SelectedPath;
-                    Properties.Settings.Default.UDKCustomPath = udkPath;
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-                bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes ==
-                    MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
-
-                IsBusy = true;
-                BusyText = $"Converting {fileName}";
-                Task.Run(() =>
-                {
-                    string persistentPath = StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, Pcc);
-                    if (convertAll)
-                    {
-                        var levelFiles = new List<string>();
-                        string levelName = fileName.Split('_')[1];
-                        foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
-                        {
-                            if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 &&
-                                parts[1] == levelName)
-                            {
-                                BusyText = $"Converting {fileName}";
-                                using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
-                                levelFiles.Add(StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, levPcc));
-                            }
-                        }
-
-                        using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
-                        IEntry levStreamingClass =
-                            persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
-                        IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
-                        int i = 1;
-                        int firstLevStream = persistentUDK.ExportCount;
-                        foreach (string levelFile in levelFiles)
-                        {
-                            string fileName = Path.GetFileNameWithoutExtension(levelFile);
-                            persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
-                            {
-                                new NameProperty(fileName, "PackageName"),
-                                CommonStructs.ColorProp(
-                                    System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256),
-                                        (byte) ((i * 7) % 256)), "DrawColor")
-                            })
-                            {
-                                ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
-                                Class = levStreamingClass,
-                                Parent = theWorld
-                            });
-                            i++;
-                        }
-
-                        var streamingLevelsProp = new ArrayProperty<ObjectProperty>("StreamingLevels");
-                        for (int j = firstLevStream; j < persistentUDK.ExportCount; j++)
-                        {
-                            streamingLevelsProp.Add(new ObjectProperty(j));
-                        }
-
-                        persistentUDK.Exports.First(exp => exp.ClassName == "WorldInfo")
-                            .WriteProperty(streamingLevelsProp);
-                        persistentUDK.Save();
-                    }
-
-                    IsBusy = false;
-                });
+                PackageEditorExperimentsS.UDKifyTest(this);
             }
         }
 
@@ -4739,66 +4424,7 @@ namespace ME3Explorer
 
         private void MakeME1TextureFileList(object sender, RoutedEventArgs e)
         {
-            var filePaths = MELoadedFiles.GetOfficialFiles(MEGame.ME1).ToList();
-
-            IsBusy = true;
-            BusyText = "Scanning";
-            Task.Run(() =>
-            {
-                var textureFiles = new HashSet<string>();
-                foreach (string filePath in filePaths)
-                {
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-
-                    foreach (ExportEntry export in pcc.Exports)
-                    {
-                        try
-                        {
-                            if (export.IsTexture() && !export.IsDefaultObject)
-                            {
-                                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, null);
-                                foreach (Texture2DMipInfo mip in mips)
-                                {
-                                    if (mip.storageType == StorageTypes.extLZO ||
-                                        mip.storageType == StorageTypes.extZlib ||
-                                        mip.storageType == StorageTypes.extUnc)
-                                    {
-                                        var fullPath = filePaths.FirstOrDefault(x =>
-                                            Path.GetFileName(x).Equals(mip.TextureCacheName,
-                                                StringComparison.InvariantCultureIgnoreCase));
-                                        if (fullPath != null)
-                                        {
-                                            var baseIdx = fullPath.LastIndexOf("CookedPC");
-                                            textureFiles.Add(fullPath.Substring(baseIdx));
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            throw new FileNotFoundException(
-                                                $"Externally referenced texture file not found in game: {mip.TextureCacheName}.");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine(e.Message);
-                        }
-                    }
-                }
-
-                return textureFiles;
-
-            }).ContinueWithOnUIThread(prevTask =>
-            {
-                IsBusy = false;
-                List<string> files = prevTask.Result.OrderBy(s => s).ToList();
-                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1TextureFiles.json"),
-                    JsonConvert.SerializeObject(files, Formatting.Indented));
-                ListDialog dlg = new ListDialog(files, "", "ME1 files with externally referenced textures", this);
-                dlg.Show();
-            });
+            PackageEditorExperimentsS.MakeME1TextureFileList(this);
         }
 
         private void CondenseAllArchetypes(object sender, RoutedEventArgs e)
