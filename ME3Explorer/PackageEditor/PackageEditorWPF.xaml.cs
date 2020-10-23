@@ -1717,6 +1717,17 @@ namespace ME3Explorer
                 }
             }
 
+            foreach (ImportEntry imp in Pcc.Imports)
+            {
+                if (imp.idxLink != 0 && !Pcc.TryGetEntry(imp.idxLink, out _))
+                {
+                    badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has an invalid link value that is outside of the import/export table {imp.idxLink}"));
+                } else if (imp.idxLink == imp.UIndex)
+                {
+                    badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has a circular self reference for it's link. The game and the toolset may be unable to handle this condition"));
+                }
+            }
+
             if (badReferences.Any())
             {
                 MessageBox.Show(badReferences.Count + " invalid object references were found in export properties.",

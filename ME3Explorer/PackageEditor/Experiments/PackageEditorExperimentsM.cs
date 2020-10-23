@@ -11,6 +11,7 @@ using System.Windows;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
@@ -42,69 +43,78 @@ namespace ME3Explorer.PackageEditor.Experiments
             // Vars
             var targetLink = entryMenuPackage.GetUExport(197); //PersistentLevel
 
-            // Items that need ported in:
+            // Items that need ported in
             List<ExportEntry> itemsToPort = new List<ExportEntry>();
             var me3UncPlanet = biopChar.GetUExport(6276);
 
 
 
+
+            // Cleanup LCA
+            var lightCollectionExp = biopChar.GetUExport(28403);
+            var lcActor = ObjectBinary.From<StaticLightCollectionActor>(lightCollectionExp);
+
+            // Prune some lights
+            var lcExpsToPrune = lcActor.Components.Select(x => x.value).ToList();
+            lcExpsToPrune.Remove(27009);
+            lcExpsToPrune.Remove(27018);
+            lcExpsToPrune.Remove(27029);
+            PruneUindexesFromSCA(lcActor, lcExpsToPrune.ToList());
+
+
             itemsToPort.Add(me3UncPlanet); //UNC53Planet
             itemsToPort.Add(biopChar.GetUExport(6279)); //Corona
             itemsToPort.Add(biopChar.GetUExport(6280)); //GXMPlanet
-            itemsToPort.Add(biopChar.GetUExport(28403)); //Lights. Might need to cut down on these as it affects main menu too
+            itemsToPort.Add(lightCollectionExp); //Lights. Might need to cut down on these as it affects main menu too
 
             foreach (var item in itemsToPort)
             {
                 var newEntry = portEntry(item, targetLink);
-                ReindexAllSAmeNamedObjects(newEntry); // this is experiment, who cares how fast it is
+                ReindexAllSameNamedObjects(newEntry); // this is experiment, who cares how fast it is
             }
 
             // We need to add a star field like ME1/ME2 has
 
             // Port in sky sphere
-            using var skySphereSourcePackage = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect 3\BioGame\CookedPCConsole\BioA_Cat004_000Global.pcc");
-            var sphereExportToPortIn = skySphereSourcePackage.GetUExport(983); //it's an SMC so we need to dump the other stuff
-            var ssSmcaExp = skySphereSourcePackage.GetUExport(977);
+            using var skySphereSourcePackage = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect 3\BioGame\CookedPCConsole\BioA_End002_Start.pcc");
+            var sphereExportToPortIn = skySphereSourcePackage.GetUExport(2450); //it's an SMC so we need to dump the other stuff
+            var ssSmcaExp = skySphereSourcePackage.GetUExport(2052); //The containing SMCA
 
             // remove childrren of SMAC that we don't want to port in
             var scScma = ObjectBinary.From<StaticMeshCollectionActor>(ssSmcaExp);
-            for (int i = scScma.Components.Count - 1; i >= 0; i--)
-            {
-                if (scScma.Components[i].value != sphereExportToPortIn.UIndex)
-                {
-                    scScma.Components.RemoveAt(i);
-                    scScma.LocalToWorldTransforms.RemoveAt(i);
-                }
-            }
 
-            if (scScma.Components.Count != 1)
-            {
-                Debugger.Break();
-            }
-            var scmaProps = ssSmcaExp.GetProperties();
-            var components = scmaProps.GetProp<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
-            var removedComponents = components.RemoveAll(x => x.Value != sphereExportToPortIn.UIndex);
+            // REMOVE CODE HERE
+            PruneUindexesFromSCA(scScma, scScma.Components.Where(x => x.value != sphereExportToPortIn.UIndex).Select(x => x.value).ToList());
 
-            if (components.Count != 1)
-            {
-                Debugger.Break();
-            }
+            var skySphereSMACEntry = portEntry(ssSmcaExp, targetLink) as ExportEntry; //Port in object
 
-            ssSmcaExp.WriteProperties(scmaProps);
-            ssSmcaExp.SetBinaryData(scScma);
-
-            var skySphereSMACEntry = portEntry(ssSmcaExp, targetLink); //Port in object
             var planetLoc = SharedPathfinding.GetLocation(me3UncPlanet);
-            var scScmaNew = ObjectBinary.From<StaticMeshCollectionActor>(skySphereSMACEntry as ExportEntry);
+            var scScmaNew = ObjectBinary.From<StaticMeshCollectionActor>(skySphereSMACEntry);
+            var newSkySphereEntry = entryMenuPackage.GetUExport(scScmaNew.Components[0]);
+            SharedPathfinding.SetLocation(newSkySphereEntry, (float)planetLoc.X, (float)planetLoc.Y, (float)planetLoc.Z);
+            var ssProps = newSkySphereEntry.GetProperties(); //Don't make it hugenormous as this little bugger is smol
+            SharedPathfinding.SetLocation(ssProps.GetProp<StructProperty>("Scale3D"), 50, 50, 50);
+            newSkySphereEntry.WriteProperties(ssProps);
 
-            SharedPathfinding.SetLocation(entryMenuPackage.GetUExport(scScmaNew.Components[0]), (float)planetLoc.X, (float)planetLoc.Y, (float)planetLoc.Z);
-            //var textureToClone = entryMenuPackage.GetUExport(0); //new backdrop
-            //var materialToClone = entryMenuPackage.GetUExport(0); //new material for mesh that links it to the texture
-            //var meshToClone = entryMenuPackage.GetUExport(0); //clone of the mesh since it already has a material
+            // Fix the second stage interpolation where the camera moves up
+            var panUpITM = entryMenuPackage.GetUExport(196); //InterpTrackMove for camera
+            var panUpITMProps = panUpITM.GetProperties();
+            foreach (var point in panUpITMProps.GetProp<StructProperty>("PosTrack").GetProp<ArrayProperty<StructProperty>>("Points"))
+            {
+                SharedPathfinding.SetLocation(point.GetProp<StructProperty>("OutVal"), 0, 0, 0);
+            }
 
+            foreach (var point in panUpITMProps.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points"))
+            {
+                // todo: figure out how to code this so it doesn't take 1000 lines
+                //SharedPathfinding.SetLocation(point.GetProp<StructProperty>("OutVal"), 0, 0, 0);
+            }
 
+            // Set to relative so it doesn't move
+            panUpITMProps.AddOrReplaceProp(new EnumProperty("IMF_RelativeToInitial", "EInterpTrackMoveFrame", MEGame.ME3, "MoveFrame"));
+            panUpITM.WriteProperties(panUpITMProps);
 
-
+            #region internalMethods
             IEntry portEntry(IEntry sourceEntry, IEntry targetLinkEntry)
             {
                 Dictionary<IEntry, IEntry> crossPCCObjectMap = new Dictionary<IEntry, IEntry>();
@@ -113,6 +123,10 @@ namespace ME3Explorer.PackageEditor.Experiments
                 //Import!
                 var relinkResults = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceEntry, entryMenuPackage,
                     targetLinkEntry, true, out IEntry newEntry, crossPCCObjectMap);
+                if (relinkResults.Any())
+                {
+                    Debugger.Break();
+                }
 
                 TryAddToPersistentLevel2(entryMenuPackage.Exports.Skip(numExports));
                 return newEntry;
@@ -131,7 +145,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                 return false;
             }
 
-            void ReindexAllSAmeNamedObjects(IEntry entry)
+            void ReindexAllSameNamedObjects(IEntry entry)
             {
                 string prefixToReindex = entry.ParentInstancedFullPath;
                 string objectname = entry.ObjectName.Name;
@@ -148,6 +162,40 @@ namespace ME3Explorer.PackageEditor.Experiments
                     }
                 }
             }
+
+
+            void PruneUindexesFromSCA(StaticCollectionActor sca, List<int> uindicesToRemove)
+            {
+                for (int i = sca.Components.Count - 1; i >= 0; i--)
+                {
+                    if (uindicesToRemove.Contains(sca.Components[i].value))
+                    {
+                        sca.Components.RemoveAt(i);
+                        sca.LocalToWorldTransforms.RemoveAt(i);
+                    }
+                }
+
+                var scmaProps = sca.Export.GetProperties();
+                var components = scmaProps.GetProp<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                //var componentsToRemove = components.Where(x => uindicesToRemove.Contains(x.Value)).ToList();
+
+                // Trash the useless children
+                foreach (var c in components)
+                {
+                    if (uindicesToRemove.Contains(c.Value))
+                    {
+                        EntryPruner.TrashEntryAndDescendants(c.ResolveToEntry(sca.Export.FileRef));
+                    }
+                }
+                // Remove from properties
+                components.Remove(x => uindicesToRemove.Contains(x.Value)); //remove from properties
+                sca.Export.WriteProperties(scmaProps);
+
+                // write the binary out now
+                sca.Export.SetBinaryData(sca);
+            }
+
+            #endregion
             // UPDATE THE CAMERA POSITION
 
             // >> Read position data from ME1
@@ -195,29 +243,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             //SharedPathfinding.SetRotation(properties.GetProp<StructProperty>("EulerTrack").GetProp<ArrayProperty<StructProperty>>("Points")[0].GetProp<StructProperty>("OutVal"), rotRoll, rotYaw, rotPitch);
             properties.AddOrReplaceProp(new EnumProperty("IMF_RelativeToInitial", "EInterpTrackMoveFrame", MEGame.ME3, "MoveFrame"));
             cameraInterpTrackMove1.WriteProperties(properties);
-            //Point3D me2planetPos = new Point3D()
-            //{
-            //    X = -5402.598,
-            //    Y = 13571.81,
-            //    Z = -40187.2
-            //};
 
-
-
-            //Debug.WriteLine("Place moon at:");
-            //var diff = moonPos.getDelta(planetPos);
-            //var newpos = me2planetPos.applyDelta(diff);
-
-            //Debug.WriteLine("X: " + newpos.X);
-            //Debug.WriteLine("Y: " + newpos.Y);
-            //Debug.WriteLine("Z: " + newpos.Z);
-
-            //Debug.WriteLine("Set Camera rotation:");
-
-
-            //Debug.WriteLine("Pitch: " + cameraEuler.X);
-            //Debug.WriteLine("Yaw: " + cameraEuler.Y);
-            //Debug.WriteLine("Roll: " + cameraEuler.Z);}
 
         }
 
