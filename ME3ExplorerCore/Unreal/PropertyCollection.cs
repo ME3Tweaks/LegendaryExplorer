@@ -10,6 +10,9 @@ using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
+#if AZURE
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -591,11 +594,11 @@ namespace ME3ExplorerCore.Unreal
                                 try
                                 {
 #endif
-                                    props.Add(new StructProperty(arrayStructType, structProps)
-                                    {
-                                        StartOffset = structOffset,
-                                        ValueOffset = structProps[0].StartOffset
-                                    });
+                                props.Add(new StructProperty(arrayStructType, structProps)
+                                {
+                                    StartOffset = structOffset,
+                                    ValueOffset = structProps[0].StartOffset
+                                });
 #if DEBUG
                                 }
                                 catch (Exception e)
@@ -1706,6 +1709,9 @@ namespace ME3ExplorerCore.Unreal
 
         public UnknownProperty(NameReference? name = null) : base(name)
         {
+#if AZURE
+            Assert.Fail("Encountered an unknownproperty!");
+#endif
             raw = new byte[0];
         }
 
@@ -1714,6 +1720,9 @@ namespace ME3ExplorerCore.Unreal
             ValueOffset = stream.Position;
             TypeName = typeName ?? "Unknown";
             raw = stream.ReadBytes(size);
+#if AZURE
+            Assert.Fail("Encountered an unknownproperty!");
+#endif
         }
 
         public override void WriteTo(EndianWriter stream, IMEPackage pcc, bool valueOnly = false)
