@@ -95,9 +95,12 @@ namespace ME3Explorer.Soundplorer
         /// </summary>
         private void PopulateFakeFullData()
         {
+            // This needs further testing. It doesn't seem to be correct for
+            // Xenon platform (ME1)
+            
             MemoryStream outStream = new MemoryStream();
             EndianWriter writer = new EndianWriter(outStream);
-            //writer.Endian = FileEndianness;
+            writer.Endian = FileEndianness;
             writer.WriteStringASCII("RIFF");
             writer.Write(0); //Placeholder for length
             writer.WriteStringASCII("isbf"); //titl is actually a chunk
