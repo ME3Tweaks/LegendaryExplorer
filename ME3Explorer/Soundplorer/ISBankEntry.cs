@@ -97,7 +97,7 @@ namespace ME3Explorer.Soundplorer
         {
             MemoryStream outStream = new MemoryStream();
             EndianWriter writer = new EndianWriter(outStream);
-            writer.Endian = FileEndianness;
+            //writer.Endian = FileEndianness;
             writer.WriteStringASCII("RIFF");
             writer.Write(0); //Placeholder for length
             writer.WriteStringASCII("isbf"); //titl is actually a chunk
@@ -134,6 +134,7 @@ namespace ME3Explorer.Soundplorer
             FullData = outStream.ToArray();
         }
 
+        //TODO: Move this out of ISBankEntry as it's a generic raw RIFF -> WAV converter
         /// <summary>
         /// Converts a RAW RIFF/RIFX to WAVE using VGMStream and returns the data
         /// </summary>
@@ -144,6 +145,7 @@ namespace ME3Explorer.Soundplorer
             //convert ISB Codec 1/4 to WAV
             MemoryStream outputData = new MemoryStream();
 
+            // Todo: Link against VGMStream with a wrapper so we don't have to perform disk writes
             ProcessStartInfo procStartInfo = new ProcessStartInfo(Path.Combine(App.ExecFolder, "vgmstream", "vgmstream.exe"), $"-P \"{inputfile}\"")
             {
                 WorkingDirectory = Path.Combine(App.ExecFolder, "vgmstream"),
@@ -168,13 +170,6 @@ namespace ME3Explorer.Soundplorer
 
             proc.WaitForExit();
             File.Delete(inputfile); //intermediate
-
-            //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
-            //outputData.Position = 0x4;
-            //outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
-            //outputData.Position = 0x28;
-            //outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
-            //outputData.Position = 0;
             return outputData;
         }
 

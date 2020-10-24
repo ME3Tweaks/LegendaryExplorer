@@ -972,11 +972,11 @@ namespace ME3Explorer.PackageEditor.Experiments
                     var streambin = wwstream?.GetBinaryData<WwiseStream>() ?? null;
                     if (streambin != null)
                     {
-                        var duration = streambin.GetSoundLength();
+                        var duration = streambin.GetAudioInfo().GetLength();
                         var durtnMS = wwevent.GetProperty<FloatProperty>("DurationMilliseconds");
                         if (durtnMS != null && duration != null)
                         {
-                            durtnMS.Value = (float)duration.Value.TotalMilliseconds;
+                            durtnMS.Value = (float)duration.TotalMilliseconds;
                             wwevent.WriteProperty(durtnMS);
                         }
                     }

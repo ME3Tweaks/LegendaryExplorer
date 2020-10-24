@@ -16,7 +16,7 @@ namespace ME3Explorer.Unreal
     {
         public static bool ExtractRawFromSourceToFile(string outfile, string afcPath, int dataSize, int dataOffset)
         {
-            var ms = ExtractRawFromSource(afcPath, dataSize, dataOffset);
+            var ms = ExternalFileHelper.ReadExternalData(afcPath, dataOffset, dataSize);
             if (ms is null)
             {
                 return false;
@@ -170,36 +170,6 @@ namespace ME3Explorer.Unreal
             //Debug.WriteLine("Done");
             return outputData;
             //            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
-        }
-
-        public static MemoryStream ExtractRawFromSource(string afcPath, int DataSize, int DataOffset)
-        {
-            if (!File.Exists(afcPath))
-                return null;
-
-            using Stream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
-            if (DataOffset + DataSize > fs.Length)
-                return null; //invalid pointer, outside bounds
-            MemoryStream ms = new MemoryStream();
-            fs.Seek(DataOffset, SeekOrigin.Begin);
-            //for (int i = 0; i < DataSize; i++)
-            //    fs2.WriteByte((byte)fs.ReadByte());
-            fs.CopyToEx(ms, DataSize);
-            ms.Position = 0;
-            return ms;
-            /*
-                if (File.Exists(outputFile))
-                    File.Delete(outputFile);
-                using (FileStream fs2 = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-                {
-                    fs.Seek(DataOffset, SeekOrigin.Begin);
-                    //for (int i = 0; i < DataSize; i++)
-                    //    fs2.WriteByte((byte)fs.ReadByte());
-                    var dataToCopy = new byte[DataSize];
-                    fs.Read(dataToCopy, 0, DataSize);
-                    fs2.Write(dataToCopy, 0, DataSize);
-                }*/
-            //            return true;
         }
 
         /// <summary>

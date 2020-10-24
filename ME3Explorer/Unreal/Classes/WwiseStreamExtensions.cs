@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ME3Explorer.Soundplorer;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using NAudio.Wave;
@@ -53,28 +54,6 @@ namespace ME3Explorer.Unreal.Classes
                     ws.ImportWwiseOgg(d.FileName, stream);
             }
         }
-
-        public static TimeSpan? GetSoundLength(this WwiseStream ws)
-        {
-            Stream waveStream = ws.CreateWaveStream(); 
-            if (waveStream != null)
-            {
-                //Check it is RIFF
-                byte[] riffHeaderBytes = new byte[4];
-                waveStream.SeekBegin();
-                waveStream.Read(riffHeaderBytes, 0, 4);
-                string wemHeader = "" + (char)riffHeaderBytes[0] + (char)riffHeaderBytes[1] + (char)riffHeaderBytes[2] + (char)riffHeaderBytes[3];
-                if (wemHeader == "RIFF") //this is terrible code and will not work for RIFX (big endian). Length can be calculated by sound header (look at vgmstream source) with samplerate * bits per sample divided by number of samples
-                {
-                    waveStream.SeekBegin();
-                    WaveFileReader wf = new WaveFileReader(waveStream);
-                    return wf.TotalTime;
-                }
-            }
-            return null;
-        }
-
-
 
         /// <summary>
         /// Creates wav file in temp directory

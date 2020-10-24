@@ -29,7 +29,7 @@ namespace ME3Explorer
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-                var platform = (EShaderPlatform) bin.ReadByte();
+                var platform = (EShaderPlatform)bin.ReadByte();
                 subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {platform}") { Length = 1 });
 
                 //if (platform != EShaderPlatform.XBOXDirect3D){
@@ -70,9 +70,9 @@ namespace ME3Explorer
                     {
 
                         shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
-                            {Length = 8});
+                        { Length = 8 });
                         shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
-                            {Length = 16});
+                        { Length = 16 });
                         if (Pcc.Game == MEGame.UDK)
                         {
                             shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
@@ -81,36 +81,37 @@ namespace ME3Explorer
 
                         int shaderEndOffset = bin.ReadInt32();
                         shaderNode.Items.Add(
-                            new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") {Length = 4});
+                            new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
 
 
                         shaderNode.Items.Add(
-                            new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform) bin.ReadByte()}")
-                                {Length = 1});
+                            new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatform)bin.ReadByte()}")
+                            { Length = 1 });
                         shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                            $"Frequency: {(EShaderFrequency) bin.ReadByte()}") {Length = 1});
+                            $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
+                        { Length = 1 });
 
                         int shaderSize = bin.ReadInt32();
                         shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}")
-                            {Length = 4});
+                        { Length = 4 });
 
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") {Length = shaderSize});
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") { Length = shaderSize });
                         bin.Skip(shaderSize);
 
                         shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
                         shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
-                            {Length = 16});
+                        { Length = 16 });
 
                         shaderNode.Items.Add(
-                            new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") {Length = 8});
+                            new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
 
                         shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
                         shaderNode.Items.Add(
                             new BinInterpNode(bin.Position,
                                     $"Unknown shader bytes ({shaderEndOffset - (dataOffset + bin.Position)} bytes)")
-                                {Length = (int) (shaderEndOffset - (dataOffset + bin.Position))});
+                            { Length = (int)(shaderEndOffset - (dataOffset + bin.Position)) });
 
                         embeddedShaderCount.Items.Add(shaderNode);
 
@@ -4760,7 +4761,7 @@ namespace ME3Explorer
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
                 bin.JumpTo(CurrentLoadedExport.propsEnd());
 
-                if (Pcc.Game == MEGame.ME2)
+                if (Pcc.Game == MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
                 {
                     subnodes.Add(MakeUInt32Node(bin, "Unk1"));
                     subnodes.Add(MakeUInt32Node(bin, "Unk2"));
@@ -4771,6 +4772,11 @@ namespace ME3Explorer
                     subnodes.Add(MakeGuidNode(bin, "UnkGuid"));
                     subnodes.Add(MakeUInt32Node(bin, "Unk3"));
                     subnodes.Add(MakeUInt32Node(bin, "Unk4"));
+                }
+                else if (Pcc.Game == MEGame.ME2 && Pcc.Platform == MEPackage.GamePlatform.PS3)
+                {
+                    subnodes.Add(MakeUInt32Node(bin, "Unk3 PS3"));
+                    subnodes.Add(MakeUInt32Node(bin, "Unk4 PS3"));
                 }
                 subnodes.Add(MakeUInt32Node(bin, "Unk5"));
                 int dataSize = bin.ReadInt32();
@@ -4829,7 +4835,7 @@ namespace ME3Explorer
                 while (bin.Position < bin.Length)
                 {
                     var start = bin.Position;
-                    string chunkID = bin.ReadEndianASCIIString(4);
+                    string chunkID = bin.BaseStream.ReadStringASCII(4); //This is not endian swapped!
                     int size = bin.ReadInt32();
                     var chunk = new BinInterpNode(start, $"{chunkID}: {size} bytes")
                     {
@@ -5201,15 +5207,15 @@ namespace ME3Explorer
             var subnodes = new List<ITreeItem>();
             try
             {
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 || CurrentLoadedExport.FileRef.Platform == MEPackage.GamePlatform.PS3)
                 {
-                    int count = BitConverter.ToInt32(data, binarystart);
+                    int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                     subnodes.Add(new BinInterpNode { Header = $"0x{binarystart:X4} Count: {count.ToString()}", Name = "_" + binarystart });
                     binarystart += 4; //+ int
                     for (int i = 0; i < count; i++)
                     {
                         string nodeText = $"0x{binarystart:X4} ";
-                        int val = BitConverter.ToInt32(data, binarystart);
+                        int val = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                         string name = val.ToString();
                         if (Pcc.GetEntry(val) is ExportEntry exp)
                         {
@@ -5235,7 +5241,7 @@ namespace ME3Explorer
                         */
                     }
                 }
-                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
                 {
                     var wwiseID = data.Skip(binarystart).Take(4).ToArray();
                     subnodes.Add(new BinInterpNode
@@ -5246,7 +5252,7 @@ namespace ME3Explorer
                     });
                     binarystart += 4;
 
-                    int count = BitConverter.ToInt32(data, binarystart);
+                    int count = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                     var Streams = new BinInterpNode
                     {
                         Header = $"0x{binarystart:X4} Link Count: {count}",
@@ -5258,7 +5264,7 @@ namespace ME3Explorer
 
                     for (int s = 0; s < count; s++)
                     {
-                        int bankcount = BitConverter.ToInt32(data, binarystart);
+                        int bankcount = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                         subnodes.Add(new BinInterpNode
                         {
                             Header = $"0x{binarystart:X4} BankCount: {bankcount}",
@@ -5268,7 +5274,7 @@ namespace ME3Explorer
                         binarystart += 4;
                         for (int b = 0; b < bankcount; b++)
                         {
-                            int bank = BitConverter.ToInt32(data, binarystart);
+                            int bank = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                             subnodes.Add(new BinInterpNode
                             {
                                 Header = $"0x{binarystart:X4} WwiseBank: {bank} {CurrentLoadedExport.FileRef.GetEntryString(bank)}",
@@ -5278,7 +5284,7 @@ namespace ME3Explorer
                             binarystart += 4;
                         }
 
-                        int streamcount = BitConverter.ToInt32(data, binarystart);
+                        int streamcount = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                         subnodes.Add(new BinInterpNode
                         {
                             Header = $"0x{binarystart:X4} StreamCount: {streamcount}",
@@ -5288,7 +5294,7 @@ namespace ME3Explorer
                         binarystart += 4;
                         for (int w = 0; w < streamcount; w++)
                         {
-                            int wwstream = BitConverter.ToInt32(data, binarystart);
+                            int wwstream = EndianReader.ToInt32(data, binarystart, CurrentLoadedExport.FileRef.Endian);
                             subnodes.Add(new BinInterpNode
                             {
                                 Header = $"0x{binarystart:X4} WwiseStream: {wwstream} {CurrentLoadedExport.FileRef.GetEntryString(wwstream)}",

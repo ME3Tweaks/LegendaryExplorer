@@ -541,9 +541,9 @@ namespace ME3Explorer.Soundplorer
                     {
                         string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
                         string wemName = $"{spExport.Export.ObjectName}_0x{wemID:X8}";
-                        if (wemHeader == "RIFF")
+                        if (wemHeader == "RIFF" || wemHeader == "RIFX")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export.FileRef.Game); //will correct truncated stuff
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
                             Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
                             if (waveStream != null && waveStream.Length > 0)
                             {
@@ -689,7 +689,7 @@ namespace ME3Explorer.Soundplorer
             switch (SoundExports_ListBox.SelectedItem)
             {
                 case SoundplorerExport spExport:
-                    if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+                    if (spExport.Export.ClassName == "WwiseStream")
                     {
                         SaveFileDialog d = new SaveFileDialog
                         {
@@ -1061,7 +1061,7 @@ namespace ME3Explorer.Soundplorer
                             string wemId = wemID.ToString("X8");
                             string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export.FileRef.Game, wemID);
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export, wemID);
                             AllWems.Add(wem);
                             i++;
                         }
@@ -1446,7 +1446,7 @@ namespace ME3Explorer.Soundplorer
                 case "WwiseStream":
                     {
                         // Check if there is TLK string in the export name
-                        var splits = Export.ObjectName.Name.Split('_',',');
+                        var splits = Export.ObjectName.Name.Split('_', ',');
                         for (int i = splits.Length - 1; i > 0; i--)
                         {
                             //backwards is faster
@@ -1463,25 +1463,45 @@ namespace ME3Explorer.Soundplorer
 
 
                         WwiseStream w = Export.GetBinaryData<WwiseStream>();
-                        string afcPath = w.GetPathToAFC();
-                        if (afcPath == "")
+                        if (!w.IsPCCStored && w.GetPathToAFC() == "")
                         {
-                            SubText = "Could not find AFC";
+                            //AFC not found.
+                            SubText = $"AFC unavailable: {w.Filename}";
                         }
                         else
                         {
-                            TimeSpan? time = w.GetSoundLength();
-                            if (time != null)
+                            var length = w.GetAudioInfo()?.GetLength();
+                            if (length != null)
                             {
                                 //here backslash must be present to tell that parser colon is
                                 //not the part of format, it just a character that we want in output
-                                SubText = time.Value.ToString(@"mm\:ss\:fff");
+                                SubText = length.Value.ToString(@"mm\:ss\:fff");
                             }
                             else
                             {
                                 SubText = "Error getting length, may be unsupported";
                             }
                         }
+
+                        //string afcPath = w.GetPathToAFC();
+                        //if (afcPath == "")
+                        //{
+                        //    SubText = "Could not find AFC";
+                        //}
+                        //else
+                        //{
+                        //    TimeSpan? time = w.GetSoundLength();
+                        //    if (time != null)
+                        //    {
+                        //        //here backslash must be present to tell that parser colon is
+                        //        //not the part of format, it just a character that we want in output
+                        //        SubText = time.Value.ToString(@"mm\:ss\:fff");
+                        //    }
+                        //    else
+                        //    {
+                        //        SubText = "Error getting length, may be unsupported";
+                        //    }
+                        //}
                         NeedsLoading = false;
                         Icon = EFontAwesomeIcon.Solid_VolumeUp;
                         break;

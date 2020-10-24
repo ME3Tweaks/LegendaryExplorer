@@ -16,7 +16,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public int DataSize;
         public int DataOffset;
         public byte[] EmbeddedData;
-        
+
         public int Id;
         public string Filename;
 
@@ -32,7 +32,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 throw new Exception($"WwiseStream is not a valid class for {sc.Game}!");
             }
-            if (sc.Game == MEGame.ME2)
+            if (sc.Game == MEGame.ME2 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
                 sc.Serialize(ref Unk1);
                 sc.Serialize(ref Unk2);
@@ -43,6 +43,17 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref UnkGuid);
                 sc.Serialize(ref Unk3);
                 sc.Serialize(ref Unk4);
+            }
+            else if (sc.Game == MEGame.ME2 && sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
+            {
+                // ME2 seems to have different wwisestream binary format than both ME2 and ME3 PC
+                sc.Serialize(ref Unk1);
+                sc.Serialize(ref Unk2);
+                if (Unk1 == 0 && Unk2 == 0)
+                {
+                    // Dunno if these matter for PS3
+                    return; //not sure what's going on here
+                }
             }
             sc.Serialize(ref Unk5);
             if (sc.IsSaving && EmbeddedData != null)

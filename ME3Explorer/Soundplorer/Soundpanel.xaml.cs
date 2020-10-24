@@ -23,6 +23,8 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Audio;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -206,36 +208,40 @@ namespace ME3Explorer
                                 //Parse it
                                 ExportInformationList.Add("---------Referenced Audio Header----------");
                                 ASCIIEncoding ascii = new ASCIIEncoding();
+                                var riffTag = ascii.GetString(headerbytes, 0, 4);
+                                Endian endian = Endian.Little;
+                                if (riffTag == "RIFF") endian = Endian.Little;
+                                if (riffTag == "RIFX") endian = Endian.Big;
 
-                                ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
-                                ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+                                ExportInformationList.Add("0x00 RIFF tag: " + riffTag);
+                                ExportInformationList.Add("0x04 File size: " + EndianReader.ToInt32(headerbytes, 4, endian) + " bytes");
                                 ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
                                 ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
-                                ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
-                                ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
-                                ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
-                                ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4));
-                                ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+                                ExportInformationList.Add("0x10 Format size: " + GetHexForUI(headerbytes, 0x10, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x14 Codec ID: " + GetHexForUI(headerbytes, 0x14, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x16 Channel count: " + GetHexForUI(headerbytes, 0x16, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x1C Average bits per second: " + GetHexForUI(headerbytes, 0x1C, 2, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
-                                ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
-                                ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
-                                ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
-                                ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
-                                ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
-                                ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
-                                ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
-                                ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
-                                ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
-                                ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+                                ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
-                                ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
-                                ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
-                                ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
-                                ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+                                ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                                ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6, exportEntry.FileRef.Endian));
                             }
                         }
                         catch
@@ -266,14 +272,14 @@ namespace ME3Explorer
 
                             string wemHeader = $"{(char)bytes[0]}{(char)bytes[1]}{(char)bytes[2]}{(char)bytes[3]}";
                             string wemName = $"{i}: Embedded WEM 0x{wemId}";
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(bytes, wemName, exportEntry.FileRef.Game, id);
-                            if (wemHeader == "RIFF")
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(bytes, wemName, exportEntry, id);
+                            if (wemHeader == "RIFF" || wemHeader == "RIFX")
                             {
                                 ExportInformationList.Add(wem);
                             }
                             else
                             {
-                                ExportInformationList.Add($"{wemName} - No RIFF header ({wemHeader})");
+                                ExportInformationList.Add($"{wemName} - No RIFF/RIFX header ({wemHeader})");
                             }
 
                             AllWems.Add(wem);
@@ -342,17 +348,17 @@ namespace ME3Explorer
             }
         }
 
-        private static string GetHexForUI(byte[] bytes, int startoffset, int length)
+        private static string GetHexForUI(byte[] bytes, int startoffset, int length, Endian endian)
         {
             string ret = "";
 
             if (length == 2)
             {
-                ret += BitConverter.ToInt16(bytes, startoffset);
+                ret += EndianReader.ToInt16(bytes, startoffset, endian);
             }
             else if (length == 4)
             {
-                ret += BitConverter.ToInt32(bytes, startoffset);
+                ret += EndianReader.ToInt32(bytes, startoffset, endian);
             }
 
             ret += " (";
@@ -534,36 +540,41 @@ namespace ME3Explorer
                     //Parse it
                     ExportInformationList.Add($"---------Wwise Audio Header----------");
                     ASCIIEncoding ascii = new ASCIIEncoding();
+                    var riffTag = ascii.GetString(headerbytes, 0, 4);
+                    Endian endian = Endian.Little;
+                    if (riffTag == "RIFF") endian = Endian.Little;
+                    if (riffTag == "RIFX") endian = Endian.Big;
 
-                    ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
-                    ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+
+                    ExportInformationList.Add("0x00 RIFF tag: " + riffTag);
+                    ExportInformationList.Add("0x04 File size: " + EndianReader.ToInt32(headerbytes, 4, endian) + " bytes");
                     ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
                     ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
-                    ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
-                    ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
-                    ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
-                    ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4));
-                    ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+                    ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4, endian));
+                    ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2, endian));
+                    ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2, endian));
+                    ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4, endian));
+                    ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4, endian));
 
-                    ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
-                    ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
-                    ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
-                    ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
-                    ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
-                    ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
-                    ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
-                    ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
-                    ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
-                    ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
-                    ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+                    ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4, endian));
+                    ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2, endian));
+                    ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2, endian));
+                    ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4, endian));
+                    ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2, endian));
+                    ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2, endian));
+                    ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4, endian));
+                    ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4, endian));
+                    ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2, endian));
+                    ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2, endian));
+                    ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4, endian));
 
-                    ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
-                    ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
-                    ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
-                    ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
-                    ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+                    ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4, endian));
+                    ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2, endian));
+                    ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2, endian));
+                    ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4, endian));
+                    ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4, endian));
 
-                    ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                    ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6, endian));
                     CurrentLoadedAFCFileEntry = aEntry;
                 }
             }
@@ -1950,16 +1961,17 @@ namespace ME3Explorer
         public bool HasBeenFixed;
         public MEGame Game;
 
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, uint Id = 0)
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString, ExportEntry export, uint Id = 0)
         {
+            this.export = export;
             this.Id = Id;
-            Game = game;
+            this.Game = export.Game;
             this.WemData = WemData;
             this.DisplayString = DisplayString;
 
 
-            int size = BitConverter.ToInt32(WemData, 4);
-            int subchunk2size = BitConverter.ToInt32(WemData, 0x5A);
+            int size = EndianReader.ToInt32(WemData, 4, export.FileRef.Endian);
+            int subchunk2size = EndianReader.ToInt32(WemData, 0x5A, export.FileRef.Endian);
 
             if (size != WemData.Length - 8)
             {
@@ -1971,23 +1983,113 @@ namespace ME3Explorer
                 HasBeenFixed = true;
                 this.DisplayString += " - Preloading";
                 int offset = 4;
-                WemData[offset] = (byte)size; // fourth byte
-                WemData[offset + 1] = (byte)(size >> 8); // third byte
-                WemData[offset + 2] = (byte)(size >> 16); // second byte
-                WemData[offset + 3] = (byte)(size >> 24); // last byte
 
-                offset = 0x5A; //Subchunk2 size offset
-                size = WemData.Length - 94; //size of data to follow
-                WemData[offset] = (byte)size; // fourth byte
-                WemData[offset + 1] = (byte)(size >> 8); // third byte
-                WemData[offset + 2] = (byte)(size >> 16); // second byte
-                WemData[offset + 3] = (byte)(size >> 24); // last byte
+                if (export.FileRef.Endian == Endian.Little)
+                {
+                    WemData[offset] = (byte)size; // fourth byte
+                    WemData[offset + 1] = (byte)(size >> 8); // third byte
+                    WemData[offset + 2] = (byte)(size >> 16); // second byte
+                    WemData[offset + 3] = (byte)(size >> 24); // last byte
+
+                    offset = 0x5A; //Subchunk2 size offset
+                    size = WemData.Length - 94; //size of data to follow
+                    WemData[offset] = (byte)size; // fourth byte
+                    WemData[offset + 1] = (byte)(size >> 8); // third byte
+                    WemData[offset + 2] = (byte)(size >> 16); // second byte
+                    WemData[offset + 3] = (byte)(size >> 24); // last byte
+                }
+                else
+                {
+                    WemData[offset + 3] = (byte)size; // fourth byte
+                    WemData[offset + 2] = (byte)(size >> 8); // third byte
+                    WemData[offset + 1] = (byte)(size >> 16); // second byte
+                    WemData[offset] = (byte)(size >> 24); // last byte
+
+                    offset = 0x5A; //Subchunk2 size offset
+                    size = WemData.Length - 94; //size of data to follow
+                    WemData[offset + 3] = (byte)size; // fourth byte
+                    WemData[offset + 2] = (byte)(size >> 8); // third byte
+                    WemData[offset + 1] = (byte)(size >> 16); // second byte
+                    WemData[offset] = (byte)(size >> 24); // last byte
+                }
+
+                var audioLen = GetAudioInfo(WemData)?.GetLength();
+                if (audioLen != null && audioLen.Value != TimeSpan.Zero)
+                {
+                    this.DisplayString += $" ({ audioLen.Value.ToString(@"mm\:ss\:fff")})";
+                }
             }
         }
 
+        private ExportEntry export;
         public byte[] WemData { get; set; }
         public byte[] OriginalWemData { get; set; }
         public string DisplayString { get; set; }
+
+        public AudioInfo GetAudioInfo(byte[] dataOverride = null)
+        {
+            // Similar to WwiseStream
+            try
+            {
+                AudioInfo ai = new AudioInfo();
+                Stream dataStream = new MemoryStream(dataOverride ?? WemData);
+
+                EndianReader er = new EndianReader(dataStream);
+                var header = er.ReadStringASCII(4);
+                if (header == "RIFX") er.Endian = Endian.Big;
+                if (header == "RIFF") er.Endian = Endian.Little;
+                // Position 4
+
+                // This info seems wrong. Needs to be updated. Probably for 5.1.
+
+
+                er.Seek(0xC, SeekOrigin.Current); // Post 'fmt ', get fmt size
+                var fmtSize = er.ReadInt32();
+                var postFormatPosition = er.Position;
+                ai.CodecID = er.ReadUInt16();
+
+                switch (ai.CodecID)
+                {
+                    case 0xFFFF:
+                        ai.CodecName = "Vorbis";
+                        break;
+                    default:
+                        ai.CodecName = $"Unknown codec ID {ai.CodecID}";
+                        break;
+                }
+
+                ai.Channels = er.ReadUInt16();
+                ai.SampleRate = er.ReadUInt32();
+                er.ReadInt32(); //Average bits per second
+                er.ReadUInt16(); //Alignment. VGMStream shows this is 16bit but that doesn't seem right
+                ai.BitsPerSample = er.ReadUInt16(); //Bytes per sample. For vorbis this is always 0!
+                var extraSize = er.ReadUInt16();
+                if (extraSize == 0x30)
+                {
+                    er.Seek(postFormatPosition + 0x18, SeekOrigin.Begin);
+                    ai.SampleCount = er.ReadUInt32();
+                }
+                else
+                {
+                    // Find audio sample data chunk size
+                    er.Seek(0x10 + fmtSize, SeekOrigin.Begin);
+                    var chunkName = er.ReadStringASCII(4);
+                    while (!chunkName.Equals("data", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        er.Seek(er.ReadInt32(), SeekOrigin.Current);
+                        chunkName = er.ReadStringASCII(4);
+                    }
+                    ai.AudioDataSize = er.ReadUInt32();
+                }
+
+                // We don't care about the rest.
+                return ai;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 
     public class ImportExportSoundEnabledConverter : IValueConverter
