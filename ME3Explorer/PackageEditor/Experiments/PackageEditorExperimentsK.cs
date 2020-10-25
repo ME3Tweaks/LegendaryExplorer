@@ -373,10 +373,10 @@ namespace ME3Explorer.PackageEditor.Experiments
                             var oldclass = sactorxp.ClassName;
                             var newclass = actorclassesToSubstitute[oldclass];
                             sactorxp.Class = donor.getEntryOrAddImport(newclass);
-                            var stack = sactorxp.GetStack();
+                            var stack = sactorxp.GetPrePropBinary();
                             stack.OverwriteRange(0, BitConverter.GetBytes(sactorxp.Class.UIndex));
                             stack.OverwriteRange(4, BitConverter.GetBytes(sactorxp.Class.UIndex));
-                            sactorxp.SetStack(stack);
+                            sactorxp.SetPrePropBinary(stack);
                             var children = sactorxp.GetChildren();
                             foreach (var c in children)
                             {

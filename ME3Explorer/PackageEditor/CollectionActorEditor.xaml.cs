@@ -91,8 +91,9 @@ namespace ME3Explorer.PackageEditor
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.IsA("StaticMeshComponent") && exportEntry.Parent.IsA("StaticMeshCollectionActor") ||
-                exportEntry.IsA("LightComponent") && exportEntry.Parent.IsA("StaticLightCollectionActor");
+            return exportEntry.HasParent && 
+                   (exportEntry.IsA("StaticMeshComponent") && exportEntry.Parent.IsA("StaticMeshCollectionActor") || 
+                    exportEntry.IsA("LightComponent") && exportEntry.Parent.IsA("StaticLightCollectionActor") ) ;
         }
 
         public override void LoadExport(ExportEntry exportEntry)
@@ -152,7 +153,7 @@ namespace ME3Explorer.PackageEditor
                                                           new Rotator(UUPitch, UUYaw, UURoll), 
                                                           new Vector3(ScaleX, ScaleY, ScaleZ));
                 sca.LocalToWorldTransforms[index] = m;
-                StaticCollectionActorExport.SetBinaryData(sca);
+                StaticCollectionActorExport.WriteBinary(sca);
             }
             else
             {

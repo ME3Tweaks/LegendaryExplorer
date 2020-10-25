@@ -536,7 +536,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 //    }
                 //}
 
-                levelExport.SetBinaryData(level);
+                levelExport.WriteBinary(level);
                 task?.Complete("NavigationPoint chain has been updated");
             }
             else

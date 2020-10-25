@@ -563,7 +563,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     m.TranslationVector = new Vector3(x, y, z);
                     binData.LocalToWorldTransforms[idx] = m;
 
-                    collectionactor.SetBinaryData(binData);
+                    collectionactor.WriteBinary(binData);
                 }
             }
         }

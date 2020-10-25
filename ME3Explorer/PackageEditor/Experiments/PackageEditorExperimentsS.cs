@@ -127,7 +127,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                         {
                             //Debug.WriteLine($"{exp.UIndex}: {filePath}");
                             var originalData = exp.Data;
-                            exp.SetBinaryData(ObjectBinary.From(exp));
+                            exp.WriteBinary(ObjectBinary.From(exp));
                             var newData = exp.Data;
                             if (!originalData.SequenceEqual(newData))
                             {

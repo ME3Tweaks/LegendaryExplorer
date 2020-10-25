@@ -89,7 +89,7 @@ namespace ME3Explorer.MaterialViewer
                 }
             }
 
-            firstShaderCache.SetBinaryData(compactedShaderCache);
+            firstShaderCache.WriteBinary(compactedShaderCache);
         }
     }
 }

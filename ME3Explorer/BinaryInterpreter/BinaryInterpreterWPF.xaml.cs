@@ -341,7 +341,8 @@ namespace ME3Explorer
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject);
+            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
+                || exportEntry.TemplateOwnerClassIdx >= 0;
         }
 
         public override void PopOut()
@@ -518,6 +519,12 @@ namespace ME3Explorer
                     case "DominantDirectionalLightComponent":
                         subNodes.AddRange(StartDominantLightScan(data));
                         break;
+                }
+
+                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+                {
+                    int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
+                    subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
                 }
 
                 string className = CurrentLoadedExport.ClassName;

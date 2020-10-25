@@ -102,7 +102,7 @@ namespace ME3ExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.SetBinaryData(level);
+                levelExport.WriteBinary(level);
             }
 
             return added;
@@ -115,7 +115,7 @@ namespace ME3ExplorerCore.Packages
                 Level level = ObjectBinary.From<Level>(levelExport);
                 if (level.Actors.Remove(actor.UIndex))
                 {
-                    levelExport.SetBinaryData(level);
+                    levelExport.WriteBinary(level);
                     return true;
                 }
             }
@@ -660,10 +660,16 @@ namespace ME3ExplorerCore.Packages
                     }
 
                     //find stack references
-                    if (exp.HasStack && exp.Data is byte[] data
-                                     && (baseUIndex == BitConverter.ToInt32(data, 0) || baseUIndex == BitConverter.ToInt32(data, 4)))
+                    if (exp.HasStack)
                     {
-                        result.AddToListAt(exp, "Stack");
+                        if (exp.Data is byte[] data && (baseUIndex == BitConverter.ToInt32(data, 0) || baseUIndex == BitConverter.ToInt32(data, 4)))
+                        {
+                            result.AddToListAt(exp, "Stack");
+                        }
+                    }
+                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == BitConverter.ToInt32(exp.Data, toci))
+                    {
+                        result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
 
 
@@ -799,7 +805,7 @@ namespace ME3ExplorerCore.Packages
                                 }
                             }
 
-                            exp.SetBinaryData(objBin);
+                            exp.WriteBinary(objBin);
                         }
                     }
                 }

@@ -3407,7 +3407,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     components.Add(new ObjectProperty(newNodeEntry));
                     sca.LocalToWorldTransforms.Add(new SharpDX.Matrix(clonedloc.M11, clonedloc.M12, clonedloc.M13, clonedloc.M14, clonedloc.M21, clonedloc.M22, clonedloc.M23, clonedloc.M24, clonedloc.M31, clonedloc.M32, clonedloc.M33, clonedloc.M34, clonedloc.M41, clonedloc.M42, clonedloc.M43, clonedloc.M44));
                     parent.WriteProperty(components);
-                    parent.SetBinaryData(sca);
+                    parent.WriteBinary(sca);
                     AllowRefresh = true;
                 }
                 else
@@ -3433,7 +3433,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Add cloned node to persistentlevel
                     var level = ObjectBinary.From<Level>(PersistentLevelExport);
                     level.Actors.Add(newNodeEntry.UIndex);
-                    PersistentLevelExport.SetBinaryData(level);
+                    PersistentLevelExport.WriteBinary(level);
                 }
 
                 return newNodeEntry;
@@ -3451,7 +3451,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 AllowRefresh = false;
                 levelBin.Actors.Remove(nodeEntry);
-                PersistentLevelExport.SetBinaryData(levelBin);
+                PersistentLevelExport.WriteBinary(levelBin);
                 AllowRefresh = true;
                 RefreshGraph();
                 MessageBox.Show("Removed item from level.");
@@ -3477,7 +3477,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     components.RemoveAt(i);
                     sca.LocalToWorldTransforms.RemoveAt(i);
                     parent.WriteProperty(components);
-                    parent.SetBinaryData(sca);
+                    parent.WriteBinary(sca);
                     AllowRefresh = true;
                     RefreshGraph();
                     MessageBox.Show("Removed item from level.");
@@ -3514,7 +3514,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 components.RemoveAt(i);
                 sca.LocalToWorldTransforms.RemoveAt(i);
                 parent.WriteProperty(components);
-                parent.SetBinaryData(sca);
+                parent.WriteBinary(sca);
                 EntryPruner.TrashEntryAndDescendants(nodeEntry);
             }
             else
@@ -3523,7 +3523,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (levelBin.Actors.Contains(nodeEntry))
                 {
                     levelBin.Actors.Remove(nodeEntry);
-                    PersistentLevelExport.SetBinaryData(levelBin);
+                    PersistentLevelExport.WriteBinary(levelBin);
                     EntryPruner.TrashEntryAndDescendants(nodeEntry);
                 }
             }
@@ -3665,7 +3665,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 m.TranslationVector *= -1;
                                 smca.LocalToWorldTransforms[i] = m;
                             }
-                            exp.SetBinaryData(smca);
+                            exp.WriteBinary(smca);
                             break;
                         }
                     default:
@@ -3916,7 +3916,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             }
 
                             lightCollection.Export.WriteProperty(new ArrayProperty<ObjectProperty>(lightCollection.Components.Select(x => new ObjectProperty(x.value)).ToList(), lightCollection.ComponentPropName));
-                            lightCollection.Export.SetBinaryData(lightCollection);
+                            lightCollection.Export.WriteBinary(lightCollection);
                         }
                     }
                 }
@@ -3928,7 +3928,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             else
             {
-                PersistentLevelExport.SetBinaryData(levelBin);
+                PersistentLevelExport.WriteBinary(levelBin);
                 RefreshGraph();
                 MessageBox.Show("Removed item(s) from level. See debug log");
             }
@@ -4330,7 +4330,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             }
                         }
                     }
-                    comp.SetBinaryData(sc);
+                    comp.WriteBinary(sc);
                 }
             }
 
@@ -4467,7 +4467,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                       new SharpDX.Vector3(scaleX, scaleY, scaleZ));
                             sca.LocalToWorldTransforms[index] = newm;
                         }
-                        actor.SetBinaryData(sca);
+                        actor.WriteBinary(sca);
                     }
 
                 }
@@ -4546,7 +4546,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                       new SharpDX.Vector3(scaleX, scaleY, scaleZ));
                             sca.LocalToWorldTransforms[index] = newm;
                         }
-                        actor.SetBinaryData(sca);
+                        actor.WriteBinary(sca);
                     }
 
                 }
@@ -4813,7 +4813,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     level.numbers.Clear();
                 }
 
-                levelExport.SetBinaryData(level);
+                levelExport.WriteBinary(level);
 
                 var tdlg = MessageBox.Show("The recooker will now trash any entries that are not being used.\n\nThis is experimental. Keep backups.", "WARNING", MessageBoxButton.OKCancel);
                 if (tdlg == MessageBoxResult.Cancel)

@@ -48,7 +48,7 @@ namespace ME3Explorer.StaticLighting
                 {
                     rbBodySetup.RemoveProperty("PhysMaterial");
                 }
-                mesh.SetBinaryData(stm);
+                mesh.WriteBinary(stm);
                 IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, out IEntry ent, relinkMap);
                 ExportEntry portedMesh = (ExportEntry)ent;
@@ -60,7 +60,7 @@ namespace ME3Explorer.StaticLighting
                         meshElement.Material = mats.Dequeue();
                     }
                 }
-                portedMesh.SetBinaryData(stm);
+                portedMesh.WriteBinary(stm);
             }
 
             #endregion
@@ -116,7 +116,7 @@ namespace ME3Explorer.StaticLighting
                         newMat.ObjectName = matExp.ObjectName;
                         Material matBin = ObjectBinary.From<Material>(newMat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[]{ norm?.UIndex ?? 0, diff.UIndex };
-                        newMat.SetBinaryData(matBin);
+                        newMat.WriteBinary(matBin);
                         relinkMap[matExp] = newMat;
                         if (newMat.GetProperty<ArrayProperty<ObjectProperty>>("Expressions") is {} expressionsProp && expressionsProp.Count >= 2)
                         {
@@ -219,7 +219,7 @@ namespace ME3Explorer.StaticLighting
                                 continue;
                             }
 
-                            smc.SetBinaryData(emptySMCBin);
+                            smc.WriteBinary(emptySMCBin);
                             smc.RemoveProperty("bBioIsReceivingDecals");
                             smc.RemoveProperty("bBioForcePrecomputedShadows");
                             //smc.RemoveProperty("bUsePreComputedShadows");
@@ -512,7 +512,7 @@ namespace ME3Explorer.StaticLighting
 
                 Level level = ObjectBinary.From<Level>(levelExport);
                 level.Actors = levelExport.GetChildren().Where(ent => ent.IsA("Actor")).Select(ent => new UIndex(ent.UIndex)).ToList();
-                levelExport.SetBinaryData(level);
+                levelExport.WriteBinary(level);
 
                 udkPackage.Save();
             }
@@ -532,7 +532,7 @@ namespace ME3Explorer.StaticLighting
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor, udkPackage2, levelExport, true, out IEntry result);
                     levelBin.Actors.Add(result.UIndex);
                 }
-                levelExport.SetBinaryData(levelBin);
+                levelExport.WriteBinary(levelBin);
                 udkPackage2.Save(resultFilePath);
             }
             File.Delete(tempPackagePath);

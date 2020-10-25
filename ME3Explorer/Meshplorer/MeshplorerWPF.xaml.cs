@@ -260,7 +260,7 @@ namespace ME3Explorer
                             var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
                             if (!lodOnly)
                             {
-                                CurrentExport.SetBinaryData(newMesh);
+                                CurrentExport.WriteBinary(newMesh);
 
                                 //Check LODs count
                                 if (lods != null)
@@ -328,7 +328,7 @@ namespace ME3Explorer
                                 originalMesh.LODModels = new[] { incomingLOD };
 
                                 //write it out
-                                CurrentExport.SetBinaryData(originalMesh); //used to be NEW MESH
+                                CurrentExport.WriteBinary(originalMesh); //used to be NEW MESH
                                 if (lods.Count > 1)
                                 {
                                     // we need to update the LOD models
@@ -372,7 +372,7 @@ namespace ME3Explorer
                                     }
                                 }
                             }
-                            CurrentExport.SetBinaryData(newMesh);
+                            CurrentExport.WriteBinary(newMesh);
                         }
                         MessageBox.Show(this, "Done!");
                     }

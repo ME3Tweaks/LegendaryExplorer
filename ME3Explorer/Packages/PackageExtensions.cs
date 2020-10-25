@@ -165,7 +165,7 @@ namespace ME3Explorer.Packages
                         }
                     }
                     offsets.Add((int)tfc.Position);
-                    texport.SetBinaryData(ExportBinaryConverter.ConvertTexture2D(texport, package.Game, offsets, StorageTypes.extZlib));
+                    texport.WriteBinary(ExportBinaryConverter.ConvertTexture2D(texport, package.Game, offsets, StorageTypes.extZlib));
                     texport.WriteProperty(new NameProperty(tfcName, "TextureFileCacheName"));
                     texport.WriteProperty(tfcGuid.ToGuidStructProp("TFCFileGuid"));
                 }
@@ -291,7 +291,7 @@ namespace ME3Explorer.Packages
 
                         var matBin = ObjectBinary.From<Material>(mat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[] { norm, diff };
-                        mat.SetBinaryData(matBin);
+                        mat.WriteBinary(matBin);
                         mat.Class = package.Imports.First(imp => imp.ObjectName == "Material");
                     }
                     else if (mat.ClassName == "Material")

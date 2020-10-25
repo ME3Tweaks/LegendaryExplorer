@@ -794,7 +794,7 @@ namespace ME3ExplorerCore.Packages
                     e.DataOffset = (int)ms.Position;
                     if (objBin != null)
                     {
-                        e.SetBinaryData(objBin);
+                        e.WriteBinary(objBin);
                     }
 
 

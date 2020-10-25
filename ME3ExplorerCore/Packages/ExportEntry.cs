@@ -141,21 +141,42 @@ namespace ME3ExplorerCore.Packages
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
 
-        public byte[] GetStack()
+        public byte[] GetPrePropBinary()
         {
-            if (!HasStack)
-            {
-                return Array.Empty<byte>();
-            }
-
-            return _data.Slice(0, stackLength);
+            return _data.Slice(0, GetPropertyStart());
         }
 
-        public void SetStack(byte[] stack)
+        public void SetPrePropBinary(byte[] bytes)
         {
-            byte[] data = Data;
-            Buffer.BlockCopy(stack, 0, data, 0, stackLength);
-            Data = data;
+            if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+            {
+                int minLen = (IsDefaultObject ? 8 : 12);
+                if (bytes.Length < minLen)
+                {
+                    throw new ArgumentException($"Expected pre-property binary to be at least {minLen} bytes, not {bytes.Length}!", nameof(bytes));
+                }
+                int oldLen = GetPropertyStart();
+                int count = EndianReader.ToInt32(bytes, 0, FileRef.Endian);
+                minLen += count * 2;
+                if (bytes.Length < minLen)
+                {
+                    throw new ArgumentException($"Expected pre-property binary to be {minLen} bytes, not {bytes.Length}!", nameof(bytes));
+                }
+                var ms = new MemoryStream();
+                ms.WriteFromBuffer(bytes);
+                ms.Write(_data, oldLen, _data.Length - oldLen);
+                Data = ms.ToArray();
+            }
+            else
+            {
+                if (bytes.Length != GetPropertyStart())
+                {
+                    throw new ArgumentException($"Expected pre-property binary to be {GetPropertyStart()} bytes, not {bytes.Length}!", nameof(bytes));
+                }
+                byte[] data = Data;
+                Buffer.BlockCopy(bytes, 0, data, 0, bytes.Length);
+                Data = data;
+            }
         }
 
         //should only have to check the flag, but custom mod classes might not have set it properly
@@ -616,6 +637,16 @@ namespace ME3ExplorerCore.Packages
             Data = m.ToArray();
         }
 
+        public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props)
+        {
+            var m = new EndianReader { Endian = FileRef.Endian };
+            m.Writer.WriteBytes(prePropBytes);
+            props.WriteTo(m.Writer, FileRef);
+            int binStart = propsEnd();
+            m.Writer.Write(_data, binStart, _data.Length - binStart);
+            Data = m.ToArray();
+        }
+
         public int GetPropertyStart()
         {
             if (HasStack)
@@ -645,6 +676,25 @@ namespace ME3ExplorerCore.Packages
             start += 4; //NetIndex
 
             return start;
+        }
+
+        public int TemplateOwnerClassIdx
+        {
+            get
+            {
+                if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
+                {
+                    if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
+                    {
+                        //DominantLightShadowMap, which goes before everything for some reason
+                        int count = EndianReader.ToInt32(_data, 0, FileRef.Endian);
+                        return count * 2 + 4;
+                    }
+                    return 0;
+                }
+
+                return -1;
+            }
         }
 
         private int stackLength =>
@@ -692,7 +742,7 @@ namespace ME3ExplorerCore.Packages
             return new MemoryStream(_data, start, _data.Length - start, false);
         }
 
-        public void SetBinaryData(byte[] binaryData)
+        public void WriteBinary(byte[] binaryData)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
@@ -700,7 +750,7 @@ namespace ME3ExplorerCore.Packages
             Data = m.ToArray();
         }
 
-        public void SetBinaryData(ObjectBinary bin)
+        public void WriteBinary(ObjectBinary bin)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());

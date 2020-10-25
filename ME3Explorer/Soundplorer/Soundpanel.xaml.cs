@@ -771,7 +771,7 @@ namespace ME3Explorer
         {
             CurrentLoadedWwisebank.HIRCObjects.Clear();
             CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
-            CurrentLoadedExport.SetBinaryData(CurrentLoadedWwisebank);
+            CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             foreach (var hircObject in HIRCObjects)
             {
                 hircObject.DataChanged = false;
@@ -919,7 +919,7 @@ namespace ME3Explorer
             }
             CurrentLoadedWwisebank.EmbeddedFiles.Clear();
             CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
-            CurrentLoadedExport.SetBinaryData(CurrentLoadedWwisebank);
+            CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             MessageBox.Show("Done");
         }
@@ -1572,7 +1572,7 @@ namespace ME3Explorer
                 }
 
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
-                exportToWorkOn.SetBinaryData(w);
+                exportToWorkOn.WriteBinary(w);
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;

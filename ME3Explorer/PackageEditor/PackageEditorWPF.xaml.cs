@@ -1674,8 +1674,8 @@ namespace ME3Explorer
                 //find stack references
                 if (exp.HasStack && exp.Data is byte[] data)
                 {
-                    var stack1 = EndianReader.ToInt32(exp.Data, 0, exp.FileRef.Endian);
-                    var stack2 = EndianReader.ToInt32(exp.Data, 4, exp.FileRef.Endian);
+                    var stack1 = EndianReader.ToInt32(data, 0, exp.FileRef.Endian);
+                    var stack2 = EndianReader.ToInt32(data, 4, exp.FileRef.Endian);
                     if (stack1 != 0 && !Pcc.IsEntry(stack1))
                     {
                         badReferences.Add(new EntryStringPair(exp,
@@ -1686,6 +1686,15 @@ namespace ME3Explorer
                     {
                         badReferences.Add(new EntryStringPair(exp,
                             $"Export Stack[1] ({stack2}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
+                    }
+                }
+                else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0)
+                {
+                    var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
+                    if (TemplateOwnerClassIdx != 0 && !Pcc.IsEntry(TemplateOwnerClassIdx))
+                    {
+                        badReferences.Add(new EntryStringPair(exp, 
+                            $"TemplateOwnerClass (Data offset 0x{toci:X}) ({TemplateOwnerClassIdx}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                     }
                 }
 
@@ -2010,7 +2019,7 @@ namespace ME3Explorer
                 byte[] data = File.ReadAllBytes(d.FileName);
                 if (binaryOnly)
                 {
-                    export.SetBinaryData(data);
+                    export.WriteBinary(data);
                 }
                 else
                 {
@@ -3780,7 +3789,7 @@ namespace ME3Explorer
                     level.Actors.Add(actorExport.UIndex);
                 }
 
-                targetPersistentLevel.SetBinaryData(level);
+                targetPersistentLevel.WriteBinary(level);
             }
 
 
@@ -4408,7 +4417,7 @@ namespace ME3Explorer
                     };
                     tempPcc.AddExport(playerStart);
                     level.Actors.Add(playerStart.UIndex);
-                    levelExport.SetBinaryData(level);
+                    levelExport.WriteBinary(level);
                 }
 
                 tempPcc.Save();

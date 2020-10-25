@@ -419,7 +419,7 @@ namespace ME3ExplorerCore.Packages
 
                 binData.Skip(40);
                 binData.WriteInt32(baseOffset + (int)binData.Position + 4);
-                export.SetBinaryData(binData.ToArray());
+                export.WriteBinary(binData.ToArray());
             }
         }
     }

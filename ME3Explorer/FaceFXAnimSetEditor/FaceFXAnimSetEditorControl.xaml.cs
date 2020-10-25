@@ -210,7 +210,7 @@ namespace ME3Explorer.FaceFX
                 }).ToList();
                 SelectedLine.NumKeys = numKeys;
             }
-            CurrentLoadedExport?.SetBinaryData(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX);
         }
 
         public void SelectLineByName(string name)
@@ -523,7 +523,7 @@ namespace ME3Explorer.FaceFX
                 SelectedLine.NumKeys[i] = keptPoints;
             }
             SelectedLine.Points = newPoints;
-            CurrentLoadedExport?.SetBinaryData(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX);
             updateAnimListBox();
         }
 
@@ -593,7 +593,7 @@ namespace ME3Explorer.FaceFX
                     }
                 }
                 SelectedLine.Points = newPoints;
-                CurrentLoadedExport?.SetBinaryData(FaceFX);
+                CurrentLoadedExport?.WriteBinary(FaceFX);
                 updateAnimListBox();
             }
         }
@@ -665,7 +665,7 @@ namespace ME3Explorer.FaceFX
                     SelectedLine.Points[i] = tmp;
                 }
             }
-            CurrentLoadedExport?.SetBinaryData(FaceFX);
+            CurrentLoadedExport?.WriteBinary(FaceFX);
             updateAnimListBox();
         }
 

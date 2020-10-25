@@ -151,7 +151,7 @@ namespace ME3Script.Compiling
 
                 Target.ScriptBytecodeSize = GetMemLength();
                 Target.ScriptBytes = GetByteCode();
-                Target.Export.SetBinaryData(Target);
+                Target.Export.WriteBinary(Target);
             }
             else
             {
@@ -199,7 +199,7 @@ namespace ME3Script.Compiling
 
                 Target.ScriptBytecodeSize = GetMemLength();
                 Target.ScriptBytes = GetByteCode();
-                Target.Export.SetBinaryData(Target);
+                Target.Export.WriteBinary(Target);
             }
             else
             {

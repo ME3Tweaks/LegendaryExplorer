@@ -160,7 +160,7 @@ namespace ME3ExplorerCore.TLK.ME1
             }
 
             byte[] buff = m.ToArray();
-            export.SetBinaryData(buff);
+            export.WriteBinary(buff);
             if (savePackage)
             {
                 export.FileRef.Save(export.FileRef.FilePath);

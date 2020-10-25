@@ -100,36 +100,52 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         {
             var relinkFailedReport = new List<EntryStringPair>();
             IMEPackage sourcePcc = sourceExport.FileRef;
+
+            byte[] prePropBinary = relinkingExport.GetPrePropBinary();
+
             //Relink stack
             if (relinkingExport.HasStack)
             {
-                byte[] stack = relinkingExport.GetStack();
 
-                int uIndex = BitConverter.ToInt32(stack, 0);
+                int uIndex = BitConverter.ToInt32(prePropBinary, 0);
                 var relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: Node",
                                                    crossPCCObjectMappingList, "", importExportDependencies, relinkerCache);
                 if (relinkResult is null)
                 {
-                    stack.OverwriteRange(0, BitConverter.GetBytes(uIndex));
+                    prePropBinary.OverwriteRange(0, BitConverter.GetBytes(uIndex));
                 }
                 else
                 {
                     relinkFailedReport.Add(relinkResult);
                 }
 
-                uIndex = BitConverter.ToInt32(stack, 4);
+                uIndex = BitConverter.ToInt32(prePropBinary, 4);
                 relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode", 
                                             crossPCCObjectMappingList, "", importExportDependencies, relinkerCache);
                 if (relinkResult is null)
                 {
-                    stack.OverwriteRange(4, BitConverter.GetBytes(uIndex));
+                    prePropBinary.OverwriteRange(4, BitConverter.GetBytes(uIndex));
                 }
                 else
                 {
                     relinkFailedReport.Add(relinkResult);
                 }
+            }
+            //Relink Component's TemplateOwnerClass
+            else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+            {
 
-                relinkingExport.SetStack(stack);
+                int uIndex = BitConverter.ToInt32(prePropBinary, toci);
+                var relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "TemplateOwnerClass",
+                                                crossPCCObjectMappingList, "", importExportDependencies, relinkerCache);
+                if (relinkResult is null)
+                {
+                    prePropBinary.OverwriteRange(toci, BitConverter.GetBytes(uIndex));
+                }
+                else
+                {
+                    relinkFailedReport.Add(relinkResult);
+                }
             }
 
             //Relink Properties
@@ -193,7 +209,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             }
                         }
                     }
-                    relinkingExport.WritePropertiesAndBinary(props, objBin);
+                    relinkingExport.WritePrePropsAndPropertiesAndBinary(prePropBinary, props, objBin);
                     return relinkFailedReport;
                 }
             }
@@ -202,7 +218,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
-            relinkingExport.WriteProperties(props);
+            relinkingExport.WritePrePropsAndProperties(prePropBinary, props);
             return relinkFailedReport;
         }
 

@@ -174,7 +174,7 @@ namespace ME3Explorer
                         props.AddOrReplaceProp(originalSeqName);
                     }
                     CurrentExport.WriteProperties(props);
-                    CurrentExport.SetBinaryData(selectedAnimSequence);
+                    CurrentExport.WriteBinary(selectedAnimSequence);
                     MessageBox.Show("Done!", "Replace From PSA", MessageBoxButton.OK);
                 }
             }
@@ -213,7 +213,7 @@ namespace ME3Explorer
                     seq.UpdateProps(props, Pcc.Game);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
                     seqExp.WriteProperties(props);
-                    seqExp.SetBinaryData(seq);
+                    seqExp.WriteBinary(seq);
                 }
                 MessageBox.Show("Done!", "Import From PSA", MessageBoxButton.OK);
             }
@@ -265,7 +265,7 @@ namespace ME3Explorer
                         props.AddOrReplaceProp(originalSeqName);
                     }
                     CurrentExport.WriteProperties(props);
-                    CurrentExport.SetBinaryData(selectedAnimSequence);
+                    CurrentExport.WriteBinary(selectedAnimSequence);
                     MessageBox.Show("Done!", "Replace From UDK", MessageBoxButton.OK);
                 }
             }
@@ -330,7 +330,7 @@ namespace ME3Explorer
                     seq.UpdateProps(props, Pcc.Game);
                     props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
                     seqExp.WriteProperties(props);
-                    seqExp.SetBinaryData(seq);
+                    seqExp.WriteBinary(seq);
                 }
                 MessageBox.Show("Done!", "Import From UDK", MessageBoxButton.OK);
             }
