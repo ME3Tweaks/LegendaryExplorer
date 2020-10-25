@@ -56,85 +56,88 @@ namespace ME3Explorer.ParticleSystems
                         rootNodes.Add(p);
                         var emitterLODs = emitterExport.GetProperty<ArrayProperty<ObjectProperty>>("LODLevels");
                         int lodNumber = 0;
-                        foreach (var lod in emitterLODs)
+                        if (emitterLODs != null)
                         {
-                            var lodExport = CurrentLoadedExport.FileRef.GetUExport(lod.Value);
-                            ParticleSystemNode psLod = new ParticleSystemNode
+                            foreach (var lod in emitterLODs)
                             {
-                                Entry = lodExport,
-                                Header = $"LOD {lodNumber}: {lodExport.UIndex} {lodExport.InstancedFullPath}"
-                            };
-                            p.Children.Add(psLod);
-
-                            {
-                                var requiredModule = (ExportEntry)lodExport.GetProperty<ObjectProperty>("RequiredModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
-                                if (requiredModule != null)
+                                var lodExport = CurrentLoadedExport.FileRef.GetUExport(lod.Value);
+                                ParticleSystemNode psLod = new ParticleSystemNode
                                 {
-                                    ParticleSystemNode reqModule = new ParticleSystemNode
-                                    {
-                                        Entry = requiredModule,
-                                        Header =
-                                            $"Required Module: {requiredModule.UIndex} {requiredModule.InstancedFullPath}"
-                                    };
-                                    psLod.Children.Add(reqModule);
+                                    Entry = lodExport,
+                                    Header = $"LOD {lodNumber}: {lodExport.UIndex} {lodExport.InstancedFullPath}"
+                                };
+                                p.Children.Add(psLod);
 
-                                    var materialEntry = requiredModule.GetProperty<ObjectProperty>("Material")?.ResolveToEntry(CurrentLoadedExport.FileRef);
-                                    if (materialEntry != null)
+                                {
+                                    var requiredModule = (ExportEntry) lodExport.GetProperty<ObjectProperty>("RequiredModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
+                                    if (requiredModule != null)
                                     {
-                                        ParticleSystemNode matNode = new ParticleSystemNode
+                                        ParticleSystemNode reqModule = new ParticleSystemNode
                                         {
-                                            Entry = materialEntry,
-                                            Header = $"Material: {materialEntry.UIndex} {materialEntry.InstancedFullPath}"
+                                            Entry = requiredModule,
+                                            Header =
+                                                $"Required Module: {requiredModule.UIndex} {requiredModule.InstancedFullPath}"
                                         };
-                                        reqModule.Children.Add(matNode);
+                                        psLod.Children.Add(reqModule);
+
+                                        var materialEntry = requiredModule.GetProperty<ObjectProperty>("Material")?.ResolveToEntry(CurrentLoadedExport.FileRef);
+                                        if (materialEntry != null)
+                                        {
+                                            ParticleSystemNode matNode = new ParticleSystemNode
+                                            {
+                                                Entry = materialEntry,
+                                                Header = $"Material: {materialEntry.UIndex} {materialEntry.InstancedFullPath}"
+                                            };
+                                            reqModule.Children.Add(matNode);
+                                        }
                                     }
                                 }
-                            }
 
-                            var typeDataExport = (ExportEntry)lodExport.GetProperty<ObjectProperty>("TypeDataModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
-                            if (typeDataExport != null)
-                            {
-                                ParticleSystemNode typeModuleNode = new ParticleSystemNode { Entry = typeDataExport, Header = $"Type Data Module: {typeDataExport.UIndex} {typeDataExport.InstancedFullPath}" };
-                                psLod.Children.Add(typeModuleNode);
-
-                                var meshes = typeDataExport.GetProperty<ArrayProperty<ObjectProperty>>("m_Meshes");
-                                if (meshes != null)
+                                var typeDataExport = (ExportEntry) lodExport.GetProperty<ObjectProperty>("TypeDataModule")?.ResolveToEntry(CurrentLoadedExport.FileRef);
+                                if (typeDataExport != null)
                                 {
-                                    int meshIndex = 0;
-                                    foreach (var mesh in meshes)
+                                    ParticleSystemNode typeModuleNode = new ParticleSystemNode {Entry = typeDataExport, Header = $"Type Data Module: {typeDataExport.UIndex} {typeDataExport.InstancedFullPath}"};
+                                    psLod.Children.Add(typeModuleNode);
+
+                                    var meshes = typeDataExport.GetProperty<ArrayProperty<ObjectProperty>>("m_Meshes");
+                                    if (meshes != null)
                                     {
-                                        var meshExp = mesh.ResolveToEntry(CurrentLoadedExport.FileRef);
-                                        if (meshExp != null)
+                                        int meshIndex = 0;
+                                        foreach (var mesh in meshes)
                                         {
-                                            ParticleSystemNode meshNode = new ParticleSystemNode { Entry = meshExp, Header = $"Mesh {meshIndex}: {meshExp.UIndex} {meshExp.InstancedFullPath}" };
-                                            typeModuleNode.Children.Add(meshNode);
+                                            var meshExp = mesh.ResolveToEntry(CurrentLoadedExport.FileRef);
+                                            if (meshExp != null)
+                                            {
+                                                ParticleSystemNode meshNode = new ParticleSystemNode {Entry = meshExp, Header = $"Mesh {meshIndex}: {meshExp.UIndex} {meshExp.InstancedFullPath}"};
+                                                typeModuleNode.Children.Add(meshNode);
+                                            }
+
+                                            meshIndex++;
+                                        }
+                                    }
+                                }
+
+                                var modules = lodExport.GetProperty<ArrayProperty<ObjectProperty>>("Modules");
+                                if (modules != null)
+                                {
+                                    int modIndex = 0;
+                                    foreach (var module in modules)
+                                    {
+                                        var moduleExp = module.ResolveToEntry(CurrentLoadedExport.FileRef);
+                                        if (moduleExp != null)
+                                        {
+                                            ParticleSystemNode moduleNode = new ParticleSystemNode {Entry = moduleExp, Header = $"Module {modIndex}: {moduleExp.UIndex} {moduleExp.InstancedFullPath}"};
+                                            psLod.Children.Add(moduleNode);
+                                            GenerateNode(moduleNode);
                                         }
 
-                                        meshIndex++;
+                                        modIndex++;
                                     }
                                 }
-                            }
 
-                            var modules = lodExport.GetProperty<ArrayProperty<ObjectProperty>>("Modules");
-                            if (modules != null)
-                            {
-                                int modIndex = 0;
-                                foreach (var module in modules)
-                                {
-                                    var moduleExp = module.ResolveToEntry(CurrentLoadedExport.FileRef);
-                                    if (moduleExp != null)
-                                    {
-                                        ParticleSystemNode moduleNode = new ParticleSystemNode { Entry = moduleExp, Header = $"Module {modIndex}: {moduleExp.UIndex} {moduleExp.InstancedFullPath}" };
-                                        psLod.Children.Add(moduleNode);
-                                        GenerateNode(moduleNode);
-                                    }
-                                    modIndex++;
-                                }
+                                lodNumber++;
                             }
-
-                            lodNumber++;
                         }
-
                     }
                 }
             }
