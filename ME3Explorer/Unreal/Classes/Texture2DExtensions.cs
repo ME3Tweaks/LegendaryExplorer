@@ -482,17 +482,26 @@ namespace ME3Explorer.Unreal.Classes
             //        }
             //    }
             //}
+
+            var hasNeverStream = props.GetProp<BoolProperty>("NeverStream") != null;
+            if (locallyStored)
+            {
+                // Rules for default neverstream
+                // 1. Must be Package Stored
+                // 2. Must have at least 6 not empty mips
+                if (mipmaps.Count >= 6)
+                {
+                    props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+                }
+                // Side case: NeverStream property was already set, we should respect the value
+                // But won't that always be set here? 
+                // Is there a time where we should remove NeverStream? I can't see any logical way
+                // neverstream would be here
+            }
+
             if (mipmaps.Count < 6)
             {
-                props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
-            }
-            else
-            {
-                var neverStream = props.GetProp<BoolProperty>("NeverStream");
-                if (neverStream != null)
-                {
-                    props.Remove(neverStream);
-                }
+                props.RemoveNamedProperty("NeverStream");
             }
 
             if (!locallyStored)
