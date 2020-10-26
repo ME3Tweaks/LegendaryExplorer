@@ -75,14 +75,12 @@ namespace ME3Explorer.Matinee
         {
         }
 
-        public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "";
-
         private string _statusText;
 
         public string StatusText
         {
             get => _statusText;
-            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
+            set => SetProperty(ref _statusText, value);
         }
 
         private ExportEntry _selectedInterpData;
@@ -149,7 +147,7 @@ namespace ME3Explorer.Matinee
             InterpDataExports.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "InterpData"));
             Animations.AddRange(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence").Select(a => a.ObjectNameString));
             Title = $"Interp Viewer - {Pcc.FilePath}";
-            StatusText = Path.GetFileName(fileName);
+            StatusText = Path.GetFileName(Pcc.FilePath);
         }
 
         private void LoadInterpData(ExportEntry value)
