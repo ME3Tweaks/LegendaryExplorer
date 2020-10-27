@@ -163,6 +163,7 @@ namespace ME3ExplorerCore.Audio
                                 {
                                     // Check if offset indicates this is official bioware afc territory
                                     if (vanillaSizesMap.TryGetValue(afcName, out var vanillaSize))
+                                    {
                                         if (audioOffset < vanillaSize)
                                         {
                                             if (isOfficialDLC)
@@ -171,6 +172,7 @@ namespace ME3ExplorerCore.Audio
                                             }
                                             else if (isBasegame)
                                             {
+                                                debugOut?.Invoke($" >>>> Dropping fully basegame audio reference: {exp.ObjectName}");
                                                 continue; //Fully basegame audio is never returned as it will always be available
                                             }
                                         }
@@ -179,6 +181,11 @@ namespace ME3ExplorerCore.Audio
                                             // Out of range?
                                             source = "Modified official DLC";
                                         }
+                                    }
+                                    else
+                                    {
+                                        debugOut?.Invoke($"!!! Vanilla sizes map doesn't include file being checked: {afcName}");
+                                    }
                                 }
                                 else
                                 {
