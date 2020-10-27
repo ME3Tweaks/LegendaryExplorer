@@ -8,15 +8,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Audio;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Application = System.Windows.Application;
 
 namespace ME3Explorer.AFCCompactorUI
 {
@@ -64,7 +67,7 @@ namespace ME3Explorer.AFCCompactorUI
             {
                 var dlcDep = getDlcDependencyForAFC(ra.afcName);
                 // Any will work since there should be only 1 instance that matches in the list
-                if (dlcDep != null && DLCDependencies.Any(x => x.DLCName.Equals(dlcDep, StringComparison.InvariantCultureIgnoreCase) && !x.IsDependedOn))
+                if (!ra.isModified && dlcDep != null && DLCDependencies.Any(x => x.DLCName.Equals(dlcDep, StringComparison.InvariantCultureIgnoreCase) && !x.IsDependedOn))
                 {
                     return false; // Selected to be depended on. Which means it won't be pulled in. Don't show it
                 }
@@ -92,7 +95,9 @@ namespace ME3Explorer.AFCCompactorUI
                             "Warning: This will modify all files in your mod. You should ensure you have a backup of your entire mod before you perform this procedure.\n\nDo you have a backup of your mod?",
                             "WARNING", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No) return;
-
+            var referencesFiltered = AudioReferences.ToList(); //Clone
+            FilterText = "";
+            AudioReferencesView.Refresh();
             Task.Run(() =>
             {
                 IsBusy = true;
@@ -118,11 +123,27 @@ namespace ME3Explorer.AFCCompactorUI
                     return returnValue;
                 }
 
-                var compactionResult = AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, AudioReferences.ToList(), showBrokenAudio, statusUpdate => StatusText = statusUpdate);
+
+                referencesFiltered.ReplaceAll(referencesFiltered.Where(x => FilterReferences(x)).ToList()); //Must use tolist or we'll get concurrent modification
+                string finalAfcPath = null;
+                var compactionResult = AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, referencesFiltered, showBrokenAudio,
+                    (done, total) =>
+                    {
+                        ProgressValue = done;
+                        ProgressMax = total;
+                    },
+                    statusUpdate => StatusText = statusUpdate,
+                    fafcpath => finalAfcPath = fafcpath,
+                    msg => DebugOutput.PrintLn(msg));
                 if (!compactionResult) return (compactionResult, null);
 
                 // Check references
                 var recalcedRefs = AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder,
+                    (done, total) =>
+                    {
+                        ProgressValue = done;
+                        ProgressMax = total;
+                    },
                     x => StatusText = $"Rescanning {Path.GetFileName(x)}");
                 var dependencyList = recalcedRefs.availableAFCReferences
                     .Where(x =>
@@ -132,14 +153,18 @@ namespace ME3Explorer.AFCCompactorUI
                         if (x.afcName.Equals(NewAFCName, StringComparison.InvariantCultureIgnoreCase)) return false; //we just made this obviously it depends on it
                         return true;
                     }).Select(x => getDlcDependencyForAFC(x.afcName)).Distinct().ToList();
+                if (finalAfcPath != null && File.Exists(finalAfcPath))
+                {
+                    Utilities.OpenAndSelectFileInExplorer(finalAfcPath);
 
+                }
                 return (compactionResult, dependencyList);
 
             }).ContinueWithOnUIThread(prevTask =>
             {
-                AudioReferences.ClearEx();
                 if (prevTask.Result.compactionResult)
                 {
+                    AudioReferences.ClearEx();
                     StatusText = "Compaction completed";
                     ListDialog ld = new ListDialog(prevTask.Result.dependencyList, "Compaction dependency results", "Your mod now depends on the following DLCs for audio. Users without these DLC will be have no audio play if the referenced AFC is attempted to be used from them.", this);
                     ld.Show();
@@ -183,6 +208,20 @@ namespace ME3Explorer.AFCCompactorUI
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
+
+        private long _progressMax = 100;
+        public long ProgressMax
+        {
+            get => _progressMax;
+            set => SetProperty(ref _progressMax, value);
+        }
+        private long _progressValue;
+        public long ProgressValue
+        {
+            get => _progressValue;
+            set => SetProperty(ref _progressValue, value);
+        }
+
 
         private string _statusText;
         public string StatusText
@@ -286,15 +325,20 @@ namespace ME3Explorer.AFCCompactorUI
                     {
                         IsBusy = true;
                         return AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder,
-                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}"
-                            , debugMsg =>
+                            (done, total) =>
+                            {
+                                ProgressValue = done;
+                                ProgressMax = total;
+                            },
+                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}",
+                            debugMsg =>
                             {
                                 DebugOutput.PrintLn(debugMsg, false);
                                 allMessages.Add(debugMsg);
                             });
                     }).ContinueWithOnUIThread(prevTask =>
                     {
-                        File.WriteAllLines(@"C:\Users\Public\AFCCompactorLog.txt", allMessages);
+                        //File.WriteAllLines(@"C:\Users\Public\AFCCompactorLog.txt", allMessages);
                         StatusText = "Review audio references and adjust as necessary";
                         AudioReferences.ReplaceAll(prevTask.Result.availableAFCReferences);
                         DLCDependencies.ReplaceAll(getDLCDependencies(prevTask.Result.availableAFCReferences, SelectedGame));

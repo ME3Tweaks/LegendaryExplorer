@@ -24,8 +24,8 @@
             <DockPanel Dock="Bottom" Margin="0,5,0,0">
                 <TextBlock Text="{Binding StatusText, FallbackValue=Ahoy}" VerticalAlignment="Center" 
                            Margin="5,0"
-                           HorizontalAlignment="Right" DockPanel.Dock="Right"></TextBlock>
-                <ProgressBar IsIndeterminate="{Binding IsBusy}" Width="200" HorizontalAlignment="Left"/>
+                           HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+                <ProgressBar Maximum="{Binding ProgressMax}" Value="{Binding ProgressValue}" Width="250" HorizontalAlignment="Left"/>
 
             </DockPanel>
 
@@ -85,7 +85,8 @@
                 <DockPanel Dock="Bottom">
                     <xctk:WatermarkTextBox Watermark="Type to filter" 
                                            Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                                           ToolTip="Filter shown items. Note this only filters the interface and not what will actually be compacted"/>
+                                           ToolTip="Filter shown items. Note this only filters the interface and not what will actually be compacted"
+                                           IsEnabled="{Binding IsBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}"/>
                 </DockPanel>
                 <ListBox ItemsSource="{Binding AudioReferencesView}" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
