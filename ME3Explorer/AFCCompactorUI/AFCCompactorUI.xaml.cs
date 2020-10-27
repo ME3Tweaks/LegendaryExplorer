@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Audio;
 using ME3ExplorerCore.Helpers;
@@ -284,11 +285,13 @@ namespace ME3Explorer.AFCCompactorUI
 
                 if (pccFiles.Any())
                 {
+                    DebugOutput.StartDebugger("AFC Compactor");
                     Task.Run(() =>
                     {
                         IsBusy = true;
                         return AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder,
-                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}");
+                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}",
+                            debugMsg => DebugOutput.PrintLn(debugMsg));
                     }).ContinueWithOnUIThread(prevTask =>
                     {
                         StatusText = "Review audio references and adjust as necessary";

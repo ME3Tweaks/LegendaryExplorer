@@ -54,41 +54,55 @@ namespace ME3ExplorerCore.Audio
             public bool isAvailable { get; set; }
         }
 
-        public static (List<ReferencedAudio> missingAFCReferences, List<ReferencedAudio> availableAFCReferences) GetReferencedAudio(MEGame game, string inputPath, Action<string> currentScanningFileCallback = null)
+        public static (List<ReferencedAudio> missingAFCReferences, List<ReferencedAudio> availableAFCReferences) GetReferencedAudio(MEGame game, string inputPath, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
         {
             var sizesJsonStr = new StreamReader(Utilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
             var vanillaSizesMap = JsonConvert.DeserializeObject<CaseInsensitiveDictionary<int>>(sizesJsonStr);
             var pccFiles = Directory.GetFiles(inputPath, "*.pcc", SearchOption.AllDirectories);
             var localFolderAFCFiles = Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories);
-
-
             var referencedAFCAudio = new List<ReferencedAudio>();
             var missingAFCReferences = new List<ReferencedAudio>();
             int i = 1;
 
             var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
+            foreach (var oafc in basegameAFCFiles)
+            {
+                debugOut?.Invoke($@" >> Found Basegame AFC {oafc}");
+            }
             var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFiles(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
+
+            foreach (var oafc in officialDLCAFCFiles)
+            {
+                debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
+            }
 
             CaseInsensitiveDictionary<List<string>> sfarAFCFiles = new CaseInsensitiveDictionary<List<string>>();
             if (game == MEGame.ME3 && Directory.Exists(ME3Directory.DLCPath))
             {
+                debugOut?.Invoke($@"DLC directory: {ME3Directory.DLCPath}");
                 foreach (var officialDLC in ME3Directory.OfficialDLC)
                 {
                     var sfarPath = Path.Combine(ME3Directory.DLCPath, officialDLC, "CookedPCConsole", "Default.sfar");
                     if (File.Exists(sfarPath))
                     {
                         currentScanningFileCallback?.Invoke(ME3Directory.OfficialDLCNames[officialDLC]);
+                        debugOut?.Invoke($@"{ME3Directory.OfficialDLCNames[officialDLC]} is installed ({officialDLC})");
+
                         DLCPackage dlc = new DLCPackage(sfarPath);
                         sfarAFCFiles[officialDLC] = dlc.Files.Where(x => x.FileName.EndsWith(".afc")).Select(x => x.FileName).ToList();
+                        foreach (var oafc in sfarAFCFiles[officialDLC])
+                        {
+                            debugOut?.Invoke($@" >> Found SFAR AFC {oafc}");
+                        }
+
                         officialDLCAFCFiles.AddRange(sfarAFCFiles[officialDLC]);
                     }
                 }
             }
 
-
-
             foreach (string pccPath in pccFiles)
             {
+                debugOut?.Invoke($@"SCANNING {pccPath}");
                 currentScanningFileCallback?.Invoke(pccPath);
                 //NotifyStatusUpdate?.Invoke($"Finding all referenced audio ({i}/{pccFiles.Length})");
                 using (var pack = MEPackageHandler.OpenMEPackage(pccPath))
@@ -96,24 +110,46 @@ namespace ME3ExplorerCore.Audio
                     List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
                     foreach (ExportEntry exp in wwiseStreamExports)
                     {
+                        debugOut?.Invoke($@" >> WwiseStream {exp.UIndex} {exp.ObjectName}");
+
                         var afcNameProp = exp.GetProperty<NameProperty>("Filename");
                         if (afcNameProp != null)
                         {
+                            debugOut?.Invoke($@" >>>> AFC filename: {afcNameProp.Value.Name}");
+
                             bool isBasegame = false;
                             bool isOfficialDLC = false;
                             var afcFile = localFolderAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
+
+                            bool logged = false;
+                            if (afcFile != null)
+                            {
+                                debugOut?.Invoke($@" >>>> AFC found locally: {afcFile}");
+                                logged = true;
+                            }
                             if (afcFile == null)
                             {
                                 // Try to find basegame version
                                 afcFile = basegameAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
                                 isBasegame = afcFile != null;
                             }
+                            if (afcFile != null && !logged)
+                            {
+                                debugOut?.Invoke($@" >>>> AFC found in basegame: {afcFile}");
+                                logged = true;
+                            }
+
 
                             if (afcFile == null)
                             {
                                 // Try to find official DLC version
                                 afcFile = officialDLCAFCFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(afcNameProp.Value, StringComparison.InvariantCultureIgnoreCase));
                                 isOfficialDLC = afcFile != null;
+                            }
+                            if (afcFile != null && !logged)
+                            {
+                                debugOut?.Invoke($@" >>>> AFC found in official DLC: {afcFile}");
+                                logged = true;
                             }
 
                             string afcName = afcNameProp.ToString().ToLower();
@@ -155,6 +191,8 @@ namespace ME3ExplorerCore.Audio
                             }
                             else
                             {
+                                debugOut?.Invoke($@" !!!! AFC NOT FOUND: {afcFile}");
+
                                 missingAFCReferences.Add(new ReferencedAudio()
                                 {
                                     afcName = afcNameProp.Value,
