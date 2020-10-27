@@ -162,22 +162,27 @@ namespace ME3ExplorerCore.Audio
                                 if (isBasegame || isOfficialDLC)
                                 {
                                     // Check if offset indicates this is official bioware afc territory
-                                    if (vanillaSizesMap.TryGetValue(afcName, out var vanillaSize) &&
-                                        audioOffset < vanillaSize)
-                                    {
-                                        if (isOfficialDLC)
+                                    if (vanillaSizesMap.TryGetValue(afcName, out var vanillaSize))
+                                        if (audioOffset < vanillaSize)
                                         {
-                                            source = "Official DLC";
+                                            if (isOfficialDLC)
+                                            {
+                                                source = "Official DLC";
+                                            }
+                                            else if (isBasegame)
+                                            {
+                                                continue; //Fully basegame audio is never returned as it will always be available
+                                            }
                                         }
-                                        else if (isBasegame)
+                                        else
                                         {
-                                            continue; //Fully basegame audio is never returned as it will always be available
+                                            // Out of range?
+                                            source = "Modified official DLC";
                                         }
-                                    }
-                                    else
-                                    {
-                                        source = "Modified";
-                                    }
+                                }
+                                else
+                                {
+                                    source = "Modified unofficial";
                                 }
 
                                 referencedAFCAudio.Add(new ReferencedAudio()
@@ -384,7 +389,6 @@ namespace ME3ExplorerCore.Audio
 
 
             var basegameAFCFile = basegameAfcFiles.FirstOrDefault(x => Path.GetFileName(x).ToLower() == fname);
-
             if (basegameAFCFile != null)
             {
                 return File.OpenRead(basegameAFCFile);

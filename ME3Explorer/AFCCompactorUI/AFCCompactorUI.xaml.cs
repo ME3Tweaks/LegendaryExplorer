@@ -290,8 +290,9 @@ namespace ME3Explorer.AFCCompactorUI
                     {
                         IsBusy = true;
                         return AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder,
-                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}",
-                            debugMsg => DebugOutput.PrintLn(debugMsg));
+                            scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}"
+                            , debugMsg => DebugOutput.PrintLn(debugMsg)
+                            );
                     }).ContinueWithOnUIThread(prevTask =>
                     {
                         StatusText = "Review audio references and adjust as necessary";
