@@ -933,7 +933,7 @@ namespace ME3Explorer.TFCCompactor
                             GameList.Add(new GameWrapper(MEGame.Unknown, "Select game...", null) { IsBrowseForCustom = true, IsCustomPath = true });
                             SelectedGame = newItem;
                             var officialDLC = gameSelected == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
-                            var DLC = MELoadedFiles.GetEnabledDLCFiles(gameSelected, result).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
+                            var DLC = MELoadedFiles.GetEnabledDLCFolders(gameSelected, result).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
                             CustomDLCFolderList.ReplaceAll(DLC);
                         }
                     }
@@ -943,7 +943,7 @@ namespace ME3Explorer.TFCCompactor
                     ScanForGameCompleted = false;
                     SelectedGame = newItem;
                     var officialDLC = newItem.Game == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
-                    var DLC = MELoadedFiles.GetEnabledDLCFiles(newItem.Game, newItem.DLCPath).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
+                    var DLC = MELoadedFiles.GetEnabledDLCFolders(newItem.Game, newItem.DLCPath).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
                     CustomDLCFolderList.ReplaceAll(DLC);
                     movieScan = newItem.DisplayName == "Mass Effect 3 (Movies)";
                 }

@@ -55,7 +55,7 @@ namespace ME3ExplorerCore.Helpers
             var bgPath = MEDirectories.MEDirectories.BioGamePath(game);
             if (bgPath != null)
             {
-                foreach (string directory in GetEnabledDLCFiles(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
+                foreach (string directory in GetEnabledDLCFolders(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
                 {
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs))
                     {
@@ -88,9 +88,9 @@ namespace ME3ExplorerCore.Helpers
         }
 
         // this should have a null check on Biogamepath to avoid throwing an exception
-        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFolders(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
         // this should have a null check on Biogamepath to void throwing an exception
-        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFiles(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFolders(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
 
         internal static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
         {
@@ -106,18 +106,18 @@ namespace ME3ExplorerCore.Helpers
         }
 
 
-        // These methods show check DLCpath to avoid throwing exception
+        // These methods should check DLCpath to avoid throwing exception
 
         /// <summary>
         /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
         /// Directory Override is used to use a custom path, for things like TFC Compactor, where the directory ME3Exp is pointing to may not be the one you want to use.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLCFiles(MEGame game, string directoryOverride = null) =>
+        public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string directoryOverride = null) =>
             Directory.Exists(MEDirectories.MEDirectories.DLCPath(game))
                 ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
                 : Enumerable.Empty<string>();
-        public static IEnumerable<string> GetOfficialDLCFiles(MEGame game) =>
+        public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) =>
             Directory.Exists(MEDirectories.MEDirectories.DLCPath(game))
                 ? Directory.EnumerateDirectories(MEDirectories.MEDirectories.DLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
                 : Enumerable.Empty<string>();

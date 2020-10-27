@@ -70,8 +70,7 @@ namespace ME3ExplorerCore.Audio
             {
                 debugOut?.Invoke($@" >> Found Basegame AFC {oafc}");
             }
-            var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFiles(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
-
+            var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFolders(game).SelectMany(x => Directory.GetFiles(x, "*.afc", SearchOption.AllDirectories)).ToList();
             foreach (var oafc in officialDLCAFCFiles)
             {
                 debugOut?.Invoke($@" >> Found AFC in DLC directory {oafc}");
@@ -229,7 +228,7 @@ namespace ME3ExplorerCore.Audio
             notifyStatusUpdate?.Invoke("Preparing to compact AFC");
             var localFolderAFCFiles = Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories).ToList();
             var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
-            var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFiles(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
+            var officialDLCAFCFiles = MELoadedFiles.GetOfficialDLCFolders(game).Where(x => Path.GetExtension(x) == ".afc").ToList();
 
             CaseInsensitiveDictionary<List<string>> sfarAFCFiles = new CaseInsensitiveDictionary<List<string>>();
             if (game == MEGame.ME3 && Directory.Exists(ME3Directory.DLCPath))
