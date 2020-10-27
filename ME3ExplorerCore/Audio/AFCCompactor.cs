@@ -64,6 +64,7 @@ namespace ME3ExplorerCore.Audio
             var missingAFCReferences = new List<ReferencedAudio>();
             int i = 1;
 
+            debugOut?.Invoke($"Beginning AFC references scan. Input path: {inputPath}, game {game}");
             var basegameAFCFiles = MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc").ToList();
             foreach (var oafc in basegameAFCFiles)
             {
@@ -203,7 +204,7 @@ namespace ME3ExplorerCore.Audio
                             }
                             else
                             {
-                                debugOut?.Invoke($@" !!!! AFC NOT FOUND: {afcFile}");
+                                debugOut?.Invoke($@" !!!! AFC NOT FOUND: {afcNameProp.Value}");
 
                                 missingAFCReferences.Add(new ReferencedAudio()
                                 {

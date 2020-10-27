@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using ME3Explorer.Debugging;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Audio;
@@ -285,16 +280,21 @@ namespace ME3Explorer.AFCCompactorUI
 
                 if (pccFiles.Any())
                 {
+                    var allMessages = new List<string>();
                     DebugOutput.StartDebugger("AFC Compactor");
                     Task.Run(() =>
                     {
                         IsBusy = true;
                         return AFCCompactor.GetReferencedAudio(SelectedGame, DLCInputFolder,
                             scanningPcc => StatusText = $"Scanning {Path.GetFileName(scanningPcc)}"
-                            , debugMsg => DebugOutput.PrintLn(debugMsg)
-                            );
+                            , debugMsg =>
+                            {
+                                DebugOutput.PrintLn(debugMsg, false);
+                                allMessages.Add(debugMsg);
+                            });
                     }).ContinueWithOnUIThread(prevTask =>
                     {
+                        File.WriteAllLines(@"C:\Users\Public\AFCCompactorLog.txt", allMessages);
                         StatusText = "Review audio references and adjust as necessary";
                         AudioReferences.ReplaceAll(prevTask.Result.availableAFCReferences);
                         DLCDependencies.ReplaceAll(getDLCDependencies(prevTask.Result.availableAFCReferences, SelectedGame));
