@@ -66,7 +66,19 @@ namespace ME3Explorer.CurveEd
                 graph.Clear();
                 CurrentLoadedExport = exportEntry;
                 Load();
-                CurrentExportName_TextBlock.Text = exportEntry.FullPath.Substring(exportEntry.FullPath.IndexOf("Main_Sequence.") + "Main_Sequence.".Length);
+                string fullPath = exportEntry.InstancedFullPath;
+                int mainSeqIdx = fullPath.IndexOf("Main_Sequence.");
+                if (mainSeqIdx >= 0)
+                {
+                    fullPath = fullPath.Substring(mainSeqIdx + "Main_Sequence.".Length);
+                }
+                CurrentExportName_TextBlock.Text = fullPath;
+                btnClamped.Visibility = CurrentLoadedExport.Game switch
+                {
+                    MEGame.ME3 => Visibility.Visible,
+                    MEGame.UDK => Visibility.Visible,
+                    _ => Visibility.Collapsed
+                };
             }
         }
 
