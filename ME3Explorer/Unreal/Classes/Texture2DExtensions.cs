@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Helpers;
 using System.Globalization;
+using AmaroK86.ImageFormat;
 using ME3ExplorerCore.Gammtek.IO;
 
 namespace ME3Explorer.Unreal.Classes
@@ -608,41 +609,32 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (outputPath == null && outStream == null)
                 throw new Exception("ExportToPNG() requires at least one not-null parameter.");
-            Texture2DMipInfo info = new Texture2DMipInfo();
-            info = t2d.Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            if (info != null)
+            Texture2DMipInfo mip = t2d.Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+            if (mip != null)
             {
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info);
+                    imageBytes = Texture2D.GetTextureData(mip);
                 }
                 catch (FileNotFoundException e)
                 {
                     Debug.WriteLine("External cache not found. Defaulting to internal mips.");
                     //External archive not found - using built in mips (will be hideous, but better than nothing)
-                    info = t2d.Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
-                    if (info != null)
+                    mip = t2d.Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                    if (mip != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info);
+                        imageBytes = Texture2D.GetTextureData(mip);
                     }
                 }
 
-                if (imageBytes != null)
+                var pngEncoder = DDSImage.ToPng(imageBytes, DDSImage.convertFormat(t2d.TextureFormat), mip.width, mip.height);
+                if (pngEncoder != null)
                 {
-                    PixelFormat format = Image.getPixelFormatType(t2d.TextureFormat);
-
-                    PngBitmapEncoder image = Image.convertToPng(imageBytes, info.width, info.height, format);
-                    if (outStream == null)
-                    {
-                        outStream = new FileStream(outputPath, FileMode.Create);
-                        image.Save(outStream);
-                        outStream.Close();
-                    }
-                    else
-                    {
-                        image.Save(outStream);
-                    }
+                    bool shouldClose = outStream == null;
+                    if (outStream == null) outStream = new FileStream(outputPath, FileMode.Create);
+                    pngEncoder.Save(outStream);
+                    if (shouldClose) outStream.Close();
                 }
             }
 
