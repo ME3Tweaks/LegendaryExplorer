@@ -78,18 +78,21 @@
                 <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <TextBlock Margin="5" Text="Welcome to Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
                     <TextBlock Margin="5" TextWrapping="Wrap">
-                            The new Meshplorer is a bit different from the classic Meshplorer.
+                            Meshplorer is a mesh editing focused tool that only shows mesh exports in package files.
                                 <LineBreak/>
-                                Indexes are done strictly by UIndex, which is how they appear in game code. 
+                                This includes SkeletalMeshes, StaticMeshes, and Brushes currently. 
                                 <LineBreak/>
                                 <LineBreak/>
-                            This means:
+                            You can view the properties of exports in the top Interpreter panel, and the binary for the
                                 <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in Package Editor
+                            export in the Binary Interpreter panel at the bottom. On the right is the Mesh Renderer.
                             <LineBreak/>
-                                -  Import references will remain the same
                             <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
+                                Right clicking on the export list will bring up a list of options. The Mesh Renderer
+                            <LineBreak/>
+                            also has options such as showing wireframe, what LOD to show, the background color, and
+                            <LineBreak/>
+                            UModel export. Importing must be done from packages created with UDK 2015.
                              <LineBreak/>
                              <LineBreak/>
                                 If you have issues with Meshplorer, please report them to one of the following places:

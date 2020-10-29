@@ -77,7 +77,7 @@
                     <TextBlock Margin="5">
                             This tool allows you to visualize Unreal's Matinee Sequences
                                 <LineBreak/>
-                            It does not yet support direct editing, but you can still change values in the Interpreter panel
+                            It does not yet support direct editing, but you can still change values in the Interpreter and Curve Editor tabs.
                                 <LineBreak/>
                     </TextBlock>
 
