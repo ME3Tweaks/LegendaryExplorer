@@ -448,22 +448,31 @@
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" MinHeight="230" MaxHeight="230" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
                 <StackPanel DockPanel.Dock="Left">
-                    <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
+                    <TextBlock Margin="5" Text="Welcome to Pathfinding Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
-                            Pathfinding Editor WPF is a bit different from the classic Pathfinding Editor.
+                            Pathfinding Editor is a top down 2D level editor that mostly focuses on editing level pathing,
                                 <LineBreak/>
-                                Indexes are done strictly by UIndex, which is how they appear in game code.
+                            but can also be used to edit positions of meshes, lightings, and other actors.
                                 <LineBreak/>
                                 <LineBreak/>
-                            This means:
-                                <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in Pathfinding Editor
-                            <LineBreak/>
-                                -  Import references will remain the same
-                            <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
+
+                            Load a file containing a level, and use the view options to help orient yourself. You can load
                              <LineBreak/>
-                    </TextBlock>
+                                an 'overlay' pathing file in the Experiments menu, which will show nodes from another file 
+                             <LineBreak/>
+                            on top of the current one, which can help you navigate the space.
+                            <LineBreak/>
+                            <LineBreak/>
+                            If you have issues with Pathfinding Editor, please report them to one of the following places:
+                            <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>                                <LineBreak/>
+                            - The issues list on GitHub at 
+                            <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                            </Hyperlink>
+                    </TextBlock>                   
                 </StackPanel>
                 <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left"/>
             </DockPanel>
