@@ -732,10 +732,12 @@ namespace ME3Explorer.Sequence_Editor
             {
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
                                                .Where(prop => Pcc.IsUExport(prop.Value))
-                                               .Select(prop => LoadObject(Pcc.GetUExport(prop.Value))));
+                                               .Select(prop => Pcc.GetUExport(prop.Value))
+                                               .ToHashSet() //remove duplicate exports
+                                               .Select(LoadObject));
                 if (CurrentObjects.Count != seqObjs.Count)
                 {
-                    MessageBox.Show(this, "Sequence contains invalid exports! Correct this by editing the SequenceObject array in the Interpreter");
+                    MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Interpreter");
                 }
             }
         }
