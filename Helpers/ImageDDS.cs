@@ -609,7 +609,7 @@ namespace MassEffectModder.Images
             return dst;
         }
 
-        static private byte[] decompressMipmap(PixelFormat srcFormat, byte[] src, int w, int h)
+        private static byte[] decompressMipmap(PixelFormat srcFormat, byte[] src, int w, int h)
         {
             byte[] dst = new byte[w * h * 4];
             int cores = Environment.ProcessorCount;

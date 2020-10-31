@@ -685,8 +685,8 @@ namespace ME3Explorer.Unreal.Classes
             }
             int width = (int)info.width;
             int height = (int)info.height;
-            var fmt = AmaroK86.ImageFormat.DDSImage.convertFormat(t2d.TextureFormat);
-            var bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(imageBytes, fmt, info.width, info.height);
+            var bmp = Image.convertRawToBitmapARGB(imageBytes, info.width, info.height, Image.getPixelFormatType(t2d.TextureFormat));
+
             // Convert compressed image data to an A8R8G8B8 System.Drawing.Bitmap
             /* DDSFormat format;
             const Format dxformat = Format.B8G8R8A8_UNorm;

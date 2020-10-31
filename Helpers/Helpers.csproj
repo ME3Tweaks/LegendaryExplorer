@@ -30,6 +30,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinRelease|x64'">
     <OutputPath>bin\x64\WinRelease\</OutputPath>
@@ -42,7 +43,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Codecs\CompressonatorCodecs.cs" />
-    <Compile Include="DDSImage.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageBMP.cs" />
     <Compile Include="ImageDDS.cs" />

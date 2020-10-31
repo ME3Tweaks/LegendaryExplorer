@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AmaroK86.ImageFormat;
 using MassEffectModder.Images;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Properties;
@@ -364,8 +363,8 @@ namespace ME3Explorer
             {
                 var imagebytes = Texture2D.GetTextureData(mipToLoad);
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
-                var fmt = DDSImage.convertFormat(CurrentLoadedFormat);
-                var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
+                var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat));
+                //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());
                 using (MemoryStream memory = new MemoryStream())
                 {
                     bitmap.Save(memory, ImageFormat.Bmp);

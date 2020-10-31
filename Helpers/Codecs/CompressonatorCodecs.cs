@@ -52,6 +52,7 @@ namespace CompressonatorCodecs
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressAlphaBlock([In] byte[] alphaBlock, [Out] uint[] compressedBlock);
 
+        //[DllImport("CompressonatorCodecs.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressAlphaBlock([Out] byte[] alphaBlock, [In] uint[] compressedBlock);
 
