@@ -109,6 +109,21 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies, cache);
             }
 
+            // Reindex
+            Dictionary<string, ExportEntry> itemsToReindex = new Dictionary<string, ExportEntry>();
+            foreach (var v in relinkMap.Values)
+            {
+                if (v is ExportEntry export && export.indexValue > 0)
+                {
+                    itemsToReindex[export.FullPath] = export; // Match on full path. Not instanced full path!
+                }
+            }
+
+            foreach (var item in itemsToReindex)
+            {
+                ReindexExportEntriesWithSamePath(item.Value);
+            }
+
             cache?.Dispose();
             return relinkResults;
 
@@ -148,7 +163,25 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     importChildrenOf(node, entry, cache);
                 }
             }
+        }
 
+        public static void ReindexExportEntriesWithSamePath(ExportEntry entry)
+        {
+            string prefixToReindex = entry.ParentInstancedFullPath;
+            string objectname = entry.ObjectName.Name;
+
+            int index = 1; //we'll start at 1.
+            foreach (ExportEntry export in entry.FileRef.Exports)
+            {
+                //Check object name is the same, the package path count is the same, the package prefix is the same, and the item is not of type Class
+
+                // Could this be optimized somehow?
+                if (export.ParentInstancedFullPath == prefixToReindex && !export.IsClass && objectname == export.ObjectName.Name)
+                {
+                    export.indexValue = index;
+                    index++;
+                }
+            }
         }
 
         /// <summary>

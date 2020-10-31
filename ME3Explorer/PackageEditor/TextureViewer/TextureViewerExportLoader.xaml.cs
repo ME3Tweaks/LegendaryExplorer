@@ -138,7 +138,7 @@ namespace ME3Explorer
                 catch (TextureSizeNotPowerOf2Exception)
                 {
                     MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
-                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, etc)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 catch (Exception e)
