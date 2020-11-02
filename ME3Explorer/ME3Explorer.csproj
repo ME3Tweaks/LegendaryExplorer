@@ -1601,6 +1601,7 @@
     <Resource Include="Resources\sfarexplorer_256x256.ico" />
     <Resource Include="Resources\afccompactor_256x256.ico" />
     <Resource Include="Resources\minilogo.png" />
+    <Resource Include="Resources\scriptdatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>

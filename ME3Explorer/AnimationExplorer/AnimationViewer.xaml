@@ -11,7 +11,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="AnimationExplorer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
+        Title="Animation Viewer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>

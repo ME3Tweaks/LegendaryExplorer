@@ -217,19 +217,27 @@
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                         <TextBlock Margin="5" Text="Welcome to Sequence Editor" FontWeight="Bold" />
                         <TextBlock Margin="5">
-                            The new Sequence Editor is a bit different from the classic Sequence Editor.
+                            Sequence Editor is the toolsets editor for Kismet sequencencing, which is heavily utilized in Mass Effect games.
                             <LineBreak />
-                            Indexes are done strictly by UIndex, which is how they appear in game code.
-                            <LineBreak />
-                            <LineBreak />
-                            This means:
-                            <LineBreak />
-                            -  Export references will be incremented by 1 from what you have seen in the old Sequence Editor
-                            <LineBreak />
-                            -  Import references will remain the same
-                            <LineBreak />
-                            -  0 indicates null, empty, or "Class", depending on the context
-                            <LineBreak />
+                            Package files that contain sequences are ones that contain levels, which for ME1 are nearly everything in the
+                            <LineBreak/>
+                            Maps folder, and for ME2/ME3 the BioA/D/H/P/S files.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Connect sequences by dragging their outputs to inputs. Use the sequence toolbox on the left side to add new 
+                            <LineBreak/>
+                            objects in as needed. Look for existing usages of sequence objects in files to see how they are used.
+                            <LineBreak/>
+                            <LineBreak/>
+                            If you have issues with Sequence Editor, please report them to one of the following places:
+                            <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>                                <LineBreak/>
+                            - The issues list on GitHub at 
+                            <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                            </Hyperlink>
                         </TextBlock>
                     </StackPanel>
                     <SharedUI:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
