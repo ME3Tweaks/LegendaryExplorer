@@ -52,6 +52,8 @@
     <OutputPath>bin\x64\WinRelease\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8</LangVersion>
+    <DefineConstants>RELEASE</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinDebug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +70,7 @@
     <LangVersion>8</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <DefineConstants>AZURE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -1628,6 +1631,8 @@ rmdir /s /q "$(ProjectDir)$(OutDir)ro"
 rmdir /s /q "$(ProjectDir)$(OutDir)ru"
 rmdir /s /q "$(ProjectDir)$(OutDir)sv"
 rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
+rmdir /s /q "$(ProjectDir)$(OutDir)runtimes\win-arm"
+rmdir /s /q "$(ProjectDir)$(OutDir)runtimes\win-x86"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe" "$(ProjectDir)$(OutDir)lib\"

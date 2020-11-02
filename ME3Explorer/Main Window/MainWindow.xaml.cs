@@ -61,9 +61,12 @@ namespace ME3Explorer
 
 #if DEBUG
                 version += " DEBUG";
-#else
+#elif AZURE
                 //This is what will be placed in release. Comment this out when building for a stable!
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+#elif RELEASE
+                // UPDATE THIS FOR RELEASE
+                version += " RC";
 #endif
                 return version;
             }
