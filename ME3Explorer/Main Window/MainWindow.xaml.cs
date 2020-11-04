@@ -66,7 +66,7 @@ namespace ME3Explorer
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #elif RELEASE
                 // UPDATE THIS FOR RELEASE
-                version += " RC";
+                //version += " RC";
 #endif
                 return version;
             }
