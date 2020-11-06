@@ -1,21 +1,18 @@
 ﻿using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
+using EReplyCategory = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyCategory;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -115,7 +112,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void GenerateTable()
         {
-            
+
             datagrid_Links.ItemsSource = linkTable;
 
             var clnO = new DataGridTextColumn
@@ -138,7 +135,7 @@ namespace ME3Explorer.Dialogue_Editor
             };
             datagrid_Links.Columns.Add(clnA);
 
-            if(!IsReply)
+            if (!IsReply)
             {
                 var clnB = new DataGridTextColumn
                 {
@@ -252,20 +249,20 @@ namespace ME3Explorer.Dialogue_Editor
                     links.Add($"{entry.NodeCount}: {entry.LineStrRef} {entry.Line}");
                 }
             }
-            string ldlg = InputComboBoxWPF.GetValue(this, "Pick the next dialogue node to link to", links, links[l]);
+            string ldlg = InputComboBoxWPF.GetValue(this, "Pick the next dialogue node to link to", "Dialogue Editor", links, links[l]);
 
             if (string.IsNullOrEmpty(ldlg))
                 return;
             editLink.Index = links.FindIndex(ldlg.Equals);
 
-            if(!IsReply)
+            if (!IsReply)
             {
                 //Set StrRef
                 int strRef = 0;
                 bool isNumber = false;
                 while (!isNumber)
                 {
-                    var response = PromptDialog.Prompt(this,"Enter the TLK String Reference for the dialogue wheel:", "Link Editor", editLink.ReplyStrRef.ToString());
+                    var response = PromptDialog.Prompt(this, "Enter the TLK String Reference for the dialogue wheel:", "Link Editor", editLink.ReplyStrRef.ToString());
                     if (response == null || response == "0")
                         return;
                     isNumber = int.TryParse(response, out strRef);
@@ -281,7 +278,7 @@ namespace ME3Explorer.Dialogue_Editor
                 ////Set GUI Reply style
                 var rc = editLink.RCategory; //Get current link
 
-                string rdlg = InputComboBoxWPF.GetValue(this, "Pick the wheel position or interrupt:", Enums.GetNames<EReplyCategory>(), rc.ToString());
+                string rdlg = InputComboBoxWPF.GetValue(this, "Pick the wheel position or interrupt:", "Dialogue Editor", Enums.GetNames<EReplyCategory>(), rc.ToString());
 
                 if (string.IsNullOrEmpty(rdlg))
                     return;
@@ -298,7 +295,7 @@ namespace ME3Explorer.Dialogue_Editor
             linkTable.Sort(l => l.Order);
 
             int n = 0;
-            foreach(var link in linkTable )
+            foreach (var link in linkTable)
             {
                 link.Order = n;
                 link.Ordinal = DialogueEditorWPF.AddOrdinal(link.Order + 1);
@@ -351,7 +348,7 @@ namespace ME3Explorer.Dialogue_Editor
         private void CloneLink()
         {
             var donor = linkTable[datagrid_Links.SelectedIndex];
-            linkTable.Add(new ReplyChoiceNode(donor) {Order = linkTable.Count + 1});
+            linkTable.Add(new ReplyChoiceNode(donor) { Order = linkTable.Count + 1 });
             NeedsSave = true;
             ReOrderTable();
         }
@@ -361,7 +358,7 @@ namespace ME3Explorer.Dialogue_Editor
             string command = obj as string;
 
             int n = 1;
-            if(command == "Up") //"Up" is down in index
+            if (command == "Up") //"Up" is down in index
             {
                 n = -1;
             }
@@ -382,7 +379,7 @@ namespace ME3Explorer.Dialogue_Editor
 
         private void LinkEd_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(NeedsSave)
+            if (NeedsSave)
             {
                 var confirm = MessageBox.Show("There are unsaved changes. Do you wish to save now?", "Link Editor", MessageBoxButton.YesNoCancel);
 

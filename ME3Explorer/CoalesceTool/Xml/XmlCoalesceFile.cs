@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Gammtek.Conduit.IO;
-using Gammtek.Conduit.Extensions;
+using ME3ExplorerCore.Gammtek.IO;
+
 
 namespace MassEffect3.Coalesce.Xml
 {

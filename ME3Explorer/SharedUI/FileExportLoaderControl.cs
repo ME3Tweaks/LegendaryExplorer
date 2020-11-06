@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,6 +12,11 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public abstract class FileExportLoaderControl : ExportLoaderControl
     {
+        protected FileExportLoaderControl(string memoryTrackerName) : base(memoryTrackerName)
+        {
+
+        }
+
         public abstract void LoadFile(string filepath);
         public string LoadedFile;
         public abstract bool CanLoadFile();

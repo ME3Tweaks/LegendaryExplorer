@@ -3,7 +3,11 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using ME3ExplorerCore.TLK.ME2ME3;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -21,9 +25,11 @@ namespace ME3Explorer
 
         public string InputXmlFilePath
         {
-            get { return _inputXmlFilePath; }
-            set { InputTlkFilePath = value; }
+            get => _inputXmlFilePath;
+            set => InputTlkFilePath = value;
         }
+
+        private string[] InputXMLPaths = new string[0];
 
         public string OutputTlkFilePath { get; set; } = ConfigurationManager.AppSettings["OutputTlkFilePath"];
 
@@ -43,6 +49,8 @@ namespace ME3Explorer
             {
                 InputTlkFilePath = openFileDialog.FileName;
                 TextInputTlkFilePath.Text = InputTlkFilePath;
+                TextOutputXmlFilePath.Text = OutputTextFilePath = Path.ChangeExtension(InputTlkFilePath, "xml");
+
             }
         }
 
@@ -63,13 +71,23 @@ namespace ME3Explorer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Multiselect = false,
+                Multiselect = true,
                 Filter = "XML Files (*.xml)|*.xml"
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 _inputXmlFilePath = openFileDialog.FileName;
-                TextInputXmlFilePath.Text = _inputXmlFilePath;
+                if (openFileDialog.FileNames.Length > 1)
+                {
+                    TextInputXmlFilePath.Text = string.Join(", ", openFileDialog.FileNames.Select(Path.GetFileName));
+                    InputXMLPaths = openFileDialog.FileNames;
+                }
+                else
+                {
+                    TextInputXmlFilePath.Text = _inputXmlFilePath;
+                    TextOutputTlkFilePath.Text = OutputTlkFilePath = Path.ChangeExtension(_inputXmlFilePath, "tlk");
+                    InputXMLPaths = Array.Empty<string>();
+                }
             }
         }
 
@@ -140,46 +158,48 @@ namespace ME3Explorer
             loadingWorker.RunWorkerAsync();
         }
 
-        private void StartWritingTlkButton_Click(object sender, RoutedEventArgs e)
+        private async void StartWritingTlkButton_Click(object sender, RoutedEventArgs e)
         {
-            bool debugVersion = false;
-            if (DebugCheckBox.IsChecked == true)
-                debugVersion = true;
+            bool debugVersion = DebugCheckBox.IsChecked == true;
             BusyWriting(true);
-            var writingWorker = new BackgroundWorker();
 
-            writingWorker.DoWork += delegate
+            await Task.Run(() => CreateTLKFromXML(debugVersion));
+
+            BusyWriting(false);
+        }
+
+        private void CreateTLKFromXML(bool debugVersion)
+        {
+            try
             {
-                try
+                HuffmanCompression hc = new HuffmanCompression();
+                if (InputXMLPaths.Length > 0)
                 {
-                    HuffmanCompression hc = new HuffmanCompression();
+                    hc.LoadInputData(InputXMLPaths, debugVersion);
+                }
+                else
+                {
                     hc.LoadInputData(_inputXmlFilePath, debugVersion);
+                }
 
-                    hc.SaveToTlkFile(OutputTlkFilePath);
-                    MessageBox.Show("Finished creating TLK file.", "Done!",
+                hc.SaveToTlkFile(OutputTlkFilePath);
+                MessageBox.Show("Finished creating TLK file.", "Done!",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (FileNotFoundException)
-                {
-                    MessageBox.Show("Selected XML file was not found or is corrupted.", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                catch (System.Xml.XmlException ex)
-                {
-                    MessageBox.Show($"Parse Error: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-            };
-            writingWorker.RunWorkerCompleted += delegate
+            }
+            catch (FileNotFoundException)
             {
-                BusyWriting(false);
-            };
-
-            writingWorker.RunWorkerAsync();
+                MessageBox.Show("Selected XML file was not found or is corrupted.", "Error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (System.Xml.XmlException ex)
+            {
+                MessageBox.Show($"Parse Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error",
+                                MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private void BusyReading(bool busy)
@@ -250,11 +270,6 @@ namespace ME3Explorer
                 Owner = this
             };
             howToWindow.Show();
-        }
-
-        private void Forums_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://me3tweaks.com/forums");
         }
     }
 }

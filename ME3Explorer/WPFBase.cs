@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
-    public abstract class WPFBase : NotifyPropertyChangedWindowBase
+    /// <summary>
+    /// Window subclass that allows the window to operate on a single package, and subscribe to package updates for that package.
+    /// </summary>
+    public abstract class WPFBase : NotifyPropertyChangedWindowBase, IPackageUser
     {
         private IMEPackage pcc;
         /// <summary>
@@ -23,14 +26,23 @@ namespace ME3Explorer
             private set => SetProperty(ref pcc, value);
         }
 
-        protected WPFBase()
+        protected WPFBase(string memoryTrackerName, bool submitTelemetry = true)
         {
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended($"[WPFBase] {memoryTrackerName}", new WeakReference(this)));
+            if (submitTelemetry)
+            {
+                Analytics.TrackEvent("Opened tool", new Dictionary<string, string>
+                {
+                    {"Toolname", memoryTrackerName}
+                });
+            }
+
             this.Closing += WPFBase_Closing;
         }
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
-            if (pcc != null && pcc.IsModified && pcc.Tools.Count == 1 &&
+            if (pcc != null && pcc.IsModified && pcc.Users.Count == 1 &&
                 MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo))
             {
                 e.Cancel = true;
@@ -41,24 +53,69 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Registers use of an already open package. Releases the existing one, if any.
+        /// This is the same as LoadMEPackage, but the package is already loaded
+        /// </summary>
+        /// <param name="package"></param>
+        public void RegisterPackage(IMEPackage package)
+        {
+            UnLoadMEPackage();
+            Pcc = MEPackageHandler.OpenMEPackage(package, this);
+        }
+
         public void LoadMEPackage(string s)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
+            Pcc = MEPackageHandler.OpenMEPackage(s, this);
         }
 
-        public void LoadME3Package(string s)
+        public void LoadMEPackage(Stream stream, string associatedFilePath = null)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
+            Pcc = MEPackageHandler.OpenMEPackageFromStream(stream, associatedFilePath, user: this);
         }
 
         protected void UnLoadMEPackage()
         {
-            pcc?.Release(wpfWindow: this);
+            pcc?.Release(this);
             Pcc = null;
         }
 
         public abstract void handleUpdate(List<PackageUpdate> updates);
+
+        EventHandler wpfClosed;
+        public void RegisterClosed(Action handler)
+        {
+            wpfClosed = (obj, args) =>
+            {
+                handler();
+            };
+            Closed += wpfClosed;
+        }
+
+        public void ReleaseUse()
+        {
+            Closed -= wpfClosed;
+            wpfClosed = null;
+        }
+
+        public static bool TryOpenInExisting<T>(string filePath, out T tool) where T : WPFBase
+        {
+            foreach (IMEPackage pcc in MEPackageHandler.packagesInTools)
+            {
+                if (pcc.FilePath == filePath)
+                {
+                    foreach (var user in pcc.Users.OfType<T>())
+                    {
+                        tool = user;
+                        tool.RestoreAndBringToFront();
+                        return true;
+                    }
+                }
+            }
+            tool = null;
+            return false;
+        }
     }
 }

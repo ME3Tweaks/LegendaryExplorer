@@ -8,15 +8,12 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:facefx="clr-namespace:ME3Explorer.FaceFX"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:Packages="clr-namespace:ME3Explorer.Packages"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
-        xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         Closing="PackageEditorWPF_Closing"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
@@ -24,12 +21,16 @@
         xmlns:packageEditor="clr-namespace:ME3Explorer.PackageEditor"
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
+        xmlns:particleSystems="clr-namespace:ME3Explorer.ParticleSystems"
+        xmlns:me3Script="clr-namespace:ME3Explorer.ME3Script"
+        xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
         Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        PreviewMouseUp="Window_MouseUp"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
@@ -45,6 +46,7 @@
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="EntryContextMenu">
             <MenuItem Header="Find usages" ToolTip="Finds places where this name is used" Command="{Binding FindNameUsagesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding ResolveImportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Copy name text" ToolTip="Copies the name text to the clipboard" Command="{Binding CopyNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromContextMenu" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -55,16 +57,24 @@
             <MenuItem Header="Open in Soundplorer" Command="{Binding OpenExportInCommand}" CommandParameter="Soundplorer" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Open in Sequence Editor" Command="{Binding OpenExportInCommand}" CommandParameter="SequenceEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Open in Interp Viewer" Command="{Binding OpenExportInCommand}" CommandParameter="InterpViewer" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in Pathfinding Editor" Command="{Binding OpenExportInCommand}" CommandParameter="PathfindingEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Open in WwiseEditor" Command="{Binding OpenExportInCommand}" CommandParameter="WwiseEditor" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
             <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
-            <MenuItem Header="Package utilities">
+            <MenuItem Header="Multi-cloning">
+                <MenuItem Header="Multi-clone entry" ToolTip="Clone only this entry multiple times" Command="{Binding MultiCloneCommand}"/>
+                <MenuItem Header="Multi-clone Tree" ToolTip="Clone this entry and all children multiple times" Command="{Binding MultiCloneTreeCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Go to Archetype" ToolTip="Go to this object's archetype" Command="{Binding GoToArchetypecommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Package utilities" Command="{Binding PackageExportIsSelectedCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             </MenuItem>
             <MenuItem Header="Trash entry and children" ToolTip="Converts this entry and its children into empty data" Command="{Binding TrashCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                 <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
@@ -83,18 +93,20 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FindCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control+Shift" Command="{Binding FindAllClassInstancesCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GotoCommand}"/>
         <KeyBinding Key="Right" Modifiers="Alt" Command="{Binding TabRightCommand}"/>
         <KeyBinding Key="Left" Modifiers="Alt" Command="{Binding TabLeftCommand}"/>
         <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding PopoutCurrentViewCommand}"/>
-        <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding AddNameCommand}"/>
+        <KeyBinding Key="A" Modifiers="Ctrl+Shift" Command="{Binding AddNameCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4" >
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
-                    <MenuItem Header="Create new package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
+                    <MenuItem Header="Create new empty package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
+                    <MenuItem Header="Create new ME3 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 package with the minimum setup to load as a level"/>
                     <MenuItem Header="Save"  Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save a copy to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Open in...">
@@ -137,23 +149,25 @@
                     <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
-                    <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new windowstored in package header" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
+                    <MenuItem Header="Find all instances of class in package" Command="{Binding FindAllClassInstancesCommand}" InputGestureText="CTRL+Shift+F"/>
+
+                    <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
-                    <MenuItem Header="Multi-drop relinking mode" ToolTip="Enables the multi-drop relinking mode" IsChecked="{Binding MultiRelinkingModeActive}" Command="{Binding MultidropRelinkingCommand}"/>
-                    <MenuItem Header="Perform relinking" ToolTip="Runs the relinker against the items that have been added to the relinking map since the mode was turned on.&#x0a;Selecting this option will relink and then clear the cross-file map."
-                              Command="{Binding PerformMultiRelinkCommand}"/>
-                    <Separator/>
-                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL + A"/>
+                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
                         <MenuItem Header="Bulk export...">
                             <MenuItem Header="GFX/SWF files"  Command="{Binding BulkExportSWFCommand}" ToolTip="Export all GFxMovieInfo/BioSWF files in this package to a folder"/>
                         </MenuItem>
                         <MenuItem Header="Bulk import...">
-                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkImportSWFCommand}" ToolTip="Imports a folder of Gfx/SWF files from a folder and replaces exports matching the path by the name of the file"/>
+                            <MenuItem Header="GFX/SWF files"  Command="{Binding BulkImportSWFCommand}" ToolTip="Imports a folder of GFx/SWF files from a folder and replaces exports matching the path by the name of the file"/>
                         </MenuItem>
-                        <MenuItem Header="Compact SeekFreeShaderCache" ToolTip="Removes unused data from ShaderCaches in this file. Only neccesary if you've been porting shaders"
+                        <MenuItem Header="Compact SeekFreeShaderCache" ToolTip="Removes unused data from ShaderCaches in this file. Only necessary if you've been porting shaders"
                                   Command="{Binding CompactShaderCacheCommand}"/>
+                        <MenuItem Header="Search and Replace Names" ToolTip="Replaces every instance or part of a Name selected with new text"
+                                  Command="{Binding ReplaceNamesCommand}"/>
+                        <MenuItem Header="Reindex all duplicate indexes" Command="{Binding ReindexDuplicateIndexesCommand}"/>
+                        <MenuItem Header="Replace all references to selection" Command="{Binding ReplaceReferenceLinksCommand}"/>
                     </MenuItem>
 
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
@@ -185,18 +199,16 @@
                     <Separator/>
 
                     <MenuItem Name="ShowImpExpPrefixes_MenuItem" Header="Show Imp/Exp entry prefixes" Click="ShowImpExpPrefix_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowImpExpPrefix, Mode=TwoWay}" ToolTip="Changes the treeview of Package Editor to display/hide the (Imp)/(Exp) text"/>
+                    <MenuItem Name="ShowMetadata_MenuItem" Header="Show metadata in tree (if available)" Click="ShowExportMetadataInTree_Clicked" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowSubText, Mode=TwoWay}" ToolTip="Adds a second line to items in the tree if the export has additional information, such as Tag property or WwiseStream TLK reference"/>
                     <MenuItem Name="ShowExportIcons_MenuItem" Header="Show Export Icons" Click="ShowExportIcons_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PackageEditorWPF_ShowExportIcons, Mode=TwoWay}" ToolTip="Toggles display of icons that visually distinguish class types in the tree view"/>
-                    <MenuItem Header="Property Parsing">
-                        <MenuItem Name="PropertyParsing_ME1UnknownArrayAsObj_MenuItem" Header="ME1: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME1UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME1UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME1."/>
-                        <MenuItem Name="PropertyParsing_ME2UnknownArrayAsObj_MenuItem" Header="ME2: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME2UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME2UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME2."/>
-                        <MenuItem Name="PropertyParsing_ME3UnknownArrayAsObj_MenuItem" Header="ME3: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME3UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME3UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME3."/>
-                    </MenuItem>
+                    <MenuItem Name="PropertyParsing_UnknownArrayAsObj_MenuItem" Header="Parse Unknown array types as objects instead of int" Click="PropertyParsing_UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingUnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values."/>
                     <MenuItem Header="Binary Interpreter">
                         <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
                     </MenuItem>
                     <MenuItem Header="Interpreter">
                         <MenuItem Name="InterpreterWPF_AdvancedMode_MenuItem" Header="Advanced Mode" Click="InterpreterWPF_AdvancedMode_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_AdvancedDisplay, Mode=TwoWay}" ToolTip="Displays data types, array sizes for each property in InterpreterWPF. Turning this off will condense the interface"/>
                         <MenuItem Name="InterpreterWPF_Colorize_MenuItem" Header="Colorize property types" Click="InterpreterWPF_Colorize_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize, Mode=TwoWay}" ToolTip="Changes the background color for different property types. Makes it easier to quickly identify different types of data."/>
+                        <MenuItem Name="InterpreterWPF_LinearColorWheel_MenuItem" Header="Show color wheel for LinearColor structs" Click="InterpreterWPF_LinearColorWheel_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_ShowLinearColorWheel, Mode=TwoWay}" ToolTip="Shos the color wheel picker for LinearColor structs. Linear color structs do not represent R G B values, so this option is off by default."/>
                         <MenuItem Name="InterpreterWPF_ArrayPropertyLimit_MenuItem" Header="Limit ArrayProperties to 1000 items for performance" Click="InterpreterWPF_ArrayPropertySizeLimit_MenuItem_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_LimitArrayPropertySize, Mode=TwoWay}" ToolTip="Enables or disables the 1000 item limit of ArrayProperty when displaying properties.&#10;Some arrayproperties are huge and will stall the program while it generates thousands of UI nodes."/>
                     </MenuItem>
                     <MenuItem Header="Texture Viewer">
@@ -207,16 +219,13 @@
                     <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at ME3Logger output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
+                    <MenuItem Header="Check exports for invalid object references in properties" ToolTip="Enumerates all exports, reads their properties, and checks if any ObjectProperty items have invalid values" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebugVisibility}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
-                    <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
-                    <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
-                    <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
                     <MenuItem Header="Rebuild Object Infos">
                         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
                         <MenuItem Header="Build ME2 Object Info" Click="BuildME2ObjectInfo_Clicked"/>
@@ -226,26 +235,59 @@
                         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
                         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
                     </MenuItem>
-                    <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
-                    <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
-                    <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
-                    <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
-                    <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
-                    <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
-                    <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
-                    <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
-                    <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
-                    <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
-                    <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
-                    <MenuItem Header="Make all Dialogue Nodes in game skippable" Click="ConvertAllDialogueToSkippable_Click"/>
-                    <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
-                    <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-                    <MenuItem Header="Correct Orikon Wwise Offsets" Click="CorrectOnDiskOffsetsForWwise_Click"/>
-                    <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
-                    <MenuItem Header="UDKify" Click="UDKifyTest"/>
-                    <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
+                    <MenuItem Header="Mgamerz's Programming Circus">
+                        <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
+                        <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
+                        <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
+                        <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
+
+                        <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
+                        <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
+                        <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
+
+                        <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
+                        <MenuItem Header="Print native function indices from current file" Click="PrintNatives"/>
+                        <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
+                        <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
+                        <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
+                        <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
+                        <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
+
+                        <MenuItem Header="Port WiiU BSPs to Entry" Click="PortWiiUBSP"/>
+                        <MenuItem Header="Port ME1 EntryMenu into ME3 via BioP_Char" Click="PortME1EntryMenu_Clicked"/>
+                        <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
+                        <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
+                        <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
+                        <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
+                        <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
+                        <MenuItem Header="Scan folder for files containing objects of a specific class" Click="FindAllFilesWithSpecificClass"/>
+                    </MenuItem>
+                    <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
+                        <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
+                        <MenuItem Header="Scan stuff" Click="ScanStuff_Click"/>
+                        <MenuItem Header="Make all Dialogue Nodes in game skippable" Click="ConvertAllDialogueToSkippable_Click"/>
+                        <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
+                        <MenuItem Header="Dump All Shaders in File" Command="{Binding DumpAllShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Command="{Binding DumpMaterialShadersCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open this map in game" Command="{Binding OpenMapInGameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Re-serialize export" Click="ReSerializeExport_Click"/>
+                        <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
+                        <MenuItem Header="UDKify" Click="UDKifyTest"/>
+                        <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
+                        <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
+                        <MenuItem Header="Recompile All classes (ME3 Only!)" Click="RecompileAll_OnClick" />
+                    </MenuItem>
+                    <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
+                        <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
+                        <MenuItem Header="Recook a game level transfer from temporary files (from JSON)" Click="RestartTransferFromJSON"/>
+                        <MenuItem Header="Recook to a singular test level (from JSON)" Click="RecookLevelToTestFromJSON"/>
+                        <MenuItem Header="Convert to ME3 (retain instances)" Click="ConvertFileToME3"/>
+                        <MenuItem Header="Enumerate Class NetIndexes" Click="AutoEnumerateClassNetIndex"/>
+                        <MenuItem Header="Set All WwiseEvent Durations" Click="SetAllWwiseEventDurations_Click"/>
+                    </MenuItem>
+                    <MenuItem Header="Other people's box of Legos">
+                        <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -278,15 +320,14 @@
                     <Separator/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkComboBox Watermark="Class Selector" Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
-                        <!--<ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type ComboBox}}" VerticalContentAlignment="Center"/>-->
                         <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
-                        <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
+                        <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center" ToolTip="Press CTRL+F to automatically jump to this box"/>
                         <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}"  Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
-                        <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center"/>
+                        <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center" ToolTip="Press CTRL+G to automatically jump to this box"/>
                         <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
                     </StackPanel>
                     <!--This is outside so that it doesn't hide the whole box if it is too long to show -->
@@ -341,9 +382,9 @@
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ContextMenu="{StaticResource EntryContextMenu}" Background="Transparent"  Padding="{Binding Path=(SharedUI:TouchComfySettings.TreeViewMargin)}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
-                                    <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
+                                <DockPanel>
+
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}" FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
@@ -354,7 +395,21 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
+                                        <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
+                                                            <Setter Property="Background" Value="Yellow"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
@@ -376,8 +431,8 @@
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                            <!--<Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />-->
-                            <!--<Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />-->
+                            <!--<EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                            <EventSetter Event="Selected" Handler="OnSelected"/>-->
                         </Style>
                     </TreeView.ItemContainerStyle>
 
@@ -392,62 +447,48 @@
                 <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">
                     <TabItem Name="Intro_Tab" Header="Welcome">
                         <StackPanel>
-                            <TextBlock Margin="5" Text="Welcome the rewritten version of Package Editor" FontWeight="Bold"/>
+                            <TextBlock Margin="5" Text="Welcome to Package Editor" FontWeight="Bold"/>
                             <TextBlock Margin="5">
-                            It's a bit different from the classic Package Editor.
-                                <LineBreak/>
-                                Indexes are done strictly by UIndex, which is how they appear in game code. 
-                                <LineBreak/>
-                                <LineBreak/>
-                            This means:
-                                <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in the old Package Editor
+                            Package Editor is the primary modding tool for editing game package files and contains
                             <LineBreak/>
-                                -  Import references will remain the same
+                            many embedded tools that appear as tabs on the right pane.
                             <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
-                             <LineBreak/>
-                             <LineBreak/>
-                            Additionally the order of entries will appear different as they now reflect
                             <LineBreak/>
-                            the order of the data stored in game files.
+                            <Bold>Some general information about indexing in package files:</Bold>
                             <LineBreak/>
+                                 Indexes of Imports and Exports are done strictly by UIndex, which is how they appear in game code. 
                                 <LineBreak/>
-                                If you have issues, please report them to one of the following places:
+                                     - Imports will always have a negative index, starting from -1 and extending negatively
+                            <LineBreak/>
+
+                                   - Exports will always have a positive index, starting from 1 and extending positively
+                            <LineBreak/>
+
+                                    - 0 indicates no entry
                                 <LineBreak/>
-                                 - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
                                 <LineBreak/>
-                                 - The issues list on GitHub at 
-                                <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
-                                    <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
-                                </Hyperlink>
+                            Check the menus for keyboard shortcuts. Check out CTRL+P: It pops out the currently viewed tab!
+                            <LineBreak/>
+                            <LineBreak/>
+                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="View the Package Editor basics wiki article"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
+                            If you have issues, please report them to one of the following places:
+                            <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>
+                            <LineBreak/>
+                            - The issues list on GitHub at 
+                            <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                            </Hyperlink>
                             </TextBlock>
 
-                            <Grid HorizontalAlignment="Left" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="280"/>
-                                    <ColumnDefinition Width="280"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
-                                <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                                <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                            </Grid>
+                            <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left" 
+                                                     Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                         </StackPanel>
                     </TabItem>
                     <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
@@ -455,17 +496,17 @@
                         <TabItem.Header>
                             <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
                         </TabItem.Header>
-                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
+                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Metadata_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Metadata" ToolTip="Edit entry metadata such as class, object name, etc"/>
                         </TabItem.Header>
-                        <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor"/>
+                        <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="Bio2DAViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Bio2DA" ToolTip="View (someday, edit) Bio2DA tables"/>
+                            <TextBlock Text="Bio2DA" ToolTip="View and Edit Bio2DA tables"/>
                         </TabItem.Header>
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>
@@ -479,7 +520,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Binary Interpreter" ToolTip="View and edit binary data for supported classes"/>
                         </TabItem.Header>
-                        <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
+                        <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter" SubstituteImageForHexBox="{Binding IsBusy, RelativeSource={RelativeSource AncestorType=Window}}" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="MeshRenderer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
@@ -487,11 +528,17 @@
                         </TabItem.Header>
                         <meshplorer:MeshRendererWPF x:Name="MeshRendererTab_MeshRenderer"/>
                     </TabItem>
+                    <TabItem Name="Bytecode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>
+                        </TabItem.Header>
+                        <global:BytecodeEditor x:Name="BytecodeTab_BytecodeEditor"/>
+                    </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <TextBlock Text="Script" ToolTip="View and edit UnrealScript functions"/>
+                            <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
                         </TabItem.Header>
-                        <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
+                        <me3Script:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
@@ -528,6 +575,30 @@
                             <TextBlock Text="Shader Viewer" ToolTip="View Material's Shaders"/>
                         </TabItem.Header>
                         <materialViewer:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
+                    </TabItem>
+                    <TabItem Name="RADLaunch_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Movie" ToolTip="Launch Movie in external tools"/>
+                        </TabItem.Header>
+                        <packageEditor:BIKExternalExportLoader x:Name="RADLauncherTab_BIKLauncher"/>
+                    </TabItem>
+                    <TabItem Name="CollectionActorEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Location/Rotation/Scale" ToolTip="Edit the transformation matrix for this component"/>
+                        </TabItem.Header>
+                        <packageEditor:CollectionActorEditor x:Name="CollectionActorEditorTab_CollectionActorEditor"/>
+                    </TabItem>
+                    <TabItem Name="ParticleSystem_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Particle System" ToolTip="View information about this particle system"/>
+                        </TabItem.Header>
+                        <particleSystems:ParticleSystemExportLoader x:Name="ParticleSystemTab_ParticleSystemLoader"/>
+                    </TabItem>
+                    <TabItem Name="ParticleModule_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Particle Module" ToolTip="Particle Module editor"/>
+                        </TabItem.Header>
+                        <particleSystems:ParticleModuleExportLoader x:Name="ParticleModuleTab_ParticleModuleLoader"/>
                     </TabItem>
                 </TabControl>
             </Grid>

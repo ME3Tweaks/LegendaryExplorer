@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpDX;
-using StreamHelpers;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -26,7 +26,7 @@ namespace ME3Explorer.Pathfinding_Editor
             StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
             if (guidProp != null)
             {
-                export.WriteProperty(CommonStructs.Guid(Guid.NewGuid(), "NavGuid"));
+                export.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), "NavGuid"));
             }
         }
 
@@ -223,7 +223,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 upstreamfullpath = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
-                if (upstreammatchinglist.Where(x=>x.entry is ExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
+                if (upstreammatchinglist.Where(x => x.entry is ExportEntry).HasExactly(1) || upstreammatchinglist.Where(x => x.entry is ImportEntry).HasExactly(1))
                 {
                     upstreamEntryToAttachTo = upstreammatchinglist[0].entry;
                     break;
@@ -278,7 +278,7 @@ namespace ME3Explorer.Pathfinding_Editor
             while (upstreamCount > 0)
             {
                 upstreamCount--;
-                string fullobjectname = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
+                string fullobjectname = string.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 Dictionary<string, string> importdbinfo = ImportClassDB[fullobjectname];
 
                 var downstreamName = importParts[importParts.Length - upstreamCount - 1];
@@ -322,7 +322,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
         /// <returns>Actor for ME2/ME3, Nav for ME1</returns>
-        public static string GetReachSpecEndName(ExportEntry export) => export.FileRef.Game == MEGame.ME1 ? "Nav" : "Actor";
+        public static string GetReachSpecEndName(ExportEntry export) => export.FileRef.Game < MEGame.ME3 && export.FileRef.Platform != MEPackage.GamePlatform.PS3 ? "Nav" : "Actor";
 
         /// <summary>
         /// Rounds a double to an int. Because apparently Microsoft doesn't know how to round numbers.
@@ -433,35 +433,105 @@ namespace ME3Explorer.Pathfinding_Editor
             return null; //can't get end, or is external
         }
 
+        internal static Point3D GetLocationFromVector(StructProperty vector)
+        {
+            return new Point3D()
+            {
+                X = vector.GetProp<FloatProperty>("X"),
+                Y = vector.GetProp<FloatProperty>("Y"),
+                Z = vector.GetProp<FloatProperty>("Z")
+            };
+        }
+
         public static Point3D GetLocation(ExportEntry export)
         {
             float x = 0, y = 0, z = int.MinValue;
-            var prop = export.GetProperty<StructProperty>("location");
-            if (prop != null)
+            if (export.ClassName.Contains("Component") && export.HasParent && export.Parent.ClassName.Contains("CollectionActor"))  //Collection component
             {
-                foreach (var locprop in prop.Properties)
+                var actorCollection = export.Parent as ExportEntry;
+                var collection = GetCollectionItems(actorCollection);
+
+                if (!(collection?.IsEmpty() ?? true))
                 {
-                    switch (locprop)
+                    var positions = GetCollectionLocationData(actorCollection);
+                    var idx = collection.FindIndex(o => o != null && o.UIndex == export.UIndex);
+                    if (idx >= 0)
                     {
-                        case FloatProperty fltProp when fltProp.Name == "X":
-                            x = fltProp;
-                            break;
-                        case FloatProperty fltProp when fltProp.Name == "Y":
-                            y = fltProp;
-                            break;
-                        case FloatProperty fltProp when fltProp.Name == "Z":
-                            z = fltProp;
-                            break;
+                        return new Point3D((double)positions[idx].X, (double)positions[idx].Y, (double)positions[idx].Z);
                     }
                 }
-                return new Point3D(x, y, z);
+
+            }
+            else
+            {
+                var prop = export.GetProperty<StructProperty>("location");
+                if (prop != null)
+                {
+                    foreach (var locprop in prop.Properties)
+                    {
+                        switch (locprop)
+                        {
+                            case FloatProperty fltProp when fltProp.Name == "X":
+                                x = fltProp;
+                                break;
+                            case FloatProperty fltProp when fltProp.Name == "Y":
+                                y = fltProp;
+                                break;
+                            case FloatProperty fltProp when fltProp.Name == "Z":
+                                z = fltProp;
+                                break;
+                        }
+                    }
+                    return new Point3D(x, y, z);
+                }
+            }
+            return new Point3D(0, 0, 0);
+        }
+
+        public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor)
+        {
+            if (!collectionactor.ClassName.Contains("CollectionActor"))
+                return null;
+
+            return ((StaticCollectionActor)ObjectBinary.From(collectionactor)).LocalToWorldTransforms
+                                                                              .Select(localToWorldTransform => (Point3D)localToWorldTransform.TranslationVector).ToList();
+        }
+
+        public static List<ExportEntry> GetCollectionItems(ExportEntry smac)
+        {
+            var collectionItems = new List<ExportEntry>();
+            var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>(smac.ClassName == "StaticMeshCollectionActor" ? "StaticMeshComponents" : "LightComponents");
+            if (smacItems != null)
+            {
+                //Read exports...
+                foreach (ObjectProperty obj in smacItems)
+                {
+                    if (obj.Value > 0)
+                    {
+                        ExportEntry item = smac.FileRef.GetUExport(obj.Value);
+                        collectionItems.Add(item);
+                    }
+                    else
+                    {
+                        //this is a blank entry, or an import, somehow.
+                        collectionItems.Add(null);
+                    }
+                }
+                return collectionItems;
             }
             return null;
         }
 
         public static void SetLocation(ExportEntry export, float x, float y, float z)
         {
-            export.WriteProperty(CommonStructs.Vector3(x, y, z, "location"));
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorLocation(export, x, y, z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "location"));
+            }
         }
 
         public static void SetLocation(StructProperty prop, float x, float y, float z)
@@ -470,6 +540,34 @@ namespace ME3Explorer.Pathfinding_Editor
             prop.GetProp<FloatProperty>("Y").Value = y;
             prop.GetProp<FloatProperty>("Z").Value = z;
         }
+
+        public static void SetCollectionActorLocation(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if (collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
+
+            collectionitems ??= GetCollectionItems(collectionactor);
+
+            if (collectionitems?.Count > 0)
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
+
+                    Matrix m = binData.LocalToWorldTransforms[idx];
+                    m.TranslationVector = new Vector3(x, y, z);
+                    binData.LocalToWorldTransforms[idx] = m;
+
+                    collectionactor.WriteBinary(binData);
+                }
+            }
+        }
+
     }
 
     public class UnrealGUID
@@ -528,6 +626,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public const int MOOK_HEIGHT = 90;
         public const int MINIBOSS_RADIUS = 105;
         public const int MINIBOSS_HEIGHT = 145;
+        public const int BRUTE_RADIUS = 115;
+        // No height. Just use miniboss for brute
         public const int BOSS_RADIUS = 140;
         public const int BOSS_HEIGHT = 195;
         public const int BANSHEE_RADIUS = 50;
@@ -630,9 +730,28 @@ namespace ME3Explorer.Pathfinding_Editor
             return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
 
+        public Point3D getDelta(Point3D other)
+        {
+            double deltaX = X - other.X;
+            double deltaY = Y - other.Y;
+            double deltaZ = Z - other.Z;
+            return new Point3D(deltaX, deltaY, deltaZ);
+        }
+
         public override string ToString()
         {
             return $"{X},{Y},{Z}";
         }
+
+        public Point3D applyDelta(Point3D other)
+        {
+            double deltaX = X + other.X;
+            double deltaY = Y + other.Y;
+            double deltaZ = Z + other.Z;
+            return new Point3D(deltaX, deltaY, deltaZ);
+        }
+
+        public static implicit operator Point3D(Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
+        public static implicit operator Point3D(ME3ExplorerCore.SharpDX.Vector3 vec) => new Point3D(vec.X, vec.Y, vec.Z);
     }
 }

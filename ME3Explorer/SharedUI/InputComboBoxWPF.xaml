@@ -20,7 +20,7 @@
         <ComboBox Name="EntrySelector_ComboBox" VerticalAlignment="Center"
                   ItemsPanel="{StaticResource VSP}"
                   IsTextSearchEnabled="True"
-                  ToolTip="Type a UIndex value to automatically select it" KeyDown="EntrySelector_ComboBox_KeyDown"/>
+                  KeyDown="EntrySelector_ComboBox_KeyDown"/>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
             <Button Content="OK"  Width="40" Command="{Binding OKCommand}"/>

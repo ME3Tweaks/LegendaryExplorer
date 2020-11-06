@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.MaterialViewer
 {
@@ -21,7 +21,7 @@ namespace ME3Explorer.MaterialViewer
                 {
                     staticParamSetsInFile.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
                 }
-                else if (export.IsOrInheritsFrom("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
+                else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
                 {
                     staticParamSetsInFile.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
@@ -89,7 +89,7 @@ namespace ME3Explorer.MaterialViewer
                 }
             }
 
-            firstShaderCache.setBinaryData(compactedShaderCache);
+            firstShaderCache.WriteBinary(compactedShaderCache);
         }
     }
 }

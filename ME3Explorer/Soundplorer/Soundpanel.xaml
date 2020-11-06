@@ -6,7 +6,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:ME3Explorer"
-             xmlns:unrealclasses="clr-namespace:ME3Explorer.Unreal.Classes"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
                                         Loaded="Soundpanel_Loaded"
                            Unloaded="Soundpanel_Unloaded"
@@ -43,18 +42,42 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
-                <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick">
+                <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" 
+                         PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
-                        <DataTemplate DataType="{x:Type s:String}">
-                            <TextBlock Text="{Binding}" Foreground="Gray"/>
-                        </DataTemplate>
+                        <!--Defines a context menu-->
+                        <ContextMenu x:Key="MyElementMenu">
+                            <MenuItem Header="Export"/>
+                        </ContextMenu>
+
+                        <!--Sets a context menu for each ListBoxItem in the current ListBox-->
+
+
                         <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type soundplorer:ISBankEntry}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
-                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="ExtractISBEToWav" ToolTip="Extract audio to WAV file">
+                                            <MenuItem.Header>
+                                                <TextBlock Text="Extract as WAV" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                        <MenuItem Click="ExtractISBERaw" ToolTip="Extracts this sound from the embedded ISB and places it into a standalone ISB. This is mainly only for debugging.">
+                                            <MenuItem.Header>
+                                                <TextBlock Text="Extract single sound to 'ISB' raw file" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type s:String}">
+                            <TextBlock Text="{Binding}" Foreground="Gray"/>
                         </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>
@@ -79,13 +102,15 @@
                 <Grid HorizontalAlignment="Center" Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="16"/> <!--Margin-->
+                        <ColumnDefinition Width="16"/>
+                        <!--Margin-->
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="48"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="48"/>
                         <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="16"/> <!--Margin-->
+                        <ColumnDefinition Width="16"/>
+                        <!--Margin-->
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -123,9 +148,6 @@
 
             </Grid>
         </TabItem>
-        <TabItem Header="Bank Info" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
-            <TextBox Text="{Binding QuickScanText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
-        </TabItem>
         <TabItem Header="HIRCs" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
             <DockPanel LastChildFill="True">
                 <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
@@ -162,7 +184,7 @@
 
                     <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch">
                         <ListBox.Resources>
-                            <DataTemplate DataType="{x:Type unrealclasses:WwiseBank+HIRCObject}">
+                            <DataTemplate DataType="{x:Type soundplorer:HIRCDisplayObject}">
                                 <StackPanel Name="HIRCContainer" Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
                                     <StackPanel>
@@ -172,6 +194,15 @@
                                             <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
+                                    <StackPanel.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="CloneHIRCObject" ToolTip="Clones HIRC object">
+                                                <MenuItem.Header>
+                                                    <TextBlock Text="Clone" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrush}}"/>
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </StackPanel.ContextMenu>
                                 </StackPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">
@@ -192,7 +223,7 @@
                       Panel.ZIndex="60"/>
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                            <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
                             <ColumnDefinition Width="3" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -215,8 +246,8 @@
                             <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
                             <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         </ToolBar>
-                        <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="220" MaxWidth="718">
-                            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" MinimumSize="200,50" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
+                        <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
                             </hb1:HexBox>
                         </WindowsFormsHost>
                         <GridSplitter Grid.Column="1" 

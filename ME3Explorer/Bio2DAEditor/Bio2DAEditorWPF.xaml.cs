@@ -1,25 +1,11 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
-using ME3Explorer.Unreal;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
@@ -40,7 +26,7 @@ namespace ME3Explorer
 
         public ICommand CommitCommand { get; set; }
 
-        public Bio2DAEditorWPF()
+        public Bio2DAEditorWPF() : base("Bio2DA Editor")
         {
             DataContext = this;
             LoadCommands();
@@ -68,28 +54,29 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
-                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport)
+                {
+                    Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
                 elhw.Show();
             }
         }
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            for (int counter = 0; counter < (Bio2DA_DataGrid.SelectedCells.Count); counter++)
+            for (int counter = 0; counter < Bio2DA_DataGrid.SelectedCells.Count; counter++)
             {
                 int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
-                string columnName = Table2DA.GetColumnNameByIndex(columnIndex);
                 int rowIndex = Bio2DA_DataGrid.Items.IndexOf(Bio2DA_DataGrid.SelectedCells[0].Item);
                 var item = Table2DA[rowIndex, columnIndex];
-                Bio2DAInfo_CellCoordinates_TextBlock.Text = "Selected cell coordinates: " + (rowIndex + 1) + "," + (columnIndex + 1);
-                Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: ????";// + (rowIndex + 1) + "," + (columnIndex + 1);
+                Bio2DAInfo_CellCoordinates_TextBlock.Text = $"Selected cell coordinates: {rowIndex + 1},{columnIndex + 1}";
                 if (item != null)
                 {
-                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.DisplayableValue;
-                    Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: 0x" + item.Offset.ToString("X6");
+                    Bio2DAInfo_CellDataType_TextBlock.Text = $"Selected cell data type: {item.Type}";
+                    Bio2DAInfo_CellData_TextBlock.Text = $"Selected cell data: {item.DisplayableValue}";
+                    Bio2DAInfo_CellDataOffset_TextBlock.Text = $"Selected cell data offset: 0x{item.Offset:X6}";
                     if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
                     {
-                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.GetIntValue(), CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
+                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = TLKManagerWPF.GlobalFindStrRefbyID(item.IntValue, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                     }
                     else
                     {
@@ -99,6 +86,7 @@ namespace ME3Explorer
                 else
                 {
                     Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: NULL";
+                    Bio2DAInfo_CellData_TextBlock.Text = "Selected cell data:";
                     Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: N/A";
                     Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select a cell to preview TLK value";
                 }
@@ -160,11 +148,11 @@ namespace ME3Explorer
             MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:");
             OpenFileDialog oDlg = new OpenFileDialog
             {
-                Filter = "Excel Files (*.xlsx)|*.xlsx"
+                Filter = "Excel Files (*.xlsx)|*.xlsx",
+                Title = "Import Excel table"
             };
-            oDlg.Title = "Import Excel table";
-            var result = oDlg.ShowDialog();
-            if (result.HasValue && result.Value)
+
+            if (oDlg.ShowDialog() == true)
             {
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
@@ -173,8 +161,9 @@ namespace ME3Explorer
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
                         {
-                            if (resulting2DA.IsIndexed == true) { MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not."); }
-                            else { MessageBox.Show("Warning: Underlying sheet contains blank cells. Imported sheet does not."); }
+                            MessageBox.Show(resulting2DA.IsIndexed
+                                                ? "Warning: Imported sheet contains blank cells. Underlying sheet does not."
+                                                : "Warning: Underlying sheet contains blank cells. Imported sheet does not.");
                         }
                         resulting2DA.Write2DAToExport();
                     }

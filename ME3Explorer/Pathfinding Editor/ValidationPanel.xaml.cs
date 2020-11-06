@@ -1,26 +1,19 @@
 ﻿using FontAwesome5;
-using FontAwesome5.WPF;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.SharpDX;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -114,7 +107,85 @@ namespace ME3Explorer.Pathfinding_Editor
             ValidationTasks.Add(task);
             relinkPathfindingChain(task);
 
+            task = new ListBoxTask("Recalculating SplineComponents");
+            ValidationTasks.Add(task);
+            RecalculateSplineComponents(Pcc, task);
+
             LastRunOnText = "Last ran at " + DateTime.Now;
+        }
+
+        public static void RecalculateSplineComponents(IMEPackage mePackage, ListBoxTask task = null)
+        {
+            int numRecalculated = 0;
+            foreach (ExportEntry splineActor in mePackage.Exports.Where(exp => exp.ClassName == "SplineActor"))
+            {
+                if (splineActor.GetProperty<ArrayProperty<StructProperty>>("Connections") is { } connections && connections.Any())
+                {
+                    Vector3 location = CommonStructs.GetVector3(splineActor, "location", Vector3.Zero);
+                    Vector3 splineActorTangent = CommonStructs.GetVector3(splineActor, "SplineActorTangent", new Vector3(300f, 0f, 0f));
+
+                    foreach (StructProperty connection in connections)
+                    {
+                        int splineComponentUIndex = connection.GetProp<ObjectProperty>("SplineComponent")?.Value ?? 0;
+                        int connectedActorUIndex = connection.GetProp<ObjectProperty>("ConnectTo")?.Value ?? 0;
+                        if (mePackage.TryGetUExport(splineComponentUIndex, out ExportEntry splineComponent) && mePackage.TryGetUExport(connectedActorUIndex, out ExportEntry connectedActor))
+                        {
+                            if (task != null)
+                            {
+                                task.Header = $"Recalculating SplineComponents {((double)splineComponent.UIndex / mePackage.ExportCount):P}";
+                            }
+
+                            var splineInfo = new InterpCurve<Vector3>();
+                            Vector3 tangent = ActorUtils.GetLocalToWorld(splineActor).TransformNormal(splineActorTangent);
+
+                            splineInfo.AddPoint(0f, location, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
+
+                            Vector3 connectedActorLocation = CommonStructs.GetVector3(connectedActor, "location", Vector3.Zero);
+                            Vector3 connectedActorSplineActorTangent = CommonStructs.GetVector3(connectedActor, "SplineActorTangent", new Vector3(300f, 0f, 0f));
+
+                            tangent = ActorUtils.GetLocalToWorld(connectedActor).TransformNormal(connectedActorSplineActorTangent);
+
+                            splineInfo.AddPoint(1f, connectedActorLocation, tangent, tangent, EInterpCurveMode.CIM_CurveUser);
+
+                            splineComponent.WriteProperty(splineInfo.ToStructProperty(mePackage.Game, "SplineInfo"));
+
+                            var splineReparamTable = new InterpCurve<float>();
+                            if (splineInfo.Points.Count > 1)
+                            {
+                                const int steps = 10;
+                                float totalDist = 0;
+
+                                float input = splineInfo.Points[0].InVal;
+                                float end = splineInfo.Points.Last().InVal;
+                                float interval = (end - input) / (steps - 1);
+                                Vector3 oldPos = splineInfo.Eval(input, Vector3.Zero);
+                                Vector3 startPos = oldPos;
+                                Vector3 newPos = startPos;
+                                splineReparamTable.AddPoint(totalDist, input);
+                                input += interval;
+                                for (int i = 1; i < steps; i++)
+                                {
+                                    newPos = splineInfo.Eval(input, Vector3.Zero);
+                                    totalDist += (newPos - oldPos).Length();
+                                    oldPos = newPos;
+                                    splineReparamTable.AddPoint(totalDist, input);
+                                    input += interval;
+                                }
+
+                                if (totalDist != 0f)
+                                {
+                                    splineComponent.WriteProperty(new FloatProperty((startPos - newPos).Length() / totalDist, "SplineCurviness"));
+                                }
+                            }
+
+                            splineComponent.WriteProperty(splineReparamTable.ToStructProperty(mePackage.Game, "SplineReparamTable"));
+                            numRecalculated++;
+                        }
+                    }
+                }
+
+            }
+            task?.Complete($"{numRecalculated} SplineComponent{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         public void recalculateReachspecs(ListBoxTask task = null)
@@ -139,53 +210,61 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
                         bool isBad = false;
-                        ExportEntry spec = Pcc.GetUExport(reachSpecObj.Value);
-                        var specProps = spec.GetProperties();
-                        ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
-                        if (start.Value != exp.UIndex)
+                        if (Pcc.TryGetUExport(reachSpecObj.Value, out ExportEntry spec))
                         {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start value does not match the node that references it ({exp.UIndex})");
-                        }
-
-                        //get end
-                        StructProperty end = specProps.GetProp<StructProperty>("End");
-                        ObjectProperty endActorObj = end.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec));
-                        if (endActorObj.Value == start.Value)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
-                        }
-
-                        var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
-                        if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has no external guid and has no endactor.");
-                        }
-                        if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
-                        {
-                            isBad = true;
-                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has invalid end property (past end of bounds or less than 0).");
-                        }
-                        /*if (endActorObj.Value > 0)
-                        {
-                            ExportEntry expo = cc.Exports[endActorObj.Value - 1];
-                            names.Add(expo.ClassName);
-                        }*/
-                        //
-                        if (!isBad)
-                        {
-                            if (calculateReachSpec(spec))
+                            var specProps = spec.GetProperties();
+                            ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
+                            if (start.Value != exp.UIndex)
                             {
-                                numRecalculated++;
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start value does not match the node that references it ({exp.UIndex})");
+                            }
+
+                            //get end
+                            StructProperty end = specProps.GetProp<StructProperty>("End");
+                            ObjectProperty endActorObj = end.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec));
+                            if (endActorObj.Value == start.Value)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} start and end property is the same. This will crash the game.");
+                            }
+
+                            var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
+                            if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has no external guid and has no endactor.");
+                            }
+                            if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
+                            {
+                                isBad = true;
+                                badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName.Instanced} has invalid end property (past end of bounds or less than 0).");
+                            }
+                            /*if (endActorObj.Value > 0)
+                            {
+                                ExportEntry expo = cc.Exports[endActorObj.Value - 1];
+                                names.Add(expo.ClassName);
+                            }*/
+                            //
+                            if (!isBad)
+                            {
+                                Debug.WriteLine($"Calculating {spec.UIndex.ToString()} {spec.ClassName}");
+                                if (calculateReachSpec(spec))
+                                {
+                                    numRecalculated++;
+                                }
                             }
                         }
+                        else
+                        {
+                            badSpecs.Add($"{reachSpecObj.Value} is incorrectly included in the path list.");
+                        }
+
                     }
 
                 }
             }
-            task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? "" : "s")} were recalculated");
+            task?.Complete($"{numRecalculated} ReachSpec{(numRecalculated == 1 ? " was" : "s were")} recalculated");
         }
 
         private bool calculateReachSpec(ExportEntry reachSpecExport, ExportEntry startNodeExport = null)
@@ -344,7 +423,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         if (exportEntry.NetIndex >= 0)
                         {
-                            Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath+" from "+exportEntry.NetIndex);
+                            Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
                             exportEntry.NetIndex = nextNetIndex++;
                         }
                     }
@@ -370,6 +449,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         exportEntry.Data = exportData;
                     }
 
+                    // probably shouldn't do this...
                     if (exportEntry.NetIndex >= 0)
                     {
                         Debug.WriteLine("Updating netindex on " + exportEntry.InstancedFullPath + " from " + exportEntry.NetIndex);
@@ -384,88 +464,79 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void relinkPathfindingChain(ListBoxTask task = null)
         {
-            var pathfindingChain = new List<ExportEntry>();
-
-            byte[] data = PersistentLevel.getBinaryData();
-            int start = 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
-
-            start += 8;
-            int itemcount = 2; //Skip bioworldinfo and Class
-
-            //Get all nav items.
-            while (itemcount <= numberofitems)
+            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
-                //get header.
-                int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.IsUExport(itemexportid))
+                Level level = ObjectBinary.From<Level>(levelExport);
+                List<ExportEntry> validNodesInLevel = new List<ExportEntry>();
+                List<ExportEntry> validCoverlinksInLevel = new List<ExportEntry>();
+                foreach (var item in level.Actors)
                 {
-                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
-                    StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
-                    if (navGuid != null)
+                    if (Pcc.IsUExport(item.value))
                     {
-                        pathfindingChain.Add(exportEntry);
+                        ExportEntry exportEntry = Pcc.GetUExport(item.value);
+                        StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
+                        if (navGuid != null)
+                        {
+                            if (exportEntry.ClassName == "CoverLink")
+                            {
+                                validCoverlinksInLevel.Add(exportEntry);
+                            }
+                            else
+                            {
+                                validNodesInLevel.Add(exportEntry);
+                            }
+                        }
                     }
-
-                    start += 4;
-                    itemcount++;
-                }
-                else
-                {
-                    start += 4;
-                    itemcount++;
-                }
-            }
-
-            //Filter so it only has nextNavigationPoint. This will drop the end node
-            var nextNavigationPointChain = new List<ExportEntry>();
-            foreach (ExportEntry exportEntry in pathfindingChain)
-            {
-                ObjectProperty nextNavigationPointProp = exportEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                if (nextNavigationPointProp == null)
-                {
-                    //don't add this as its not part of this chain
-                    continue;
-                }
-                nextNavigationPointChain.Add(exportEntry);
-            }
-
-            if (nextNavigationPointChain.Count > 0)
-            {
-                //Follow chain to end to find end node
-                ExportEntry nodeEntry = nextNavigationPointChain[0];
-                ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                while (nextNavPoint != null)
-                {
-                    nodeEntry = Pcc.GetUExport(nextNavPoint.Value);
-                    nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
                 }
 
-                //rebuild chain
-                for (int i = 0; i < nextNavigationPointChain.Count; i++)
+                // NavChain
+                if (validNodesInLevel.Any())
                 {
-                    ExportEntry chainItem = nextNavigationPointChain[i];
-                    ExportEntry nextchainItem;
-                    if (i < nextNavigationPointChain.Count - 1)
+                    // has nav chain
+
+                    // not sure this should be done...
+                    level.NavListStart = validNodesInLevel.First().UIndex;
+                    level.NavListEnd = validNodesInLevel.Last().UIndex;
+
+                    for (int i = 0; i < validNodesInLevel.Count; i++)
                     {
-                        nextchainItem = nextNavigationPointChain[i + 1];
+                        ExportEntry parsingExp = validNodesInLevel[i];
+                        if (i != validNodesInLevel.Count - 1)
+                        {
+                            ObjectProperty nextNavigationPointProp = new ObjectProperty(validNodesInLevel[i + 1].UIndex, "nextNavigationPoint");
+                            parsingExp.WriteProperty(nextNavigationPointProp);
+                        }
+                        else
+                        {
+                            parsingExp.RemoveProperty("nextNavigationPoint");
+                        }
                     }
-                    else
-                    {
-                        nextchainItem = nodeEntry;
-                    }
-
-                    ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
-
-                    byte[] expData = chainItem.Data;
-                    expData.OverwriteRange((int) nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
-                    chainItem.Data = expData;
-                    //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
                 }
 
+                //Coverlink Chain
+                // Disable until we can figure out why this breaks MP cover
+                //if (validCoverlinksInLevel.Any())
+                //{
+                //    // not sure how this is handled with 1
+                //    level.CoverListStart = validCoverlinksInLevel.First().UIndex;
+                //    level.CoverListEnd = validCoverlinksInLevel.Last().UIndex;
+
+                //    for (int i = 0; i < validCoverlinksInLevel.Count ; i++)
+                //    {
+                //        ExportEntry parsingExp = validCoverlinksInLevel[i];
+                //        if (i != validCoverlinksInLevel.Count - 1)
+                //        {
+                //            ObjectProperty nextCoverlink = new ObjectProperty(validCoverlinksInLevel[i + 1].UIndex, "NextCoverLink");
+                //            parsingExp.WriteProperty(nextCoverlink);
+                //        }
+                //        else
+                //        {
+                //            parsingExp.RemoveProperty("NextCoverLink");
+                //        }
+                //    }
+                //}
+
+                levelExport.WriteBinary(level);
                 task?.Complete("NavigationPoint chain has been updated");
             }
             else
@@ -480,47 +551,14 @@ namespace ME3Explorer.Pathfinding_Editor
             var navGuidLists = new Dictionary<string, List<UnrealGUID>>();
             var duplicateGuids = new List<UnrealGUID>();
 
-            int start = PersistentLevel.propsEnd();
-            //Read persistent level binary
-            byte[] data = PersistentLevel.Data;
-
-            uint exportid = BitConverter.ToUInt32(data, start);
-            start += 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
-            int itemcount = 2;
-            start += 8;
-            while (itemcount < numberofitems)
+            foreach (UIndex itemexportid in PersistentLevel.GetBinaryData<Level>().Actors)
             {
-                //get header.
-                int itemexportid = BitConverter.ToInt32(data, start);
-                if (Pcc.IsUExport(itemexportid) && itemexportid > 0)
+                if (Pcc.TryGetUExport(itemexportid, out ExportEntry exportEntry) 
+                 && exportEntry.GetProperty<StructProperty>("NavGuid") is StructProperty navGuid)
                 {
-                    ExportEntry exportEntry = Pcc.GetUExport(itemexportid);
-                    StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
-                    if (navguid != null)
-                    {
-                        UnrealGUID nav = new UnrealGUID(navguid);
-
-                        if (navGuidLists.TryGetValue(nav.ToString(), out List<UnrealGUID> list))
-                        {
-                            list.Add(nav);
-                        }
-                        else
-                        {
-                            list = new List<UnrealGUID>();
-                            navGuidLists[nav.ToString()] = list;
-                            list.Add(nav);
-                        }
-                    }
-                    start += 4;
-                    itemcount++;
-                }
-                else
-                {
-                    //INVALID or empty item encountered. We don't care right now though.
-                    start += 4;
-                    itemcount++;
+                    UnrealGUID nav = new UnrealGUID(navGuid);
+                    nav.export = exportEntry;
+                    navGuidLists.AddToListAt(nav.ToString(), nav);
                 }
             }
 
@@ -536,18 +574,17 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
                         duplicateGuids.Add(guid);
-                        ListBoxTask v = new ListBoxTask
+                        ValidationTasks.Add(new ListBoxTask
                         {
-                            Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName.Instanced}",
+                            Header = $"Duplicate GUID found on export {guid.export?.UIndex} {guid.export?.ObjectName.Instanced}",
                             Icon = EFontAwesomeIcon.Solid_Times,
                             Spinning = false,
                             Foreground = Brushes.Red
-                        };
-                        ValidationTasks.Add(v);
+                        });
                     }
                 }
             }
-            task?.Complete(numduplicates + " duplicate GUID" + (numduplicates != 1 ? "s" : "") + " were found");
+            task?.Complete($"{numduplicates} duplicate GUID{(numduplicates != 1 ? "s were" : " was")} found");
         }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
-using ME3Explorer.Unreal.BinaryConverters;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -28,10 +27,10 @@ namespace ME3Explorer.Unreal.Classes
         //    public string Desc;
         //}
 
-        public MaterialInstanceConstant(ExportEntry export)
+        public MaterialInstanceConstant(ExportEntry export, List<IMEPackage> cachedPackages = null)
         {
-            this.Export = export;
-            ReadMaterial(export);
+            Export = export;
+            ReadMaterial(export, cachedPackages);
 
             //bool me1Parsed = false;
             //if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
@@ -59,7 +58,8 @@ namespace ME3Explorer.Unreal.Classes
             //}
         }
 
-        private void ReadMaterial(ExportEntry export)
+        // TODO: THIS NEEDS MOVED OUT OF LIBRARY AS ITS FOR RENDERING
+        private void ReadMaterial(ExportEntry export, List<IMEPackage> cachedPackages = null)
         {
             if (export.ClassName == "Material")
             {
@@ -71,6 +71,28 @@ namespace ME3Explorer.Unreal.Classes
                     if (tex != null)
                     {
                         Textures.Add(tex);
+                    }
+                }
+            }
+            else if (export.ClassName == "RvrEffectsMaterialUser")
+            {
+                var props = export.GetProperties();
+                if (export.GetProperty<ObjectProperty>("m_pBaseMaterial") is ObjectProperty baseProp)
+                {
+                    // This is an instance... maybe?
+                    if (baseProp.Value > 0)
+                    {
+                        // Local export
+                        ReadMaterial(export.FileRef.GetUExport(baseProp.Value));
+                    }
+                    else
+                    {
+                        ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null, cachedPackages);
+                        if (externalEntry != null)
+                        {
+                            ReadMaterial(externalEntry);
+                        }
                     }
                 }
             }
@@ -118,7 +140,7 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
-                        var externalEntry = ModelPreview.FindExternalAsset(ie, null);
+                        var externalEntry = ModelPreview.FindExternalAsset(ie, null, null);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);
@@ -176,26 +198,6 @@ namespace ME3Explorer.Unreal.Classes
                 }
 
             }
-        }
-
-        public TreeNode ToTree()
-        {
-            TreeNode res = new TreeNode($"#{Export.UIndex} \"{Export.ObjectName.Instanced}\"");
-            for (int i = 0; i < Textures.Count; i++)
-            {
-                string s = $"{Textures[i].FullPath} = #{Textures[i].UIndex}";
-                s += $" \"{Export.FileRef.getObjectName(Textures[i].UIndex)}\"";
-                res.Nodes.Add(s);
-            }
-            TreeNode propsnode = new TreeNode("Properties");
-            res.Nodes.Add(propsnode);
-
-            foreach (var prop in Export.GetProperties())
-            {
-                propsnode.Nodes.Add(new TreeNode($"{prop.Name} | {prop.PropType}"));
-            }
-
-            return res;
         }
     }
 }

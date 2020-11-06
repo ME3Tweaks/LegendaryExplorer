@@ -1,11 +1,7 @@
-﻿using Gammtek.Conduit.Extensions.IO;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -16,95 +12,93 @@ namespace ME3Explorer.Soundplorer
         public ISBank(string isbPath)
         {
             Filepath = isbPath;
-            ParseBank(new MemoryStream(File.ReadAllBytes(isbPath)), false);
+            ParseBank(new EndianReader(new MemoryStream(File.ReadAllBytes(isbPath))), false);
         }
 
-        public ISBank(byte[] binData, bool isEmbedded)
+        public ISBank(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
-            ParseBank(ms, isEmbedded);
+            ms.Skip(4);
+            ParseBank(new EndianReader(ms), true);
         }
 
-        private void ParseBank(MemoryStream ms, bool isEmbedded)
+        private void ParseBank(EndianReader ms, bool isEmbedded)
         {
-            int counter = 1;
-            //Skip RIFF, isbftitl
-            long dataStartPosition = ms.Position;
-            string shouldBeRiff = ms.ReadString(4, false);
-            if (shouldBeRiff != "RIFF")
-            {
-                Debug.WriteLine("Not a RIFF!");
-            }
-            uint riffSize = ms.ReadUInt32();
-            var riffType = ms.ReadString(8, false); //technically not type, its just how this file format works
+            int numEntriesWithData = 1;
+            //long dataStartPosition = ms.Position;
+            //string shouldBeRiff = ms.ReadString(4, false);
+            //if (shouldBeRiff != "RIFF")
+            //{
+            //    Debug.WriteLine("Not a RIFF!");
+            //}
+            //uint riffSize = ms.ReadUInt32();
+            //var riffType = ms.ReadString(8, false); //technically not type, its just how this file format works
+            //ISBankEntry isbEntry = null;
+            //uint blocksize = 0;
+            //int currentCounter = counter;
+            //bool endOfFile = false;
+
+            //if (isEmbedded && riffType != "isbftitl")
+            //{
+            //    //its an icbftitl, which never has data.
+            //    ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+            //}
+            //else
+            //{
+            //    //get full data
+            //    var pos = ms.Position;
+            //    ms.Position -= 8; //go back 8
+            //    var fulldata = new byte[riffSize + 8];
+            //    ms.Read(fulldata, 0, fulldata.Length);
+            //    ms.Position = pos; //reset
+            //    isbEntry = new ISBankEntry(); //start of a new file
+            //    isbEntry.FullData = fulldata;
+
+            //    blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
+            //    ms.Seek(blocksize, SeekOrigin.Current); //skip it
+            //}
+            ////todo change to this
+            ////  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
+            uint chunksize = 0;
             ISBankEntry isbEntry = null;
-            uint blocksize = 0;
-            int currentCounter = counter;
-            bool endOfFile = false;
-
-            if (isEmbedded && riffType != "isbftitl")
+            while (ms.BaseStream.Position < ms.BaseStream.Length)
             {
-                //its an icbftitl, which never has data.
-                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
-            }
-            else
-            {
-
-                blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
-                ms.Seek(blocksize, SeekOrigin.Current); //skip it
-                isbEntry = new ISBankEntry(); //start of a new file
-                isbEntry.HeaderOffset = (uint)ms.Position;
-            }
-            //todo change to this
-            //  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
-            while (ms.Position < ms.Length && !endOfFile)
-            {
-                blocksize = 0; //reset
-                if (currentCounter != counter)
-                {
-                    //Debug.WriteLine("Sound #" + currentCounter);
-                    //Debug.WriteLine(currentFileName);
-                    //Debug.WriteLine("Sample Rate: " + sampleRate);
-                    //Debug.WriteLine("Channels: " + pcChannels);
-                    //Debug.WriteLine("Is Ogg: " + isOgg);
-                    //Debug.WriteLine("Is PCM: " + isPCM);
-                    if (isbEntry != null)
-                    {
-                        BankEntries.Add(isbEntry);
-                    }
-                    //Debug.WriteLine(isbEntry.GetTextSummary());
-                    //Debug.WriteLine("=======================");
-                    isbEntry = new ISBankEntry();
-                    isbEntry.HeaderOffset = (uint)ms.Position;
-                    currentCounter = counter;
-                }
-
-                string blockName = ms.ReadString(4);
+                chunksize = 0; //reset
+                var chunkStartPos = ms.BaseStream.Position;
+                string blockName = ms.ReadEndianASCIIString(4);
                 //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
                 switch (blockName)
                 {
                     case "LIST":
-                        /*
-                         *       AudioFile.Seek(4, sofromcurrent); //list block size
-      AudioFile.Seek(8, sofromcurrent); //Seek past ''isbftitl'' bytes
-      blocksize:=Audiofile.ReadDWord;
+                        chunksize = ms.ReadUInt32();
+                        var nextblockname = ms.ReadEndianASCIIString(4);
+                        var nextblockname2 = ms.ReadEndianASCIIString(4);
+                        if (nextblockname == "samp" && nextblockname2 == "titl")
+                        {
+                            if (!isEmbedded)
+                            {
+                                //upcoming sample data
+                                //add old ISB entry
+                                if (isbEntry?.DataAsStored != null)
+                                {
+                                    BankEntries.Add(isbEntry);
+                                }
 
-      TempString:='';
-      //filename:='';
-      for I := 0 to blocksize - 1 do
-      begin
-        TempString:=chr(Audiofile.ReadByte);
-        if TempString=#0 then
-        else
-          //filename:=filename + TempString;
-      end;
-      continue;*/
-                        ms.Seek(4, SeekOrigin.Current); //list block size
-                        ms.Seek(8, SeekOrigin.Current); //Seek past ''isbftitl'' bytes
-                        blocksize = ms.ReadUInt32(); //size of block
+                                isbEntry = new ISBankEntry();
+                            }
+                        }
+                        else
+                        {
+                            //maybe isb container, ignore
+                            ms.BaseStream.Position = chunksize + 8 + chunkStartPos;
+                            //Debug.WriteLine($"Skipping non-sample LIST at 0x{chunkStartPos:X8}");
+                            continue;
+                        }
+
+                        chunksize = ms.ReadUInt32(); //size of block
                         string tempStr = ""; //we have to build it manually because of how they chose to store it in a weird non-ASCII/unicode way
                         bool endOfStr = false;
-                        for (int i = 0; i < blocksize / 2; i++)
+                        for (int i = 0; i < chunksize / 2; i++)
                         {
                             short value = ms.ReadInt16();
                             if (value != 0 && !endOfStr)
@@ -117,132 +111,113 @@ namespace ME3Explorer.Soundplorer
                                 endOfStr = true;
                             }
                         }
-                        //string str = ms.ReadString(blocksize);
                         isbEntry.FileName = tempStr;
                         break;
                     case "sinf":
-                        /*    if blockname='sinf' then
-    begin
-      AudioFile.Seek(12, sofromcurrent);
-      samplerate:=Audiofile.ReadDWord;
-      AudioFile.Seek(8, sofromcurrent);
-      continue;
-    end;*/
-                        ms.Seek(12, SeekOrigin.Current);
-                        isbEntry.sampleRate = ms.ReadUInt32();
-                        ms.Seek(8, SeekOrigin.Current);
+                        chunksize = ms.ReadUInt32();
+                        var pos = ms.BaseStream.Position;
+                        ms.ReadInt64(); //skip 8
+                        isbEntry.sampleRate = ms.ReadUInt32(); // This is actually codec dependent. e.g. this can list 48K but actual samplerate is 44.1K
+                        isbEntry.pcmBytes = ms.ReadUInt32();
+                        isbEntry.bps = ms.ReadInt16();
+                        ms.BaseStream.Position = pos + chunksize; //skip to next chunk
                         break;
                     case "chnk":
-                        /*
-                         *     if blockname='chnk' then
-    begin
-      AudioFile.Seek(4, sofromcurrent);
-      PCchannels:=Audiofile.ReadDWord;
-      continue;
-    end;*/
                         ms.Seek(4, SeekOrigin.Current);
                         isbEntry.numberOfChannels = ms.ReadUInt32();
                         break;
                     case "cmpi":
-                        /*
-    if blockname='cmpi' then
-    begin
-      AudioFile.Seek(24, sofromcurrent);
-      if Audiofile.ReadDWord=1053609165 then
-        IsPCM:=true
-      else
-        IsPCM:=false;
-      continue;
-    end;*/
-                        ms.Seek(20, SeekOrigin.Current);
-                        int pcmSignature1 = ms.ReadInt32();
-                        int pcmSignature2 = ms.ReadInt32();
-
-                        isbEntry.CodecID = pcmSignature1;
-                        isbEntry.CodecID2 = pcmSignature2;
-
-                        isbEntry.isPCM = pcmSignature2 == 1053609165;
-
+                        //Codec/compression index
+                        var size = ms.ReadInt32();
+                        pos = ms.BaseStream.Position;
+                        isbEntry.CodecID = ms.ReadInt32();
+                        isbEntry.CodecID2 = ms.ReadInt32();
+                        ms.BaseStream.Position = pos + size;
                         break;
                     case "data":
-                        counter++;
-
-                        //Debug.WriteLine(counter + " Data for " + isbEntry.FileName);
-                        blocksize = ms.ReadUInt32(); //size of block
-
-                        string encodedType = ms.ReadString(4, false);
-                        isbEntry.isOgg = encodedType == "OggS";
-                        ms.Seek(-4, SeekOrigin.Current); //go to block start
-                        isbEntry.DataOffset = (uint)ms.Position;
-
+                        numEntriesWithData++;
+                        chunksize = ms.ReadUInt32(); //size of block
+                        isbEntry.DataOffset = (uint)ms.BaseStream.Position;
                         MemoryStream data = new MemoryStream();
-                        ms.CopyToEx(data, (int)blocksize);
+                        ms.BaseStream.CopyToEx(data, (int)chunksize);
                         data.Position = 0;
-                        var str = data.ReadString(4, false);
+                        var str = data.ReadStringASCII(4);
                         isbEntry.DataAsStored = data.ToArray();
-                        //ms.Seek(blocksize, SeekOrigin.Current); //go to next block
-
-                        /*
-                         *     if blockname='data' then
-    begin
-      inc(Counter);
-      blocksize:=Audiofile.ReadDWord;
-      if blocksize mod 2 <> 0 then
-        blocksize:=blocksize+1;
-
-      if Audiofile.ReadBlockName='OggS' then
-        IsOgg:=true
-      else
-        IsOgg:=false;
-
-      AudioFile.Seek(-4, sofromcurrent);
-
-      if Counter=FileNo then
-      begin
-        SavePcFile(filename, destdir, blocksize, IsOgg, IsPcm, False, PcChannels, SampleRate);
-        application.processmessages;
-        continue;
-      end
-      else
-      begin
-        Audiofile.Seek(blocksize, sofromcurrent);
-        application.processmessages;
-        continue;
-      end;
-    end;*/
                         break;
+                    case "FFIR":
                     case "RIFF":
-                        //this is the start of a new file.
-                        riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
-
-                        counter++;
-                        riffType = ms.ReadString(8, false); //technically not type, its just how this file format works
-                        if (riffType != "isbftitl")
+                        if (blockName == "FFIR")
                         {
-                            //its an icbftitl, which never has data.
-                            ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                            ms.Endian = Endian.Big;
+                        }
+                        if (isEmbedded)
+                        {
+                            //EMBEDDED ISB
+                            //this is the start of a new file.
+                            var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
+                            var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            if (riffType != "isbf" && riffType2 == "titl")
+                            {
+                                //its an icbftitl, which never has data.
+                                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                                continue; //skip
+                            }
+
+                            //add old ISB entry
+                            if (isbEntry?.DataAsStored != null)
+                            {
+                                BankEntries.Add(isbEntry);
+                            }
+
+                            isbEntry = new ISBankEntry
+                            {
+                                FileEndianness = ms.Endian,
+                                FullData = new byte[riffSize + 8]
+                            };
+                            pos = ms.BaseStream.Position;
+                            ms.BaseStream.Position = ms.BaseStream.Position - 16;
+                            ms.Read(isbEntry.FullData, 0, (int)riffSize + 8);
+                            ms.BaseStream.Position = pos;
+                            chunksize = ms.ReadUInt32(); //size of isfbtitl chunk
+                            ms.Seek(chunksize, SeekOrigin.Current); //skip it
+                        }
+                        else
+                        {
+                            //ISB file - has external RIFF header and samptitl's separating each data section
+                            var riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
+                            var riffType = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            var riffType2 = ms.ReadEndianASCIIString(4); //type of ISB riff
+                            if (riffType != "isbf" && riffType2 != "titl")
+                            {
+                                //its an icbftitl, which never has data, or is not ISB
+                                ms.Seek(riffSize - 8, SeekOrigin.Current); //skip it
+                                continue; //skip
+                            }
+
+                            //can't do += here it seems
+                            ms.Seek(ms.ReadInt32(), SeekOrigin.Current); //skip this title section
+
+                            //we will continue to parse through ISB header until we find a LIST object for sample data
                         }
 
-                        blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
-                        ms.Seek(blocksize, SeekOrigin.Current); //skip it
                         break;
                     default:
                         //skip the block
-                        blocksize = ms.ReadUInt32(); //size of block
-                        //Debug.WriteLine("Skipping block of size " + blocksize + " at 0x" + ms.Position.ToString("X5"));
-                        ms.Seek(blocksize, SeekOrigin.Current); //skip it
+                        chunksize = ms.ReadUInt32(); //size of block
+                        ///sDebug.WriteLine($"Skipping block {blockName} of size {chunksize} at 0x{ms.Position:X8}");
+                        ms.Seek(chunksize, SeekOrigin.Current); //skip it
                         break;
                 }
-                if (blocksize % 2 != 0)
+                if (chunksize % 2 != 0)
                 {
                     ms.Seek(1, SeekOrigin.Current); //byte align
                 }
             }
-            if (isbEntry != null && isbEntry.DataAsStored != null)
+            if (isbEntry?.DataAsStored != null)
             {
                 BankEntries.Add(isbEntry);
             }
-            isbEntry = new ISBankEntry();
         }
     }
 }

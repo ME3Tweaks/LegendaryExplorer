@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using ME3Explorer.Sequence_Editor;
@@ -11,7 +9,10 @@ using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 using ME3Explorer.AutoTOC;
+using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
+using ME3Explorer.SFAREditor;
+using ME3ExplorerCore.MEDirectories;
 
 namespace ME3Explorer
 {
@@ -73,11 +74,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Memory Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzerUI),
                 icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
                 open = () =>
                 {
-                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
+                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzerUI()).Show();
                 },
                 tags = new List<string> { "utility", "toolsetdev" },
                 subCategory = "For Toolset Devs Only",
@@ -87,7 +88,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "File Hex Analyzer",
-                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                type = typeof(FileHexViewerWPF),
                 icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
                 open = () =>
                 {
@@ -101,18 +102,71 @@ namespace ME3Explorer
             #endregion
 
             #region Utilities
+            //set.Add(new Tool
+            //{
+            //    name = "Animation Explorer",
+            //    type = typeof(AnimationExplorer.AnimationExplorer),
+            //    icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new AnimationExplorer.AnimationExplorer()).Show();
+            //    },
+            //    tags = new List<string> { "utility", "animation", "gesture", "bone", "PSA" },
+            //    subCategory = "Explorers",
+            //    description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
+            //});
             set.Add(new Tool
             {
-                name = "Animation Explorer",
-                type = typeof(AnimationExplorer.AnimationExplorer),
-                icon = Application.Current.FindResource("iconAnimationExplorer") as ImageSource,
+                name = "Animation Viewer",
+                type = typeof(AnimationExplorer.AnimationViewer),
+                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
-                    (new AnimationExplorer.AnimationExplorer()).Show();
+                    if (AnimationExplorer.AnimationViewer.Instance == null)
+                    {
+                        (new AnimationExplorer.AnimationViewer()).Show();
+                    }
+                    else
+                    {
+                        AnimationExplorer.AnimationViewer.Instance.RestoreAndBringToFront();
+                    }
                 },
-                tags = new List<string> { "utility", "animation", "gesture", "bone" },
+                tags = new List<string> { "utility", "animation", "gesture" },
                 subCategory = "Explorers",
-                description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
+                description = "Animation Viewer allows you to preview any animation in Mass Effect 3"
+            });
+            set.Add(new Tool
+            {
+                name = "Live Level Editor",
+                type = typeof(GameInterop.LiveLevelEditor),
+                icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
+                open = () =>
+                {
+                    if (GameInterop.LiveLevelEditor.Instance == null)
+                    {
+                        (new GameInterop.LiveLevelEditor()).Show();
+                    }
+                    else
+                    {
+                        GameInterop.LiveLevelEditor.Instance.RestoreAndBringToFront();
+                    }
+                },
+                tags = new List<string> { "utility" },
+                subCategory = "Utilities",
+                description = "Live Level Editor allows you to preview the effect of property changes to Actors in game, to reduce iteration times. It also has a Camera Path Editor, which lets you make camera pans quickly."
+            });
+            set.Add(new Tool
+            {
+                name = "AFC Compactor",
+                type = typeof(TFCCompactor.TFCCompactor),
+                icon = Application.Current.FindResource("iconAFCCompactor") as ImageSource,
+                open = () =>
+                {
+                    (new AFCCompactorUI.AFCCompactorUI()).Show();
+                },
+                tags = new List<string> { "utility", "deployment", "audio", },
+                subCategory = "Deployment",
+                description = "AFC Compactor can compact your ME2 or ME3 Audio File Cache (AFC) files by effectively removing unreferenced chunks in it. It also can be used to reduce or remove AFC dependencies so users do not have to have DLC installed for certain audio to work.",
             });
             set.Add(new Tool
             {
@@ -131,7 +185,7 @@ namespace ME3Explorer
             {
                 name = "Audio Localizer",
                 type = typeof(AudioLocalizer),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconAudioLocalizer") as ImageSource,
                 open = () =>
                 {
                     (new AudioLocalizer()).Show();
@@ -169,13 +223,13 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "DLC Unpacker",
-                type = typeof(DLCUnpacker.DLCUnpacker),
+                type = typeof(DLCUnpacker.DLCUnpackerUI),
                 icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
                 open = () =>
                 {
                     if (ME3Directory.gamePath != null)
                     {
-                        new DLCUnpacker.DLCUnpacker().Show();
+                        new DLCUnpacker.DLCUnpackerUI().Show();
                     }
                     else
                     {
@@ -213,24 +267,9 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
-#if DEBUG
             set.Add(new Tool
             {
                 name = "Meshplorer",
-                type = typeof(Meshplorer.Meshplorer),
-                icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
-                open = () =>
-                {
-                    (new Meshplorer.Meshplorer()).Show();
-                },
-                tags = new List<string> { "developer", "mesh" },
-                subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
-            });
-#endif
-            set.Add(new Tool
-            {
-                name = "Meshplorer WPF",
                 type = typeof(MeshplorerWPF),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
                 open = () =>
@@ -239,7 +278,20 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer WPF loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool works with all three games."
+            });
+            set.Add(new Tool
+            {
+                name = "Animation Importer/Exporter",
+                type = typeof(AnimationImporter),
+                icon = Application.Current.FindResource("iconAnimationImporter") as ImageSource,
+                open = () =>
+                {
+                    (new AnimationImporter()).Show();
+                },
+                tags = new List<string> { "developer", "animation", "psa", "animset", "animsequence" },
+                subCategory = "Scene Shop",
+                description = "Import and Export AnimSequences from/to PSA and UDK"
             });
             set.Add(new Tool
             {
@@ -363,18 +415,6 @@ namespace ME3Explorer
             #endregion
 
             #region Create Mods
-            //set.Add(new Tool
-            //{
-            //    name = "Audio Editor",
-            //    type = typeof(Audio_Editor.AudioEditor),
-            //    icon = Application.Current.FindResource("iconAudioEditor") as ImageSource,
-            //    open = () =>
-            //    {
-            //        (new Audio_Editor.AudioEditor()).Show();
-            //    },
-            //    tags = new List<string> { "developer", "afc", "sound", "wwise" },
-            //    subCategory = "Core",
-            //});
             set.Add(new Tool
             {
                 name = "Conditionals Editor",
@@ -421,29 +461,6 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation", "me3", "me3" },
                 subCategory = "Scene Shop",
                 description = "FaceFX Editor is the toolset’s highly-simplified version of FaceFX Studio. With this tool modders can edit FaceFX AnimSets (FXEs) for all three games.",
-            });
-            set.Add(new Tool
-            {
-                name = "FaceFXAnimSet Editor",
-                type = typeof(FaceFX.FaceFXAnimSetEditor),
-                icon = Application.Current.FindResource("iconFaceFXAnimSetEditor") as ImageSource,
-                open = () =>
-                {
-                    (new FaceFX.FaceFXAnimSetEditor()).Show();
-                    //string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2" }, "ME3", true);
-                    //switch (result)
-                    //{
-                    //    case "ME3":
-                    //        (new FaceFX.FaceFXAnimSetEditor()).Show();
-                    //        break;
-                    //    case "ME2":
-                    //        (new ME2Explorer.FaceFXAnimSetEditor()).Show();
-                    //        break;
-                    //}
-                },
-                tags = new List<string> { "developer", "fxa", "facefx", "lipsync", "fxe", "bones", "animation" },
-                subCategory = "Scene Shop",
-                description = "FaceFXAnimSetEditor is the original tool for manipulating FaceFXAnimsets. It will soon be completely replaced by the more complete FaceFX Editor.",
             });
             //Benji's tool. Uncomment when we have more progress.
             /*set.Add(new Tool
@@ -540,18 +557,31 @@ namespace ME3Explorer
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
+            //set.Add(new Tool
+            //{
+            //    name = "SFAR Editor",
+            //    type = typeof(SFAREditor2),
+            //    icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new SFAREditor2()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "dlc" },
+            //    subCategory = other,
+            //    description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+            //});
             set.Add(new Tool
             {
-                name = "SFAR Editor",
-                type = typeof(SFAREditor2),
-                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
+                name = "SFAR Explorer",
+                type = typeof(SFARExplorer),
+                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
                 open = () =>
                 {
-                    (new SFAREditor2()).Show();
+                    (new SFARExplorer()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
             });
             set.Add(new Tool
             {
@@ -562,22 +592,24 @@ namespace ME3Explorer
                 {
                     (new Soundplorer.SoundplorerWPF()).Show();
                 },
-                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc" },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound", "afc", "wwise", "bank" },
                 subCategory = "Scene Shop",
                 description = "Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {
-                name = "WwiseBank Editor",
-                type = typeof(WwiseBankEditor.WwiseEditor),
-                icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
+                name = "Wwise Graph Editor",
+                type = typeof(WwiseEditor.WwiseEditorWPF),
+                icon = Application.Current.FindResource("iconWwiseEditor") as ImageSource,
                 open = () =>
                 {
-                    (new WwiseBankEditor.WwiseEditor()).Show();
+                    (new WwiseEditor.WwiseEditorWPF()).Show();
                 },
-                tags = new List<string> { "developer", "dialogue", "text", "line" },
+                tags = new List<string> { "developer", "audio", "music", "sound", "wwise", "bank" },
                 subCategory = "Scene Shop",
-                description = "Wwisebank Editor edits ME3 Wwisebank objects, which contain data references to specific sets of Wwiseevents and Wwisestreams in the PCC. \n\nEditing “the bank” is often necessary when changing game music or when adding new dialogue.",
+                description = "Wwise Editor currently has no editing functionality. " +
+                "It can be used to help visualize the relationships between HIRC objects as well as their connection to WwiseEvent and WwiseStream Exports. " +
+                "There are many relationships not shown, due to most HIRC objects not being parsed yet.",
             });
             #endregion
 

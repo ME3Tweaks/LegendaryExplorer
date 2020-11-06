@@ -1,5 +1,6 @@
-[![Download latest release](https://raw.github.com/Mgamerz/ME3Explorer/Beta/ME3Explorer/Resources/toolset_splash.png)](https://github.com/Mgamerz/ME3Explorer/releases/latest)
-[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/Mgamerz2/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
+[![Download latest release](https://raw.github.com/ME3Tweaks/ME3Explorer/Beta/ME3Explorer/Resources/toolset_splash.png)](https://github.com/ME3Tweaks/ME3Explorer/releases/latest)
+[![Build Status](https://dev.azure.com/ME3Tweaks/ME3Explorer/_apis/build/status/ME3Tweaks.ME3Explorer?branchName=Beta)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/latest?definitionId=2&branchName=Beta)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/ME3Tweaks/ME3Explorer/2)](https://dev.azure.com/ME3Tweaks/ME3Explorer/_build?definitionId=2)
 
 ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has limited support for both _Mass Effect_ and _Mass Effect 2_. ME3Explorer does not support Mass Effect games on any other platforms.
 
@@ -7,6 +8,8 @@ This fork is updated by ME3Tweaks and contains bleeding edge features for develo
 
 ## New to modding?
 [Check out our github wiki](https://github.com/ME3Tweaks/ME3Explorer/wiki) which has tutorials on various modding subjects. Want to contribute? Sign up for github and start writing tutorials today for other users.
+
+Need assistance? [Join the ME3Tweaks Discord](https://discord.gg/s8HA6dc).
 
 ## Features
 All stable releases starting with 3.0.7.0 on this fork are signed with the ME3Tweaks code signing certificate.

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using ME3ExplorerCore.Helpers;
 
 namespace ME3Explorer.CurveEd
 {
@@ -85,8 +80,10 @@ namespace ME3Explorer.CurveEd
         }
     }
 
-    public class Curve
+    public class Curve : NotifyPropertyChangedBase
     {
+        private bool isSelected;
+        public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
         public string Name { get; }
 
         public LinkedList<CurvePoint> CurvePoints;

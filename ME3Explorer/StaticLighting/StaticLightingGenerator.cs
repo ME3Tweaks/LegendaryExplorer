@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gammtek.Conduit.Extensions.Collections.Generic;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.BinaryConverters;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
+using Utilities = ME3ExplorerCore.Helpers.Utilities;
 
 namespace ME3Explorer.StaticLighting
 {
     public static class StaticLightingGenerator
     {
-        public static void GenerateUDKFileForLevel(IMEPackage pcc, string udkPath)
+        public static string GenerateUDKFileForLevel(string udkPath, IMEPackage pcc)
         {
             #region AssetPackage
 
@@ -49,7 +48,7 @@ namespace ME3Explorer.StaticLighting
                 {
                     rbBodySetup.RemoveProperty("PhysMaterial");
                 }
-                mesh.setBinaryData(stm.ToBytes(pcc));
+                mesh.WriteBinary(stm);
                 IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage);
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, out IEntry ent, relinkMap);
                 ExportEntry portedMesh = (ExportEntry)ent;
@@ -61,13 +60,13 @@ namespace ME3Explorer.StaticLighting
                         meshElement.Material = mats.Dequeue();
                     }
                 }
-                portedMesh.setBinaryData(stm.ToBytes(meshPackage));
+                portedMesh.WriteBinary(stm);
             }
 
             #endregion
 
             #region Materials
-            using (IMEPackage udkResources = MEPackageHandler.OpenUDKPackage(App.CustomResourceFilePath(MEGame.UDK)))
+            using (IMEPackage udkResources = MEPackageHandler.OpenMEPackageFromStream(Utilities.GetCustomAppResourceStream(MEGame.UDK)))
             {
                 ExportEntry normDiffMat = udkResources.Exports.First(exp => exp.ObjectName == "NormDiffMat");
                 foreach (int matUIndex in allMats)
@@ -117,7 +116,7 @@ namespace ME3Explorer.StaticLighting
                         newMat.ObjectName = matExp.ObjectName;
                         Material matBin = ObjectBinary.From<Material>(newMat);
                         matBin.SM3MaterialResource.UniformExpressionTextures = new UIndex[]{ norm?.UIndex ?? 0, diff.UIndex };
-                        newMat.setBinaryData(matBin);
+                        newMat.WriteBinary(matBin);
                         relinkMap[matExp] = newMat;
                         if (newMat.GetProperty<ArrayProperty<ObjectProperty>>("Expressions") is {} expressionsProp && expressionsProp.Count >= 2)
                         {
@@ -159,7 +158,7 @@ namespace ME3Explorer.StaticLighting
                 var topLevelMeshPackages = new List<IEntry>();
                 foreach (ExportEntry exportEntry in staticMeshes)
                 {
-                    IEntry imp = udkPackage.getEntryOrAddImport($"{exportEntry.FullPath}", "StaticMesh", "Engine");
+                    IEntry imp = udkPackage.getEntryOrAddImport($"{exportEntry.FullPath}", "StaticMesh", "Engine", exportEntry.ObjectName.Number);
                     while (imp.Parent != null)
                     {
                         imp = imp.Parent;
@@ -183,7 +182,7 @@ namespace ME3Explorer.StaticLighting
                             var components = stcExp.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
                             for (int i = 0; i < components.Count; i++)
                             {
-                                componentToMatrixMap.Add(components[i].Value, stmc.LocalToWorldTransforms[i]);
+                                componentToMatrixMap[components[i].Value] = stmc.LocalToWorldTransforms[i];
                             }
                         }
                         else if (stcExp.ClassName == "StaticLightCollectionActor")
@@ -192,7 +191,7 @@ namespace ME3Explorer.StaticLighting
                             var components = stcExp.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
                             for (int i = 0; i < components.Count; i++)
                             {
-                                componentToMatrixMap.Add(components[i].Value, stlc.LocalToWorldTransforms[i]);
+                                componentToMatrixMap[components[i].Value] = stlc.LocalToWorldTransforms[i];
                             }
                         }
                     }
@@ -200,7 +199,7 @@ namespace ME3Explorer.StaticLighting
 
                 #region StaticMeshActors
                 {
-                    var emptySMCBin = new byte[4];
+                    var emptySMCBin = new StaticMeshComponent();
                     IEntry staticMeshActorClass = udkPackage.getEntryOrAddImport("Engine.StaticMeshActor");
                     udkPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor", "StaticMeshActor", "Engine");
                     IEntry staticMeshComponentArchetype = udkPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor.StaticMeshComponent0",
@@ -209,13 +208,18 @@ namespace ME3Explorer.StaticLighting
                     int smcIndex = 2;
                     foreach (ExportEntry smc in pcc.Exports.Where(exp => exp.ClassName == "StaticMeshComponent"))
                     {
-                        if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex))
+                        if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex) && parent.IsA("StaticMeshActorBase"))
                         {
                             StructProperty locationProp;
                             StructProperty rotationProp;
-                            //StructProperty scaleProp;
+                            StructProperty scaleProp = null;
                             smc.CondenseArchetypes();
-                            smc.setBinaryData(emptySMCBin);
+                            if (!(smc.GetProperty<ObjectProperty>("StaticMesh") is { } meshProp) || !pcc.IsUExport(meshProp.Value))
+                            {
+                                continue;
+                            }
+
+                            smc.WriteBinary(emptySMCBin);
                             smc.RemoveProperty("bBioIsReceivingDecals");
                             smc.RemoveProperty("bBioForcePrecomputedShadows");
                             //smc.RemoveProperty("bUsePreComputedShadows");
@@ -225,16 +229,30 @@ namespace ME3Explorer.StaticLighting
                             smc.ObjectName = new NameReference("StaticMeshComponent", smcIndex++);
                             if (parent.ClassName == "StaticMeshCollectionActor")
                             {
-                                Matrix m = componentToMatrixMap[smc.UIndex];
-                                locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
-                                rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
-                                //scaleProp = CommonStructs.Vector(m.ScaleVector, "Scale3D");
+                                if (!componentToMatrixMap.TryGetValue(smc.UIndex, out Matrix m))
+                                {
+                                    continue;
+                                }
+                                (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
+                                locationProp = CommonStructs.Vector3Prop(posVec, "Location");
+                                rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
+                                scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
                                 //smc.WriteProperty(CommonStructs.Matrix(m, "CachedParentToWorld"));
                             }
                             else
                             {
                                 locationProp = parent.GetProperty<StructProperty>("Location");
                                 rotationProp = parent.GetProperty<StructProperty>("Rotation");
+                                scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
+                                if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
+                                {
+                                    Vector3 scaleVec = Vector3.One;
+                                    if (scaleProp != null)
+                                    {
+                                        scaleVec = CommonStructs.GetVector3(scaleProp);
+                                    }
+                                    scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
+                                }
                             }
 
                             ExportEntry sma = new ExportEntry(udkPackage, EntryImporter.CreateStack(MEGame.UDK, staticMeshActorClass.UIndex))
@@ -262,6 +280,11 @@ namespace ME3Explorer.StaticLighting
                             if (rotationProp != null)
                             {
                                 props.Add(rotationProp);
+                            }
+
+                            if (scaleProp != null)
+                            {
+                                props.Add(scaleProp);
                             }
                             sma.WriteProperties(props);
                             staticMeshActors.Add(sma);
@@ -295,6 +318,7 @@ namespace ME3Explorer.StaticLighting
                         }
                         StructProperty locationProp;
                         StructProperty rotationProp;
+                        StructProperty scaleProp;
                         switch (lightComponent.ClassName)
                         {
                             case "PointLightComponent":
@@ -302,14 +326,29 @@ namespace ME3Explorer.StaticLighting
                                 lightComponent.ObjectName = new NameReference("PointLightComponent", plcIndex++);
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
-                                    Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
-                                    rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
+                                    if (!componentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix m))
+                                    {
+                                        continue;
+                                    }
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
+                                    locationProp = CommonStructs.Vector3Prop(posVec, "Location");
+                                    rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
+                                    scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
                                 }
                                 else
                                 {
                                     locationProp = parent.GetProperty<StructProperty>("Location");
                                     rotationProp = parent.GetProperty<StructProperty>("Rotation");
+                                    scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
+                                    if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
+                                    {
+                                        Vector3 scaleVec = Vector3.One;
+                                        if (scaleProp != null)
+                                        {
+                                            scaleVec = CommonStructs.GetVector3(scaleProp);
+                                        }
+                                        scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
+                                    }
                                 }
 
                                 ExportEntry pla = new ExportEntry(udkPackage, EntryImporter.CreateStack(MEGame.UDK, pointLightClass.UIndex))
@@ -336,6 +375,10 @@ namespace ME3Explorer.StaticLighting
                                 {
                                     plsProps.Add(rotationProp);
                                 }
+                                if (scaleProp != null)
+                                {
+                                    plsProps.Add(scaleProp);
+                                }
                                 pla.WriteProperties(plsProps);
                                 lightActors.Add(pla);
                                 break;
@@ -344,14 +387,29 @@ namespace ME3Explorer.StaticLighting
                                 lightComponent.ObjectName = new NameReference("SpotLightComponent", slcIndex++);
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
-                                    Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
-                                    rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
+                                    if (!componentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix m))
+                                    {
+                                        continue;
+                                    }
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
+                                    locationProp = CommonStructs.Vector3Prop(posVec, "Location");
+                                    rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
+                                    scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
                                 }
                                 else
                                 {
                                     locationProp = parent.GetProperty<StructProperty>("Location");
                                     rotationProp = parent.GetProperty<StructProperty>("Rotation");
+                                    scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
+                                    if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
+                                    {
+                                        Vector3 scaleVec = Vector3.One;
+                                        if (scaleProp != null)
+                                        {
+                                            scaleVec = CommonStructs.GetVector3(scaleProp);
+                                        }
+                                        scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
+                                    }
                                 }
 
                                 ExportEntry sla = new ExportEntry(udkPackage, EntryImporter.CreateStack(MEGame.UDK, spotLightClass.UIndex))
@@ -378,6 +436,10 @@ namespace ME3Explorer.StaticLighting
                                 {
                                     slaProps.Add(rotationProp);
                                 }
+                                if (scaleProp != null)
+                                {
+                                    slaProps.Add(scaleProp);
+                                }
                                 sla.WriteProperties(slaProps);
                                 lightActors.Add(sla);
                                 break;
@@ -386,14 +448,29 @@ namespace ME3Explorer.StaticLighting
                                 lightComponent.ObjectName = new NameReference("DirectionalLightComponent", dlcIndex++);
                                 if (parent.ClassName == "StaticLightCollectionActor")
                                 {
-                                    Matrix m = componentToMatrixMap[lightComponent.UIndex];
-                                    locationProp = CommonStructs.Vector3(m.TranslationVector, "Location");
-                                    rotationProp = CommonStructs.Rotator(m.GetRotator(), "Rotation");
+                                    if (!componentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix m))
+                                    {
+                                        continue;
+                                    }
+                                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
+                                    locationProp = CommonStructs.Vector3Prop(posVec, "Location");
+                                    rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
+                                    scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
                                 }
                                 else
                                 {
                                     locationProp = parent.GetProperty<StructProperty>("Location");
                                     rotationProp = parent.GetProperty<StructProperty>("Rotation");
+                                    scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
+                                    if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
+                                    {
+                                        Vector3 scaleVec = Vector3.One;
+                                        if (scaleProp != null)
+                                        {
+                                            scaleVec = CommonStructs.GetVector3(scaleProp);
+                                        }
+                                        scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
+                                    }
                                 }
 
                                 ExportEntry dla = new ExportEntry(udkPackage, EntryImporter.CreateStack(MEGame.UDK, directionalLightClass.UIndex))
@@ -420,6 +497,10 @@ namespace ME3Explorer.StaticLighting
                                 {
                                     dlaProps.Add(rotationProp);
                                 }
+                                if (scaleProp != null)
+                                {
+                                    dlaProps.Add(scaleProp);
+                                }
                                 dla.WriteProperties(dlaProps);
                                 lightActors.Add(dla);
                                 break;
@@ -430,12 +511,13 @@ namespace ME3Explorer.StaticLighting
                 #endregion
 
                 Level level = ObjectBinary.From<Level>(levelExport);
-                level.Actors = levelExport.GetChildren().Where(ent => ent.IsOrInheritsFrom("Actor")).Select(ent => new UIndex(ent.UIndex)).ToList();
-                levelExport.setBinaryData(level);
+                level.Actors = levelExport.GetChildren().Where(ent => ent.IsA("Actor")).Select(ent => new UIndex(ent.UIndex)).ToList();
+                levelExport.WriteBinary(level);
 
                 udkPackage.Save();
             }
 
+            string resultFilePath = Path.Combine(udkPath, @"UDKGame\Content\Maps\", $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}.udk");
             using (IMEPackage udkPackage2 = MEPackageHandler.OpenUDKPackage(Path.Combine(App.ExecFolder, "empty.udk")))
             {
                 ExportEntry levelExport = udkPackage2.Exports.First(exp => exp.ClassName == "Level");
@@ -450,10 +532,11 @@ namespace ME3Explorer.StaticLighting
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor, udkPackage2, levelExport, true, out IEntry result);
                     levelBin.Actors.Add(result.UIndex);
                 }
-                levelExport.setBinaryData(levelBin);
-                udkPackage2.Save(Path.Combine(udkPath, @"UDKGame\Content\Maps\", $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}.udk"));
+                levelExport.WriteBinary(levelBin);
+                udkPackage2.Save(resultFilePath);
             }
             File.Delete(tempPackagePath);
+            return resultFilePath; 
         }
 
         public static void UDKifyLights(IMEPackage pcc)

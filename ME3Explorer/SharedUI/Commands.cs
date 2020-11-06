@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ME3Explorer.SharedUI
@@ -53,8 +50,42 @@ namespace ME3Explorer.SharedUI
 
         public void Execute(object parameter)
         {
-            _execute();
+            _execute?.Invoke();
         }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+    }
+
+    public class EnableCommand : ICommand
+    {
+        private readonly Func<bool> _isEnabled;
+
+        public EnableCommand(Func<bool> isEnabled)
+        {
+            _isEnabled = isEnabled;
+        }
+        public bool CanExecute(object parameter) => _isEnabled.Invoke();
+
+        public void Execute(object parameter)
+        {
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+    }
+
+    public class DisabledCommand : ICommand
+    {
+        public bool CanExecute(object parameter) => false;
+
+        public void Execute(object parameter) {}
 
         public event EventHandler CanExecuteChanged
         {

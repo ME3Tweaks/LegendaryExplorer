@@ -21,13 +21,13 @@
 
 using System;
 using System.IO;
-using StreamHelpers;
+using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {
     public partial class Image
     {
-        private void LoadImageTGA(MemoryStream stream, ImageFormat format)
+        private void LoadImageTGA(MemoryStream stream)
         {
             int idLength = stream.ReadByte();
 
@@ -39,9 +39,7 @@ namespace MassEffectModder.Images
             if (imageType != 2 && imageType != 10)
                 throw new Exception("only RGB TGA supported!");
 
-            bool compressed = false;
-            if (imageType == 10)
-                compressed = true;
+            bool compressed = imageType == 10;
 
             stream.SkipInt16(); // color map first entry index
             stream.SkipInt16(); // color map length
@@ -51,9 +49,8 @@ namespace MassEffectModder.Images
 
             int imageWidth = stream.ReadInt16();
             int imageHeight = stream.ReadInt16();
-            if (!checkPowerOfTwo(imageWidth) ||
-                !checkPowerOfTwo(imageHeight))
-                throw new Exception("dimensions not power of two");
+            if (!IsPowerOfTwo(imageWidth) || !IsPowerOfTwo(imageHeight))
+                throw new TextureSizeNotPowerOf2Exception();
 
             int imageDepth = stream.ReadByte();
             if (imageDepth != 32 && imageDepth != 24)
@@ -63,9 +60,7 @@ namespace MassEffectModder.Images
             if ((imageDesc & 0x10) != 0)
                 throw new Exception("origin right not supported in TGA!");
 
-            bool downToTop = true;
-            if ((imageDesc & 0x20) != 0)
-                downToTop = false;
+            bool downToTop = (imageDesc & 0x20) == 0;
 
             stream.Skip(idLength);
 
@@ -87,12 +82,12 @@ namespace MassEffectModder.Images
                     }
                     else
                     {
-                        byte pixelR, pixelG, pixelB, pixelA;
                         if (repeat != 0)
                         {
-                            pixelR = (byte)stream.ReadByte();
-                            pixelG = (byte)stream.ReadByte();
-                            pixelB = (byte)stream.ReadByte();
+                            byte pixelR = (byte)stream.ReadByte();
+                            byte pixelG = (byte)stream.ReadByte();
+                            byte pixelB = (byte)stream.ReadByte();
+                            byte pixelA;
                             if (imageDepth == 32)
                                 pixelA = (byte)stream.ReadByte();
                             else

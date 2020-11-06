@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
@@ -32,13 +27,21 @@ namespace ME3Explorer
     /// </summary>
     public partial class BinaryInterpreterWPF : ExportLoaderControl
     {
+        public bool SubstituteImageForHexBox
+        {
+            get => (bool)GetValue(SubstituteImageForHexBoxProperty);
+            set => SetValue(SubstituteImageForHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
+            nameof(SubstituteImageForHexBox), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
+
         public bool HideHexBox
         {
             get => (bool)GetValue(HideHexBoxProperty);
             set => SetValue(HideHexBoxProperty, value);
         }
         public static readonly DependencyProperty HideHexBoxProperty = DependencyProperty.Register(
-            "HideHexBox", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
+            nameof(HideHexBox), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false, HideHexBoxChangedCallback));
 
         public bool AlwaysLoadRegardlessOfSize
         {
@@ -46,7 +49,37 @@ namespace ME3Explorer
             set => SetValue(AlwaysLoadRegardlessOfSizeProperty, value);
         }
         public static readonly DependencyProperty AlwaysLoadRegardlessOfSizeProperty = DependencyProperty.Register(
-            "AlwaysLoadRegardlessOfSize", typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
+            nameof(AlwaysLoadRegardlessOfSize), typeof(bool), typeof(BinaryInterpreterWPF), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Use only for binding to prevent null bindings
+        /// </summary>
+        public GenericCommand NavigateToEntryCommandInternal { get; set; }
+
+        public RelayCommand NavigateToEntryCommand
+        {
+            get => (RelayCommand)GetValue(NavigateToEntryCallbackProperty);
+            set => SetValue(NavigateToEntryCallbackProperty, value);
+        }
+
+        public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
+            nameof(NavigateToEntryCommand), typeof(RelayCommand), typeof(BinaryInterpreterWPF), new PropertyMetadata(null));
+
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(BinaryInterpreterWPF), new PropertyMetadata(default(int)));
 
         private HexBox BinaryInterpreter_Hexbox;
 
@@ -84,9 +117,8 @@ namespace ME3Explorer
         private InterpreterMode interpreterMode = InterpreterMode.Objects;
         private bool LoadingNewData;
 
-        public BinaryInterpreterWPF()
+        public BinaryInterpreterWPF() : base("Binary Interpreter")
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Binary Interpreter", new WeakReference(this));
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();
@@ -109,10 +141,90 @@ namespace ME3Explorer
 
         #region Commands
         public ICommand CopyOffsetCommand { get; set; }
+        public ICommand OpenInPackageEditorCommand { get; set; }
 
         private void LoadCommands()
         {
             CopyOffsetCommand = new RelayCommand(CopyFileOffsetToClipboard, OffsetIsSelected);
+            NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
+            OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, IsSelectedItemAnObjectRef);
+        }
+
+        private bool IsSelectedItemAnObjectRef()
+        {
+            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b);
+        }
+
+        private void FireNavigateCallback()
+        {
+            if (CurrentLoadedExport != null && NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b.Tag))
+            {
+                var pos = b.GetPos();
+                //terribly inefficient. I don't use endianconverter here as it's static and i don't want static endian setting
+                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                { Endian = CurrentLoadedExport.FileRef.Endian };
+                er.Position = pos;
+                var value = er.ReadInt32();
+                if (CurrentLoadedExport.FileRef.IsEntry(value))
+                {
+                    NavigateToEntryCommand?.Execute(CurrentLoadedExport.FileRef.GetEntry(value));
+                }
+            }
+        }
+
+        private bool CanFireNavigateCallback()
+        {
+            if (NavigateToEntryCommand != null && BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b &&
+                IsObjectNodeType(b.Tag))
+            {
+                var pos = b.GetPos();
+                //This will be super inefficient. It may be wiser to cache the value of an object reference in BinInterpNode since we refresh the entire tree
+                //on modification anyways.
+                EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                { Endian = CurrentLoadedExport.FileRef.Endian };
+                er.Position = pos;
+                var value = er.ReadInt32();
+                return CurrentLoadedExport.FileRef.IsEntry(value);
+            }
+
+            return false;
+        }
+
+        private void OpenInPackageEditor()
+        {
+            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b))
+            {
+                int index = 0;
+                if (b.UIndexValue == 0)
+                {
+                    EndianReader er = new EndianReader(new MemoryStream(CurrentLoadedExport.Data))
+                    { Endian = CurrentLoadedExport.FileRef.Endian };
+                    index = b.GetObjectRefValue(er);
+                }
+                else
+                {
+                    index = b.UIndexValue;
+                }
+                if (CurrentLoadedExport.FileRef.IsEntry(index))
+                {
+                    PackageEditorWPF p = new PackageEditorWPF();
+                    p.Show();
+                    p.LoadFile(CurrentLoadedExport.FileRef.FilePath, index);
+                    p.Activate(); //bring to front  
+                }
+            }
+        }
+
+        private bool IsObjectNodeType(object nodeobj)
+        {
+            if (nodeobj is BinInterpNode node && node.Tag is BinaryInterpreterWPF.NodeType type)
+            {
+                if (type == NodeType.ArrayLeafObject) return true;
+                if (type == NodeType.ObjectProperty) return true;
+                if (type == NodeType.StructLeafObject) return true;
+            }
+
+            return false;
         }
 
         private void CopyFileOffsetToClipboard(object obj)
@@ -132,11 +244,14 @@ namespace ME3Explorer
             "ArrayProperty",
             "BioCodexMap",
             "BioConsequenceMap",
+            "BioCreatureSoundSet",
             "BioDynamicAnimSet",
             "BioGestureRuntimeData",
+            "BioMorphFace",
             "BioOutcomeMap",
             "BioPawn",
             "BioQuestMap",
+            "BioSocketSupermodel",
             "BioSoundNodeWaveStreamingData",
             "BioStage",
             "BioStateEventMap",
@@ -162,13 +277,16 @@ namespace ME3Explorer
             "FaceFXAsset",
             "FloatProperty",
             "FluidSurfaceComponent",
+            "ForceFeedbackWaveform",
             "FracturedStaticMesh",
             "FracturedStaticMeshComponent",
             "GuidCache",
             "InteractiveFoliageComponent",
+            "InterfaceProperty",
             "IntProperty",
             "Level",
             "LightMapTexture2D",
+            "MapProperty",
             "Material",
             "MaterialInstanceConstant",
             "MaterialInstanceConstants",
@@ -186,8 +304,10 @@ namespace ME3Explorer
             "PrefabInstance",
             "RB_BodySetup",
             "SFXNav_LargeMantleNode",
+            "SFXMorphFaceFrontEndDataSource",
             "ScriptStruct",
             "ShaderCache",
+            "ShaderCachePayload",
             "ShadowMap1D",
             "ShadowMapTexture2D",
             "SkeletalMesh",
@@ -215,11 +335,14 @@ namespace ME3Explorer
             "WwiseBank",
             "WwiseEvent",
             "WwiseStream",
+            "Bio2DANumberedRows",
+            "Bio2DA",
         };
 
         public override bool CanParse(ExportEntry exportEntry)
         {
-            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsOrInheritsFrom("BioPawn")) && !exportEntry.IsDefaultObject);
+            return exportEntry.HasStack || ((ParsableBinaryClasses.Contains(exportEntry.ClassName) || exportEntry.IsA("BioPawn")) && !exportEntry.IsDefaultObject)
+                || exportEntry.TemplateOwnerClassIdx >= 0;
         }
 
         public override void PopOut()
@@ -351,6 +474,30 @@ namespace ME3Explorer
                 });
         }
 
+        public static bool IsNativePropertyType(string classname)
+        {
+            switch (classname)
+            {
+                case "IntProperty":
+                case "BoolProperty":
+                case "ArrayProperty":
+                case "FloatProperty":
+                case "ClassProperty":
+                case "ByteProperty":
+                case "StrProperty":
+                case "NameProperty":
+                case "StringRefProperty":
+                case "StructProperty":
+                case "ComponentProperty":
+                case "ObjectProperty":
+                case "DelegateProperty":
+                case "InterfaceProperty":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         private BinInterpNode PerformScanBackground(BinInterpNode topLevelTree, byte[] data, int binarystart)
         {
             if (CurrentLoadedExport == null) return topLevelTree; //Could happen due to multithread
@@ -374,8 +521,14 @@ namespace ME3Explorer
                         break;
                 }
 
+                if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+                {
+                    int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
+                    subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
+                }
+
                 string className = CurrentLoadedExport.ClassName;
-                if (CurrentLoadedExport.IsOrInheritsFrom("BioPawn"))
+                if (CurrentLoadedExport.IsA("BioPawn"))
                 {
                     className = "BioPawn";
                 }
@@ -394,7 +547,9 @@ namespace ME3Explorer
                     case "ComponentProperty":
                     case "ObjectProperty":
                     case "DelegateProperty":
-                        subNodes.AddRange(StartObjectScan(data));
+                    case "MapProperty":
+                    case "InterfaceProperty":
+                        subNodes.AddRange(StartPropertyScan(data, ref binarystart));
                         break;
                     case "BioDynamicAnimSet":
                         subNodes.AddRange(StartBioDynamicAnimSetScan(data, ref binarystart));
@@ -406,11 +561,17 @@ namespace ME3Explorer
                         subNodes.AddRange(StartMetaDataScan(data, ref binarystart));
                         break;
                     case "WwiseStream":
+                        subNodes.AddRange(Scan_WwiseStream(data));
+                        break;
                     case "WwiseBank":
-                        subNodes.AddRange(Scan_WwiseStreamBank(data));
+                        subNodes.AddRange(Scan_WwiseBank(data));
                         break;
                     case "WwiseEvent":
                         subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));
+                        break;
+                    case "Bio2DA":
+                    case "Bio2DANumberedRows":
+                        subNodes.AddRange(Scan_Bio2DA(data));
                         break;
                     case "BioStage":
                         subNodes.AddRange(StartBioStageScan(data, ref binarystart));
@@ -422,8 +583,10 @@ namespace ME3Explorer
                         subNodes.AddRange(StartClassScan(data));
                         break;
                     case "Enum":
+                        subNodes.AddRange(StartEnumScan(data, ref binarystart));
+                        break;
                     case "Const":
-                        subNodes.AddRange(StartEnumScan(data));
+                        subNodes.AddRange(StartConstScan(data, ref binarystart));
                         break;
                     case "GuidCache":
                         subNodes.AddRange(StartGuidCacheScan(data, ref binarystart));
@@ -433,6 +596,9 @@ namespace ME3Explorer
                         break;
                     case "ShaderCache":
                         subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
+                        break;
+                    case "ShaderCachePayload": //Consoles
+                        subNodes.AddRange(StartShaderCachePayloadScanStream(data, ref binarystart));
                         break;
                     case "Model":
                         subNodes.AddRange(StartModelScan(data, ref binarystart));
@@ -455,6 +621,7 @@ namespace ME3Explorer
                         subNodes.AddRange(StartPrefabInstanceScan(data, ref binarystart));
                         break;
                     case "SkeletalMesh":
+                    case "BioSocketSupermodel":
                         subNodes.AddRange(StartSkeletalMeshScan(data, ref binarystart));
                         break;
                     case "StaticMeshCollectionActor":
@@ -488,7 +655,6 @@ namespace ME3Explorer
                         break;
                     case "State":
                         subNodes.AddRange(StartStateScan(data, ref binarystart));
-                        appendGenericScan = true;
                         break;
                     case "TextureMovie":
                         subNodes.AddRange(StartTextureMovieScan(data, ref binarystart));
@@ -569,8 +735,20 @@ namespace ME3Explorer
                     case "FluidSurfaceComponent":
                         subNodes.AddRange(StartFluidSurfaceComponentScan(data, ref binarystart));
                         break;
+                    case "ForceFeedbackWaveform":
+                        subNodes.AddRange(StartForceFeedbackWaveformScan(data, ref binarystart));
+                        break;
                     case "MorphTarget":
                         subNodes.AddRange(StartMorphTargetScan(data, ref binarystart));
+                        break;
+                    case "BioMorphFace":
+                        subNodes.AddRange(StartBioMorphFaceScan(data, ref binarystart));
+                        break;
+                    case "SFXMorphFaceFrontEndDataSource":
+                        subNodes.AddRange(StartSFXMorphFaceFrontEndDataSourceScan(data, ref binarystart));
+                        break;
+                    case "BioCreatureSoundSet":
+                        subNodes.AddRange(StartBioCreatureSoundSetScan(data, ref binarystart));
                         break;
                     default:
                         if (!CurrentLoadedExport.HasStack)
@@ -595,7 +773,7 @@ namespace ME3Explorer
                     }
                     genericContainer.Items.AddRange(genericItems);
                 }
-                if (PreviousLoadedUIndex == CurrentLoadedExport.UIndex && PreviousSelectedTreeName != "")
+                if (PreviousLoadedUIndex == CurrentLoadedExport?.UIndex && PreviousSelectedTreeName != "")
                 {
                     var reSelected = AttemptSelectPreviousEntry(subNodes);
                     Debug.WriteLine("Reselected previous entry");
@@ -613,7 +791,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(new BinInterpNode(ExceptionHandlerDialogWPF.FlattenException(ex)));
+                topLevelTree.Items.Add(new BinInterpNode(ex.FlattenException()));
             }
             return topLevelTree;
         }
@@ -656,7 +834,7 @@ namespace ME3Explorer
             //Todo: convert to this single byteprovider and clear bytes rather than instantiating new ones.
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider();
             TreeViewItems.ClearEx();
-            if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
+            if (CurrentLoadedExport != null && CurrentLoadedExport.DataSize > 20480)
             {
                 //There was likely a large amount of nodes placed onto the UI
                 //Lets free that memory once this export unloads
@@ -675,7 +853,7 @@ namespace ME3Explorer
                     detach?.Invoke();
                 });
 
-                detach = new Action(() => timer.Tick -= handler); // No need for deregistering but just for safety let's do it.
+                detach = () => timer.Tick -= handler; // No need for deregistering but just for safety let's do it.
                 timer.Tick += handler;
                 timer.Start();
             }
@@ -867,6 +1045,9 @@ namespace ME3Explorer
         private void BinaryInterpreter_Loaded(object sender, RoutedEventArgs e)
         {
             BinaryInterpreter_Hexbox = (HexBox)BinaryInterpreter_Hexbox_Host.Child;
+
+            this.bind(HexBoxMinWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MinWidth));
+            this.bind(HexBoxMaxWidthProperty, BinaryInterpreter_Hexbox, nameof(BinaryInterpreter_Hexbox.MaxWidth));
         }
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
@@ -883,14 +1064,14 @@ namespace ME3Explorer
                     string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
                     if (start <= currentData.Length - 2)
                     {
-                        ushort val = BitConverter.ToUInt16(currentData, start);
+                        ushort val = EndianReader.ToUInt16(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", UShort: {val}";
                     }
                     if (start <= currentData.Length - 4)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
+                        int val = EndianReader.ToInt32(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Int: {val}";
-                        float fval = BitConverter.ToSingle(currentData, start);
+                        float fval = EndianReader.ToSingle(currentData, start, CurrentLoadedExport.FileRef.Endian);
                         s += $", Float: {fval}";
                         if (CurrentLoadedExport.FileRef.IsName(val))
                         {
@@ -1138,7 +1319,7 @@ namespace ME3Explorer
             {
                 switch (bitvi.ArrayAddAlgoritm)
                 {
-                    case BinInterpNode.ArrayPropertyChildAddAlgorithm.LevelItem:
+                    case BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes:
                         BinInterpNode container = bitvi;
                         if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
                         {
@@ -1186,7 +1367,7 @@ namespace ME3Explorer
             BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
             if ((bool)e.NewValue)
             {
-                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Collapsed;
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(0);
                 i.HexboxColumnDefinition.MinWidth = 0;
                 i.HexboxColumnDefinition.MaxWidth = 0;
@@ -1194,11 +1375,29 @@ namespace ME3Explorer
             }
             else
             {
-                i.BinaryInterpreter_Hexbox_Host.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
-                i.HexboxColumnDefinition.Width = new GridLength(285);
+                i.hexBoxContainer.Visibility = i.HexProps_GridSplitter.Visibility = i.ToggleHexboxWidth_Button.Visibility = Visibility.Visible;
+                i.HexboxColumnDefinition.Width = new GridLength(i.HexBoxMinWidth);
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
-                i.HexboxColumnDefinition.MinWidth = 220;
-                i.HexboxColumnDefinition.MaxWidth = 718;
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
+                i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
+            }
+        }
+
+        private static void SubstituteImageForHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            BinaryInterpreterWPF i = (BinaryInterpreterWPF)obj;
+            if (e.NewValue is true && i.BinaryInterpreter_Hexbox_Host.Child.Height > 0 && i.BinaryInterpreter_Hexbox_Host.Child.Width > 0)
+            {
+                i.hexboxImageSub.Source = i.BinaryInterpreter_Hexbox_Host.Child.DrawToBitmapSource();
+                i.hexboxImageSub.Width = i.BinaryInterpreter_Hexbox_Host.ActualWidth;
+                i.hexboxImageSub.Height = i.BinaryInterpreter_Hexbox_Host.ActualHeight;
+                i.hexboxImageSub.Visibility = Visibility.Visible;
+                i.BinaryInterpreter_Hexbox_Host.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                i.BinaryInterpreter_Hexbox_Host.Visibility = Visibility.Visible;
+                i.hexboxImageSub.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1211,6 +1410,10 @@ namespace ME3Explorer
                     using (StringWriter stringoutput = new StringWriter())
                     {
                         TreeViewItems[0].PrintPretty("", stringoutput, true, CurrentLoadedExport);
+#if DEBUG
+                        //Uncomment this to write it out to disk. sometimes pasting big text busts things
+                        //File.WriteAllText(@"C:\users\public\bincopy.txt", stringoutput.ToString());
+#endif
                         Clipboard.SetText(stringoutput.ToString());
                     }
                 }

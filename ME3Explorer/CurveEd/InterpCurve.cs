@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer.Unreal;
-using System.IO;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using SharpDX;
 
 namespace ME3Explorer.CurveEd
 {
@@ -21,21 +20,7 @@ namespace ME3Explorer.CurveEd
         InterpCurveLinearColor,
     }
 
-    public struct Vector
-    {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public Vector(float x, float y, float z)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
-    }
-
-    public class InterpCurve
+    public class InterpCurve : NotifyPropertyChangedBase
     {
 
         private readonly IMEPackage pcc;
@@ -43,7 +28,6 @@ namespace ME3Explorer.CurveEd
 
         public string Name { get; set; }
         public ObservableCollectionExtended<Curve> Curves { get; set; }
-
         public InterpCurve(IMEPackage _pcc, StructProperty prop)
         {
             pcc = _pcc;
@@ -92,9 +76,9 @@ namespace ME3Explorer.CurveEd
                     Curves.Add(new Curve("X", vals));
                     break;
                 case CurveType.InterpCurveVector:
-                    Vector OutValVec = new Vector(0, 0, 0);
-                    Vector ArriveTangentVec = new Vector(0, 0, 0);
-                    Vector LeaveTangentVec = new Vector(0, 0, 0);
+                    Vector3 OutValVec = new Vector3(0, 0, 0);
+                    Vector3 ArriveTangentVec = new Vector3(0, 0, 0);
+                    Vector3 LeaveTangentVec = new Vector3(0, 0, 0);
                     var x = new LinkedList<CurvePoint>();
                     var y = new LinkedList<CurvePoint>();
                     var z = new LinkedList<CurvePoint>();
@@ -108,13 +92,13 @@ namespace ME3Explorer.CurveEd
                                     InVal = floatProp.Value;
                                     break;
                                 case StructProperty structProp when structProp.Name == "OutVal":
-                                    OutValVec = GetVector(structProp);
+                                    OutValVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case StructProperty structProp when structProp.Name == "ArriveTangent":
-                                    ArriveTangentVec = GetVector(structProp);
+                                    ArriveTangentVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case StructProperty structProp when structProp.Name == "LeaveTangent":
-                                    LeaveTangentVec = GetVector(structProp);
+                                    LeaveTangentVec = CommonStructs.GetVector3(structProp);
                                     break;
                                 case EnumProperty enumProp when enumProp.Name == "InterpMode" && Enum.TryParse(enumProp.Value, out CurveMode enumVal):
                                     InterpMode = enumVal;
@@ -135,7 +119,7 @@ namespace ME3Explorer.CurveEd
                     {
                         Curves.Add(new Curve("X", x));
                         Curves.Add(new Curve("Y", y));
-                        Curves.Add(new Curve("Z", z)); 
+                        Curves.Add(new Curve("Z", z));
                     }
                     break;
                 case CurveType.InterpCurveVector2D:
@@ -172,7 +156,7 @@ namespace ME3Explorer.CurveEd
                         CurvePoint p = c.CurvePoints.ElementAt(index);
                         if (index == 0)
                         {
-                            curve.CurvePoints.AddFirst(new CurvePoint(p.InVal, curve.CurvePoints.First().OutVal, 0, 0, p.InterpMode));
+                            curve.CurvePoints.AddFirst(new CurvePoint(p.InVal, Enumerable.First(curve.CurvePoints).OutVal, 0, 0, p.InterpMode));
                         }
                         else
                         {
@@ -233,7 +217,7 @@ namespace ME3Explorer.CurveEd
                 case CurveType.InterpCurveFloat:
                     return new StructProperty("InterpCurveFloat", new PropertyCollection
                     {
-                        new ArrayProperty<StructProperty>(Curves[0].CurvePoints.Select(point => 
+                        new ArrayProperty<StructProperty>(Curves[0].CurvePoints.Select(point =>
                             new StructProperty("InterpCurvePointFloat", new PropertyCollection
                             {
                                 new FloatProperty(point.InVal, "InVal"),
@@ -292,28 +276,5 @@ namespace ME3Explorer.CurveEd
 
             return null;
         }
-
-        private static Vector GetVector(StructProperty props)
-        {
-            Vector vec = new Vector();
-            foreach (var prop in props.Properties)
-            {
-                switch (prop)
-                {
-                    case FloatProperty fltProp when fltProp.Name == "X":
-                        vec.X = fltProp.Value;
-                        break;
-                    case FloatProperty fltProp when fltProp.Name == "Y":
-                        vec.Y = fltProp.Value;
-                        break;
-                    case FloatProperty fltProp when fltProp.Name == "Z":
-                        vec.Z = fltProp.Value;
-                        break;
-                }
-            }
-            return vec;
-        }
-
-
     }
 }

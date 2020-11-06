@@ -1,17 +1,9 @@
-﻿using ME3Explorer.Packages;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI
 {
@@ -74,7 +66,7 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<IEntry> entryPredicate = null) where T : class, IEntry
+        public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
         {
             SupportedTypes supportedInputTypes = SupportedTypes.ExportsAndImports;
             if (typeof(T) == typeof(ExportEntry))
@@ -85,7 +77,13 @@ namespace ME3Explorer.SharedUI
             {
                 supportedInputTypes = SupportedTypes.Imports;
             }
-            var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
+
+            Predicate<IEntry> entryPredicate = null;
+            if (predicate != null)
+            {
+                entryPredicate = entry => predicate((T)entry);
+            }
+            using var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate);
             if (dlg.ShowDialog() == true)
             {
                 return dlg.ChosenEntry as T;

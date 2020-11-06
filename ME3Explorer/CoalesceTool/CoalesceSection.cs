@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Gammtek.Conduit.Extensions.Collections.Generic;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace MassEffect3.Coalesce
 {

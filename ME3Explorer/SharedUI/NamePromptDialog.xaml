@@ -1,4 +1,4 @@
-﻿<global:NotifyPropertyChangedWindowBase xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<global:TrackingNotifyPropertyChangedWindowBase xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     x:Class="ME3Explorer.SharedUI.NamePromptDialog"
     xmlns:global="clr-namespace:ME3Explorer"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -39,4 +39,4 @@
             <Button Content="_Cancel" IsCancel="True" Margin="5" Width="50" Height="25" Name="btnCancel" Click="btnCancel_Click" />
         </StackPanel>
     </StackPanel>
-</global:NotifyPropertyChangedWindowBase>
+</global:TrackingNotifyPropertyChangedWindowBase>

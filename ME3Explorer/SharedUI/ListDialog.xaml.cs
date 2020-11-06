@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI
 {
     /// <summary>
     /// Dialog that has copy button, designed for showing lists of short lines of text
     /// </summary>
-    public partial class ListDialog : Window
+    public partial class ListDialog : TrackingNotifyPropertyChangedWindowBase
     {
-        List<string> items;
-        public ListDialog(List<string> listItems, string title, string message, Window owner, int width = 0, int height = 0)
+        public ObservableCollectionExtended<object> Items { get; } = new ObservableCollectionExtended<object>();
+        public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
+        private string topText;
+
+        public string TopText
         {
+            get => topText;
+            set => SetProperty(ref topText, value);
+        }
+
+        private ListDialog(string title, string message, Window owner, int width = 0, int height = 0) : base("List Dialog", false)
+        {
+            DataContext = this;
             InitializeComponent();
             Title = title;
-            ListDialog_Message.Text = message;
-            items = listItems;
             if (width != 0)
             {
                 Width = width;
@@ -34,16 +35,25 @@ namespace ME3Explorer.SharedUI
             {
                 Height = height;
             }
-            foreach (string str in listItems)
-            {
-                ListDialog_List.Items.Add(str);
-            }
             Owner = owner;
+        }
+
+
+        public ListDialog(IEnumerable<EntryStringPair> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        {
+            Items.ReplaceAll(listItems);
+            TopText = message;
+        }
+
+        public ListDialog(IEnumerable<string> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
+        {
+            Items.ReplaceAll(listItems);
+            TopText = message;
         }
 
         private void CopyItemsToClipBoard_Click(object sender, RoutedEventArgs e)
         {
-            string toClipboard = string.Join("\n", items);
+            string toClipboard = string.Join("\n", Items);
             try
             {
                 Clipboard.SetText(toClipboard);
@@ -53,6 +63,21 @@ namespace ME3Explorer.SharedUI
             {
                 //yes, this actually happens sometimes...
                 MessageBox.Show("Could not set data to clipboard:\n" + ex.Message);
+            }
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && item.Entry != null)
+            {
+                if (DoubleClickEntryHandler == null)
+                {
+                    MessageBox.Show("This dialog doesn't support double click to goto yet, please report this");
+                }
+                else
+                {
+                    DoubleClickEntryHandler.Invoke(item);
+                }
             }
         }
     }

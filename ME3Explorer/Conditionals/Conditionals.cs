@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
@@ -37,6 +36,12 @@ namespace ME3Explorer
         public List<int> currefbool = new List<int>();
         public Conditionals()
         {
+            // Gross, Windows forms! Can't use tracking base
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Conditionals Editor", new WeakReference(this)));
+            Analytics.TrackEvent("Used tool", new Dictionary<string, string>
+            {
+                { "Toolname", "Conditionals Editor" }
+            });
             InitializeComponent();
         }
         public int UnknownInt16;
@@ -651,8 +656,8 @@ namespace ME3Explorer
                 MemoryStream m = new MemoryStream();
                 m.Write(BitConverter.GetBytes((uint)0x434F4E44), 0, 4);
                 m.Write(BitConverter.GetBytes(1), 0, 4);
-                m.Write(BitConverter.GetBytes((Int16)UnknownInt16), 0, 2);
-                m.Write(BitConverter.GetBytes((Int16)Entry.Count), 0, 2);
+                m.Write(BitConverter.GetBytes((short)UnknownInt16), 0, 2);
+                m.Write(BitConverter.GetBytes((short)Entry.Count), 0, 2);
                 for (int i = 0; i < Entry.Count; i++)
                 {
                     Entries en = Entry[i];

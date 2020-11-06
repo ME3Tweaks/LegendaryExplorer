@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
@@ -41,7 +37,7 @@ namespace ME3Explorer
 
 
 
-                    var syncObject = new Object();
+                    var syncObject = new object();
                     lock (syncObject)
                     {
                         wc.DownloadFileAsync(new Uri(fullURL), staticExecutable, syncObject);
@@ -91,7 +87,7 @@ namespace ME3Explorer
                         }
                     };
                     var fullURL = App.StaticFilesBaseURL + staticZipName;
-                    var syncObject = new Object();
+                    var syncObject = new object();
                     lock (syncObject)
                     {
                         Debug.WriteLine("Fetching zip via " + fullURL);

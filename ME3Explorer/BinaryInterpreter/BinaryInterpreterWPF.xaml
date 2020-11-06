@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
@@ -14,6 +13,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
                             Loaded="BinaryInterpreter_Loaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
@@ -28,7 +28,7 @@
         <StackPanel Name="OnDemand_Panel" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Name="OnDemand_Title_TextBlock" Text="This export is larger than 20KB" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
             <TextBlock Name="OnDemand_Subtext_TextBlock" Text="Large exports are not automatically parsed to improve performance" HorizontalAlignment="Center"/>
-            <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="3" Click="ParseBinary_Button_Click"/>
+            <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="20" Click="ParseBinary_Button_Click"/>
             <fa:ImageAwesome  Name="ParseBinary_Spinner" Grid.Column="7" Icon="Solid_Spinner" Spin="True" SpinDuration="2" Width="24" Height="24" Margin="5"/>
         </StackPanel>
         <DockPanel Name="LoadedContent_Panel">
@@ -96,16 +96,22 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                        <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
                         <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-                    <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-                        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionLengthChanged="hb1_SelectionChanged" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-                        </hb1:HexBox>
-                    </WindowsFormsHost>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" Name="hexBoxContainer">
+                        <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" 
+                                          HorizontalAlignment="Stretch">
+                            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
+                                        LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
+                                        StringViewVisible="True" SelectionLengthChanged="hb1_SelectionChanged"
+                                        SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                            </hb1:HexBox>
+                        </WindowsFormsHost>
+                        <Image Grid.Column="0" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
+                    </Grid>
                     <GridSplitter Grid.Column="1" 
                       Name="HexProps_GridSplitter"
                       Grid.Row="1" HorizontalAlignment="Stretch" 
@@ -113,10 +119,20 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
+                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" 
+                              FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" 
+                              PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" 
+                              VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{Binding TreeViewItems}">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type global:BinInterpNode}" ItemsSource="{Binding Items}">
-                                <TextBlock Text="{Binding Path=Header}" />
+                                <TextBlock Text="{Binding Path=Header}" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                </TextBlock>
+
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                                 <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
@@ -132,10 +148,6 @@
                                                 <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
-
-
-
-
                                     </StackPanel>
                                 </StackPanel>
                                 <HierarchicalDataTemplate.Triggers>
@@ -200,6 +212,17 @@
                                 <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
                             </Style>
                         </TreeView.ItemContainerStyle>
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object" Command="{Binding NavigateToEntryCommandInternal}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                                <MenuItem Header="Open in new Package Editor" ToolTip="Opens a new Package Editor to this object" Command="{Binding OpenInPackageEditorCommand}" sharedUi:Bindings.VisibilityToEnabled="True">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                        
                     </TreeView>
                 </Grid>
             </Grid>

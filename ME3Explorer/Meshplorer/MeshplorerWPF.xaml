@@ -1,6 +1,5 @@
 ﻿<local:WPFBase x:Class="ME3Explorer.MeshplorerWPF"
-        xmlns:packages="clr-namespace:ME3Explorer.Packages"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,19 +7,21 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-               xmlns:fa="http://schemas.fontawesome.com/icons/"
-               xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
-               xmlns:scene3d="clr-namespace:ME3Explorer.Scene3D"
-               mc:Ignorable="d"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
+        xmlns:scene3d="clr-namespace:ME3Explorer.Scene3D"
+        xmlns:packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
         Closing="MeshplorerWPF_Closing"
         Icon="/Resources/meshplorer_256x256.ico"
-        Title="Meshplorer WPF" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
+        Title="Meshplorer" Height="550" Width="1200" Loaded="MeshplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:BoolEnabledConverter x:Key="BoolEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
@@ -43,7 +44,8 @@
 
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Import New Mesh from UDK" Command="{Binding ImportFromUDKCommand}"/>
-                    <MenuItem Header="Replace Mesh from UDK" Command="{Binding ReplaceFromUDKCommand}"/>
+                    <MenuItem Header="Replace Mesh from UDK" ToolTip="Replaces an entire mesh from UDK (.upk file)" Command="{Binding ReplaceFromUDKCommand}"/>
+                    <MenuItem Header="Replace single LOD from UDK" ToolTip="Replaces a single LOD from UDK (.upk file). Use this if full replacement is wonky"  Command="{Binding ReplaceLODFromUDKCommand}"/>
                     <MenuItem Header="Export Mesh to UDK" Command="{Binding ExportToUDKCommand}"/>
                     <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
                 </MenuItem>
@@ -62,7 +64,7 @@
             </StatusBar>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="250" Width="250"/>
+                    <ColumnDefinition MinWidth="280" Width="280"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
                     <ColumnDefinition Width="*" MinWidth="300"/>
                     <ColumnDefinition MinWidth="5" MaxWidth="5"/>
@@ -74,99 +76,114 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Meshplorer WPF, the rewritten version of Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Margin="5" Text="Welcome to Meshplorer" FontWeight="Bold" TextWrapping="Wrap"/>
                     <TextBlock Margin="5" TextWrapping="Wrap">
-                            Meshplorer WPF is a bit different from the classic Meshplorer.
+                            Meshplorer is a mesh editing focused tool that only shows mesh exports in package files.
                                 <LineBreak/>
-                                Indexes are done strictly by UIndex, which is how they appear in game code. 
+                                This includes SkeletalMeshes, StaticMeshes, and Brushes currently. 
                                 <LineBreak/>
                                 <LineBreak/>
-                            This means:
+                            You can view the properties of exports in the top Interpreter panel, and the binary for the
                                 <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in Package Editor
+                            export in the Binary Interpreter panel at the bottom. On the right is the Mesh Renderer.
                             <LineBreak/>
-                                -  Import references will remain the same
                             <LineBreak/>
-                                -  0 indicates null, empty, or "Class", depending on the context
+                                Right clicking on the export list will bring up a list of options. The Mesh Renderer
+                            <LineBreak/>
+                            also has options such as showing wireframe, what LOD to show, the background color, and
+                            <LineBreak/>
+                            UModel export. Importing must be done from packages created with UDK 2015.
                              <LineBreak/>
                              <LineBreak/>
-                                Meshplorer WPF is still relatively new, if you have issues, please report them to one of the following places:
+                                If you have issues with Meshplorer, please report them to one of the following places:
                                 <LineBreak/>
-                                 - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
-                                <LineBreak/>
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static local:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>                                <LineBreak/>
                                  - The issues list on GitHub at 
                                 <Hyperlink NavigateUri="{Binding Source={x:Static local:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">
                                     <Run Text="{Binding Source={x:Static local:App.BugReportURL}, Mode=OneTime}"/>
                                 </Hyperlink>
                     </TextBlock>
-
-                    <Grid HorizontalAlignment="Left" Margin="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="280"/>
-                            <ColumnDefinition Width="280"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
-                        <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                        <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                    </Grid>
+                    <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left"/>
                 </StackPanel>
 
-                <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}">
-                    <ListBox.Resources>
-                        <DataTemplate DataType="{x:Type packages:ExportEntry}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+                <DockPanel Grid.Row="0" Grid.Column="0"                              
+                           IsEnabled="{Binding IsRendererBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+                        <CheckBox Content="Brushes" IsChecked="{Binding ShowBrushes}"/>
+                        <CheckBox Content="SkeletalMeshes" Margin="5,0" IsChecked="{Binding ShowSkeletalMeshes}"/>
+                        <CheckBox Content="StaticMeshes" IsChecked="{Binding ShowStaticMeshes}"/>
+                    </StackPanel>
+                    <ListBox  ItemsSource="{Binding MeshExports}" Name="MeshExportsList" SelectedItem="{Binding CurrentExport}" 
+                              HorizontalContentAlignment="Stretch">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type packages:ExportEntry}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
 
-                                <fa:ImageAwesome x:Name="FAImageIcon" Grid.Column="7" Width="18" Height="18" Margin="2,0,4,0"/>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
+                                    <fa:ImageAwesome x:Name="FAImageIcon" Width="18" Height="18" Margin="2,0,4,0"/>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding UIndex}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" ToolTip="Export index"/>
+                                            <TextBlock Text="{Binding ObjectName.Instanced}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding ParentFullPath}" VerticalAlignment="Center" Foreground="Gray"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
-                                    <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="SkeletalMesh">
-                                    <Setter Property="Icon" Value="Solid_Skull" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="StaticMesh">
-                                    <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
-                                    <Setter Property="Icon" Value="Brands_Codepen" TargetName="FAImageIcon"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                        <ContextMenu x:Key="MyMenu">
-                            <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked"/>
-                            <MenuItem Header="Replace Mesh from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}"/>
-                            <MenuItem Header="Export Mesh to UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToUDKCommand}"/>
-                            <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
-                        </ContextMenu>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
-                            <Setter Property="Padding" Value="0"/>
-                        </Style>
-                    </ListBox.Resources>
-                </ListBox>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                        <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="SkeletalMesh">
+                                        <Setter Property="Icon" Value="Solid_Skull" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="StaticMesh">
+                                        <Setter Property="Icon" Value="Solid_Archway" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=ClassName}" Value="BrushComponent">
+                                        <Setter Property="Icon" Value="Brands_Codepen" TargetName="FAImageIcon"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                            <ContextMenu x:Key="MyMenu">
+                                <MenuItem Header="Open in Package Editor" ToolTip="Opens this mesh in Package Editor" Click="OpenInPackageEditor_Clicked">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Replace Mesh from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/udk.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Replace single LOD from UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceLODFromUDKCommand}"
+                                          ToolTip="Replaces a single LOD from UDK (.upk file). Use this if full replacement is wonky">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/udk.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Export Mesh to UDK" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToUDKCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/udk.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKUModelCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Meshplorer/umodel.ico" Width="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
+                            </ContextMenu>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
 
-                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
+                </DockPanel>
+                <Grid Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}" 
+                      IsEnabled="{Binding IsRendererBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition MinHeight="5" MaxHeight="5" Height="5"/>

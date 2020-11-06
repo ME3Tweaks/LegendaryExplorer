@@ -9,9 +9,9 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
-    Loaded="MetadataEditor_Loaded"   
-    xmlns:Packages="clr-namespace:ME3Explorer.Packages"
+    Loaded="MetadataEditor_Loaded"
     xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+    xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
     d:DesignHeight="730" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
@@ -181,9 +181,12 @@
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
         <!--Grid.Row="10" Grid.ColumnSpan="2"-->
         <WindowsFormsHost Name="Header_Hexbox_Host" Grid.Row="19" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
-            <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged">
+            <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" 
+                         LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" 
+                         StringViewVisible="True">
             </hb1:HexBox>
         </WindowsFormsHost>
+        <Image Grid.Row="19" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
         <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="20" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
         <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="21" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
     </Grid>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+//using ME3ExplorerCore.SharpDX;
 using SharpDX;
 //using SharpDX.DXGI;
 using SharpDX.Direct3D11;
@@ -207,8 +208,8 @@ namespace ME3Explorer.Scene3D
 
     public class WorldVertex : VertexBase
     {
-        Vector3 Normal;
-        Vector2 UV;
+        public Vector3 Normal;
+        public Vector2 UV;
 
         public WorldVertex() : base(Vector3.Zero)
         {

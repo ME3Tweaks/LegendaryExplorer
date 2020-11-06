@@ -24,14 +24,23 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using StreamHelpers;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {
+    // For passing to another project.
+    public enum GamePlatform
+    {
+        PC,
+        Xenon,
+        PS3,
+        WiiU
+    }
+
     public enum PixelFormat
     {
         Unknown, DXT1, DXT3, DXT5, ATI2, V8U8, ARGB, RGB, G8
@@ -107,8 +116,9 @@ namespace MassEffectModder.Images
         }
     }
 
-    [DebuggerDisplay("MEM Image | Num Mips: {mipMaps.Count}")]
+    public class TextureSizeNotPowerOf2Exception : Exception { }
 
+    [DebuggerDisplay("MEM Image | Num Mips: {mipMaps.Count}")]
     public partial class Image
     {
         public enum ImageFormat
@@ -124,10 +134,8 @@ namespace MassEffectModder.Images
             if (format == ImageFormat.Unknown)
                 format = DetectImageByFilename(fileName);
 
-            using (FileStream stream = File.OpenRead(fileName))
-            {
-                LoadImage(new MemoryStream(stream.ReadToBuffer(stream.Length)), format);
-            }
+            using FileStream stream = File.OpenRead(fileName);
+            LoadImage(new MemoryStream(stream.ReadToBuffer(stream.Length)), format);
         }
 
         public Image(MemoryStream stream, ImageFormat format)
@@ -156,12 +164,12 @@ namespace MassEffectModder.Images
             pixelFormat = pixelFmt;
         }
 
-        private ImageFormat DetectImageByFilename(string fileName)
+        private static ImageFormat DetectImageByFilename(string fileName)
         {
             return DetectImageByExtension(Path.GetExtension(fileName));
         }
 
-        private ImageFormat DetectImageByExtension(string extension)
+        private static ImageFormat DetectImageByExtension(string extension)
         {
             switch (extension.ToLowerInvariant())
             {
@@ -188,31 +196,28 @@ namespace MassEffectModder.Images
             {
                 case ImageFormat.DDS:
                     {
-                        LoadImageDDS(stream, format);
+                        LoadImageDDS(stream);
                         break;
                     }
                 case ImageFormat.TGA:
                     {
-                        LoadImageTGA(stream, format);
+                        LoadImageTGA(stream);
                         break;
                     }
                 case ImageFormat.BMP:
                     {
-                        LoadImageBMP(stream, format);
+                        LoadImageBMP(stream);
                         break;
                     }
                 case ImageFormat.PNG:
                 case ImageFormat.JPEG:
                     {
-                        BitmapSource frame = null;
-                        if (format == ImageFormat.PNG)
-                            frame = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
-                        else if (format == ImageFormat.JPEG)
-                            frame = new JpegBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
+                        BitmapSource frame = format == ImageFormat.PNG
+                            ? new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0]
+                            : new JpegBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
 
-                        if (!checkPowerOfTwo(frame.PixelWidth) ||
-                            !checkPowerOfTwo(frame.PixelHeight))
-                            throw new Exception("dimensions not power of two");
+                        if (!IsPowerOfTwo(frame.PixelWidth) || !IsPowerOfTwo(frame.PixelHeight))
+                            throw new TextureSizeNotPowerOf2Exception();
 
                         FormatConvertedBitmap srcBitmap = new FormatConvertedBitmap();
                         srcBitmap.BeginInit();
@@ -220,7 +225,7 @@ namespace MassEffectModder.Images
                         srcBitmap.DestinationFormat = PixelFormats.Bgra32;
                         srcBitmap.EndInit();
 
-                        byte[] pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
+                        var pixels = new byte[srcBitmap.PixelWidth * srcBitmap.PixelHeight * 4];
                         frame.CopyPixels(pixels, srcBitmap.PixelWidth * 4, 0);
 
                         pixelFormat = PixelFormat.ARGB;
@@ -625,13 +630,7 @@ namespace MassEffectModder.Images
             }
         }
 
-        public static bool checkPowerOfTwo(int n)
-        {
-            if ((n & (n - 1)) == 0)
-                return true;
-            else
-                return false;
-        }
+        public static bool IsPowerOfTwo(int n) => (n & (n - 1)) == 0;
 
         public static int returnPowerOfTwo(int n)
         {

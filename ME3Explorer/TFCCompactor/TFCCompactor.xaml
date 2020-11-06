@@ -1,4 +1,4 @@
-﻿<me3Explorer:NotifyPropertyChangedWindowBase x:Class="ME3Explorer.TFCCompactor.TFCCompactor"
+﻿<me3Explorer:TrackingNotifyPropertyChangedWindowBase x:Class="ME3Explorer.TFCCompactor.TFCCompactor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -36,7 +36,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="145"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="90"/>
             </Grid.ColumnDefinitions>
@@ -58,4 +58,4 @@
             <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding CurrentOperationText, FallbackValue=Waiting for user}" TextWrapping="Wrap"/>
         </Grid>
     </xctk:BusyIndicator>
-</me3Explorer:NotifyPropertyChangedWindowBase>
+</me3Explorer:TrackingNotifyPropertyChangedWindowBase>

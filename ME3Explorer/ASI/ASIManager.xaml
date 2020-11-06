@@ -1,4 +1,4 @@
-﻿<me3explorer:NotifyPropertyChangedWindowBase
+﻿<me3explorer:TrackingNotifyPropertyChangedWindowBase
     xmlns:me3explorer="clr-namespace:ME3Explorer"
     x:Class="ME3Explorer.ASI.ASIManager"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -131,4 +131,4 @@
         </DockPanel>
 
     </xctk:BusyIndicator>
-</me3explorer:NotifyPropertyChangedWindowBase>
+</me3explorer:TrackingNotifyPropertyChangedWindowBase>

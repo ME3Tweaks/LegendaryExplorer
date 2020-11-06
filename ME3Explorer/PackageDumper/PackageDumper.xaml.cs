@@ -1,15 +1,10 @@
 ﻿/**
- * Package Dumper is based on ME3Tweaks Mass Effect 3 Mod Manager Command Line Tools
+ * Package Dumper is based on ME3Tweaks' Mass Effect 3 Mod Manager Command Line Tools
  * TransplanterLib. This is a modified version provided by Mgamerz
  * (c) Mgamerz 2019
  */
 
-using Gammtek.Conduit.Extensions.IO;
-using ME3Explorer;
-using ME3Explorer.ME1.Unreal.UnhoodBytecode;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -17,20 +12,27 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.PackageDumper
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class PackageDumper : NotifyPropertyChangedWindowBase
+    public partial class PackageDumper : TrackingNotifyPropertyChangedWindowBase
     {
         /// <summary>
         /// Items show in the list that are currently being processed
@@ -67,9 +69,9 @@ namespace ME3Explorer.PackageDumper
                 EnsureFileExists = true,
                 Title = "Select files to dump",
             };
-            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
-            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk;*.xxx"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc;*.xxx"));
 
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
@@ -104,7 +106,21 @@ namespace ME3Explorer.PackageDumper
         public int OverallProgressValue
         {
             get => _overallProgressValue;
-            set => SetProperty(ref _overallProgressValue, value);
+            set
+            {
+                if (SetProperty(ref _overallProgressValue, value))
+                {
+                    if (value > 0)
+                    {
+                        TaskbarHelper.SetProgress(value, OverallProgressMaximum);
+                        TaskbarHelper.SetProgressState(TaskbarProgressBarState.Normal);
+                    }
+                    else
+                    {
+                        TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
+                    }
+                }
+            }
         }
 
         private ActionBlock<PackageDumperSingleFileTask> ProcessingQueue;
@@ -151,10 +167,7 @@ namespace ME3Explorer.PackageDumper
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -175,13 +188,8 @@ namespace ME3Explorer.PackageDumper
 
         #endregion
 
-        public PackageDumper(Window owner = null)
+        public PackageDumper(Window owner = null) : base("Package Dumper", true)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "Package Dumper" }
-            });
             Owner = owner;
             DataContext = this;
             LoadCommands();
@@ -242,7 +250,7 @@ namespace ME3Explorer.PackageDumper
             }
             catch (Exception ex)
             {
-                var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
+                var exceptionMessage = ex.FlattenException();
                 Debug.WriteLine(exceptionMessage);
             }
 
@@ -272,36 +280,88 @@ namespace ME3Explorer.PackageDumper
             ProcessingQueue = new ActionBlock<PackageDumperSingleFileTask>(x =>
             {
                 if (x.DumpCanceled) { OverallProgressValue++; return; }
-                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                Application.Current.Dispatcher.Invoke(() => CurrentDumpingItems.Add(x));
                 x.dumpPackageFile(); // What to do on each item
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     OverallProgressValue++; //Concurrency
                     CurrentDumpingItems.Remove(x);
-                }));
+                });
             },
             new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
 
             AllDumpingItems = new List<PackageDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
+
+            // Calculate what files have duplicate names so we can avoid same-file accessing/writing
+            CaseInsensitiveDictionary<List<string>> inputMapping = new CaseInsensitiveDictionary<List<string>>();
             foreach (var item in files)
             {
-                string outfolder = outputfolder;
-                if (outfolder != null)
+                var fname = Path.GetFileName(item);
+                if (!inputMapping.TryGetValue(fname, out var listOfSameNamedFiles))
                 {
-                    string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
-                    outfolder = Path.Combine(outfolder, relative);
+                    listOfSameNamedFiles = new List<string>();
+                    inputMapping[fname] = listOfSameNamedFiles;
                 }
-
-                var threadtask = new PackageDumperSingleFileTask(item, outfolder);
-                AllDumpingItems.Add(threadtask); //For setting cancelation value
-                ProcessingQueue.Post(threadtask); // Post all items to the block
+                listOfSameNamedFiles.Add(item);
             }
 
-            ProcessingQueue.Complete(); // Signal completion
-            CommandManager.InvalidateRequerySuggested();
-            await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
+            // Prevent multithreading conflicts by making unique names
+            foreach (var item in inputMapping)
+            {
+                int i = 0;
+                foreach (var packageF in item.Value)
+                {
+                    var outputFilename = Path.GetFileNameWithoutExtension(item.Key);
+                    if (item.Value.Count > 1)
+                    {
+                        // we need to change names
+                        string dlcName = null;
+                        DirectoryInfo parentPath = Directory.GetParent(packageF);
+                        while (parentPath != null)
+                        {
+                            if (parentPath.Name.StartsWith("CookedPC", StringComparison.InvariantCultureIgnoreCase)
+                                && parentPath.Parent != null
+                                && parentPath.Parent.Name.Equals("BioGame", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                outputFilename += "_Basegame";
+                                break;
+                            }
+                            else if (parentPath.Name.StartsWith("DLC_"))
+                            {
+                                outputFilename += $"_{parentPath.Name}";
+                                break;
+                            }
+                            parentPath = parentPath.Parent;
+                        }
 
+                        if (parentPath == null)
+                        {
+                            // Didn't find it
+                            outputFilename += $"_Instance{i}"; // We could use some logic to find a better name, but it's probably not that useful.
+                        }
+                    }
+
+                    outputFilename += ".txt";
+
+                    string outfolder = outputfolder;
+                    if (outfolder != null)
+                    {
+                        string relative = GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
+                        outfolder = Path.Combine(outfolder, relative);
+                    }
+
+                    var threadtask = new PackageDumperSingleFileTask(packageF, outputFilename, outfolder);
+                    AllDumpingItems.Add(threadtask); //For setting cancellation value
+                    ProcessingQueue.Post(threadtask); // Post all items to the block
+                    i++;
+                }
+            }
+
+            ProcessingQueue.Complete(); // Signal completion of adding items
+            CommandManager.InvalidateRequerySuggested();
+            await ProcessingQueue.Completion; // Asynchronously wait for completion.
+            AllDumpingItems = null; // Let the garbage collector clear stuff
             if (DumpCanceled)
             {
                 DumpCanceled = false;
@@ -315,6 +375,9 @@ namespace ME3Explorer.PackageDumper
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed";
             }
+
+            ProcessingQueue = null;
+            TaskbarHelper.SetProgressState(TaskbarProgressBarState.NoProgress);
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -323,7 +386,7 @@ namespace ME3Explorer.PackageDumper
         /// Writes a line to the console if verbose mode is turned on
         /// </summary>
         /// <param name="message">Verbose message to write</param>
-        public void writeVerboseLine(String message)
+        public void writeVerboseLine(string message)
         {
             if (verbose)
             {
@@ -362,7 +425,10 @@ namespace ME3Explorer.PackageDumper
 
             Uri relativeUri = fromUri.MakeRelativeUri(toUri);
             string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
+            if (relativePath == "./")
+            {
+                return toPath;
+            }
             if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
             {
                 relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
@@ -386,10 +452,8 @@ namespace ME3Explorer.PackageDumper
         private void PackageDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
-            if (AllDumpingItems != null)
-            {
-                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
-            }
+            AllDumpingItems?.ForEach(x => x.DumpCanceled = true);
+            AllDumpingItems = null;
         }
 
         private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
@@ -489,16 +553,17 @@ namespace ME3Explorer.PackageDumper
             set => SetProperty(ref _shortFileName, value);
         }
 
-        public PackageDumperSingleFileTask(string file, string outputfolder = null)
+        public PackageDumperSingleFileTask(string packageToDump, string outputFilenameNoExtension = null, string outputfolder = null)
         {
-            this.File = file;
-            this.ShortFileName = Path.GetFileNameWithoutExtension(file);
+            MemoryAnalyzer.AddTrackedMemoryItem($"PDSFT for {packageToDump}", new WeakReference(this));
+            this._packageToDump = packageToDump;
+            this.ShortFileName = outputFilenameNoExtension ?? Path.GetFileNameWithoutExtension(packageToDump);
             this.OutputFolder = outputfolder;
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
         public bool DumpCanceled;
-        private string File;
+        private string _packageToDump;
         private string OutputFolder;
 
         /// <summary>
@@ -513,26 +578,22 @@ namespace ME3Explorer.PackageDumper
             //}
             //try
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(_packageToDump))
                 {
                     var GameBeingDumped = pcc.Game;
                     CurrentFileProgressMaximum = pcc.ExportCount;
-                    string outfolder = OutputFolder ?? Directory.GetParent(File).ToString();
-
-                    if (!outfolder.EndsWith(@"\"))
-                    {
-                        outfolder += @"\";
-                    }
+                    string outfolder = OutputFolder ?? Directory.GetParent(_packageToDump).ToString();
 
                     //if (properties)
                     //{
                     //    UnrealObjectInfo.loadfromJSON();
                     //}
                     //dumps data.
-                    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + ".txt";
-                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
+                    string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
+                    Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
                     using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    //using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
                     {
 
                         //if (imports)
@@ -542,7 +603,7 @@ namespace ME3Explorer.PackageDumper
                         for (int x = 0; x < pcc.Imports.Count; x++)
                         {
                             ImportEntry imp = pcc.Imports[x];
-                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
+                            stringoutput.WriteLine($"#{(x + 1) * -1}: {imp.InstancedFullPath}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.headerSize):X4})");
                         }
                         stringoutput.WriteLine("--End of Imports");
                         //}
@@ -550,7 +611,7 @@ namespace ME3Explorer.PackageDumper
                         string datasets = "Exports Coalesced ";
                         //if (GameBeingDumped != MEGame.ME2)
                         //{
-                            datasets += " Functions";
+                        datasets += " Functions";
                         //}
 
                         stringoutput.WriteLine("--Start of " + datasets);
@@ -558,7 +619,7 @@ namespace ME3Explorer.PackageDumper
 
                         int numDone = 1;
                         //writeVerboseLine("Enumerating exports");
-                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
+                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
                         foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
@@ -614,9 +675,17 @@ namespace ME3Explorer.PackageDumper
                                             stringoutput.WriteLine(s.OffsetDisplayableString);
                                         }
                                         break;
+                                    case MEGame.ME3:
+
+                                        Function func3 = new Function(exp.Data, exp);
+                                        func3.ParseFunction();
+                                        stringoutput.WriteLine(func3.GetSignature());
+                                        foreach (var v in func3.ScriptBlocks)
+                                        {
+                                            stringoutput.WriteLine(v.text);
+                                        }
+                                        break;
                                 }
-                                //Function func = new Function(exp.Data, pcc);
-                                //stringoutput.WriteLine(func.ToRawText());
                             }
                             //TODO: Change to UProperty
 
@@ -629,7 +698,7 @@ namespace ME3Explorer.PackageDumper
                                     {
                                         stringoutput.WriteLine("==============Properties==============");
                                         UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                        foreach (UProperty prop in props)
+                                        foreach (Property prop in props)
                                         {
                                             InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
                                         }

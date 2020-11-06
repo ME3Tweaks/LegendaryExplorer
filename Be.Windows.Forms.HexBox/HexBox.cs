@@ -7,8 +7,9 @@ using System.Security.Permissions;
 using System.Windows.Forms.VisualStyles;
 using System.Text;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
+using System.Globalization;
 
 namespace Be.Windows.Forms
 {
@@ -16,7 +17,7 @@ namespace Be.Windows.Forms
     /// Represents a hex box control.
     /// </summary>
     [ToolboxBitmap(typeof(HexBox), "HexBox.bmp")]
-    public class HexBox : Control
+    public class HexBox : Control, INotifyPropertyChanged
     {
         #region IKeyInterpreter interface
         /// <summary>
@@ -1153,6 +1154,11 @@ namespace Be.Windows.Forms
         int _iHexMaxBytes;
 
         /// <summary>
+        /// Contains the number of digits shown in the line info
+        /// </summary>
+        int _lineInfoNumDigits = 6;
+        const int _lineInfoMinDigits = 2;
+        /// <summary>
         /// Contains the scroll bars minimum value
         /// </summary>
         long _scrollVmin;
@@ -2274,13 +2280,22 @@ namespace Be.Windows.Forms
             {
                 string sBuffer = (string)da.GetData(typeof(string));
                 Regex invalidHex = new Regex("[^0-9A-Fa-f]");
-                if (!invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0 && _keyInterpreter == _ki)
+                bool hexString = !invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0;
+                if (!hexString)
+                {
+                    string spaceLess = sBuffer.Replace(" ", "");
+                    if (!invalidHex.IsMatch(spaceLess) && spaceLess.Length % 2 == 0)
+                    {
+                        hexString = true;
+                        sBuffer = spaceLess;
+                    }
+                }
+                if (hexString && _keyInterpreter == _ki)
                 {
                     buffer = new byte[sBuffer.Length / 2];
-                    byte tmp;
                     for (int i = 0; i < sBuffer.Length; i += 2)
                     {
-                        if (!byte.TryParse(sBuffer.Substring(i, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.CurrentInfo, out tmp))
+                        if (!byte.TryParse(sBuffer.Substring(i, 2), NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out byte tmp))
                         {
                             buffer = null;
                             break;
@@ -2288,10 +2303,7 @@ namespace Be.Windows.Forms
                         buffer[i / 2] = tmp;
                     }
                 }
-                if (buffer == null)
-                {
-                    buffer = System.Text.Encoding.ASCII.GetBytes(sBuffer);
-                }
+                buffer ??= Encoding.ASCII.GetBytes(sBuffer);
             }
             else
             {
@@ -2626,15 +2638,15 @@ namespace Be.Windows.Forms
 
                 PointF bytePointF = GetBytePointF(new Point(0, 0 + i));
                 string info = firstLineByte.ToString(_hexStringFormat, System.Threading.Thread.CurrentThread.CurrentCulture);
-                int nulls = 8 - info.Length;
+                int nulls = _lineInfoNumDigits - info.Length;
                 string formattedInfo;
                 if (nulls > -1)
                 {
-                    formattedInfo = new string('0', 8 - info.Length) + info;
+                    formattedInfo = new string('0', _lineInfoNumDigits - info.Length) + info;
                 }
                 else
                 {
-                    formattedInfo = new string('~', 8);
+                    formattedInfo = new string('~', _lineInfoNumDigits);
                 }
 
                 g.DrawString(formattedInfo, Font, brush, new PointF(_recLineInfo.X, bytePointF.Y), _stringFormat);
@@ -3030,9 +3042,13 @@ namespace Be.Windows.Forms
             // calc line info bounds
             if (_lineInfoVisible)
             {
+                var numBytes = _byteProvider?.Length ?? 0;
+                int maxDigitsNeccesary = $"{numBytes:X}".Length;
+                _lineInfoNumDigits = Math.Max(maxDigitsNeccesary, _lineInfoMinDigits);
+
                 _recLineInfo = new Rectangle(_recContent.X + marginLeft,
                     _recContent.Y,
-                    (int)(_charSize.Width * 10),
+                    (int)(_charSize.Width * (_lineInfoNumDigits + 2)),
                     _recContent.Height);
                 requiredWidth += _recLineInfo.Width;
             }
@@ -3088,6 +3104,9 @@ namespace Be.Windows.Forms
                 _recHex.Width = (int)Math.Floor(((double)_iHexMaxHBytes) * _charSize.Width * 3 + (2 * _charSize.Width));
                 requiredWidth += _recHex.Width;
             }
+
+            MinWidth = 5 + _recHex.X + (int)Math.Floor(MinBytesPerLine * _charSize.Width * 3 + 2 * _charSize.Width);
+            MaxWidth = 5 + _recHex.X + (int)Math.Floor((MaxBytesPerLine + 1) * _charSize.Width * 3 + 2 * _charSize.Width) + (int)(_charSize.Width * (MaxBytesPerLine + 1));
 
             if (_stringViewVisible)
             {
@@ -3210,22 +3229,25 @@ namespace Be.Windows.Forms
         #endregion
 
         #region Properties
+
+        private int _minWidth;
+        public int MinWidth
+        {
+            get => _minWidth;
+            set => SetProperty(ref _minWidth, value);
+        }
+
+        private int _maxWidth;
+        public int MaxWidth
+        {
+            get => _maxWidth;
+            set => SetProperty(ref _maxWidth, value);
+        }
         /// <summary>
         /// Gets or sets the background color for the disabled control.
         /// </summary>
         [Category("Appearance"), DefaultValue(typeof(Color), "WhiteSmoke")]
-        public Color BackColorDisabled
-        {
-            get
-            {
-                return _backColorDisabled;
-            }
-            set
-            {
-                _backColorDisabled = value;
-            }
-        }
-        Color _backColorDisabled = Color.FromName("WhiteSmoke");
+        public Color BackColorDisabled { get; set; } = Color.FromName("WhiteSmoke");
 
         /// <summary>
         /// Gets or sets if the count of bytes in one line is fix.
@@ -4282,6 +4304,7 @@ namespace Be.Windows.Forms
         void _byteProvider_LengthChanged(object sender, EventArgs e)
         {
             UpdateScrollSize();
+            UpdateRectanglePositioning();
         }
 
         /// <summary>
@@ -4363,6 +4386,38 @@ namespace Be.Windows.Forms
 
         private static Color backColor = SystemColors.Window;
         private static Color foreColor = SystemColors.ControlText;
+
+        #endregion
+
+        #region NotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Notifies listeners when given property is updated.
+        /// </summary>
+        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
+        /// <summary>
+        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
+        /// Should be called in property setters.
+        /// </summary>
+        /// <typeparam name="T">Type of given property.</typeparam>
+        /// <param name="field">Backing field to update.</param>
+        /// <param name="value">New value of property.</param>
+        /// <param name="propertyName">Name of property.</param>
+        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
 
         #endregion
     }

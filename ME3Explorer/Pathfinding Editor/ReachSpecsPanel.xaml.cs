@@ -1,22 +1,13 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+﻿using ME3Explorer.SharedUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ME3Explorer.PathfindingNodes;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Microsoft.Win32;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -65,6 +56,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public override void PopOut()
         {
             //This loader is coupled with Pathfinding Editor's UI and cannot be popped out.
+            throw new Exception("ReachSpecsPanel cannot be popped out. You shouldn't see this error!");
         }
 
         private bool _toExternalNodeChecked;
@@ -99,7 +91,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool CreateReturningReachSpec { get => _createReturningReachSpec; set => SetProperty(ref _createReturningReachSpec, value); }
 
 
-        public ReachSpecsPanel()
+        public ReachSpecsPanel() : base("ReachSpecsPanel")
         {
             DataContext = this;
             ReachSpecSizeToText = "Select a reachspec above";
@@ -126,18 +118,22 @@ namespace ME3Explorer.Pathfinding_Editor
             AvailableReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Brutes", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.BRUTE_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Brutes", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.BRUTE_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
             AvailableNodeSizes.Add(new NodeSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Harvester", ReachSpecSize.HARVESTER_HEIGHT, ReachSpecSize.HARVESTER_RADIUS));
             AvailableNodeSizes.Add(new NodeSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableNodeSizes.Add(new NodeSize("Brutes", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.BRUTE_RADIUS));
+
             AvailableNodeSizes.Add(new NodeSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
             LoadCommands();
@@ -212,7 +208,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void LoadExternalFile()
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            OpenFileDialog d = new OpenFileDialog { Filter = App.OpenFileFilter };
             if (d.ShowDialog() == true)
             {
                 try

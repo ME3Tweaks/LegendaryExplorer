@@ -3,7 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {

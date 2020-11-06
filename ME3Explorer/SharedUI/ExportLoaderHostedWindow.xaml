@@ -23,6 +23,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding ReloadCurrentExportCommand}"/>
     </Window.InputBindings>
     <!-- Codebehind will add a child to this panel-->
     <DockPanel Name="RootPanel">
@@ -33,6 +34,7 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             <MenuItem Header="_File" Padding="4">
+                <MenuItem Header="Reload current export" InputGestureText="Ctrl+R" Command="{Binding ReloadCurrentExportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Open" x:Name="OpenFileMenuItem" InputGestureText="Ctrl+O" Command="{Binding OpenFileCommand}" />
                 <MenuItem Header="Save" x:Name="SaveFileMenuItem" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}" />
                 <MenuItem Header="Save As" x:Name="SaveFileAsMenuItem" InputGestureText="Ctrl+Shift+S" Command="{Binding SaveAsCommand}" />

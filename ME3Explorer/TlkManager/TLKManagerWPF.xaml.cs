@@ -1,8 +1,4 @@
-﻿using ME1Explorer;
-using ME2Explorer;
-using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
-using Microsoft.Win32;
+﻿using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -11,26 +7,26 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.ME1;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
+using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.TlkManagerNS
 {
     /// <summary>
     /// Interaction logic for TLKManagerWPF.xaml
     /// </summary>
-    public partial class TLKManagerWPF : NotifyPropertyChangedWindowBase
+    public partial class TLKManagerWPF : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<LoadedTLK> ME1TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
@@ -40,13 +36,8 @@ namespace ME3Explorer.TlkManagerNS
         private bool bSaveNeededME2 = false;
         private bool bSaveNeededME3 = false;
 
-        public TLKManagerWPF()
+        public TLKManagerWPF() : base("TLK Manager", true)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "TLK Manager" }
-            });
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -306,17 +297,14 @@ namespace ME3Explorer.TlkManagerNS
         {
             //ME1 TLKs are held in Package Files
             //For a proper full reload we have to reload the package from disk
+            // which we don't do
             ME1TalkFiles.ClearLoadedTlks();
-            foreach (LoadedTLK tlk in tlksToLoad)
-            {
-                
-            }
             foreach (LoadedTLK tlk in tlksToLoad)
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
             }
             ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME1TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME1);
         }
 
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -328,7 +316,7 @@ namespace ME3Explorer.TlkManagerNS
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
             }
             ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME2TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME2);
         }
 
         private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
@@ -340,7 +328,7 @@ namespace ME3Explorer.TlkManagerNS
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);
             }
             ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-            ME3TalkFiles.SaveTLKList();
+            TLKLoader.SaveTLKList(MEGame.ME3);
         }
 
         private async void ME1ReloadTLKStrings()

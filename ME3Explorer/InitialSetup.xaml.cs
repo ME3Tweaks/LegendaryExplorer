@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shell;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.MEDirectories;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -117,7 +108,7 @@ namespace ME3Explorer
 
         private void changePathsButton_Click(object sender, RoutedEventArgs e)
         {
-            string game = InputComboBoxWPF.GetValue(this, "Which game's path do you want to change?",
+            string game = InputComboBoxWPF.GetValue(this, "Which game's path do you want to change?", "Change game paths",
                 new[] { "Mass Effect", "Mass Effect 2", "Mass Effect 3" }, "Mass Effect 3");
             if (game != "")
             {

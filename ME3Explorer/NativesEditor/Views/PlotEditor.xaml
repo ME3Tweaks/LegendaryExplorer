@@ -23,6 +23,7 @@
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+        <CommandBinding Command="SaveAs" CanExecute="Save_CanExecute" Executed="SaveAs_Executed"/>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
     </Window.CommandBindings>
     <!-- Content -->
@@ -41,6 +42,7 @@
             <MenuItem Header="_File" Padding="4">
                 <MenuItem Header="_Open" x:Name="OpenFileMenuItem" Command="Open" />
                 <MenuItem Header="_Save" x:Name="SaveFileMenuItem" Command="Save" />
+                <MenuItem Header="_Save As" x:Name="SaveAsFileMenuItem" Command="SaveAs" />
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
@@ -60,32 +62,7 @@
         <!-- Main Tab Control -->
         <TabControl x:Name="MainTabControl" SelectedValuePath="Content">
             <TabItem Name="RecentFiles_Tab" Header="Recent Files" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="280"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="5"/>
-                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                </Grid>
+                <SharedUI:RecentsControl x:Name="RecentsController"/>
             </TabItem>
             <TabItem Header="Codex Map">
                 <views:CodexMapView x:Name="CodexMapControl" />

@@ -11,6 +11,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
+        xmlns:curveEd="clr-namespace:ME3Explorer.CurveEd"
         mc:Ignorable="d"
         Title="Interp Viewer" Height="750" Width="1300" MinWidth="900" MinHeight="200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" Closing="WPFBase_Closing">
@@ -76,74 +77,76 @@
                     <TextBlock Margin="5">
                             This tool allows you to visualize Unreal's Matinee Sequences
                                 <LineBreak/>
-                            It does not yet support direct editing, but you can still change values in the Interpreter panel
+                            It does not yet support direct editing, but you can still change values in the Interpreter and Curve Editor tabs.
                                 <LineBreak/>
                     </TextBlock>
+
                 </StackPanel>
+                <SharedUI:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" Grid.Column="3" 
+                                         Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}}, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                <TabControl Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <TabItem Header="Matinees">
+                        <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}"
+                         HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,5,0">
+                                        <Grid.Style>
+                                            <Style TargetType="{x:Type Grid}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="Yellow"/>
+                                                        <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding UIndex}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Selector.IsSelected" Value="True">
+                                            <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </TabItem>
+                    <TabItem Header="Animations">
+                        <ListView ItemsSource="{Binding Animations}"/>
+                    </TabItem>
+                </TabControl>
 
-                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="280"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="0"/>
-                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                </Grid>
-                <ListBox Name="InterpDataExports_ListBox" Grid.Column="0" ItemsSource="{Binding InterpDataExports}" SelectedItem="{Binding SelectedInterpData}"
-                         HorizontalContentAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,0,5,0">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                                <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding UIndex}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemContainerStyle>
-                        <Style>
-                            <Style.Triggers>
-                                <Trigger Property="Selector.IsSelected" Value="True">
-                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
                 <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HideHexBox="True"
+                <TabControl Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" TabStripPlacement="Left" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="270" />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                    <TabItem Header="Interpreter">
+
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" HideHexBox="True"
                                        Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </TabItem>
+                    <TabItem Header="Curve Editor" IsEnabled="{Binding LoadedExportIsCurve}">
+                        <curveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                    </TabItem>
+                </TabControl>
+
             </Grid>
         </Grid>
     </DockPanel>

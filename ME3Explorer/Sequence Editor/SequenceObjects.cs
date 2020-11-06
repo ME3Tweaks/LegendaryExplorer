@@ -5,21 +5,20 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Packages;
-
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
-using Gammtek.Conduit.Extensions;
-using ME1Explorer;
+using ME3Explorer.Sequence_Editor;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.SequenceObjects
 {
-    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
+    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String, Vector };
     public abstract class SeqEdEdge : PPath
     {
         public PNode start;
@@ -51,6 +50,8 @@ namespace ME3Explorer.SequenceObjects
         static readonly Color boolColor = Color.FromArgb(215, 37, 33); //red
         static readonly Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        static readonly Color stringColor = Color.FromArgb(24, 219, 12);//lime green
+        static readonly Color vectorColor = Color.FromArgb(127, 123, 32);//dark gold
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
@@ -65,7 +66,7 @@ namespace ME3Explorer.SequenceObjects
 
         public RectangleF posAtDragStart;
 
-        public int Index => export.Index;
+        public int Index => UIndex - 1;
 
         public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
@@ -76,6 +77,8 @@ namespace ME3Explorer.SequenceObjects
         protected ExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
+
+        public string Comment => comment.Text;
 
         protected SObj(ExportEntry entry, GraphEditor grapheditor)
         {
@@ -123,17 +126,24 @@ namespace ME3Explorer.SequenceObjects
                         string newText = "";
                         if (newMap != null)
                         {
-                            newText += $"Map: :{newMap}\n";
+                            newText += $"Map: :{newMap.Value.Instanced}\n";
                         }
                         if (startPoint != null)
                         {
-                            newText += $"Startpoint: {startPoint}";
+                            newText += $"Startpoint: {startPoint.Value.Instanced}";
                         }
                         res += newText;
                         break;
                     case "SeqAct_Delay":
                         var delayValue = properties.GetProp<FloatProperty>("Duration");
                         res += $"Delay: {delayValue?.Value ?? 1}s";
+                        break;
+                    case "SeqEvent_Death":
+                        var originator = properties.GetProp<ObjectProperty>("Originator");
+                        if (originator != null && originator.Value != 0)
+                        {
+                            res += $"Originator: {export.FileRef.GetEntry(originator.Value).InstancedFullPath}";
+                        }
                         break;
                     case "SeqAct_PlaySound":
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
@@ -150,6 +160,12 @@ namespace ME3Explorer.SequenceObjects
                         if (weaponEnum != null)
                         {
                             res += weaponEnum.Value;
+                        }
+                        break;
+                    case "BioSeqAct_BlackScreen":
+                        if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is {} blackScreenProp)
+                        {
+                            res += blackScreenProp.Value.Name.Split('_').Last();
                         }
                         break;
                 }
@@ -171,6 +187,10 @@ namespace ME3Explorer.SequenceObjects
                     return objectColor;
                 case VarTypes.MatineeData:
                     return interpDataColor;
+                case VarTypes.String:
+                    return stringColor;
+                case VarTypes.Vector:
+                    return vectorColor;
                 default:
                     return Color.Black;
             }
@@ -192,6 +212,8 @@ namespace ME3Explorer.SequenceObjects
                 return VarTypes.StrRef;
             if (s.Contains("String"))
                 return VarTypes.String;
+            if (s.Contains("Vector"))
+                return VarTypes.Vector;
             return VarTypes.Extern;
         }
 
@@ -248,7 +270,7 @@ namespace ME3Explorer.SequenceObjects
                 if ((prop.Name == "VarName" || prop.Name == "varName")
                     && prop is NameProperty nameProp)
                 {
-                    SText VarName = new SText(nameProp.Value, Color.Red, false)
+                    SText VarName = new SText(nameProp.Value.Instanced, Color.Red, false)
                     {
                         Pickable = false,
                         TextAlignment = StringAlignment.Center,
@@ -266,13 +288,14 @@ namespace ME3Explorer.SequenceObjects
 
         public string GetValue()
         {
+            const string unknownValue = "???";
             try
             {
                 var props = export.GetProperties();
                 switch (type)
                 {
                     case VarTypes.Int:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerInt")
+                        if (export.ClassName == "BioSeqVar_StoryManagerInt")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -289,7 +312,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "0";
                     case VarTypes.Float:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerFloat")
+                        if (export.ClassName == "BioSeqVar_StoryManagerFloat")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -304,9 +327,15 @@ namespace ME3Explorer.SequenceObjects
                         {
                             return floatValue.Value.ToString();
                         }
+
+                        if (export.ClassName == "SeqVar_RandomFloat" && props.GetProp<FloatProperty>("Min") is FloatProperty minVal &&
+                            props.GetProp<FloatProperty>("Max") is FloatProperty maxVal)
+                        {
+                            return $"{minVal.Value}\nto\n{maxVal.Value}";
+                        }
                         return "0.00";
                     case VarTypes.Bool:
-                        if (export.ObjectName == "BioSeqVar_StoryManagerBool")
+                        if (export.ClassName == "BioSeqVar_StoryManagerBool")
                         {
                             if (props.GetProp<StrProperty>("m_sRefName") is StrProperty m_sRefName)
                             {
@@ -323,20 +352,20 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "False";
                     case VarTypes.Object:
-                        if (export.ObjectName == "SeqVar_Player")
+                        if (export.ClassName == "SeqVar_Player")
                             return "Player";
                         foreach (var prop in props)
                         {
                             switch (prop)
                             {
                                 case NameProperty nameProp when nameProp.Name == "m_sObjectTagToFind":
-                                    return nameProp.Value;
+                                    return nameProp.Value.Instanced;
                                 case StrProperty strProp when strProp.Name == "m_sObjectTagToFind":
                                     return strProp.Value;
                                 case ObjectProperty objProp when objProp.Name == "ObjValue":
                                     {
                                         IEntry entry = pcc.GetEntry(objProp.Value);
-                                        if (entry == null) return "???";
+                                        if (entry == null) return unknownValue;
                                         if (entry is ExportEntry objValueExport && objValueExport.GetProperty<NameProperty>("Tag") is NameProperty tagProp && tagProp.Value != objValueExport.ObjectName)
                                         {
                                             return $"#{entry.UIndex}\n{entry.ObjectName.Instanced}\n{ tagProp.Value}";
@@ -348,7 +377,7 @@ namespace ME3Explorer.SequenceObjects
                                     }
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.StrRef:
                         foreach (var prop in props)
                         {
@@ -358,14 +387,14 @@ namespace ME3Explorer.SequenceObjects
                                 return TlkManagerNS.TLKManagerWPF.GlobalFindStrRefbyID(strRefProp.Value, export.FileRef.Game, export.FileRef);
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.String:
                         var strValue = props.GetProp<StrProperty>("StrValue");
                         if (strValue != null)
                         {
                             return strValue.Value;
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.Extern:
                         foreach (var prop in props)
                         {
@@ -373,25 +402,31 @@ namespace ME3Explorer.SequenceObjects
                             {
                                 //Named Variable
                                 case NameProperty nameProp when nameProp.Name == "FindVarName":
-                                    return $"< {nameProp.Value} >";
+                                    return $"< {nameProp.Value.Instanced} >";
                                 //SeqVar_Name
                                 case NameProperty nameProp when nameProp.Name == "NameValue":
-                                    return nameProp.Value;
+                                    return nameProp.Value.Instanced;
                                 //External
                                 case StrProperty strProp when strProp.Name == "VariableLabel":
                                     return $"Extern:\n{strProp.Value}";
                             }
                         }
-                        return "???";
+                        return unknownValue;
                     case VarTypes.MatineeData:
-                        return $"#{UIndex}\nInterpData";
+                        return $"#{UIndex}\n{Export.ObjectName.Instanced}";
+                    case VarTypes.Vector:
+                        if (props.GetProp<StructProperty>("VectValue") is { } vecStruct)
+                        {
+                            return CommonStructs.GetVector3(vecStruct).ToString();
+                        }
+                        return unknownValue;
                     default:
-                        return "???";
+                        return unknownValue;
                 }
             }
             catch (Exception)
             {
-                return "???";
+                return unknownValue;
             }
         }
 
@@ -1000,7 +1035,6 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
@@ -1024,28 +1058,13 @@ namespace ME3Explorer.SequenceObjects
             }
             if (inputIndex == -1)
                 return;
-            var outLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
-                        linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
-                            new ObjectProperty(end.export, "LinkedOp"),
-                            new IntProperty(inputIndex, "InputLinkIdx")));
-                        startExport.WriteProperty(outLinksProp);
-                        return;
-                    }
-                }
-            }
+            KismetHelper.CreateOutputLink(start.export, linkDesc, end.export, inputIndex);
         }
+
 
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
@@ -1059,24 +1078,12 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            var varLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
-            {
-                foreach (var prop in varLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Export));
-                        startExport.WriteProperty(varLinksProp);
-                    }
-                }
-            }
+            KismetHelper.CreateVariableLink(start.export, linkDesc, end.Export);
         }
 
         public void CreateEventlink(PNode p1, SEvent end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            ExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (EventLink l in start.EventLinks)
             {
@@ -1090,18 +1097,7 @@ namespace ME3Explorer.SequenceObjects
             }
             if (linkDesc == null)
                 return;
-            var eventLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
-            {
-                foreach (var prop in eventLinksProp)
-                {
-                    if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
-                    {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Add(new ObjectProperty(end.Export));
-                        startExport.WriteProperty(eventLinksProp);
-                    }
-                }
-            }
+            KismetHelper.CreateEventLink(start.export, linkDesc, end.export);
         }
         public void RemoveOutlink(ActionEdge edge)
         {
@@ -1295,7 +1291,7 @@ namespace ME3Explorer.SequenceObjects
             foreach (var prop in props)
             {
                 if (prop.Name.Name.Contains("EventName") || prop.Name == "sScriptName")
-                    s += "\n\"" + (prop as NameProperty) + "\"";
+                    s += "\n\"" + (prop as NameProperty)?.Value.Instanced + "\"";
                 else if (prop.Name == "InputLabel" || prop.Name == "sEvent")
                     s += "\n\"" + (prop as StrProperty) + "\"";
             }
@@ -1525,7 +1521,7 @@ namespace ME3Explorer.SequenceObjects
                             break;
                         }
                     case NameProperty nameProp when nameProp.Name == "EventName" || nameProp.Name == "StateName":
-                        s += $"\n\"{nameProp}\"";
+                        s += $"\n\"{nameProp.Value.Instanced}\"";
                         break;
                     case StrProperty strProp when strProp.Name == "OutputLabel" || strProp.Name == "m_sMovieName":
                         s += $"\n\"{strProp}\"";
@@ -1571,7 +1567,16 @@ namespace ME3Explorer.SequenceObjects
                 var oSequenceReference = export.GetProperty<ObjectProperty>("oSequenceReference");
                 if (oSequenceReference != null)
                 {
-                    inputLinksProp = pcc.GetUExport(oSequenceReference.Value).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    int referencedIndex = oSequenceReference.Value;
+                    if (pcc.TryGetUExport(referencedIndex, out var exportRef))
+                    {
+                        inputLinksProp = exportRef.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+                    }
+                    else
+                    {
+                        var referencedFullPath = pcc.GetEntry(referencedIndex).InstancedFullPath;
+                        Debug.WriteLine($"Can't get input links of {referencedFullPath} because it is an import.");
+                    }
                 }
             }
 

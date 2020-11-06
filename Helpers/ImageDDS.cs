@@ -21,8 +21,8 @@
 
 using System;
 using System.IO;
-using StreamHelpers;
 using System.Threading.Tasks;
+using ME3ExplorerCore.Helpers;
 
 namespace MassEffectModder.Images
 {
@@ -69,7 +69,7 @@ namespace MassEffectModder.Images
         private DDS_PF ddsPixelFormat = new DDS_PF();
         private uint DDSflags;
 
-        private void LoadImageDDS(MemoryStream stream, ImageFormat format)
+        private void LoadImageDDS(MemoryStream stream)
         {
             if (stream.ReadUInt32() != DDS_TAG)
                 throw new Exception("not DDS tag");
@@ -81,9 +81,9 @@ namespace MassEffectModder.Images
 
             int dwHeight = stream.ReadInt32();
             int dwWidth = stream.ReadInt32();
-            if (!checkPowerOfTwo(dwWidth) ||
-                !checkPowerOfTwo(dwHeight))
-                throw new Exception("dimensions not power of two");
+            if (!IsPowerOfTwo(dwWidth) ||
+                !IsPowerOfTwo(dwHeight))
+                throw new TextureSizeNotPowerOf2Exception();
 
             stream.Skip(8); // dwPitchOrLinearSize, dwDepth
 
@@ -181,7 +181,6 @@ namespace MassEffectModder.Images
             }
             stream.Skip(5 * 4); // dwCaps, dwCaps2, dwCaps3, dwCaps4, dwReserved2
 
-            byte[] tempData;
             for (int i = 0; i < dwMipMapCount; i++)
             {
                 int w = dwWidth >> i;
@@ -205,6 +204,7 @@ namespace MassEffectModder.Images
                         h = 4;
                 }
 
+                byte[] tempData;
                 try
                 {
                     tempData = stream.ReadToBuffer(MipMap.getBufferSize(w, h, pixelFormat));
@@ -371,7 +371,10 @@ namespace MassEffectModder.Images
 
             int dataSize = 0;
             for (int i = 0; i < mipMaps.Count; i++)
+            {
                 dataSize += MipMap.getBufferSize(mipMaps[i].width, mipMaps[i].height, format == PixelFormat.Unknown ? pixelFormat : format);
+            }
+
             stream.WriteInt32(dataSize);
 
             stream.WriteUInt32(0); // dwDepth
@@ -606,7 +609,7 @@ namespace MassEffectModder.Images
             return dst;
         }
 
-        static private byte[] decompressMipmap(PixelFormat srcFormat, byte[] src, int w, int h)
+        private static byte[] decompressMipmap(PixelFormat srcFormat, byte[] src, int w, int h)
         {
             byte[] dst = new byte[w * h * 4];
             int cores = Environment.ProcessorCount;

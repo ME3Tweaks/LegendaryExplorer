@@ -10,12 +10,24 @@
     <Border Background="#7210192A">
         <StackPanel Orientation="Vertical" Margin="6,0">
             <DockPanel Height="30">
-                <TextBlock Text="{Binding Category}" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="20" 
-                           Foreground="{DynamicResource LabelTextBrush}" RenderTransformOrigin="0.5,0.5" Margin="0,0,5,0">
-                    <TextBlock.RenderTransform>
-                        <TranslateTransform Y="-1.5"/>
-                    </TextBlock.RenderTransform>
-                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Category}" FontFamily="{StaticResource TitilliumWeb-Regular}"
+                               FontSize="20"
+                               Foreground="{DynamicResource LabelTextBrush}" RenderTransformOrigin="0.5,0.5"
+                               Margin="0,0,5,0">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform Y="-1.5" />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock Text="{Binding Subtext}" FontFamily="{StaticResource TitilliumWeb-Light}"
+                               FontSize="15" Foreground="{DynamicResource LabelTextBrush}" 
+                               RenderTransformOrigin="0.5,0.5" Opacity="0.5"
+                               Margin="5,0,5,0">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform Y="4" />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Button x:Name="backButton" Style="{StaticResource BorderlessButton}" Opacity="0.85" Click="backButton_Click" Visibility="Collapsed">
                         <Image Source="../Resources/left_arrow.ico" Width="16" Height="16"/>
@@ -34,7 +46,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate DataType="local:Tool">
                         <Grid>
                             <Button Padding="0" Margin="{Binding ItemMargin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ToolPanel}}}"
                                 Style="{StaticResource BorderlessButton}" Width="64" ToolTip="{Binding name}" Click="Button_Click" GotFocus="Button_GotFocus"

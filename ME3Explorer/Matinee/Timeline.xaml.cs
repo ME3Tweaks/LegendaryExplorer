@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.Matinee
 {
@@ -54,14 +47,53 @@ namespace ME3Explorer.Matinee
             set => SetProperty(ref _offset, value);
         }
 
+        public ICommand OpenSelection { get; set; }
+        public ICommand OpenInterpData { get; set; }
         public event Action<ExportEntry> SelectionChanged;
-
+        public bool HasSelection(object obj) { return MatineeTree.SelectedItem != null; }
+        public bool HasData(object obj) { return InterpDataExport != null; }
         public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = new ObservableCollectionExtended<InterpGroup>();
 
         public Timeline()
         {
+            LoadCommands();
             InitializeComponent();
             ResetView();
+        }
+
+        private void LoadCommands()
+        {
+            OpenSelection = new RelayCommand(OpenInToolkit, HasSelection);
+            OpenInterpData = new RelayCommand(OpenInToolkit, HasData);
+        }
+
+        private void OpenInToolkit(object obj)
+        {
+            var command = obj as string;
+            if (InterpDataExport != null)
+            {
+                ExportEntry exportEntry = InterpDataExport;
+                switch (command)
+                {
+                    case "Track":
+                        switch (MatineeTree.SelectedItem)
+                        {
+                            case InterpGroup group:
+                                exportEntry = group.Export;
+                                break;
+                            case InterpTrack track:
+                                exportEntry = track.Export;
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                var packEd = new PackageEditorWPF();
+                packEd.Show();
+                packEd.LoadFile(Pcc.FilePath, exportEntry.UIndex);
+            }
         }
 
         private void LoadGroups()
@@ -78,6 +110,7 @@ namespace ME3Explorer.Matinee
 
         public void RefreshInterpData(ExportEntry changedExport)
         {
+            var selection = MatineeTree.SelectedItem;
             if (changedExport.ClassName == "InterpGroup")
             {
                 if (InterpGroups.FirstOrDefault(g => g.Export == changedExport) is InterpGroup group)
@@ -97,7 +130,23 @@ namespace ME3Explorer.Matinee
                 {
                     if (changedExport.Parent == interpGroup.Export)
                     {
-                        interpGroup.RefreshTracks();
+                        // export is a child of this group
+                        interpGroup.Tracks.FirstOrDefault(x => x.Export == changedExport)?.LoadTrack(); //reload
+                    }
+                }
+            }
+
+            if (selection != null && selection is InterpTrack strk) //Reselect item post edit
+            {
+                foreach (var grp in InterpGroups)
+                {
+                    foreach (var trk in grp.Tracks)
+                    {
+                        if (trk.Export.UIndex == strk.Export.UIndex)
+                        {
+                            MatineeTree.SelectItem(trk); //???
+                            return;
+                        }
                     }
                 }
             }
@@ -151,7 +200,7 @@ namespace ME3Explorer.Matinee
             {
                 lineSpacing = 0.25;
             }
-            else if(Scale > 110)
+            else if (Scale > 110)
             {
                 lineSpacing = 0.5;
             }
@@ -188,7 +237,7 @@ namespace ME3Explorer.Matinee
             double xPos = e.GetPosition(Guide).X / Scale;
             double initialWidth = Guide.ActualWidth / Scale;
             Scale *= 1 + e.Delta / 1000.0;
-            
+
             //Math here is to make zooming centered on the mouse
 
             double xPercent = xPos / initialWidth;
@@ -197,7 +246,7 @@ namespace ME3Explorer.Matinee
             Offset -= widthDiff / 2 + zoomRelativeToMouseDiff;
             DrawGuideLines();
             e.Handled = true;
-        } 
+        }
 
 
         private bool dragging;

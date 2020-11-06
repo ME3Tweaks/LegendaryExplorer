@@ -1,13 +1,13 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using MassEffect3.Coalesce;
 using ME3Explorer;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace MassEffect3.CoalesceTool
@@ -15,16 +15,16 @@ namespace MassEffect3.CoalesceTool
     /// <summary>
     ///     Interaction logic for CoalescedEditor.xaml
     /// </summary>
-    public partial class CoalescedEditor : NotifyPropertyChangedWindowBase
+    public partial class CoalescedEditor : TrackingNotifyPropertyChangedWindowBase
 	{
 		private string _destinationPath;
 		private CoalescedType _destinationType;
 		private string _sourcePath;
 		private CoalescedType _sourceType;
 
-		public CoalescedEditor()
+		public CoalescedEditor() : base("Coalesced Editor", true)
 		{
-			InitializeComponent();
+            InitializeComponent();
 
 			DataContext = this;
 		}

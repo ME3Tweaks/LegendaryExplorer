@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using ME3Explorer.Unreal;
-using ME3Explorer.Packages;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.PathfindingNodes
 {

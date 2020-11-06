@@ -38,6 +38,8 @@
                 <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
+            <Separator/>
+            <MenuItem Header="Copy Line to Clipboard" Command="{Binding CopyToClipboardCommand}" CommandParameter="Line"/>
         </ContextMenu>
         <ContextMenu x:Key="entrynodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Edit Links" Name="entryLinkEditContextMenu" Command="{Binding NodeEditCommand}" CommandParameter="Entry" ToolTip="Edit Links order and details"/>
@@ -50,6 +52,8 @@
                 <MenuItem Header="Break All Links" Name="ebreakAllLinksMenuItem" Command="{Binding NodeDeleteAllLinksCommand}" IsEnabled="{Binding SelectedDialogueNode, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
             <MenuItem Header="Remove from Dialogue" Command="{Binding NodeRemoveCommand}"/>
+            <Separator/>
+            <MenuItem Header="Copy Line to Clipboard" Command="{Binding CopyToClipboardCommand}" CommandParameter="Line"/>
         </ContextMenu>
         <system:Boolean x:Key="True">True</system:Boolean>
     </Window.Resources>
@@ -62,6 +66,7 @@
         <KeyBinding Key="C" Modifiers="Control+Shift" Command="{Binding RecenterCommand}"/>
         <KeyBinding Key="M" Modifiers="Control+Shift" Command="{Binding SaveViewCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding SearchCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding ForceRefreshCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch">
@@ -104,6 +109,7 @@
                 <MenuItem Header="Search" Command="{Binding SearchCommand}" InputGestureText="Ctrl+F" ToolTip="Search by string or text"/>
                 <Separator/>
                 <MenuItem Header="Manage TLKs" Command="{Binding LoadTLKManagerCommand}" ToolTip="Load TLK Manager"/>
+                <MenuItem Header="Force Refresh" Command="{Binding ForceRefreshCommand}" InputGestureText="F5" ToolTip="Force full refresh of Dialogue"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Dialogue"/>
                 <MenuItem Header="Test for looping paths" Command="{Binding TestPathsCommand}" ToolTip="Test the dialogue for looping paths." IsEnabled="{Binding SelectedConv, Converter={StaticResource NullEnabledConverter}}"/>
                 <Separator/>
@@ -188,6 +194,9 @@
                                              GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
             <StatusBarItem>
                 <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="StatusBar_OtherText" Text=""/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
@@ -423,7 +432,9 @@
                                     <TextBlock Name="Node_Text_Type" Text="Dialogue Node"  HorizontalAlignment="Left" FontWeight="Bold" FontSize="18" DockPanel.Dock="Left" Padding="5"/>
                                     <TextBlock Text="{Binding Path=SelectedDialogueNode.NodeCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left" DockPanel.Dock="Right" FontWeight="Bold" FontSize="18"/>
                                 </DockPanel>
-                                <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5"/>
+                                <TextBlock Name="Node_Text_LineString" Text="{Binding Path=SelectedDialogueNode.Line, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15" DockPanel.Dock="Left" Padding="5" ToolTip="Right mouse click to copy" MouseRightButtonUp="CopyStringToClipboard_Click">
+
+                                </TextBlock>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Line String Ref:  " FontSize="15"/>
                                     <TextBox Name="Node_Text_StrRef" Text="{Binding Path=SelectedDialogueNode.LineStrRef, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="15" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" GotKeyboardFocus="EditBox_GotKeyboardFocus" LostKeyboardFocus="EditBox_LostKeyboardFocus" KeyUp="EditBox_Node_KeyUp" PreviewTextInput="NumberValidationEditBox"/>
@@ -507,11 +518,11 @@
                                                     <fa:ImageAwesome Icon="Solid_SlidersH" Width="16" Height="16" Foreground="DarkBlue"/>
                                                 </Button.Content>
                                             </Button>
-                                            <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee interpdata for this line." FontSize="15" Margin="2"/>
+                                            <TextBlock Text="{Binding Path=SelectedDialogueNode.Interpdata.UIndex, TargetNullValue=None, FallbackValue=None}" Name="Interpdata_TxtBx" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Matinee interpdata for this line." FontSize="15" Margin="2" MouseRightButtonUp="CopyStringToClipboard_Click"/>
                                         </DockPanel>
                                         <StackPanel Orientation="Horizontal" ToolTip="Length in secs of matinee interpdata.">
                                             <TextBlock Text="InterpLength: " VerticalAlignment="Center" FontSize="15" Margin="2"/>
-                                            <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
+                                            <TextBox Text="{Binding Path=SelectedDialogueNode.InterpLength}" Name="InterpLength_TxtBx" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" HorizontalContentAlignment="Left" BorderBrush="LightGray" BorderThickness="0" IsReadOnly="True"/>
                                             <TextBlock Text="seconds" VerticalAlignment="Center" FontSize="15" Margin="2"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" ToolTip="Link to Matinee via BioSeqEvent_Conv">
@@ -776,32 +787,9 @@
                              <LineBreak/>
                     </TextBlock>
                 </StackPanel>
-                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="280"/>
-                    </Grid.ColumnDefinitions>
+                <SharedUI:RecentsControl x:Name="RecentsController" Grid.Column="3"
+                                         Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
 
-                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="0"/>
-                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                </Grid>
                 <!-- Conversation Box-->
                 <ListBox Name="Conversations_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Conversations}" SelectionChanged="ConversationList_SelectedItemChanged" MouseLeftButtonUp="ListBox_MouseLeftButtonUp" HorizontalContentAlignment="Stretch"
                              Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">

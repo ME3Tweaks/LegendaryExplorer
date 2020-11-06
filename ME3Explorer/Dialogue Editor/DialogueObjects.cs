@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using ME3Explorer;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
+using EReplyCategory = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyCategory;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -634,7 +629,7 @@ namespace ME3Explorer.Dialogue_Editor
             if (inW + outW + 10 > w) w = inW + outW + 10;
 
             //TitleBox
-            string s = $"{Node.SpeakerTag.SpeakerName}";
+            string s = $"{Node.SpeakerTag?.SpeakerName ?? "Unknown"}";
             string l = $"{Node.Line}";
             string n = $"E{Node.NodeCount}";
             if (Node.IsReply)
@@ -1005,7 +1000,7 @@ namespace ME3Explorer.Dialogue_Editor
             newReplyListProp.Add(new StructProperty("BioDialogReplyListDetails", new PropertyCollection
             {
                 new IntProperty(endNode - 1000, "nIndex"),
-                new StringRefProperty(0, "srParaphrase"),
+                new StringRefProperty(663399, "srParaphrase"),
                 new StrProperty("", "sParaphrase"),
                 new EnumProperty("REPLY_CATEGORY_DEFAULT", "EReplyCategory", Editor.Pcc.Game, "Category"),
                 new NoneProperty()

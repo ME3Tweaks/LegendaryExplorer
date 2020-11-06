@@ -1,14 +1,11 @@
-﻿using ME3Explorer.Packages;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI.Converters
 {
@@ -110,6 +107,8 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_sequence.png";
                     case "Material":
                         return "/PackageEditor/EntryIcons/icon_material.png";
+                    case "State":
+                        return "/PackageEditor/EntryIcons/icon_state.png";
                 }
             }
             else if (Properties.Settings.Default.PackageEditorWPF_ShowExportIcons && value is ExportEntry exp2 && exp2.IsDefaultObject)

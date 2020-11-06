@@ -18,14 +18,20 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome5;
-using ME3Explorer.Packages;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Audio;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
-using NAudio.Wave;
-using static ME3Explorer.Unreal.Classes.WwiseBank;
+using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
+using WwiseStream = ME3ExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace ME3Explorer
 {
@@ -40,29 +46,55 @@ namespace ME3Explorer
         WwiseStream wwiseStream;
         public string afcPath = "";
         readonly DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
-        private bool SeekUpdatingDueToTimer = false;
-        private bool SeekDragging = false;
-        Stream vorbisStream;
+        private bool SeekUpdatingDueToTimer;
+        private bool SeekDragging;
+        Stream audioStream;
         private HexBox SoundpanelHIRC_Hexbox;
         private DynamicByteProvider hircHexProvider;
 
         public IBusyUIHost HostingControl
         {
-            get { return (IBusyUIHost)this.GetValue(HostingControlProperty); }
-            set { this.SetValue(HostingControlProperty, value); }
+            get => (IBusyUIHost)GetValue(HostingControlProperty);
+            set => SetValue(HostingControlProperty, value);
         }
+
         public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
-            "HostingControl", typeof(IBusyUIHost), typeof(Soundpanel));
+            nameof(HostingControl), typeof(IBusyUIHost), typeof(Soundpanel));
 
-        private string _quickScanText;
-        public string QuickScanText
+        public ObservableCollectionExtended<HIRCDisplayObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCDisplayObject>();
+
+        public bool PlayBackOnlyMode
         {
-            get => _quickScanText;
-            set => SetProperty(ref _quickScanText, value);
+            get => (bool)GetValue(PlayBackOnlyModeProperty);
+            set => SetValue(PlayBackOnlyModeProperty, value);
         }
 
-        public ObservableCollectionExtended<HIRCObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCObject>();
+        public static readonly DependencyProperty PlayBackOnlyModeProperty = DependencyProperty.Register(
+            nameof(PlayBackOnlyMode), typeof(bool), typeof(Soundpanel), new PropertyMetadata(default(bool), PlayBackOnlyModeChanged));
 
+        private static void PlayBackOnlyModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Soundpanel)
+            {
+                //do nothing?
+            }
+        }
+
+        public int HexBoxMinWidth
+        {
+            get => (int)GetValue(HexBoxMinWidthProperty);
+            set => SetValue(HexBoxMinWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMinWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
+
+        public int HexBoxMaxWidth
+        {
+            get => (int)GetValue(HexBoxMaxWidthProperty);
+            set => SetValue(HexBoxMaxWidthProperty, value);
+        }
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(
+            nameof(HexBoxMaxWidth), typeof(int), typeof(Soundpanel), new PropertyMetadata(default(int)));
 
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
         //private Dictionary<ExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<ExportEntry, List<Tuple<string, int, double>>>();
@@ -71,18 +103,18 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
-                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
-                elhw.Height = 400;
-                elhw.Width = 400;
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport)
+                {
+                    Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}",
+                    Height = 400,
+                    Width = 400
+                };
                 elhw.Show();
             }
         }
 
-        public Soundpanel()
+        public Soundpanel() : base("Soundpanel")
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
-
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
             LoadCommands();
             CurrentVolume = 0.65f;
@@ -135,140 +167,121 @@ namespace ME3Explorer
 
                 }
                 CurrentPackage = exportEntry.FileRef;*/
-                ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
+                ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
-                    WwiseStream w = new WwiseStream(exportEntry);
-                    ExportInformationList.Add($"Filename : {w.FileName ?? "Stored in this PCC"}");
-                    ExportInformationList.Add($"Data size: {w.DataSize} bytes");
-                    ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
-                    string wemId = $"ID: 0x{w.Id:X8}";
-                    if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                    WwiseStream w = exportEntry.GetBinaryData<WwiseStream>();
+                    ExportInformationList.Add($"Filename : {w.Filename ?? "Stored in this PCC"}");
+                    if (!PlayBackOnlyMode)
                     {
-                        wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
-                    }
-                    ExportInformationList.Add(wemId);
+                        ExportInformationList.Add($"Data size: {w.DataSize} bytes");
+                        ExportInformationList.Add($"Data offset: 0x{w.DataOffset:X8}");
+                        string wemId = $"ID: 0x{w.Id:X8}";
+                        if (ShouldReverseIDEndianness)
+                        {
+                            wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
+                        }
 
-                    if (w.FileName != null)
+                        ExportInformationList.Add(wemId);
+                    }
+
+                    if (w.Filename != null && !PlayBackOnlyMode)
                     {
                         try
                         {
                             var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
-                            string samefolderfilepath = System.IO.Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
-                            byte[] headerbytes = new byte[0x56];
+                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
+                            var headerbytes = new byte[0x56];
                             bool bytesread = false;
 
                             if (File.Exists(samefolderfilepath))
                             {
-                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                                {
-                                    fs.Seek(w.DataOffset, SeekOrigin.Begin);
-                                    fs.Read(headerbytes, 0, 0x56);
-                                    bytesread = true;
-                                }
+                                using FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                fs.Seek(w.DataOffset, SeekOrigin.Begin);
+                                fs.Read(headerbytes, 0, 0x56);
+                                bytesread = true;
                             }
 
                             if (bytesread)
                             {
                                 //Parse it
-                                ExportInformationList.Add($"---------Referenced Audio Header----------");
+                                ExportInformationList.Add("---------Referenced Audio Header----------");
                                 ASCIIEncoding ascii = new ASCIIEncoding();
+                                var riffTag = ascii.GetString(headerbytes, 0, 4);
+                                Endian endian = Endian.Little;
+                                if (riffTag == "RIFF") endian = Endian.Little;
+                                if (riffTag == "RIFX") endian = Endian.Big;
 
-                                ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
-                                ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+                                ExportInformationList.Add("0x00 RIFF tag: " + riffTag);
+                                ExportInformationList.Add("0x04 File size: " + EndianReader.ToInt32(headerbytes, 4, endian) + " bytes");
                                 ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
                                 ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
-                                ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
-                                ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
-                                ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
-                                ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4));
-                                ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+                                ExportInformationList.Add("0x10 Format size: " + GetHexForUI(headerbytes, 0x10, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x14 Codec ID: " + GetHexForUI(headerbytes, 0x14, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x16 Channel count: " + GetHexForUI(headerbytes, 0x16, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x1C Average bits per second: " + GetHexForUI(headerbytes, 0x1C, 2, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
-                                ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
-                                ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
-                                ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
-                                ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
-                                ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
-                                ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
-                                ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
-                                ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
-                                ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
-                                ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+                                ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
-                                ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
-                                ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
-                                ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
-                                ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+                                ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4, exportEntry.FileRef.Endian));
+                                ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4, exportEntry.FileRef.Endian));
 
-                                ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                                ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6, exportEntry.FileRef.Endian));
                             }
                         }
-                        catch (Exception e)
+                        catch
                         {
-
+                            // ignored
                         }
                     }
+
                     CurrentLoadedExport = exportEntry;
                 }
+
                 if (exportEntry.ClassName == "WwiseBank")
                 {
-                    WwiseBank wb = new WwiseBank(exportEntry);
+                    WwiseBank wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
+                    HIRCObjects.Clear();
+                    HIRCObjects.AddRange(wb.HIRCObjects.Values().Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
 
-                    if (exportEntry.FileRef.Game == MEGame.ME3)
+                    if (wb.EmbeddedFiles.Count > 0)
                     {
-                        QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
-                        List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
-                        HIRCObjects.Clear();
-                        HIRCObjects.AddRange(hircObjects);
-                        CurrentLoadedWwisebank = wb;
-                    }
-                    else
-                    {
-                        QuickScanText = "Cannot scan ME2 game files.";
-                    }
-                    List<(uint, int, int)> embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                    byte[] data = wb.GetChunk("DATA");
-                    int i = 0;
-                    if (embeddedWEMFiles.Count > 0)
-                    {
-                        foreach ((uint wemID, int offset, int size) singleWemMetadata in embeddedWEMFiles)
+                        int i = 0;
+                        foreach ((uint id, byte[] bytes) in wb.EmbeddedFiles)
                         {
-                            var wemData = new byte[singleWemMetadata.size];
-                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                            Buffer.BlockCopy(data, singleWemMetadata.offset + 0x8, wemData, 0, singleWemMetadata.size);
-                            //check for RIFF header as some don't seem to have it and are not playable.
-                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-
-                            string wemId = singleWemMetadata.wemID.ToString("X8");
-                            if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                            string wemId = id.ToString("X8");
+                            if (ShouldReverseIDEndianness)
                             {
-                                wemId = $"{ReverseBytes(singleWemMetadata.wemID):X8} (Reversed)";
+                                wemId = $"{ReverseBytes(id):X8} (Reversed)";
                             }
-                            string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
-                            /* //HIRC lookup, if I ever get around to supporting HIRC
-                            List<Tuple<string, int, double>> wemInfo;
-                            if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry, out wemInfo))
-                            {
-                                var info = wemInfo.FirstOrDefault(x => x.Item2 == singleWemMetadata.Item1); //item2 in x = ID, singleWemMetadata.Item1 = ID
-                                if (info != null)
-                                {
-                                    //have info
-                                    wemName = info.Item1;
-                                }
-                            }*/
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, exportEntry.FileRef.Game, singleWemMetadata.wemID);
-                            if (wemHeader == "RIFF")
+                            string wemHeader = $"{(char)bytes[0]}{(char)bytes[1]}{(char)bytes[2]}{(char)bytes[3]}";
+                            string wemName = $"{i}: Embedded WEM 0x{wemId}";
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(bytes, wemName, exportEntry, id);
+                            if (wemHeader == "RIFF" || wemHeader == "RIFX")
                             {
                                 ExportInformationList.Add(wem);
                             }
                             else
                             {
-                                ExportInformationList.Add($"{i}: {wemName} - No RIFF header");
+                                ExportInformationList.Add($"{wemName} - No RIFF/RIFX header ({wemHeader})");
                             }
+
                             AllWems.Add(wem);
                             i++;
                         }
@@ -277,6 +290,7 @@ namespace ME3Explorer
                     {
                         ExportInformationList.Add("This soundbank has no embedded WEM files");
                     }
+
                     CurrentLoadedExport = exportEntry;
 
                     //This makes the hexbox widen by 1 and then shrink by 1
@@ -300,15 +314,13 @@ namespace ME3Explorer
                     SoundpanelHIRC_Hexbox.Select(0, 1);
                     SoundpanelHIRC_Hexbox.ScrollByteIntoView();
                 }
+
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
-                    int dataSizeOffset = exportEntry.propsEnd() + 4;
-                    int dataLength = BitConverter.ToInt32(exportEntry.Data, dataSizeOffset);
-                    if (dataLength > 0)
+                    var soundNodeWave = exportEntry.GetBinaryData<SoundNodeWave>();
+                    if (soundNodeWave.RawData.Length > 0)
                     {
-                        byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
-                        ISBank isb = new ISBank(binData, true);
-                        List<ISBankEntry> audios = isb.BankEntries;
+                        ISBank isb = new ISBank(soundNodeWave.RawData);
                         foreach (ISBankEntry isbe in isb.BankEntries)
                         {
                             if (isbe.DataAsStored != null)
@@ -320,31 +332,33 @@ namespace ME3Explorer
                                 ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
                             }
                         }
+                        ExportInfoListBox.SelectedItem = isb.BankEntries.FirstOrDefault();
                     }
                     else
                     {
                         ExportInformationList.Add("This export contains no embedded audio");
                     }
+
                     CurrentLoadedExport = exportEntry;
                 }
             }
             catch (Exception e)
             {
-
+                Debug.WriteLine("Error: " + e.Message);
             }
         }
 
-        private string GetHexForUI(byte[] bytes, int startoffset, int length)
+        private static string GetHexForUI(byte[] bytes, int startoffset, int length, Endian endian)
         {
             string ret = "";
 
             if (length == 2)
             {
-                ret += BitConverter.ToInt16(bytes, startoffset);
+                ret += EndianReader.ToInt16(bytes, startoffset, endian);
             }
             else if (length == 4)
             {
-                ret += BitConverter.ToInt32(bytes, startoffset);
+                ret += EndianReader.ToInt32(bytes, startoffset, endian);
             }
 
             ret += " (";
@@ -352,15 +366,16 @@ namespace ME3Explorer
             {
                 ret += bytes[startoffset + i].ToString("X2") + " ";
             }
+
             ret = ret.Trim();
             ret += ")";
             return ret;
         }
 
-        public static UInt32 ReverseBytes(UInt32 value)
+        public static uint ReverseBytes(uint value)
         {
-            return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
-                (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+            return ((value & 0x000000FFU) << 24) | ((value & 0x0000FF00U) << 8) |
+                   ((value & 0x00FF0000U) >> 8) | ((value & 0xFF000000U) >> 24);
         }
 
         public override void UnloadExport()
@@ -381,8 +396,8 @@ namespace ME3Explorer
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
-            return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
+            return ((exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            //return !exportEntry.IsDefaultObject && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
         public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);
@@ -393,19 +408,23 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Gets a PCM stream of data (WAV) from either teh currently loaded export or selected WEM
+        /// Gets a PCM stream of data (WAV) from either the currently loaded export or selected WEM
         /// </summary>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
         public Stream getPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
+            if (CurrentLoadedExport?.ClassName == "SoundNodeWave" && CurrentLoadedExport?.Game == MEGame.ME1 && ExportInfoListBox.SelectedItem is ISBankEntry be)
+            {
+                return be.GetWaveStream();
+            }
             if (CurrentLoadedISACTEntry != null)
             {
                 return CurrentLoadedISACTEntry.GetWaveStream();
             }
             else if (CurrentLoadedAFCFileEntry != null)
             {
-                return WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                return WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
             else
             {
@@ -414,31 +433,25 @@ namespace ME3Explorer
                 {
                     if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                     {
-                        wwiseStream = new WwiseStream(localCurrentExport);
-                        string path;
-                        if (wwiseStream.IsPCCStored)
+                        wwiseStream = localCurrentExport.GetBinaryData<WwiseStream>();
+
+                        if (wwiseStream.IsPCCStored || wwiseStream.GetPathToAFC() != "")
                         {
-                            path = localCurrentExport.FileRef.FilePath;
-                        }
-                        else
-                        {
-                            path = wwiseStream.GetPathToAFC(); // only to check if AFC exists.
-                        }
-                        if (path != "")
-                        {
-                            return wwiseStream.CreateWaveStream(path);
+                            return wwiseStream.CreateWaveStream();
                         }
                     }
+
                     if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
                     {
                         object currentSelectedItem = ExportInfoListBox.SelectedItem;
-                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry))
+                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry bankEntry))
                         {
                             return null; //nothing selected, or current item is not playable
                         }
-                        var bankEntry = (ISBankEntry)currentSelectedItem;
+
                         return bankEntry.GetWaveStream();
                     }
+
                     if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
                     {
                         object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
@@ -446,20 +459,25 @@ namespace ME3Explorer
                         {
                             return null; //nothing selected, or current wem is not playable
                         }
+
                         var wemObject = (EmbeddedWEMFile)currentWEMItem;
-                        string basePath = $"{System.IO.Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
-                        File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
-                        return WwiseStream.ConvertRiffToWav(basePath + ".dat", wemObject.Game == MEGame.ME2);
+                        string basePath = $"{Path.GetTempPath()}ME3EXP_SOUND_{Guid.NewGuid()}";
+                        var outpath = basePath + ".wem";
+                        File.WriteAllBytes(outpath, wemObject.WemData);
+                        return ISBankEntry.ConvertAudioToWave(outpath); //use vgmstream
                     }
                 }
             }
+
             return null;
         }
 
 
 
         #region MVVM stuff
+
         private bool _repeating;
+
         public bool Repeating
         {
             get => _repeating;
@@ -467,6 +485,7 @@ namespace ME3Explorer
         }
 
         private EFontAwesomeIcon _playPauseImageSource;
+
         public EFontAwesomeIcon PlayPauseIcon
         {
             get => _playPauseImageSource;
@@ -497,7 +516,7 @@ namespace ME3Explorer
             AllWems.Clear();
 
             ExportInformationList.Add($"Audio file in Audio File Cache");
-            ExportInformationList.Add($"Filename : { aEntry.AFCPath}");
+            ExportInformationList.Add($"Filename : {aEntry.AFCPath}");
             ExportInformationList.Add($"Data size: {aEntry.DataSize} bytes");
             ExportInformationList.Add($"Data offset: 0x{aEntry.Offset:X8}");
 
@@ -521,36 +540,41 @@ namespace ME3Explorer
                     //Parse it
                     ExportInformationList.Add($"---------Wwise Audio Header----------");
                     ASCIIEncoding ascii = new ASCIIEncoding();
+                    var riffTag = ascii.GetString(headerbytes, 0, 4);
+                    Endian endian = Endian.Little;
+                    if (riffTag == "RIFF") endian = Endian.Little;
+                    if (riffTag == "RIFX") endian = Endian.Big;
 
-                    ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
-                    ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+
+                    ExportInformationList.Add("0x00 RIFF tag: " + riffTag);
+                    ExportInformationList.Add("0x04 File size: " + EndianReader.ToInt32(headerbytes, 4, endian) + " bytes");
                     ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
                     ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
-                    ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
-                    ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
-                    ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
-                    ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4));
-                    ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+                    ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4, endian));
+                    ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2, endian));
+                    ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2, endian));
+                    ExportInformationList.Add("0x18 Sample rate: " + GetHexForUI(headerbytes, 0x18, 4, endian));
+                    ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4, endian));
 
-                    ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
-                    ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
-                    ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
-                    ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
-                    ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
-                    ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
-                    ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
-                    ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
-                    ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
-                    ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
-                    ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+                    ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4, endian));
+                    ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2, endian));
+                    ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2, endian));
+                    ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4, endian));
+                    ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2, endian));
+                    ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2, endian));
+                    ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4, endian));
+                    ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4, endian));
+                    ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2, endian));
+                    ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2, endian));
+                    ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4, endian));
 
-                    ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
-                    ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
-                    ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
-                    ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
-                    ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+                    ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4, endian));
+                    ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2, endian));
+                    ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2, endian));
+                    ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4, endian));
+                    ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4, endian));
 
-                    ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                    ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6, endian));
                     CurrentLoadedAFCFileEntry = aEntry;
                 }
             }
@@ -579,7 +603,7 @@ namespace ME3Explorer
             set
             {
                 if (value.Equals(_currentTrackPosition)) return;
-                Debug.WriteLine("trackpos: " + value);
+                //Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
                 OnPropertyChanged(nameof(CurrentTrackPosition));
@@ -605,10 +629,12 @@ namespace ME3Explorer
         /// when pressing play again after playback has been stopped.
         /// </summary>
         private object CachedStreamSource { get; set; }
+
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
         public WwiseBank CurrentLoadedWwisebank { get; private set; }
         private string _searchStatusText;
+
         public string SearchStatusText
         {
             get => _searchStatusText;
@@ -617,7 +643,9 @@ namespace ME3Explorer
 
         private enum PlaybackState
         {
-            Playing, Stopped, Paused
+            Playing,
+            Stopped,
+            Paused
         }
 
         private PlaybackState _playbackState;
@@ -634,7 +662,7 @@ namespace ME3Explorer
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
-            VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+            VolumeControlValueChangedCommand = new GenericCommand(VolumeControlValueChanged);
 
             //WwisebankEditor commands
             CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
@@ -648,12 +676,21 @@ namespace ME3Explorer
 
         private void SaveHIRCHex()
         {
-            if (HIRC_ListBox.SelectedItem is HIRCObject ho)
+            int idx = HIRC_ListBox.SelectedIndex;
+            if (idx != -1)
             {
-                ho.Data = hircHexProvider.Bytes.ToArray();
+                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Bytes.ToArray()), Pcc.Game)
+                {
+                    DataChanged = true
+                };
                 HIRCHexChanged = false;
                 OnPropertyChanged(nameof(HIRCHexChanged));
             }
+        }
+
+        private WwiseBank.HIRCObject CreateHircObjectFromHex(byte[] bytes)
+        {
+            return WwiseBank.HIRCObject.Create(new SerializingContainer2(new MemoryStream(bytes), Pcc, true));
         }
 
         private bool CanSearchHIRCHex()
@@ -665,10 +702,12 @@ namespace ME3Explorer
             {
                 return false;
             }
+
             if (hexString.Length % 2 != 0)
             {
                 return false;
             }
+
             return true;
         }
 
@@ -687,22 +726,24 @@ namespace ME3Explorer
                 SearchStatusText = "Illegal characters in Hex String";
                 return;
             }
+
             if (hexString.Length % 2 != 0)
             {
                 SearchStatusText = "Odd number of characters in Hex String";
                 return;
             }
+
             byte[] buff = new byte[hexString.Length / 2];
             for (int i = 0; i < hexString.Length / 2; i++)
             {
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
-            byte[] hirc;
+
             int count = HIRCObjects.Count;
             int hexboxIndex = (int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
             for (int i = 0; i < count; i++)
             {
-                hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
+                byte[] hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
                 int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
                 if (indexIn > -1)
                 {
@@ -711,42 +752,34 @@ namespace ME3Explorer
                     //searchHexStatus.Text = "";
                     return;
                 }
+
                 hexboxIndex = 0;
             }
+
             SearchStatusText = "Hex not found";
         }
 
-        /// <summary>
-        /// Ported from WwiseViewer
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
         public static bool isHexString(string s)
         {
-            string hexChars = "0123456789abcdefABCDEF";
-            for (int i = 0; i < s.Length; i++)
-            {
-                int f = -1;
-                for (int j = 0; j < hexChars.Length; j++)
-                    if (s[i] == hexChars[j])
-                    {
-                        f = j;
-                        break;
-                    }
-                if (f == -1)
-                    return false;
-            }
-            return true;
+            const string hexChars = "0123456789abcdefABCDEF";
+            return s.All(c => hexChars.Contains(c));
         }
 
         private bool CanCommitBankToFile() => HasPendingHIRCChanges;
 
         private void CommitBankToFile()
         {
-            CurrentLoadedExport.Data = CurrentLoadedWwisebank.RecreateBinary(HIRCObjects.Select(x => x.Data).ToList());
+            CurrentLoadedWwisebank.HIRCObjects.Clear();
+            CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
+            CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
+            foreach (var hircObject in HIRCObjects)
+            {
+                hircObject.DataChanged = false;
+            }
         }
 
         private bool _hircHexChanged;
+
         public bool HIRCHexChanged
         {
             get => _hircHexChanged;
@@ -761,16 +794,13 @@ namespace ME3Explorer
                 AllWems.Clear();
 
                 ExportInformationList.Add(entry.FileName);
-                ExportInformationList.Add($"Ogg encoded: {entry.isOgg}");
-                ExportInformationList.Add($"PCM encoded: {entry.isPCM}");
-                ExportInformationList.Add($"ADPCM encoded: {!entry.isOgg && !entry.isPCM}");
-                ExportInformationList.Add($"Header offset: 0x{entry.HeaderOffset:X8}");
+                ExportInformationList.Add($"Codec: {entry.getCodecStr()}");
                 ExportInformationList.Add($"Datastream size: {entry.DataAsStored.Length} bytes");
                 ExportInformationList.Add($"Datastream offset: 0x{entry.DataOffset:X8}");
 
                 CurrentLoadedISACTEntry = entry;
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -788,12 +818,14 @@ namespace ME3Explorer
             {
                 return CurrentLoadedExport.FileRef.Game == MEGame.ME3;
             }
+
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 object currentWEMItem = ExportInfoListBox.SelectedItem;
                 bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3;
                 return result;
             }
+
             return false;
         }
 
@@ -804,6 +836,7 @@ namespace ME3Explorer
             {
                 await ReplaceAudioFromWave();
             }
+
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 ReplaceWEMAudioFromWave();
@@ -855,7 +888,6 @@ namespace ME3Explorer
         /// <param name="wem"></param>
         private void ReplaceWEMAudioFromWwiseOgg(string oggPath, EmbeddedWEMFile wem)
         {
-            WwiseBank w = new WwiseBank(CurrentLoadedExport);
             if (oggPath == null)
             {
                 OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
@@ -870,10 +902,10 @@ namespace ME3Explorer
                 }
             }
 
-            MemoryStream convertedStream = null;
+            MemoryStream convertedStream;
             using (var fileStream = new FileStream(oggPath, FileMode.Open))
             {
-                convertedStream = WwiseStream.ConvertWwiseOggToME3Ogg(fileStream);
+                convertedStream = WwiseStreamHelper.ConvertWwiseOggToME3Ogg(fileStream);
             }
 
             //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
@@ -885,8 +917,9 @@ namespace ME3Explorer
             {
                 wem.WemData = convertedStream.ToArray();
             }
-
-            w.UpdateDataChunk(AllWems); //updates this export's data.
+            CurrentLoadedWwisebank.EmbeddedFiles.Clear();
+            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             MessageBox.Show("Done");
         }
@@ -927,6 +960,7 @@ namespace ME3Explorer
                 HostingControl.BusyText = "Converting and replacing audio";
                 HostingControl.IsBusy = true;
             }
+
             var conversion = await Task.Run(async () => await RunWwiseConversion(wwisePath, sourceFile, conversionSettings));
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport);
@@ -959,13 +993,13 @@ namespace ME3Explorer
             var assembly = Assembly.GetExecutingAssembly();
             string[] stuff = assembly.GetManifestResourceNames();
             const string resourceName = "ME3Explorer.Soundplorer.WwiseTemplateProject.zip";
-            string templatefolder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject");
+            string templatefolder = Path.Combine(Path.GetTempPath(), "TemplateProject");
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 await TryDeleteDirectory(templatefolder);
                 ZipArchive archive = new ZipArchive(stream);
-                archive.ExtractToDirectory(System.IO.Path.GetTempPath());
+                archive.ExtractToDirectory(Path.GetTempPath());
             }
 
             //Generate the external sources document
@@ -982,7 +1016,7 @@ namespace ME3Explorer
             {
                 //it's a single file
                 isSingleFile = true;
-                filesToConvert = new string[] { fileOrFolderPath };
+                filesToConvert = new[] { fileOrFolderPath };
                 folderParent = Directory.GetParent(fileOrFolderPath).FullName;
             }
 
@@ -991,17 +1025,17 @@ namespace ME3Explorer
             XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
             foreach (string file in filesToConvert)
             {
-                XElement source = new XElement("Source", new XAttribute("Path", System.IO.Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
+                XElement source = new XElement("Source", new XAttribute("Path", Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
                 externalSourcesList.Add(source);
             }
 
             //Write ExternalSources.wsources
-            string wsourcesFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
+            string wsourcesFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
 
             File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
             Debug.WriteLine(externalSourcesList.ToString());
 
-            string conversionSettingsFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
+            string conversionSettingsFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
             XmlDocument conversionDoc = new XmlDocument();
             conversionDoc.Load(conversionSettingsFile);
 
@@ -1011,21 +1045,25 @@ namespace ME3Explorer
             conversionDoc.Save(conversionSettingsFile);
             //Run Conversion
 
+            string projFile = Path.Combine(Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = wwiseCLIPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    Arguments = $"\"{projFile}\" -ConvertExternalSources Windows",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true
+                }
+            };
             //uncomment the following lines to view output from wwisecli
             //DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
-            Process process = new Process();
-            process.StartInfo.FileName = wwiseCLIPath;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
             //process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
             //process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
 
-            string projFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
-            process.StartInfo.Arguments = $"\"{projFile}\" -ConvertExternalSources Windows";
-
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardOutput = true;
             process.Start();
             //process.BeginOutputReadLine();
             process.WaitForExit();
@@ -1033,32 +1071,31 @@ namespace ME3Explorer
             process.Close();
 
             //Files generates
-            string outputDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "OutputFiles");
-            string copyToDirectory = System.IO.Path.Combine(folderParent, "Converted");
+            string outputDirectory = Path.Combine(Path.GetTempPath(), "TemplateProject", "OutputFiles");
+            string copyToDirectory = Path.Combine(folderParent, "Converted");
             Directory.CreateDirectory(copyToDirectory);
             foreach (string file in filesToConvert)
             {
-                string basename = System.IO.Path.GetFileNameWithoutExtension(file);
-                File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
+                string basename = Path.GetFileNameWithoutExtension(file);
+                File.Copy(Path.Combine(outputDirectory, basename + ".ogg"), Path.Combine(copyToDirectory, basename + ".ogg"), true);
             }
+
             var deleteResult = await TryDeleteDirectory(templatefolder);
             Debug.WriteLine("Deleted templatedproject: " + deleteResult);
 
             if (isSingleFile)
             {
-                return System.IO.Path.Combine(copyToDirectory, System.IO.Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
+                return Path.Combine(copyToDirectory, Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
             }
-            else
-            {
-                return copyToDirectory;
-            }
+
+            return copyToDirectory;
         }
 
 
         public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
         {
             if (directoryPath == null)
-                throw new ArgumentNullException(directoryPath);
+                throw new ArgumentNullException(nameof(directoryPath));
             if (maxRetries < 1)
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
             if (millisecondsDelay < 1)
@@ -1098,7 +1135,7 @@ namespace ME3Explorer
             string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
             if (wwisePath != null)
             {
-                wwisePath = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
+                wwisePath = Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
                 if (File.Exists(wwisePath))
                 {
                     //check that it's a supported version...
@@ -1111,24 +1148,18 @@ namespace ME3Explorer
                             MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 64bit to use this feature.");
                         return null;
                     }
-                    else
-                    {
-                        return wwisePath;
-                    }
+
+                    return wwisePath;
                 }
-                else
-                {
-                    if (!silent)
-                        MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
-                    return null;
-                }
-            }
-            else
-            {
+
                 if (!silent)
-                    MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
+                    MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
                 return null;
             }
+
+            if (!silent)
+                MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
+            return null;
         }
 
         // Player commands
@@ -1145,12 +1176,13 @@ namespace ME3Explorer
                     };
                     if (d.ShowDialog() == true)
                     {
-                        WwiseStream w = new WwiseStream(CurrentLoadedExport);
-                        string wavPath = w.CreateWave(w.GetPathToAFC());
+                        WwiseStream w = CurrentLoadedExport.GetBinaryData<WwiseStream>();
+                        string wavPath = w.CreateWave();
                         if (wavPath != null && File.Exists(wavPath))
                         {
                             File.Copy(wavPath, d.FileName, true);
                         }
+
                         MessageBox.Show("Done.");
                     }
                 }
@@ -1172,10 +1204,12 @@ namespace ME3Explorer
                             ms.CopyTo(fs);
                             fs.Flush();
                         }
+
                         MessageBox.Show("Done.");
                     }
                 }
             }
+
             if (CurrentLoadedISACTEntry != null)
             {
                 SaveFileDialog d = new SaveFileDialog
@@ -1192,12 +1226,14 @@ namespace ME3Explorer
                         waveStream.CopyTo(fs);
                         fs.Flush();
                     }
+
                     MessageBox.Show("Done.");
                 }
             }
+
             if (CurrentLoadedAFCFileEntry != null)
             {
-                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
+                string presetfilename = $"{Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
                 SaveFileDialog d = new SaveFileDialog
                 {
                     Filter = "Wave PCM File|*.wav",
@@ -1205,12 +1241,13 @@ namespace ME3Explorer
                 };
                 if (d.ShowDialog() == true)
                 {
-                    Stream s = WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                    Stream s = WwiseStreamHelper.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
                     using (var fileStream = File.Create(d.FileName))
                     {
                         s.Seek(0, SeekOrigin.Begin);
                         s.CopyTo(fileStream);
                     }
+
                     MessageBox.Show("Done.");
                 }
             }
@@ -1223,13 +1260,15 @@ namespace ME3Explorer
             if (CurrentLoadedAFCFileEntry != null) return true;
             if (CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
-                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    object currentWEMItem = ExportInfoListBox.SelectedItem;
-                    return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
+                    case "WwiseStream":
+                        return true;
+                    case "WwiseBank":
+                        return ExportInfoListBox.SelectedItem is EmbeddedWEMFile;
                 }
             }
+
             return false;
         }
 
@@ -1243,9 +1282,9 @@ namespace ME3Explorer
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
-                if (vorbisStream == null)
+                if (audioStream == null)
                 {
-                    UpdateVorbisStream();
+                    UpdateAudioStream();
                 }
                 else
                 {
@@ -1255,36 +1294,38 @@ namespace ME3Explorer
                             (CurrentLoadedAFCFileEntry != null && CachedStreamSource != CurrentLoadedAFCFileEntry))
                         {
                             //invalidate the cache
-                            UpdateVorbisStream();
+                            UpdateAudioStream();
                         }
+
                         if (CurrentLoadedExport != null)
                         {
                             //check if cached is the same as what we want to play
                             if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
                             {
                                 //invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                             else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
                             {
                                 //Invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                             else if (CurrentLoadedExport.ClassName == "SoundNodeWave" && CachedStreamSource != ExportInfoListBox.SelectedItem)
                             {
                                 //Invalidate the cache
-                                UpdateVorbisStream();
+                                UpdateAudioStream();
                             }
                         }
                     }
                 }
+
                 //check to make sure stream has loaded before we attempt to play it
-                if (vorbisStream != null)
+                if (audioStream != null)
                 {
                     try
                     {
-                        vorbisStream.Position = 0;
-                        _audioPlayer = new SoundpanelAudioPlayer(vorbisStream, CurrentVolume)
+                        audioStream.Position = 0;
+                        _audioPlayer = new SoundpanelAudioPlayer(audioStream, CurrentVolume)
                         {
                             PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile
                         };
@@ -1301,7 +1342,7 @@ namespace ME3Explorer
                     catch (Exception)
                     {
                         //error playing audio or initializing
-                        vorbisStream = null;
+                        audioStream = null;
                         playToggle = false;
                     }
 
@@ -1320,34 +1361,30 @@ namespace ME3Explorer
             }
         }
 
-        private void UpdateVorbisStream()
+        private void UpdateAudioStream()
         {
-            vorbisStream = getPCMStream();
-            //if (vorbisStream is MemoryStream ms)
-            //{
-            //    File.WriteAllBytes(@"C:\users\public\file.wav", ms.ToArray());
-            //}
+            audioStream = getPCMStream();
             if (CurrentLoadedISACTEntry != null)
             {
                 CachedStreamSource = CurrentLoadedISACTEntry;
             }
+
             if (CurrentLoadedAFCFileEntry != null)
             {
                 CachedStreamSource = CurrentLoadedAFCFileEntry;
             }
+
             if (CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    CachedStreamSource = CurrentLoadedExport;
-                }
-                else if (CurrentLoadedExport.ClassName == "WwiseBank")
-                {
-                    CachedStreamSource = ExportInfoListBox.SelectedItem;
-                }
-                else if (CurrentLoadedExport.ClassName == "SoundNodeWave")
-                {
-                    CachedStreamSource = ExportInfoListBox.SelectedItem;
+                    case "WwiseStream":
+                        CachedStreamSource = CurrentLoadedExport;
+                        break;
+                    case "WwiseBank":
+                    case "SoundNodeWave":
+                        CachedStreamSource = ExportInfoListBox.SelectedItem;
+                        break;
                 }
             }
         }
@@ -1363,30 +1400,35 @@ namespace ME3Explorer
 
         public bool CanStartPlayback(object p)
         {
-            if (vorbisStream != null) return true; //looping
+            if (audioStream != null) return true; //looping
             if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
             if (CurrentLoadedISACTEntry != null) return true;
             if (CurrentLoadedAFCFileEntry != null) return true;
-            if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+            if (CurrentLoadedExport?.ClassName == "WwiseStream") return true;
 
-            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            if (CurrentLoadedExport?.ClassName == "WwiseBank")
             {
-                object currentWEMItem = ExportInfoListBox.SelectedItem;
-                if (currentWEMItem == null || currentWEMItem is string)
+                switch (ExportInfoListBox.SelectedItem)
                 {
-                    return false; //nothing selected, or current wem is not playable
+                    case null:
+                    case string _:
+                        return false; //nothing selected, or current wem is not playable
+                    case EmbeddedWEMFile _:
+                        return true;
                 }
-                if (currentWEMItem is EmbeddedWEMFile) return true;
             }
-            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+
+            if (CurrentLoadedExport?.ClassName == "SoundNodeWave")
             {
-                object currentNodeWaveItem = ExportInfoListBox.SelectedItem;
-                if (currentNodeWaveItem == null) return false;
-                if (currentNodeWaveItem is ISBankEntry isbe)
+                switch (ExportInfoListBox.SelectedItem)
                 {
-                    return isbe.DataAsStored != null;
+                    case null:
+                        return false;
+                    case ISBankEntry isbe:
+                        return isbe.DataAsStored != null;
+                    case EmbeddedWEMFile _:
+                        return true;
                 }
-                if (currentNodeWaveItem is EmbeddedWEMFile) return true;
             }
 
             return false;
@@ -1406,23 +1448,18 @@ namespace ME3Explorer
                 _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }
-            if (vorbisStream != null)
+
+            if (audioStream != null)
             {
                 //vorbisStream.Dispose();
-                vorbisStream = null;
+                audioStream = null;
             }
         }
 
-        private bool CanStopPlayback(object p)
-        {
-            return _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || vorbisStream != null;
-        }
+        private bool CanStopPlayback(object p) => _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
 
         // Events
-        private void TrackControlMouseDown(object p)
-        {
-            _audioPlayer?.Pause();
-        }
+        private void TrackControlMouseDown(object p) => _audioPlayer?.Pause();
 
         private void TrackControlMouseUp(object p)
         {
@@ -1433,25 +1470,11 @@ namespace ME3Explorer
             }
         }
 
-        private bool CanTrackControlMouseDown(object p)
-        {
-            return _playbackState == PlaybackState.Playing;
-        }
+        private bool CanTrackControlMouseDown(object p) => _playbackState == PlaybackState.Playing;
 
-        private bool CanTrackControlMouseUp(object p)
-        {
-            return _playbackState == PlaybackState.Paused;
-        }
+        private bool CanTrackControlMouseUp(object p) => _playbackState == PlaybackState.Paused;
 
-        private void VolumeControlValueChanged(object p)
-        {
-            _audioPlayer?.SetVolume(CurrentVolume); // set value of the slider to current volume
-        }
-
-        private bool CanVolumeControlValueChanged(object p)
-        {
-            return true;
-        }
+        private void VolumeControlValueChanged() => _audioPlayer?.SetVolume(CurrentVolume);
 
         private void _audioPlayer_PlaybackStopped()
         {
@@ -1508,6 +1531,7 @@ namespace ME3Explorer
                     _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
                 }
             }
+
             SeekDragging = false;
         }
 
@@ -1532,14 +1556,7 @@ namespace ME3Explorer
             ExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(exportToWorkOn);
-                if (w.IsPCCStored)
-                {
-                    //TODO: enable replacing of PCC-stored sounds
-                    MessageBox.Show("Cannot replace pcc-stored sounds yet.");
-                    return;
-                }
-
+                WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
                 if (oggPath == null)
                 {
                     OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
@@ -1553,30 +1570,38 @@ namespace ME3Explorer
                         return;
                     }
                 }
+
                 w.ImportFromFile(oggPath, w.GetPathToAFC());
-                CurrentLoadedExport.Data = w.memory.TypedClone();
+                exportToWorkOn.WriteBinary(w);
                 if (HostingControl != null)
                 {
                     HostingControl.IsBusy = false;
                 }
+
                 MessageBox.Show("Done");
             }
         }
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
-            //get parent item
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            while (true)
+            {
+                //get parent item
+                DependencyObject parentObject = VisualTreeHelper.GetParent(child);
 
-            //we've reached the end of the tree
-            if (parentObject == null) return null;
-
-            //check if the parent matches the type we're looking for
-            T parent = parentObject as T;
-            if (parent != null)
-                return parent;
-            else
-                return FindParent<T>(parentObject);
+                switch (parentObject)
+                {
+                    //we've reached the end of the tree
+                    case null:
+                        return null;
+                    //check if the parent matches the type we're looking for
+                    case T parent:
+                        return parent;
+                    default:
+                        child = parentObject;
+                        break;
+                }
+            }
         }
 
         private void RepeatingButton_Click(object sender, RoutedEventArgs e)
@@ -1589,18 +1614,19 @@ namespace ME3Explorer
         {
             if (e is KeyEventArgs ke)
             {
-                if (ke.Key == Key.Space)
+                switch (ke.Key)
                 {
-                    if (CanStartPlayback(null))
-                    {
-                        StartOrPausePlaying();
-                    }
-                    ke.Handled = true;
-                }
-                if (ke.Key == Key.Escape)
-                {
-                    StopPlaying();
-                    ke.Handled = true;
+                    case Key.Space:
+                        if (CanStartPlayback(null))
+                        {
+                            StartOrPausePlaying();
+                        }
+                        ke.Handled = true;
+                        break;
+                    case Key.Escape:
+                        StopPlaying();
+                        ke.Handled = true;
+                        break;
                 }
             }
         }
@@ -1608,27 +1634,30 @@ namespace ME3Explorer
         private void ExportInfoListBox_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (currentSelectedItem != null && currentSelectedItem is EmbeddedWEMFile)
+            if (currentSelectedItem is EmbeddedWEMFile)
             {
                 StopPlaying();
                 StartOrPausePlaying();
             }
-            if (currentSelectedItem != null && currentSelectedItem is ISBankEntry && (currentSelectedItem as ISBankEntry).DataAsStored != null)
+
+            if (currentSelectedItem is ISBankEntry bankEntry && bankEntry.DataAsStored != null)
             {
                 StopPlaying();
                 StartOrPausePlaying();
             }
         }
 
+        public event Action<uint> HIRCObjectSelected;
+
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HIRCNotableItems.ClearEx();
-            if (HIRC_ListBox.SelectedItem is HIRCObject h)
+            if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
             {
                 HIRC_ListBox.ScrollIntoView(h);
 
                 OriginalHIRCHex = h.Data;
-                hircHexProvider.ReplaceBytes(h.Data);
+                hircHexProvider.ReplaceBytes(OriginalHIRCHex);
                 SoundpanelHIRC_Hexbox.Refresh();
 
                 HIRCNotableItems.Add(new HIRCNotableItem
@@ -1641,7 +1670,7 @@ namespace ME3Explorer
                 HIRCNotableItems.Add(new HIRCNotableItem
                 {
                     Offset = 0x1,
-                    Header = $"Size: 0x{h.Size:X8}",
+                    Header = $"Size: 0x{h.Data.Length - 5:X8}",
                     Length = 4
                 });
 
@@ -1653,9 +1682,9 @@ namespace ME3Explorer
                 });
 
                 int start = 0x9;
-                switch (h.ObjType)
+                switch ((HIRCType)h.ObjType)
                 {
-                    case HIRCObject.TYPE_SOUNDSFXVOICE:
+                    case HIRCType.SoundSXFSoundVoice:
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
@@ -1675,7 +1704,7 @@ namespace ME3Explorer
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"Audio ID: {h.unk1:X8}",
+                            Header = $"Audio ID: {h.AudioID:X8}",
                             Length = 4
                         });
 
@@ -1683,7 +1712,7 @@ namespace ME3Explorer
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"Source ID: 0x{h.IDsource:X8}",
+                            Header = $"Source ID: 0x{h.SourceID:X8}",
                             Length = 4
                         });
 
@@ -1695,15 +1724,15 @@ namespace ME3Explorer
                             Length = 4
                         });
                         break;
-                    case HIRCObject.TYPE_EVENT:
+                    case HIRCType.Event:
                         HIRCNotableItems.Add(new HIRCNotableItem
                         {
                             Offset = start,
-                            Header = $"# of event actions to fire: {h.eventIDs.Count}",
+                            Header = $"# of event actions to fire: {h.EventIDs.Count}",
                             Length = 4
                         });
                         start += 4;
-                        foreach (int eventid in h.eventIDs)
+                        foreach (uint eventid in h.EventIDs)
                         {
                             HIRCNotableItems.Add(new HIRCNotableItem
                             {
@@ -1713,8 +1742,10 @@ namespace ME3Explorer
                             });
                             start += 4;
                         }
+
                         break;
                 }
+                HIRCObjectSelected?.Invoke(h.ID);
             }
             else
             {
@@ -1730,6 +1761,7 @@ namespace ME3Explorer
         }
 
         private bool ControlLoaded;
+
         private void Soundpanel_Loaded(object sender, RoutedEventArgs e)
         {
             if (!ControlLoaded)
@@ -1739,6 +1771,10 @@ namespace ME3Explorer
 
                 SoundpanelHIRC_Hexbox.ByteProvider = hircHexProvider;
                 SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
+
+                this.bind(HexBoxMinWidthProperty, SoundpanelHIRC_Hexbox, nameof(SoundpanelHIRC_Hexbox.MinWidth));
+                this.bind(HexBoxMaxWidthProperty, SoundpanelHIRC_Hexbox, nameof(SoundpanelHIRC_Hexbox.MaxWidth));
+
                 ControlLoaded = true;
             }
         }
@@ -1770,7 +1806,7 @@ namespace ME3Explorer
                             int val = BitConverter.ToInt32(memory, start);
                             float fval = BitConverter.ToSingle(memory, start);
                             s += $", Int: {val} (0x{val:X8}) Float: {fval}";
-                            HIRCObject referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
+                            var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
 
                             if (referencedHIRCbyID != null)
                             {
@@ -1783,6 +1819,7 @@ namespace ME3Explorer
                             {
                                 s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
                             }
+
                             //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
                             //{
                             //    s += $", Export: {exp.ObjectName}";
@@ -1792,12 +1829,14 @@ namespace ME3Explorer
                             //    s += $", Import: {imp.ObjectName}";
                             //}
                         }
+
                         s += $" | Start=0x{start:X8} ";
                         if (len > 0)
                         {
                             s += $"Length=0x{len:X8} ";
                             s += $"End=0x{(start + len - 1):X8}";
                         }
+
                         HIRCStatusBar_LeftMostText.Text = s;
                     }
                     else
@@ -1808,6 +1847,7 @@ namespace ME3Explorer
                 catch (Exception)
                 {
                 }
+
                 SoundpanelHIRC_Hexbox.Refresh();
             }
         }
@@ -1829,6 +1869,7 @@ namespace ME3Explorer
         public bool HasPendingHIRCChanges => HIRCObjects.Any(x => x.DataChanged);
 
         private byte[] OriginalHIRCHex;
+        private static bool ShouldReverseIDEndianness => Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness;
 
         private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
         {
@@ -1869,6 +1910,49 @@ namespace ME3Explorer
                 SoundpanelHIRC_Hexbox.SelectionLength = 1;
             }
         }
+
+        private void ExtractISBEToWav(object sender, RoutedEventArgs e)
+        {
+            //todo: standard extraction
+
+        }
+
+        private void ExtractISBERaw(object sender, RoutedEventArgs e)
+        {
+            object currentSelectedItem = ExportInfoListBox.SelectedItem;
+            if (!(currentSelectedItem is ISBankEntry isbe) || isbe.DataAsStored == null || isbe.FullData == null)
+            {
+                return; //nothing selected, or current item is not playable
+            }
+
+            var bankEntry = (ISBankEntry)currentSelectedItem;
+            SaveFileDialog d = new SaveFileDialog
+            {
+                //ISBS is not a real extension, but I set it to prevent people from trying to load a single sample into
+                //soundplorer and breaking things as the headers are different for real banks.
+                Filter = "ISACT Single Sample|*.isbs",
+                FileName = Path.GetFileNameWithoutExtension(isbe.FileName) + ".isbs"
+            };
+            if (d.ShowDialog() == true)
+            {
+                File.WriteAllBytes(d.FileName, bankEntry.FullData);
+                MessageBox.Show("Done");
+            }
+        }
+
+        private void CloneHIRCObject(object sender, RoutedEventArgs e)
+        {
+            if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
+            {
+                WwiseBank.HIRCObject clone = CreateHircObjectFromHex(h.Data).Clone();
+                HIRCObjects.Add(new HIRCDisplayObject(HIRCObjects.Count, clone, Pcc.Game)
+                {
+                    DataChanged = true
+                });
+                HIRC_ListBox.ScrollIntoView(clone);
+                HIRC_ListBox.SelectedItem = clone;
+            }
+        }
     }
 
     public class EmbeddedWEMFile
@@ -1876,16 +1960,18 @@ namespace ME3Explorer
         public uint Id;
         public bool HasBeenFixed;
         public MEGame Game;
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, uint Id = 0)
+
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString, ExportEntry export, uint Id = 0)
         {
+            this.export = export;
             this.Id = Id;
-            this.Game = game;
+            this.Game = export.Game;
             this.WemData = WemData;
             this.DisplayString = DisplayString;
 
 
-            int size = BitConverter.ToInt32(WemData, 4);
-            int subchunk2size = BitConverter.ToInt32(WemData, 0x5A);
+            int size = EndianReader.ToInt32(WemData, 4, export.FileRef.Endian);
+            int subchunk2size = EndianReader.ToInt32(WemData, 0x5A, export.FileRef.Endian);
 
             if (size != WemData.Length - 8)
             {
@@ -1897,23 +1983,113 @@ namespace ME3Explorer
                 HasBeenFixed = true;
                 this.DisplayString += " - Preloading";
                 int offset = 4;
-                WemData[offset] = (byte)size; // fourth byte
-                WemData[offset + 1] = (byte)(size >> 8); // third byte
-                WemData[offset + 2] = (byte)(size >> 16); // second byte
-                WemData[offset + 3] = (byte)(size >> 24); // last byte
 
-                offset = 0x5A; //Subchunk2 size offset
-                size = WemData.Length - 94; //size of data to follow
-                WemData[offset] = (byte)size; // fourth byte
-                WemData[offset + 1] = (byte)(size >> 8); // third byte
-                WemData[offset + 2] = (byte)(size >> 16); // second byte
-                WemData[offset + 3] = (byte)(size >> 24); // last byte
+                if (export.FileRef.Endian == Endian.Little)
+                {
+                    WemData[offset] = (byte)size; // fourth byte
+                    WemData[offset + 1] = (byte)(size >> 8); // third byte
+                    WemData[offset + 2] = (byte)(size >> 16); // second byte
+                    WemData[offset + 3] = (byte)(size >> 24); // last byte
+
+                    offset = 0x5A; //Subchunk2 size offset
+                    size = WemData.Length - 94; //size of data to follow
+                    WemData[offset] = (byte)size; // fourth byte
+                    WemData[offset + 1] = (byte)(size >> 8); // third byte
+                    WemData[offset + 2] = (byte)(size >> 16); // second byte
+                    WemData[offset + 3] = (byte)(size >> 24); // last byte
+                }
+                else
+                {
+                    WemData[offset + 3] = (byte)size; // fourth byte
+                    WemData[offset + 2] = (byte)(size >> 8); // third byte
+                    WemData[offset + 1] = (byte)(size >> 16); // second byte
+                    WemData[offset] = (byte)(size >> 24); // last byte
+
+                    offset = 0x5A; //Subchunk2 size offset
+                    size = WemData.Length - 94; //size of data to follow
+                    WemData[offset + 3] = (byte)size; // fourth byte
+                    WemData[offset + 2] = (byte)(size >> 8); // third byte
+                    WemData[offset + 1] = (byte)(size >> 16); // second byte
+                    WemData[offset] = (byte)(size >> 24); // last byte
+                }
+
+                var audioLen = GetAudioInfo(WemData)?.GetLength();
+                if (audioLen != null && audioLen.Value != TimeSpan.Zero)
+                {
+                    this.DisplayString += $" ({ audioLen.Value.ToString(@"mm\:ss\:fff")})";
+                }
             }
         }
 
+        private ExportEntry export;
         public byte[] WemData { get; set; }
         public byte[] OriginalWemData { get; set; }
         public string DisplayString { get; set; }
+
+        public AudioInfo GetAudioInfo(byte[] dataOverride = null)
+        {
+            // Similar to WwiseStream
+            try
+            {
+                AudioInfo ai = new AudioInfo();
+                Stream dataStream = new MemoryStream(dataOverride ?? WemData);
+
+                EndianReader er = new EndianReader(dataStream);
+                var header = er.ReadStringASCII(4);
+                if (header == "RIFX") er.Endian = Endian.Big;
+                if (header == "RIFF") er.Endian = Endian.Little;
+                // Position 4
+
+                // This info seems wrong. Needs to be updated. Probably for 5.1.
+
+
+                er.Seek(0xC, SeekOrigin.Current); // Post 'fmt ', get fmt size
+                var fmtSize = er.ReadInt32();
+                var postFormatPosition = er.Position;
+                ai.CodecID = er.ReadUInt16();
+
+                switch (ai.CodecID)
+                {
+                    case 0xFFFF:
+                        ai.CodecName = "Vorbis";
+                        break;
+                    default:
+                        ai.CodecName = $"Unknown codec ID {ai.CodecID}";
+                        break;
+                }
+
+                ai.Channels = er.ReadUInt16();
+                ai.SampleRate = er.ReadUInt32();
+                er.ReadInt32(); //Average bits per second
+                er.ReadUInt16(); //Alignment. VGMStream shows this is 16bit but that doesn't seem right
+                ai.BitsPerSample = er.ReadUInt16(); //Bytes per sample. For vorbis this is always 0!
+                var extraSize = er.ReadUInt16();
+                if (extraSize == 0x30)
+                {
+                    er.Seek(postFormatPosition + 0x18, SeekOrigin.Begin);
+                    ai.SampleCount = er.ReadUInt32();
+                }
+                else
+                {
+                    // Find audio sample data chunk size
+                    er.Seek(0x10 + fmtSize, SeekOrigin.Begin);
+                    var chunkName = er.ReadStringASCII(4);
+                    while (!chunkName.Equals("data", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        er.Seek(er.ReadInt32(), SeekOrigin.Current);
+                        chunkName = er.ReadStringASCII(4);
+                    }
+                    ai.AudioDataSize = er.ReadUInt32();
+                }
+
+                // We don't care about the rest.
+                return ai;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 
     public class ImportExportSoundEnabledConverter : IValueConverter
@@ -1928,5 +2104,4 @@ namespace ME3Explorer
             return false; //don't need this
         }
     }
-
 }

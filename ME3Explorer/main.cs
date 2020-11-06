@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
+using ME3Explorer.Splash;
 using Microsoft.Shell;
 
 namespace ME3Explorer
 {
     public partial class App : ISingleInstanceApp
     {
+        private static DPIAwareSplashScreen ME3ExplorerSplashScreen;
+
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool SetDllDirectory(string lpPathName);
 
@@ -21,7 +22,6 @@ namespace ME3Explorer
 
         const string Unique = "{3BF98E29-9166-43E7-B24C-AA5C57B73BA6}";
 
-        static SplashScreen splashScreen;
 
 
         /// <summary>
@@ -34,14 +34,17 @@ namespace ME3Explorer
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {
                 AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-                splashScreen = new SplashScreen("resources/toolset_splash.png");
-                if (Environment.GetCommandLineArgs().Length == 1)
-                {
-                    splashScreen.Show(false);
-                }
+                ME3ExplorerSplashScreen = new DPIAwareSplashScreen();
+                //if (Environment.GetCommandLineArgs().Length == 1)
+                //{
+                ME3ExplorerSplashScreen.Show();
+
+                //    splashScreen.Show(false);
+                //}
                 SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 CleanupTempFiles();
                 App app = new App();
+                app.MainWindow = null;
                 app.InitializeComponent();
                 //will throw exception on some tools when opening over remote desktop.
                 app.Run();
@@ -59,7 +62,7 @@ namespace ME3Explorer
         {
             //Cleanup orphaned temp sounds from soundplorer
             DirectoryInfo tempDirectoryInfo = new DirectoryInfo(System.IO.Path.GetTempPath());
-            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_SOUND_*");
+            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_*");
             foreach (FileInfo file in Files)
             {
                 try
@@ -80,7 +83,9 @@ namespace ME3Explorer
         private static void UnblockLibFiles()
         {
             var probingPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lib");
-            var files = Directory.GetFiles(probingPath);
+            IEnumerable<string> files = Directory.EnumerateFiles(probingPath);
+            //unblock asi files as well
+            files = files.Concat(Directory.EnumerateFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exec"), "*.asi"));
             foreach (string file in files)
             {
                 DeleteFile(file + ":Zone.Identifier");
@@ -126,12 +131,17 @@ namespace ME3Explorer
         //
         public int SignalExternalCommandLineArgs(string[] args)
         {
-            int taskListResponse = HandleCommandLineJumplistCall(args, out _);
-            if (taskListResponse == 0)
+            var taskListResponse = HandleCommandLineJumplistCall(args, out _);
+            if (taskListResponse != null && args.Length == 1) //no params
             {
                 //just a new instance
                 MainWindow.RestoreAndBringToFront();
             }
+            else
+            {
+                taskListResponse?.Invoke();
+            }
+
             return 0;
         }
     }

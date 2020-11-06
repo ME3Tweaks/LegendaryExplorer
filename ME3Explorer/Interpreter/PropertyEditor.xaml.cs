@@ -1,21 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {
@@ -82,9 +70,9 @@ namespace ME3Explorer
                 switch (pcc.Game)
                 {
                     case MEGame.ME1:
-                        return $"\"{(new ME1Explorer.Unreal.Classes.BioTlkFileSet(pcc)).findDataById(strRef)}\"";
+                        return "ME1 StrRef not supported";
                     case MEGame.ME2:
-                        return $"\"{ME2Explorer.ME2TalkFiles.findDataById(strRef)}\"";
+                        return $"\"{ME2TalkFiles.findDataById(strRef)}\"";
                     case MEGame.ME3:
                         return $"\"{ME3TalkFiles.findDataById(strRef)}\"";
                     case MEGame.UDK:

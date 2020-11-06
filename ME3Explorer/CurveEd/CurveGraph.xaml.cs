@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ME3Explorer.CurveEd
@@ -428,17 +421,23 @@ namespace ME3Explorer.CurveEd
         {
             Point pos = (Point)(sender as MenuItem).Tag;
             double inVal = unrealX(pos.X);
+            AddKey((float)inVal, (float)unrealY(ActualHeight - pos.Y));
+        }
+
+        private void AddKey(float time, float y)
+        {
             LinkedListNode<CurvePoint> node;
             try
             {
-                node = SelectedCurve.CurvePoints.Find(SelectedCurve.CurvePoints.First(x => x.InVal > inVal));
-                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node.Value.InterpMode), node);
+                node = SelectedCurve.CurvePoints.Find(SelectedCurve.CurvePoints.First(x => x.InVal > time));
+                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node.Value.InterpMode), node);
             }
             catch (Exception)
             {
                 node = SelectedCurve.CurvePoints.Last;
-                SelectedCurve.AddPoint(new CurvePoint((float)inVal, (float)unrealY(ActualHeight - pos.Y), 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveUser), node, false);
+                SelectedCurve.AddPoint(new CurvePoint(time, y, 0, 0, node?.Value.InterpMode ?? CurveMode.CIM_CurveUser), node, false);
             }
+
             Paint(true);
         }
 

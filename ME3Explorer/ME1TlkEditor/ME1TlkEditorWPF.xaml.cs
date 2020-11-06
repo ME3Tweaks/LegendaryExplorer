@@ -4,21 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.IO;
 using System.Xml;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME1Explorer.Unreal.Classes;
-using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
-using System.Threading;
 using System.Media;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK.ME1;
+using TalkFile = ME3ExplorerCore.TLK.ME2ME3.TalkFile;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -28,9 +23,9 @@ namespace ME3Explorer.ME1TlkEditor
     public partial class ME1TlkEditorWPF : FileExportLoaderControl
     {
         private TalkFile CurrentME2ME3TalkFile;
-        public TLKStringRef[] StringRefs;
-        public List<TLKStringRef> LoadedStrings; //Loaded TLK
-        public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
+        public ME1TalkFile.TLKStringRef[] StringRefs;
+        public List<ME1TalkFile.TLKStringRef> LoadedStrings; //Loaded TLK
+        public ObservableCollectionExtended<ME1TalkFile.TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<ME1TalkFile.TLKStringRef>(); // Displayed
         private bool xmlUp;
 
         private static string NO_STRING_SELECTED = "No string selected";
@@ -44,7 +39,7 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
-        public ME1TlkEditorWPF()
+        public ME1TlkEditorWPF() : base("TLKEditor")
         {
             DataContext = this;
             LoadCommands();
@@ -68,7 +63,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void DeleteString(object obj)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
             FileModified = true;
@@ -101,7 +96,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void CommitTLK(object obj)
         {
-            ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
+            HuffmanCompression huff = new HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
             huff.serializeTLKStrListToExport(CurrentLoadedExport);
             FileModified = false;
@@ -109,7 +104,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void SaveString(object obj)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
             if (selectedItem != null)
             {
                 selectedItem.Data = editBox.Text.Trim();
@@ -120,7 +115,7 @@ namespace ME3Explorer.ME1TlkEditor
         private bool CanSaveString(object obj)
         {
             if (DisplayedString_ListBox == null) return false;
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
             return selectedItem != null && selectedItem.Data != null && editBox.Text.Trim() != selectedItem.Data;
         }
 
@@ -146,25 +141,26 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadExport(ExportEntry exportEntry)
         {
-            var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
+            CurrentLoadedFile = null;
+            var tlkFile = new ME1TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
             FileModified = false;
-
         }
+
+        public string CurrentLoadedFile { get; set; }
 
         public override void UnloadExport()
         {
             FileModified = false;
-
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
 
             if (selectedItem != null)
             {
@@ -219,7 +215,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_AddString(object sender, RoutedEventArgs e)
         {
-            var blankstringref = new TLKStringRef(100, 1, "New Blank Line");
+            var blankstringref = new ME1TalkFile.TLKStringRef(100, 1, "New Blank Line");
             LoadedStrings.Add(blankstringref);
             CleanedStrings.Add(blankstringref);
             DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
@@ -230,16 +226,24 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
         {
-
+            var fnameBase = CurrentLoadedExport?.ObjectName.Name;
+            if (fnameBase == null && CurrentLoadedFile != null) fnameBase = Path.GetFileNameWithoutExtension(CurrentLoadedFile);
+            if (fnameBase == null) fnameBase = "TalkFile";
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "XML Files (*.xml)|*.xml",
-                FileName = CurrentLoadedExport.ObjectName + ".xml"
+                FileName = fnameBase + ".xml"
             };
             if (saveFileDialog.ShowDialog() == true)
             {
-                ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(CurrentLoadedExport);
-                talkfile.saveToFile(saveFileDialog.FileName);
+                if (CurrentLoadedExport != null)
+                {
+                    ME1TalkFile talkfile = new ME1TalkFile(CurrentLoadedExport);
+                    talkfile.saveToFile(saveFileDialog.FileName);
+                } else if (CurrentME2ME3TalkFile != null)
+                {
+                    CurrentME2ME3TalkFile.DumpToFile(saveFileDialog.FileName);
+                }
             }
 
         }
@@ -253,7 +257,7 @@ namespace ME3Explorer.ME1TlkEditor
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
+                HuffmanCompression compressor = new HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
                 compressor.serializeTLKStrListToExport(CurrentLoadedExport);
                 FileModified = true; //this is not always technically true, but we'll assume it is
@@ -314,7 +318,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void SetNewID()
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
             if (selectedItem != null)
             {
 
@@ -350,7 +354,7 @@ namespace ME3Explorer.ME1TlkEditor
             for (int i = 0; i < CleanedStrings.Count; i++)
             {
                 int curIndex = (i + pos) % CleanedStrings.Count;
-                TLKStringRef node = CleanedStrings[curIndex];
+                ME1TalkFile.TLKStringRef node = CleanedStrings[curIndex];
 
                 if (CleanedStrings[curIndex].StringID.ToString().Contains(searchTerm))
                 {
@@ -371,11 +375,23 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadFile(string filepath)
         {
-            //throw new NotImplementedException();
             UnloadExport();
-
+            CurrentLoadedFile = filepath;
             CurrentME2ME3TalkFile = new TalkFile();
             CurrentME2ME3TalkFile.LoadTlkData(filepath);
+
+            LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            FileModified = false;
+        }
+
+        public void LoadFileFromStream(Stream stream)
+        {
+            UnloadExport();
+            //CurrentLoadedFile = filepath;
+            CurrentME2ME3TalkFile = new TalkFile();
+            CurrentME2ME3TalkFile.LoadTlkDataFromStream(stream);
 
             LoadedStrings = CurrentME2ME3TalkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
@@ -422,7 +438,7 @@ namespace ME3Explorer.ME1TlkEditor
             else if (CurrentME2ME3TalkFile != null)
             {
                 // CurrentME2ME3TalkFile.
-                ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression huff = new ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression();
                 huff.LoadInputData(LoadedStrings);
                 huff.SaveToTlkFile(CurrentME2ME3TalkFile.path);
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
@@ -447,7 +463,7 @@ namespace ME3Explorer.ME1TlkEditor
                 if (d.ShowDialog() == true)
                 {
                     // CurrentME2ME3TalkFile.
-                    ME3Explorer.HuffmanCompression huff = new ME3Explorer.HuffmanCompression();
+                    ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression huff = new ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression();
                     huff.LoadInputData(LoadedStrings);
                     huff.SaveToTlkFile(d.FileName);
                 }

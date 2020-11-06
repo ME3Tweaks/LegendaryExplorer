@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DocumentFormat.OpenXml.InkML;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Misc;
 
 namespace ME3Explorer.Soundplorer
 {
     /// <summary>
     /// Interaction logic for SoundReplaceOptionsDialog.xaml
     /// </summary>
-    public partial class SoundReplaceOptionsDialog : NotifyPropertyChangedWindowBase
+    public partial class SoundReplaceOptionsDialog : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<int> SampleRates { get; } = new ObservableCollectionExtended<int>();
         private static readonly int[] AcceptedSampleRates = {24000, 32000}; //may add more later
         public WwiseConversionSettingsPackage ChosenSettings; 
 
-        public SoundReplaceOptionsDialog()
+        public SoundReplaceOptionsDialog() : base("Sound Replace Options Dialog", false)
         {
             DataContext = this;
             SampleRates.AddRange(AcceptedSampleRates);

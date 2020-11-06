@@ -7,17 +7,18 @@
         xmlns:local="clr-namespace:ME3Explorer.Soundplorer"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
-        xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        
         Closing="Soundplorer_Closing"
         Drop="Window_Drop"
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Soundplorer" Height="450" Width="830" Loaded="SoundplorerWPF_OnLoaded">
+        xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Soundplorer" Height="583" Width="900" Loaded="SoundplorerWPF_OnLoaded">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="MyMenu">
@@ -42,8 +43,8 @@
 
             </MenuItem>
             <MenuItem Header="Clone and replace..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
-                <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-                <MenuItem Name="CloneAndReplaceFromWav_MenuItem" Click="CloneAndReplaceFromWav_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio (from Wwise Ogg)" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="CloneAndReplaceFromWav_MenuItem" Click="CloneAndReplaceFromWav_Clicked" Header="Clone and replace audio (from Wave PCM)" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
             </MenuItem>
         </ContextMenu>
         <Style x:Key="SoundExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
@@ -55,7 +56,6 @@
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
         <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
         <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:SoundplorerWPFCommands.OpenInWwiseBankEditor" Executed="OpenInWwiseBankEditor_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
@@ -70,7 +70,6 @@
                     <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
                     <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="_Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="_Open in WwiseBank Editor" Command="Commands:SoundplorerWPFCommands.OpenInWwiseBankEditor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
 
                     <Separator/>
                     <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
@@ -102,7 +101,47 @@
                     </StackPanel>
                 </StatusBarItem>
             </StatusBar>
-            <Grid Margin="5">
+                <StackPanel  
+                    Margin="10"
+                    Visibility="{Binding AudioFileLoaded,Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}">
+                    <TextBlock Margin="5" Text="Welcome to Soundplorer" FontWeight="Bold"/>
+                    <TextBlock Margin="5">
+                            Soundplorer is an audio-focused editor that supports browsing and exporting
+                            <LineBreak/>
+                            audio from all three games.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Audio replacement information:
+                            <Italic>
+                            <LineBreak/>
+                            ME1: No authoring tools (ISACT) are available
+                            <LineBreak/>
+                            ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
+                            <LineBreak/>
+                            ME3: Requires 
+                            <Hyperlink NavigateUri="" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
+                            </Hyperlink>
+                            </Italic>
+
+                            <LineBreak/>
+                            <LineBreak/>
+
+                                If you have issues, please report them to one of the following places:
+                                <LineBreak/>
+                                 - <Hyperlink NavigateUri="{Binding Source={x:Static global:App.DiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                <Run Text="The ME3Tweaks Discord (ME3Explorer channel)"/>
+                            </Hyperlink>
+                                <LineBreak/>
+                                 - The issues list on GitHub at 
+                                <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                    <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                                </Hyperlink>
+                    </TextBlock>
+                    <sharedUi:RecentsControl x:Name="RecentsController" HorizontalAlignment="Left"/>
+                </StackPanel>
+            <Grid Margin="5" 
+               Visibility="{Binding AudioFileLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="200" Width="400"/>
                     <ColumnDefinition Width="5"/>
@@ -114,9 +153,10 @@
                         <DataTemplate DataType="{x:Type local:SoundplorerExport}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
 
-                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <fa:ImageAwesome Icon="{Binding Icon}" VerticalAlignment="Center" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TLKString}" TextWrapping="Wrap" FontSize="10" FontStyle="Italic"  Visibility="{Binding TLKString, Converter={StaticResource NullVisibilityConverter}}"/>
                                     <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>

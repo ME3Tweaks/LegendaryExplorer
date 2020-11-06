@@ -1,15 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Windows.Forms;
-using System.Diagnostics;
-using CsvHelper;
 using System.Text.RegularExpressions;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
+using CsvHelper;
 
 namespace ME3Explorer.PlotVarDB
 {
@@ -64,7 +61,7 @@ namespace ME3Explorer.PlotVarDB
 
         public PlotVarDB()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Database", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("Plot Database", new WeakReference(this)));
             InitializeComponent();
             this.plotVarTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
         }
@@ -212,7 +209,7 @@ namespace ME3Explorer.PlotVarDB
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                
+
 
                 //Header
                 fs.Write(BitConverter.GetBytes(V2PLUS_MAGIC), 0, 4);
@@ -415,7 +412,7 @@ namespace ME3Explorer.PlotVarDB
         private void loadDatabase(string fileName)
         {
             FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            
+
             int magic = ReadInt(fs);
             if (magic != V2PLUS_MAGIC)
             {
@@ -548,7 +545,8 @@ namespace ME3Explorer.PlotVarDB
             else if (e.KeyCode == Keys.Delete)
             {
                 deleteCurrentCell();
-            } else if (e.Control && e.KeyCode == Keys.C)
+            }
+            else if (e.Control && e.KeyCode == Keys.C)
             {
                 DataObject d = plotVarTable.GetClipboardContent();
                 Clipboard.SetDataObject(d);
@@ -602,7 +600,7 @@ namespace ME3Explorer.PlotVarDB
             if (d.ShowDialog() == DialogResult.OK)
             {
                 System.IO.StreamWriter stringWriter = new System.IO.StreamWriter(d.FileName);
-                var csv = new CsvWriter(stringWriter);
+                var csv = new CsvWriter(stringWriter, CultureInfo.InvariantCulture);
                 //Header record
                 csv.WriteField("id");
                 csv.WriteField("type");
@@ -643,8 +641,8 @@ namespace ME3Explorer.PlotVarDB
             {
                 int a = 0;
                 int b = 0;
-                bool aresult = Int32.TryParse(e.CellValue1.ToString(), out a);
-                bool bresult = Int32.TryParse(e.CellValue2.ToString(), out b);
+                bool aresult = int.TryParse(e.CellValue1.ToString(), out a);
+                bool bresult = int.TryParse(e.CellValue2.ToString(), out b);
                 if (!aresult && !bresult)
                 {
                     //two empty values being compared
@@ -667,7 +665,7 @@ namespace ME3Explorer.PlotVarDB
             {
                 commitTable();
                 System.IO.StreamReader stringreader = new System.IO.StreamReader(d.FileName);
-                var csv = new CsvReader(stringreader);
+                var csv = new CsvReader(stringreader, CultureInfo.InvariantCulture);
                 var item = csv.GetRecords<PlotVarEntry>();
                 List<PlotVarEntry> importingEntries = new List<PlotVarEntry>();
 

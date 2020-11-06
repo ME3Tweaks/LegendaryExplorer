@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gammtek.Conduit.Extensions;
-using Gammtek.Conduit.Extensions.IO;
-using Gammtek.Conduit.IO;
 using MassEffect3.FileFormats.Coalesced;
 using MassEffect3.FileFormats.Huffman;
+using ME3ExplorerCore.Gammtek.Extensions;
+using ME3ExplorerCore.Gammtek.Extensions.IO;
+using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Helpers;
 using Decoder = MassEffect3.FileFormats.Huffman.Decoder;
 using Encoder = MassEffect3.FileFormats.Huffman.Encoder;
 
@@ -260,7 +261,7 @@ namespace MassEffect3.FileFormats
 
 			var bytes = new byte[(bits.Length - 1) / 8 + 1];
 			bits.CopyTo(bytes, 0);
-			output.WriteBytes(bytes);
+			output.WriteFromBuffer(bytes);
 
 			output.Seek(8, SeekOrigin.Begin);
 			output.WriteInt32(maxKeyLength, endian);
@@ -360,7 +361,7 @@ namespace MassEffect3.FileFormats
 			using (var index = input.ReadToMemoryStream(indexSize))
 			{
 				var totalBits = input.ReadInt32(endian);
-				var data = input.ReadBytes(dataSize);
+				var data = input.ReadToBuffer(dataSize);
 				var bitArray = new BitArray(data)
 				{
 					Length = totalBits

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Input;
 using SharpDX;
-using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
-using System.Windows;
 
 namespace ME3Explorer.Scene3D
 {
@@ -36,7 +32,6 @@ namespace ME3Explorer.Scene3D
         private void InitializeComponent()
         {
             D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image();
-            
             D3DImage.OnRender = this.D3DImage_OnRender;
             Image = new Image();
             Image.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -51,8 +46,19 @@ namespace ME3Explorer.Scene3D
             this.PreviewMouseMove += SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp += SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel += SceneRenderControlWPF_PreviewMouseWheel;
-            // TODO: Hook up keyboard events
-            // TODO: Hook up some sort of dispose event
+            this.KeyDown += OnKeyDown;
+            this.KeyUp += OnKeyUp;
+        }
+
+        public void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            e.Handled = Context.KeyUp(e.Key);
+        }
+
+
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = Context.KeyDown(e.Key);
         }
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace ME3Explorer.Scene3D
         }
 
         public event EventHandler Render;
-
+        DateTime LastUpdatedTime = DateTime.Now;
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
@@ -145,7 +151,7 @@ namespace ME3Explorer.Scene3D
                 d3dres.Dispose();
 
             }
-            Context.UpdateScene(0.1f); // TODO: Measure elapsed time!
+            LastUpdatedTime = Context.UpdateScene((DateTime.Now - LastUpdatedTime).Milliseconds / 100.0f); // TODO: Measure elapsed time!
             Context.RenderScene();
             Render?.Invoke(this, new EventArgs());
             Context.ImmediateContext.Flush();
@@ -161,6 +167,24 @@ namespace ME3Explorer.Scene3D
             this.PreviewMouseMove -= SceneRenderControlWPF_PreviewMouseMove;
             this.PreviewMouseUp -= SceneRenderControlWPF_PreviewMouseUp;
             this.PreviewMouseWheel -= SceneRenderControlWPF_PreviewMouseWheel;
+            this.KeyUp -= OnKeyUp;
+            this.KeyDown -= OnKeyDown;
+        }
+
+        private bool _shouldRender = true;
+
+        public void SetShouldRender(bool shouldRender)
+        {
+            if (!_shouldRender && shouldRender) //Not rendering, but we should start
+            {
+                D3DImage.OnRender = D3DImage_OnRender;
+            }
+            else if (_shouldRender && !shouldRender) //Currently rendering, but we should stop
+            {
+                D3DImage.OnRender = null;
+            }
+
+            _shouldRender = shouldRender;
         }
     }
 }

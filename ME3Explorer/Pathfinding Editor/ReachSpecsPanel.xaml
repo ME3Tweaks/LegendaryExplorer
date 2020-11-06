@@ -70,7 +70,7 @@
                                 <RowDefinition Height="15"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding DestinationTextUI}" />
-                            <TextBlock Grid.Column="1" TextAlignment="Right" Text="SpecExport.ObjectName.Instanced"/>
+                            <TextBlock Grid.Column="1" TextAlignment="Right" Text="{Binding SpecExport.ObjectName.Instanced}"/>
                             <TextBlock Grid.Row="1" Grid.Column="0" TextAlignment="Left" FontSize="10" Foreground="Gray">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}x{1}">

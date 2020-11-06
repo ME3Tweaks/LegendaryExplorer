@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -12,39 +11,31 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Ini;
 using FontAwesome5;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using StreamHelpers;
 
 namespace ME3Explorer.AutoTOC
 {
     /// <summary>
     /// Interaction logic for AutoTOCWPF.xaml
     /// </summary>
-    public partial class AutoTOCWPF : NotifyPropertyChangedWindowBase
+    public partial class AutoTOCWPF : TrackingNotifyPropertyChangedWindowBase
     {
         private readonly object _myCollectionLock = new object();
 
         public ObservableCollectionExtended<ListBoxTask> TOCTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
 
-        public AutoTOCWPF()
+        public AutoTOCWPF() : base("AutoTOC", true)
         {
             DataContext = this;
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("AutoTOC WPF", new WeakReference(this));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "AutoTOC" }
-            });
             LoadCommands();
             InitializeComponent();
             BindingOperations.EnableCollectionSynchronization(TOCTasks, _myCollectionLock);
-        }
-
-        public AutoTOCWPF(bool automated) : this()
-        {
-            Automated = automated;
         }
 
         public ICommand RunAutoTOCCommand { get; private set; }
@@ -52,10 +43,6 @@ namespace ME3Explorer.AutoTOC
         public ICommand BuildME1FileListCommand { get; private set; }
 
         public BackgroundWorker TOCWorker;
-        /// <summary>
-        /// Used to determine if this window will automatically close when an ME3 autotoc completes
-        /// </summary>
-        private readonly bool Automated;
 
         private void LoadCommands()
         {
@@ -80,7 +67,7 @@ namespace ME3Explorer.AutoTOC
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
             foreach (string dlcDir in dlcList)
             {
-                if (dlcDir.EndsWith("DLC_UNC",StringComparison.InvariantCultureIgnoreCase))
+                if (dlcDir.EndsWith("DLC_UNC", StringComparison.InvariantCultureIgnoreCase))
                 {
                     dlcTable.Add(1, "DLC_UNC");
                 }
@@ -113,11 +100,11 @@ namespace ME3Explorer.AutoTOC
             }
             catch (IOException e)
             {
-                MessageBox.Show($"BioEngine not found. Run config or game to set it up. {ExceptionHandlerDialogWPF.FlattenException(e)}");
+                MessageBox.Show($"BioEngine not found. Run config or game to set it up. {e.FlattenException()}");
                 return;
             }
-            
-            
+
+
             var BioEngine = new IniFile(bioEnginePath);
 
             //Clean out seekfreepaths and moviepaths
@@ -143,14 +130,14 @@ namespace ME3Explorer.AutoTOC
                 else
                 {
                     BioEngine.WriteNewValue("Core.System", "SeekFreePCPaths", $@"..\DLC\{item.Value}\CookedPC");
-                    if(Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
+                    if (Directory.Exists(Path.Combine(ME1Directory.DLCPath, item.Value, "Movies")))
                     {
                         BioEngine.WriteNewValue("Core.System", "DLC_MoviePaths", $@"..\DLC\{item.Value}\Movies"); //Add MoviePath if present
                     }
                 }
             }
 
-            
+
 
 
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
@@ -165,7 +152,7 @@ namespace ME3Explorer.AutoTOC
                 }
                 catch (IOException e)
                 {
-                    MessageBox.Show($"Error backup up FileIndex.txt:\n{ExceptionHandlerDialogWPF.FlattenException((e))}");
+                    MessageBox.Show($"Error backup up FileIndex.txt:\n{e.FlattenException()}");
                     return;
                 }
             }
@@ -174,7 +161,7 @@ namespace ME3Explorer.AutoTOC
             // DO NOT ADD DUPLICATES
             TOCTasks.ClearEx();
 
-            var masterList = new List<string>(); 
+            var masterList = new List<string>();
             foreach (KeyValuePair<int, string> fileListStem in dlcTable.OrderByDescending(k => k.Key))
             {
                 if (fileListStem.Value == "BioGame")
@@ -269,7 +256,7 @@ namespace ME3Explorer.AutoTOC
         private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            prepareToCreateTOC(e.Argument as string);
+            prepareToCreateTOC(e.Argument as string, TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "TOC created",
@@ -296,16 +283,12 @@ namespace ME3Explorer.AutoTOC
         {
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
             TOCWorker = null;
-            if (Automated)
-            {
-                Close();
-            }
         }
 
         private void GenerateAllTOCs_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             TOCTasks.ClearEx();
-            GenerateAllTOCs();
+            GenerateAllTOCs(TOCTasks);
             TOCTasks.Add(new ListBoxTask
             {
                 Header = "AutoTOC complete",
@@ -328,7 +311,8 @@ namespace ME3Explorer.AutoTOC
         /// Prepares to create the indexed TOC file by gathering data and then passing it to the TOC creation function
         /// </summary>
         /// <param name="consoletocFile"></param>
-        public void prepareToCreateTOC(string consoletocFile)
+        /// <param name="tocTasks"></param>
+        public static void prepareToCreateTOC(string consoletocFile, IList<ListBoxTask> tocTasks = null)
         {
             if (!consoletocFile.EndsWith("\\"))
             {
@@ -338,8 +322,12 @@ namespace ME3Explorer.AutoTOC
             if (files.Count != 0)
             {
                 //These variable names.......
-                ListBoxTask task = new ListBoxTask($"Creating TOC in {consoletocFile}");
-                TOCTasks.Add(task);
+                ListBoxTask task = null;
+                if (tocTasks != null)
+                {
+                    task = new ListBoxTask($"Creating TOC in {consoletocFile}");
+                    tocTasks.Add(task);
+                }
                 string t = files[0];
                 int n = t.IndexOf("DLC_");
                 if (n > 0)
@@ -372,7 +360,7 @@ namespace ME3Explorer.AutoTOC
                     pathbase = consoletocFile;
                 }
                 CreateTOC(pathbase, consoletocFile + "PCConsoleTOC.bin", files.ToArray());
-                task.Complete($"Created TOC for {consoletocFile}");
+                task?.Complete($"Created TOC for {consoletocFile}");
             }
         }
 
@@ -447,19 +435,15 @@ namespace ME3Explorer.AutoTOC
             return res.ToArray();
         }
 
-        private void GenerateAllTOCs()
+        public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
         {
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
-            folders.Add(ME3Directory.gamePath + @"BIOGame\");
-            folders.ForEach(prepareToCreateTOC);
+            folders.Add(Path.Combine(ME3Directory.gamePath, "BIOGame"));
+            folders.ForEach(consoletocFile => prepareToCreateTOC(consoletocFile, tocTasks));
         }
 
         private void AutoTOCWPF_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (Automated)
-            {
-                RunAutoTOC();
-            }
         }
 
         private void ListBox_OnLoaded(object sender, RoutedEventArgs e)

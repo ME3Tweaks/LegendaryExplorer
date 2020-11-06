@@ -1,11 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ME3Explorer
@@ -547,7 +542,7 @@ namespace ME3Explorer
             byte[] Cout = new byte[0];
             if (node.Text == "value" || node.Text == "value_a")
             {
-                Int32 n = Convert.ToInt16(node.Nodes[0].Text);
+                int n = Convert.ToInt16(node.Nodes[0].Text);
                 Cout = new byte[5];
                 Cout[0] = 0x31;
                 byte[] buff = BitConverter.GetBytes(n);
@@ -564,7 +559,7 @@ namespace ME3Explorer
             byte[] Cout = new byte[0];
             if (node.Text == "value_i")
             {
-                Int32 n = Convert.ToInt32(node.Nodes[0].Text);
+                int n = Convert.ToInt32(node.Nodes[0].Text);
                 Cout = new byte[5];
                 Cout[0] = 0x11;
                 byte[] buff = BitConverter.GetBytes(n);
@@ -599,7 +594,7 @@ namespace ME3Explorer
             byte[] Cout = new byte[0];
             if (node.Text == "plot bool")
             {
-                Int32 n = Convert.ToInt16(node.Nodes[0].Text);
+                int n = Convert.ToInt16(node.Nodes[0].Text);
                 Cout = new byte[5];
                 Cout[0] = 0x60;
                 byte[] buff = BitConverter.GetBytes(n);
@@ -616,7 +611,7 @@ namespace ME3Explorer
             byte[] Cout = new byte[0];
             if (node.Text == "plot int")
             {
-                Int32 n = Convert.ToInt16(node.Nodes[0].Text);
+                int n = Convert.ToInt16(node.Nodes[0].Text);
                 Cout = new byte[5];
                 Cout[0] = 0x61;
                 byte[] buff = BitConverter.GetBytes(n);
@@ -633,7 +628,7 @@ namespace ME3Explorer
             byte[] Cout = new byte[0];
             if (node.Text == "plot float")
             {
-                Int32 n = Convert.ToInt16(node.Nodes[0].Text);
+                int n = Convert.ToInt16(node.Nodes[0].Text);
                 Cout = new byte[5];
                 Cout[0] = 0x62;
                 byte[] buff = BitConverter.GetBytes(n);
@@ -653,7 +648,7 @@ namespace ME3Explorer
                 TreeNode t1 = node.Nodes[0];
                 TreeNode t2 = node.Nodes[1];
                 string s = t1.Text;
-                Int16 l = (Int16)s.Length;
+                short l = (short)s.Length;
                 byte[] buff = BitConverter.GetBytes(l);
                 Cout = new byte[9 + l];
                 Cout[0] = 0x30;
@@ -838,8 +833,8 @@ namespace ME3Explorer
                 }
                 if (negexp)
                     Cout[1] = 6;
-                Int16 hsize = (Int16)(Ctmp.Count * 2);
-                byte[] count = BitConverter.GetBytes((Int16)Ctmp.Count);
+                short hsize = (short)(Ctmp.Count * 2);
+                byte[] count = BitConverter.GetBytes((short)Ctmp.Count);
                 Cout[2] = count[0];
                 Cout[3] = count[1];
                 for (int i = 0; i < Ctmp.Count; i++)
@@ -847,14 +842,14 @@ namespace ME3Explorer
                     byte[] buff = BitConverter.GetBytes(hsize);
                     Cout[i * 2 + 4] = buff[0];
                     Cout[i * 2 + 5] = buff[1];
-                    hsize += (Int16)Ctmp[i].Length;
+                    hsize += (short)Ctmp[i].Length;
                 }
-                hsize = (Int16)(Ctmp.Count * 2 + 4);
+                hsize = (short)(Ctmp.Count * 2 + 4);
                 for (int i = 0; i < Ctmp.Count; i++)
                 {
                     for (int j = 0; j < Ctmp[i].Length; j++)
                         Cout[hsize + j] = Ctmp[i][j];
-                    hsize += (Int16)Ctmp[i].Length;
+                    hsize += (short)Ctmp[i].Length;
                 }
                 return Cout;
             }

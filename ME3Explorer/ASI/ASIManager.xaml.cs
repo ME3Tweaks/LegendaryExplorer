@@ -1,5 +1,4 @@
-﻿using ME3Explorer.Packages;
-using ME3Explorer.SharedUI;
+﻿using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.ASI
@@ -18,7 +20,7 @@ namespace ME3Explorer.ASI
     /// <summary>
     /// Interaction logic for ASIManager.xaml
     /// </summary>
-    public partial class ASIManager : NotifyPropertyChangedWindowBase
+    public partial class ASIManager : TrackingNotifyPropertyChangedWindowBase
     {
 
         #region Busy variables
@@ -129,13 +131,8 @@ namespace ME3Explorer.ASI
         /// Please do not change the logic for this code (at least, for Mass Effect 3) as it may break compatibility with Mass
         /// Effect 3 Mod Manager (e.g. dual same ASIs are installed) and the ME3Tweaks serverside components.
         /// </summary>
-        public ASIManager()
+        public ASIManager() : base("ASI Manager", true)
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("ASI Manager", new WeakReference(this));
-            Analytics.TrackEvent("Used tool", new Dictionary<string, string>()
-            {
-                { "Toolname", "ASI Manager" }
-            });
             DataContext = this;
 
             if (!Directory.Exists(ASIManagerDataFolder))
@@ -403,7 +400,7 @@ namespace ME3Explorer.ASI
                 wc.DownloadFileCompleted += (a, b) => LoadManifest(StagedManifestLocation, true);
                 wc.DownloadFileAsync(
                     // Param1 = Link of file
-                    new System.Uri("https://me3tweaks.com/mods/asi/getmanifest?AllGames=1"),
+                    new System.Uri("https://raw.githubusercontent.com/ME3Tweaks/ME3Explorer/Beta/ME3Explorer/ME3Tweaks/asimanifest.xml"),
                     // Param2 = Path to save
                     StagedManifestLocation);
             }

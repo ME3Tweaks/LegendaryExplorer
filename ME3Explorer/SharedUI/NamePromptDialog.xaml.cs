@@ -1,20 +1,8 @@
-﻿using ME3Explorer.Unreal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ME3Explorer.Packages;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer.SharedUI
@@ -22,7 +10,7 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for NamePromptDialogPromptDialog.xaml
     /// </summary>
-    public partial class NamePromptDialog : NotifyPropertyChangedWindowBase
+    public partial class NamePromptDialog : TrackingNotifyPropertyChangedWindowBase
     {
         private List<IndexedName> _nameList;
         public List<IndexedName> NameList
@@ -43,7 +31,7 @@ namespace ME3Explorer.SharedUI
             set => SetProperty(ref _number, value);
         }
 
-        public NamePromptDialog(string question, string title, List<IndexedName> NameList, int defaultValue = 0)
+        public NamePromptDialog(string question, string title, List<IndexedName> NameList, int defaultValue = 0) : base("Name Prompt Dialog", false)
         {
             this.NameList = NameList;
             DataContext = this;

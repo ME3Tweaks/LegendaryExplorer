@@ -1,17 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Diagnostics;
 using System.Windows.Forms;
 using ME3Explorer.SequenceObjects;
-using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
 
 namespace UMD.HCIL.GraphEditor
 {
@@ -313,12 +306,10 @@ namespace UMD.HCIL.GraphEditor
 
     public class ZoomController : IDisposable
     {
-        public static float MIN_SCALE = .005f;
-        public static float MAX_SCALE = 15;
         private PCamera camera;
-        private GraphEditor graphEditor;
+        private PCanvas graphEditor;
 
-        public ZoomController(GraphEditor graphEditor)
+        public ZoomController(PCanvas graphEditor)
         {
             this.graphEditor = graphEditor;
             this.camera = graphEditor.Camera;
@@ -330,8 +321,11 @@ namespace UMD.HCIL.GraphEditor
         public void Dispose()
         {
             //Remove event handlers for memory cleanup
-            graphEditor.KeyDown -= OnKeyDown;
-            graphEditor.Camera.MouseWheel -= OnMouseWheel;
+            if (graphEditor != null)
+            {
+                graphEditor.KeyDown -= OnKeyDown;
+                graphEditor.Camera.MouseWheel -= OnMouseWheel;
+            }
             graphEditor = null;
             camera = null;
 
@@ -360,6 +354,8 @@ namespace UMD.HCIL.GraphEditor
 
         private void scaleView(float scaleDelta, PointF p)
         {
+            const float MIN_SCALE = .005f;
+            const float MAX_SCALE = 15;
             float currentScale = camera.ViewScale;
             float newScale = currentScale * scaleDelta;
             if (newScale < MIN_SCALE)

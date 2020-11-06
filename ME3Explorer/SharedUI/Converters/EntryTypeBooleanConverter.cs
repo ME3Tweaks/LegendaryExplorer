@@ -1,12 +1,11 @@
-﻿using ME3Explorer.Packages;
-using System;
+﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer.SharedUI.Converters
 {
-    [ValueConversion(typeof(IEntry), typeof(Boolean))]
+    [ValueConversion(typeof(IEntry), typeof(bool))]
     public class EntryTypeBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

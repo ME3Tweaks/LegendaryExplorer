@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ME3Explorer.SharedUI
 {
@@ -19,11 +9,12 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class InputComboBoxWPF : NotifyPropertyChangedWindowBase
     {
-        private InputComboBoxWPF(Window owner, string promptText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
+        private InputComboBoxWPF(Window owner, string promptText, string titleText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
         {
             DirectionsText = promptText;
             Topmost = topMost;
             Owner = owner;
+            Title = titleText;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -36,11 +27,35 @@ namespace ME3Explorer.SharedUI
             EntrySelector_ComboBox.Focus();
         }
 
-        public static string GetValue(Window owner, string promptText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
+        //private InputComboBoxWPF(Window owner, string promptText, string titleText, IEnumerable<PackageEditorWPF.IndexedName> items, string defaultValue = "", bool topMost = false)
+        //{
+        //    DirectionsText = promptText;
+        //    Topmost = topMost;
+        //    Owner = owner;
+        //    Title = titleText;
+        //    DataContext = this;
+        //    LoadCommands();
+        //    InitializeComponent();
+        //    if (owner == null)
+        //    {
+        //        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        //    }
+        //    EntrySelector_ComboBox.ItemsSource = items;
+        //    EntrySelector_ComboBox.SelectedItem = defaultValue;
+        //    EntrySelector_ComboBox.Focus();
+        //}
+
+        public static string GetValue(Window owner, string promptText, string titleText, IEnumerable<string> items, string defaultValue = "", bool topMost = false)
         {
-            var dlg = new InputComboBoxWPF(owner, promptText, items, defaultValue, topMost);
-            return dlg.ShowDialog() == true ? dlg.ChosenEntry : "";
+            var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
+            return dlg.ShowDialog() == true ? dlg.ChosenItem : "";
         }
+
+        //public static string GetValue(Window owner, string promptText, string titleText, IEnumerable<PackageEditorWPF.IndexedName> items, string defaultValue = "", bool topMost = false)
+        //{
+        //    var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
+        //    return dlg.ShowDialog() == true ? dlg.ChosenItem : "";
+        //}
 
         public ICommand OKCommand { get; set; }
         private void LoadCommands()
@@ -56,10 +71,10 @@ namespace ME3Explorer.SharedUI
         private void AcceptSelection()
         {
             DialogResult = true;
-            ChosenEntry = EntrySelector_ComboBox.SelectedItem as string;
+            ChosenItem = EntrySelector_ComboBox.SelectedItem as string;
         }
 
-        private string ChosenEntry;
+        private string ChosenItem;
         public string DirectionsText { get; }
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {

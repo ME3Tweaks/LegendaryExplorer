@@ -10,10 +10,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Threading.Tasks;
-using ME3Explorer.Packages;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using FontAwesome5.WPF;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.TLK;
+using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
 {
@@ -56,9 +61,12 @@ namespace ME3Explorer
 
 #if DEBUG
                 version += " DEBUG";
-#else
+#elif AZURE
                 //This is what will be placed in release. Comment this out when building for a stable!
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
+#elif RELEASE
+                // UPDATE THIS FOR RELEASE
+                //version += " RC";
 #endif
                 return version;
             }
@@ -116,36 +124,35 @@ namespace ME3Explorer
         {
             Task.Run(() =>
             {
+                //Fetch core count from WMI - this can take like 1-2 seconds and is not typically necessary until a tool is opened
+                try
+                {
+                    App.CoreCount = 2;
+                    foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+                    {
+                        App.CoreCount = int.Parse(item["NumberOfCores"].ToString());
+                    }
+                }
+                catch
+                {
+                    //???
+                }
+
                 // load TLK strings
+                // todo: this loads them all. Just do one call i guess.
+
                 try
                 {
-                    ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+                    TLKLoader.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-                }
-                catch
-                {
-                    //?
-                }
-
-                try
-                {
-                    ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
-                }
-                catch
-                {
-                    //?
-                }
-
-                try
-                {
-                    ME3TalkFiles.LoadSavedTlkList();
                     TlkManagerNS.TLKManagerWPF.ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
                 }
                 catch
                 {
                     //?
                 }
+
                 App.TlkFirstLoadDone = true;
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -238,9 +245,14 @@ namespace ME3Explorer
             if (CICOpen)
             {
                 closeCIC();
+
             }
             else
             {
+                Analytics.TrackEvent("CIC Window Size Changed", new Dictionary<string, string>()
+                {
+                    {"New State", "Maximized"}
+                });
                 if (CreateModsOpen)
                 {
                     closeCreateMods(100);
@@ -254,7 +266,6 @@ namespace ME3Explorer
                     closeTaskPane(100);
                 }
                 CICOpen = true;
-                Logo.Source = (ImageSource)Logo.FindResource("LogoOnImage");
                 if (SearchBox.Text.Trim() != string.Empty)
                 {
                     SearchOpen = true;
@@ -264,10 +275,9 @@ namespace ME3Explorer
             }
         }
 
-        private void closeCIC(int duration = 300)
+        private void closeCIC(int duration = 300, bool triggerAnalytics = true)
         {
             CICOpen = false;
-            Logo.Source = (ImageSource)Logo.FindResource("LogoOffImage");
             if (SearchOpen)
             {
                 closeSearch(duration / 3);
@@ -284,6 +294,15 @@ namespace ME3Explorer
             {
                 closeGamePaths();
             }
+
+            if (triggerAnalytics)
+            {
+                Analytics.TrackEvent("CIC Window Size Changed", new Dictionary<string, string>()
+                {
+                    {"New State", "Minimized"}
+                });
+            }
+
             CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
@@ -335,13 +354,10 @@ namespace ME3Explorer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var tools = new List<GenericWindow>();
+            var tools = new List<WPFBase>();
             foreach (var package in MEPackageHandler.packagesInTools)
             {
-                foreach (var tool in package.Tools)
-                {
-                    tools.Add(tool);
-                }
+                tools.AddRange(package.Users.OfType<WPFBase>());
             }
             foreach (var tool in tools)
             {
@@ -429,10 +445,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "Utilities"}
+                });
                 UtilitiesOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (CreateModsOpen)
                 {
@@ -453,6 +473,10 @@ namespace ME3Explorer
             {
                 closeToolInfo();
             }
+            Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            {
+                {"Tab Name Closed", "Utilities"}
+            });
             UtilitiesOpen = false;
             utilitiesPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             utilitiesButton.OpacityMask = LabelTextBrush;
@@ -466,10 +490,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "Create Mods"}
+                });
                 CreateModsOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (UtilitiesOpen)
                 {
@@ -490,6 +518,10 @@ namespace ME3Explorer
             {
                 closeToolInfo();
             }
+            Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            {
+                {"Tab Name Closed", "Create Mods"}
+            });
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
             createModsButton.OpacityMask = LabelTextBrush;
@@ -681,10 +713,14 @@ namespace ME3Explorer
             }
             else
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Opened", "TaskPane"}
+                });
                 TaskPaneOpen = true;
                 if (CICOpen)
                 {
-                    closeCIC(100);
+                    closeCIC(100, false);
                 }
                 if (UtilitiesOpen)
                 {
@@ -703,6 +739,10 @@ namespace ME3Explorer
         {
             if (TaskPaneInfoPanelOpen)
             {
+                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+                {
+                    {"Tab Name Closed", "TaskPane"}
+                });
                 closeTaskPaneInfoPanel();
             }
             TaskPaneOpen = false;
@@ -716,9 +756,9 @@ namespace ME3Explorer
             taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
-        private void taskPanePanel_ToolMouseOver(object sender, GenericWindow e)
+        private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
         {
-            taskPaneInfoPanel.setTool(e);
+            taskPaneInfoPanel.setTool(e.wpf);
             if (!TaskPaneInfoPanelOpen)
             {
                 TaskPaneInfoPanelOpen = true;
@@ -744,16 +784,15 @@ namespace ME3Explorer
 
         private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
         {
-            const string link = "https://discordapp.com/invite/s8HA6dc";
             try
             {
-                System.Diagnostics.Process.Start(link);
+                System.Diagnostics.Process.Start(App.DiscordInviteURL);
             }
             catch (Exception)
             {
                 try
                 {
-                    Clipboard.SetText(link);
+                    Clipboard.SetText(App.DiscordInviteURL);
                 }
                 catch
                 {

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Gammtek.Conduit.MassEffect3.SFXGame;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using ME3Explorer;
 
@@ -55,8 +49,12 @@ namespace MassEffect.NativesEditor.Views
                     int boolId = SearchTerm;
                     searchResultsListBox.ItemsSource = parentRef.StateEventMapControl.StateEvents.Where(x => 
                         x.Value.HasElements && x.Value.Elements.Any(y =>
-                            y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId
-                        )
+                           (y.ElementType == BioStateEventElementType.Bool && (y as BioStateEventElementBool)?.GlobalBool == boolId)
+                        || (y.ElementType == BioStateEventElementType.Substate && 
+                                (((y as BioStateEventElementSubstate)?.GlobalBool == boolId) 
+                                || (y as BioStateEventElementSubstate)?.ParentIndex == boolId)
+                                /*|| (y as BioStateEventElementSubstate).SiblingIndices.Contains(boolId)*/)
+                           )
                     );
                     break;
                 case "Plot Float":

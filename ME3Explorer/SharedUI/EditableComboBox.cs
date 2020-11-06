@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Data;
-using System;
 
 namespace ME3Explorer.SharedUI
 {

@@ -1,37 +1,35 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Unreal.Classes;
+using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer
 {
     public partial class PSAViewer : Form
     {
-        public PSAFile psa;
+        public PSA psa;
         public string CurrFile;
 
         public PSAViewer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("PSA Viewer", new WeakReference(this));
+            MemoryAnalyzer.AddTrackedMemoryItem(new MemoryAnalyzerObjectExtended("PSA Viewer", new WeakReference(this)));
             InitializeComponent();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.psa|*.psa";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Filter = AnimationImporter.PSAFilter,
+                Multiselect = false,
+                CheckFileExists = true
+            };
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 string path = d.FileName;
-                psa = new PSAFile();
-                psa.ImportPSA(path);
+                psa = PSA.FromFile(path);
                 CurrFile = path;
                 RefreshTree();
             }
@@ -53,21 +51,21 @@ namespace ME3Explorer
         {
             TreeNode t = new TreeNode("BONENAMES");
             t.Nodes.Add("Size : 120");
-            t.Nodes.Add("Count : " + psa.data.Bones.Count());
+            t.Nodes.Add("Count : " + psa.Bones.Count);
             TreeNode t2 = new TreeNode("Data");
             int count = 0;
-            foreach (PSAFile.PSABone b in psa.data.Bones)
+            foreach (var b in psa.Bones)
             {
 
-                string s = count.ToString("d4") + " \"" + b.name + "\" Position (";
-                s += b.location.x + " ; ";
-                s += b.location.y + " ; ";
-                s += b.location.z + " ) Orientation (";
-                s += b.rotation.x + " ; ";
-                s += b.rotation.y + " ; ";
-                s += b.rotation.z + " ; ";
-                s += b.rotation.w + ") Parent (";
-                s += b.parent + ") Childs (" + b.childs + ")";
+                string s = count.ToString("d4") + " \"" + b.Name + "\" Position (";
+                s += b.Position.X + " ; ";
+                s += b.Position.Y + " ; ";
+                s += b.Position.Z + " ) Orientation (";
+                s += b.Rotation.X + " ; ";
+                s += b.Rotation.Y + " ; ";
+                s += b.Rotation.Z + " ; ";
+                s += b.Rotation.W + ") Parent (";
+                s += b.ParentIndex + ") Childs (" + b.NumChildren + ")";
                 t2.Nodes.Add(s);
                 count++;
             }
@@ -80,16 +78,16 @@ namespace ME3Explorer
         {
             TreeNode t = new TreeNode("ANIMINFO");
             t.Nodes.Add("Size : 168");
-            t.Nodes.Add("Count : " + psa.data.Infos.Count());
+            t.Nodes.Add("Count : " + psa.Infos.Count);
             TreeNode t2 = new TreeNode("Data");
             int count = 0;
-            foreach (PSAFile.PSAAnimInfo info in psa.data.Infos)
+            foreach (var info in psa.Infos)
             {
                 TreeNode t3 = new TreeNode(count.ToString("d4") 
                     + " :  \"" 
-                    + info.name 
+                    + info.Name 
                     + "\" (Group : \"" 
-                    + info.group 
+                    + info.Group 
                     + "\")"
                     );
                 t3.Nodes.Add("Total Bones : " + info.TotalBones);
@@ -114,18 +112,18 @@ namespace ME3Explorer
         {
             TreeNode t = new TreeNode("ANIMKEYS");
             t.Nodes.Add("Size : 32");
-            t.Nodes.Add("Count : " + psa.data.Keys.Count());
+            t.Nodes.Add("Count : " + psa.Keys.Count);
             TreeNode t2 = new TreeNode("Data");
             int count = 0;
-            foreach (PSAFile.PSAAnimKeys key in psa.data.Keys)
+            foreach (var key in psa.Keys)
             {
 
                 string s = count.ToString("d4") + " : ";
                 //for (int i = 0; i < key.raw.Length; i++)
                 //    s += key.raw[i].ToString("X2") + " ";
-                s += "Location : (" + key.location.x + " ; " + key.location.y + " ; " + key.location.z + " ) ";
-                s += "Rotation : (" + key.rotation.x + " ; " + key.rotation.y + " ; " + key.rotation.z + " ; " + key.rotation.w + " ) ";
-                s += "Time : " + key.time;
+                s += "Position : (" + key.Position.X + " ; " + key.Position.Y + " ; " + key.Position.Z + " ) ";
+                s += "Rotation : (" + key.Rotation.X + " ; " + key.Rotation.Y + " ; " + key.Rotation.Z + " ; " + key.Rotation.W + " ) ";
+                s += "Time : " + key.Time;
                 t2.Nodes.Add(s);
                 count++;
             }

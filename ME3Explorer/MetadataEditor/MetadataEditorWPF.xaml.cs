@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Be.Windows.Forms;
-using ByteSizeLib;
-using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.Unreal.UnrealFlags;
+using static ME3ExplorerCore.Unreal.UnrealFlags;
 
 namespace ME3Explorer.MetadataEditor
 {
@@ -58,9 +49,35 @@ namespace ME3Explorer.MetadataEditor
         private DynamicByteProvider headerByteProvider;
         private bool loadingNewData;
 
+        public bool SubstituteImageForHexBox
+        {
+            get => (bool)GetValue(SubstituteImageForHexBoxProperty);
+            set => SetValue(SubstituteImageForHexBoxProperty, value);
+        }
+        public static readonly DependencyProperty SubstituteImageForHexBoxProperty = DependencyProperty.Register(
+            nameof(SubstituteImageForHexBox), typeof(bool), typeof(MetadataEditorWPF), new PropertyMetadata(false, SubstituteImageForHexBoxChangedCallback));
+
+        private static void SubstituteImageForHexBoxChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            MetadataEditorWPF i = (MetadataEditorWPF)obj;
+            if (e.NewValue is true && i.Header_Hexbox_Host.Child.Height > 0 && i.Header_Hexbox_Host.Child.Width > 0)
+            {
+                i.hexboxImageSub.Source = i.Header_Hexbox_Host.Child.DrawToBitmapSource();
+                i.hexboxImageSub.Width = i.Header_Hexbox_Host.ActualWidth;
+                i.hexboxImageSub.Height = i.Header_Hexbox_Host.ActualHeight;
+                i.hexboxImageSub.Visibility = Visibility.Visible;
+                i.Header_Hexbox_Host.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                i.Header_Hexbox_Host.Visibility = Visibility.Visible;
+                i.hexboxImageSub.Visibility = Visibility.Collapsed;
+            }
+        }
+
         public string ObjectIndexOffsetText => CurrentLoadedEntry is ImportEntry ? "0x18 Object index:" : "0x10 Object index:";
 
-        public MetadataEditorWPF()
+        public  MetadataEditorWPF() : base("Metadata Editor")
         {
             DataContext = this;
             LoadCommands();
@@ -74,7 +91,13 @@ namespace ME3Explorer.MetadataEditor
         public bool HexChanged
         {
             get => _hexChanged && CurrentLoadedEntry != null;
-            private set => SetProperty(ref _hexChanged, value);
+            private set
+            {
+                if (SetProperty(ref _hexChanged, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         public ICommand SaveHexChangesCommand { get; private set; }
@@ -84,7 +107,12 @@ namespace ME3Explorer.MetadataEditor
             SaveHexChangesCommand = new GenericCommand(SaveHexChanges, CanSaveHexChanges);
         }
 
-        private bool CanSaveHexChanges() => CurrentLoadedEntry!= null && HexChanged;
+        private bool CanSaveHexChanges()
+        {
+            if (CurrentLoadedEntry == null || !HexChanged) return false;
+
+            return true;
+        }
 
         private void SaveHexChanges()
         {
@@ -172,10 +200,11 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_Flags_ComboBox.ItemsSource = flagsList;
                 InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
 
-                InfoTab_ExportDataSize_TextBox.Text = $"{exportEntry.DataSize} bytes ({ByteSize.FromBytes(exportEntry.DataSize)})";
+                InfoTab_ExportDataSize_TextBox.Text =
+                    $"{exportEntry.DataSize} bytes ({FileSize.FormatSize(exportEntry.DataSize)})";
                 InfoTab_ExportOffsetHex_TextBox.Text = $"0x{exportEntry.DataOffset:X8}";
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
-                
+
                 if (exportEntry.HasComponentMap)
                 {
                     OrderedMultiValueDictionary<NameReference, int> componentMap = exportEntry.ComponentMap;
@@ -183,7 +212,8 @@ namespace ME3Explorer.MetadataEditor
                     int pairOffset = 44;
                     foreach ((NameReference name, int uIndex) in componentMap)
                     {
-                        components += $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
+                        components +=
+                            $"0x{pairOffset:X2} {name.Instanced} {exportEntry.FileRef.GetEntryString(uIndex)}\n";
                         pairOffset += 12;
                     }
 
@@ -195,20 +225,33 @@ namespace ME3Explorer.MetadataEditor
                 }
 
                 InfoTab_ExportFlags_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset:X2} ExportFlags:";
-                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList().Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
+                InfoTab_ExportFlags_TextBox.Text = Enums.GetValues<EExportFlags>().Distinct().ToList()
+                    .Where(flag => exportEntry.ExportFlags.HasFlag(flag)).StringJoin(" ");
 
-                InfoTab_GenerationNetObjectCount_TextBlock.Text = $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
+                InfoTab_GenerationNetObjectCount_TextBlock.Text =
+                    $"0x{exportEntry.ExportFlagsOffset + 4:X2} GenerationNetObjs:";
                 int[] generationNetObjectCount = exportEntry.GenerationNetObjectCount;
-                InfoTab_GenerationNetObjectCount_TextBox.Text = $"{generationNetObjectCount.Length} counts: {{{string.Join(", ", generationNetObjectCount)}}}";
+                InfoTab_GenerationNetObjectCount_TextBox.Text =
+                    $"{generationNetObjectCount.Length} counts: {string.Join(", ", generationNetObjectCount)}";
 
                 InfoTab_GUID_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset:X2} GUID:";
                 InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
-                InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
-                InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList().Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
+                if (exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC)
+                {
+                  
+                    InfoTab_PackageFlags_TextBlock.Text = $"0x{exportEntry.PackageGuidOffset + 16:X2} PackageFlags:";
+                    InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList()
+                        .Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
+                }
+                else
+                {
+                    InfoTab_PackageFlags_TextBlock.Text = "";
+                    InfoTab_PackageFlags_TextBox.Text = "";
+                }
             }
             catch (Exception e)
             {
-                MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
+                //MessageBox.Show("An error occurRed while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
             }
 
             CurrentLoadedEntry = exportEntry;
@@ -409,12 +452,21 @@ namespace ME3Explorer.MetadataEditor
             RefreshAllEntriesList(pcc);
         }
 
+        //Exports
         private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!loadingNewData && InfoTab_Class_ComboBox.SelectedIndex >= 0)
             {
                 var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    var exp = CurrentLoadedEntry as ExportEntry;
+                    InfoTab_Class_ComboBox.SelectedIndex = exp.Class != null ? exp.Class.UIndex + CurrentLoadedEntry.FileRef.ImportCount : CurrentLoadedEntry.FileRef.ImportCount;
+                    MessageBox.Show("Cannot set class to self, this will cause infinite recursion in game.");
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -432,8 +484,15 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData && InfoTab_PackageLink_ComboBox.SelectedIndex >= 0)
             {
+
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
-                var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount;
+                var unrealIndex = selectedImpExp - CurrentLoadedEntry.FileRef.ImportCount; //get the actual UIndex
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    MessageBox.Show("Cannot link to self, this will cause infinite recursion.");
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = CurrentLoadedEntry.idxLink + CurrentLoadedEntry.FileRef.ImportCount;
+                    return;
+                }
                 headerByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -445,6 +504,22 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
                 var unrealIndex = selectedClassIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    MessageBox.Show("Cannot set superclass to self, this will cause infinite recursion in game.");
+                    var exp = CurrentLoadedEntry as ExportEntry;
+
+                    if (exp.HasSuperClass)
+                    {
+                        InfoTab_Superclass_ComboBox.SelectedIndex = exp.SuperClass.UIndex + CurrentLoadedEntry.FileRef.ImportCount;
+                    }
+                    else
+                    {
+                        InfoTab_Superclass_ComboBox.SelectedIndex = CurrentLoadedEntry.FileRef.ImportCount; //0
+                    }
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -481,6 +556,22 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
                 var unrealIndex = selectedArchetTypeIndex - CurrentLoadedEntry.FileRef.ImportCount;
+                if (unrealIndex == CurrentLoadedEntry?.UIndex)
+                {
+                    MessageBox.Show("Cannot set archetype to self, this will cause infinite recursion in game.");
+                    var exp = CurrentLoadedEntry as ExportEntry;
+
+                    if (exp.HasArchetype)
+                    {
+                        InfoTab_Archetype_ComboBox.SelectedIndex = exp.Archetype.UIndex + CurrentLoadedEntry.FileRef.ImportCount;
+                    }
+                    else
+                    {
+                        InfoTab_Archetype_ComboBox.SelectedIndex = CurrentLoadedEntry.FileRef.ImportCount; //0
+                    }
+                    return;
+                }
+
                 headerByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(unrealIndex));
                 Header_Hexbox.Refresh();
             }
@@ -587,13 +678,18 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!ControlLoaded)
             {
-                Debug.WriteLine("MDE HB LOADED");
                 Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
                 headerByteProvider = new DynamicByteProvider();
                 Header_Hexbox.ByteProvider = headerByteProvider;
                 if (CurrentLoadedEntry != null) headerByteProvider.ReplaceBytes(CurrentLoadedEntry.Header);
                 headerByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
                 ControlLoaded = true;
+
+                Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
+
+                Header_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
             }
         }
 
@@ -649,9 +745,16 @@ namespace ME3Explorer.MetadataEditor
 
         public override void Dispose()
         {
+            if (Header_Hexbox != null)
+            {
+                Header_Hexbox.SelectionStartChanged -= hb1_SelectionChanged;
+                Header_Hexbox.SelectionLengthChanged -= hb1_SelectionChanged;
+            }
+
             Header_Hexbox = null;
             Header_Hexbox_Host.Child.Dispose();
             Header_Hexbox_Host.Dispose();
+            Header_Hexbox_Host = null;
         }
 
         /// <summary>

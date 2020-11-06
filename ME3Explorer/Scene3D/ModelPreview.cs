@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
 using SharpDX.Direct3D11;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal.BinaryConverters;
-using ME3Explorer.Unreal.Classes;
-using StaticMesh = ME3Explorer.Unreal.BinaryConverters.StaticMesh;
-using static ME3Explorer.TextureViewerExportLoader;
+using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using static ME3Explorer.Scene3D.ModelPreview;
+using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
+using ME3Explorer.Unreal.Classes;
+using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Unreal.Classes;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -87,11 +88,11 @@ namespace ME3Explorer.Scene3D
     public abstract class ModelPreviewMaterial : IDisposable
     {
         /// <summary>
-        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="Unreal.Classes.MaterialInstanceConstant"/> looks like as possible. 
+        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        protected ModelPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null)
+        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<IMEPackage> cachedPackages, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
             Properties.Add("Name", mat.Export.ObjectName);
@@ -116,7 +117,7 @@ namespace ME3Explorer.Scene3D
 
                     if (textureEntry is ImportEntry import)
                     {
-                        var extAsset = ModelPreview.FindExternalAsset(import, texcache.cache.Select(x => x.TextureExport).ToList());
+                        var extAsset = ModelPreview.FindExternalAsset(import, texcache.cache.Select(x => x.TextureExport).ToList(), cachedPackages);
                         if (extAsset != null)
                         {
                             Textures.Add(textureEntry.FullPath, texcache.LoadTexture(extAsset));
@@ -165,17 +166,21 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         public string DiffuseTextureFullName = "";
         /// <summary>
-        /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="Unreal.Classes.MaterialInstanceConstant"/> looks like as possible. 
+        /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, preloadedTextures)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<IMEPackage> cachedPackages, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, cachedPackages, preloadedTextures)
         {
-            var matPackage = mat.Export.Parent.FullPath.ToLower();
+            string matPackage = null;
+            if (mat.Export.Parent != null)
+            {
+                matPackage = mat.Export.Parent.FullPath.ToLower();
+            }
             foreach (var textureEntry in mat.Textures)
             {
                 var texObjectName = textureEntry.FullPath.ToLower();
-                if (texObjectName.StartsWith(matPackage) && texObjectName.Contains("diff"))
+                if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
                 {
                     // we have found the diffuse texture!
                     DiffuseTextureFullName = textureEntry.FullPath;
@@ -235,7 +240,7 @@ namespace ME3Explorer.Scene3D
     }
 
     /// <summary>
-    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="Unreal.BinaryConverters.SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
+    /// Contains all the necessary resources (minus textures, which are cached in a <see cref="PreviewTextureCache"/>) needed to render a static preview of <see cref="SkeletalMesh"/> or <see cref="StaticMesh"/> instances.  
     /// </summary>
     public class ModelPreview : IDisposable
     {
@@ -254,9 +259,22 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="device"></param>
         /// <param name="mesh"></param>
-        public ModelPreview(Device device, WorldMesh mesh)
+        public ModelPreview(Device device, WorldMesh mesh, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
         {
-            LODs.Add(new ModelPreviewLOD(mesh, new List<ModelPreviewSection>()));
+            //Preloaded
+            List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+            if (preloadedData != null)
+            {
+                sections = preloadedData.sections;
+                var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
+                foreach (var mat in uniqueMaterials)
+                {
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
+                    AddMaterial(mat.ObjectName.Name, material);
+                }
+            }
+            LODs.Add(new ModelPreviewLOD(mesh, sections));
+
         }
 
         /// <summary>
@@ -265,8 +283,11 @@ namespace ME3Explorer.Scene3D
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
         {
+            if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
+                return;
+
             // STEP 1: MESH
             var lodModel = m.LODModels[selectedLOD];
             List<Triangle> triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
@@ -389,6 +410,8 @@ namespace ME3Explorer.Scene3D
 
             // STEP 3: SECTIONS
             List<ModelPreviewSection> sections = preloadedData != null ? preloadedData.sections : null;
+            List<IMEPackage> assetLookupPackagesToDispose = new List<IMEPackage>();
+
             //This section exists for Meshplorer Winforms. WPF version preloads this in a background thread to improve performance
             if (sections == null)
             {
@@ -402,19 +425,19 @@ namespace ME3Explorer.Scene3D
                         // MaterialInstanceConstant mat has.
                         // For now, just use the default material.
                         ExportEntry entry = m.Export.FileRef.GetUExport(section.Material.value);
-                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry));
+                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), cachedPackages);
                         AddMaterial(material.Properties["Name"], material);
                     }
                     else if (section.Material.value < 0)
                     {
-                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.GetImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList());
+                        var extMaterialExport = FindExternalAsset(m.Export.FileRef.GetImport(section.Material.value), texcache.cache.Select(x => x.TextureExport).ToList(), assetLookupPackagesToDispose);
                         if (extMaterialExport != null)
                         {
                             ModelPreviewMaterial material;
                             // TODO: pick what material class best fits based on what properties the 
                             // MaterialInstanceConstant mat has.
                             // For now, just use the default material.
-                            material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport));
+                            material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), cachedPackages);
                             AddMaterial(material.Properties["Name"], material);
                         }
                         else
@@ -435,11 +458,15 @@ namespace ME3Explorer.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
                 }
             }
 
+            foreach (var package in assetLookupPackagesToDispose)
+            {
+                package?.Dispose(); //Release
+            }
             //List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
             //foreach (var section in lodModel.Elements)
             //{
@@ -448,7 +475,8 @@ namespace ME3Explorer.Scene3D
             LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
         }
 
-        internal static ExportEntry FindExternalAsset(ImportEntry entry, List<ExportEntry> alreadyLoadedPackageEntries)
+        // Todo: ME3Exp 5.1: Get rid of this and use the import resolver. It must support a cache so we don't constnatly open packages
+        internal static ExportEntry FindExternalAsset(ImportEntry entry, List<ExportEntry> alreadyLoadedPackageEntries, List<IMEPackage> openedPackages)
         {
             //Debug.WriteLine("Finding external asset " + entry.GetFullPath);
             if (entry.Game == MEGame.ME1)
@@ -459,9 +487,14 @@ namespace ME3Explorer.Scene3D
                 if (preloadedPackageEntry == null && MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1).TryGetValue(baseName, out string packagePath))
                 {
                     var package = MEPackageHandler.OpenMEPackage(packagePath);
+                    if (openedPackages != null && !openedPackages.Contains(package))
+                    {
+                        openedPackages.Add(package);
+                    }
+
                     var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == sourcePackageInternalPath && exp.ClassName == entry.ClassName);
                     if (foundExp != null) return foundExp;
-                    package.Dispose();
+                    if (openedPackages == null) package.Dispose();
                 }
                 else
                 {
@@ -514,78 +547,67 @@ namespace ME3Explorer.Scene3D
                     }
                 }
 
+                // Add globals
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "SFXGame.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.u")); //ME1
+
                 foreach (string packagePath in packagesToCheck)
                 {
-                    var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
-                    if (preloadedPackageEntry == null)
+                    if (File.Exists(packagePath))
                     {
-                        Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
-                        var package = MEPackageHandler.OpenMEPackage(packagePath);
-                        var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                        if (foundExp != null) return foundExp;
-                        //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
-                        package.Dispose();
+                        var preloadedPackageEntry = alreadyLoadedPackageEntries?.FirstOrDefault(x => Path.GetFileName(x.FileRef.FilePath).Equals(packagePath, StringComparison.InvariantCultureIgnoreCase));
+                        if (preloadedPackageEntry == null)
+                        {
+                            var sentry = searchPackageForEntry(packagePath, entry.FullPath, entry.ClassName, openedPackages);
+                            if (sentry != null) return sentry;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
+                            var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
+                            if (foundExp != null) return foundExp;
+                        }
                     }
-                    else
-                    {
-                        Debug.WriteLine("ME2/3 External Asset lookup: Using existing preloaded export package");
-                        var foundExp = preloadedPackageEntry.FileRef.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                        if (foundExp != null) return foundExp;
-                    }
-                }
-
-                //Check SFXGame
-                string sfxgamePath = Path.Combine(MEDirectories.CookedPath(entry.Game), "SFXGame.pcc");
-                if (File.Exists(sfxgamePath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(sfxgamePath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not SFXGame, disposing");
-
-                    pcc.Dispose(); //Dump from memory
-                }
-
-                //Check EntryMenu
-                string entryMenuPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc");
-                if (File.Exists(entryMenuPath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(entryMenuPath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not EntryMenu, disposing");
-
-                    pcc.Dispose(); //Dump from memory
-                }
-
-                //Check Startup
-                string startupPath = Path.Combine(MEDirectories.CookedPath(entry.Game), "Startup.pcc");
-                if (File.Exists(startupPath))
-                {
-                    //This is not in using statement as we have to keep this in memory.
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(startupPath);
-                    var foundExp = pcc.Exports.FirstOrDefault(exp => exp.FullPath == entry.FullPath && exp.ClassName == entry.ClassName);
-                    if (foundExp != null) return foundExp;
-                    //Debug.WriteLine("ME2/3 External Asset lookup: Not Startup, disposing");
-                    pcc.Dispose(); //Dump from memory
                 }
             }
+
             Debug.WriteLine("Could not find external asset: " + entry.FullPath);
             return null;
+        }
+
+        private static ExportEntry searchPackageForEntry(string packagePath, string fullPath, string className, List<IMEPackage> openedPackages)
+        {
+
+            //Debug.WriteLine("ME2/3 External Asset lookup: Checking " + packagePath);
+            IMEPackage package = null;
+            if (openedPackages != null)
+            {
+                package = openedPackages.FirstOrDefault(x => x.FilePath == packagePath);
+            }
+            package ??= MEPackageHandler.OpenMEPackage(packagePath);
+            if (openedPackages != null && !openedPackages.Contains(package))
+            {
+                openedPackages.Add(package);
+            }
+            var foundExp = package.Exports.FirstOrDefault(exp => exp.FullPath == fullPath && exp.ClassName == className);
+            if (openedPackages == null) package.Dispose();
+            return foundExp;
+            //Debug.WriteLine("ME2/3 External Asset lookup: Not found, disposing " + packagePath);
         }
 
 
         /// <summary>
         /// Internal method for decoding UV values.
         /// </summary>
-        /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
-        /// <returns>The decoded <see cref="Single"/>.</returns>
+        /// <param name="val">The <see cref="float"/> encoded as a <see cref="ushort"/>.</param>
+        /// <returns>The decoded <see cref="float"/>.</returns>
         public static float HalfToFloat(ushort val)
         {
 
-            UInt16 u = val;
+            ushort u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;
@@ -614,12 +636,12 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
-        /// Creates a preview of the given <see cref="Unreal.BinaryConverters.SkeletalMesh"/>.
+        /// Creates a preview of the given <see cref="SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device Device, SkeletalMesh m, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MATERIALS
             if (preloadedData == null)
@@ -636,7 +658,7 @@ namespace ME3Explorer.Scene3D
                     {
                         // The material instance is an import!
                         ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex.value);
-                        var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
+                        var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList(), cachedPackages);
                         if (externalAsset != null)
                         {
                             mat = new MaterialInstanceConstant(externalAsset);
@@ -649,7 +671,7 @@ namespace ME3Explorer.Scene3D
                         // TODO: pick what material class best fits based on what properties the 
                         // MaterialInstanceConstant mat has.
                         // For now, just use the default material.
-                        material = new TexturedPreviewMaterial(texcache, mat);
+                        material = new TexturedPreviewMaterial(texcache, mat, cachedPackages);
                         AddMaterial(material.Properties["Name"], material);
                     }
                 }
@@ -661,7 +683,7 @@ namespace ME3Explorer.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
 
                 }
@@ -687,7 +709,7 @@ namespace ME3Explorer.Scene3D
                     }
                 }
                 // Triangles
-                List<Triangle> triangles = new List<Triangle>(lodmodel.IndexBuffer.Length/3);
+                List<Triangle> triangles = new List<Triangle>(lodmodel.IndexBuffer.Length / 3);
                 for (int i = 0; i < lodmodel.IndexBuffer.Length; i += 3)
                 {
                     triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
@@ -699,86 +721,86 @@ namespace ME3Explorer.Scene3D
                 {
                     if (section.MaterialIndex < Materials.Count)
                     {
-                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
+                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), section.BaseIndex, (uint)section.NumTriangles));
                     }
                 }
                 LODs.Add(new ModelPreviewLOD(mesh, sections));
             }
         }
 
-        /// <summary>
-        /// Creates a preview of the given <see cref="Unreal.Classes.SkeletalMesh"/>.
-        /// </summary>
-        /// <param name="Device">The Direct3D device to use for buffer creation.</param>
-        /// <param name="m">The mesh to generate a preview for.</param>
-        /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, Unreal.Classes.SkeletalMesh m, PreviewTextureCache texcache)
-        {
-            // STEP 1: MATERIALS
-            for (int i = 0; i < m.Materials.Count; i++)
-            {
-                Unreal.Classes.MaterialInstanceConstant mat = m.MatInsts[i];
-                if (mat == null && m.Materials[i] < 0)
-                {
-                    // The material instance is an import!
-                    ImportEntry matImport = m.Export.FileRef.GetImport(m.Materials[i]);
-                    var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
-                    if (externalAsset != null)
-                    {
-                        mat = new MaterialInstanceConstant(externalAsset);
-                    }
-                }
+        ///// <summary>
+        ///// Creates a preview of the given <see cref="SkeletalMesh"/>.
+        ///// </summary>
+        ///// <param name="Device">The Direct3D device to use for buffer creation.</param>
+        ///// <param name="m">The mesh to generate a preview for.</param>
+        ///// <param name="texcache">The texture cache for loading textures.</param>
+        //public ModelPreview(Device Device, ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
+        //{
+        //    // STEP 1: MATERIALS
+        //    for (int i = 0; i < m.Materials.Count; i++)
+        //    {
+        //        MaterialInstanceConstant mat = m.MatInsts[i];
+        //        if (mat == null && m.Materials[i] < 0)
+        //        {
+        //            // The material instance is an import!
+        //            ImportEntry matImport = m.Export.FileRef.GetImport(m.Materials[i]);
+        //            var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
+        //            if (externalAsset != null)
+        //            {
+        //                mat = new MaterialInstanceConstant(externalAsset);
+        //            }
+        //        }
 
-                if (mat != null)
-                {
-                    ModelPreviewMaterial material;
-                    // TODO: pick what material class best fits based on what properties the 
-                    // MaterialInstanceConstant mat has.
-                    // For now, just use the default material.
-                    material = new TexturedPreviewMaterial(texcache, mat);
-                    AddMaterial(material.Properties["Name"], material);
-                }
-            }
+        //        if (mat != null)
+        //        {
+        //            ModelPreviewMaterial material;
+        //            // TODO: pick what material class best fits based on what properties the 
+        //            // MaterialInstanceConstant mat has.
+        //            // For now, just use the default material.
+        //            material = new TexturedPreviewMaterial(texcache, mat);
+        //            AddMaterial(material.Properties["Name"], material);
+        //        }
+        //    }
 
-            // STEP 2: LODS
-            foreach (Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
-            {
-                // Vertices
-                List<WorldVertex> vertices = new List<WorldVertex>();
-                if (m.Export.Game == MEGame.ME1)
-                {
-                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-                    {
-                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
-                    }
-                }
-                else
-                {
-                    foreach (Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-                    {
-                        // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
-                        vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
-                    }
-                }
-                // Triangles
-                List<Triangle> triangles = new List<Triangle>();
-                for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
-                {
-                    triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
-                }
-                WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
-                // Sections
-                List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-                foreach (Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
-                {
-                    if (section.MaterialIndex < Materials.Count)
-                    {
-                        sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
-                    }
-                }
-                LODs.Add(new ModelPreviewLOD(mesh, sections));
-            }
-        }
+        //    // STEP 2: LODS
+        //    foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
+        //    {
+        //        // Vertices
+        //        List<WorldVertex> vertices = new List<WorldVertex>();
+        //        if (m.Export.Game == MEGame.ME1)
+        //        {
+        //            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+        //            {
+        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
+        //            {
+        //                // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
+        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
+        //            }
+        //        }
+        //        // Triangles
+        //        List<Triangle> triangles = new List<Triangle>();
+        //        for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
+        //        {
+        //            triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
+        //        }
+        //        WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
+        //        // Sections
+        //        List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
+        //        foreach (ME3ExplorerCore.Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
+        //        {
+        //            if (section.MaterialIndex < Materials.Count)
+        //            {
+        //                sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
+        //            }
+        //        }
+        //        LODs.Add(new ModelPreviewLOD(mesh, sections));
+        //    }
+        //}
 
         /// <summary>
         /// Renders the ModelPreview at the specified level of detail.

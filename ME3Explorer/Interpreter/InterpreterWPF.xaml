@@ -8,8 +8,6 @@
              xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
-             xmlns:unreal="clr-namespace:ME3Explorer.Unreal"
-             xmlns:Commands="clr-namespace:ME3Explorer.Commands"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              mc:Ignorable="d" 
              Loaded="Interpreter_Loaded"
@@ -17,6 +15,7 @@
              xmlns:properties="clr-namespace:ME3Explorer.Properties"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                             xmlns:fa="http://schemas.fontawesome.com/icons/"
+                            xmlns:unreal="clr-namespace:ME3ExplorerCore.Unreal;assembly=ME3ExplorerCore"
                             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -83,27 +82,34 @@
         </StatusBar>
         <Grid Margin="0,1,0,-1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MaxHeight="1080"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="220" MaxWidth="718" Width="220" Name="HexboxColumnDefinition" />
+                <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
                 <ColumnDefinition Width="1" Name="HexboxColumn_GridSplitter_ColumnDefinition"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-            <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-                </hb1:HexBox>
-            </WindowsFormsHost>
+            <Grid Name="hexBoxContainer">
+                <WindowsFormsHost Grid.Row="0" Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch">
+                    <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True"
+                                LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10"
+                                StringViewVisible="True" VScrollBarVisible="True" />
+                </WindowsFormsHost>
+                <Image Grid.Column="0" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
+            </Grid>
             <GridSplitter 
-                Name="HexProps_GridSplitter"      
+                Name="HexProps_GridSplitter"
                 Grid.Column="1" 
                       Grid.Row="0" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="0" Grid.Column="2" Width="Auto" 
+                                         FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" 
+                                         ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+                                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <SharedUI:StretchingTreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
                         <Border x:Name="PropertyItem_Container" Margin="1" Padding="{Binding Path=(SharedUI:TouchComfySettings.InterpreterWPFNodeMargin)}">
@@ -120,7 +126,7 @@
                                                Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" 
-                                                      SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
+                                                      SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60" Closed="ColorPicker_Closed"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="1" x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"
                                            Visibility="{Binding AdvancedView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:InterpreterWPF}, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -188,7 +194,7 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
                             </MultiDataTrigger>
-                             <MultiDataTrigger>
+                            <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
                                     <Condition Binding="{Binding Source={x:Static properties:Settings.Default}, Path=InterpreterWPF_Colorize}" Value="True" />
@@ -257,12 +263,30 @@
                         <MenuItem Header="Clear Array" ToolTip="Removes all values from the array." Command="{Binding ClearArrayCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="View referenced object in pop out Interpreter" ToolTip="Opens a new Interpreter window displaying the referenced object value" Command="{Binding PopoutInterpreterForObjectValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open in Package Editor (this instance)" ToolTip="Navigates this package editor to this object" Command="{Binding NavigateToEntryCommandInternal}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Open in new Package Editor" ToolTip="Opens a new Package Editor to this object" Command="{Binding OpenInPackageEditorCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Attempt to find source of this import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding AttemptOpenImportDefinitionCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Open in Meshplorer" ToolTip="Opens the referenced export in Meshplorer" Command="{Binding OpenInMeshplorerCommand}" SharedUI:Bindings.VisibilityToEnabled="True">
+
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/meshplorer_256x256.ico" Width="64"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
 
                         <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Add missing properties" ToolTip="Add all properties that this struct can have" Command="{Binding AddPropertiesToStructCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Generate new GUID" ToolTip="Generate a new GUID" Command="{Binding GenerateGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <!--<MenuItem Header="Order array...">
                             <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 

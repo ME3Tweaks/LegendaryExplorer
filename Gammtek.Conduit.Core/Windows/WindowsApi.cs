@@ -237,6 +237,6 @@ namespace Gammtek.Conduit.Windows
 
 			[DllImport(User32DllName)]
 			public static extern int ReleaseDC(IntPtr hwnd, IntPtr hdc);
-		}
+        }
 	}
 }
