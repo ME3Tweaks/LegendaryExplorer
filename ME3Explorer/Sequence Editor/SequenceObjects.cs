@@ -145,6 +145,36 @@ namespace ME3Explorer.SequenceObjects
                             res += $"Originator: {export.FileRef.GetEntry(originator.Value).InstancedFullPath}";
                         }
                         break;
+                    case "SFXSeqAct_AIFactory2":
+                        var sets = properties.GetProp<ArrayProperty<StructProperty>>("SpawnSets");
+                        if (sets != null)
+                        {
+                            int i = 0;
+                            foreach (var set in sets)
+                            {
+                                var types = set.GetProp<ArrayProperty<ObjectProperty>>("Types");
+                                if (types != null)
+                                {
+                                    res += "SpawnSet 0:\n";
+                                    foreach (var v in types)
+                                    {
+                                        res += $"  {v.ResolveToEntry(export.FileRef).FullPath}";
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case "SeqAct_ConsoleCommand":
+                        var commands = properties.GetProp<ArrayProperty<StrProperty>>("Commands");
+                        if (commands != null)
+                        {
+                            res += "Commands:\n";
+                            foreach (var c in commands)
+                            {
+                                res += $"   {c.Value}\n";
+                            }
+                        }
+                        break;
                     case "SeqAct_PlaySound":
                         var soundObjRef = properties.GetProp<ObjectProperty>("PlaySound");
                         if (soundObjRef != null)
@@ -163,7 +193,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         break;
                     case "BioSeqAct_BlackScreen":
-                        if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is {} blackScreenProp)
+                        if (properties.GetProp<EnumProperty>("m_eBlackScreenAction") is { } blackScreenProp)
                         {
                             res += blackScreenProp.Value.Name.Split('_').Last();
                         }
