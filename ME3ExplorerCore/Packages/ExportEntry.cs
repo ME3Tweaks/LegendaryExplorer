@@ -274,7 +274,7 @@ namespace ME3ExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 0, FileRef.Endian);
             private set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 0, sizeof(int));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 0, sizeof(int));
                 HeaderChanged = true;
             }
         }
@@ -289,7 +289,7 @@ namespace ME3ExplorerCore.Packages
                 {
                     throw new Exception("Cannot set export superclass to itself, this will cause infinite recursion");
                 }
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 4, sizeof(int));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 4, sizeof(int));
                 HeaderChanged = true;
             }
         }
@@ -304,7 +304,7 @@ namespace ME3ExplorerCore.Packages
                 {
                     throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                 }
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 8, sizeof(int));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 8, sizeof(int));
                 HeaderChanged = true;
             }
         }
@@ -314,7 +314,7 @@ namespace ME3ExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 12, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 12, sizeof(int));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 12, sizeof(int));
                 HeaderChanged = true;
             }
         }
@@ -326,7 +326,7 @@ namespace ME3ExplorerCore.Packages
             {
                 if (indexValue != value)
                 {
-                    Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 16, sizeof(int));
+                    Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 16, sizeof(int));
                     HeaderChanged = true;
                 }
             }
@@ -337,7 +337,7 @@ namespace ME3ExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 20, FileRef.Endian);
             private set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 20, sizeof(int));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 20, sizeof(int));
                 HeaderChanged = true;
             }
         }
@@ -347,7 +347,7 @@ namespace ME3ExplorerCore.Packages
             get => (EObjectFlags)EndianReader.ToUInt64(_header, 24, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((ulong)value), 0, _header, 24, sizeof(ulong));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes((ulong)value, FileRef.Endian), 0, _header, 24, sizeof(ulong));
                 HeaderChanged = true;
             }
         }
@@ -355,13 +355,13 @@ namespace ME3ExplorerCore.Packages
         public int DataSize
         {
             get => EndianReader.ToInt32(_header, 32, FileRef.Endian);
-            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 32, sizeof(int));
+            private set => Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 32, sizeof(int));
         }
 
         public int DataOffset
         {
             get => EndianReader.ToInt32(_header, 36, FileRef.Endian);
-            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, _header, 36, sizeof(int));
+            set => Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 36, sizeof(int));
         }
 
         public bool HasComponentMap => FileRef.Game <= MEGame.ME2 && FileRef.Platform != MEPackage.GamePlatform.PS3;
@@ -397,7 +397,7 @@ namespace ME3ExplorerCore.Packages
             get => (EExportFlags)EndianReader.ToUInt32(_header, ExportFlagsOffset, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, ExportFlagsOffset, sizeof(uint));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes((uint)value, FileRef.Endian), 0, _header, ExportFlagsOffset, sizeof(uint));
                 HeaderChanged = true;
             }
         }
@@ -434,7 +434,7 @@ namespace ME3ExplorerCore.Packages
             get => (EPackageFlags)EndianReader.ToUInt32(_header, PackageGuidOffset + 16, FileRef.Endian);
             set
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((uint)value), 0, _header, PackageGuidOffset + 16, sizeof(uint));
+                Buffer.BlockCopy(EndianBitConverter.GetBytes((uint)value, FileRef.Endian), 0, _header, PackageGuidOffset + 16, sizeof(uint));
                 HeaderChanged = true;
             }
         }
@@ -715,7 +715,7 @@ namespace ME3ExplorerCore.Packages
                 if (value != NetIndex)
                 {
                     var data = Data;
-                    data.OverwriteRange(GetPropertyStart() - 4, BitConverter.GetBytes(value));
+                    data.OverwriteRange(GetPropertyStart() - 4, EndianBitConverter.GetBytes(value, FileRef.Endian));
                     Data = data;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
