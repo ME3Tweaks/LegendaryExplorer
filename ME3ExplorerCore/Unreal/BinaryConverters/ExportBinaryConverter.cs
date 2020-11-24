@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.Classes;
@@ -174,7 +175,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            texture = Texture2D.GetTextureData(mips[i], false); //copy in external textures
+                            texture = Texture2D.GetTextureData(mips[i], export.Game, MEDirectories.GetDefaultGamePath(export.Game),false); //copy in external textures
                         }
                         else
                         {

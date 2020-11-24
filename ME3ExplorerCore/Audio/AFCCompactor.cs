@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -39,7 +39,7 @@ namespace ME3ExplorerCore.Audio
 
 
                 debugOut?.Invoke($"Beginning AFC references scan. Input path: {inputPath}, game {game}");
-                inventory.BasegameAFCFiles.ReplaceAll(MELoadedFiles.GetCookedFiles(game, MEDirectories.MEDirectories.BioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc"));
+                inventory.BasegameAFCFiles.ReplaceAll(MELoadedFiles.GetCookedFiles(game, GameFilesystem.MEDirectories.GetBioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc"));
                 foreach (var oafc in inventory.BasegameAFCFiles)
                 {
                     debugOut?.Invoke($@" >> Found Basegame AFC {oafc}");

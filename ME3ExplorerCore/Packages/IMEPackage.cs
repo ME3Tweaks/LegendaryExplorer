@@ -214,7 +214,7 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
-        MemoryStream SaveToStream(bool compress);
+        MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true);
         List<ME1TalkFile> LocalTalkFiles { get; }
         /// <summary>
         /// Compares this package against the one located on disk at the specified path

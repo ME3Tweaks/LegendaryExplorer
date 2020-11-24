@@ -189,6 +189,7 @@ namespace ME3ExplorerCore.Unreal
                 ReadFileNames();
         }
 
+        private const string FILENAMES_FILENAME = "Filenames.txt (this file has no real name)";
 
         public void ReadFileNames()
         {
@@ -205,7 +206,7 @@ namespace ME3ExplorerCore.Unreal
             if (f == -1)
                 return;
             var fFile = Files[f];
-            fFile.FileName = "Filenames.txt (this file has no real name)";
+            fFile.FileName = FILENAMES_FILENAME;
             fFile.isActualFile = false;
             Files[f] = fFile;
             try
@@ -821,77 +822,97 @@ namespace ME3ExplorerCore.Unreal
             fs.Close();
         }
 
-        public List<TOCBinFile.Entry> UpdateTOCbin(bool Rebuild = false)
+        public enum DLCTOCUpdateResult
         {
-            Debug.WriteLine("File opened\nSearching TOCbin...");
-            int f = -1;
-            for (int i = 0; i < Files.Count; i++)
-                if (Files[i].FileName.Contains("PCConsoleTOC.bin"))
-                    f = i;
-            if (f == -1)
-            {
-                Debug.WriteLine("Couldnt Find PCConsoleTOC.bin");
-                return null;
-            }
-            int IndexTOC = f;
-            Debug.WriteLine("Found PCConsoleTOC.bin(" + f + ")!\nLoading Entries...");
-            TOCBinFile TOC = new TOCBinFile(new MemoryStream(DecompressEntry(f).ToArray()));
-            Debug.WriteLine("Checking Entries...");
-            int count = 0;
-            if (TOC.Entries == null)
-                Debug.WriteLine("No TOC entries found. Oh dear...");
-            for (int i = 0; i < TOC.Entries.Count; i++)
-            {
-                TOCBinFile.Entry e = TOC.Entries[i];
-                f = -1;
-                for (int j = 0; j < Files.Count; j++)
-                    if (Files[j].FileName.Replace('/', '\\').Contains(e.name))
-                        f = j;
+            RESULT_UPDATED,
+            RESULT_UPDATE_NOT_NECESSARY,
+            RESULT_ERROR_NO_ENTRIES,
+            RESULT_ERROR_NO_TOC
+        }
 
-                ////////////////////////////// KFREON TEMPORARY STUFF WV :)
-                if (f == -1)
+        public DLCTOCUpdateResult UpdateTOCbin()
+        {
+            int archiveFileIndex = -1;
+            for (int i = 0; i < Files.Count; i++)
+            {
+                if (Path.GetFileName(Files[i].FileName) == @"PCConsoleTOC.bin")
                 {
-                    List<string> parts = new List<string>(this.FileName.Split('\\'));
-                    parts.RemoveAt(parts.Count - 1);
-                    parts.RemoveAt(parts.Count - 1);
-                    string path = string.Join("\\", parts) + "\\" + e.name;
-                    if (File.Exists(path))
+                    archiveFileIndex = i;
+                    break;
+                }
+            }
+
+            if (archiveFileIndex == -1)
+            {
+                Debug.WriteLine(@"Couldn't find PCConsoleTOC.bin in SFAR");
+                return DLCTOCUpdateResult.RESULT_ERROR_NO_TOC;
+            }
+
+            //Collect list of information from the SFAR Header of files and their sizes
+            var entries = new List<(string filepath, int size)>();
+            foreach (var file in Files)
+            {
+                if (file.FileName != FILENAMES_FILENAME)
+                {
+                    string consoleDirFilename = file.FileName.Substring(file.FileName.IndexOf(@"DLC_", StringComparison.InvariantCultureIgnoreCase));
+                    consoleDirFilename = consoleDirFilename.Substring(consoleDirFilename.IndexOf('/') + 1);
+                    entries.Add((consoleDirFilename.Replace('/', '\\'), (int)file.UncompressedSize));
+                }
+            }
+
+            //Read the current TOC and see if an update is necessary.
+            bool tocNeedsUpdating = false;
+
+            var tocMemoryStream = DecompressEntry(archiveFileIndex);
+            TOCBinFile toc = new TOCBinFile(tocMemoryStream);
+
+            int actualTocEntries = toc.Entries.Count;
+            actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase));
+            actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase));
+            if (actualTocEntries != entries.Count)
+            {
+                tocNeedsUpdating = true;
+            }
+            else
+            {
+                //Check sizes to see if all of ours match.
+                foreach (var entry in toc.Entries)
+                {
+                    if (entry.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase) || entry.name.EndsWith("GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase)) continue; //These files don't actually exist in SFARs
+                    var matchingNewEntry = entries.FirstOrDefault(x => x.filepath.Equals(entry.name, StringComparison.InvariantCultureIgnoreCase));
+                    if (matchingNewEntry.filepath == null)
                     {
-                        FileInfo fi = new FileInfo(path);
-                        if (fi.Length == e.size)
-                            Debug.WriteLine((count++) + " : Entry is correct " + e.name);
-                        else
-                        {
-                            e.size = (int)fi.Length;
-                            Debug.WriteLine((count++) + " : Entry will be updated " + e.name);
-                            TOC.Entries[i] = e;
-                        }
+                        //same number of files but we could not find it in the list. A delete and add might have caused this.
+                        tocNeedsUpdating = true;
+                        break;
                     }
-                    else
-                        Debug.WriteLine((count++) + " : Entry not found " + e.name);
-                }  /////////////////////////////// END KFREON BLATHER
-                else
-                {
-                    if (Files[f].UncompressedSize == e.size)
-                        Debug.WriteLine((count++) + " : Entry is correct " + e.name);
-                    else if (Files[f].UncompressedSize != e.size)
+                    if (matchingNewEntry.size != entry.size)
                     {
-                        e.size = (int)Files[f].UncompressedSize;
-                        Debug.WriteLine((count++) + " : Entry will be updated " + e.name);
-                        TOC.Entries[i] = e;
+                        //size is different.
+                        tocNeedsUpdating = true;
+                        break;
                     }
                 }
             }
-            Debug.WriteLine("Replacing TOC back...");
-            ReplaceEntry(TOC.Save().ToArray(), IndexTOC);
-            if (Rebuild)
+
+            //DEBUG TESTING!
+            if (tocNeedsUpdating || FileName.Contains(@"Patch_001"))
             {
-                Debug.WriteLine("Reopening SFAR...");
-                Load(FileName);
-                Debug.WriteLine("Rebuild...");
-                ReBuild();
+                MemoryStream newTocStream = TOCCreator.CreateTOCForEntries(entries);
+                byte[] newmem = newTocStream.ToArray();
+                //if (tocMemoryStream.ToArray().SequenceEqual(newTocStream.ToArray()))
+                //{
+                //    //no update needed
+                //    return DLCTOCUpdateResult.RESULT_UPDATE_NOT_NECESSARY;
+                //}
+                ReplaceEntry(newmem, archiveFileIndex);
+
             }
-            return TOC.Entries;
+            else
+            {
+                return DLCTOCUpdateResult.RESULT_UPDATE_NOT_NECESSARY; // no update needed
+            }
+            return DLCTOCUpdateResult.RESULT_UPDATED;
         }
 
         public int FindFileEntry(string fileName)

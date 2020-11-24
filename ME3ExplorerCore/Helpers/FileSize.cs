@@ -48,7 +48,7 @@ namespace ME3ExplorerCore.Helpers
         /// <summary>
         /// 1024 bytes
         /// </summary>
-        public static long KibiBytes => 2 ^ 10;
+        public static long KibiByte => 2 ^ 10;
         /// <summary>
         /// 1000 Kilobytes
         /// </summary>
@@ -56,7 +56,7 @@ namespace ME3ExplorerCore.Helpers
         /// <summary>
         /// 1024 Kibibytes
         /// </summary>
-        public static long MebiByte => 1000 * 1000;
+        public static long MebiByte => 2 ^ 20;
         /// <summary>
         /// 1000 Megabytes
         /// </summary>
@@ -64,7 +64,7 @@ namespace ME3ExplorerCore.Helpers
         /// <summary>
         /// 1024 Mebibytes
         /// </summary>
-        public static long GibiByte => MebiByte ^ 10;
+        public static long GibiByte => 2 ^ 30;
         /// <summary>
         /// 1000 Gigabytes
         /// </summary>
@@ -72,7 +72,7 @@ namespace ME3ExplorerCore.Helpers
         /// <summary>
         /// 1024 Gibibytes
         /// </summary>
-        public static long TebiByte => TebiByte ^ 10;
+        public static long TebiByte => 2 ^ 40;
     }
 
 

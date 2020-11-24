@@ -124,7 +124,7 @@ namespace ME3ExplorerCore.Compression
             }
         }
 
-        internal static void DecompressLZMAStream(MemoryStream compressedStream, MemoryStream decompressedStream)
+        public static void DecompressLZMAStream(MemoryStream compressedStream, MemoryStream decompressedStream)
         {
             compressedStream.Seek(5, SeekOrigin.Begin);
             int len = compressedStream.ReadInt32();

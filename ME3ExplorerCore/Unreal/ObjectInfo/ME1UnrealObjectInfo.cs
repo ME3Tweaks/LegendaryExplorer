@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.ObjectInfo;
@@ -339,7 +339,7 @@ namespace ME3ExplorerCore.Unreal
 #endif
                     if (loadStream == null)
                     {
-                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                        filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
                         if (File.Exists(filepath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(filepath));

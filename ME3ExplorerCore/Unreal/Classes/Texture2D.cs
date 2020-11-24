@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
@@ -19,14 +20,24 @@ namespace ME3ExplorerCore.Unreal.Classes
         public readonly string TextureFormat;
         public Guid TextureGuid;
 
+        // Callback for when there's an exception. Used by M3 to localize the error. Defaults to an int version since ME3Explorer is INT only
+        public static Func<string, string, string> GetLocalizedCouldNotFetchTextureDataMessage { get; set; } = (export, file) => $"Could not fetch texture data for texture {export} in file {file}";
+        public static Func<string, string> GetLocalizedCouldNotFindME1TexturePackageMessage { get; set; } =  file => $"Externally referenced texture package not found: {file}";
+        public static Func<string, string> GetLocalizedCouldNotFindME2ME3TextureCacheMessage { get; set; } = file => $"Externally referenced texture file not found: {file}";
+        public static Func<string, string, string, string, string> GetLocalizedTextureExceptionExternalMessage { get; set; } = (exceptionMessage, file, storageType, offset) => $"{exceptionMessage}\nFile: {file}\nStorageType: {storageType}\nExternal file offset: {offset}";
+        public static Func<string, string, string> GetLocalizedTextureExceptionInternalMessage { get; set; } = (exceptionMessage, storageType) => $"{exceptionMessage}\nStorageType: {storageType}";
+
+
+        //public static Func<string> GetLocalizedCouldNotFetchTextureDataMessage { get; set; }
+
         public Texture2D(ExportEntry export)
         {
             Export = export;
             PropertyCollection properties = export.GetProperties();
-            TextureFormat = properties.GetProp<EnumProperty>("Format").Value.Name;
-            var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
+            TextureFormat = properties.GetProp<EnumProperty>(@"Format").Value.Name;
+            var cache = properties.GetProp<NameProperty>(@"TextureFileCacheName");
 
-            NeverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
+            NeverStream = properties.GetProp<BoolProperty>(@"NeverStream") ?? false;
             Mips = GetTexture2DMipInfos(export, cache?.Value);
             if (Export.Game != MEGame.ME1)
             {
@@ -54,7 +65,7 @@ namespace ME3ExplorerCore.Unreal.Classes
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
-       
+
         public Texture2DMipInfo GetTopMip()
         {
             return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
@@ -95,26 +106,32 @@ namespace ME3ExplorerCore.Unreal.Classes
             return mips;
         }
 
-        public byte[] GetImageBytesForMip(Texture2DMipInfo info)
+        public byte[] GetImageBytesForMip(Texture2DMipInfo info, MEGame game, bool useLowerMipsIfTFCMissing, string gamePathToUse = null, List<string> additionalTFCs = null)
         {
             byte[] imageBytes = null;
             try
             {
-                imageBytes = GetTextureData(info);
+                imageBytes = GetTextureData(info, game, gamePathToUse, useLowerMipsIfTFCMissing, additionalTFCs);
             }
             catch (FileNotFoundException e)
             {
-                Debug.WriteLine("External cache not found. Defaulting to internal mips.");
-                //External archive not found - using built in mips (will be hideous, but better than nothing)
-                info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
-                if (info != null)
+                if (useLowerMipsIfTFCMissing)
                 {
-                    imageBytes = GetTextureData(info);
+                    //External archive not found - using built in mips (will be hideous, but better than nothing)
+                    info = Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
+                    if (info != null)
+                    {
+                        imageBytes = GetTextureData(info, game, gamePathToUse);
+                    }
+                }
+                else
+                {
+                    throw e; //rethrow
                 }
             }
             if (imageBytes == null)
             {
-                throw new Exception("Could not fetch texture data for texture " + info?.Export.ObjectName.Instanced);
+                throw new Exception(GetLocalizedCouldNotFetchTextureDataMessage(info?.Export.InstancedFullPath, info?.Export.FileRef.FilePath));
             }
             return imageBytes;
         }
@@ -177,7 +194,7 @@ namespace ME3ExplorerCore.Unreal.Classes
         }
 
 
-        public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, bool decompress = true)
+        public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, MEGame game, string gamePathToUse = null, bool decompress = true, List<string> additionalTFCs = null)
         {
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
             //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
@@ -197,7 +214,7 @@ namespace ME3ExplorerCore.Unreal.Classes
                     }
                     catch (Exception e)
                     {
-                        throw new Exception($"{e.Message}\nStorageType: {mipToLoad.storageType}\n");
+                        throw new Exception(GetLocalizedTextureExceptionInternalMessage(e.Message, mipToLoad.storageType.ToString()));
                     }
                 }
                 else
@@ -208,37 +225,45 @@ namespace ME3ExplorerCore.Unreal.Classes
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
             {
                 string filename = null;
-                var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(mipToLoad.Export.Game, true, true);
+                List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, false);
                 if (mipToLoad.Export.Game == MEGame.ME1)
                 {
-                    if (loadedFiles.TryGetValue(mipToLoad.TextureCacheName, out var fullPath))
+                    var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
+
+                    if (fullPath != null)
                     {
                         filename = fullPath;
                     }
                     else
                     {
-                        throw new FileNotFoundException($"Externally referenced texture file not found in game: {mipToLoad.TextureCacheName}.");
+                        throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
                     }
                 }
                 else
                 {
-                    string archive = mipToLoad.TextureCacheName + ".tfc";
+                    string archive = mipToLoad.TextureCacheName + @".tfc";
+
                     var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(mipToLoad.Export.FileRef.FilePath), archive);
                     if (File.Exists(localDirectoryTFCPath))
                     {
                         filename = localDirectoryTFCPath;
                     }
+                    else if (additionalTFCs != null && additionalTFCs.Any(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        filename = additionalTFCs.First(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
+                    }
                     else
                     {
+                        var tfcs = loadedFiles.Where(x => x.EndsWith(@".tfc")).ToList();
+
+                        var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
+                        if (fullPath != null)
                         {
-                            if (loadedFiles.TryGetValue(archive, out var fullPath))
-                            {
-                                filename = fullPath;
-                            }
-                            else
-                            {
-                                throw new FileNotFoundException($"Externally referenced texture cache not found: {archive}.");
-                            }
+                            filename = fullPath;
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
                         }
                     }
                 }
@@ -264,9 +289,7 @@ namespace ME3ExplorerCore.Unreal.Classes
                                         }
                                         catch (Exception e)
                                         {
-                                            throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
-                                                                "StorageType: " + mipToLoad.storageType + "\n" +
-                                                                "External file offset: " + mipToLoad.externalOffset);
+                                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                                         }
                                     }
                                 }
@@ -282,25 +305,21 @@ namespace ME3ExplorerCore.Unreal.Classes
                         }
                         catch (Exception e)
                         {
-                            throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
-                                "StorageType: " + mipToLoad.storageType + "\n" +
-                                "External file offset: " + mipToLoad.externalOffset);
+                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
-                        "StorageType: " + mipToLoad.storageType + "\n" +
-                        "External file offset: " + mipToLoad.externalOffset);
+                    throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                 }
             }
             return imagebytes;
         }
 
-        public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat)
+        public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat, string gamePathToUse = null)
         {
-            byte[] data = GetTextureData(mip);
+            byte[] data = GetTextureData(mip, mip.Export.Game, gamePathToUse);
             if (data == null) return 0;
             if (textureFormat == "PF_NormalMap_HQ")
             {
@@ -311,7 +330,7 @@ namespace ME3ExplorerCore.Unreal.Classes
         }
     }
 
-    [DebuggerDisplay("Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
+    [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
     public class Texture2DMipInfo
     {
         public ExportEntry Export;

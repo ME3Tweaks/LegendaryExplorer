@@ -28,8 +28,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 
 namespace ME3ExplorerCore.Unreal
 {
