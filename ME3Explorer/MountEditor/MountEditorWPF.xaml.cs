@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using Microsoft.AppCenter.Analytics;

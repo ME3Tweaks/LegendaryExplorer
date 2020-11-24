@@ -111,7 +111,7 @@ namespace ME3ExplorerCore.Unreal.Classes
             byte[] imageBytes = null;
             try
             {
-                imageBytes = GetTextureData(info, game, gamePathToUse, useLowerMipsIfTFCMissing, additionalTFCs);
+                imageBytes = GetTextureData(info, game, gamePathToUse, true, additionalTFCs);
             }
             catch (FileNotFoundException e)
             {

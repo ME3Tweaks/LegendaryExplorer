@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Tests.helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ME3ExplorerCore.Tests

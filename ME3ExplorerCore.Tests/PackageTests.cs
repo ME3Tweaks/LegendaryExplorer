@@ -441,11 +441,11 @@ namespace ME3ExplorerCore.Tests
                             {
                                 var displayStr = v.MipDisplayString;
                                 var texCache = v.TextureCacheName;
-                                var textureData = Texture2D.GetTextureData(v);
-                                var imageDataFromInternal = t2d.GetImageBytesForMip(v);
+                                var textureData = Texture2D.GetTextureData(v, v.Export.Game);
+                                var imageDataFromInternal = t2d.GetImageBytesForMip(v, v.Export.Game, false);
                                 if (!textureData.SequenceEqual(imageDataFromInternal))
                                 {
-                                    Assert.Fail($"Texture data accessed using wrapper and internal method did not match! Export: {textureExp} in {p}");
+                                    Assert.Fail($"Texture data accessed using wrapper and internal method did not match! Export: {textureExp.InstancedFullPath} in {p}. Static size: {textureData.Length} Instance size: {imageDataFromInternal.Length}");
                                 }
                             }
                             t2d.RemoveEmptyMipsFromMipList();
