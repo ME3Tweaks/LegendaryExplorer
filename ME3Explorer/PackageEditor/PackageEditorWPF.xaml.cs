@@ -2185,7 +2185,9 @@ namespace ME3Explorer
                         if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
                         {
                             //try this one
-                            var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
+                            var objName = p.ObjectName;
+                            if (p.indexValue > 0) objName += $"_{p.indexValue - 1}"; //Some ME3 map files are indexed
+                            var cookedPackageName = objName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
                             unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
                             break;
                         }

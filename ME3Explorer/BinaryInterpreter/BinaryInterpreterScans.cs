@@ -375,6 +375,11 @@ namespace ME3Explorer
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
+                    if (bin.Position != (shaderEndOffset - dataOffset))
+                    {
+                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unknown post-shader data") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
+                    }
+
                     embeddedShaderCount.Items.Add(shaderNode);
 
                     bin.JumpTo(shaderEndOffset - dataOffset);
@@ -485,12 +490,28 @@ namespace ME3Explorer
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
 
-                int numShaderCachePayloads = bin.ReadInt32();
-                var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
-                subnodes.Add(shaderCachePayloads);
-                for (int i = 0; i < numShaderCachePayloads; i++)
+                if (CurrentLoadedExport.Game >= MEGame.ME2)
                 {
-                    shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}"));
+                    int numShaderCachePayloads = bin.ReadInt32();
+                    var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
+                    subnodes.Add(shaderCachePayloads);
+                    for (int i = 0; i < numShaderCachePayloads; i++)
+                    {
+                        shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}"));
+                    }
+                }
+                else if (CurrentLoadedExport.Game == MEGame.ME1 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
+                {
+                    int numSomething = bin.ReadInt32();
+                    var somethings = new BinInterpNode(bin.Position - 4, $"Something, {numSomething} items");
+                    subnodes.Add(somethings);
+                    for (int i = 0; i < numSomething; i++)
+                    {
+                        var node = new BinInterpNode(bin.Position, $"Something {i}");
+                        node.Items.Add(MakeNameNode(bin, "SomethingName?"));
+                        node.Items.Add(MakeGuidNode(bin, "SomethingGuid?"));
+                        somethings.Items.Add(node);
+                    }
                 }
             }
             catch (Exception ex)
@@ -5089,8 +5110,8 @@ namespace ME3Explorer
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_J_4bytes"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_K_4bytes"));
                         node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes")); //In v56 banks?
-                        //node.Items.Add(MakeByteNode(bin, "Unknown"));  In imported v53 banks?
-                        //node.Items.Add(MakeByteNode(bin, "Unknown"));
+                                                                                 //node.Items.Add(MakeByteNode(bin, "Unknown"));  In imported v53 banks?
+                                                                                 //node.Items.Add(MakeByteNode(bin, "Unknown"));
                         node.Items.Add(MakeInt32Node(bin, "Loop Count (0=infinite)"));
                         node.Items.Add(MakeByteNode(bin, "Unknown"));
                         node.Items.Add(MakeByteNode(bin, "Unknown"));

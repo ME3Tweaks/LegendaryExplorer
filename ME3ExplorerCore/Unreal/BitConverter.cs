@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -122,9 +123,9 @@ namespace ME3ExplorerCore.Unreal
         /// Returns:
         ///     An array of bytes with length 4.
         ///</summary>
-        public static byte[] GetBytes(int value)
+        public static byte[] GetBytes(int value, Endian endian)
         {
-            if (IsLittleEndian)
+            if (endian.IsNative)
             {
                 return System.BitConverter.GetBytes(value);
             }
@@ -144,9 +145,9 @@ namespace ME3ExplorerCore.Unreal
         /// Returns:
         ///     An array of bytes with length 8.
         ///</summary>
-        public static byte[] GetBytes(long value)
+        public static byte[] GetBytes(long value, Endian endian)
         {
-            if (IsLittleEndian)
+            if (endian.IsNative)
             {
                 return System.BitConverter.GetBytes(value);
             }
@@ -166,9 +167,9 @@ namespace ME3ExplorerCore.Unreal
         /// Returns:
         ///     An array of bytes with length 2.
         ///</summary>
-        public static byte[] GetBytes(short value)
+        public static byte[] GetBytes(short value, Endian endian)
         {
-            if (IsLittleEndian)
+            if (endian.IsNative)
             {
                 return System.BitConverter.GetBytes(value);
             }
@@ -188,9 +189,9 @@ namespace ME3ExplorerCore.Unreal
         /// Returns:
         ///     An array of bytes with length 4.
         ///</summary>
-        public static byte[] GetBytes(uint value)
+        public static byte[] GetBytes(uint value, Endian endian)
         {
-            if (IsLittleEndian)
+            if (endian.IsNative)
             {
                 return System.BitConverter.GetBytes(value);
             }
@@ -210,9 +211,9 @@ namespace ME3ExplorerCore.Unreal
         /// Returns:
         ///     An array of bytes with length 8.
         ///</summary>
-        public static byte[] GetBytes(ulong value)
+        public static byte[] GetBytes(ulong value, Endian endian)
         {
-            if (IsLittleEndian)
+            if (endian.IsNative)
             {
                 return System.BitConverter.GetBytes(value);
             }
