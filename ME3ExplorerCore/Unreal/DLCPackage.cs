@@ -917,7 +917,7 @@ namespace ME3ExplorerCore.Unreal
 
         public int FindFileEntry(string fileName)
         {
-            return Files.IndexOf(Files.FirstOrDefault(x => x.FileName.Contains(fileName)));
+            return Files.IndexOf(Files.FirstOrDefault(x => x.FileName.Contains(fileName, StringComparison.InvariantCultureIgnoreCase)));
         }
     }
 }

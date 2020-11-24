@@ -49,9 +49,9 @@ namespace ME3ExplorerCore.Packages
                 return;
             }
 
-            if (package.FilePath is null)
+            if (package.FilePath is null && savePath == null)
             {
-                throw new InvalidOperationException("Cannot save a temporary memory-based package!");
+                throw new InvalidOperationException("Cannot save a temporary memory-based package! You must pass a save path to save a memory package.");
             }
             switch (package)
             {
