@@ -126,8 +126,8 @@ namespace ME3ExplorerCore.GameFilesystem
             else
             {
 #if WINDOWS
-                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
-                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                string hkey32 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\";
+                string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\";
                 string subkey = @"BioWare\Mass Effect";
 
                 string keyName = hkey32 + subkey;
