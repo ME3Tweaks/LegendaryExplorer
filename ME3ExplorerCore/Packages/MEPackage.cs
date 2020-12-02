@@ -592,7 +592,7 @@ namespace ME3ExplorerCore.Packages
         private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable)
         {
             var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
-            saveStream.WriteToFile(path);
+            saveStream.WriteToFile(path ?? mePackage.FilePath);
             if (!isSaveAs)
             {
                 mePackage.AfterSave();
