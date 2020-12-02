@@ -278,6 +278,14 @@ namespace ME3Explorer
                                     }
                                     break;
                                 }
+                            case "Texture2D":
+                                {
+                                    var properties = ee.GetProperties();
+                                    var sizeX = properties.GetProp<IntProperty>("SizeX");
+                                    var sizeY = properties.GetProp<IntProperty>("SizeY");
+                                    _subtext = $"{sizeX?.Value}x{sizeY?.Value}";
+                                    break;
+                                }
                         }
 
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))

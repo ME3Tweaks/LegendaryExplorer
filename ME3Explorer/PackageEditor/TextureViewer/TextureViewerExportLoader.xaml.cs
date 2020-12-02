@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using MassEffectModder.Images;
 using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Properties;
@@ -18,6 +19,7 @@ using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 using Image = MassEffectModder.Images.Image;
@@ -98,10 +100,34 @@ namespace ME3Explorer
 
         public ICommand ExportToPNGCommand { get; set; }
         public ICommand ReplaceFromPNGCommand { get; set; }
+        public ICommand DropMipCommand { get; set; }
         private void LoadCommands()
         {
             ExportToPNGCommand = new GenericCommand(ExportToPNG, NonEmptyMipSelected);
             ReplaceFromPNGCommand = new GenericCommand(ReplaceFromFile, CanReplaceTexture);
+            DropMipCommand = new GenericCommand(DropTopMip, CanDropTopMip);
+        }
+
+        private void DropTopMip()
+        {
+            var props = CurrentLoadedExport.GetProperties();
+            
+            // Note: This will not remove TFC data if streamed mips are all removed.
+            // Hopefully a dev doesn't do this
+            // I'm sure someday I will read this comment again and regret it
+            // -Mgamerz
+            var tex = ObjectBinary.From<UTexture2D>(CurrentLoadedExport);
+            tex.Mips.RemoveAt(0);
+            props.GetProp<IntProperty>("SizeX").Value = tex.Mips[0].SizeX;
+            props.GetProp<IntProperty>("SizeY").Value = tex.Mips[0].SizeY;
+            props.GetProp<IntProperty>("MipTailBaseIdx").Value = tex.Mips.Count - 1; // 0 based
+            CurrentLoadedExport.WritePropertiesAndBinary(props,tex);
+        }
+
+        private bool CanDropTopMip()
+        {
+            // There must be at least 1 mip
+            return CanReplaceTexture() && MipList.Count > 1 && Mips_ListBox.SelectedIndex == 0;
         }
 
         private bool CanReplaceTexture()

@@ -490,7 +490,7 @@ namespace ME3Explorer
                     bin.JumpTo(shaderMapEndOffset - dataOffset);
                 }
 
-                if (CurrentLoadedExport.Game >= MEGame.ME2)
+                if (CurrentLoadedExport.Game >= MEGame.ME2 &&CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
                 {
                     int numShaderCachePayloads = bin.ReadInt32();
                     var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");
