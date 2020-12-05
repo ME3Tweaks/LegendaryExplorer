@@ -67,7 +67,7 @@ namespace ME3ExplorerCore.TLK.ME1
                     {
                         return "-1\0";
                     }
-                    if (Data.EndsWith("\0"))
+                    if (Data.EndsWith("\0", StringComparison.Ordinal))
                     {
                         return Data;
                     }
