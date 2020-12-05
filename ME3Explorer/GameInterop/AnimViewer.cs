@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using ME3Explorer.AutoTOC;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
@@ -66,7 +66,7 @@ namespace ME3Explorer.GameInterop
 
             }
 
-            string tempFilePath = Path.Combine(ME3Directory.cookedPath, $"{saveAsName}.pcc");
+            string tempFilePath = Path.Combine(ME3Directory.CookedPCPath, $"{saveAsName}.pcc");
 
             pcc.Save(tempFilePath);
             InteropHelper.TryPadFile(tempFilePath, 10_485_760);
@@ -75,7 +75,7 @@ namespace ME3Explorer.GameInterop
         public static void OpenFileInME3(IMEPackage pcc, bool canHotLoad = false, bool shouldPad = true)
         {
             var tempMapName = GameController.TempMapName;
-            string tempDir = ME3Directory.cookedPath;
+            string tempDir = ME3Directory.CookedPCPath;
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
 
             pcc.Save(tempFilePath);

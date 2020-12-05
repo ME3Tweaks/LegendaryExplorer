@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.DLCUnpacker"
-        xmlns:global="clr-namespace:ME3Explorer" xmlns:global1="clr-namespace:ME3ExplorerCore.MEDirectories;assembly=ME3ExplorerCore"
+        xmlns:global="clr-namespace:ME3Explorer" xmlns:global1="clr-namespace:ME3ExplorerCore.GameFilesystem;assembly=ME3ExplorerCore"
     WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="DLC Unpacker" Height="300" Width="489"

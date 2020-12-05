@@ -25,8 +25,8 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.DLCUnpacker
@@ -144,7 +144,7 @@ namespace ME3Explorer.DLCUnpacker
         {
             if (UnpackDLCWorker == null || !UnpackDLCWorker.IsBusy)
             {
-                var parts = ME3Directory.gamePath.Split(':');
+                var parts = ME3Directory.DefaultGamePath.Split(':');
                 DriveInfo info = new DriveInfo(parts[0]);
                 AvailableSpace = info.AvailableFreeSpace;
                 AvailableSpaceText = FileSize.FormatSize((long)AvailableSpace);
@@ -179,7 +179,7 @@ namespace ME3Explorer.DLCUnpacker
         /// </summary>
         private void CalculateUnpackRequirements()
         {
-            if (ME3Directory.gamePath != null)
+            if (ME3Directory.DefaultGamePath != null)
             {
                 ProgressBarIndeterminate = true;
                 Debug.WriteLine("Available space set");

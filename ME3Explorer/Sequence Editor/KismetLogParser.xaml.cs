@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -20,9 +19,9 @@ namespace ME3Explorer.Sequence_Editor
     /// </summary>
     public partial class KismetLogParser : NotifyPropertyChangedControlBase
     {
-        static string KismetLogME3Path => ME3Directory.gamePath != null ? Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "KismetLog.txt") : "";
-        static string KismetLogME2Path => ME2Directory.gamePath != null ? Path.Combine(ME2Directory.gamePath, "Binaries", "KismetLog.txt") : "";
-        static string KismetLogME1Path => ME1Directory.gamePath != null ? Path.Combine(ME1Directory.gamePath, "Binaries", "KismetLog.txt") : "";
+        static string KismetLogME3Path => ME3Directory.DefaultGamePath != null ? Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "Win32", "KismetLog.txt") : "";
+        static string KismetLogME2Path => ME2Directory.DefaultGamePath != null ? Path.Combine(ME2Directory.DefaultGamePath, "Binaries", "KismetLog.txt") : "";
+        static string KismetLogME1Path => ME1Directory.DefaultGamePath != null ? Path.Combine(ME1Directory.DefaultGamePath, "Binaries", "KismetLog.txt") : "";
         public static string KismetLogPath(MEGame game) => game == MEGame.ME3 ? KismetLogME3Path :
                                                            game == MEGame.ME2 ? KismetLogME2Path :
                                                            game == MEGame.ME1 ? KismetLogME1Path : null;

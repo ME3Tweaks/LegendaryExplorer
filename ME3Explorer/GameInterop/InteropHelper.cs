@@ -4,8 +4,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Input;
 using ME3Explorer.Properties;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using Microsoft.Win32;
 
 namespace ME3Explorer.GameInterop
@@ -85,7 +85,7 @@ namespace ME3Explorer.GameInterop
             {
                 string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName)));
 
-                Settings.Default.ME3Directory = ME3Directory.gamePath = gamePath;
+                Settings.Default.ME3Directory = ME3Directory.DefaultGamePath = gamePath;
                 Settings.Default.Save();
                 CommandManager.InvalidateRequerySuggested();
             }

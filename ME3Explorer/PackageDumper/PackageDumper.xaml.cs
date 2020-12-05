@@ -16,15 +16,13 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ME3Explorer.PackageDumper
@@ -146,17 +144,17 @@ namespace ME3Explorer.PackageDumper
 
         private bool CanDumpGameME1(object obj)
         {
-            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
+            return ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanDumpGameME2(object obj)
         {
-            return ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
+            return ME2Directory.DefaultGamePath != null && Directory.Exists(ME2Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanDumpGameME3(object obj)
         {
-            return ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
+            return ME3Directory.DefaultGamePath != null && Directory.Exists(ME3Directory.DefaultGamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanCancelDump(object obj)
@@ -215,13 +213,13 @@ namespace ME3Explorer.PackageDumper
             switch (game)
             {
                 case MEGame.ME1:
-                    rootPath = ME1Directory.gamePath;
+                    rootPath = ME1Directory.DefaultGamePath;
                     break;
                 case MEGame.ME2:
-                    rootPath = ME2Directory.gamePath;
+                    rootPath = ME2Directory.DefaultGamePath;
                     break;
                 case MEGame.ME3:
-                    rootPath = ME3Directory.gamePath;
+                    rootPath = ME3Directory.DefaultGamePath;
                     break;
             }
             CommonOpenFileDialog m = new CommonOpenFileDialog

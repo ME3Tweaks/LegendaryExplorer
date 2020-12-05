@@ -2,11 +2,8 @@
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ME3Explorer.PackageEditor.Experiments
 {

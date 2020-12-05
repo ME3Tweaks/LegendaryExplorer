@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Helpers;
 using System.Globalization;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 
 namespace ME3Explorer.Unreal.Classes
@@ -558,7 +559,7 @@ namespace ME3Explorer.Unreal.Classes
                 var array = t2d.Export.Data.Take(propStart).Concat(propData).ToArray();
                 var testdata = new MemoryStream(array);
                 var test2 = PropertyCollection.ReadProps(t2d.Export, testdata, "Texture2D", true, true, t2d.Export); //do not set properties as this may interfere with some other code. may change later.
-                                                                                                                 //ME2 post-data is this right?
+                                                                                                                     //ME2 post-data is this right?
                 t2d.Export.Data = t2d.Export.Data.Take(propStart).Concat(propData).Concat(t2d.SerializeNewData()).ToArray();
             }
 
@@ -615,7 +616,7 @@ namespace ME3Explorer.Unreal.Classes
                 byte[] imageBytes = null;
                 try
                 {
-                    imageBytes = Texture2D.GetTextureData(info);
+                    imageBytes = Texture2D.GetTextureData(info, t2d.Export.Game);
                 }
                 catch (FileNotFoundException e)
                 {
@@ -624,7 +625,7 @@ namespace ME3Explorer.Unreal.Classes
                     info = t2d.Mips.FirstOrDefault(x => x.storageType == StorageTypes.pccUnc);
                     if (info != null)
                     {
-                        imageBytes = Texture2D.GetTextureData(info);
+                        imageBytes = Texture2D.GetTextureData(info, t2d.Export.Game);
                     }
                 }
 
@@ -654,7 +655,7 @@ namespace ME3Explorer.Unreal.Classes
             PixelFormat format = Image.getPixelFormatType(t2d.TextureFormat);
 
             MemoryStream ms = new MemoryStream();
-            Image.convertToPng(Texture2D.GetTextureData(info), info.width, info.height, format).Save(ms);
+            Image.convertToPng(Texture2D.GetTextureData(info, t2d.Export.Game), info.width, info.height, format).Save(ms);
             return ms.ToArray();
         }
 
@@ -681,7 +682,7 @@ namespace ME3Explorer.Unreal.Classes
             Debug.WriteLine($"Generating preview texture for Texture2D {info.Export.FullPath} of format {t2d.TextureFormat}");
             if (imageBytes == null)
             {
-                imageBytes = t2d.GetImageBytesForMip(info);
+                imageBytes = t2d.GetImageBytesForMip(info, t2d.Export.Game, true);
             }
             int width = (int)info.width;
             int height = (int)info.height;

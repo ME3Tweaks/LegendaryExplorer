@@ -438,9 +438,8 @@ namespace ME3Explorer.ME1TlkEditor
             else if (CurrentME2ME3TalkFile != null)
             {
                 // CurrentME2ME3TalkFile.
-                ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression huff = new ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression();
-                huff.LoadInputData(LoadedStrings);
-                huff.SaveToTlkFile(CurrentME2ME3TalkFile.path);
+                ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression.SaveToTlkFile(CurrentME2ME3TalkFile.path, LoadedStrings);
+
                 FileModified = false; //you can only commit to file, not to export and then file in file mode.
             }
             //throw new NotImplementedException();
@@ -463,9 +462,7 @@ namespace ME3Explorer.ME1TlkEditor
                 if (d.ShowDialog() == true)
                 {
                     // CurrentME2ME3TalkFile.
-                    ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression huff = new ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression();
-                    huff.LoadInputData(LoadedStrings);
-                    huff.SaveToTlkFile(d.FileName);
+                    ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression.SaveToTlkFile(d.FileName, LoadedStrings);
                 }
 
             }

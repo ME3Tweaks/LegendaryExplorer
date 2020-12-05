@@ -9,9 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -535,7 +535,7 @@ namespace ME3Explorer.TFCCompactor
                     Directory.CreateDirectory(basegameCookedDir);
 
                     //Copy basegame TFCs to cookedDiretory
-                    var basegameDirToCopyFrom = MEDirectories.CookedPath(SelectedGame.Game);
+                    var basegameDirToCopyFrom = MEDirectories.GetCookedPath(SelectedGame.Game);
                     var tfcs = Directory.GetFiles(basegameDirToCopyFrom, "*.tfc").ToList();
                     var currentgamefiles = MELoadedFiles.GetFilesLoadedInGame(SelectedGame.Game, forceReload: true, includeTFCs: true);
                     //var debug = currentgamefiles.Where(x => x.Value.Contains(".tfc")).ToList();
@@ -574,7 +574,7 @@ namespace ME3Explorer.TFCCompactor
                             if (tfcShortName.StartsWith("Textures_DLC"))
                             {
                                 string dlcFolderName = tfc.Substring(9);
-                                var sfar = Path.Combine(MEDirectories.DLCPath(SelectedGame.Game), dlcFolderName, "CookedPCConsole", "Default.sfar");
+                                var sfar = Path.Combine(MEDirectories.GetDLCPath(SelectedGame.Game), dlcFolderName, "CookedPCConsole", "Default.sfar");
                                 if (File.Exists(sfar) && new FileInfo(sfar).Length > 32)
                                 {
                                     //sfar exists and is not fully unpacked (with mem style 32 byte sfar)

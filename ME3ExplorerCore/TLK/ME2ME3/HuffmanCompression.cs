@@ -114,9 +114,14 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         /// </remarks>
         /// </summary>
         /// <param name="fileName"></param>
-        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs = null)
+        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs = null) // having this be null in static method makes no sense. probably should not let it be null
         {
             SaveToTlkStream(stringRefs).WriteToFile(fileName);
+        }
+
+        public void SaveToFile(string fileName)
+        {
+            SaveToTlkFile(fileName, _inputData);
         }
 
         /// <summary>

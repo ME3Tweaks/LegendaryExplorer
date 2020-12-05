@@ -11,14 +11,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Unreal;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.TlkManagerNS
@@ -349,7 +347,7 @@ namespace ME3Explorer.TlkManagerNS
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
-                var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+                var tlks = Directory.EnumerateFiles(ME3Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
                 tlks.ForEach(x => x.LoadMountPriority());
                 tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
                 return tlks;
@@ -418,7 +416,7 @@ namespace ME3Explorer.TlkManagerNS
             ME1TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                var tlkfiles = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).ToList();
+                var tlkfiles = Directory.EnumerateFiles(ME1Directory.DefaultGamePath, "*Tlk*", SearchOption.AllDirectories).ToList();
                 var tlks = new List<LoadedTLK>();
                 foreach (string tlk in tlkfiles)
                 {
@@ -445,7 +443,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private static bool ME1GamePathExists()
         {
-            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath);
+            return ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath);
         }
 
         private static bool ME2BIOGamePathExists()
@@ -455,7 +453,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private static bool ME3BIOGamePathExists()
         {
-            return ME3Directory.BIOGamePath != null && Directory.Exists(ME3Directory.BIOGamePath);
+            return ME3Directory.BioGamePath != null && Directory.Exists(ME3Directory.BioGamePath);
         }
 
         public class LoadedTLK : NotifyPropertyChangedBase

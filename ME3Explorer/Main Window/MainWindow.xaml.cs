@@ -12,12 +12,10 @@ using System.Windows.Media.Animation;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using FontAwesome5.WPF;
-using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.TLK;
 using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer
@@ -111,7 +109,7 @@ namespace ME3Explorer
 
             Topmost = Properties.Settings.Default.AlwaysOnTop;
             //Check that at least one game path is set. If none are, show the initial dialog.
-            if (ME1Directory.gamePath == null && ME2Directory.gamePath == null && ME3Directory.gamePath == null)
+            if (ME1Directory.DefaultGamePath == null && ME2Directory.DefaultGamePath == null && ME3Directory.DefaultGamePath == null)
             {
                 (new InitialSetup()).ShowDialog();
             }
@@ -626,15 +624,15 @@ namespace ME3Explorer
                     switch (game)
                     {
                         case "MassEffect":
-                            me1PathBox.Text = ME1Directory.gamePath = result;
+                            me1PathBox.Text = ME1Directory.DefaultGamePath = result;
                             me1PathBox.Visibility = Visibility.Visible;
                             break;
                         case "MassEffect2":
-                            me2PathBox.Text = ME2Directory.gamePath = result;
+                            me2PathBox.Text = ME2Directory.DefaultGamePath = result;
                             me2PathBox.Visibility = Visibility.Visible;
                             break;
                         case "MassEffect3":
-                            me3PathBox.Text = ME3Directory.gamePath = Path.GetDirectoryName(result);
+                            me3PathBox.Text = ME3Directory.DefaultGamePath = Path.GetDirectoryName(result);
                             me3PathBox.Visibility = Visibility.Visible;
                             break;
                     }
@@ -646,7 +644,7 @@ namespace ME3Explorer
         private void UpdateGamePathWarningIconStatus()
         {
             var warningIcons = new List<ImageAwesome> { me1GamePathWarningIcon, me2GamePathWarningIcon, me3GamePathWarningIcon };
-            var directories = new List<string> { ME1Directory.gamePath, ME2Directory.gamePath, ME3Directory.gamePath };
+            var directories = new List<string> { ME1Directory.DefaultGamePath, ME2Directory.DefaultGamePath, ME3Directory.DefaultGamePath };
             gamePathsWarningIcon.Visibility = directories.Any(item => item != null && (!Directory.Exists(item) || !Directory.Exists(Path.Combine(item, "BIOGame")) || !Directory.Exists(Path.Combine(item, "Binaries")))) ? Visibility.Visible : Visibility.Collapsed;
             for (int i = 0; i < warningIcons.Count; i++)
             {
@@ -664,25 +662,25 @@ namespace ME3Explorer
             }
             else
             {
-                if (ME1Directory.gamePath != null)
+                if (ME1Directory.DefaultGamePath != null)
                 {
-                    me1PathBox.Text = ME1Directory.gamePath;
+                    me1PathBox.Text = ME1Directory.DefaultGamePath;
                 }
                 else
                 {
                     me1PathBox.Visibility = Visibility.Collapsed;
                 }
-                if (ME2Directory.gamePath != null)
+                if (ME2Directory.DefaultGamePath != null)
                 {
-                    me2PathBox.Text = ME2Directory.gamePath;
+                    me2PathBox.Text = ME2Directory.DefaultGamePath;
                 }
                 else
                 {
                     me2PathBox.Visibility = Visibility.Collapsed;
                 }
-                if (ME3Directory.gamePath != null)
+                if (ME3Directory.DefaultGamePath != null)
                 {
-                    me3PathBox.Text = ME3Directory.gamePath;
+                    me3PathBox.Text = ME3Directory.DefaultGamePath;
                 }
                 else
                 {

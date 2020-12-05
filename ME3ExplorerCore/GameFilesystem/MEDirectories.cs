@@ -92,7 +92,7 @@ namespace ME3ExplorerCore.GameFilesystem
             }
         }
 
-        public static string GetExecutableDirectory(MEGame game, string gamePathRoot = null)
+        public static string GetExecutableFolderPath(MEGame game, string gamePathRoot = null)
         {
             switch (game)
             {

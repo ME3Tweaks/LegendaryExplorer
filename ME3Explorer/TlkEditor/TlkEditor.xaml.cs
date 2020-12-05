@@ -182,7 +182,7 @@ namespace ME3Explorer
                     hc.LoadInputData(_inputXmlFilePath, debugVersion);
                 }
 
-                hc.SaveToTlkFile(OutputTlkFilePath);
+                hc.SaveToFile(OutputTlkFilePath);
                 MessageBox.Show("Finished creating TLK file.", "Done!",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
             }

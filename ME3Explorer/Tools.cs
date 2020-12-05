@@ -12,7 +12,7 @@ using ME3Explorer.AutoTOC;
 using ME3Explorer.FileHexViewer;
 using ME3Explorer.Matinee;
 using ME3Explorer.SFAREditor;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 
 namespace ME3Explorer
 {
@@ -227,7 +227,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
                 open = () =>
                 {
-                    if (ME3Directory.gamePath != null)
+                    if (ME3Directory.DefaultGamePath != null)
                     {
                         new DLCUnpacker.DLCUnpackerUI().Show();
                     }

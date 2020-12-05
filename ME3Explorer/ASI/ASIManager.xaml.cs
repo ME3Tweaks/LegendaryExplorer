@@ -8,12 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Windows.Input;
 using System.Xml.Linq;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
-using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.ASI
 {
@@ -278,9 +276,9 @@ namespace ME3Explorer.ASI
         private void RefreshBinkStatuses()
         {
             var md5 = System.Security.Cryptography.MD5.Create();
-            if (ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath))
+            if (ME1Directory.DefaultGamePath != null && Directory.Exists(ME1Directory.DefaultGamePath))
             {
-                var binkw32 = Path.Combine(ME1Directory.gamePath, "Binaries", "binkw32.dll");
+                var binkw32 = Path.Combine(ME1Directory.DefaultGamePath, "Binaries", "binkw32.dll");
                 if (File.Exists(binkw32))
                 {
                     var hashBytes = md5.ComputeHash(File.ReadAllBytes(binkw32));
@@ -289,9 +287,9 @@ namespace ME3Explorer.ASI
                 }
             }
 
-            if (ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath))
+            if (ME2Directory.DefaultGamePath != null && Directory.Exists(ME2Directory.DefaultGamePath))
             {
-                var binkw32 = Path.Combine(ME2Directory.gamePath, "Binaries", "binkw32.dll");
+                var binkw32 = Path.Combine(ME2Directory.DefaultGamePath, "Binaries", "binkw32.dll");
                 if (File.Exists(binkw32))
                 {
                     var hashBytes = md5.ComputeHash(File.ReadAllBytes(binkw32));
@@ -300,9 +298,9 @@ namespace ME3Explorer.ASI
                 }
             }
 
-            if (ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath))
+            if (ME3Directory.DefaultGamePath != null && Directory.Exists(ME3Directory.DefaultGamePath))
             {
-                var binkw32 = Path.Combine(ME3Directory.gamePath, "Binaries", "win32", "binkw32.dll");
+                var binkw32 = Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "win32", "binkw32.dll");
                 if (File.Exists(binkw32))
                 {
                     var hashBytes = md5.ComputeHash(File.ReadAllBytes(binkw32));
@@ -598,9 +596,9 @@ namespace ME3Explorer.ASI
             }
         }
 
-        public string ME1ASIDirectory => ME1Directory.gamePath != null ? Path.Combine(ME1Directory.gamePath, "Binaries", "asi") : null;
-        public string ME2ASIDirectory => ME2Directory.gamePath != null ? Path.Combine(ME2Directory.gamePath, "Binaries", "asi") : null;
-        public string ME3ASIDirectory => ME3Directory.gamePath != null ? Path.Combine(ME3Directory.gamePath, "Binaries", "win32", "asi") : null;
+        public string ME1ASIDirectory => ME1Directory.DefaultGamePath != null ? Path.Combine(ME1Directory.DefaultGamePath, "Binaries", "asi") : null;
+        public string ME2ASIDirectory => ME2Directory.DefaultGamePath != null ? Path.Combine(ME2Directory.DefaultGamePath, "Binaries", "asi") : null;
+        public string ME3ASIDirectory => ME3Directory.DefaultGamePath != null ? Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "win32", "asi") : null;
 
 
         /// <summary>
@@ -618,17 +616,17 @@ namespace ME3Explorer.ASI
             {
                 case 1:
                     asiDirectory = ME1ASIDirectory;
-                    gameDirectory = ME1Directory.gamePath;
+                    gameDirectory = ME1Directory.DefaultGamePath;
                     gameEnum = MEGame.ME1;
                     break;
                 case 2:
                     asiDirectory = ME2ASIDirectory;
-                    gameDirectory = ME2Directory.gamePath;
+                    gameDirectory = ME2Directory.DefaultGamePath;
                     gameEnum = MEGame.ME2;
                     break;
                 case 3:
                     asiDirectory = ME3ASIDirectory;
-                    gameDirectory = ME3Directory.gamePath;
+                    gameDirectory = ME3Directory.DefaultGamePath;
                     gameEnum = MEGame.ME3;
                     break;
                 default:

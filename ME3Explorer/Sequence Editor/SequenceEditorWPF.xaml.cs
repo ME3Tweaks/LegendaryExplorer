@@ -25,16 +25,14 @@ using System.Windows.Threading;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Views;
 using ME3Explorer.Matinee;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI.Interfaces;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Image = System.Drawing.Image;
 using ME3ExplorerCore.Helpers;
@@ -2091,7 +2089,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 var plotFiles = MELoadedFiles.GetEnabledDLCFolders(MEGame.ME3).OrderByDescending(dir => MELoadedFiles.GetMountPriority(dir, MEGame.ME3))
                                               .Select(dir => Path.Combine(dir, "CookedPCConsole", $"Startup_{MELoadedFiles.GetDLCNameFromDir(dir)}_INT.pcc"))
-                                              .Append(Path.Combine(ME3Directory.cookedPath, "SFXGameInfoSP_SF.pcc"))
+                                              .Append(Path.Combine(ME3Directory.CookedPCPath, "SFXGameInfoSP_SF.pcc"))
                                               .Where(File.Exists);
                 string filePath = null;
                 foreach (string plotFile in plotFiles)
