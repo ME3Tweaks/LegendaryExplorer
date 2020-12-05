@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 
@@ -20,9 +21,9 @@ namespace ME3ExplorerCore.Tests
             SynchronizationContext.SetSynchronizationContext(sc);
             CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
 #if AZURE
-            ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
-            ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
-            ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
+            ME1Directory.DefaultGamePath = ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
+            ME2Directory.DefaultGamePath = ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);
+            ME3Directory.DefaultGamePath = ME3UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME3);
 #endif
             initialized = true;
         }
