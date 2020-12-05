@@ -115,7 +115,7 @@ namespace ME3ExplorerCore.Compression
             }
             else if (len == -1)
             {
-                throw new Exception("Cannot decompress streamed LZMA with this implementation!");
+                throw new InvalidOperationException("Cannot decompress streamed LZMA with this implementation!");
             }
             else
             {
