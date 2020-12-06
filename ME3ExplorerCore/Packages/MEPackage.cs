@@ -420,11 +420,11 @@ namespace ME3ExplorerCore.Packages
             }
 
             //Debug.WriteLine($"Compression type {filePath}: {compressionType}");
-            int numChunks = packageReader.ReadInt32();
+            NumCompressedChunksAtLoad = packageReader.ReadInt32();
 
             //read package source
             var savedPos = packageReader.Position;
-            packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
+            packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
 
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
@@ -456,7 +456,7 @@ namespace ME3ExplorerCore.Packages
             #region Decompression of package data
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
-            if (IsCompressed && numChunks > 0)
+            if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform);
             }
