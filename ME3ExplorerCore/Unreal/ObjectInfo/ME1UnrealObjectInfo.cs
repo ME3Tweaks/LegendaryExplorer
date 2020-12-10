@@ -685,6 +685,17 @@ namespace ME3ExplorerCore.Unreal
             bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
-#endregion
+        #endregion
+
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            // NEEDS CHECKED FOR ME1
+            @"Engine.CodecMovieBink"
+        };
     }
 }

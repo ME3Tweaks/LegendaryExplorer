@@ -696,5 +696,16 @@ namespace ME3ExplorerCore.Unreal
             return new PropertyInfo(type, reference, transient);
         }
         #endregion
+
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            // NEEDS CHECKED FOR ME2
+            @"Engine.CodecMovieBink"
+        };
     }
 }

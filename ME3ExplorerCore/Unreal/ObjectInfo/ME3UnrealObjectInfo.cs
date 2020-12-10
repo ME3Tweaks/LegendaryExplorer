@@ -43,6 +43,41 @@ namespace ME3ExplorerCore.Unreal
                 _ => false
             };
 
+        public static bool InheritsFrom(this IEntry entry, string baseClass) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game);
+        public static bool InheritsFrom(string className, string baseClass, MEGame game) =>
+            className == baseClass || game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                _ => false
+            };
+
+        /// <summary>
+        /// Checks if the full path name of this entry is known to be defined in native only
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static bool IsAKnownNativeClass(this IEntry entry) => IsAKnownNativeClass(entry.FullPath, entry.Game);
+
+        /// <summary>
+        /// Checks if the full path name is known to be defined in native only
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static bool IsAKnownNativeClass(string fullPathName, MEGame game)
+        {
+            switch(game)
+            {
+                case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                default: return false;
+            };
+        }
+
         public static SequenceObjectInfo getSequenceObjectInfo(MEGame game, string className) =>
             game switch
             {
@@ -1417,5 +1452,14 @@ namespace ME3ExplorerCore.Unreal
         #endregion
 #endif
 
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            @"Engine.CodecMovieBink"
+        };
     }
 }
