@@ -1592,6 +1592,11 @@ namespace ME3Explorer
                         badReferences.Add(new EntryStringPair(entry,
                             $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                     }
+                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
+                    {
+                        badReferences.Add(new EntryStringPair(entry,
+                            $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                    }
                 }
                 else if (property is ArrayProperty<ObjectProperty> aop)
                 {
@@ -1709,7 +1714,7 @@ namespace ME3Explorer
                                 badReferences.Add(new EntryStringPair(exp,
                                     $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash")
+                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash" || exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
                             {
                                 badReferences.Add(new EntryStringPair(exp,
                                     $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
