@@ -134,6 +134,10 @@ namespace ME3ExplorerCore.Packages
         int ImportOffset { get; }
         int ExportOffset { get; }
         int NameOffset { get; }
+        /// <summary>
+        /// The number of compressed chunks in the chunk table there were found during package loading.
+        /// </summary>
+        int NumCompressedChunksAtLoad { get; }
         Guid PackageGuid { get; set; }
         IReadOnlyList<ExportEntry> Exports { get; }
         IReadOnlyList<ImportEntry> Imports { get; }

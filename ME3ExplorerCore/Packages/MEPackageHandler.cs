@@ -30,7 +30,7 @@ namespace ME3ExplorerCore.Packages
         static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
 
         // Header only loaders. Meant for when you just need to get info about a package without caring about the contents.
-        static Func<string, MEPackage> MEConstructorQuickDelegate;
+        //static Func<string, MEPackage> MEConstructorQuickDelegate;
         static Func<Stream, string, MEPackage> MEConstructorQuickStreamDelegate;
 
         public static void Initialize()
@@ -39,7 +39,7 @@ namespace ME3ExplorerCore.Packages
             UDKStreamConstructorDelegate = UDKPackage.RegisterStreamLoader();
             MEConstructorDelegate = MEPackage.RegisterLoader();
             MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
-            MEConstructorQuickDelegate = MEPackage.RegisterQuickLoader();
+            //MEConstructorQuickDelegate = MEPackage.RegisterQuickLoader();
             MEConstructorQuickStreamDelegate = MEPackage.RegisterQuickStreamLoader();
         }
 
@@ -53,12 +53,12 @@ namespace ME3ExplorerCore.Packages
         /// <param name="useSharedPackageCache"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null, bool useSharedPackageCache = false, IPackageUser user = null)
+        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null, bool useSharedPackageCache = false, IPackageUser user = null, bool quickLoad = false)
         {
             IMEPackage package;
-            if (associatedFilePath == null || !useSharedPackageCache || !GlobalSharedCacheEnabled)
+            if (associatedFilePath == null || !useSharedPackageCache || !GlobalSharedCacheEnabled || quickLoad)
             {
-                package = LoadPackage(inStream, associatedFilePath, false);
+                package = LoadPackage(inStream, associatedFilePath, false, quickLoad);
             }
             else
             {
@@ -108,7 +108,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="user">????</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false)
         {
             if (File.Exists(pathToFile))
             {
@@ -116,11 +116,11 @@ namespace ME3ExplorerCore.Packages
             }
 
             IMEPackage package;
-            if (forceLoadFromDisk || !GlobalSharedCacheEnabled)
+            if (forceLoadFromDisk || !GlobalSharedCacheEnabled || quickLoad) //Quick loaded packages cannot be cached
             {
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
-                    package = LoadPackage(fs, pathToFile, false);
+                    package = LoadPackage(fs, pathToFile, false, quickLoad);
                 }
             }
             else
@@ -162,10 +162,10 @@ namespace ME3ExplorerCore.Packages
             }
 
             using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
-            return LoadPackage(fs, pathToFile, false);
+            return LoadPackage(fs, pathToFile, false, true);
         }
 
-        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false)
+        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false)
         {
             ushort version = 0;
             ushort licenseVersion = 0;
@@ -210,7 +210,7 @@ namespace ME3ExplorerCore.Packages
                 version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
             {
                 stream.Position -= 8; //reset to start
-                pkg = MEStreamConstructorDelegate(stream, filePath);
+                pkg = quickLoad ? MEConstructorQuickStreamDelegate(stream, filePath) : MEStreamConstructorDelegate(stream, filePath);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else if (version == 868 || version == 867 && licenseVersion == 0)
