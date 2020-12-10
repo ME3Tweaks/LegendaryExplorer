@@ -104,7 +104,7 @@ namespace ME3ExplorerCore.Packages
         {
             bool isSaveAs = savePath != null && savePath != pcc.FilePath;
             int originalLength = -1;
-            if (pcc.Game == MEGame.ME3 && CheckME3Running != null && !isSaveAs && ME3Directory.BIOGamePath != null && pcc.FilePath.StartsWith(ME3Directory.BIOGamePath) && CheckME3Running.Invoke())
+            if (pcc.Game == MEGame.ME3 && CheckME3Running != null && !isSaveAs && ME3Directory.GetBioGamePath() != null && pcc.FilePath.StartsWith(ME3Directory.GetBioGamePath()) && CheckME3Running.Invoke())
             {
                 try
                 {
