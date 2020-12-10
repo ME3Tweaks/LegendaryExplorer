@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
@@ -61,14 +59,14 @@ namespace ME3Explorer.Packages
                 }
                 else
                 {
-                    string testPath = Path.Combine(MEDirectories.BioGamePath(pcc.Game), info.pccPath);
+                    string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game), info.pccPath);
                     if (File.Exists(testPath))
                     {
                         loadStream = new MemoryStream(File.ReadAllBytes(testPath));
                     }
                     else if (pcc.Game == MEGame.ME1)
                     {
-                        testPath = Path.Combine(ME1Directory.gamePath, info.pccPath);
+                        testPath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath);
                         if (File.Exists(testPath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(testPath));

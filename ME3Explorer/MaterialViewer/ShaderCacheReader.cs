@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX.D3DCompiler;
@@ -12,7 +12,7 @@ namespace ME3Explorer.MaterialViewer
     public static class ShaderCacheReader
     {
         public const string shaderFileName = "RefShaderCache-PC-D3D-SM3.upk";
-        private static string shaderfilePath(MEGame game) => Path.Combine(MEDirectories.CookedPath(game), shaderFileName);
+        private static string shaderfilePath(MEGame game) => Path.Combine(MEDirectories.GetCookedPath(game), shaderFileName);
 
         private static Dictionary<Guid, int> ME3ShaderOffsets;
         private static Dictionary<Guid, int> ME2ShaderOffsets;

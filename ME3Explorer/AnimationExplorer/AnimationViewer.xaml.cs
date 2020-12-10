@@ -12,14 +12,11 @@ using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.AssetDatabase;
 using ME3Explorer.GameInterop;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
-using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 using SharpDX;
 using Path = System.IO.Path;
 
@@ -392,7 +389,7 @@ namespace ME3Explorer.AnimationExplorer
                     bool isMod;
                     (fileListIndex, animUIndex, isMod) = anim.AnimUsages[0];
                     (string filename, string contentdir) = FileListExtended[fileListIndex];
-                    string rootPath = ME3Directory.gamePath;
+                    string rootPath = ME3Directory.DefaultGamePath;
 
                     filename = $"{filename}.*";
                     filePath = Directory.GetFiles(rootPath, filename, SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));

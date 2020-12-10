@@ -876,7 +876,7 @@ namespace ME3Explorer.Meshplorer
                         var preloadedTextureData = new ModelPreview.PreloadedTextureData();
                         //Debug.WriteLine("Preloading ext texture " + extAsset.ObjectName + " for material " + entry.ObjectName);
                         Texture2D t2d = new Texture2D(extAsset);
-                        preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
+                        preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip(), t2d.Export.Game, true);
                         preloadedTextureData.MaterialExport = entry;
                         preloadedTextureData.Mip = t2d.GetTopMip(); //This may need to be adjusted for data returned by previous function if it's using a lower mip
                         texturePreviewMaterials.Add(preloadedTextureData);
@@ -887,7 +887,7 @@ namespace ME3Explorer.Meshplorer
                     var preloadedTextureData = new ModelPreview.PreloadedTextureData();
                     Texture2D t2d = new Texture2D(tex as ExportEntry);
                     //Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);
-                    preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip());
+                    preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip(), t2d.Export.Game, true);
                     preloadedTextureData.MaterialExport = entry;
                     preloadedTextureData.Mip = t2d.GetTopMip(); //This may need to be adjusted for data returned by previous function if it's using a lower mip
                     texturePreviewMaterials.Add(preloadedTextureData);

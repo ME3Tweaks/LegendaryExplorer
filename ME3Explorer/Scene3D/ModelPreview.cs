@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
@@ -12,7 +11,7 @@ using StaticMesh = ME3ExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using static ME3Explorer.Scene3D.ModelPreview;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3Explorer.Unreal.Classes;
-using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Unreal.Classes;
 
 
@@ -548,11 +547,11 @@ namespace ME3Explorer.Scene3D
                 }
 
                 // Add globals
-                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "SFXGame.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "EntryMenu.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.pcc"));
-                packagesToCheck.Add(Path.Combine(MEDirectories.CookedPath(entry.Game), "Engine.u")); //ME1
+                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "SFXGame.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "EntryMenu.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), entry.Game == MEGame.ME3 ? "Startup.pcc" : "Startup_INT.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "Engine.pcc"));
+                packagesToCheck.Add(Path.Combine(MEDirectories.GetCookedPath(entry.Game), "Engine.u")); //ME1
 
                 foreach (string packagePath in packagesToCheck)
                 {

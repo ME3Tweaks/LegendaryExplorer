@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -91,7 +91,7 @@ namespace ME3ExplorerCore.Unreal
                     while (info != null && info.ClassName != notIncludingClass)
                     {
                         Stream loadStream = null;
-                        string filepathTL = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
+                        string filepathTL = Path.Combine(GameFilesystem.MEDirectories.GetBioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
@@ -112,7 +112,7 @@ namespace ME3ExplorerCore.Unreal
 
                         if (game == MEGame.ME1 && !File.Exists(filepathTL))
                         {
-                            filepathTL = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                            filepathTL = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepathTL))
                             {
                                 loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
@@ -695,9 +695,9 @@ namespace ME3ExplorerCore.Unreal
                             }
                         }
                         string filepath = null;
-                        if (ME3Directory.BIOGamePath != null)
+                        if (ME3Directory.GetBioGamePath() != null)
                         {
-                            filepath = Path.Combine(ME3Directory.BIOGamePath, info.pccPath);
+                            filepath = Path.Combine(ME3Directory.GetBioGamePath(), info.pccPath);
                         }
 
                         Stream loadStream = null;

@@ -8,8 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -453,7 +453,7 @@ namespace ME3Explorer.PackageEditor
                 if (IsExternalFile)
                 {
                     string filename = $"{BikFileName}.bik";
-                    string rootPath = MEDirectories.GamePath(Pcc.Game);
+                    string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                     if (rootPath == null || !Directory.Exists(rootPath))
                     {
                         MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
@@ -478,7 +478,7 @@ namespace ME3Explorer.PackageEditor
                         var tfcprop = CurrentLoadedExport.GetProperty<NameProperty>("TextureFileCacheName");
                         string filename = $"{tfcprop.Value}.tfc";
 
-                        string rootPath = MEDirectories.GamePath(Pcc.Game);
+                        string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                         if (rootPath == null || !Directory.Exists(rootPath))
                         {
                             MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
@@ -683,7 +683,7 @@ namespace ME3Explorer.PackageEditor
                 if (tfcPath == null || !File.Exists(tfcPath))
                 {
                     string filename = $"{TfcName}.tfc";
-                    string rootPath = MEDirectories.GamePath(Pcc.Game);
+                    string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                     if (rootPath == null || !Directory.Exists(rootPath))
                     {
                         MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
@@ -782,7 +782,7 @@ namespace ME3Explorer.PackageEditor
                                 break;
                             }
 
-                            string rootPath = MEDirectories.GamePath(Pcc.Game);
+                            string rootPath = MEDirectories.GetDefaultGamePath(Pcc.Game);
                             if (rootPath == null || !Directory.Exists(rootPath))
                             {
                                 MessageBox.Show($"{Pcc.Game} has not been found. Please check your ME3Explorer settings");
@@ -869,7 +869,7 @@ namespace ME3Explorer.PackageEditor
                     if (adddlg.ShowDialog() ?? false)
                     {
                         string addedtfc = Path.GetFileNameWithoutExtension(adddlg.FileName);
-                        if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(adddlg.FileName)))
+                        if (!Directory.GetDirectories(MEDirectories.GetDefaultGamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(adddlg.FileName)))
                         {
                             MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
                         }

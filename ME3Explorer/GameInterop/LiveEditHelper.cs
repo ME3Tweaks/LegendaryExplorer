@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using ME3Explorer.AutoTOC;
 using ME3Explorer.Sequence_Editor;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.SharpDX;
@@ -104,7 +104,7 @@ namespace ME3Explorer.GameInterop
             PadCamPathFile();
 
             InteropHelper.InstallInteropASI();
-            string consoleExtASIWritePath = Path.Combine(ME3Directory.BinariesPath, "ASI", consoleExtASIName);
+            string consoleExtASIWritePath = Path.Combine(ME3Directory.ExecutableFolder, "asi", consoleExtASIName);
             if (File.Exists(consoleExtASIWritePath))
             {
                 File.Delete(consoleExtASIWritePath);
@@ -176,7 +176,7 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        private static string savedCamFilePath => Path.Combine(ME3Directory.BinariesPath, "savedCams");
+        private static string savedCamFilePath => Path.Combine(ME3Directory.ExecutableFolder, "savedCams");
         public static POV[] ReadSavedCamsFile()
         {
             var povs = new POV[10];

@@ -13,14 +13,25 @@ namespace ME3ExplorerCore.Packages
 {
     public static class MEPackageHandler
     {
+        /// <summary>
+        /// Global override for shared cache. Set to false to disable usage of the cache and always force loading packages.
+        /// </summary>
+        public static bool GlobalSharedCacheEnabled = true;
+
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>(StringComparer.OrdinalIgnoreCase);
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
+        // Package loading for UDK 2014/2015
         static Func<string, bool, UDKPackage> UDKConstructorDelegate;
         static Func<Stream, string, UDKPackage> UDKStreamConstructorDelegate;
 
+        // Package loading for ME games
         static Func<string, MEGame, MEPackage> MEConstructorDelegate;
         static Func<Stream, string, MEPackage> MEStreamConstructorDelegate;
+
+        // Header only loaders. Meant for when you just need to get info about a package without caring about the contents.
+        //static Func<string, MEPackage> MEConstructorQuickDelegate;
+        static Func<Stream, string, MEPackage> MEConstructorQuickStreamDelegate;
 
         public static void Initialize()
         {
@@ -28,6 +39,8 @@ namespace ME3ExplorerCore.Packages
             UDKStreamConstructorDelegate = UDKPackage.RegisterStreamLoader();
             MEConstructorDelegate = MEPackage.RegisterLoader();
             MEStreamConstructorDelegate = MEPackage.RegisterStreamLoader();
+            //MEConstructorQuickDelegate = MEPackage.RegisterQuickLoader();
+            MEConstructorQuickStreamDelegate = MEPackage.RegisterQuickStreamLoader();
         }
 
         public static IReadOnlyList<string> GetOpenPackages() => openPackages.Select(x => x.Key).ToList();
@@ -40,22 +53,19 @@ namespace ME3ExplorerCore.Packages
         /// <param name="useSharedPackageCache"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null, bool useSharedPackageCache = false, IPackageUser user = null)
+        public static IMEPackage OpenMEPackageFromStream(Stream inStream, string associatedFilePath = null, bool useSharedPackageCache = false, IPackageUser user = null, bool quickLoad = false)
         {
             IMEPackage package;
-            if (associatedFilePath == null || !useSharedPackageCache)
+            if (associatedFilePath == null || !useSharedPackageCache || !GlobalSharedCacheEnabled || quickLoad)
             {
-                package = LoadPackage(inStream, associatedFilePath, false);
+                package = LoadPackage(inStream, associatedFilePath, false, quickLoad);
             }
             else
             {
                 package = openPackages.GetOrAdd(associatedFilePath, fpath =>
                 {
-                    using (FileStream fs = new FileStream(associatedFilePath, FileMode.Open, FileAccess.Read))
-                    {
-                        Debug.WriteLine($"Adding package to package cache (Stream): {fpath}");
-                        return LoadPackage(fs, fpath, true);
-                    }
+                    Debug.WriteLine($"Adding package to package cache (Stream): {associatedFilePath}");
+                    return LoadPackage(inStream, associatedFilePath, true);
                 });
             }
 
@@ -72,7 +82,7 @@ namespace ME3ExplorerCore.Packages
         }
 
         /// <summary>
-        /// Opens an already open package package, registering it for use in a tool.
+        /// Opens an already open package, registering it for use in a tool.
         /// </summary>
         /// <param name="package"></param>
         /// <param name="user"></param>
@@ -98,7 +108,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="user">????</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false)
         {
             if (File.Exists(pathToFile))
             {
@@ -106,11 +116,11 @@ namespace ME3ExplorerCore.Packages
             }
 
             IMEPackage package;
-            if (forceLoadFromDisk)
+            if (forceLoadFromDisk || !GlobalSharedCacheEnabled || quickLoad) //Quick loaded packages cannot be cached
             {
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
-                    package = LoadPackage(fs, pathToFile, false);
+                    package = LoadPackage(fs, pathToFile, false, quickLoad);
                 }
             }
             else
@@ -139,7 +149,23 @@ namespace ME3ExplorerCore.Packages
             return package;
         }
 
-        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false)
+        /// <summary>
+        /// Opens a package, but only reads the header. No names, imports or exports are loaded (and an error will be thrown if any are accessed). The package is not decompressed and is not added to the package cache.
+        /// </summary>
+        /// <param name="targetPath"></param>
+        /// <returns></returns>
+        public static IMEPackage QuickOpenMEPackage(string pathToFile)
+        {
+            if (File.Exists(pathToFile))
+            {
+                pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
+            }
+
+            using FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read);
+            return LoadPackage(fs, pathToFile, false, true);
+        }
+
+        private static IMEPackage LoadPackage(Stream stream, string filePath = null, bool useSharedCache = false, bool quickLoad = false)
         {
             ushort version = 0;
             ushort licenseVersion = 0;
@@ -184,7 +210,7 @@ namespace ME3ExplorerCore.Packages
                 version == MEPackage.ME1XboxUnrealVersion && licenseVersion == MEPackage.ME1XboxLicenseeVersion)
             {
                 stream.Position -= 8; //reset to start
-                pkg = MEStreamConstructorDelegate(stream, filePath);
+                pkg = quickLoad ? MEConstructorQuickStreamDelegate(stream, filePath) : MEStreamConstructorDelegate(stream, filePath);
                 MemoryAnalyzer.AddTrackedMemoryItem($"MEPackage {Path.GetFileName(filePath)}", new WeakReference(pkg));
             }
             else if (version == 868 || version == 867 && licenseVersion == 0)

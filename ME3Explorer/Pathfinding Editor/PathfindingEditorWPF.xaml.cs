@@ -15,7 +15,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Microsoft.AppCenter.Analytics;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
@@ -23,10 +22,9 @@ using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using BioPawn = ME3Explorer.ActorNodes.BioPawn;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
 using System.Threading.Tasks;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI.Interfaces;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
@@ -3730,7 +3728,7 @@ namespace ME3Explorer.Pathfinding_Editor
             worker.DoWork += delegate
             {
                 StatusText = "Getting file information from game directory";
-                FileInfo[] files = new DirectoryInfo(ME3Directory.BIOGamePath).EnumerateFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                FileInfo[] files = new DirectoryInfo(ME3Directory.BioGamePath).EnumerateFiles("*.pcc", SearchOption.AllDirectories).ToArray();
                 int numScanned = 1;
                 SortedSet<string> navsNotAccountedFor = new SortedSet<string>();
                 foreach (var file in files)

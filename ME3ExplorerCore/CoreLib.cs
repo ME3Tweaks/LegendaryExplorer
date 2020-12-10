@@ -35,12 +35,25 @@ namespace ME3ExplorerCore
         private static bool initialized = false;
 
         /// <summary>
+        /// Allows you to specify the synchronization context, for example, if you want to use ContinueWithOnUIThread() before
+        /// the library has been initialized.
+        /// </summary>
+        /// <param name="scheduler"></param>
+        public static void SetSynchronizationContext(TaskScheduler scheduler)
+        {
+            SYNCHRONIZATION_CONTEXT = scheduler;
+        }
+
+        /// <summary>
         /// Call this before using anything in this library. It registers things such as package loaders
         /// </summary>
         public static void InitLib(TaskScheduler uiThreadScheduler, Action<string> packageSavingFailed = null)
         {
             if (initialized) return;
-            SYNCHRONIZATION_CONTEXT = uiThreadScheduler;
+            if (SYNCHRONIZATION_CONTEXT == null)
+            {
+                SYNCHRONIZATION_CONTEXT = uiThreadScheduler;
+            }
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;

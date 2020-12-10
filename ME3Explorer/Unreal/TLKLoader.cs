@@ -1,5 +1,4 @@
 ﻿using ME3ExplorerCore.ME1;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK;
 using ME3ExplorerCore.TLK.ME1;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ME3ExplorerCore.GameFilesystem;
 
 namespace ME3Explorer.Unreal
 {
@@ -31,7 +31,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
+                string path = ME1Directory.CookedPCPath + @"Packages\Dialog\GlobalTlk.upk";
                 if (File.Exists(path))
                 {
                     try
@@ -66,7 +66,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                string tlkPath = ME2Directory.cookedPath + "BIOGame_INT.tlk";
+                string tlkPath = ME2Directory.CookedPCPath + "BIOGame_INT.tlk";
                 ME2TalkFiles.LoadTlkData(tlkPath);
             }
         }
@@ -90,7 +90,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                string tlkPath = ME3Directory.cookedPath + "BIOGame_INT.tlk";
+                string tlkPath = ME3Directory.CookedPCPath + "BIOGame_INT.tlk";
                 ME3TalkFiles.LoadTlkData(tlkPath);
             }
         }

@@ -11,11 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using MassEffectModder.Images;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.Properties;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal.Classes;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -330,7 +329,7 @@ namespace ME3Explorer
                             if (baseName != "" && !neverStream)
                             {
                                 List<string> gameFiles =
-                                    MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.gamePath);
+                                    MEDirectories.EnumerateGameFiles(MEGame.ME1, ME1Directory.DefaultGamePath);
                                 if (gameFiles.Exists(s =>
                                     Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
                                 {
@@ -387,7 +386,7 @@ namespace ME3Explorer
             TextureImage.Source = null;
             try
             {
-                var imagebytes = Texture2D.GetTextureData(mipToLoad);
+                var imagebytes = Texture2D.GetTextureData(mipToLoad, mipToLoad.Export.Game);
                 CannotShowTextureTextVisibility = Visibility.Collapsed;
                 var bitmap = Image.convertRawToBitmapARGB(imagebytes, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(CurrentLoadedFormat));
                 //var bitmap = DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height, CurrentLoadedExport.FileRef.Platform.ToString());

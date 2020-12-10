@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.TLK.ME2ME3;
 using ME3ExplorerCore.Unreal;
 

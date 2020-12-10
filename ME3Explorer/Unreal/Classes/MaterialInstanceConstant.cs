@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ME3Explorer.Scene3D;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -162,7 +162,7 @@ namespace ME3Explorer.Unreal.Classes
             else
             {
                 //Hardcode ME3 path for now.
-                string globalShaderCachPath = Path.Combine(ME3Directory.cookedPath, "RefShaderCache-PC-D3D-SM3.upk");
+                string globalShaderCachPath = Path.Combine(ME3Directory.CookedPCPath, "RefShaderCache-PC-D3D-SM3.upk");
                 if (File.Exists(globalShaderCachPath))
                 {
                     using (var shaderUPK = MEPackageHandler.OpenMEPackage(globalShaderCachPath))

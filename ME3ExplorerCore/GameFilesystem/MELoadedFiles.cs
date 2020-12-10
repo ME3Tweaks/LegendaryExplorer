@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
-namespace ME3ExplorerCore.Helpers
+namespace ME3ExplorerCore.GameFilesystem
 {
     public static class MELoadedFiles
     {
         private static readonly string[] ME1FilePatterns = { "*.u", "*.upk", "*.sfm" };
         private const string ME2and3FilePattern = "*.pcc";
 
-        //private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
+        private static readonly string[] ME2and3FilePatternIncludeTFC = { "*.pcc", "*.tfc" };
 
+        public static void InvalidateCaches()
+        {
+            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = null;
+            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = null;
+        }
+
+        #region LoadedFiles
         private static CaseInsensitiveDictionary<string> cachedME1LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedME2LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedME3LoadedFiles;
@@ -35,7 +41,6 @@ namespace ME3ExplorerCore.Helpers
                     useCached &= !includeAFCs || !cachedME2LoadedFiles.Keys.Any(x => x.EndsWith(".afc"));
                     if (useCached) return cachedME2LoadedFiles;
                 }
-
                 if (game == MEGame.ME3 && cachedME3LoadedFiles != null)
                 {
                     bool useCached = true;
@@ -52,7 +57,7 @@ namespace ME3ExplorerCore.Helpers
                 return loadedFiles;
             }
 
-            var bgPath = MEDirectories.MEDirectories.BioGamePath(game);
+            var bgPath = MEDirectories.GetBioGamePath(game);
             if (bgPath != null)
             {
                 foreach (string directory in GetEnabledDLCFolders(game).OrderBy(dir => GetMountPriority(dir, game)).Prepend(bgPath))
@@ -71,10 +76,50 @@ namespace ME3ExplorerCore.Helpers
 
             return loadedFiles;
         }
+        #endregion
+
+        #region All Game Files
+        private static List<string> cachedME1TargetFiles;
+        private static List<string> cachedME2TargetFiles;
+        private static List<string> cachedME3TargetFiles;
+
+        /// <summary>
+        /// Gets a Dictionary of all loaded files in the given game. Key is the filename, value is file path
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static List<string> GetAllGameFiles(string gamePath, MEGame game, bool forceReload = false, bool includeTFC = false)
+        {
+            if (!forceReload)
+            {
+                if (game == MEGame.ME1 && cachedME1TargetFiles != null) return cachedME1TargetFiles;
+                if (game == MEGame.ME2 && cachedME2TargetFiles != null) return cachedME2TargetFiles;
+                if (game == MEGame.ME3 && cachedME3TargetFiles != null) return cachedME3TargetFiles;
+            }
+
+            //make dictionary from basegame files
+            var loadedFiles = new List<string>(2000);
+
+            foreach (string directory in MELoadedFiles.GetEnabledDLCFolders(game, gamePath).OrderBy(dir => GetMountPriority(dir, game)).Prepend(MEDirectories.GetBioGamePath(game, gamePath)))
+            {
+                foreach (string filePath in GetCookedFiles(game, directory, includeTFC))
+                {
+                    string fileName = Path.GetFileName(filePath);
+                    if (fileName != null) loadedFiles.Add(filePath);
+                }
+            }
+
+            if (game == MEGame.ME1) cachedME1TargetFiles = loadedFiles;
+            if (game == MEGame.ME2) cachedME2TargetFiles = loadedFiles;
+            if (game == MEGame.ME3) cachedME3TargetFiles = loadedFiles;
+
+            return loadedFiles;
+        }
+        #endregion
 
         public static IEnumerable<string> GetDLCFiles(MEGame game, string dlcName)
         {
-            var dlcPath = MEDirectories.MEDirectories.DLCPath(game);
+            var dlcPath = MEDirectories.GetDLCPath(game);
             if (dlcPath != null)
             {
                 string specificDlcPath = Path.Combine(dlcPath, dlcName);
@@ -88,11 +133,11 @@ namespace ME3ExplorerCore.Helpers
         }
 
         // this should have a null check on Biogamepath to avoid throwing an exception
-        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFolders(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetAllFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetEnabledDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
         // this should have a null check on Biogamepath to void throwing an exception
-        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFolders(game).Prepend(MEDirectories.MEDirectories.BioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
+        public static IEnumerable<string> GetOfficialFiles(MEGame game, bool includeTFCs = false, bool includeAFCs = false) => GetOfficialDLCFolders(game).Prepend(MEDirectories.GetBioGamePath(game)).SelectMany(directory => GetCookedFiles(game, directory, includeTFCs, includeAFCs));
 
-        internal static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
+        public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false)
         {
             if (game == MEGame.ME1)
                 return ME1FilePatterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, "CookedPC"), pattern, SearchOption.AllDirectories));
@@ -106,7 +151,7 @@ namespace ME3ExplorerCore.Helpers
         }
 
 
-        // These methods should check DLCpath to avoid throwing exception
+        // These methods should check DLCPath to avoid throwing exception
 
         /// <summary>
         /// Gets the base DLC directory of each unpacked DLC/mod that will load in game (eg. C:\Program Files (x86)\Origin Games\Mass Effect 3\BIOGame\DLC\DLC_EXP_Pack001)
@@ -114,12 +159,12 @@ namespace ME3ExplorerCore.Helpers
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string directoryOverride = null) =>
-            Directory.Exists(MEDirectories.MEDirectories.DLCPath(game))
-                ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.MEDirectories.DLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
+            Directory.Exists(MEDirectories.GetDLCPath(game))
+                ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.GetDLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
                 : Enumerable.Empty<string>();
         public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) =>
-            Directory.Exists(MEDirectories.MEDirectories.DLCPath(game))
-                ? Directory.EnumerateDirectories(MEDirectories.MEDirectories.DLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
+            Directory.Exists(MEDirectories.GetDLCPath(game))
+                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game)).Where(dir => IsOfficialDLC(dir, game))
                 : Enumerable.Empty<string>();
 
         public static string GetMountDLCFromDLCDir(string dlcDirectory, MEGame game) => Path.Combine(dlcDirectory, game == MEGame.ME3 ? "CookedPCConsole" : "CookedPC", "Mount.dlc");
@@ -137,7 +182,7 @@ namespace ME3ExplorerCore.Helpers
         public static bool IsOfficialDLC(string dir, MEGame game)
         {
             string dlcName = Path.GetFileName(dir);
-            return MEDirectories.MEDirectories.OfficialDLC(game).Contains(dlcName);
+            return MEDirectories.OfficialDLC(game).Contains(dlcName);
         }
 
         public static int GetMountPriority(string dlcDirectory, MEGame game)

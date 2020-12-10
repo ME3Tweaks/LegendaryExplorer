@@ -9,17 +9,15 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using FontAwesome5;
 using ME3Explorer.AnimationExplorer;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 
 namespace ME3Explorer.GameInterop
 {
@@ -319,7 +317,7 @@ namespace ME3Explorer.GameInterop
         private void BuildActorDict()
         {
             ActorDict.Clear();
-            string actorDumpPath = Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "ME3ExpActorDump.txt");
+            string actorDumpPath = Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "Win32", "ME3ExpActorDump.txt");
             if (!File.Exists(actorDumpPath))
             {
                 return;
@@ -645,7 +643,7 @@ namespace ME3Explorer.GameInterop
             fovTrackExport = camPathPackage.GetUExport(CamPath_FOVTrackIDX);
             ReloadCurveEdExports();
 
-            savedCamsFileWatcher = new FileSystemWatcher(ME3Directory.BinariesPath, "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
+            savedCamsFileWatcher = new FileSystemWatcher(ME3Directory.ExecutableFolder, "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
             savedCamsFileWatcher.Changed += SavedCamsFileWatcher_Changed;
             savedCamsFileWatcher.EnableRaisingEvents = true;
 

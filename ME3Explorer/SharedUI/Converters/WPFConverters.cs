@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
@@ -59,7 +59,7 @@ namespace ME3Explorer
         {
             if (value is string path)
             {
-                if (path.StartsWith(ME3Directory.cookedPath) || path.StartsWith(ME2Directory.cookedPath) || path.StartsWith(ME1Directory.cookedPath))
+                if (path.StartsWith(ME3Directory.CookedPCPath) || path.StartsWith(ME2Directory.CookedPCPath) || path.StartsWith(ME1Directory.CookedPCPath))
                 {
                     return "Basegame";
                 }

@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows.Forms;
 using ME3Explorer.Soundplorer;
-using ME3ExplorerCore.Gammtek.IO;
-using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using NAudio.Wave;
 
 namespace ME3Explorer.Unreal.Classes
 {

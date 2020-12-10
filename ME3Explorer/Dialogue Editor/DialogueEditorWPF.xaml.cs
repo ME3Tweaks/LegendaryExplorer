@@ -22,14 +22,12 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Dialogue_Editor.BioConversationExtended;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI.Interfaces;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
@@ -3901,13 +3899,13 @@ namespace ME3Explorer.Dialogue_Editor
                     switch (Pcc.Game)
                     {
                         case MEGame.ME1:
-                            rootPath = ME1Directory.gamePath;
+                            rootPath = ME1Directory.DefaultGamePath;
                             break;
                         case MEGame.ME2:
-                            rootPath = ME2Directory.gamePath;
+                            rootPath = ME2Directory.DefaultGamePath;
                             break;
                         case MEGame.ME3:
-                            rootPath = ME3Directory.gamePath;
+                            rootPath = ME3Directory.DefaultGamePath;
                             break;
                     }
                     filePath = Directory.GetFiles(rootPath, Level, SearchOption.AllDirectories).FirstOrDefault();

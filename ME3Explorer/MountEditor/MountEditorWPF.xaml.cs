@@ -1,16 +1,12 @@
-﻿using ME3Explorer.SharedUI;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Misc;
-using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.TLK;
 
 namespace ME3Explorer.MountEditor
