@@ -296,7 +296,7 @@ namespace ME3ExplorerCore.Unreal
 
         public MemoryStream DecompressEntry(FileEntryStruct e)
         {
-            Debug.WriteLine("Decompressing " + e.FileName);
+            //Debug.WriteLine("Decompressing " + e.FileName);
             MemoryStream result = new MemoryStream();
             uint count = 0;
             byte[] inputBlock;
