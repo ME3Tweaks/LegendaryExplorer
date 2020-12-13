@@ -43,7 +43,8 @@
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120">
             <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
-            <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" />
+            <TextBlock Text="Press enter to save the string. Press Shift+Enter to enter a newline." DockPanel.Dock="Bottom" Background="LightGray"/>
+            <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" AcceptsReturn="True" PreviewKeyDown="TlkStrField_PreviewKeyDown" />
         </DockPanel>
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">
             <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >

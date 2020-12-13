@@ -19,6 +19,7 @@ using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX;
@@ -31,6 +32,37 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
+            if (d.ShowDialog() == true)
+            {
+
+                using var compactedAlready = MEPackageHandler.OpenMEPackage(d.FileName);
+                var fname = Path.GetFileNameWithoutExtension(sourcePackage.FilePath);
+                var exportsToKeep = sourcePackage.Exports
+                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" || x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
+
+                var entriesToTrash = new ConcurrentBag<ExportEntry>();
+                Parallel.ForEach(sourcePackage.Exports, export =>
+                {
+                    var matchingExport = exportsToKeep.FirstOrDefault(x => x.FullPath == export.FullPath);
+                    if (matchingExport == null)
+                    {
+                        matchingExport = compactedAlready.Exports.FirstOrDefault(x => x.FullPath == export.FullPath);
+                    }
+
+                    if (matchingExport == null)
+                    {
+                        //Debug.WriteLine($"Trash {export.FullPath}");
+                        entriesToTrash.Add(export);
+                    }
+                });
+
+                EntryPruner.TrashEntries(sourcePackage, entriesToTrash);
+            }
+        }
+
         public static void PortME1EntryMenuToME3ViaBioPChar(IMEPackage entryMenuPackage)
         {
             // Open packages

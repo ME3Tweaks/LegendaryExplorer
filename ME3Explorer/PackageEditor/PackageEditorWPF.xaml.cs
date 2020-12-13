@@ -2754,7 +2754,7 @@ namespace ME3Explorer
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
                     {
-                        Debug.WriteLine("Reorder req for " + tvi.UIndex);
+                        //Debug.WriteLine("Reorder req for " + tvi.UIndex);
                         TreeViewEntry newParent = tree.FirstOrDefault(x => x.UIndex == tvi.Entry.idxLink);
                         if (newParent == null)
                         {
@@ -4800,6 +4800,10 @@ namespace ME3Explorer
         private void PortME1EntryMenu_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.PortME1EntryMenuToME3ViaBioPChar(Pcc);
+        }
+        private void CompactInFile_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
         }
     }
 }

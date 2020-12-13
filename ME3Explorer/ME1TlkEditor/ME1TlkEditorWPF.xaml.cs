@@ -116,7 +116,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             if (DisplayedString_ListBox == null) return false;
             var selectedItem = DisplayedString_ListBox.SelectedItem as ME1TalkFile.TLKStringRef;
-            return selectedItem != null && selectedItem.Data != null && editBox.Text.Trim() != selectedItem.Data;
+            return selectedItem?.Data != null && editBox.Text.Trim() != selectedItem.Data;
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
@@ -384,6 +384,11 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.ReplaceAll(LoadedStrings.Where(x => x.StringID > 0).ToList()); //remove 0 or null strings.
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
             FileModified = false;
+
+            AddRecent(filepath, false);
+            SaveRecentList();
+            RefreshRecent(true, RFiles);
+            Window.GetWindow(this).Title = "TLK Editor - " + filepath;
         }
 
         public void LoadFileFromStream(Stream stream)
@@ -415,10 +420,6 @@ namespace ME3Explorer.ME1TlkEditor
                 {
 #endif
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
-                Window.GetWindow(this).Title = "TLK Editor - " + d.FileName;
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -501,5 +502,18 @@ namespace ME3Explorer.ME1TlkEditor
         }
 
         internal override string DataFolder { get; } = "TLKEditorWPF";
+
+        private void TlkStrField_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && Keyboard.Modifiers != ModifierKeys.Shift)
+            {
+                e.Handled = true;
+            }
+
+            if (CanSaveString(null))
+            {
+                SaveString(null);
+            }
+        }
     }
 }

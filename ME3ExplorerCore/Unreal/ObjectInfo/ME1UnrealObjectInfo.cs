@@ -428,15 +428,28 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
-        public static bool InheritsFrom(string className, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
         {
-            while (Classes.ContainsKey(className))
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            while (true)
             {
                 if (className == baseClass)
                 {
                     return true;
                 }
-                className = Classes[className].baseClass;
+
+                if (customClassInfos != null && customClassInfos.ContainsKey(className))
+                {
+                    className = customClassInfos[className].baseClass;
+                }
+                else if (Classes.ContainsKey(className))
+                {
+                    className = Classes[className].baseClass;
+                }
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
