@@ -31,26 +31,26 @@ namespace ME3ExplorerCore.Unreal
                 _ => false,
             };
 
-        public static bool IsA(this ClassInfo info, string baseClass, MEGame game) => IsA(info.ClassName, baseClass, game);
-        public static bool IsA(this IEntry entry, string baseClass) => IsA(entry.ClassName, baseClass, entry.FileRef.Game);
-        public static bool IsA(string className, string baseClass, MEGame game) =>
+        public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
+        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.FileRef.Game, customClassInfos);
+        public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
             className == baseClass || game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
 
-        public static bool InheritsFrom(this IEntry entry, string baseClass) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game);
-        public static bool InheritsFrom(string className, string baseClass, MEGame game) =>
+        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos);
+        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
             className == baseClass || game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
 
@@ -68,7 +68,7 @@ namespace ME3ExplorerCore.Unreal
         /// <returns></returns>
         public static bool IsAKnownNativeClass(string fullPathName, MEGame game)
         {
-            switch(game)
+            switch (game)
             {
                 case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
                 case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
@@ -847,15 +847,28 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
-        public static bool InheritsFrom(string className, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
         {
-            while (Classes.ContainsKey(className))
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            while (true)
             {
                 if (className == baseClass)
                 {
                     return true;
                 }
-                className = Classes[className].baseClass;
+
+                if (customClassInfos != null && customClassInfos.ContainsKey(className))
+                {
+                    className = customClassInfos[className].baseClass;
+                }
+                else if (Classes.ContainsKey(className))
+                {
+                    className = Classes[className].baseClass;
+                }
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
