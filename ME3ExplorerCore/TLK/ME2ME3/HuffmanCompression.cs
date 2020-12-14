@@ -20,25 +20,6 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
         private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
 
-        //private class TLKEntry : IComparable
-        //{
-        //    public int StringID;
-        //    public int position;
-        //    public string data;
-
-        //    public TLKEntry(int StringID, int position, string data)
-        //    {
-        //        this.StringID = StringID;
-        //        this.position = position;
-        //        this.data = data;
-        //    }
-
-        //    public int CompareTo(object obj)
-        //    {
-        //       TLKEntry entry = (TLKEntry)obj;
-        //       return position.CompareTo(entry.position);
-        //    }
-        //}
 
         private class HuffmanNode
         {
@@ -127,96 +108,20 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             PrepareHuffmanCoding();
         }
 
-        /// <summary>
         /// Dumps data from memory to TLK compressed file format.
         /// <remarks>
         /// Compressed data should be read into memory first, by LoadInputData method.
         /// </remarks>
         /// </summary>
         /// <param name="fileName"></param>
-        public void SaveToTlkFile(string fileName)
+        public static void SaveToTlkFile(string fileName, List<TLKStringRef> stringRefs = null) // having this be null in static method makes no sense. probably should not let it be null
         {
-            File.Delete(fileName);
+            SaveToTlkStream(stringRefs).WriteToFile(fileName);
+        }
 
-            /* converts Huffmann Tree to binary form */
-            List<int> treeBuffer = ConvertHuffmanTreeToBuffer();
-
-            /* preparing data and entries for writing to file
-             * entries list consists of pairs <String ID, Offset> */
-            List<BitArray> binaryData = new List<BitArray>();
-            Dictionary<int, int> entries1 = new Dictionary<int, int>();
-            Dictionary<int, int> entries2 = new Dictionary<int, int>();
-            int offset = 0;
-
-            foreach (var entry in _inputData)
-            {
-                if (entry.StringID < 0)
-                {
-                    if (!entries1.ContainsKey(entry.StringID))
-                        entries1.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
-                    else
-                        entries2.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
-                    continue;
-                }
-
-                if (!entries1.ContainsKey(entry.StringID))
-                    entries1.Add(entry.StringID, offset);
-                else
-                    entries2.Add(entry.StringID, offset);
-
-                /* for every character in a string, put it's binary code into data array */
-                foreach (char c in entry.ASCIIData)
-                {
-                    binaryData.Add(_huffmanCodes[c]);
-                    offset += _huffmanCodes[c].Count;
-                }
-            }
-
-            /* preparing TLK Header */
-            int magic = 7040084;
-            int ver = 3;
-            int min_ver = 2;
-            int entry1Count = entries1.Count;
-            int entry2Count = entries2.Count;
-            int treeNodeCount = treeBuffer.Count() / 2;
-            int dataLength = offset / 8;
-            if (offset % 8 > 0)
-                ++dataLength;
-
-            BinaryWriter bw = new BinaryWriter(File.OpenWrite(fileName));
-
-            /* writing TLK Header */
-            bw.Write(magic);
-            bw.Write(ver);
-            bw.Write(min_ver);
-            bw.Write(entry1Count);
-            bw.Write(entry2Count);
-            bw.Write(treeNodeCount);
-            bw.Write(dataLength);
-
-            /* writing entries */
-            foreach (var entry in entries1)
-            {
-                bw.Write(entry.Key);
-                bw.Write(entry.Value);
-            }
-            foreach (var entry in entries2)
-            {
-                bw.Write(entry.Key);
-                bw.Write(entry.Value);
-            }
-
-            /* writing HuffmanTree */
-            foreach (int element in treeBuffer)
-            {
-                bw.Write(element);
-            }
-
-            /* writing data */
-            byte[] data = BitArrayListToByteArray(binaryData, offset);
-            bw.Write(data);
-
-            bw.Close();
+        public void SaveToFile(string fileName)
+        {
+            SaveToTlkFile(fileName, _inputData);
         }
 
         /// <summary>
@@ -325,9 +230,6 @@ namespace ME3ExplorerCore.TLK.ME2ME3
 
             BuildHuffmanTree();
             BuildCodingArray();
-
-            // DebugTools.LoadHuffmanTree(_huffmanCodes);
-            // DebugTools.PrintLookupTable();
         }
 
         /// <summary>
@@ -493,6 +395,94 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         private static int CompareNodes(HuffmanNode L1, HuffmanNode L2)
         {
             return L1.FrequencyCount.CompareTo(L2.FrequencyCount);
+        }
+
+        public static MemoryStream SaveToTlkStream(List<TLKStringRef> stringRefs)
+        {
+            var memStream = new MemoryStream();
+            HuffmanCompression hc = new HuffmanCompression();
+            if (stringRefs != null)
+            {
+                hc._inputData = stringRefs.OrderBy(x => x.CalculatedID).ToList();
+                hc.PrepareHuffmanCoding();
+            }
+            /* converts Huffmann Tree to binary form */
+            List<int> treeBuffer = hc.ConvertHuffmanTreeToBuffer();
+
+            /* preparing data and entries for writing to file
+             * entries list consists of pairs <String ID, Offset> */
+            List<BitArray> binaryData = new List<BitArray>();
+            Dictionary<int, int> maleStrings = new Dictionary<int, int>();
+            Dictionary<int, int> femaleStrings = new Dictionary<int, int>();
+            int offset = 0;
+
+            foreach (var entry in hc._inputData)
+            {
+                if (entry.StringID < 0)
+                {
+                    if (!maleStrings.ContainsKey(entry.StringID))
+                        maleStrings.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
+                    else
+                        femaleStrings.Add(entry.StringID, Convert.ToInt32(entry.ASCIIData));
+                    continue;
+                }
+
+                if (!maleStrings.ContainsKey(entry.StringID))
+                    maleStrings.Add(entry.StringID, offset);
+                else
+                    femaleStrings.Add(entry.StringID, offset);
+
+                /* for every character in a string, put it's binary code into data array */
+                foreach (char c in entry.ASCIIData)
+                {
+                    binaryData.Add(hc._huffmanCodes[c]);
+                    offset += hc._huffmanCodes[c].Count;
+                }
+            }
+
+            /* preparing TLK Header */
+            int magic = 7040084; //Tlk\0
+            int ver = 3;
+            int min_ver = 2;
+            int entry1Count = maleStrings.Count;
+            int entry2Count = femaleStrings.Count;
+            int treeNodeCount = treeBuffer.Count() / 2;
+            int dataLength = offset / 8;
+            if (offset % 8 > 0)
+                ++dataLength;
+
+
+            /* writing TLK Header */
+            memStream.WriteInt32(magic);
+            memStream.WriteInt32(ver);
+            memStream.WriteInt32(min_ver);
+            memStream.WriteInt32(entry1Count);
+            memStream.WriteInt32(entry2Count);
+            memStream.WriteInt32(treeNodeCount);
+            memStream.WriteInt32(dataLength);
+
+            /* writing entries */
+            foreach (var entry in maleStrings)
+            {
+                memStream.WriteInt32(entry.Key);
+                memStream.WriteInt32(entry.Value);
+            }
+            foreach (var entry in femaleStrings)
+            {
+                memStream.WriteInt32(entry.Key);
+                memStream.WriteInt32(entry.Value);
+            }
+
+            /* writing HuffmanTree */
+            foreach (int element in treeBuffer)
+            {
+                memStream.WriteInt32(element);
+            }
+
+            /* writing data */
+            byte[] data = BitArrayListToByteArray(binaryData, offset);
+            memStream.WriteFromBuffer(data);
+            return memStream;
         }
     }
 }

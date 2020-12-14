@@ -4,7 +4,7 @@
     <Description>Core library for ME3Explorer, a toolset for modding the Mass Effect Trilogy</Description>
     <Company>ME3Tweaks</Company>
     <Authors>ME3Tweaks</Authors>
-    <Version>5.0.0.0</Version>
+    <Version>5.0.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -112,7 +112,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" Condition="$(Configuration.Contains('Azure'))"/>
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" Condition="$(Configuration.Contains('Azure'))" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
   </ItemGroup>

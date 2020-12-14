@@ -104,7 +104,7 @@ namespace ME3ExplorerCore.Packages
             return;
         }
 
-        /// <summary>
+        /// <summary>S
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
         /// </summary>
         /// <param name="filePath">full path + file name of desired udk file.</param>
@@ -221,8 +221,10 @@ namespace ME3ExplorerCore.Packages
         /// Saves this UDK package to disk. The compression flag is not used by this method, the package will always save uncompressed.
         /// </summary>
         /// <param name="compress"></param>
+        /// <param name="includeAdditionalPackagesToCook">This value is not used by this call</param>
+        /// <param name="includeDependencyTable">This value is not used by this call</param>
         /// <returns></returns>
-        public MemoryStream SaveToStream(bool compress)
+        public MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
             if (exports.Any(exp => exp.ClassName == "Level"))
             {

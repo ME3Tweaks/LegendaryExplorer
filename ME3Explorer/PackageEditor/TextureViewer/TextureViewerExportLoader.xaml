@@ -5,25 +5,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-    mc:Ignorable="d" 
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             xmlns:sharedUi="clr-namespace:ME3Explorer.SharedUI"
+             mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <Converters:EntryGameMatchVisibilityConverter x:Key="EntryGameMatchVisibilityConverter"/>
-        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibiltyConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
     </UserControl.Resources>
     <DockPanel>
-        <ListBox Name="Mips_ListBox"  DockPanel.Dock="Left"  MinWidth="200" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged" ScrollViewer.CanContentScroll="False" Visibility="{Binding ViewerModeOnly, Converter={StaticResource BoolToVisibiltyConverter}, ConverterParameter='Not'}">
+        <ListBox Name="Mips_ListBox"  DockPanel.Dock="Left"  MinWidth="200" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged" ScrollViewer.CanContentScroll="False"
+                 Visibility="{Binding ViewerModeOnly, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}">
             <ListBox.ItemContainerStyle>
-                <Style>
+                <Style TargetType="ListBoxItem">
                     <Style.Triggers>
                         <Trigger Property="Selector.IsSelected" Value="True">
                             <Setter Property="TextElement.FontWeight" Value="Bold"/>
                         </Trigger>
                     </Style.Triggers>
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Drop mip" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.DropMipCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </ListBox.ItemContainerStyle>
+
         </ListBox>
         <DockPanel>
             <Grid DockPanel.Dock="Bottom">
@@ -46,7 +57,6 @@
                 <Button Grid.Row="1" Grid.Column="2" Content="Replace from File" Command="{Binding ReplaceFromPNGCommand}" Padding="5,2" Margin="3" />
                 <TextBlock Grid.Row="0" Grid.Column="3" Text="Texture Cache:" VerticalAlignment="Center" Margin="3,6" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}"/>
                 <ComboBox Grid.Row="1" Grid.Column="3" Width="200" VerticalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvailableTFCNames}"  ToolTip="Changing the texture cache requires changing the texture" Name="TextureCacheComboBox" Visibility="{Binding CurrentLoadedExport, Converter={StaticResource EntryGameMatchVisibilityConverter}, ConverterParameter=ME1_Not}" IsEnabled="{Binding ViewerModeOnly, Converter={StaticResource InverseBooleanConverter}}"/>
-
             </Grid>
             <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
                 <StackPanel Orientation="Horizontal">

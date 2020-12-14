@@ -6,16 +6,10 @@ using System.Windows.Threading;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script;
 using ME3Script.Analysis.Visitors;
-using ME3Script.Compiling;
 using ME3Script.Compiling.Errors;
-using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
-using ME3Script.Language.Util;
-using ME3Script.Lexing;
-using ME3Script.Parsing;
 
 namespace ME3Explorer.ME3Script
 {

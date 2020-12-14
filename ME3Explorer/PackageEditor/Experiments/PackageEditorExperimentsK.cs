@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
@@ -52,7 +51,7 @@ namespace ME3Explorer.PackageEditor.Experiments
             };
             var fails = new List<string>();
             string busytext = null;
-            if ((BioPSource.Game == MEGame.ME2 && ME2Directory.gamePath == null) || (BioPSource.Game == MEGame.ME1 && ME1Directory.gamePath == null) || (BioPSource.Game == MEGame.ME3 && ME3Directory.gamePath == null) || BioPSource.Game == MEGame.UDK)
+            if ((BioPSource.Game == MEGame.ME2 && ME2Directory.DefaultGamePath == null) || (BioPSource.Game == MEGame.ME1 && ME1Directory.DefaultGamePath == null) || (BioPSource.Game == MEGame.ME3 && ME3Directory.DefaultGamePath == null) || BioPSource.Game == MEGame.UDK)
             {
                 fails.Add("Source Game Directory not found");
                 return fails;
@@ -81,7 +80,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                         var filename = lskexp.GetProperty<NameProperty>("PackageName");
                         if ((filename?.Value.ToString().ToLowerInvariant().StartsWith("bioa") ?? false) || (filename?.Value.ToString().ToLowerInvariant().StartsWith("biod") ?? false))
                         {
-                            var filePath = Directory.GetFiles(ME2Directory.gamePath, $"{filename.Value.Instanced}.pcc", SearchOption.AllDirectories).FirstOrDefault();
+                            var filePath = Directory.GetFiles(ME2Directory.DefaultGamePath, $"{filename.Value.Instanced}.pcc", SearchOption.AllDirectories).FirstOrDefault();
                             conversionData.FilesToCopy.TryAdd(filename.Value.Instanced, filePath);
                         }
                     }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -109,20 +109,20 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies, cache);
             }
 
-            // Reindex
-            Dictionary<string, ExportEntry> itemsToReindex = new Dictionary<string, ExportEntry>();
-            foreach (var v in relinkMap.Values)
-            {
-                if (v is ExportEntry export && export.indexValue > 0)
-                {
-                    itemsToReindex[export.FullPath] = export; // Match on full path. Not instanced full path!
-                }
-            }
+            // Reindex - disabled for now as it causes issues
+            //Dictionary<string, ExportEntry> itemsToReindex = new Dictionary<string, ExportEntry>();
+            //foreach (var v in relinkMap.Values)
+            //{
+            //    if (v is ExportEntry export && export.indexValue > 0)
+            //    {
+            //        itemsToReindex[export.FullPath] = export; // Match on full path. Not instanced full path!
+            //    }
+            //}
 
-            foreach (var item in itemsToReindex)
-            {
-                ReindexExportEntriesWithSamePath(item.Value);
-            }
+            //foreach (var item in itemsToReindex)
+            //{
+            //    ReindexExportEntriesWithSamePath(item.Value);
+            //}
 
             cache?.Dispose();
             return relinkResults;

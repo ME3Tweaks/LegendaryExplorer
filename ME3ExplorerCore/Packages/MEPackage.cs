@@ -111,11 +111,11 @@ namespace ME3ExplorerCore.Packages
         public byte[] getHeader()
         {
             var ms = new MemoryStream();
-            WriteHeader(ms);
+            WriteHeader(ms, includeAdditionalPackageToCook: true);
             return ms.ToArray();
         }
 
-#region HeaderMisc
+        #region HeaderMisc
         private int Gen0ExportCount;
         private int Gen0NameCount;
         private int Gen0NetworkedObjectCount;
@@ -126,11 +126,12 @@ namespace ME3ExplorerCore.Packages
         private uint packageSource;
         private int unknown4;
         private int unknown6;
-#endregion
+        #endregion
 
-        static bool isLoaderRegistered;
-        static bool isStreamLoaderRegistered;
-
+        private static bool isLoaderRegistered;
+        private static bool isStreamLoaderRegistered;
+        private static bool isQuickStreamLoaderRegistered;
+        private static bool isQuickLoaderRegistered;
         public static Func<string, MEGame, MEPackage> RegisterLoader()
         {
             if (isLoaderRegistered)
@@ -149,6 +150,32 @@ namespace ME3ExplorerCore.Packages
             };
         }
 
+        public static Func<string, MEPackage> RegisterQuickLoader()
+        {
+            if (isQuickLoaderRegistered)
+            {
+                throw new Exception(nameof(MEPackage) + " quickloader can only be initialized once");
+            }
+
+            isQuickLoaderRegistered = true;
+            return f =>
+            {
+                using var fs = File.OpenRead(f); //This is faster than reading whole package file in
+                return new MEPackage(fs, f, onlyHeader: true);
+            };
+        }
+
+        public static Func<Stream, string, MEPackage> RegisterQuickStreamLoader()
+        {
+            if (isQuickStreamLoaderRegistered)
+            {
+                throw new Exception(nameof(MEPackage) + " quickstreamloader can only be initialized once");
+            }
+
+            isQuickStreamLoaderRegistered = true;
+            return (s, associatedFilePath) => new MEPackage(s, associatedFilePath, onlyHeader: true);
+        }
+
         public static Func<Stream, string, MEPackage> RegisterStreamLoader()
         {
             if (isStreamLoaderRegistered)
@@ -160,7 +187,27 @@ namespace ME3ExplorerCore.Packages
             return (s, associatedFilePath) => new MEPackage(s, associatedFilePath);
         }
 
+        /// <summary>
+        /// Gets a decompressed stream of a package. Mixin rules makes it follow the following rules if the package is compressed and needs to be decompressed:
+        /// 1. Additional packages to cook is not written to the stream.
+        /// 2. Dependency table is included.
+        /// If the package is not compressed, the additional packages header is written.
+        /// ME3CMM decompression code was based on ME3Exp 2.0 which would do this when decompressing files. If a file was already decompressed, it would not modify it, so it did not affect SFAR files.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="mixinRules"></param>
+        /// <returns></returns>
+        public static MemoryStream GetDecompressedPackageStream(MemoryStream stream, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
+        {
+            var package = MEPackageHandler.OpenMEPackageFromStream(stream);
+            return package.SaveToStream(false, includeAdditionalPackagesToCook, includeDependencyTable);
+        }
 
+        /// <summary>
+        /// Creates a new blank MEPackage object.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="filePath"></param>
         private MEPackage(MEGame game, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
             //new Package
@@ -175,11 +222,12 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
-        private MEPackage(Stream fs, string filePath = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath: null)
+        /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
+        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
         {
             //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
-#region Header
+            #region Header
 
             EndianReader packageReader = EndianReader.SetupForPackageReading(fs);
             packageReader.SkipInt32(); //skip magic as we have already read it
@@ -303,7 +351,7 @@ namespace ME3ExplorerCore.Packages
             Flags = (EPackageFlags)packageReader.ReadUInt32();
 
             //Xenon Demo ME3 doesn't read this. Xenon ME3 Retail does
-            if (Game == MEGame.ME3 
+            if (Game == MEGame.ME3
                 && (Flags.HasFlag(EPackageFlags.Cooked) || Platform != GamePlatform.PC) && licenseeVersion != ME3Xenon2011DemoLicenseeVersion)
             {
                 //Consoles are always cooked.
@@ -372,11 +420,11 @@ namespace ME3ExplorerCore.Packages
             }
 
             //Debug.WriteLine($"Compression type {filePath}: {compressionType}");
-            int numChunks = packageReader.ReadInt32();
+            NumCompressedChunksAtLoad = packageReader.ReadInt32();
 
             //read package source
             var savedPos = packageReader.Position;
-            packageReader.Skip(numChunks * 16); //skip chunk table so we can find package tag
+            packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
 
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
@@ -402,15 +450,17 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
+            if (onlyHeader) return; // That's all we need to parse. 
+            #endregion
+
+            #region Decompression of package data
             packageReader.Position = savedPos; //restore position to chunk table
             Stream inStream = fs;
-            if (IsCompressed && numChunks > 0)
+            if (IsCompressed && NumCompressedChunksAtLoad > 0)
             {
                 inStream = CompressionHelper.DecompressPackage(packageReader, compressionFlagPosition, game: Game, platform: Platform);
             }
-
-
-#endregion
+            #endregion
 
             var endian = packageReader.Endian;
             packageReader = new EndianReader(inStream) { Endian = endian };
@@ -530,7 +580,7 @@ namespace ME3ExplorerCore.Packages
 
 
 
-        public static Action<MEPackage, string, bool, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<MEPackage, string, bool, bool, bool, bool> RegisterSaver() => saveByReconstructing;
 
         /// <summary>
         /// Saves the package to disk by reconstructing the package file
@@ -539,10 +589,10 @@ namespace ME3ExplorerCore.Packages
         /// <param name="path"></param>
         /// <param name="isSaveAs"></param>
         /// <param name="compress"></param>
-        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress)
+        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable)
         {
-            var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress);
-            saveStream.WriteToFile(path);
+            var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+            saveStream.WriteToFile(path ?? mePackage.FilePath);
             if (!isSaveAs)
             {
                 mePackage.AfterSave();
@@ -555,11 +605,11 @@ namespace ME3ExplorerCore.Packages
         /// <param name="package"></param>
         /// <param name="uncompressedStream"></param>
         /// <returns></returns>
-        private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream)
+        private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
             MemoryStream compressedStream = new MemoryStream();
-            package.WriteHeader(compressedStream); //for positioning
+            package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
             var chunks = new List<CompressionHelper.Chunk>();
             var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
 
@@ -581,7 +631,7 @@ namespace ME3ExplorerCore.Packages
             chunk.uncompressedSize = package.FullHeaderSize - package.NameOffset;
             chunk.uncompressedOffset = package.NameOffset;
 
-#region DEBUG STUFF
+            #region DEBUG STUFF
             //string firstElement = "Tables";
             //string lastElement = firstElement;
 
@@ -590,7 +640,7 @@ namespace ME3ExplorerCore.Packages
             //uncompressedStream.Position = NameOffset;
             //m2.WriteFromStream(uncompressedStream, chunk.uncompressedSize);
             //uncompressedStream.Position = pos;
-#endregion
+            #endregion
 
             //Export data chunks
             int chunkNum = 0;
@@ -619,7 +669,7 @@ namespace ME3ExplorerCore.Packages
 
             //Rewrite header with chunk table information so we can position the data blocks after table
             compressedStream.Position = 0;
-            package.WriteHeader(compressedStream, compressionType, chunks);
+            package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
             MemoryStream m1 = new MemoryStream();
 
             for (int c = 0; c < chunks.Count; c++)
@@ -694,7 +744,7 @@ namespace ME3ExplorerCore.Packages
 
             //Write final header
             compressedStream.Position = 0;
-            package.WriteHeader(compressedStream, compressionType, chunks);
+            package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
             return compressedStream;
         }
 
@@ -704,7 +754,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="mePackage"></param>
         /// <param name="isSaveAs"></param>
         /// <returns></returns>
-        private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress)
+        private static MemoryStream saveByReconstructingToStream(MEPackage mePackage, bool isSaveAs, bool compress, bool includeAdditionalPackageToCook = true, bool includeDependencyTable = true)
         {
             if (mePackage.Platform != GamePlatform.PC) throw new Exception("Cannot save packages for platforms other than PC");
             //if (mePackage.Game == MEGame.ME1 && compress) throw new Exception("Cannot save ME1 packages compressed due to texture linking issues");
@@ -726,7 +776,7 @@ namespace ME3ExplorerCore.Packages
                 var ms = new MemoryStream();
 
                 //just for positioning. We write over this later when the header values have been updated
-                mePackage.WriteHeader(ms);
+                mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
 
                 //name table
                 mePackage.NameOffset = (int)ms.Position;
@@ -768,7 +818,19 @@ namespace ME3ExplorerCore.Packages
                 }
 
                 mePackage.DependencyTableOffset = (int)ms.Position;
-                ms.WriteInt32(0); //zero-count DependencyTable
+
+                if (includeDependencyTable)
+                {
+                    //Unreal Engine style (keeping in line with the package specification)
+                    //write the table out. No count for this table.
+                    ms.WriteFromBuffer(new byte[mePackage.ExportCount * 4]);
+                }
+                else
+                {
+                    //ME3EXP STYLE -BLANK(?) table
+                    ms.WriteInt32(0); //Technically this is not a count. The count is the number of exports. but this is just for consistency with ME3Exp.
+                }
+
                 mePackage.FullHeaderSize = mePackage.ImportExportGuidsOffset = (int)ms.Position;
 
                 //export data
@@ -810,7 +872,7 @@ namespace ME3ExplorerCore.Packages
 
                 //re-write header with updated values
                 ms.JumpTo(0);
-                mePackage.WriteHeader(ms);
+                mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
 
                 if (compress)
                     return compressPackage(mePackage, ms);
@@ -833,9 +895,9 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        public MemoryStream SaveToStream(bool compress = false)
+        public MemoryStream SaveToStream(bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
-            return saveByReconstructingToStream(this, true, compress);
+            return saveByReconstructingToStream(this, true, compress, includeAdditionalPackagesToCook, includeDependencyTable);
         }
 
         private static void UpdateShaderCacheOffsets(ExportEntry export, int newDataOffset)
@@ -936,7 +998,7 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null)
+        private void WriteHeader(Stream ms, CompressionType compressionType = CompressionType.None, List<CompressionHelper.Chunk> chunks = null, bool includeAdditionalPackageToCook = true)
         {
             ms.WriteUInt32(packageTagLittleEndian);
             //version
@@ -1093,18 +1155,28 @@ namespace ME3ExplorerCore.Packages
 
             if (Game == MEGame.ME3 || Game == MEGame.ME2)
             {
-                ms.WriteInt32(AdditionalPackagesToCook.Count);
-                foreach (var pname in AdditionalPackagesToCook)
+                // ME3Explorer should always save with this flag set to true.
+                // Only things that depend on legacy configuration (like Mixins) should
+                // set it to false.
+                if (includeAdditionalPackageToCook)
                 {
-                    if (Game == MEGame.ME2)
+                    ms.WriteInt32(AdditionalPackagesToCook.Count);
+                    foreach (var pname in AdditionalPackagesToCook)
                     {
-                        //ME2 Uses ASCII
-                        ms.WriteUnrealStringASCII(pname);
+                        if (Game == MEGame.ME2)
+                        {
+                            //ME2 Uses ASCII
+                            ms.WriteUnrealStringASCII(pname);
+                        }
+                        else
+                        {
+                            ms.WriteUnrealStringUnicode(pname);
+                        }
                     }
-                    else
-                    {
-                        ms.WriteUnrealStringUnicode(pname);
-                    }
+                }
+                else
+                {
+                    ms.WriteInt32(0);
                 }
             }
         }

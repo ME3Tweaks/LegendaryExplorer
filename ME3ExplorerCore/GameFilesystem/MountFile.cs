@@ -1,7 +1,7 @@
-﻿using ME3ExplorerCore.Helpers;
-using System.IO;
+﻿using System.IO;
+using ME3ExplorerCore.Helpers;
 
-namespace ME3ExplorerCore.MEDirectories
+namespace ME3ExplorerCore.GameFilesystem
 {
     public enum EMountFileFlag
     {

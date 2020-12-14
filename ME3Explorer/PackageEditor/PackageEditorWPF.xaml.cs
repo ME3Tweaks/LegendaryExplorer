@@ -21,33 +21,25 @@ using ME3Explorer.Dialogue_Editor;
 using ME3Explorer.MaterialViewer;
 using ME3Explorer.ME3Tweaks;
 using ME3Explorer.Meshplorer;
-using ME3Explorer.StaticLighting;
 using GongSolutions.Wpf.DragDrop;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using Newtonsoft.Json;
 using ME3Explorer.PackageEditor.Experiments;
 using ME3Explorer.Packages;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
-using Microsoft.AppCenter.Analytics;
-using UsefulThings;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using Guid = System.Guid;
-using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
-using ME3ExplorerCore.Unreal.Classes;
 using ME3Script;
-using JetBrains.Profiler.Api;
-using JetBrains.Profiler.SelfApi;
+using ME3ExplorerCore.GameFilesystem;
 
 namespace ME3Explorer
 {
@@ -1600,6 +1592,11 @@ namespace ME3Explorer
                         badReferences.Add(new EntryStringPair(entry,
                             $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
                     }
+                    else if (Pcc.GetEntry(op.Value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
+                    {
+                        badReferences.Add(new EntryStringPair(entry,
+                            $"[Nested property] Export {op.Value} is a Trashed object, Export #{entry.UIndex} {entry.InstancedFullPath}"));
+                    }
                 }
                 else if (property is ArrayProperty<ObjectProperty> aop)
                 {
@@ -1717,7 +1714,7 @@ namespace ME3Explorer
                                 badReferences.Add(new EntryStringPair(exp,
                                     $"Binary reference ({uIndex.value}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                             }
-                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash")
+                            else if (exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "Trash" || exp.FileRef.GetEntry(uIndex.value)?.ObjectName.ToString() == "ME3ExplorerTrashPackage")
                             {
                                 badReferences.Add(new EntryStringPair(exp,
                                     $"Binary reference ({uIndex.value}) is a Trashed object, Export #{exp.UIndex} {exp.InstancedFullPath}"));
@@ -1811,7 +1808,7 @@ namespace ME3Explorer
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
                 ListDialog lw = new ListDialog(duplicates, "Duplicate indexes",
-                        "The following items have duplicate indexes. The game may choose to use the first occurance of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.",
+                        "The following items have duplicate indexes. The game may choose to use the first occurrence of the index it finds, or may crash if indexing is checked internally (such as pathfinding). You can reindex an object to force all same named items to be reindexed in the given unique path. You should reindex from the topmost duplicate entry first if one is found, as it may resolve lower item duplicates.",
                         this)
                 { DoubleClickEntryHandler = entryDoubleClick };
                 lw.Show();
@@ -2143,7 +2140,7 @@ namespace ME3Explorer
                 BusyText = "Finding unmodded candidates...";
                 IsBusy = true;
                 string lookupFilename = Path.GetFileName(Pcc.FilePath);
-                string dlcPath = MEDirectories.DLCPath(Pcc.Game);
+                string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
                 var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
                 var unmoddedCandidates = new UnmoddedCandidatesLookup();
 
@@ -2152,7 +2149,7 @@ namespace ME3Explorer
                 {
                     List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
                         .Select(dlcName => Path.Combine(dlcPath, dlcName))
-                        .Prepend(MEDirectories.CookedPath(Pcc.Game))
+                        .Prepend(MEDirectories.GetCookedPath(Pcc.Game))
                         .Where(Directory.Exists)
                         .Select(cookedPath =>
                             Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
@@ -2161,10 +2158,10 @@ namespace ME3Explorer
 
                     if (backupPath != null)
                     {
-                        var backupDlcPath = MEDirectories.DLCPath(backupPath, Pcc.Game);
+                        var backupDlcPath = MEDirectories.GetDLCPath(Pcc.Game, backupPath);
                         inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
                             .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
-                            .Prepend(MEDirectories.CookedPath(backupPath, Pcc.Game))
+                            .Prepend(MEDirectories.GetCookedPath(Pcc.Game, backupPath))
                             .Where(Directory.Exists)
                             .Select(cookedPath =>
                                 Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
@@ -2185,7 +2182,9 @@ namespace ME3Explorer
                         if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
                         {
                             //try this one
-                            var cookedPackageName = p.ObjectName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
+                            var objName = p.ObjectName;
+                            if (p.indexValue > 0) objName += $"_{p.indexValue - 1}"; //Some ME3 map files are indexed
+                            var cookedPackageName = objName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
                             unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
                             break;
                         }
@@ -2755,7 +2754,7 @@ namespace ME3Explorer
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
                     {
-                        Debug.WriteLine("Reorder req for " + tvi.UIndex);
+                        //Debug.WriteLine("Reorder req for " + tvi.UIndex);
                         TreeViewEntry newParent = tree.FirstOrDefault(x => x.UIndex == tvi.Entry.idxLink);
                         if (newParent == null)
                         {
@@ -3476,9 +3475,9 @@ namespace ME3Explorer
 
         private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
         {
-            string myBasePath = ME1Directory.gamePath;
+            string myBasePath = ME1Directory.DefaultGamePath;
             string[] extensions = { ".u", ".upk" };
-            FileInfo[] files = new DirectoryInfo(ME1Directory.cookedPath)
+            FileInfo[] files = new DirectoryInfo(ME1Directory.CookedPCPath)
                 .EnumerateFiles("*", SearchOption.AllDirectories)
                 .Where(f => extensions.Contains(f.Extension.ToLower()))
                 .ToArray();
@@ -4380,7 +4379,7 @@ namespace ME3Explorer
             //only works for ME3?
             string mapName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
 
-            string tempDir = MEDirectories.CookedPath(Pcc.Game);
+            string tempDir = MEDirectories.GetCookedPath(Pcc.Game);
             tempDir = Pcc.Game == MEGame.ME1 ? Path.Combine(tempDir, "Maps") : tempDir;
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.{(Pcc.Game == MEGame.ME1 ? "SFM" : "pcc")}");
 
@@ -4424,7 +4423,7 @@ namespace ME3Explorer
             }
 
 
-            Process.Start(MEDirectories.ExecutablePath(Pcc.Game), $"{tempMapName} -nostartupmovies");
+            Process.Start(MEDirectories.GetExecutablePath(Pcc.Game), $"{tempMapName} -nostartupmovies");
         }
 
         private void ReSerializeExport_Click(object sender, RoutedEventArgs e)
@@ -4801,6 +4800,10 @@ namespace ME3Explorer
         private void PortME1EntryMenu_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.PortME1EntryMenuToME3ViaBioPChar(Pcc);
+        }
+        private void CompactInFile_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
         }
     }
 }

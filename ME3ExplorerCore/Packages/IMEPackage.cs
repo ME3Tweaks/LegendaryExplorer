@@ -134,6 +134,10 @@ namespace ME3ExplorerCore.Packages
         int ImportOffset { get; }
         int ExportOffset { get; }
         int NameOffset { get; }
+        /// <summary>
+        /// The number of compressed chunks in the chunk table there were found during package loading.
+        /// </summary>
+        int NumCompressedChunksAtLoad { get; }
         Guid PackageGuid { get; set; }
         IReadOnlyList<ExportEntry> Exports { get; }
         IReadOnlyList<ImportEntry> Imports { get; }
@@ -214,7 +218,7 @@ namespace ME3ExplorerCore.Packages
         event UnrealPackageFile.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
         event UnrealPackageFile.MEPackageEventHandler noLongerUsed;
-        MemoryStream SaveToStream(bool compress);
+        MemoryStream SaveToStream(bool compress, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true);
         List<ME1TalkFile> LocalTalkFiles { get; }
         /// <summary>
         /// Compares this package against the one located on disk at the specified path

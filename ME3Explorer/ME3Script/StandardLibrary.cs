@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Symbols;
@@ -72,7 +72,7 @@ namespace ME3Explorer.ME3Script
             try
             {
                 var filePaths = new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" }
-                    .Select(f => Path.Combine(ME3Directory.cookedPath, f)).ToList();
+                    .Select(f => Path.Combine(ME3Directory.CookedPCPath, f)).ToList();
                 if (!filePaths.All(File.Exists))
                 {
                     return false;

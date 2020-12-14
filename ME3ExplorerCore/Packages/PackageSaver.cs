@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
 
@@ -26,7 +26,7 @@ namespace ME3ExplorerCore.Packages
             pckg.Game == MEGame.ME2 ||
             pckg.Game == MEGame.ME1 && ME1TextureFiles.TrueForAll(texFilePath => !path.EndsWith(texFilePath));
 
-        private static Action<MEPackage, string, bool, bool> MESaveDelegate;
+        private static Action<MEPackage, string, bool, bool, bool, bool> MESaveDelegate;
         private static Action<UDKPackage, string, bool> UDKSaveDelegate;
 
         public static void Initialize()
@@ -35,43 +35,31 @@ namespace ME3ExplorerCore.Packages
             MESaveDelegate = MEPackage.RegisterSaver();
         }
 
-        public static void Save(this IMEPackage package, bool compress = false)
+        /// <summary>
+        /// Saves the package to disk.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="compress"></param>
+        /// <param name="includeAdditionalPackagesToCook"></param>
+        /// <param name="includeDependencyTable"></param>
+        public static void Save(this IMEPackage package, string savePath = null, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
             if (package == null)
             {
                 return;
             }
 
-            if (package.FilePath is null)
+            if (package.FilePath is null && savePath == null)
             {
-                throw new InvalidOperationException("Cannot save a temporary package!");
+                throw new InvalidOperationException("Cannot save a temporary memory-based package! You must pass a save path to save a memory package.");
             }
             switch (package)
             {
                 case MEPackage mePackage:
-                    Save(mePackage, package.FilePath);
+                    MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                     break;
                 case UDKPackage udkPackage:
-                    Save(udkPackage, udkPackage.FilePath);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(package));
-            }
-        }
-
-        public static void Save(this IMEPackage package, string path, bool compress = false)
-        {
-            if (package == null)
-            {
-                return;
-            }
-            switch (package)
-            {
-                case MEPackage mePackage:
-                    Save(mePackage, path);
-                    break;
-                case UDKPackage udkPackage:
-                    Save(udkPackage, path);
+                    Save(udkPackage, savePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(package));
@@ -112,11 +100,11 @@ namespace ME3ExplorerCore.Packages
 
         public static Func<Texture2D, byte[]> GetPNGForThumbnail { get; set; }
 
-        private static void Save(MEPackage pcc, string path, bool compress = false)
+        private static void MESave(MEPackage pcc, string savePath, bool compress = false, bool includeAdditionalPackagesToCook = true, bool includeDependencyTable = true)
         {
-            bool isSaveAs = path != pcc.FilePath;
+            bool isSaveAs = savePath != null && savePath != pcc.FilePath;
             int originalLength = -1;
-            if (pcc.Game == MEGame.ME3 && !isSaveAs && pcc.FilePath.StartsWith(ME3Directory.BIOGamePath) && CheckME3Running != null && CheckME3Running.Invoke())
+            if (pcc.Game == MEGame.ME3 && CheckME3Running != null && !isSaveAs && ME3Directory.GetBioGamePath() != null && pcc.FilePath.StartsWith(ME3Directory.GetBioGamePath()) && CheckME3Running.Invoke())
             {
                 try
                 {
@@ -129,9 +117,9 @@ namespace ME3ExplorerCore.Packages
             }
             try
             {
-                if (CanReconstruct(pcc, path))
+                if (CanReconstruct(pcc, savePath))
                 {
-                    MESaveDelegate(pcc, path, isSaveAs, compress);
+                    MESaveDelegate(pcc, savePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                 }
                 else
                 {
@@ -145,11 +133,11 @@ namespace ME3ExplorerCore.Packages
 
             if (originalLength > 0)
             {
-                string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.gamePath).Length);
+                string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.DefaultGamePath).Length);
                 var bin = new MemoryStream();
                 bin.WriteInt32(originalLength);
                 bin.WriteStringASCIINull(relativePath);
-                File.WriteAllBytes(Path.Combine(ME3Directory.BinariesPath, "tocupdate"), bin.ToArray());
+                File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());
                 // oh boy...
                 NotifyRunningTOCUpdateRequired();
                 // replaced:
@@ -157,7 +145,7 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private static void Save(UDKPackage pcc, string path)
+        private static void UDKSave(UDKPackage pcc, string path)
         {
             bool isSaveAs = path != pcc.FilePath;
             try

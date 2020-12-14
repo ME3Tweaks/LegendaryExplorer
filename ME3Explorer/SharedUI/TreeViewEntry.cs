@@ -197,9 +197,15 @@ namespace ME3Explorer
                                         var flags = EndianReader.ToInt32(data, data.Length - 4, ee.FileRef.Endian);
                                         FlagValues fs = new FlagValues(flags, UE3FunctionReader._flagSet);
                                         _subtext = "";
+                                        if (fs.HasFlag("Static"))
+                                        {
+                                            if (_subtext != "") _subtext += " ";
+                                            _subtext = "Static";
+                                        }
                                         if (fs.HasFlag("Native"))
                                         {
-                                            _subtext = "Native";
+                                            if (_subtext != "") _subtext += " ";
+                                            _subtext += "Native";
                                             var nativeBackOffset = Entry.FileRef.Game < MEGame.ME3 ? 7 : 6;
                                             var nativeIndex = EndianReader.ToInt16(data, data.Length - nativeBackOffset, ee.FileRef.Endian);
                                             if (nativeIndex > 0)
@@ -276,6 +282,14 @@ namespace ME3Explorer
                                     {
                                         _subtext = $"Class: {type.ObjectName}";
                                     }
+                                    break;
+                                }
+                            case "Texture2D":
+                                {
+                                    var properties = ee.GetProperties();
+                                    var sizeX = properties.GetProp<IntProperty>("SizeX");
+                                    var sizeY = properties.GetProp<IntProperty>("SizeY");
+                                    _subtext = $"{sizeX?.Value}x{sizeY?.Value}";
                                     break;
                                 }
                         }

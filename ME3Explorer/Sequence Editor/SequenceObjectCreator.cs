@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using ME3Explorer.Packages;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
@@ -109,7 +109,7 @@ namespace ME3Explorer.Sequence_Editor
                     ClassInfo classInfo = info;
                     while (classInfo != null && (varLinksProp is null || outLinksProp is null || eventLinksProp is null || game == MEGame.ME1 && inLinksProp is null))
                     {
-                        string filepath = Path.Combine(MEDirectories.BioGamePath(game), classInfo.pccPath);
+                        string filepath = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
                         Stream loadStream = null;
                         if (File.Exists(classInfo.pccPath))
                         {
@@ -125,7 +125,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                         else if (game == MEGame.ME1)
                         {
-                            filepath = Path.Combine(ME1Directory.gamePath, classInfo.pccPath); //for files from ME1 DLC
+                            filepath = Path.Combine(ME1Directory.DefaultGamePath, classInfo.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepath))
                             {
                                 loadStream = new MemoryStream(File.ReadAllBytes(filepath));

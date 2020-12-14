@@ -11,12 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Ini;
 using FontAwesome5;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
 namespace ME3Explorer.AutoTOC
@@ -142,13 +140,13 @@ namespace ME3Explorer.AutoTOC
 
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
             // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
-            var fileIndexBackupFile = Path.Combine(ME1Directory.cookedPath, "FileIndex.bak");
+            var fileIndexBackupFile = Path.Combine(ME1Directory.CookedPCPath, "FileIndex.bak");
             if (!File.Exists(fileIndexBackupFile))
             {
                 //This might fail as the game will be installed into a write-protected directory for most users by default
                 try
                 {
-                    File.Copy(Path.Combine(ME1Directory.cookedPath, "FileIndex.txt"), fileIndexBackupFile);
+                    File.Copy(Path.Combine(ME1Directory.CookedPCPath, "FileIndex.txt"), fileIndexBackupFile);
                 }
                 catch (IOException e)
                 {
@@ -300,7 +298,7 @@ namespace ME3Explorer.AutoTOC
 
         private bool CanRunAutoTOC()
         {
-            if (string.IsNullOrEmpty(ME3Directory.BIOGamePath) || !Directory.Exists(ME3Directory.BIOGamePath))
+            if (string.IsNullOrEmpty(ME3Directory.BioGamePath) || !Directory.Exists(ME3Directory.BioGamePath))
             {
                 return false;
             }
@@ -438,7 +436,7 @@ namespace ME3Explorer.AutoTOC
         public static void GenerateAllTOCs(IList<ListBoxTask> tocTasks = null)
         {
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
-            folders.Add(Path.Combine(ME3Directory.gamePath, "BIOGame"));
+            folders.Add(Path.Combine(ME3Directory.DefaultGamePath, "BIOGame"));
             folders.ForEach(consoletocFile => prepareToCreateTOC(consoletocFile, tocTasks));
         }
 

@@ -18,11 +18,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Microsoft.Win32;
 using AnimSequence = ME3ExplorerCore.Unreal.BinaryConverters.AnimSequence;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Helpers;
@@ -1058,7 +1058,7 @@ namespace ME3Explorer.AssetDatabase
         private void OpenInToolkit(string tool, string filename, string contentdir, int export = 0)
         {
             string filePath = null;
-            string rootPath = MEDirectories.GamePath(CurrentGame);
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {
@@ -1252,7 +1252,7 @@ namespace ME3Explorer.AssetDatabase
                 meshPcc?.Dispose();
                 return;
             }
-            string rootPath = MEDirectories.GamePath(CurrentGame);
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
             var selecteditem = lstbx_Meshes.SelectedItem as MeshRecord;
             var filekey = selecteditem.MeshUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey].Item1;
@@ -1324,7 +1324,7 @@ namespace ME3Explorer.AssetDatabase
 
             var filekey = selecteditem.TextureUsages[0].Item1;
             var filename = CurrentDataBase.FileList[filekey].Item1;
-            string rootPath = MEDirectories.GamePath(CurrentGame);
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
             var cdir = CurrentDataBase.ContentDir[CurrentDataBase.FileList[filekey].Item2];
             if (rootPath == null)
             {
@@ -1400,7 +1400,7 @@ namespace ME3Explorer.AssetDatabase
             var selecteditem = lstbx_Lines.SelectedItem as ConvoLine;
             var filename = CurrentConvo.Item2;
             var cdir = CurrentConvo.Item4;
-            string rootPath = MEDirectories.GamePath(CurrentGame);
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
             if (rootPath == null)
             {
                 MessageBox.Show($"{CurrentGame} has not been found. Please check your ME3Explorer settings");
@@ -1532,7 +1532,7 @@ namespace ME3Explorer.AssetDatabase
         private string GetFilePath(int fileListIndex)
         {
             (string filename, string contentdir) = FileListExtended[fileListIndex];
-            return Directory.GetFiles(MEDirectories.GamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+            return Directory.GetFiles(MEDirectories.GetDefaultGamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
         }
 
         private void genderTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2501,7 +2501,7 @@ namespace ME3Explorer.AssetDatabase
             {
                 outputDir = App.AppDataFolder;
             }
-            string rootPath = MEDirectories.GamePath(CurrentGame);
+            string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
 
             if (rootPath == null || !Directory.Exists(rootPath))
             {

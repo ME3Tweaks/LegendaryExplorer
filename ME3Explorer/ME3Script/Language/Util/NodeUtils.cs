@@ -1,10 +1,5 @@
 ﻿using ME3Script.Language.Tree;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ME3Explorer;
 using ME3ExplorerCore.Helpers;
 using ME3Script.Analysis.Symbols;
 using ME3Script.Utilities;

@@ -10,18 +10,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
-using ME3Explorer.Unreal.Classes;
-using ME3ExplorerCore.Gammtek.Extensions;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX;
@@ -34,6 +32,37 @@ namespace ME3Explorer.PackageEditor.Experiments
     /// </summary>
     class PackageEditorExperimentsM
     {
+        public static void CompactFileViaExternalFile(IMEPackage sourcePackage)
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
+            if (d.ShowDialog() == true)
+            {
+
+                using var compactedAlready = MEPackageHandler.OpenMEPackage(d.FileName);
+                var fname = Path.GetFileNameWithoutExtension(sourcePackage.FilePath);
+                var exportsToKeep = sourcePackage.Exports
+                    .Where(x => x.FullPath == fname || x.FullPath == @"SeekFreeShaderCache" || x.FullPath.StartsWith("ME3ExplorerTrashPackage")).ToList();
+
+                var entriesToTrash = new ConcurrentBag<ExportEntry>();
+                Parallel.ForEach(sourcePackage.Exports, export =>
+                {
+                    var matchingExport = exportsToKeep.FirstOrDefault(x => x.FullPath == export.FullPath);
+                    if (matchingExport == null)
+                    {
+                        matchingExport = compactedAlready.Exports.FirstOrDefault(x => x.FullPath == export.FullPath);
+                    }
+
+                    if (matchingExport == null)
+                    {
+                        //Debug.WriteLine($"Trash {export.FullPath}");
+                        entriesToTrash.Add(export);
+                    }
+                });
+
+                EntryPruner.TrashEntries(sourcePackage, entriesToTrash);
+            }
+        }
+
         public static void PortME1EntryMenuToME3ViaBioPChar(IMEPackage entryMenuPackage)
         {
             // Open packages
@@ -474,11 +503,11 @@ namespace ME3Explorer.PackageEditor.Experiments
         /// </summary>
         public static void BuildTestPatchComparison()
         {
-            var oldPath = ME3Directory.gamePath;
+            var oldPath = ME3Directory.DefaultGamePath;
             // To run this change these values
 
             // Point to unpacked path.
-            ME3Directory.gamePath = @"Z:\Mass Effect 3";
+            ME3Directory.DefaultGamePath = @"Z:\Mass Effect 3";
             var patchedOutDir = Directory.CreateDirectory(@"C:\users\mgamerz\desktop\patchcomp\patch").FullName;
             var origOutDir = Directory.CreateDirectory(@"C:\users\mgamerz\desktop\patchcomp\orig").FullName;
             var patchFiles = Directory.GetFiles(@"C:\Users\Mgamerz\Desktop\ME3CMM\data\Patch_001_Extracted\BIOGame\DLC\DLC_TestPatch\CookedPCConsole", "Patch_*.pcc");
@@ -486,13 +515,13 @@ namespace ME3Explorer.PackageEditor.Experiments
             // End variables
 
             //preload these packages to speed up lookups
-            using var package1 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"));
-            using var package2 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc"));
-            using var package3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc"));
-            using var package4 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Startup.pcc"));
-            using var package5 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "GameFramework.pcc"));
-            using var package6 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "GFxUI.pcc"));
-            using var package7 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "BIOP_MP_COMMON.pcc"));
+            using var package1 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "SFXGame.pcc"));
+            using var package2 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Engine.pcc"));
+            using var package3 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Core.pcc"));
+            using var package4 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Startup.pcc"));
+            using var package5 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "GameFramework.pcc"));
+            using var package6 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "GFxUI.pcc"));
+            using var package7 = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc"));
 
             // These paths can't be easily determined so just manually build list
             // Some are empty paths cause they could be determined with code updates 
@@ -719,7 +748,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                 Debug.WriteLine(o);
             }
             //Restore path.
-            ME3Directory.gamePath = oldPath;
+            ME3Directory.DefaultGamePath = oldPath;
         }
 
         /// <summary>
@@ -1078,10 +1107,10 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void BuildME1NativeFunctionsInfo()
         {
-            if (ME1Directory.gamePath != null)
+            if (ME1Directory.DefaultGamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
-                var dir = new DirectoryInfo(ME1Directory.gamePath);
+                var dir = new DirectoryInfo(ME1Directory.DefaultGamePath);
                 var filesToSearch = dir.GetFiles( /*"*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles(*/"*.u",
                     SearchOption.AllDirectories).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
@@ -1146,10 +1175,10 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void FindME1ME22DATables()
         {
-            if (ME1Directory.gamePath != null)
+            if (ME1Directory.DefaultGamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
-                var dir = new DirectoryInfo(Path.Combine(ME1Directory.gamePath /*, "BioGame", "CookedPC", "Maps"*/));
+                var dir = new DirectoryInfo(Path.Combine(ME1Directory.DefaultGamePath /*, "BioGame", "CookedPC", "Maps"*/));
                 var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories)
                     .Union(dir.GetFiles("*.u", SearchOption.AllDirectories))
                     .Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
@@ -1177,10 +1206,10 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void FindAllME3PowerCustomActions()
         {
-            if (ME3Directory.gamePath != null)
+            if (ME3Directory.DefaultGamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<string, List<string>>();
-                var dir = new DirectoryInfo(ME3Directory.gamePath);
+                var dir = new DirectoryInfo(ME3Directory.DefaultGamePath);
                 var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
@@ -1226,10 +1255,10 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void FindAllME2Powers()
         {
-            if (ME2Directory.gamePath != null)
+            if (ME2Directory.DefaultGamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<string, List<string>>();
-                var dir = new DirectoryInfo(ME2Directory.gamePath);
+                var dir = new DirectoryInfo(ME2Directory.DefaultGamePath);
                 var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)

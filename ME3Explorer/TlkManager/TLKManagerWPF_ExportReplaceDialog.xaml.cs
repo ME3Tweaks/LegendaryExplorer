@@ -8,7 +8,6 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.TLK.ME2ME3;
-using ME3ExplorerCore.Unreal;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using HuffmanCompression = ME3ExplorerCore.TLK.ME2ME3.HuffmanCompression;
 
@@ -157,7 +156,7 @@ namespace ME3Explorer.TlkManagerNS
                         {
                             HuffmanCompression hc = new HuffmanCompression();
                             hc.LoadInputData(openFileDialog.FileName, false);
-                            hc.SaveToTlkFile(tlk.tlkPath);
+                            hc.SaveToFile(tlk.tlkPath);
                         };
                     }
                     replacingWork.RunWorkerCompleted += delegate

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.TLK.ME1;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
 
 namespace ME3ExplorerCore.TLK.ME2ME3
@@ -35,23 +36,6 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             }
         };
 
-        //public struct TLKStringRef
-        //{
-        //    public int StringID;
-        //    public int BitOffset;
-
-        //    public string Data;
-        //    public int StartOfString;
-        //    public int position;
-
-        //    public TLKStringRef(BinaryReader r)
-        //        : this()
-        //    {
-        //        StringID = r.ReadInt32();
-        //        BitOffset = r.ReadInt32();
-        //    }
-        //}
-
         public struct HuffmanNode
         {
             public int LeftNodeID;
@@ -65,8 +49,8 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             }
         }
 
-        TLKHeader Header;
-        public List<TLKStringRef> StringRefs;
+        public TLKHeader Header;
+        public List<ME1TalkFile.TLKStringRef> StringRefs;
         public string name;
         public string path;
         List<HuffmanNode> CharacterTree;
@@ -78,6 +62,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         {
             ProgressChanged?.Invoke(percentProgress);
         }
+
 
         /// <summary>
         /// Loads a TLK file into memory.
@@ -92,7 +77,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
              * 
              * reading first 28 (4 * 7) bytes 
              */
-            
+
             using Stream fs = File.OpenRead(fileName);
             LoadTlkDataFromStream(fs);
         }
@@ -162,10 +147,10 @@ namespace ME3ExplorerCore.TLK.ME2ME3
              * Sometimes there's no such key, in that case, our String ID is probably a substring
              * of another String present in rawStrings. 
              */
-            StringRefs = new List<TLKStringRef>();
+            StringRefs = new List<ME1TalkFile.TLKStringRef>();
             for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
-                TLKStringRef sref = new TLKStringRef(r, false);
+                ME1TalkFile.TLKStringRef sref = new ME1TalkFile.TLKStringRef(r, false);
                 sref.Index = i;
                 if (sref.BitOffset >= 0)
                 {
@@ -254,7 +239,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                 if (s.BitOffset < 0)
                 {
                     xr.WriteStartAttribute("calculatedID");
-                    xr.WriteValue(-(int.MinValue - s.StringID));
+                    xr.WriteValue(-(Int32.MinValue - s.StringID));
                     xr.WriteEndAttribute();
 
                     xr.WriteString("-1");
@@ -335,7 +320,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         }
 
         /* for sorting */
-        private static int CompareTlkStringRef(TLKStringRef strRef1, TLKStringRef strRef2)
+        private static int CompareTlkStringRef(ME1TalkFile.TLKStringRef strRef1, ME1TalkFile.TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -31,17 +31,52 @@ namespace ME3ExplorerCore.Unreal
                 _ => false,
             };
 
-        public static bool IsA(this ClassInfo info, string baseClass, MEGame game) => IsA(info.ClassName, baseClass, game);
-        public static bool IsA(this IEntry entry, string baseClass) => IsA(entry.ClassName, baseClass, entry.FileRef.Game);
-        public static bool IsA(string className, string baseClass, MEGame game) =>
+        public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
+        public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.FileRef.Game, customClassInfos);
+        public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
             className == baseClass || game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
-                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass),
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
                 _ => false
             };
+
+        public static bool InheritsFrom(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => InheritsFrom(entry.ObjectName.Name, baseClass, entry.FileRef.Game, customClassInfos);
+        public static bool InheritsFrom(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) =>
+            className == baseClass || game switch
+            {
+                MEGame.ME1 => ME1UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME2 => ME2UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.ME3 => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                MEGame.UDK => ME3UnrealObjectInfo.InheritsFrom(className, baseClass, customClassInfos),
+                _ => false
+            };
+
+        /// <summary>
+        /// Checks if the full path name of this entry is known to be defined in native only
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static bool IsAKnownNativeClass(this IEntry entry) => IsAKnownNativeClass(entry.FullPath, entry.Game);
+
+        /// <summary>
+        /// Checks if the full path name is known to be defined in native only
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static bool IsAKnownNativeClass(string fullPathName, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1: return ME1UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.ME2: return ME2UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.ME3: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                case MEGame.UDK: return ME3UnrealObjectInfo.IsAKnownNativeClass(fullPathName);
+                default: return false;
+            };
+        }
 
         public static SequenceObjectInfo getSequenceObjectInfo(MEGame game, string className) =>
             game switch
@@ -91,7 +126,7 @@ namespace ME3ExplorerCore.Unreal
                     while (info != null && info.ClassName != notIncludingClass)
                     {
                         Stream loadStream = null;
-                        string filepathTL = Path.Combine(MEDirectories.MEDirectories.BioGamePath(game), info.pccPath);
+                        string filepathTL = Path.Combine(GameFilesystem.MEDirectories.GetBioGamePath(game), info.pccPath);
                         if (File.Exists(info.pccPath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(info.pccPath));
@@ -112,7 +147,7 @@ namespace ME3ExplorerCore.Unreal
 
                         if (game == MEGame.ME1 && !File.Exists(filepathTL))
                         {
-                            filepathTL = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                            filepathTL = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
                             if (File.Exists(filepathTL))
                             {
                                 loadStream = new MemoryStream(File.ReadAllBytes(filepathTL));
@@ -695,9 +730,9 @@ namespace ME3ExplorerCore.Unreal
                             }
                         }
                         string filepath = null;
-                        if (ME3Directory.BIOGamePath != null)
+                        if (ME3Directory.GetBioGamePath() != null)
                         {
-                            filepath = Path.Combine(ME3Directory.BIOGamePath, info.pccPath);
+                            filepath = Path.Combine(ME3Directory.GetBioGamePath(), info.pccPath);
                         }
 
                         Stream loadStream = null;
@@ -812,15 +847,28 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
-        public static bool InheritsFrom(string className, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
         {
-            while (Classes.ContainsKey(className))
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            while (true)
             {
                 if (className == baseClass)
                 {
                     return true;
                 }
-                className = Classes[className].baseClass;
+
+                if (customClassInfos != null && customClassInfos.ContainsKey(className))
+                {
+                    className = customClassInfos[className].baseClass;
+                }
+                else if (Classes.ContainsKey(className))
+                {
+                    className = Classes[className].baseClass;
+                }
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
@@ -1417,5 +1465,14 @@ namespace ME3ExplorerCore.Unreal
         #endregion
 #endif
 
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            @"Engine.CodecMovieBink"
+        };
     }
 }

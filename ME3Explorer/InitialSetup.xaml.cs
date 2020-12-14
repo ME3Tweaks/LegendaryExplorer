@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ME3Explorer.SharedUI;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using Microsoft.Win32;
 
 namespace ME3Explorer
@@ -18,9 +18,9 @@ namespace ME3Explorer
         public InitialSetup()
         {
             InitializeComponent();
-            me1PathBox.Text = ME1Directory.gamePath;
-            me2PathBox.Text = ME2Directory.gamePath;
-            me3PathBox.Text = ME3Directory.gamePath;
+            me1PathBox.Text = ME1Directory.DefaultGamePath;
+            me2PathBox.Text = ME2Directory.DefaultGamePath;
+            me3PathBox.Text = ME3Directory.DefaultGamePath;
         }
 
         private void completeStep2()
@@ -179,9 +179,9 @@ namespace ME3Explorer
 
         private void DoneButton_Click(object sender, RoutedEventArgs e)
         {
-            ME1Directory.gamePath = me1PathBox.Text;
-            ME2Directory.gamePath = me2PathBox.Text;
-            ME3Directory.gamePath = me3PathBox.Text;
+            ME1Directory.DefaultGamePath = me1PathBox.Text;
+            ME2Directory.DefaultGamePath = me2PathBox.Text;
+            ME3Directory.DefaultGamePath = me3PathBox.Text;
             MEDirectories.SaveSettings(new List<string> { me1PathBox.Text, me2PathBox.Text, me3PathBox.Text });
             this.Close();
         }

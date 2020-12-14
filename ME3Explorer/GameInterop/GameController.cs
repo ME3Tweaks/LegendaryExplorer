@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using ME3ExplorerCore.MEDirectories;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 using Keys = System.Windows.Forms.Keys;
 
@@ -61,7 +61,7 @@ namespace ME3Explorer.GameInterop
         public static void ExecuteConsoleCommands(IntPtr hWnd, MEGame game, IEnumerable<string> commands)
         {
             const string execFileName = "me3expinterop";
-            string execFilePath = Path.Combine(MEDirectories.GamePath(game), "Binaries", execFileName);
+            string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(game), "Binaries", execFileName);
             File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
             DirectExecuteConsoleCommand(hWnd, $"exec {execFileName}");
         }

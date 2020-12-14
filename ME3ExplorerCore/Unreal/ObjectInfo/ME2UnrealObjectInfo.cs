@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.ObjectInfo;
@@ -269,15 +269,28 @@ namespace ME3ExplorerCore.Unreal
             return null;
         }
 
-        public static bool InheritsFrom(string className, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
         {
-            while (Classes.ContainsKey(className))
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            while (true)
             {
                 if (className == baseClass)
                 {
                     return true;
                 }
-                className = Classes[className].baseClass;
+
+                if (customClassInfos != null && customClassInfos.ContainsKey(className))
+                {
+                    className = customClassInfos[className].baseClass;
+                }
+                else if (Classes.ContainsKey(className))
+                {
+                    className = Classes[className].baseClass;
+                }
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
@@ -696,5 +709,16 @@ namespace ME3ExplorerCore.Unreal
             return new PropertyInfo(type, reference, transient);
         }
         #endregion
+
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            // NEEDS CHECKED FOR ME2
+            @"Engine.CodecMovieBink"
+        };
     }
 }

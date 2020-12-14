@@ -35,6 +35,7 @@ namespace ME3ExplorerCore.Packages
         public int ExportOffset { get; protected set; }
         public int ImportCount { get; protected set; }
         public int ImportOffset { get; protected set; }
+        public int NumCompressedChunksAtLoad { get; protected set; }
         public int DependencyTableOffset { get; protected set; }
         public Guid PackageGuid { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using ME3ExplorerCore.MEDirectories;
-using ME3ExplorerCore.Packages;
+﻿using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.Classes;
@@ -44,9 +44,9 @@ namespace ME3Explorer.Packages
             //fix up Default_ package.Imports
             if (newGame == MEGame.ME3)
             {
-                using IMEPackage core = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Core.pcc"));
-                using IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "Engine.pcc"));
-                using IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.cookedPath, "SFXGame.pcc"));
+                using IMEPackage core = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Core.pcc"));
+                using IMEPackage engine = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "Engine.pcc"));
+                using IMEPackage sfxGame = MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "SFXGame.pcc"));
                 foreach (ImportEntry defImp in package.Imports.Where(imp => imp.ObjectName.Name.StartsWith("Default_")).ToList())
                 {
                     string packageName = defImp.FullPath.Split('.')[0];
@@ -159,8 +159,8 @@ namespace ME3Explorer.Packages
                         {
                             offsets.Add((int)tfc.Position);
                             byte[] mip = mipInfo.storageType == StorageTypes.pccLZO
-                                ? TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo), StorageTypes.extZlib)
-                                : Texture2D.GetTextureData(mipInfo, false);
+                                ? TextureCompression.CompressTexture(Texture2D.GetTextureData(mipInfo, texport.Game), StorageTypes.extZlib)
+                                : Texture2D.GetTextureData(mipInfo, texport.Game, decompress: false);
                             tfc.WriteFromBuffer(mip);
                         }
                     }

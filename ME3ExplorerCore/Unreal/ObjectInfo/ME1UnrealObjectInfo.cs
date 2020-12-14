@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
-using ME3ExplorerCore.MEDirectories;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.ObjectInfo;
@@ -339,7 +339,7 @@ namespace ME3ExplorerCore.Unreal
 #endif
                     if (loadStream == null)
                     {
-                        filepath = Path.Combine(ME1Directory.gamePath, info.pccPath); //for files from ME1 DLC
+                        filepath = Path.Combine(ME1Directory.DefaultGamePath, info.pccPath); //for files from ME1 DLC
                         if (File.Exists(filepath))
                         {
                             loadStream = new MemoryStream(File.ReadAllBytes(filepath));
@@ -428,15 +428,28 @@ namespace ME3ExplorerCore.Unreal
             }
         }
 
-        public static bool InheritsFrom(string className, string baseClass)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
         {
-            while (Classes.ContainsKey(className))
+            if (baseClass == @"Object") return true; //Everything inherits from Object
+            while (true)
             {
                 if (className == baseClass)
                 {
                     return true;
                 }
-                className = Classes[className].baseClass;
+
+                if (customClassInfos != null && customClassInfos.ContainsKey(className))
+                {
+                    className = customClassInfos[className].baseClass;
+                }
+                else if (Classes.ContainsKey(className))
+                {
+                    className = Classes[className].baseClass;
+                }
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
@@ -685,6 +698,17 @@ namespace ME3ExplorerCore.Unreal
             bool transient = (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0;
             return new PropertyInfo(type, reference, transient);
         }
-#endregion
+        #endregion
+
+        public static bool IsAKnownNativeClass(string className) => NativeClasses.Contains(className);
+
+        /// <summary>
+        /// List of all known classes that are only defined in native code. These are not able to be handled for things like InheritsFrom as they are not in the property info database.
+        /// </summary>
+        public static string[] NativeClasses = new[]
+        {
+            // NEEDS CHECKED FOR ME1
+            @"Engine.CodecMovieBink"
+        };
     }
 }
