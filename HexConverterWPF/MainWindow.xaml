@@ -5,41 +5,76 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HexConverter"
         mc:Ignorable="d"
-        Title="Hex Converter" Height="192" Width="260">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Hex Converter" SizeToContent="WidthAndHeight">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <GroupBox Header="Numbers" Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Hex Little Endian" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
+                <TextBlock Text="Hex Big Endian" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock Text="Signed Integer" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock Text="Float" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
 
-        <TextBlock Text="Hex Little Endian" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
-        <TextBlock Text="Hex Big Endian" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBlock Text="Signed Integer" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBlock Text="Float" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-        <CheckBox Content="Always on top" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>
-        <TextBlock Text="Press enter to convert" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="11" Foreground="Gray"/>
+                <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpNumbers" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
+                <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpNumbers" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
+                <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" MaxLength="11" Grid.Row="2" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpNumbers"/>
+                <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" MaxLength="10" Grid.Row="3" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpNumbers"/>
+                <TextBox Name="Float_TextBox" Text="{Binding FloatText}" MaxLength="8" Grid.Row="4" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpNumbers"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Rotation" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Unreal" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock Text="Degrees" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock Text="Radians" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox Name="UnrealRot_TextBox" Text="{Binding UnrealRotationText}" MaxLength="8" Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
+                <TextBox Name="DegreesRot_TextBox" Text="{Binding DegreesRotationText}" MaxLength="8" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
+                <TextBox Name="RadiansRot_TextBox" Text="{Binding RadiansRotationText}" MaxLength="8" Grid.Row="2" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUpRotation"/>
+            </Grid>
+        </GroupBox>
+        <CheckBox Content="Always on top" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>
+        <TextBlock Text="Press enter to convert" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="11" Foreground="Gray"/>
 
 
-        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
-        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp" PreviewTextInput="Hex_TextBox_PreviewTextInput"/>
-        <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" MaxLength="11" Grid.Row="2" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" MaxLength="10" Grid.Row="3" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="Float_TextBox" Text="{Binding FloatText}" MaxLength="8" Grid.Row="4" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
 
-        <!--<Button Name="LittleEndian_Convert_Button" Content="C" Grid.Row="0" Grid.Column="2"/>
-        <Button Name="BigEndian_Convert_Button" Content="C" Grid.Row="1" Grid.Column="2"/>
-        <Button Name="Signed_Convert_Button" Content="C" Grid.Row="2" Grid.Column="2"/>
-        <Button Name="Unsigned_Convert_Button" Content="C" Grid.Row="3" Grid.Column="2"/>
-        <Button Name="Float_Convert_Button" Content="C" Grid.Row="4" Grid.Column="2"/>-->
         <Grid.Resources>
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="2" />

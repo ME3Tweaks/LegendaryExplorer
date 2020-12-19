@@ -1,20 +1,12 @@
-﻿using HexConverter.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HexConverter
 {
@@ -89,6 +81,40 @@ namespace HexConverter
             }
         }
 
+        private string _unrealRotationText = "0";
+        public string UnrealRotationText
+        {
+            get => _unrealRotationText;
+            set
+            {
+                _unrealRotationText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _degreesRotationText = "0";
+        public string DegreesRotationText
+        {
+            get => _degreesRotationText;
+            set
+            {
+                _degreesRotationText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _radiansRotationText = "0";
+
+        public string RadiansRotationText
+        {
+            get => _radiansRotationText;
+            set
+            {
+                _radiansRotationText = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Property Changed Notification
@@ -129,12 +155,33 @@ namespace HexConverter
             DataContext = this;
             FloatText = BigEndianText = LittleEndianText = SignedIntegerText = UnsignedIntegerText = 0.ToString();
             InitializeComponent();
-            AllInputTextBoxes = new List<TextBox>(new[] { Float_TextBox, BigEndian_TextBox, LittleEndian_TextBox, Signed_TextBox, Unsigned_TextBox });
+            AllInputTextBoxes = new List<TextBox>(new[] { Float_TextBox, BigEndian_TextBox, LittleEndian_TextBox, Signed_TextBox, Unsigned_TextBox, UnrealRot_TextBox });
             HexInputTextBoxes = new List<TextBox>(new[] { BigEndian_TextBox, LittleEndian_TextBox });
             DecInputTextBoxes = new List<TextBox>(new[] { Float_TextBox, Signed_TextBox, Unsigned_TextBox });
         }
 
-        private void RunConversions(TextBox sourceTextBox)
+
+        /// <summary>
+        /// Converts Degrees to Unreal rotation units
+        /// </summary>
+        public static int DegreesToUnrealRotationUnits(float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
+
+        /// <summary>
+        /// Converts Radians to Unreal rotation units
+        /// </summary>
+        public static int RadiansToUnrealRotationUnits(float radians) => Convert.ToInt32(radians * 180 / Math.PI * 65536f / 360f);
+
+        /// <summary>
+        /// Converts Unreal rotation units to Degrees
+        /// </summary>
+        public static float UnrealRotationUnitsToDegrees(int unrealRotationUnits) => unrealRotationUnits * 360f / 65536f;
+
+        /// <summary>
+        /// Converts Unreal rotation units to Radians
+        /// </summary>
+        public static double UnrealRotationUnitsToRadians(int unrealRotationUnits) => unrealRotationUnits * 360.0 / 65536.0 * Math.PI / 180.0;
+
+        private void RunConversionsNumbers(TextBox sourceTextBox)
         {
             string sourceStr = sourceTextBox.Text.Trim().ToUpper().Replace(" ", "");
             sourceTextBox.Text = sourceStr; //force uppercase
@@ -142,7 +189,7 @@ namespace HexConverter
             if (sourceTextBox == BigEndian_TextBox || sourceTextBox == LittleEndian_TextBox)
             {
                 sourceStr = new string(sourceTextBox.Text.Where(c => hexChars.Contains(c)).ToArray()); //remove non-hex characters
-                sourceStr = sourceStr.PadLeft(8, '0').Substring(0,8); //only 8 long supported
+                sourceStr = sourceStr.PadLeft(8, '0').Substring(0, 8); //only 8 long supported
                 sourceTextBox.Text = sourceStr;
 
                 var asCurrentEndian = new byte[4];
@@ -154,6 +201,7 @@ namespace HexConverter
                     reversedEndianStr = $"{asCurrentEndian[i]:X2}{reversedEndianStr}";
                     asReversedEndian[3 - i] = asCurrentEndian[i];
                 }
+
                 if (sourceTextBox == BigEndian_TextBox)
                 {
                     FloatText = BitConverter.ToSingle(asReversedEndian, 0).ToString();
@@ -233,11 +281,52 @@ namespace HexConverter
             }
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        private void OnKeyUpNumbers(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
-                RunConversions((TextBox)sender);
+                RunConversionsNumbers((TextBox)sender);
+            }
+        }
+
+        private void OnKeyUpRotation(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                RunConversionsRotation((TextBox)sender);
+            }
+        }
+
+        private void RunConversionsRotation(TextBox sourceTextBox)
+        {
+            string sourceStr = sourceTextBox.Text.Trim().ToUpper().Replace(" ", "");
+            sourceTextBox.Text = sourceStr; //force uppercase
+
+            if (sourceTextBox == UnrealRot_TextBox)
+            {
+                if (int.TryParse(sourceStr, out var unrealUnits))
+                {
+                    DegreesRotationText = UnrealRotationUnitsToDegrees(unrealUnits).ToString();
+                    RadiansRotationText = UnrealRotationUnitsToRadians(unrealUnits).ToString();
+                }
+            }
+            else if (sourceTextBox == DegreesRot_TextBox)
+            {
+                if (float.TryParse(sourceStr, out var degrees))
+                {
+                    var radians = (float)(degrees * (Math.PI / 180f));
+                    UnrealRotationText = RadiansToUnrealRotationUnits(radians).ToString();
+                    RadiansRotationText = radians.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+            else if (sourceTextBox == RadiansRot_TextBox)
+            {
+                if (float.TryParse(sourceStr, out var radians))
+                {
+                    var degrees = (float)((radians * 180f) / Math.PI);
+                    DegreesRotationText = degrees.ToString(CultureInfo.InvariantCulture);
+                    UnrealRotationText = DegreesToUnrealRotationUnits(degrees).ToString();
+                }
             }
         }
 

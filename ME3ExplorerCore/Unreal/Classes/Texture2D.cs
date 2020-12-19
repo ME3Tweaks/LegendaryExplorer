@@ -225,7 +225,7 @@ namespace ME3ExplorerCore.Unreal.Classes
             else if (mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib || mipToLoad.storageType == StorageTypes.extLZMA)
             {
                 string filename = null;
-                List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, false);
+                List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
                 if (mipToLoad.Export.Game == MEGame.ME1)
                 {
                     var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
