@@ -50,14 +50,14 @@ namespace ME3ExplorerCore.Unreal.Classes
             }
         }
 
-        public static uint GetTextureCRC(ExportEntry export)
+        public static uint GetTextureCRC(ExportEntry export, List<string> additionalTFCs = null)
         {
             PropertyCollection properties = export.GetProperties();
             var format = properties.GetProp<EnumProperty>("Format");
             var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
             List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
             var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-            return Texture2D.GetMipCRC(topmip, format.Value);
+            return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
         }
 
         public void RemoveEmptyMipsFromMipList()
@@ -317,9 +317,9 @@ namespace ME3ExplorerCore.Unreal.Classes
             return imagebytes;
         }
 
-        public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat, string gamePathToUse = null)
+        public static uint GetMipCRC(Texture2DMipInfo mip, string textureFormat, string gamePathToUse = null, List<string> additionalTFCs = null)
         {
-            byte[] data = GetTextureData(mip, mip.Export.Game, gamePathToUse);
+            byte[] data = GetTextureData(mip, mip.Export.Game, gamePathToUse, additionalTFCs: additionalTFCs);
             if (data == null) return 0;
             if (textureFormat == "PF_NormalMap_HQ")
             {

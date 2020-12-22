@@ -143,13 +143,13 @@ namespace ME3Explorer.Sequence_Editor
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
-            SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
-            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
-            AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
+            SaveImageCommand = new GenericCommand(SaveImage, () => CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), () => CurrentObjects.Any);
+            AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
-            SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+            SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
         }
 
         private string searchtext = "";

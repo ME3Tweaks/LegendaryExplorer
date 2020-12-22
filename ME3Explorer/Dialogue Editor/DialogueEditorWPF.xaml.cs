@@ -379,9 +379,9 @@ namespace ME3Explorer.Dialogue_Editor
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
-            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
-            SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
-            AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), ()=>CurrentObjects.Any);
+            SaveImageCommand = new GenericCommand(SaveImage, () => CurrentObjects.Any);
+            AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
             GoToCommand = new GenericCommand(GoToBoxOpen);
             LoadTLKManagerCommand = new GenericCommand(LoadTLKManager);
             OpenInCommand = new RelayCommand(OpenInAction);
@@ -410,7 +410,7 @@ namespace ME3Explorer.Dialogue_Editor
             DefaultColorsCommand = new GenericCommand(ResetColorsToDefault);
             RecenterCommand = new GenericCommand(graphEditor_PanTo);
             UpdateLayoutDefaultsCommand = new RelayCommand(UpdateLayoutDefaults);
-            SearchCommand = new GenericCommand(SearchDialogue, CurrentObjects.Any);
+            SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
             ForceRefreshCommand = new RelayCommand(ForceRefresh);
         }

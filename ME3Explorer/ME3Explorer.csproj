@@ -258,7 +258,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="lib3ds.Net">
-      <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
+      <HintPath>Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />
@@ -449,6 +449,7 @@
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
     <Compile Include="SharedUI\Interfaces\IRecents.cs" />
+    <Compile Include="SharedUI\ObservableCollectionExtendedWPF.cs" />
     <Compile Include="SharedUI\RecentsControl.xaml.cs">
       <DependentUpon>RecentsControl.xaml</DependentUpon>
     </Compile>
@@ -457,6 +458,8 @@
     <Compile Include="TextureStudio\TextureStudioUI.xaml.cs">
       <DependentUpon>TextureStudioUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TextureStudio\TextureTreeViewEntry.cs" />
+    <Compile Include="TextureStudio\TSTextureMap.cs" />
     <Compile Include="TrackingBase.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
@@ -1620,9 +1623,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
+    <PostBuildEvent>xcopy /f /y "$(ProjectDir)Libraries" "$(ProjectDir)$(OutDir)"
 
-xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
+mkdir "$(ProjectDir)\exec"
+xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec"
 move "$(ProjectDir)$(OutDir)x64\e_sqlite3.dll" "$(ProjectDir)$(OutDir)e_sqlite3.dll"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"

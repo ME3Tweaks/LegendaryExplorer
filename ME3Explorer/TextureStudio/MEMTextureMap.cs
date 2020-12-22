@@ -10,12 +10,12 @@ namespace ME3Explorer.TextureStudio
 {
     public class MEMTextureMap
     {
-        public static Dictionary<uint, TextureMapEntry> LoadTextureMap(MEGame me3)
+        public static Dictionary<uint, TextureMapEntry> LoadTextureMap(MEGame game)
         {
             // Read the vanilla file name table
             List<string> packageNames = null;
             {
-                using var stream = File.OpenRead(@"Z:\me3.bin");
+                using var stream = File.OpenRead(Path.Combine(App.ExecFolder, @"TextureMap", $@"vanilla{game}.bin"));
                 if (stream.ReadStringASCII(4) != @"MD5T")
                 {
                     throw new Exception(@"Header of MD5 table doesn't match expected value!");
@@ -45,7 +45,7 @@ namespace ME3Explorer.TextureStudio
             }
 
 
-            var tmf = @"Z:\me3map.bin";
+            var tmf = Path.Combine(App.ExecFolder, @"TextureMap", $@"vanilla{game}Map.bin");
             using var fs = File.OpenRead(tmf);
 
             // read the precomputed vanilla texture map.
@@ -71,6 +71,9 @@ namespace ME3Explorer.TextureStudio
             return map;
         }
 
+        /// <summary>
+        /// Entry for the MEM Texture Map
+        /// </summary>
         public class TextureMapEntry
         {
 
@@ -114,7 +117,9 @@ namespace ME3Explorer.TextureStudio
             public short Height { get; set; }
 
             public List<TextureMapPackageEntry> ContainingPackages { get; } = new List<TextureMapPackageEntry>();
-
+            /// <summary>
+            /// Expected object CRC
+            /// </summary>
             public uint CRC { get; set; }
 
             public int Flags { get; set; }
@@ -129,15 +134,46 @@ namespace ME3Explorer.TextureStudio
         /// </summary>
         public class TextureMapPackageEntry
         {
+            /// <summary>
+            /// In-package UIndex
+            /// </summary>
             public int UIndex { get; set; }
+            /// <summary>
+            /// The number of mips
+            /// </summary>
             public int NumMips { get; set; }
+            /// <summary>
+            /// The number of empty mips
+            /// </summary>
             public int NumEmptyMips { get; set; }
+            /// <summary>
+            /// If this entry is for TextureMovie
+            /// </summary>
             public bool IsMovieTexture { get; set; }
+            /// <summary>
+            /// Relative path to the package
+            /// </summary>
             public string RelativePackagePath { get; set; }
+            /// <summary>
+            /// The name of the package
+            /// </summary>
             public string PackageName { get; set; }
+            /// <summary>
+            /// ME1 Only: If this package references a master package
+            /// </summary>
             public bool IsSlave { get; set; }
+            /// <summary>
+            /// ME1 Only: The name of the Master Package that contains the higher mips
+            /// </summary>
             public string MasterPackageName { get; set; }
+            /// <summary>
+            /// ME1 Only: The master package offset (?)
+            /// </summary>
             public uint TextureOffset { get; set; }
+            /// <summary>
+            /// Instance-specific CRC
+            /// </summary>
+            public uint CRC { get; set; }
         }
     }
 }
