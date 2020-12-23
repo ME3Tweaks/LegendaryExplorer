@@ -25,6 +25,7 @@ using GongSolutions.Wpf.DragDrop;
 using Newtonsoft.Json;
 using ME3Explorer.PackageEditor.Experiments;
 using ME3Explorer.Packages;
+using ME3Explorer.TextureStudio;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
@@ -2334,6 +2335,10 @@ namespace ME3Explorer
                 IsBusyTaskbar = false;
                 //throw e;
             }
+
+            MasterTextureSelector mts = new MasterTextureSelector();
+            mts.LoadFile(s);
+            mts.Show();
         }
 
         /// <summary>

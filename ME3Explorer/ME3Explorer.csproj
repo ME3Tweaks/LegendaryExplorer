@@ -455,6 +455,9 @@
       <DependentUpon>RecentsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\TaskbarHelper.cs" />
+    <Compile Include="TextureStudio\MasterTextureSelector.xaml.cs">
+      <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TextureStudio\MEMTextureMap.cs" />
     <Compile Include="TextureStudio\TextureStudioUI.xaml.cs">
       <DependentUpon>TextureStudioUI.xaml</DependentUpon>
@@ -1312,6 +1315,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Splash\DPIAwareSplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextureStudio\MasterTextureSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
