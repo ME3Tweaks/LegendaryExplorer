@@ -292,8 +292,7 @@
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
-                <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
-                                                 GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
+                <SharedUI:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
                 <StatusBarItem>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="Select package file to load"/>
                 </StatusBarItem>

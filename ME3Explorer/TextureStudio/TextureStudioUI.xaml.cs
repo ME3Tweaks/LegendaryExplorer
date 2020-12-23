@@ -4,17 +4,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
-using DocumentFormat.OpenXml.Presentation;
 using ME3Explorer.SharedUI;
-using ME3ExplorerCore.Compression;
-using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ME3Explorer.TextureStudio
@@ -27,6 +24,13 @@ namespace ME3Explorer.TextureStudio
         public ObservableCollectionExtendedWPF<TextureMapMemoryEntry> AllTreeViewNodes { get; } = new ObservableCollectionExtendedWPF<TextureMapMemoryEntry>();
 
         #region Variables
+
+        private MEGame _currentStudioGame;
+        public MEGame CurrentStudioGame
+        {
+            get => _currentStudioGame;
+            set => SetProperty(ref _currentStudioGame, value);
+        }
 
         private TextureMapMemoryEntryWPF _selectedItem;
         public TextureMapMemoryEntryWPF SelectedItem
@@ -52,7 +56,6 @@ namespace ME3Explorer.TextureStudio
                 {
                     OnSelectedInstanceChanged();
                 }
-
             }
         }
 
@@ -85,7 +88,21 @@ namespace ME3Explorer.TextureStudio
         }
 
         private string _selectedFolder;
-        public string SelectedFolder { get => _selectedFolder; set => SetProperty(ref _selectedFolder, value); }
+
+        public string SelectedFolder
+        {
+            get => _selectedFolder;
+            set
+            {
+                if (SetProperty(ref _selectedFolder, value))
+                {
+                    OnSelectedFolderChanged();
+                }
+            }
+        }
+
+        private string _statusText;
+        public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
         private string _busyText;
         public string BusyText { get => _busyText; set => SetProperty(ref _busyText, value); }
@@ -141,10 +158,113 @@ namespace ME3Explorer.TextureStudio
             InitializeComponent();
         }
 
+        #region Command loading
+        public GenericCommand RemoveAllEmptyMipsCommand { get; set; }
+        public GenericCommand ME1UpdateMasterPointersCommand { get; set; }
+        public GenericCommand ME1CreateNewMasterPackageCommand { get; set; }
+        public GenericCommand BusyCancelCommand { get; set; }
+        public GenericCommand ScanFolderCommand { get; set; }
+
+
         private void LoadCommands()
         {
             BusyCancelCommand = new GenericCommand(CancelScan, () => IsBusy);
             ScanFolderCommand = new GenericCommand(ScanFolder, CanScanFolder);
+
+            RemoveAllEmptyMipsCommand = new GenericCommand(RemoveAllEmptyMips, CanRemoveEmptyMips);
+            ME1UpdateMasterPointersCommand = new GenericCommand(ME1UpdateMasterPointers, CanUpdatePointers);
+            ME1CreateNewMasterPackageCommand = new GenericCommand(ME1CreateNewMasterPackage, CanCreateNewMasterPackage);
+        }
+        #endregion
+
+        #region Command methods
+
+        private void ME1CreateNewMasterPackage()
+        {
+            SaveFileDialog sfd = new SaveFileDialog()
+            {
+                Filter = "ME1 texture package files|*.upk",
+                Title = "Select location to save package",
+                FileName = "Textures_Master_"
+            };
+
+            var result = sfd.ShowDialog(this);
+            if (result.HasValue && result.Value)
+            {
+                // filename must start with:
+                // Textures_Master_
+                if (!Path.GetFileName(sfd.FileName).StartsWith(@"Textures_Master_"))
+                {
+                    MessageBox.Show(@"All newly created ME1 texture master files must start with 'Textures_Master_'. Typically you will also want to include your DLC name as well to ensure uniqueness.");
+                    return;
+                }
+                
+                MEPackageHandler.CreateAndSavePackage(sfd.FileName, MEGame.ME1);
+            }
+
+        }
+
+        private void RemoveAllEmptyMips()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (sender, args) =>
+            {
+                var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries()).ToList();
+                var texturesWithEmptyMips = allTextures.Where(x => x.Instances.Any(x => x.NumEmptyMips > 0));
+
+                Dictionary<string, List<int>> exportMap = new Dictionary<string, List<int>>();
+                foreach (var t in texturesWithEmptyMips)
+                {
+                    foreach (var instance in t.Instances)
+                    {
+                        if (instance.NumEmptyMips > 0)
+                        {
+                            // Add to list
+                            if (!exportMap.TryGetValue(instance.RelativePackagePath, out var uindexes))
+                            {
+                                uindexes = new List<int>();
+                                exportMap[instance.RelativePackagePath] = uindexes;
+                            }
+
+                            uindexes.Add(instance.UIndex);
+                        }
+                    }
+                }
+
+                foreach (var mpMap in exportMap)
+                {
+                    foreach (var item in mpMap.Value)
+                    {
+                        Debug.WriteLine($@"Removing empty mips in {mpMap.Key}, uindex {item}");
+                    }
+                }
+            };
+            bw.RunWorkerCompleted += (sender, args) =>
+            {
+                IsBusy = false;
+                ScanFolder();
+            };
+            bw.RunWorkerAsync();
+        }
+
+        private bool CanUpdatePointers()
+        {
+            return true;
+        }
+
+        private bool CanRemoveEmptyMips()
+        {
+            return true;
+        }
+
+        private void ME1UpdateMasterPointers()
+        {
+
+        }
+
+        private bool CanCreateNewMasterPackage()
+        {
+            return true;
         }
 
         private void CancelScan()
@@ -152,15 +272,25 @@ namespace ME3Explorer.TextureStudio
             ScanCanceled = true;
         }
 
-        public GenericCommand BusyCancelCommand { get; set; }
 
         private bool CanScanFolder() => !IsBusy;
 
+        #endregion
+
+        #region OnPROPERTYNAMEChanged() methods
         private void OnSelectedItemChanged()
         {
 
         }
 
+        private void OnSelectedFolderChanged()
+        {
+            StatusText = SelectedFolder != null ? $@"Operating on {SelectedFolder}" : @"Open a folder to begin working on textures";
+        }
+
+        #endregion
+
+        #region Scanning methods
         private void ScanFolder()
         {
             var dlg = new CommonOpenFileDialog("Select a folder containing package files to work on")
@@ -179,9 +309,20 @@ namespace ME3Explorer.TextureStudio
                 };
                 IsBusy = true;
                 SelectedFolder = dlg.FileName;
+                ResetUI();
                 bw.RunWorkerAsync();
-
             }
+        }
+
+        private void ResetUI()
+        {
+            foreach(var v in CachedPackages)
+            {
+                v.Dispose();
+            }
+            CachedPackages.Clear();
+            AllTreeViewNodes.ClearEx();
+            CurrentStudioGame = MEGame.Unknown;
         }
 
         private TextureMapMemoryEntryWPF MemoryEntryGeneratorWPF(IEntry entry)
@@ -191,6 +332,7 @@ namespace ME3Explorer.TextureStudio
 
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
+            
             // Mapping of full paths to their entries
             BusyHeader = @"Calculating texture map";
             Dictionary<string, TextureMapMemoryEntry> entries = new Dictionary<string, TextureMapMemoryEntry>();
@@ -205,6 +347,17 @@ namespace ME3Explorer.TextureStudio
                 BusyText = $@"Scanning {Path.GetFileName(p)}";
                 if (ScanCanceled) break;
                 using var package = MEPackageHandler.OpenMEPackage(p);
+
+                if (CurrentStudioGame != MEGame.Unknown && CurrentStudioGame != package.Game)
+                {
+                    // This workspace has files from multiple games!
+
+                }
+                else
+                {
+                    CurrentStudioGame = package.Game;
+                }
+                
                 var textures = package.Exports.Where(x => x.IsTexture());
                 foreach (var t in textures)
                 {
@@ -219,7 +372,11 @@ namespace ME3Explorer.TextureStudio
 
             // Pass 3: Sort
             BusyText = "Sorting tree";
-            AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().ForEach(x => x.IsExpanded = false); // Collapse the top branches
+            foreach (var t in AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
+            {
+                // Collapse the top branches
+                t.IsExpanded = false;
+            }
             SortNodes(AllTreeViewNodes);
 
             // Pass 4: Find items that have matching CRCs across memory entries
@@ -252,14 +409,13 @@ namespace ME3Explorer.TextureStudio
             }
 
             BusyProgressIndeterminate = true;
-
         }
 
         private void SetUnmatchedCRC(TextureMapMemoryEntry memEntry, bool hasUnmatchedCRC)
         {
             memEntry.HasUnmatchedCRCs = hasUnmatchedCRC;
             TextureMapMemoryEntry parent = memEntry.Parent;
-            while(parent != null)
+            while (parent != null)
             {
                 parent.HasUnmatchedCRCs = hasUnmatchedCRC || parent.Children.Any(x => x.HasUnmatchedCRCs); // If one is corrected, another may exist under this tree.
                 parent = parent.Parent;
@@ -276,12 +432,9 @@ namespace ME3Explorer.TextureStudio
             branch.Sort(x => x.ObjectName);
         }
 
-        public GenericCommand ScanFolderCommand { get; set; }
-        private void LTM(object sender, RoutedEventArgs e)
-        {
-            MEMTextureMap.LoadTextureMap(MEGame.ME3);
-        }
+        #endregion
 
+        #region TEXTURE MAP (NOT-WPF)
         // BELOW CODE IS NOT TIED TO WPF
         // PLEASE KEEP IT THIS WAY IN THE EVENT
         // IT MOVES TO THE LIB
@@ -357,7 +510,24 @@ namespace ME3Explorer.TextureStudio
 
             return lastParent;
         }
+        #endregion
 
+        #region Test Methods
+        /// <summary>
+        /// Load precomputed texture map (MEM)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LTM(object sender, RoutedEventArgs e)
+        {
+            MEMTextureMap.LoadTextureMap(MEGame.ME3);
+        }
+
+        /// <summary>
+        /// Test SFAR Texture Reading
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TSTR(object sender, RoutedEventArgs e)
         {
             DLCPackage dpackage = new DLCPackage(@"Z:\ME3-Backup\BIOGame\DLC\DLC_CON_APP01\CookedPCConsole\Default.sfar");
@@ -383,6 +553,7 @@ namespace ME3Explorer.TextureStudio
                 }
             }
         }
+        #endregion
 
         private void SelectedTreeNodeChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {

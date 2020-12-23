@@ -17,6 +17,7 @@
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:GameToVisibilityConverter x:Key="GameToVisibilityConverter"/>
         <BitmapImage x:Key="packageicon" UriSource="pack://application:,,,/PackageEditor/EntryIcons/icon_package.png"/>
         <BitmapImage x:Key="textureicon" UriSource="pack://application:,,,/PackageEditor/EntryIcons/icon_texture2d.png"/>
     </Window.Resources>
@@ -26,7 +27,7 @@
                 <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="300">
                     <TextBlock Text="{Binding BusyHeader}" FontWeight="Bold" TextAlignment="Center"/>
                     <TextBlock Text="{Binding BusyText}"/>
-                    <ProgressBar Value="{Binding BusyProgressValue}" Maximum="{Binding BusyProgressMaximum}" IsIndeterminate="{Binding BusyIndeterminate}"  Margin="0,5,0,0" Height="15" />
+                    <ProgressBar Value="{Binding BusyProgressValue}" Maximum="{Binding BusyProgressMaximum}" IsIndeterminate="{Binding BusyProgressIndeterminate}"  Margin="0,5,0,0" Height="15" />
                     <Button Content="Cancel" HorizontalAlignment="center" Margin="0,5,0,0" Padding="3"  Command="{Binding BusyCancelCommand}" />
                 </StackPanel>
             </DataTemplate>
@@ -38,25 +39,50 @@
         </xctk:BusyIndicator.ProgressBarStyle>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="File">
+                <MenuItem Header="File" Padding="4">
                     <MenuItem Header="Load vanilla texture map" Click="LTM"/>
                     <MenuItem Header="Test SFAR TEXTURE READ" Click="TSTR"/>
                 </MenuItem>
+                <MenuItem Header="Operations">
+                    <MenuItem Header="Remove all empty mips" Command="{Binding RemoveAllEmptyMipsCommand}"/>
+                    <MenuItem Header="ME1: Update master texture pointers" Command="{Binding ME1UpdateMasterPointersCommand}"/>
+                    <MenuItem Header="ME1: Create a new master texture package" Command="{Binding ME1CreateNewMasterPackageCommand}"/>
+
+                </MenuItem>
             </Menu>
+            <StatusBar DockPanel.Dock="Bottom">
+                <StatusBarItem Padding="2" VerticalContentAlignment="Center" Visibility="{Binding CurrentStudioGame, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_Unknown'}">
+                    <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding CurrentStudioGame}" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Text="{Binding StatusText}"/>
+                </StatusBarItem>
+            </StatusBar>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="350"/>
+                    <ColumnDefinition MinWidth="350" MaxWidth="600"/>
                     <ColumnDefinition Width="5"/>
-                    <ColumnDefinition MinWidth="100"/>
+                    <ColumnDefinition MinWidth="100" MaxWidth="700"/>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="In-memory unique textures" Grid.Column="0" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
+                <TextBlock Text="Package instances" Grid.Column="2" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
+                <TextBlock Text="Texture Viewer for instance" Grid.Column="5" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
+
                 <Button Content="Select folder"
                         Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"
                         Command="{Binding ScanFolderCommand}"/>
                 <TreeView x:Name="LeftSide_TreeView" 
                           Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}}"
                           Grid.Column="0" 
+                          Grid.Row="1"
                           FontFamily="Consolas"
                           SelectedItemChanged="SelectedTreeNodeChanged"
                           ItemsSource="{Binding AllTreeViewNodes}" 
@@ -136,7 +162,11 @@
                     </i:Interaction.Behaviors>-->
                 </TreeView>
 
-                <GridSplitter Grid.Column="1"/>
+                <GridSplitter Width="5"  Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Grid.RowSpan="2"/>
+                <DockPanel Grid.Column="2" Grid.Row="1">
+                    <DockPanel Dock="Bottom">
+                        
+                    </DockPanel>
                 <ListBox Grid.Column="2" ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
@@ -163,8 +193,10 @@
                         </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>
-                <GridSplitter Grid.Column="3"/>
-                <me3Explorer:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4"/>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="3" Grid.RowSpan="2" Width="5"/>
+                <me3Explorer:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4" Grid.Row="1"/>
 
             </Grid>
         </DockPanel>

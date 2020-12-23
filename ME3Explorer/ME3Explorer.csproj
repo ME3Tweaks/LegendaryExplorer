@@ -448,6 +448,7 @@
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
+    <Compile Include="SharedUI\Converters\GameToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Interfaces\IRecents.cs" />
     <Compile Include="SharedUI\ObservableCollectionExtendedWPF.cs" />
     <Compile Include="SharedUI\RecentsControl.xaml.cs">

@@ -111,8 +111,12 @@ namespace ME3Explorer.TextureStudio
 
             var tex2D = ObjectBinary.From<UTexture2D>(exportEntry);
             NumMips = tex2D.Mips.Count;
-            Width = (short) tex2D.Mips[0].SizeX;
-            Height = (short) tex2D.Mips[0].SizeY;
+            if (NumMips > 0)
+            {
+                Width = (short) tex2D.Mips[0].SizeX;
+                Height = (short) tex2D.Mips[0].SizeY;
+            }
+
             NumEmptyMips = tex2D.Mips.Count(x => x.StorageType == StorageTypes.empty);
             var props = exportEntry.GetProperties();
             var format = props.GetProp<EnumProperty>(@"Format");
