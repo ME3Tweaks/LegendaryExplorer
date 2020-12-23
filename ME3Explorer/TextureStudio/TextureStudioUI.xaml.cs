@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using DocumentFormat.OpenXml.Presentation;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Compression;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -29,7 +32,42 @@ namespace ME3Explorer.TextureStudio
         public TextureMapMemoryEntryWPF SelectedItem
         {
             get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
+            set
+            {
+                if (SetProperty(ref _selectedItem, value))
+                {
+                    OnSelectedItemChanged();
+                }
+
+            }
+        }
+
+        private TextureMapPackageEntry _selectedInstance;
+        public TextureMapPackageEntry SelectedInstance
+        {
+            get => _selectedInstance;
+            set
+            {
+                if (SetProperty(ref _selectedInstance, value))
+                {
+                    OnSelectedInstanceChanged();
+                }
+
+            }
+        }
+
+        private void OnSelectedInstanceChanged()
+        {
+            if (SelectedInstance == null)
+            {
+                TextureViewer_ExportLoader.UnloadExport();
+            }
+            else
+            {
+                var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, SelectedInstance.RelativePackagePath));
+                TextureViewer_ExportLoader.LoadExport(package.GetUExport(SelectedInstance.UIndex));
+                AddPackageToCache(package);
+            }
         }
 
         private bool _isBusy;
@@ -77,7 +115,25 @@ namespace ME3Explorer.TextureStudio
         }
 
         private bool ScanCanceled;
+
+        private List<IMEPackage> CachedPackages = new List<IMEPackage>(10);
+
+        private void AddPackageToCache(IMEPackage package)
+        {
+            // Move to end of the list.
+            CachedPackages.Remove(package);
+            CachedPackages.Add(package);
+
+            if (CachedPackages.Count > 10)
+            {
+                var packageToRelease = CachedPackages[0];
+                CachedPackages.RemoveAt(0); //Remove the first item
+                packageToRelease.Dispose();
+            }
+        }
         #endregion
+
+
 
         public TextureStudioUI()
         {
@@ -99,6 +155,11 @@ namespace ME3Explorer.TextureStudio
         public GenericCommand BusyCancelCommand { get; set; }
 
         private bool CanScanFolder() => !IsBusy;
+
+        private void OnSelectedItemChanged()
+        {
+
+        }
 
         private void ScanFolder()
         {
@@ -154,10 +215,67 @@ namespace ME3Explorer.TextureStudio
             }
 
             // Pass 2: Find any unique items among the unique paths (e.g. CRC not equal to other members of same entry)
-            var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().Select(x => x.GetAllTextureEntries());
+            var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries());
+
+            // Pass 3: Sort
+            BusyText = "Sorting tree";
+            AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().ForEach(x => x.IsExpanded = false); // Collapse the top branches
+            SortNodes(AllTreeViewNodes);
+
+            // Pass 4: Find items that have matching CRCs across memory entries
+            Dictionary<uint, List<TextureMapMemoryEntry>> crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
+            foreach (var t in allTextures)
+            {
+                if (t.Instances.Any())
+                {
+                    var firstCRC = t.Instances[0].CRC;
+
+                    var areAllEqualCRC = t.Instances.All(x => x.CRC == firstCRC);
+                    if (!areAllEqualCRC)
+                    {
+                        // Some textures are not the same across the same entry!
+                        // This will lead to weird engine behavior as memory is dumped and newly loaded data is different
+                        Debug.WriteLine(@"UNMATCHED CRCSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+                        SetUnmatchedCRC(t, true);
+                    }
+                    else
+                    {
+                        if (!crcMap.TryGetValue(firstCRC, out var list))
+                        {
+                            list = new List<TextureMapMemoryEntry>();
+                            crcMap[firstCRC] = list;
+                        }
+
+                        list.Add(t);
+                    }
+                }
+            }
+
             BusyProgressIndeterminate = true;
 
         }
+
+        private void SetUnmatchedCRC(TextureMapMemoryEntry memEntry, bool hasUnmatchedCRC)
+        {
+            memEntry.HasUnmatchedCRCs = hasUnmatchedCRC;
+            TextureMapMemoryEntry parent = memEntry.Parent;
+            while(parent != null)
+            {
+                parent.HasUnmatchedCRCs = hasUnmatchedCRC || parent.Children.Any(x => x.HasUnmatchedCRCs); // If one is corrected, another may exist under this tree.
+                parent = parent.Parent;
+            }
+        }
+
+        private void SortNodes(ObservableCollectionExtended<TextureMapMemoryEntry> branch)
+        {
+            foreach (var node in branch)
+            {
+                SortNodes(node.Children);
+            }
+
+            branch.Sort(x => x.ObjectName);
+        }
+
         public GenericCommand ScanFolderCommand { get; set; }
         private void LTM(object sender, RoutedEventArgs e)
         {
@@ -178,11 +296,11 @@ namespace ME3Explorer.TextureStudio
         {
             var parent = EnsureParent(exportEntry, textureMapMemoryEntries, additionalTFCs, generatorDelegate);
 
-            if (!textureMapMemoryEntries.TryGetValue(exportEntry.FullPath, out var memoryEntry))
+            if (!textureMapMemoryEntries.TryGetValue(exportEntry.InstancedFullPath, out var memoryEntry))
             {
                 memoryEntry = generatorDelegate(exportEntry);
                 memoryEntry.Parent = parent;
-                textureMapMemoryEntries[exportEntry.FullPath] = memoryEntry;
+                textureMapMemoryEntries[exportEntry.InstancedFullPath] = memoryEntry;
                 parent?.Children.Add(memoryEntry);
             }
 
@@ -212,7 +330,7 @@ namespace ME3Explorer.TextureStudio
             for (int i = 0; i < parents.Count; i++)
             {
                 var p = parents[i];
-                if (!textureMapMemoryEntries.TryGetValue(p.FullPath, out lastParent))
+                if (!textureMapMemoryEntries.TryGetValue(p.InstancedFullPath, out lastParent))
                 {
                     if (p.IsTexture() && p is ExportEntry pe)
                     {
@@ -223,7 +341,7 @@ namespace ME3Explorer.TextureStudio
                     {
                         // Parent doesn't exist, create
                         lastParent = generatorDelegate(p);
-                        lastParent.Parent = i > 0 ? textureMapMemoryEntries[parents[i - 1].FullPath] : null;
+                        lastParent.Parent = i > 0 ? textureMapMemoryEntries[parents[i - 1].InstancedFullPath] : null;
                         // Set the parent child
                         lastParent.Parent?.Children.Add(lastParent);
                         if (lastParent.Parent == null)
@@ -232,7 +350,7 @@ namespace ME3Explorer.TextureStudio
                         }
                     }
 
-                    textureMapMemoryEntries[p.FullPath] = lastParent;
+                    textureMapMemoryEntries[p.InstancedFullPath] = lastParent;
                 }
 
             }
@@ -264,6 +382,12 @@ namespace ME3Explorer.TextureStudio
                     }
                 }
             }
+        }
+
+        private void SelectedTreeNodeChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            SelectedItem = e.NewValue as TextureMapMemoryEntryWPF;
+            //if (SelectedItem )
         }
     }
 }

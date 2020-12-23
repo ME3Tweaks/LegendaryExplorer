@@ -22,7 +22,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         // Callback for when there's an exception. Used by M3 to localize the error. Defaults to an int version since ME3Explorer is INT only
         public static Func<string, string, string> GetLocalizedCouldNotFetchTextureDataMessage { get; set; } = (export, file) => $"Could not fetch texture data for texture {export} in file {file}";
-        public static Func<string, string> GetLocalizedCouldNotFindME1TexturePackageMessage { get; set; } =  file => $"Externally referenced texture package not found: {file}";
+        public static Func<string, string> GetLocalizedCouldNotFindME1TexturePackageMessage { get; set; } = file => $"Externally referenced texture package not found: {file}";
         public static Func<string, string> GetLocalizedCouldNotFindME2ME3TextureCacheMessage { get; set; } = file => $"Externally referenced texture file not found: {file}";
         public static Func<string, string, string, string, string> GetLocalizedTextureExceptionExternalMessage { get; set; } = (exceptionMessage, file, storageType, offset) => $"{exceptionMessage}\nFile: {file}\nStorageType: {storageType}\nExternal file offset: {offset}";
         public static Func<string, string, string> GetLocalizedTextureExceptionInternalMessage { get; set; } = (exceptionMessage, storageType) => $"{exceptionMessage}\nStorageType: {storageType}";
@@ -196,6 +196,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, MEGame game, string gamePathToUse = null, bool decompress = true, List<string> additionalTFCs = null)
         {
+            bool dataLoaded = false;
             var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
             //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
             if (mipToLoad.storageType == StorageTypes.pccUnc)
@@ -261,6 +262,39 @@ namespace ME3ExplorerCore.Unreal.Classes
                         {
                             filename = fullPath;
                         }
+                        else if (game == MEGame.ME3 && mipToLoad.TextureCacheName.StartsWith(@"Textures_DLC"))
+                        {
+                            // Check SFAR
+                            var dlcName = mipToLoad.TextureCacheName.Substring(9);
+                            if (MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) && ME3Directory.DLCPath != null)
+                            {
+                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, "CookedPCConsole", "Default.sfar");
+                                if (File.Exists(sfarPath))
+                                {
+                                    DLCPackage dpackage = new DLCPackage(sfarPath);
+                                    var entryId = dpackage.FindFileEntry(archive);
+                                    if (entryId >= 0)
+                                    {
+                                        // TFC is in this SFAR
+                                        imagebytes = dpackage.ReadFromEntry(entryId, mipToLoad.externalOffset, mipToLoad.uncompressedSize);
+                                        dataLoaded = true;
+                                    } else
+                                    {
+                                        // File not in archive
+                                        throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                                    }
+                                } else
+                                {
+                                    // SFAR not in folder
+                                    throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                                }
+                            }
+                            else
+                            {
+                                // Not an official DLC
+                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                            }
+                        }
                         else
                         {
                             throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
@@ -270,48 +304,51 @@ namespace ME3ExplorerCore.Unreal.Classes
 
                 //exceptions above will prevent filename from being null here
 
-                try
+                if (!dataLoaded) // The data hasn't been extracted yet (sfar fetch)
                 {
-                    using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    try
                     {
-                        try
+                        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
                         {
-                            fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
-                            if (mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
+                            try
                             {
-                                if (decompress)
+                                fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
+                                if (mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
                                 {
-                                    using (MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize))
+                                    if (decompress)
                                     {
-                                        try
+                                        using (MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize))
                                         {
-                                            TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                            try
+                                            {
+                                                TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                                            }
                                         }
-                                        catch (Exception e)
-                                        {
-                                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
-                                        }
+                                    }
+                                    else
+                                    {
+                                        fs.Read(imagebytes, 0, mipToLoad.compressedSize);
                                     }
                                 }
                                 else
                                 {
-                                    fs.Read(imagebytes, 0, mipToLoad.compressedSize);
+                                    fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
                                 }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
+                                throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
                             }
                         }
-                        catch (Exception e)
-                        {
-                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
-                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                    catch (Exception e)
+                    {
+                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                    }
                 }
             }
             return imagebytes;

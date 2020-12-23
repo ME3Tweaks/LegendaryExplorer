@@ -58,6 +58,7 @@
                           Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}}"
                           Grid.Column="0" 
                           FontFamily="Consolas"
+                          SelectedItemChanged="SelectedTreeNodeChanged"
                           ItemsSource="{Binding AllTreeViewNodes}" 
                           FocusManager.IsFocusScope="True" 
                           VirtualizingStackPanel.IsVirtualizing="True" 
@@ -65,8 +66,7 @@
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type local:TextureMapMemoryEntryWPF}" 
                                                   ItemsSource="{Binding Children}">
-                            <Border Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
-                                    Background="Transparent">
+                            <Border Background="Transparent">
                                 <DockPanel>
                                     <TextBlock DockPanel.Dock="Bottom" Text="{Binding Instances.BindableCount, StringFormat='{}{0} instances'}" 
                                                FontSize="10"
@@ -97,6 +97,15 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
+                                        <StackPanel.Style>
+                                            <Style TargetType="{x:Type StackPanel}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasUnmatchedCRCs}" Value="true">
+                                                        <Setter Property="Background" Value="OrangeRed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
                                     </StackPanel>
                                 </DockPanel>
                                 <i:Interaction.Triggers>
@@ -122,13 +131,40 @@
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </TreeView.ItemContainerStyle>
-                    <i:Interaction.Behaviors>
+                    <!--<i:Interaction.Behaviors>
                         <sharedUi:NodeTreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
-                    </i:Interaction.Behaviors>
+                    </i:Interaction.Behaviors>-->
                 </TreeView>
 
                 <GridSplitter Grid.Column="1"/>
-                <me3Explorer:TextureViewerExportLoader Grid.Column="2"/>
+                <ListBox Grid.Column="2" ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
+                    <ListBox.Resources>
+                        <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}Located in {0}">
+                                            <Binding Path="TFCName" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}Export {0}, CRC 0x{1}, {2} mips, {3} empty mips">
+                                            <Binding Path="UIndex" />
+                                            <Binding Path="CRC" />
+                                            <Binding Path="NumMips" />
+                                            <Binding Path="NumEmptyMips" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock Text="{Binding RelativePackagePath}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.Resources>
+                </ListBox>
+                <GridSplitter Grid.Column="3"/>
+                <me3Explorer:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4"/>
 
             </Grid>
         </DockPanel>

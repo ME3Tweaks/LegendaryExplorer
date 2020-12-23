@@ -92,6 +92,10 @@ namespace ME3Explorer.TextureStudio
         /// List of direct children to this memory entry
         /// </summary>
         public virtual ObservableCollectionExtended<TextureMapMemoryEntry> Children { get; } = new ObservableCollectionExtended<TextureMapMemoryEntry>();
+        /// <summary>
+        /// If one of the instances in the children (or subchildren) of this node has unmatched CRCs in it's memory entry
+        /// </summary>
+        public bool HasUnmatchedCRCs { get; set; }
     }
 
     /// <summary>
@@ -110,10 +114,17 @@ namespace ME3Explorer.TextureStudio
             Width = (short) tex2D.Mips[0].SizeX;
             Height = (short) tex2D.Mips[0].SizeY;
             NumEmptyMips = tex2D.Mips.Count(x => x.StorageType == StorageTypes.empty);
-            var format = exportEntry.GetProperty<EnumProperty>(@"Format");
+            var props = exportEntry.GetProperties();
+            var format = props.GetProp<EnumProperty>(@"Format");
             if (format != null)
             {
                 PixelFormat = Image.getPixelFormatType(format.Value);
+            }
+
+            var cache = props.GetProp<NameProperty>(@"TextureFileCacheName");
+            if (cache != null)
+            {
+                TFCName = cache.Value.Name;
             }
 
             try
@@ -125,6 +136,8 @@ namespace ME3Explorer.TextureStudio
                 // CRC could not be calculated
             }
         }
+
+        public string TFCName { get; set; }
 
         /// <summary>
         /// The name of the package
