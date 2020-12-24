@@ -2335,10 +2335,6 @@ namespace ME3Explorer
                 IsBusyTaskbar = false;
                 //throw e;
             }
-
-            MasterTextureSelector mts = new MasterTextureSelector();
-            mts.LoadFile(s);
-            mts.Show();
         }
 
         /// <summary>

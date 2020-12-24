@@ -9,7 +9,7 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter != null && parameter is string str)
+            if (parameter is string str)
             {
                 if (str == "Reversed")
                 {

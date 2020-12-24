@@ -27,6 +27,10 @@ namespace ME3ExplorerCore.Unreal.Classes
         public static Func<string, string, string, string, string> GetLocalizedTextureExceptionExternalMessage { get; set; } = (exceptionMessage, file, storageType, offset) => $"{exceptionMessage}\nFile: {file}\nStorageType: {storageType}\nExternal file offset: {offset}";
         public static Func<string, string, string> GetLocalizedTextureExceptionInternalMessage { get; set; } = (exceptionMessage, storageType) => $"{exceptionMessage}\nStorageType: {storageType}";
 
+        /// <summary>
+        /// Stores a list of 'master' texture packages that exist outside of the main ME1 game. These are used for looking up data
+        /// </summary>
+        public static List<string> AdditionalME1MasterTexturePackages { get; } = new List<string>();
 
         //public static Func<string> GetLocalizedCouldNotFetchTextureDataMessage { get; set; }
 
@@ -237,7 +241,12 @@ namespace ME3ExplorerCore.Unreal.Classes
                     }
                     else
                     {
-                        throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
+                        fullPath = AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                        if (fullPath == null)
+                        {
+                            throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
+                        }
+                        filename = fullPath;
                     }
                 }
                 else
@@ -278,12 +287,14 @@ namespace ME3ExplorerCore.Unreal.Classes
                                         // TFC is in this SFAR
                                         imagebytes = dpackage.ReadFromEntry(entryId, mipToLoad.externalOffset, mipToLoad.uncompressedSize);
                                         dataLoaded = true;
-                                    } else
+                                    }
+                                    else
                                     {
                                         // File not in archive
                                         throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
                                     }
-                                } else
+                                }
+                                else
                                 {
                                     // SFAR not in folder
                                     throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));

@@ -19,7 +19,6 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         public readonly int startOffset;
 
         public bool IsSaving => !IsLoading;
-
         public int FileOffset => startOffset + (int)ms.Position;
         public MEGame Game => Pcc.Game;
 

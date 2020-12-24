@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -130,8 +131,8 @@ namespace ME3Explorer.TextureStudio
                     }
 
                     var destPixelFormat = InputComboBoxWPF.GetValue(this, @"Select the pixel format for this texture.", "Pixel format selection", Enum.GetValues(typeof(PixelFormat)).Cast<object>());
-
-                    GenerateNewTextureExport(linkSelector.selectedPackageRoot ? 0 : linkSelector.selectedEntry.UIndex, textureName, (PixelFormat)Enum.Parse(typeof(PixelFormat), destPixelFormat), selectDDS.FileName, image);
+                    var lodGroup = "TEXTUREGROUP_World";
+                    GenerateNewMasterTextureExport(Pcc, linkSelector.selectedPackageRoot ? 0 : linkSelector.selectedEntry.UIndex, textureName, (PixelFormat)Enum.Parse(typeof(PixelFormat), destPixelFormat), lodGroup,  selectDDS.FileName, image);
                 }
             }
         }
@@ -215,32 +216,57 @@ namespace ME3Explorer.TextureStudio
             }
 
             // Pass 2: remove non texture items
-            foreach (TreeViewEntry entry in rootNodes)
-            {
-                TrimNonTextureNodes(entry);
-            }
+            TrimTree(rootEntry, false);
 
+            // Pass 3: Remove unused packages from tree by running a second trimming pass
+            TrimTree(rootEntry, true);
 
             return new ObservableCollectionExtendedWPF<TreeViewEntry>(rootNodes.Except(itemsToRemove));
         }
 
-        public void TrimNonTextureNodes(TreeViewEntry entry)
+        public bool TrimTree(TreeViewEntry entry, bool removeEmpty)
         {
-            for (int i = entry.Sublinks.Count - 1; i > 0; i--)
+            for (int i = entry.Sublinks.Count - 1; i >= 0; i--)
             {
-                var subEntry = entry.Sublinks[i];
-                TrimNonTextureNodes(subEntry);
+                if (TrimTree(entry.Sublinks[i], removeEmpty))
+                {
+                    //Debug.WriteLine($@"Trimming {entry.Sublinks[i].Entry?.UIndex} {entry.Sublinks[i].Entry?.InstancedFullPath}  ({entry.Sublinks[i].Entry?.ClassName})");
+                    entry.Sublinks.RemoveAt(i);
+                }
             }
 
             // Am I a texture or a package?
-            if (entry.Entry != null && (entry.Entry.IsTexture() || entry.Entry.ClassName == "@Package"))
+            if (!removeEmpty)
             {
-                // Keep me
+                if (entry.Entry == null || (entry.Entry.ClassName == @"Package" || entry.Entry.IsTexture()))
+                {
+                    // Keep me
+                    //Debug.WriteLine($@"Keeping {entry.Entry?.InstancedFullPath} ({entry.Entry?.ClassName})");
+                    return false;
+                }
+                else
+                {
+                    return true; // Remove this node from the parent
+                }
             }
             else
             {
-                entry.Parent?.Sublinks.Remove(entry);
+                return entry.Entry != null && !HasAnyTextureLeaves(entry); //If there are any leaves, return false, to indicate this node should not be trimmed
             }
+        }
+
+        private bool HasAnyTextureLeaves(TreeViewEntry entry)
+        {
+            if (entry.Entry.IsTexture()) return true;
+            foreach (var t in entry.Sublinks)
+            {
+                if (HasAnyTextureLeaves(t)) ;
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private int QueuedGotoNumber;
@@ -284,7 +310,7 @@ namespace ME3Explorer.TextureStudio
         /// <param name="objectName"></param>
         /// <param name="sourceFilepath"></param>
         /// <param name="incomingImage"></param>
-        private void GenerateNewTextureExport(int idxLink, string objectName, PixelFormat destFormat, string sourceFilepath, Image incomingImage)
+        public static ExportEntry GenerateNewMasterTextureExport(IMEPackage package, int idxLink, string objectName, PixelFormat destFormat, string lodGroup, string sourceFilepath, Image incomingImage)
         {
             PropertyCollection props = new PropertyCollection();
 
@@ -292,11 +318,11 @@ namespace ME3Explorer.TextureStudio
 
             props.AddOrReplaceProp(new IntProperty(incomingImage.mipMaps[0].width, @"SizeX"));
             props.AddOrReplaceProp(new IntProperty(incomingImage.mipMaps[0].height, @"SizeY"));
+            props.AddOrReplaceProp(new EnumProperty(lodGroup, @"TextureGroup", package.Game, @"LODGroup"));
             props.AddOrReplaceProp(new IntProperty(incomingImage.mipMaps.Count, @"MipTailBaseIdx"));
 
-            // Todo: Make it so there's way to choose this. I have no idea how to determine this however
-            props.AddOrReplaceProp(new EnumProperty(@"PF_A8R8G8B8", @"EPixelFormat", Pcc.Game, @"Format"));
-            if (Pcc.Game == MEGame.ME1)
+            props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(destFormat), @"EPixelFormat", package.Game, @"Format"));
+            if (package.Game == MEGame.ME1)
             {
                 props.AddOrReplaceProp(new StrProperty(sourceFilepath, @"SourceFilePath"));
                 props.AddOrReplaceProp(new StrProperty(new FileInfo(sourceFilepath).LastAccessTimeUtc.ToString("yyyy-mm-dd hh:mm:ss"), @"SourceFileTimeStamp"));
@@ -332,12 +358,15 @@ namespace ME3Explorer.TextureStudio
                 index++;
             }
 
-            Pcc.AddExport(new ExportEntry(Pcc, properties: props, binary: binary)
+            var texport = new ExportEntry(package, properties: props, binary: binary)
             {
+                Class = EntryImporter.GetOrAddCrossImportOrPackage("Engine.Texture2D", GetGlobalPackageForGame(package.Game), package),
                 ObjectName = objectName,
                 idxLink = idxLink,
-                Class = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile("Engine.Texture2D", GetGlobalPackageForGame(Pcc.Game), Pcc)
-            });
+            };
+
+            package.AddExport(texport);
+            return texport;
         }
 
         /// <summary>
@@ -345,7 +374,7 @@ namespace ME3Explorer.TextureStudio
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        private IMEPackage GetGlobalPackageForGame(MEGame game)
+        private static IMEPackage GetGlobalPackageForGame(MEGame game)
         {
             switch (game)
             {

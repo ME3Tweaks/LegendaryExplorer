@@ -13,13 +13,22 @@
         xmlns:me3Explorer="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Texture Studio" Height="450" Width="800">
+        Title="Texture Studio" MinHeight="800" MinWidth="1000" >
     <Window.Resources>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:GameToVisibilityConverter x:Key="GameToVisibilityConverter"/>
+        <sharedUi:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
         <BitmapImage x:Key="packageicon" UriSource="pack://application:,,,/PackageEditor/EntryIcons/icon_package.png"/>
         <BitmapImage x:Key="textureicon" UriSource="pack://application:,,,/PackageEditor/EntryIcons/icon_texture2d.png"/>
+        <ContextMenu x:Key="InstanceContextMenu">
+            <MenuItem Header="Open instance in Package Editor" ToolTip="Opens a new Package Editor, focused on this instance" 
+                      Command="{Binding Source={StaticResource bindingProxy}, Path=Data.OpenInstanceInPackageEditorCommand}" sharedUi:Bindings.VisibilityToEnabled="True">
+                <MenuItem.Icon>
+                    <Image Source="/Resources/packageeditorwpf_256x256.ico" Width="64"/>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
         <xctk:BusyIndicator.BusyContentTemplate>
@@ -40,8 +49,8 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4">
-                    <MenuItem Header="Load vanilla texture map" Click="LTM"/>
                     <MenuItem Header="Test SFAR TEXTURE READ" Click="TSTR"/>
+                    <MenuItem Header="Recent workspaces" x:Name="Recents_MenuItem"/>
                 </MenuItem>
                 <MenuItem Header="Operations">
                     <MenuItem Header="Remove all empty mips" Command="{Binding RemoveAllEmptyMipsCommand}"/>
@@ -61,6 +70,16 @@
                 </StatusBarItem>
             </StatusBar>
             <Grid>
+                <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <Button 
+                            DockPanel.Dock="Bottom"
+                            Content="Open workspace"
+                            Command="{Binding ScanFolderCommand}"/>
+                    <sharedUi:RecentsControl x:Name="RecentsController" IsFolderRecents="True"/>
+                </DockPanel>
+                <Grid
+                    Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}}">
+                    
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="350" MaxWidth="600"/>
                     <ColumnDefinition Width="5"/>
@@ -75,10 +94,6 @@
                 <TextBlock Text="In-memory unique textures" Grid.Column="0" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
                 <TextBlock Text="Package instances" Grid.Column="2" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
                 <TextBlock Text="Texture Viewer for instance" Grid.Column="5" FontWeight="Bold" TextAlignment="Center" Background="{x:Static Brushes.Bisque}"/>
-
-                <Button Content="Select folder"
-                        Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"
-                        Command="{Binding ScanFolderCommand}"/>
                 <TreeView x:Name="LeftSide_TreeView" 
                           Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}}"
                           Grid.Column="0" 
@@ -164,41 +179,45 @@
 
                 <GridSplitter Width="5"  Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Grid.RowSpan="2"/>
                 <DockPanel Grid.Column="2" Grid.Row="1">
-                    <DockPanel Dock="Bottom">
-                        
-                    </DockPanel>
-                <ListBox Grid.Column="2" ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
-                    <ListBox.Resources>
-                        <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
-                            <DockPanel>
-                                <TextBlock DockPanel.Dock="Bottom" FontSize="10">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}Located in {0}">
-                                            <Binding Path="TFCName" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock DockPanel.Dock="Bottom" FontSize="10">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}Export {0}, CRC 0x{1}, {2} mips, {3} empty mips">
-                                            <Binding Path="UIndex" />
-                                            <Binding Path="CRC" />
-                                            <Binding Path="NumMips" />
-                                            <Binding Path="NumEmptyMips" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock Text="{Binding RelativePackagePath}"/>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.Resources>
-                </ListBox>
+                        <StatusBar DockPanel.Dock="Bottom">
+                            <StatusBarItem>
+                                <Button Content="Change all instances to new texture" Padding="5" Command="{Binding ChangeAllInstancesTextureCommand}"/>
+                            </StatusBarItem>
+                        </StatusBar>
+                    <ListBox ItemsSource="{Binding SelectedItem.Instances}" SelectedItem="{Binding SelectedInstance}">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
+                                <DockPanel ContextMenu="{StaticResource InstanceContextMenu}">
+                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Located in {0}">
+                                                <Binding Path="TFCName" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Export {0}, CRC 0x{1}, {2} mips, {3} empty mips">
+                                                <Binding Path="UIndex" />
+                                                <Binding Path="CRC" />
+                                                <Binding Path="NumMips" />
+                                                <Binding Path="NumEmptyMips" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding RelativePackagePath}"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
                 </DockPanel>
 
                 <GridSplitter Grid.Column="3" Grid.RowSpan="2" Width="5"/>
                 <me3Explorer:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4" Grid.Row="1"/>
 
             </Grid>
+            </Grid>
+
         </DockPanel>
     </xctk:BusyIndicator>
 </me3Explorer:NotifyPropertyChangedWindowBase>

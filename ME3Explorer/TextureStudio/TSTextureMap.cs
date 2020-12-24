@@ -118,6 +118,7 @@ namespace ME3Explorer.TextureStudio
             }
 
             NumEmptyMips = tex2D.Mips.Count(x => x.StorageType == StorageTypes.empty);
+            HasExternalReferences = tex2D.Mips.Any(x => !x.IsLocallyStored);
             var props = exportEntry.GetProperties();
             var format = props.GetProp<EnumProperty>(@"Format");
             if (format != null)
@@ -199,5 +200,9 @@ namespace ME3Explorer.TextureStudio
         /// ME1 Only: The master package offset (?)
         /// </summary>
         public uint TextureOffset { get; set; }
+        /// <summary>
+        /// If this texture references textures in another file or package
+        /// </summary>
+        public bool HasExternalReferences { get; set; }
     }
 }
