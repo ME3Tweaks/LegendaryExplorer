@@ -576,7 +576,7 @@ namespace ME3ExplorerCore.Unreal
                                         ValueOffset = offset
                                     });
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     Debug.WriteLine("ERROR READING ARRAY PROP");
                                     return new ArrayProperty<StructProperty>(arrayOffset, props, name);
@@ -594,14 +594,14 @@ namespace ME3ExplorerCore.Unreal
                                 try
                                 {
 #endif
-                                props.Add(new StructProperty(arrayStructType, structProps)
-                                {
-                                    StartOffset = structOffset,
-                                    ValueOffset = structProps[0].StartOffset
-                                });
+                                    props.Add(new StructProperty(arrayStructType, structProps)
+                                    {
+                                        StartOffset = structOffset,
+                                        ValueOffset = structProps[0].StartOffset
+                                    });
 #if DEBUG
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     return new ArrayProperty<StructProperty>(arrayOffset, props, name);
                                 }
@@ -814,8 +814,9 @@ namespace ME3ExplorerCore.Unreal
                 }, StaticArrayIndex);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
@@ -872,8 +873,9 @@ namespace ME3ExplorerCore.Unreal
         {
             return p?.Value ?? 0;
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
@@ -1066,8 +1068,9 @@ namespace ME3ExplorerCore.Unreal
             // System.Object, which defines Equals as reference equality.
             return (Value == p.Value);
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("NameProperty | {Name} = {Value}")]
@@ -1141,8 +1144,9 @@ namespace ME3ExplorerCore.Unreal
         {
             return Value;
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
@@ -1204,8 +1208,9 @@ namespace ME3ExplorerCore.Unreal
         {
             return p?.Value == true;
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
@@ -1237,8 +1242,9 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteByte(Value);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     public class BioMask4Property : Property, INotifyPropertyChanged
@@ -1266,8 +1272,9 @@ namespace ME3ExplorerCore.Unreal
             }
             stream.WriteByte(Value);
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     [DebuggerDisplay("EnumProperty | {Name} = {Value.Name}")]
@@ -1338,8 +1345,9 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteInt32(Value.Number);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     public abstract class ArrayPropertyBase : Property, IEnumerable
@@ -1663,8 +1671,9 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteInt32(Value);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     public class DelegateProperty : Property, INotifyPropertyChanged
@@ -1696,8 +1705,9 @@ namespace ME3ExplorerCore.Unreal
                 stream.WriteNameReference(Value.FunctionName, pcc);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 
     public class UnknownProperty : Property

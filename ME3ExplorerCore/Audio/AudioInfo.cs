@@ -41,6 +41,8 @@ namespace ME3ExplorerCore.Audio
 
             return TimeSpan.Zero;
         }
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 }

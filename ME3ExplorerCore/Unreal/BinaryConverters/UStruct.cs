@@ -66,7 +66,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Error decompiling function " + Export.FullPath);
+                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
                     }
                 }
                 else
@@ -81,7 +81,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Error decompiling function " + Export.FullPath);
+                        Debug.WriteLine($"Error decompiling function {Export.FullPath}: {e.Message}");
                     }
                 }
             }

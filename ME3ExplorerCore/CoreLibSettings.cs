@@ -21,7 +21,8 @@ namespace ME3ExplorerCore
         public string ME2Directory { get; set; }
         public string ME3Directory { get; set; }
 
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 }

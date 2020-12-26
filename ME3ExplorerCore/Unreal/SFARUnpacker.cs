@@ -314,7 +314,8 @@ namespace ME3ExplorerCore.Unreal
                 outputFile.WriteUInt32(LZMATag);
             }
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 }

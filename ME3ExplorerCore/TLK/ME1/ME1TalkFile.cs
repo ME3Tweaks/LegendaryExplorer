@@ -106,8 +106,9 @@ namespace ME3ExplorerCore.TLK.ME1
                 TLKStringRef entry = (TLKStringRef)obj;
                 return Index.CompareTo(entry.Index);
             }
-
+#pragma warning disable
             public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
         }
         #endregion
 
