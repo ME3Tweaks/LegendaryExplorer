@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using MassEffectModder.Images;
@@ -253,18 +254,25 @@ namespace ME3Explorer.TextureStudio
                         var master = SelectMasterPackage();
                         if (master == null) return; // No package was selected. We cannot continue
 
-                        var lodGroup = "TEXTUREGROUP_World";
-                        var masterExport = MasterTextureSelector.GenerateNewMasterTextureExport(master, 0, "TestName", SelectedItem.Instances[0].PixelFormat, lodGroup, selectDDS.FileName, image);
+                        var textureName = PromptDialog.Prompt(this, "Enter the new name of the texture.", "Enter texture name");
 
-                        // The package must be saved so the offsets are corrected. This will break all sorts of things for sure, requiring a global repointing operation on the workspace
-                        master.Save();
-
-                        foreach (var inst in SelectedItem.Instances)
+                        if (!string.IsNullOrWhiteSpace(textureName))
                         {
-                            using var sPackage = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, inst.RelativePackagePath));
-                            CorrectMasterPackagePathing(sPackage, inst, masterExport);
-                            RepointME1SlaveInstance(sPackage, inst, masterExport);
-                            sPackage.Save();
+                            // TODO: Validate texture name!
+
+                            var lodGroup = "TEXTUREGROUP_World";
+                            var masterExport = MasterTextureSelector.GenerateNewMasterTextureExport(master, 0, textureName, SelectedItem.Instances[0].PixelFormat, lodGroup, selectDDS.FileName, image);
+
+                            // The package must be saved so the offsets are corrected. This will break all sorts of things for sure, requiring a global repointing operation on the workspace
+                            master.Save();
+
+                            foreach (var inst in SelectedItem.Instances)
+                            {
+                                using var sPackage = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, inst.RelativePackagePath));
+                                CorrectMasterPackagePathing(sPackage, inst, masterExport);
+                                RepointME1SlaveInstance(sPackage, inst, masterExport);
+                                sPackage.Save();
+                            }
                         }
                     }
                 }
@@ -285,7 +293,7 @@ namespace ME3Explorer.TextureStudio
         private void CorrectMasterPackagePathing(IMEPackage sPackage, TextureMapPackageEntry inst, ExportEntry masterExport)
         {
             var sExp = sPackage.GetUExport(inst.UIndex);
-            
+
             var requiredTopLevelPackageExportName = Path.GetFileNameWithoutExtension(masterExport.FileRef.FilePath);
 
             ExportEntry masterPackageExport = sPackage.Exports.FirstOrDefault(x => x.ClassName == @"Package" && x.InstancedFullPath == requiredTopLevelPackageExportName);
@@ -296,7 +304,7 @@ namespace ME3Explorer.TextureStudio
             }
 
             // Todo: Support subpackage folders
-            
+
             sExp.idxLink = masterPackageExport.UIndex;
             sExp.ObjectName = masterExport.ObjectName;
             // Todo: Support indexing? 
@@ -305,14 +313,14 @@ namespace ME3Explorer.TextureStudio
         private void RepointME1SlaveInstance(IMEPackage slavePackage, TextureMapPackageEntry inst, ExportEntry masterExport)
         {
             var instExp = slavePackage.GetUExport(inst.UIndex);
-            
+
             // Adjust the export so it is aligned to the master
             var mastProps = masterExport.GetProperties();
             instExp.WriteProperties(mastProps);
 
             var masterInfo = ObjectBinary.From<UTexture2D>(masterExport);
             var slaveInfo = ObjectBinary.From<UTexture2D>(instExp);
-            
+
             slaveInfo.Mips.Clear();
             foreach (var mm in masterInfo.Mips)
             {
@@ -346,7 +354,7 @@ namespace ME3Explorer.TextureStudio
 
                 slaveInfo.Mips.Add(tmip);
             }
-            
+
             instExp.WriteBinary(slaveInfo);
         }
 
@@ -362,12 +370,6 @@ namespace ME3Explorer.TextureStudio
 
             return null;
         }
-
-        private void RepointME1Instances(Image newImage)
-        {
-
-        }
-
         #endregion
 
         #region Command methods
@@ -455,7 +457,53 @@ namespace ME3Explorer.TextureStudio
 
         private void ME1UpdateMasterPointers()
         {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (sender, args) =>
+            {
+                Dictionary<string, IMEPackage> masterCache = new Dictionary<string, IMEPackage>();
+                var refsToUpdate = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
+                    .SelectMany(x => x.GetAllTextureEntries())
+                    .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
+                    .OrderBy(x => x.RelativePackagePath).ToList();
 
+                IMEPackage lastOpenedSPackage = null;
+                foreach (var pInstance in refsToUpdate)
+                {
+                    var package = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, pInstance.RelativePackagePath));
+                    if (lastOpenedSPackage != package)
+                    {
+                        lastOpenedSPackage?.Save();
+                        lastOpenedSPackage = package;
+                    }
+                    
+                    var sExp = package.GetUExport(pInstance.UIndex);
+                    var masterPackagePath = Texture2D.AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x).Equals(pInstance.MasterPackageName));
+                    if (masterPackagePath != null)
+                    {
+
+                        IMEPackage masterPackage;
+                        if (!masterCache.TryGetValue(masterPackagePath, out masterPackage))
+                        {
+                            masterPackage = MEPackageHandler.OpenMEPackage(masterPackagePath, forceLoadFromDisk: true);
+                            masterCache[masterPackagePath] = masterPackage;
+                        }
+
+                        // Find the master export
+                        var masterInPackagePath = string.Join(".", sExp.InstancedFullPath.Split('.').Skip(1).Take(10));
+                        var masterExp = masterPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == masterInPackagePath);
+                        Debug.WriteLine(masterInPackagePath);
+                        RepointME1SlaveInstance(package, pInstance, masterExp);
+                    }
+                }
+                lastOpenedSPackage?.Save();
+            };
+            bw.RunWorkerCompleted += (sender, args) =>
+            {
+                IsBusy = false;
+            };
+            BusyHeader = "Updating texture references";
+            IsBusy = true;
+            bw.RunWorkerAsync();
         }
 
         private bool CanCreateNewMasterPackage()
@@ -581,16 +629,7 @@ namespace ME3Explorer.TextureStudio
             // Pass 2: Find any unique items among the unique paths (e.g. CRC not equal to other members of same entry)
             var allTextures = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().SelectMany(x => x.GetAllTextureEntries());
 
-            // Pass 3: Sort
-            BusyText = "Sorting tree";
-            foreach (var t in AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
-            {
-                // Collapse the top branches
-                t.IsExpanded = false;
-            }
-            SortNodes(AllTreeViewNodes);
-
-            // Pass 4: Find items that have matching CRCs across memory entries
+            // Pass 3: Find items that have matching CRCs across memory entries
             Dictionary<uint, List<TextureMapMemoryEntry>> crcMap = new Dictionary<uint, List<TextureMapMemoryEntry>>();
             foreach (var t in allTextures)
             {
@@ -618,6 +657,16 @@ namespace ME3Explorer.TextureStudio
                     }
                 }
             }
+
+            // Pass 4: Sort
+            BusyText = "Sorting tree";
+            foreach (var t in AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>())
+            {
+                // Collapse the top branches
+                t.IsExpanded = false;
+            }
+            SortNodes(AllTreeViewNodes);
+            Thread.Sleep(1000); //UI will take a few moments to update so we will stall this busy overlay
 
             BusyProgressIndeterminate = true;
         }

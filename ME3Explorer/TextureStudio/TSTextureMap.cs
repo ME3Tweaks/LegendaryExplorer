@@ -132,6 +132,20 @@ namespace ME3Explorer.TextureStudio
                 TFCName = cache.Value.Name;
             }
 
+            if (exportEntry.Game == MEGame.ME1)
+            {
+                IEntry pEntry = exportEntry;
+                while (pEntry.Parent != null)
+                {
+                    pEntry = pEntry.Parent;
+                }
+
+                if (pEntry.ClassName == @"Package")
+                {
+                    MasterPackageName = pEntry.ObjectName;
+                }
+            }
+
             try
             {
                 CRC = Texture2D.GetTextureCRC(exportEntry, additionalTFCs);
@@ -189,17 +203,9 @@ namespace ME3Explorer.TextureStudio
         /// </summary>
         public bool IsMovieTexture { get; set; }
         /// <summary>
-        /// ME1 Only: If this package references a master package
-        /// </summary>
-        public bool IsSlave { get; set; }
-        /// <summary>
         /// ME1 Only: The name of the Master Package that contains the higher mips
         /// </summary>
         public string MasterPackageName { get; set; }
-        /// <summary>
-        /// ME1 Only: The master package offset (?)
-        /// </summary>
-        public uint TextureOffset { get; set; }
         /// <summary>
         /// If this texture references textures in another file or package
         /// </summary>
