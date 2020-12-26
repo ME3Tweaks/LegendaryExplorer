@@ -4916,10 +4916,7 @@ namespace ME3ExplorerCore.Unreal
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
         public int TokenIndex { get; set; }
-        private string str;
-
         public string OpCodeString { get; set; }
-
         public string CurrentStack { get; set; }
         public int StartPos { get; set; }
 

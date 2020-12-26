@@ -230,7 +230,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Can't read names
 

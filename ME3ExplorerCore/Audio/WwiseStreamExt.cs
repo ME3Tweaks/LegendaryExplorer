@@ -133,7 +133,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 // We don't care about the rest.
                 return ai;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

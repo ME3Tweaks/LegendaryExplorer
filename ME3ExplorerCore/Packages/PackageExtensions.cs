@@ -212,7 +212,7 @@ namespace ME3ExplorerCore.Packages
                 }
                 catch (Exception e)
                 {
-                    result.AddToListAt(import, "Exception occured while reading this import!");
+                    result.AddToListAt(import, $"Exception occurred while reading this import: {e.Message}");
                 }
             }
 
@@ -430,7 +430,7 @@ namespace ME3ExplorerCore.Packages
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error getting references {ent.UIndex} {ent.ObjectName.Instanced}");
+                    Console.WriteLine($"Error getting references {ent.UIndex} {ent.ObjectName.Instanced}: {e.Message}");
                 }
             }
             if (getreferenced)
@@ -691,7 +691,7 @@ namespace ME3ExplorerCore.Packages
                 }
                 catch (Exception e) when (!CoreLib.IsDebug)
                 {
-                    result.AddToListAt(exp, "Exception occured while reading this export!");
+                    result.AddToListAt(exp, $"Exception occurred while reading this export: {e.Message}");
                 }
             }
 
