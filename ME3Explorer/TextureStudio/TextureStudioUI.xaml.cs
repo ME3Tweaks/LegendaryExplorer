@@ -180,6 +180,7 @@ namespace ME3Explorer.TextureStudio
         public GenericCommand ScanFolderCommand { get; set; }
         public GenericCommand ChangeAllInstancesTextureCommand { get; set; }
         public GenericCommand OpenInstanceInPackageEditorCommand { get; set; }
+        public GenericCommand CloseWorkspaceCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -192,7 +193,16 @@ namespace ME3Explorer.TextureStudio
 
             ChangeAllInstancesTextureCommand = new GenericCommand(ChangeAllInstances, CanChangeAllInstances);
             OpenInstanceInPackageEditorCommand = new GenericCommand(OpenInstanceInPackEd, () => SelectedInstance != null);
+
+            CloseWorkspaceCommand = new GenericCommand(CloseWorkspace, () => SelectedFolder != null);
         }
+
+        private void CloseWorkspace()
+        {
+            ResetUI();
+            SelectedFolder = null;
+        }
+
 
         private void OpenInstanceInPackEd()
         {
@@ -237,10 +247,12 @@ namespace ME3Explorer.TextureStudio
                     // Oh boy.........
 
                     // Ingest the texture
+                    //uint crc = 0;
                     var generateMips = SelectedItem.Instances.Any(x => x.NumMips > 1);
                     if (generateMips)
                     {
                         // It has mips. Generate mips for our new texture
+                        //crc = (uint)~ParallelCRC.Compute(image.mipMaps[0].data); //crc will change on non argb... not sure how to deal with this
                         image.correctMips(SelectedItem.Instances[0].PixelFormat);
                     }
 
@@ -251,6 +263,12 @@ namespace ME3Explorer.TextureStudio
 
                     if (requiresExternalStorage)
                     {
+                        // See if there's any CRC that matches. We can just link to existing one then and not use disk space
+                        //if (VanillaTextureMap.TryGetValue(crc, out var vanillaInfo))
+                        //{
+                        //    Debug.WriteLine("MIP ALREADY EXISTS!");
+                        //}
+
                         var master = SelectMasterPackage();
                         if (master == null) return; // No package was selected. We cannot continue
 
@@ -524,7 +542,7 @@ namespace ME3Explorer.TextureStudio
         #region OnPROPERTYNAMEChanged() methods
         private void OnSelectedItemChanged()
         {
-
+            SelectedInstance = SelectedItem?.Instances.FirstOrDefault();
         }
 
         private void OnSelectedFolderChanged()
@@ -608,7 +626,7 @@ namespace ME3Explorer.TextureStudio
                 else
                 {
                     CurrentStudioGame = package.Game;
-                    //VanillaTextureMap = MEMTextureMap.LoadTextureMap(CurrentStudioGame);
+                    VanillaTextureMap = MEMTextureMap.LoadTextureMap(CurrentStudioGame);
                 }
 
                 var textures = package.Exports.Where(x => x.IsTexture());

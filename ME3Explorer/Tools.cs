@@ -562,7 +562,7 @@ namespace ME3Explorer
             {
                 name = "Texture Studio",
                 type = typeof(TextureStudioUI),
-                icon = Application.Current.FindResource("iconSFARExplorer") as ImageSource,
+                icon = Application.Current.FindResource("iconTextureStudio") as ImageSource,
                 open = () =>
                 {
                     (new TextureStudioUI()).Show();

@@ -85,7 +85,7 @@ namespace ME3ExplorerCore.Unreal.Classes
                 Texture2DMipInfo mip = new Texture2DMipInfo
                 {
                     Export = exportEntry,
-                    index = i,
+                    index = texBin.Mips.Count - i,
                     storageType = binMip.StorageType,
                     uncompressedSize = binMip.UncompressedSize,
                     compressedSize = binMip.CompressedSize,
@@ -426,25 +426,21 @@ namespace ME3ExplorerCore.Unreal.Classes
         {
             get
             {
-                string mipinfostring = "Mip " + index;
-                mipinfostring += "\nStorage Type: ";
-                mipinfostring += storageType;
+                string mipinfostring = $"Mip {index} - {storageType}";
                 if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
                 {
                     mipinfostring += "\nLocated in: ";
                     mipinfostring += TextureCacheName ?? "(NULL!)";
                 }
 
-                mipinfostring += "\nUncompressed size: ";
-                mipinfostring += uncompressedSize;
-                mipinfostring += "\nCompressed size: ";
-                mipinfostring += compressedSize;
-                mipinfostring += "\nOffset: ";
-                mipinfostring += externalOffset;
-                mipinfostring += "\nWidth: ";
-                mipinfostring += width;
-                mipinfostring += "\nHeight: ";
-                mipinfostring += height;
+                if (storageType == StorageTypes.empty)
+                {
+                    mipinfostring += "\nEmpty mip";
+                }
+                else
+                {
+                    mipinfostring += $"\nUncompressed size: {uncompressedSize} ({FileSize.FormatSize(uncompressedSize)})\nCompressed size: {compressedSize} ({FileSize.FormatSize(compressedSize)})\nOffset: {externalOffset}\n{width}x{height}";
+                }
                 return mipinfostring;
             }
         }

@@ -49,7 +49,7 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4">
-                    <MenuItem Header="Test SFAR TEXTURE READ" Click="TSTR"/>
+                    <MenuItem Header="Close workspace" Command="{Binding CloseWorkspaceCommand}"/>
                     <MenuItem Header="Recent workspaces" x:Name="Recents_MenuItem"/>
                 </MenuItem>
                 <MenuItem Header="Operations">
@@ -74,16 +74,18 @@
                     <Button 
                             DockPanel.Dock="Bottom"
                             Content="Open workspace"
-                            Command="{Binding ScanFolderCommand}"/>
-                    <sharedUi:RecentsControl x:Name="RecentsController" IsFolderRecents="True"/>
+                            Command="{Binding ScanFolderCommand}"
+                            HorizontalAlignment="Center"
+                            Padding="25,5"
+                            Margin="10"/>
+                    <sharedUi:RecentsControl x:Name="RecentsController" IsFolderRecents="True" HorizontalContentAlignment="Center"/>
                 </DockPanel>
                 <Grid
                     Visibility="{Binding SelectedFolder, Converter={StaticResource NullVisibilityConverter}}">
-                    
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="350" MaxWidth="600"/>
+                    <ColumnDefinition MinWidth="150" Width="340"  MaxWidth="600"/>
                     <ColumnDefinition Width="5"/>
-                    <ColumnDefinition MinWidth="100" MaxWidth="700"/>
+                    <ColumnDefinition MinWidth="100" Width="380" MaxWidth="700"/>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -188,16 +190,25 @@
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type local:TextureMapPackageEntry}">
                                 <DockPanel ContextMenu="{StaticResource InstanceContextMenu}">
-                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10" 
+                                               Visibility="{Binding TFCName, Converter={StaticResource NullVisibilityConverter}}">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}Located in {0}">
+                                            <MultiBinding StringFormat="Located in {0}">
                                                 <Binding Path="TFCName" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
-                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                    <TextBlock DockPanel.Dock="Bottom" FontSize="10" 
+                                               Visibility="{Binding MasterPackageName, Converter={StaticResource NullVisibilityConverter}}">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}Export {0}, CRC 0x{1}, {2} mips, {3} empty mips">
+                                            <MultiBinding StringFormat="Located in {0}">
+                                                <Binding Path="MasterPackageName" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                        <TextBlock DockPanel.Dock="Bottom" FontSize="10">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="Export {0}, CRC 0x{1:X8}, {2} mips, {3} empty mips">
                                                 <Binding Path="UIndex" />
                                                 <Binding Path="CRC" />
                                                 <Binding Path="NumMips" />
@@ -211,8 +222,7 @@
                         </ListBox.Resources>
                     </ListBox>
                 </DockPanel>
-
-                <GridSplitter Grid.Column="3" Grid.RowSpan="2" Width="5"/>
+                <GridSplitter Grid.Row="0"  Grid.Column="3" Grid.RowSpan="2" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
                 <me3Explorer:TextureViewerExportLoader x:Name="TextureViewer_ExportLoader"  Grid.Column="4" Grid.Row="1"/>
 
             </Grid>

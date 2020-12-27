@@ -339,7 +339,7 @@ namespace ME3Explorer.TextureStudio
                 var mip = new UTexture2D.Texture2DMipMap();
                 if (index < incomingImage.mipMaps.Count - 6)
                 {
-                    mip.Mip = TextureCompression.CompressTexture(mipData.data, StorageTypes.pccLZO); //LZO 
+                    mip.Mip = TextureCompression.CompressTexture(mipData.data, StorageTypes.pccLZO); //LZO for me1
                     mip.CompressedSize = mip.Mip.Length;
                     mip.UncompressedSize = mipData.data.Length;
                     mip.StorageType = StorageTypes.pccLZO;

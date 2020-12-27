@@ -64,7 +64,7 @@ namespace ME3Explorer.TextureStudio
             Dictionary<uint, TextureMapEntry> map = new Dictionary<uint, TextureMapEntry>(textureCount);
             for (int i = 0; i < textureCount; i++)
             {
-                var entry = TextureMapEntry.ReadTextureMapEntry(texMap, MEGame.ME3, packageNames);
+                var entry = TextureMapEntry.ReadTextureMapEntry(texMap, game, packageNames);
                 map[entry.CRC] = entry;
             }
 
@@ -93,8 +93,8 @@ namespace ME3Explorer.TextureStudio
                     matched.UIndex = texMap.ReadInt32();
                     if (game == ME3ExplorerCore.Packages.MEGame.ME1)
                     {
-                        var LinkToMaster = texMap.ReadInt16();
-                        if (LinkToMaster != -1)
+                        var isSlaveTexture = texMap.ReadInt16();
+                        if (isSlaveTexture != -1)
                         {
                             matched.IsSlave = true; //This file has external mips that point to a master package file
                             matched.MasterPackageName = texMap.ReadStringASCIINull();
@@ -104,7 +104,8 @@ namespace ME3Explorer.TextureStudio
                     matched.NumEmptyMips = texMap.ReadByte();
                     matched.NumMips = texMap.ReadByte();
                     //matched.IsMovieTexture = (texture.flags == TextureProperty::TextureTypes::Movie);
-                    matched.RelativePackagePath = packageNames[texMap.ReadInt16()].Replace("\\", "/"); // Not sure what pkgs is
+                    var packageIndex = texMap.ReadInt16();
+                    matched.RelativePackagePath = packageNames[packageIndex].Replace("\\", "/"); // Not sure what pkgs is
                     matched.PackageName = Path.GetFileName(matched.RelativePackagePath);
                     tme.ContainingPackages.Add(matched);
                 }
