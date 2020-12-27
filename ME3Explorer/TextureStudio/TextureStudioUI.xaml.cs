@@ -287,7 +287,7 @@ namespace ME3Explorer.TextureStudio
                             foreach (var inst in SelectedItem.Instances)
                             {
                                 using var sPackage = MEPackageHandler.OpenMEPackage(Path.Combine(SelectedFolder, inst.RelativePackagePath));
-                                CorrectMasterPackagePathing(sPackage, inst, masterExport);
+                                CorrectMasterPackagePathing(sPackage, SelectedItem, inst, masterExport);
                                 RepointME1SlaveInstance(sPackage, inst, masterExport);
                                 sPackage.Save();
                             }
@@ -307,25 +307,46 @@ namespace ME3Explorer.TextureStudio
         /// </summary>
         /// <param name="sPackage"></param>
         /// <param name="inst"></param>
-        /// <param name="masterExport"></param>
-        private void CorrectMasterPackagePathing(IMEPackage sPackage, TextureMapPackageEntry inst, ExportEntry masterExport)
+        /// <param name="masterTextureExport"></param>
+        private void CorrectMasterPackagePathing(IMEPackage sPackage, TextureMapMemoryEntryWPF memEntry,TextureMapPackageEntry inst, ExportEntry masterTextureExport)
         {
             var sExp = sPackage.GetUExport(inst.UIndex);
 
-            var requiredTopLevelPackageExportName = Path.GetFileNameWithoutExtension(masterExport.FileRef.FilePath);
+            var requiredTopLevelPackageExportName = Path.GetFileNameWithoutExtension(masterTextureExport.FileRef.FilePath);
 
             ExportEntry masterPackageExport = sPackage.Exports.FirstOrDefault(x => x.ClassName == @"Package" && x.InstancedFullPath == requiredTopLevelPackageExportName);
+            TextureMapMemoryEntryWPF masterPackageNode = null;
             if (masterPackageExport == null)
             {
                 // Must be created
                 masterPackageExport = ExportCreator.CreatePackageExport(sPackage, requiredTopLevelPackageExportName);
+                masterPackageNode = new TextureMapMemoryEntryWPF(masterPackageExport);
+                AllTreeViewNodes.Add(masterPackageNode);
             }
+            else
+            {
+                masterPackageNode = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>().FirstOrDefault(x => x.ObjectName == inst.MasterPackageName);
+            }
+
+            if (sExp.idxLink != masterPackageExport.UIndex && masterPackageNode != null)
+            {
+                // Detatch this node from the parent
+                memEntry.Instances.Remove(inst);
+                memEntry.Parent?.Children.Remove(memEntry);
+                masterPackageNode.Children.Add(memEntry);
+                memEntry.Parent = masterPackageNode;
+                
+                // Reattach this node to the new one
+
+            }
+            
 
             // Todo: Support subpackage folders
 
             sExp.idxLink = masterPackageExport.UIndex;
-            sExp.ObjectName = masterExport.ObjectName;
-            // Todo: Support indexing? 
+            sExp.ObjectName = masterTextureExport.ObjectName;
+            
+            
         }
 
         private void RepointME1SlaveInstance(IMEPackage slavePackage, TextureMapPackageEntry inst, ExportEntry masterExport)
@@ -481,7 +502,7 @@ namespace ME3Explorer.TextureStudio
                 Dictionary<string, IMEPackage> masterCache = new Dictionary<string, IMEPackage>();
                 var refsToUpdate = AllTreeViewNodes.OfType<TextureMapMemoryEntryWPF>()
                     .SelectMany(x => x.GetAllTextureEntries())
-                    .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
+                    .SelectMany(x => x.Instances.Where(y => y.HasExternalReferences && y.MasterPackageName != null && y.MasterPackageName.StartsWith(ME1_MOD_MASTER_TEXTURE_PACKAGE_PREFIX)))
                     .OrderBy(x => x.RelativePackagePath).ToList();
 
                 IMEPackage lastOpenedSPackage = null;

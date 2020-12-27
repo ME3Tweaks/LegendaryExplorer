@@ -357,7 +357,7 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        throw new Exception("Unknown mip storage type!");
+                        throw new Exception("Unsupported mip storage type for this operation! Are you trying to replace ext textures not using Texture Studio?");
                     }
                 }
                 else
