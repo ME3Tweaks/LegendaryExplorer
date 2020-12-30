@@ -713,7 +713,7 @@ namespace ME3Explorer
             if (idx != -1)
             {
                 //var dataBefore = hircHexProvider.Bytes.ToArray();
-                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(dataBefore), Pcc.Game)
+                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Bytes.ToArray()), Pcc.Game)
                 {
                     DataChanged = true
                 };
