@@ -5,11 +5,9 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,14 +15,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FontAwesome5;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.TlkManagerNS;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Packages;
-using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using Microsoft.AppCenter.Analytics;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using WwiseStreamHelper = ME3Explorer.Unreal.WwiseStreamHelper;
@@ -988,7 +983,7 @@ namespace ME3Explorer.Soundplorer
             {
                 if (ke.Key == Key.Space)
                 {
-                    if (soundPanel.CanStartPlayback(null))
+                    if (soundPanel.CanStartPlayback())
                     {
                         soundPanel.StartOrPausePlaying();
                     }

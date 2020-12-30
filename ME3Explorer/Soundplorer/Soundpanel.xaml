@@ -187,13 +187,23 @@
                             <DataTemplate DataType="{x:Type soundplorer:HIRCDisplayObject}">
                                 <StackPanel Name="HIRCContainer" Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}"/>
-                                        <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
-                                        <Border Margin="0" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" CornerRadius="2" HorizontalAlignment="Left" Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}">
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}" DockPanel.Dock="Top"/>
+                                        <Button Content="PLAY" DockPanel.Dock="Right" 
+                                                Visibility="Collapsed"
+                                                Command="{Binding PlayHIRCCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Soundpanel}}}"
+                                                CommandParameter="{Binding}">
+
+                                        </Button>
+                                        <!--                                                 Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}"
+-->
+                                        <Border Margin="0" DockPanel.Dock="Bottom" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" 
+                                                CornerRadius="2" HorizontalAlignment="Left" 
+                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}">
                                             <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
                                         </Border>
-                                    </StackPanel>
+                                        <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
+                                    </DockPanel>
                                     <StackPanel.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Click="CloneHIRCObject" ToolTip="Clones HIRC object">

@@ -18,12 +18,12 @@ using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome5;
-using ME3Explorer.ME3ExpMemoryAnalyzer;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.Audio;
+using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
@@ -623,6 +623,8 @@ namespace ME3Explorer
         public ICommand CommitCommand { get; set; }
         public ICommand SearchHIRCHexCommand { get; private set; }
         public ICommand SaveHIRCHexCommand { get; private set; }
+        public RelayCommand PlayHIRCCommand { get; set; }
+
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -656,7 +658,7 @@ namespace ME3Explorer
             // Player commands
             ReplaceAudioCommand = new RelayCommand(ReplaceAudio, CanReplaceAudio);
             ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
-            StartPlaybackCommand = new RelayCommand(StartPlayback, CanStartPlayback);
+            StartPlaybackCommand = new GenericCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
 
             // Event commands
@@ -668,23 +670,67 @@ namespace ME3Explorer
             CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
             SearchHIRCHexCommand = new GenericCommand(SearchHIRCHex, CanSearchHIRCHex);
             SaveHIRCHexCommand = new GenericCommand(SaveHIRCHex, CanSaveHIRCHex);
+
+            // HIRC commands
+            PlayHIRCCommand = new RelayCommand(PlayHIRC, CanPlayHIRC);
+        }
+
+        private void PlayHIRC(object obj)
+        {
+            if (obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2)
+            {
+                var wems = ExportInformationList.OfType<EmbeddedWEMFile>().ToList();
+                foreach (var v in wems.OrderBy(x => x.Id))
+                {
+                    Debug.WriteLine(v.Id.ToString("X8"));
+                }
+
+                var playItem = ExportInformationList.OfType<EmbeddedWEMFile>().FirstOrDefault(x => x.Id == hirc.ID);
+                if (playItem != null)
+                {
+                    // Found the matching item
+                    ExportInfoListBox.SelectedItem = playItem;
+                    StopPlayback(null);
+                    if (CanStartPlayback())
+                    {
+                        StartPlayback();
+                    }
+                }
+            }
+        }
+
+        private bool CanPlayHIRC(object obj)
+        {
+            return obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2;
         }
 
 
-
-        private bool CanSaveHIRCHex() => HIRCHexChanged;
+        private bool CanSaveHIRCHex() => true || HIRCHexChanged;
 
         private void SaveHIRCHex()
         {
             int idx = HIRC_ListBox.SelectedIndex;
             if (idx != -1)
             {
-                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Bytes.ToArray()), Pcc.Game)
+                //var dataBefore = hircHexProvider.Bytes.ToArray();
+                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(dataBefore), Pcc.Game)
                 {
                     DataChanged = true
                 };
                 HIRCHexChanged = false;
                 OnPropertyChanged(nameof(HIRCHexChanged));
+                //var dataAfter = HIRCObjects[idx].Data;
+                //if (dataBefore.Length == dataAfter.Length)
+                //{
+                //    for (int i = 0; i < dataAfter.Length; i++)
+                //    {
+                //        if (dataAfter[i] != dataBefore[i])
+                //        {
+                //            MessageBox.Show($@"Committed data has changed! Change starts at 0x{i:X8}");
+                //            break;
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -769,13 +815,33 @@ namespace ME3Explorer
 
         private void CommitBankToFile()
         {
+            byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
             CurrentLoadedWwisebank.HIRCObjects.Clear();
             CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBank.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
+
+            // We must restore the original wem datas. In preloading entries, the length on the RIFF is the actual full length. But the data on disk is only like .1s long. 
+            // wwise does some trickery to load the rest of the audio later but we don't have that kind of code so we interally adjust it for local playback
+            CurrentLoadedWwisebank.EmbeddedFiles.ReplaceAll(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             foreach (var hircObject in HIRCObjects)
             {
                 hircObject.DataChanged = false;
             }
+            //byte[] dataAfter = CurrentLoadedWwisebank.Export.Data;
+
+            //if (dataBefore.Length == dataAfter.Length)
+            //{
+            //    for (int i = 0; i < dataAfter.Length; i++)
+            //    {
+            //        if (dataAfter[i] != dataBefore[i])
+            //        {
+            //            MessageBox.Show($@"Commited data has changed! Change starts at 0x{i:X8}");
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //CurrentLoadedWwisebank.Export.Data = dataBefore;
         }
 
         private bool _hircHexChanged;
@@ -917,8 +983,7 @@ namespace ME3Explorer
             {
                 wem.WemData = convertedStream.ToArray();
             }
-            CurrentLoadedWwisebank.EmbeddedFiles.Clear();
-            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedWwisebank.EmbeddedFiles.ReplaceAll(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             MessageBox.Show("Done");
@@ -1272,7 +1337,7 @@ namespace ME3Explorer
             return false;
         }
 
-        private void StartPlayback(object p)
+        private void StartPlayback()
         {
             StartOrPausePlaying();
         }
@@ -1398,7 +1463,7 @@ namespace ME3Explorer
         }
 
 
-        public bool CanStartPlayback(object p)
+        public bool CanStartPlayback()
         {
             if (audioStream != null) return true; //looping
             if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
@@ -1449,11 +1514,7 @@ namespace ME3Explorer
                 _audioPlayer.Stop();
             }
 
-            if (audioStream != null)
-            {
-                //vorbisStream.Dispose();
-                audioStream = null;
-            }
+            audioStream = null;
         }
 
         private bool CanStopPlayback(object p) => _playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || audioStream != null;
@@ -1487,7 +1548,7 @@ namespace ME3Explorer
             if (_audioPlayer.PlaybackStopType == SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile && Properties.Settings.Default.SoundpanelRepeating)
             {
                 RestartingDueToLoop = true;
-                StartPlayback(null);
+                StartPlayback();
                 RestartingDueToLoop = false;
             }
         }
@@ -1617,7 +1678,7 @@ namespace ME3Explorer
                 switch (ke.Key)
                 {
                     case Key.Space:
-                        if (CanStartPlayback(null))
+                        if (CanStartPlayback())
                         {
                             StartOrPausePlaying();
                         }
