@@ -158,9 +158,9 @@ namespace ME3ExplorerCore.GameFilesystem
         /// Directory Override is used to use a custom path, for things like TFC Compactor, where the directory ME3Exp is pointing to may not be the one you want to use.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string directoryOverride = null) =>
-            Directory.Exists(MEDirectories.GetDLCPath(game))
-                ? Directory.EnumerateDirectories(directoryOverride ?? MEDirectories.GetDLCPath(game)).Where(dir => IsEnabledDLC(dir, game))
+        public static IEnumerable<string> GetEnabledDLCFolders(MEGame game, string gameDirectoryOverride = null) =>
+            Directory.Exists(MEDirectories.GetDLCPath(game, gameDirectoryOverride))
+                ? Directory.EnumerateDirectories(MEDirectories.GetDLCPath(game,gameDirectoryOverride)).Where(dir => IsEnabledDLC(dir, game))
                 : Enumerable.Empty<string>();
         public static IEnumerable<string> GetOfficialDLCFolders(MEGame game) =>
             Directory.Exists(MEDirectories.GetDLCPath(game))
