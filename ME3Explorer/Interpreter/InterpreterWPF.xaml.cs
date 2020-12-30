@@ -1196,10 +1196,11 @@ namespace ME3Explorer
             switch (export.ClassName)
             {
                 case "WwiseEvent":
+                case "WwiseBank":
                     switch (name)
                     {
                         case "Id":
-                            return $" (0x{value:X8})";
+                            return $"(0x{value:X8})";
                     }
                     break;
             }

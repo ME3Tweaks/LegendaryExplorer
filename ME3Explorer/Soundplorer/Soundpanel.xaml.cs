@@ -131,48 +131,12 @@ namespace ME3Explorer
                 ExportInformationList.ClearEx();
                 AllWems.Clear();
                 CurrentLoadedWwisebank = null;
-                //Check if we need to first gather wwiseevents for wem IDing
-                //Uncomment when HIRC stuff is implemented, if ever...
-                /*if (exportEntry.FileRef != CurrentPackage)
-                {
-                    //update
-                    WemIdsToWwwiseEventIdMapping.Clear();
-                    List<ExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
-                    foreach (ExportEntry wwiseEvent in wwiseEventExports)
-                    {
-                        StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
-                        IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
-                        FloatProperty DurationMilliseconds = wwiseEvent.GetProperty<FloatProperty>("DurationMilliseconds");
-
-                        if (relationships != null)
-                        {
-                            ObjectProperty bank = relationships.GetProp<ObjectProperty>("Bank");
-                            if (bank != null && bank.Value > 0)
-                            {
-                                //export in this file
-                                List<Tuple<string, int, double>> bankWemInfosList;
-                                Tuple<string, int, double> newData = new Tuple<string, int, double>(wwiseEvent.ObjectName, id.Value, DurationMilliseconds.Value);
-                                if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry.FileRef.Exports[bank.Value - 1], out bankWemInfosList))
-                                {
-                                    bankWemInfosList.Add(newData);
-                                }
-                                else
-                                {
-                                    WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]] = new List<Tuple<string, int, double>>();
-                                    WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]].Add(newData);
-                                }
-                            }
-                        }
-                    }
-
-                }
-                CurrentPackage = exportEntry.FileRef;*/
-                ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
+                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                     SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
                     WwiseStream w = exportEntry.GetBinaryData<WwiseStream>();
-                    ExportInformationList.Add($"Filename : {w.Filename ?? "Stored in this PCC"}");
+                    ExportInformationList.Add($"Filename : {w.Filename ?? "Stored in this package"}");
                     if (!PlayBackOnlyMode)
                     {
                         ExportInformationList.Add($"Data size: {w.DataSize} bytes");
@@ -256,6 +220,8 @@ namespace ME3Explorer
                 if (exportEntry.ClassName == "WwiseBank")
                 {
                     WwiseBank wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
+                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.ID:X8})");
+
                     HIRCObjects.Clear();
                     HIRCObjects.AddRange(wb.HIRCObjects.Values().Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
 
@@ -317,6 +283,7 @@ namespace ME3Explorer
 
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
+                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
                     var soundNodeWave = exportEntry.GetBinaryData<SoundNodeWave>();
                     if (soundNodeWave.RawData.Length > 0)
                     {
@@ -685,7 +652,7 @@ namespace ME3Explorer
                     Debug.WriteLine(v.Id.ToString("X8"));
                 }
 
-                var playItem = ExportInformationList.OfType<EmbeddedWEMFile>().FirstOrDefault(x => x.Id == hirc.ID);
+                var playItem = ExportInformationList.OfType<EmbeddedWEMFile>().FirstOrDefault(x => x.Id == hirc.AudioID);
                 if (playItem != null)
                 {
                     // Found the matching item
@@ -701,11 +668,11 @@ namespace ME3Explorer
 
         private bool CanPlayHIRC(object obj)
         {
-            return obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2;
+            return obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2 && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
         }
 
 
-        private bool CanSaveHIRCHex() => true || HIRCHexChanged;
+        private bool CanSaveHIRCHex() => HIRCHexChanged;
 
         private void SaveHIRCHex()
         {

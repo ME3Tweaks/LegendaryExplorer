@@ -51,8 +51,6 @@
                         </ContextMenu>
 
                         <!--Sets a context menu for each ListBoxItem in the current ListBox-->
-
-
                         <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
@@ -182,29 +180,30 @@
                         <RowDefinition MinHeight="230"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch">
+                    <ListBox ItemsSource="{Binding HIRCObjects}" 
+                             Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" 
+                             HorizontalContentAlignment="Stretch"
+                             Grid.Row="0" Grid.ColumnSpan="3">
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type soundplorer:HIRCDisplayObject}">
-                                <StackPanel Name="HIRCContainer" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
-                                    <DockPanel>
-                                        <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}" DockPanel.Dock="Top"/>
-                                        <Button Content="PLAY" DockPanel.Dock="Right" 
-                                                Visibility="Collapsed"
+                                <DockPanel x:Name="HIRCContainer" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Index}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
+                                    <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}" DockPanel.Dock="Top"/>
+                                    <Button Content="PLAY" DockPanel.Dock="Right" 
+                                                VerticalAlignment="Center"
+                                                Padding="5"
+                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}"
                                                 Command="{Binding PlayHIRCCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Soundpanel}}}"
                                                 CommandParameter="{Binding}">
 
-                                        </Button>
-                                        <!--                                                 Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}"
--->
-                                        <Border Margin="0" DockPanel.Dock="Bottom" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" 
+                                    </Button>
+                                    <Border Margin="0" DockPanel.Dock="Bottom" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" 
                                                 CornerRadius="2" HorizontalAlignment="Left" 
                                                 Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}">
-                                            <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
-                                        </Border>
-                                        <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
-                                    </DockPanel>
-                                    <StackPanel.ContextMenu>
+                                        <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
+                                    <DockPanel.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Click="CloneHIRCObject" ToolTip="Clones HIRC object">
                                                 <MenuItem.Header>
@@ -212,8 +211,8 @@
                                                 </MenuItem.Header>
                                             </MenuItem>
                                         </ContextMenu>
-                                    </StackPanel.ContextMenu>
-                                </StackPanel>
+                                    </DockPanel.ContextMenu>
+                                </DockPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">
                                         <Setter Property="Background" Value="Yellow" TargetName="HIRCContainer"/>
@@ -224,6 +223,11 @@
                                 </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.Resources>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                     </ListBox>
                     <GridSplitter Grid.Column="0" Grid.ColumnSpan="3" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
