@@ -36,7 +36,7 @@ namespace ME3Explorer
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent" };
+        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
