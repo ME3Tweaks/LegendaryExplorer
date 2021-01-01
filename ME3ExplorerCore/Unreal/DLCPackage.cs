@@ -790,10 +790,28 @@ namespace ME3ExplorerCore.Unreal
         }
 
 
-        public void ReplaceEntry(string filein, int Index)
+        public void ReplaceEntry(string sourceFileOnDisk, int Index)
         {
-            byte[] FileIN = File.ReadAllBytes(filein);
-            ReplaceEntry(FileIN, Index);
+            byte[] fileBytes;
+            if (Path.GetExtension(sourceFileOnDisk).ToLower() == ".pcc" && FileName.EndsWith("Patch_001.sfar", StringComparison.InvariantCultureIgnoreCase))
+            {
+                //if (FileName.Contains("Patch_001")) Debugger.Break();
+                //Use the decompressed bytes - SFARs can't store compressed packages apparently!
+                var package = MEPackageHandler.OpenMEPackage(sourceFileOnDisk);
+                if (package.IsCompressed)
+                {
+                    fileBytes = package.SaveToStream(false).ToArray();
+                }
+                else
+                {
+                    fileBytes = File.ReadAllBytes(sourceFileOnDisk);
+                }
+            }
+            else
+            {
+                fileBytes = File.ReadAllBytes(sourceFileOnDisk);
+            }
+            ReplaceEntry(fileBytes, Index);
         }
 
         public void ReplaceEntry(byte[] FileIN, int Index)
