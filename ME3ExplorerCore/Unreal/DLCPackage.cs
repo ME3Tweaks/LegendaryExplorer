@@ -198,7 +198,7 @@ namespace ME3ExplorerCore.Unreal
             for (int i = 0; i < Header.FileCount; i++)
             {
                 e = Files[i];
-                e.FileName = "UNKNOWN";
+                e.FileName = FILENAMES_FILENAME;
                 Files[i] = e;
                 if (Files[i].Hash.SequenceEqual(TOCHash))
                     f = i;
