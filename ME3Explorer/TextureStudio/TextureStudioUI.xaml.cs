@@ -169,7 +169,8 @@ namespace ME3Explorer.TextureStudio
                 SelectedFolder = fileName;
                 BeginScan();
             });
-
+            MessageBox.Show(
+                @"Texture Studio is in development and is not finished. It will have usability problems AND IT MAY POTENTIALLY HAVE MOD BREAKING BUGS. TAKE FULL BACKUPS OF YOUR MOD FOLDER BEFORE USING THIS TOOL!");
         }
 
         #region Command loading
