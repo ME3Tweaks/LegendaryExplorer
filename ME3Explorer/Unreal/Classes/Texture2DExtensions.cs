@@ -104,7 +104,7 @@ namespace ME3Explorer.Unreal.Classes
 
             for (int m = 0; m < image.mipMaps.Count(); m++)
             {
-                if (t2d.Export.Game == MEGame.ME2)
+                if (t2d.Export.Game < MEGame.ME3)
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extLZO)); //LZO 
                 else
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, StorageTypes.extZlib)); //ZLib
@@ -357,7 +357,7 @@ namespace ME3Explorer.Unreal.Classes
                     }
                     else
                     {
-                        throw new Exception("Unknown mip storage type!");
+                        throw new Exception("Unsupported mip storage type for this operation! Are you trying to replace ext textures not using Texture Studio?");
                     }
                 }
                 else

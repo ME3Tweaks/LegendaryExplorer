@@ -117,9 +117,9 @@ namespace ME3ExplorerCore.Packages
             }
             try
             {
-                if (CanReconstruct(pcc, savePath))
+                if (CanReconstruct(pcc, savePath ?? pcc.FilePath))
                 {
-                    MESaveDelegate(pcc, savePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+                    MESaveDelegate(pcc, savePath ?? pcc.FilePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                 }
                 else
                 {

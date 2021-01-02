@@ -16,6 +16,7 @@ namespace ME3Explorer.Packages
             exp.ObjectFlags |= UnrealFlags.EObjectFlags.Public;
             exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
             pcc.AddExport(exp);
+            exp.indexValue = 0; // Why would you want this not index starting at 0 (afaik only trash uses indexing > 0 for package exports)
             return exp;
         }
 

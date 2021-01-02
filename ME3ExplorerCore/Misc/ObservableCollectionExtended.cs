@@ -28,7 +28,7 @@ namespace ME3ExplorerCore.Misc
         /// <summary>
         /// For UI binding 
         /// </summary>
-        public bool IsNotEmpty => this.Any();
+        public bool Any => this.Any();
 
         /// <summary> 
         /// Adds the elements of the specified collection to the end of the ObservableCollection(Of T). 
@@ -37,11 +37,15 @@ namespace ME3ExplorerCore.Misc
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             int oldcount = Count;
-            foreach (var i in collection) Items.Add(i);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            lock (_syncLock)
+            {
+                foreach (var i in collection) Items.Add(i);
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+
             if (oldcount != Count)
             {
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -56,11 +60,16 @@ namespace ME3ExplorerCore.Misc
             if (collection == Items) throw new Exception(@"Cannot remove range of same collection");
             int oldcount = Count;
             //Todo: catch reachspec crash when changing size
-            foreach (var i in collection) Items.Remove(i);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+
+            lock (_syncLock)
+            {
+                foreach (var i in collection) Items.Remove(i);
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+
             if (oldcount != Count)
             {
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -71,11 +80,15 @@ namespace ME3ExplorerCore.Misc
         public void ClearEx()
         {
             int oldcount = Count;
-            Items.Clear();
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            lock (_syncLock)
+            {
+                Items.Clear();
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+
             if (oldcount != Count)
             {
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
                 OnPropertyChanged(nameof(Count));
             }
 
@@ -96,12 +109,17 @@ namespace ME3ExplorerCore.Misc
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             int oldcount = Count;
-            Items.Clear();
-            foreach (var i in collection) Items.Add(i);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+
+            lock (_syncLock)
+            {
+                Items.Clear();
+                foreach (var i in collection) Items.Add(i);
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+
             if (oldcount != Count)
             {
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
                 OnPropertyChanged(nameof(Count));
             }
         }
@@ -157,10 +175,9 @@ namespace ME3ExplorerCore.Misc
         private int _bindableCount;
         public int BindableCount
         {
-            get { return Count; }
+            get => Count;
             private set
             {
-                // Will trigger property changed
                 if (_bindableCount != Count)
                 {
                     _bindableCount = Count;
@@ -170,7 +187,7 @@ namespace ME3ExplorerCore.Misc
         }
 
         /// <summary>
-        /// Used to force property to raise event changed of the count
+        /// Used to force property to raise event changed. Used when refreshing language in application
         /// </summary>
         public void RaiseBindableCountChanged()
         {
@@ -179,6 +196,7 @@ namespace ME3ExplorerCore.Misc
 
         #endregion // Sorting
 
+        private object _syncLock = new object();
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
@@ -187,22 +205,27 @@ namespace ME3ExplorerCore.Misc
             CollectionChanged += (a, b) =>
             {
                 BindableCount = Count;
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
             };
         }
+
+        /// <summary>
+        /// Gets the synchronization lock object.
+        /// </summary>
+        /// <returns></returns>
+        public object GetSyncLock() => _syncLock;
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 
         /// </summary> 
         /// <param name="collection">collection: The collection from which the elements are copied.</param> 
         /// <exception cref="System.ArgumentNullException">The collection parameter cannot be null.</exception> 
-        public ObservableCollectionExtended(IEnumerable<T> collection)
-            : base(collection)
+        public ObservableCollectionExtended(IEnumerable<T> collection) : base(collection)
         {
             CollectionChanged += (a, b) =>
             {
                 BindableCount = Count;
-                OnPropertyChanged(nameof(IsNotEmpty));
+                OnPropertyChanged(nameof(Any));
             };
         }
     }

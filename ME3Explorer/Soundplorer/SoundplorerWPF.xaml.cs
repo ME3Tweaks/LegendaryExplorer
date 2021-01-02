@@ -60,6 +60,13 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _busyText, value);
         }
 
+        private string _statusBarIDText;
+        public string StatusBarIDText
+        {
+            get => _statusBarIDText;
+            set => SetProperty(ref _statusBarIDText, value);
+        }
+
         private string _taskbarText = "Open a file to view sound-related exports/data";
         public string TaskbarText
         {
@@ -118,49 +125,26 @@ namespace ME3Explorer.Soundplorer
             try
             {
                 soundPanel.FreeAudioResources(); //stop playback
-                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
+                StatusBarIDText = null;
                 TaskbarText = $"Loading {Path.GetFileName(fileName)} ({FileSize.FormatSize(new FileInfo(fileName).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-
-                StatusBar_GameID_Container.Visibility = Visibility.Visible;
-
                 UnLoadMEPackage();
                 LoadedISBFile = null;
                 LoadedAFCFile = null;
                 if (Path.GetExtension(fileName).ToLower() == ".isb")
                 {
                     LoadedISBFile = fileName;
-                    StatusBar_GameID_Text.Text = "ISB";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                    StatusBarIDText = "ISB";
                 }
                 else if (Path.GetExtension(fileName).ToLower() == ".afc")
                 {
                     LoadedAFCFile = fileName;
-                    StatusBar_GameID_Text.Text = "AFC";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkOrchid);
+                    StatusBarIDText = "AFC";
                 }
                 else
                 {
                     LoadMEPackage(fileName);
-                    switch (Pcc.Game)
-                    {
-                        case MEGame.ME1:
-                            StatusBar_GameID_Text.Text = "ME1";
-                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                            break;
-                        case MEGame.ME2:
-                            StatusBar_GameID_Text.Text = "ME2";
-                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                            break;
-                        case MEGame.ME3:
-                            StatusBar_GameID_Text.Text = "ME3";
-                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                            break;
-                        case MEGame.UDK:
-                            StatusBar_GameID_Text.Text = "UDK";
-                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                            break;
-                    }
+                    StatusBarIDText = Pcc.Game.ToString();
                 }
 
 

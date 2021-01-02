@@ -258,7 +258,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="lib3ds.Net">
-      <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
+      <HintPath>Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />
@@ -448,11 +448,22 @@
       <DependentUpon>SFARExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FilePathToFilenameConverter.cs" />
+    <Compile Include="SharedUI\Converters\GameToVisibilityConverter.cs" />
     <Compile Include="SharedUI\Interfaces\IRecents.cs" />
+    <Compile Include="SharedUI\ObservableCollectionExtendedWPF.cs" />
     <Compile Include="SharedUI\RecentsControl.xaml.cs">
       <DependentUpon>RecentsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\TaskbarHelper.cs" />
+    <Compile Include="TextureStudio\MasterTextureSelector.xaml.cs">
+      <DependentUpon>MasterTextureSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextureStudio\MEMTextureMap.cs" />
+    <Compile Include="TextureStudio\TextureStudioUI.xaml.cs">
+      <DependentUpon>TextureStudioUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextureStudio\TextureTreeViewEntry.cs" />
+    <Compile Include="TextureStudio\TSTextureMap.cs" />
     <Compile Include="TrackingBase.cs" />
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\Texture2DExtensions.cs" />
@@ -1307,6 +1318,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TextureStudio\MasterTextureSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextureStudio\TextureStudioUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TFCCompactor\TFCCompactor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1605,6 +1624,7 @@
     <Resource Include="Resources\afccompactor_256x256.ico" />
     <Resource Include="Resources\minilogo.png" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
+    <Resource Include="Resources\texturestudio_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
@@ -1615,7 +1635,8 @@
     <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" md $(ProjectDir)$(OutDir)lib"
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
-xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
+mkdir "$(ProjectDir)\exec"
+xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"

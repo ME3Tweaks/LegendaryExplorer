@@ -837,23 +837,45 @@ namespace ME3ExplorerCore.Packages
                 foreach (ExportEntry e in mePackage.exports)
                 {
                     //update offsets
+                    e.DataOffset = (int)ms.Position;
+
                     ObjectBinary objBin = null;
                     if (!e.IsDefaultObject)
                     {
-                        switch (e.ClassName)
+                        if (mePackage.Game == MEGame.ME1 && e.IsTexture())
                         {
-                            case "WwiseBank":
-                            case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
-                            case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
-                                objBin = ObjectBinary.From(e);
-                                break;
-                            case "ShaderCache":
-                                UpdateShaderCacheOffsets(e, (int)ms.Position);
-                                break;
+                            // For us to reliably have in-memory textures, the data offset of 'externally' stored textures
+                            // needs to be updated to be accurate so that master and slave textures are in sync.
+                            // So any texture mips stored as pccLZO needs their DataOffsets updated
+                            var t2d = ObjectBinary.From<UTexture2D>(e);
+                            var binStart = -1;
+                            foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
+                            {
+                                if (binStart == -1)
+                                {
+                                    binStart = e.DataOffset + e.propsEnd();
+                                }
+                                // This is 
+                                mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
+                                objBin = t2d; // Assign it here so it gets picked up down below
+                            }
+                        }
+                        else
+                        {
+                            switch (e.ClassName)
+                            {
+                                case "WwiseBank":
+                                case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                                case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
+                                    objBin = ObjectBinary.From(e);
+                                    break;
+                                case "ShaderCache":
+                                    UpdateShaderCacheOffsets(e, (int)ms.Position);
+                                    break;
+                            }
                         }
                     }
 
-                    e.DataOffset = (int)ms.Position;
                     if (objBin != null)
                     {
                         e.WriteBinary(objBin);

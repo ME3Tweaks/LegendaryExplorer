@@ -15,10 +15,10 @@ variables:
   solution: 'ME3Explorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinRelease'
-  appMajorMin: '5.0'
+  appMajorMin: '5.1'
   appMajor: '5'
-  appMinor: '0'
-  appPatch: '2'
+  appMinor: '1'
+  appPatch: '0'
   disable.coverage.autogenerate: 'true'
 
 steps:
