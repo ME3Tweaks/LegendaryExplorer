@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using PropertyChanged;
 
 namespace ME3ExplorerCore.Gammtek.Collections.ObjectModel
 {
@@ -264,6 +265,7 @@ namespace ME3ExplorerCore.Gammtek.Collections.ObjectModel
 			return index;
 		}
 
+        [SuppressPropertyChangedWarnings]
 		protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
 		{
 			if (CollectionChanged != null)

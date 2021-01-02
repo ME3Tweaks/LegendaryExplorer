@@ -245,11 +245,10 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 foreach ((uint id, byte[] bytes) in EmbeddedFiles)
                 {
                     dataChunk.WriteZeros((int)(dataChunk.Position.Align(16) - dataChunk.Position)); //files must be 16-byte aligned in the data chunk
-
-                    writer.WriteUInt32(id);
-                    writer.WriteInt32((int)dataChunk.Position);
-                    writer.WriteInt32(bytes.Length);
-                    dataChunk.WriteFromBuffer(bytes);
+                    writer.WriteUInt32(id); //writing to DIDX
+                    writer.WriteInt32((int)dataChunk.Position); //Writing to DIDX
+                    writer.WriteInt32(bytes.Length); //Writing to DIDX
+                    dataChunk.WriteFromBuffer(bytes); //Writing to DATA
                 }
 
                 writer.WriteUInt32(data);

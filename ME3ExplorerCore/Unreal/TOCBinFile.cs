@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -9,6 +10,8 @@ namespace ME3ExplorerCore.Unreal
     public class TOCBinFile
     {
         MemoryStream Memory;
+        
+        [DebuggerDisplay("TOCEntry 0x{offset.ToString(\"8\")}, {name}, file size {size}")]
         public struct Entry
         {
             public int offset;

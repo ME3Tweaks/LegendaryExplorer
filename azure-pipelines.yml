@@ -18,6 +18,7 @@ variables:
   appMajorMin: '5.0'
   appMajor: '5'
   appMinor: '0'
+  appPatch: '2'
   disable.coverage.autogenerate: 'true'
 
 steps:
@@ -27,7 +28,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $artifactname = "me3explorernightly_$(appMajorMin).0.$(Build.BuildId)"
+      $artifactname = "me3explorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)"
       # Date--------------------------------------------
       $date=$(Get-Date -Format s);
       Write-Host "##vso[task.setvariable variable=time]$date"
@@ -46,7 +47,7 @@ steps:
       (Get-Content .\ME3Explorer\Properties\AssemblyInfo.cs).replace("0`"","$(Build.BuildId)`"") | out-file -FilePath .\ME3Explorer\Properties\AssemblyInfo.cs
       # Set version (ME3ExplorerCore)
       $xml = [xml](Get-Content .\ME3ExplorerCore\ME3ExplorerCore.csproj)
-      $ver = New-Object System.Version($appMajor, $appMinor, 0, [int]$(Build.BuildId))
+      $ver = New-Object System.Version($appMajor, $appMinor, $appPatch, [int]$(Build.BuildId))
       $xml.Project.PropertyGroup[0].Version = $ver.ToString() #Hopefully nobody re-organizes the csproj!
       $xml.Save(".\ME3ExplorerCore\ME3ExplorerCore.csproj")
 
@@ -110,7 +111,7 @@ steps:
     rootFolderOrFile: '$(Build.SourcesDirectory)/ME3Explorer/bin/x64/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_$(appMajorMin).0.$(Build.BuildId).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/me3explorer_nightly_cibuild_$(appMajorMin).$(appPatch).$(Build.BuildId).7z'
     replaceExistingArchive: true
     sevenZipCompression: maximum
 
@@ -118,7 +119,7 @@ steps:
   displayName: 'Publish ME3Explorer'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'me3explorernightly_$(appMajorMin).0.$(Build.BuildId)'
+    ArtifactName: 'me3explorernightly_$(appMajorMin).$(appPatch).$(Build.BuildId)'
     publishLocation: 'Container'
 
 # Notify ME3Tweaks that a new beta build has been built
@@ -165,7 +166,7 @@ steps:
         },
         {
           "name": "Version",
-          "value": "$(appMajorMin).0.$(Build.BuildId)"
+          "value": "$(appMajorMin).$(appPatch).$(Build.BuildId)"
         }],
         "url": "https://dev.azure.com/ME3Tweaks/ME3Explorer/_build/results?buildId=$(Build.BuildId)&view=artifacts",
         "timestamp": "$(time)"

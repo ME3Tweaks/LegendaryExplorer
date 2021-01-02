@@ -198,7 +198,7 @@ namespace ME3ExplorerCore.Unreal
             for (int i = 0; i < Header.FileCount; i++)
             {
                 e = Files[i];
-                e.FileName = "UNKNOWN";
+                e.FileName = FILENAMES_FILENAME;
                 Files[i] = e;
                 if (Files[i].Hash.SequenceEqual(TOCHash))
                     f = i;
@@ -230,7 +230,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Can't read names
 
@@ -342,19 +342,19 @@ namespace ME3ExplorerCore.Unreal
                         {
                             //if (Header.CompressionScheme == "lzma")
                             //{
-                                //PS3 - This doesn't work. I'm not sure what kind of LZMA this uses but it has seemingly no header
-                                //var attachedHeader = new byte[inputBlock.Length + 5];
-                                //attachedHeader[0] = 0x5D;
-                                ////attachedHeader[1] = (byte) (Header.Version >> 24);
-                                ////attachedHeader[2] = (byte)(Header.Version >> 16); 
-                                ////attachedHeader[3] = (byte)(Header.Version >> 8);
-                                ////attachedHeader[4] = (byte) Header.Version;
-                                //attachedHeader[1] = (byte)Header.Version;
-                                //attachedHeader[2] = (byte)(Header.Version >> 8);
-                                //attachedHeader[3] = (byte)(Header.Version >> 16);
-                                //attachedHeader[4] = (byte)(Header.Version >> 24);
-                                //Buffer.BlockCopy(inputBlock,0,attachedHeader,5, inputBlock.Length);
-                                //inputBlock = attachedHeader;
+                            //PS3 - This doesn't work. I'm not sure what kind of LZMA this uses but it has seemingly no header
+                            //var attachedHeader = new byte[inputBlock.Length + 5];
+                            //attachedHeader[0] = 0x5D;
+                            ////attachedHeader[1] = (byte) (Header.Version >> 24);
+                            ////attachedHeader[2] = (byte)(Header.Version >> 16); 
+                            ////attachedHeader[3] = (byte)(Header.Version >> 8);
+                            ////attachedHeader[4] = (byte) Header.Version;
+                            //attachedHeader[1] = (byte)Header.Version;
+                            //attachedHeader[2] = (byte)(Header.Version >> 8);
+                            //attachedHeader[3] = (byte)(Header.Version >> 16);
+                            //attachedHeader[4] = (byte)(Header.Version >> 24);
+                            //Buffer.BlockCopy(inputBlock,0,attachedHeader,5, inputBlock.Length);
+                            //inputBlock = attachedHeader;
                             //}
 
                             var outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
@@ -790,35 +790,66 @@ namespace ME3ExplorerCore.Unreal
         }
 
 
-        public void ReplaceEntry(string filein, int Index)
+        public void ReplaceEntry(string sourceFileOnDisk, int entryIndex)
         {
-            byte[] FileIN = File.ReadAllBytes(filein);
-            ReplaceEntry(FileIN, Index);
+            byte[] fileBytes;
+            if (Path.GetExtension(sourceFileOnDisk).ToLower() == ".pcc" && FileName.EndsWith("Patch_001.sfar", StringComparison.InvariantCultureIgnoreCase))
+            {
+                //if (FileName.Contains("Patch_001")) Debugger.Break();
+                //Use the decompressed bytes - SFARs can't store compressed packages apparently!
+                var package = MEPackageHandler.OpenMEPackage(sourceFileOnDisk);
+                if (package.IsCompressed)
+                {
+                    fileBytes = package.SaveToStream(false).ToArray();
+                }
+                else
+                {
+                    fileBytes = File.ReadAllBytes(sourceFileOnDisk);
+                }
+            }
+            else
+            {
+                fileBytes = File.ReadAllBytes(sourceFileOnDisk);
+            }
+            ReplaceEntry(fileBytes, entryIndex);
         }
 
-        public void ReplaceEntry(byte[] FileIN, int Index)
+        public void ReplaceEntry(byte[] newData, int entryIndex)
         {
 
-            string DLCPath = FileName;
-            FileStream fs = new FileStream(DLCPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            fs.Seek(0, SeekOrigin.End);
-            uint offset = (uint)fs.Length;
-            fs.Write(FileIN, 0, FileIN.Length);
-            FileEntryStruct e = Files[Index];
+            FileStream fs = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            FileEntryStruct e = Files[entryIndex];
+            if (e.BlockSizeTableIndex == 0xFFFFFFFF && e.RealUncompressedSize == newData.Length)
+            {
+                //overwrite existing data, but only if already uncompressed!
+                fs.Seek(e.RealDataOffset, SeekOrigin.Begin);
+            }
+            else
+            {
+                // It won't fit. Append it to the end instead
+                fs.Seek(0, SeekOrigin.End);
+            }
+
+            uint offset = (uint)fs.Position;
+            //append data
+            fs.Write(newData, 0, newData.Length);
+
+            //uncompressed entry
             e.BlockSizes = new ushort[0];
             e.BlockOffsets = new long[1];
             e.BlockOffsets[0] = offset;
             e.BlockSizeTableIndex = 0xFFFFFFFF;
             e.DataOffset = offset;
-            e.UncompressedSize = (uint)FileIN.Length;
+            e.UncompressedSize = (uint)newData.Length;
+
             fs.Seek(e.MyOffset, 0);
             fs.Write(e.Hash, 0, 16);
             fs.Write(BitConverter.GetBytes(0xFFFFFFFF), 0, 4);
-            fs.Write(BitConverter.GetBytes(FileIN.Length), 0, 4);
+            fs.Write(BitConverter.GetBytes(newData.Length), 0, 4);
             fs.WriteByte(e.UncompressedSizeAdder);
             fs.Write(BitConverter.GetBytes(offset), 0, 4);
             fs.WriteByte(0);
-            Files[Index] = e;
+            Files[entryIndex] = e;
             fs.Close();
         }
 
@@ -849,14 +880,14 @@ namespace ME3ExplorerCore.Unreal
             }
 
             //Collect list of information from the SFAR Header of files and their sizes
-            var entries = new List<(string filepath, int size)>();
+            var incomingNewEntries = new List<(string filepath, int size)>();
             foreach (var file in Files)
             {
                 if (file.FileName != FILENAMES_FILENAME)
                 {
                     string consoleDirFilename = file.FileName.Substring(file.FileName.IndexOf(@"DLC_", StringComparison.InvariantCultureIgnoreCase));
                     consoleDirFilename = consoleDirFilename.Substring(consoleDirFilename.IndexOf('/') + 1);
-                    entries.Add((consoleDirFilename.Replace('/', '\\'), (int)file.UncompressedSize));
+                    incomingNewEntries.Add((consoleDirFilename.Replace('/', '\\'), (int)file.UncompressedSize));
                 }
             }
 
@@ -869,24 +900,24 @@ namespace ME3ExplorerCore.Unreal
             int actualTocEntries = toc.Entries.Count;
             actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase));
             actualTocEntries -= toc.Entries.Count(x => x.name.EndsWith(@"GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase));
-            if (actualTocEntries != entries.Count)
+            if (actualTocEntries != incomingNewEntries.Count)
             {
                 tocNeedsUpdating = true;
             }
             else
             {
                 //Check sizes to see if all of ours match.
-                foreach (var entry in toc.Entries)
+                foreach (var existingEntry in toc.Entries)
                 {
-                    if (entry.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase) || entry.name.EndsWith("GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase)) continue; //These files don't actually exist in SFARs
-                    var matchingNewEntry = entries.FirstOrDefault(x => x.filepath.Equals(entry.name, StringComparison.InvariantCultureIgnoreCase));
+                    if (existingEntry.name.EndsWith(@"PCConsoleTOC.txt", StringComparison.InvariantCultureIgnoreCase) || existingEntry.name.EndsWith("GlobalPersistentCookerData.upk", StringComparison.InvariantCultureIgnoreCase)) continue; //These files don't actually exist in SFARs
+                    var matchingNewEntry = incomingNewEntries.FirstOrDefault(x => x.filepath.Equals(existingEntry.name, StringComparison.InvariantCultureIgnoreCase));
                     if (matchingNewEntry.filepath == null)
                     {
                         //same number of files but we could not find it in the list. A delete and add might have caused this.
                         tocNeedsUpdating = true;
                         break;
                     }
-                    if (matchingNewEntry.size != entry.size)
+                    if (matchingNewEntry.size != existingEntry.size)
                     {
                         //size is different.
                         tocNeedsUpdating = true;
@@ -898,13 +929,15 @@ namespace ME3ExplorerCore.Unreal
             //DEBUG TESTING!
             if (tocNeedsUpdating || FileName.Contains(@"Patch_001"))
             {
-                MemoryStream newTocStream = TOCCreator.CreateTOCForEntries(entries);
+                MemoryStream newTocStream = TOCCreator.CreateTOCForEntries(incomingNewEntries);
                 byte[] newmem = newTocStream.ToArray();
                 //if (tocMemoryStream.ToArray().SequenceEqual(newTocStream.ToArray()))
                 //{
                 //    //no update needed
                 //    return DLCTOCUpdateResult.RESULT_UPDATE_NOT_NECESSARY;
                 //}
+
+                if (newmem.Length == 0) Debugger.Break();
                 ReplaceEntry(newmem, archiveFileIndex);
 
             }

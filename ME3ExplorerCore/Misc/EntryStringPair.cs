@@ -33,7 +33,8 @@ namespace ME3ExplorerCore.Misc
         {
             return new EntryStringPair(entry, $"{$"#{entry.UIndex}",-9} {entry.FileRef.FilePath}");
         }
-
+#pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore
     }
 }

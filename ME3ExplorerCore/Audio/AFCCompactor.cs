@@ -339,7 +339,7 @@ namespace ME3ExplorerCore.Audio
                 }
                 catch (Exception e)
                 {
-                    brokenAudio.Add((referencedAudio, $"AFC could not be found:  {referencedAudio.afcName}"));
+                    brokenAudio.Add((referencedAudio, $"AFC could not be found: {referencedAudio.afcName} (Error: {e.Message})"));
                 }
 
                 var test = referenceMap[referencedAudio];
