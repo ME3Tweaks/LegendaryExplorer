@@ -1612,10 +1612,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
+    <PostBuildEvent>IF NOT EXIST "$(ProjectDir)$(OutDir)lib" md $(ProjectDir)$(OutDir)lib"
+xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
-move "$(ProjectDir)$(OutDir)x64\e_sqlite3.dll" "$(ProjectDir)$(OutDir)e_sqlite3.dll"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
@@ -1633,15 +1633,25 @@ rmdir /s /q "$(ProjectDir)$(OutDir)sv"
 rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 rmdir /s /q "$(ProjectDir)$(OutDir)runtimes\win-arm"
 rmdir /s /q "$(ProjectDir)$(OutDir)runtimes\win-x86"
+
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe" "$(ProjectDir)$(OutDir)lib\"
 move /y "$(ProjectDir)$(OutDir)Shader3DeComp.exe.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
-if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 
-if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)
-</PostBuildEvent>
+REM MAKE SURE BELOW ITEMS ARE LAST
+REM CAUSE ROBOCOPY HAS SPECIFIC RETURN CODES
+REM THAT MUST BE SWALLOWED TO PASS THE BUILD
+
+if EXIST "$(ProjectDir)$(OutDir)runtimes" (
+IF EXIST "$(ProjectDir)$(OutDir)lib\runtimes" (
+     robocopy "$(ProjectDir)$(OutDir)runtimes" "$(ProjectDir)$(OutDir)lib\runtimes" /E /IS /MOVE 
+     IF %25ERRORLEVEL%25 LEQ 8 EXIT 0
+ ) ELSE (
+     move /y "$(ProjectDir)$(OutDir)runtimes" "$(ProjectDir)$(OutDir)lib\runtimes"
+ )
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>::del "$(ProjectDir)$(OutDir)*.txt"
