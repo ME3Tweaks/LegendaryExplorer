@@ -117,7 +117,7 @@ namespace ME3Explorer.Sequence_Editor
                         }
                         else if (classInfo.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
-                            loadStream = Utilities.GetCustomAppResourceStream(game);
+                            loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(game);
                         }
                         else if (File.Exists(filepath))
                         {

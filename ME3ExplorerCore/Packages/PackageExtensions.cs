@@ -689,7 +689,7 @@ namespace ME3ExplorerCore.Packages
                         }
                     }
                 }
-                catch (Exception e) when (!CoreLib.IsDebug)
+                catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
                 {
                     result.AddToListAt(exp, $"Exception occurred while reading this export: {e.Message}");
                 }

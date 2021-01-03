@@ -9,7 +9,7 @@ using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using SharpDX;
-using Utilities = ME3ExplorerCore.Helpers.Utilities;
+using ME3ExplorerCoreUtilities = ME3ExplorerCore.Helpers.ME3ExplorerCoreUtilities;
 
 namespace ME3Explorer.StaticLighting
 {
@@ -66,7 +66,7 @@ namespace ME3Explorer.StaticLighting
             #endregion
 
             #region Materials
-            using (IMEPackage udkResources = MEPackageHandler.OpenMEPackageFromStream(Utilities.GetCustomAppResourceStream(MEGame.UDK)))
+            using (IMEPackage udkResources = MEPackageHandler.OpenMEPackageFromStream(ME3ExplorerCoreUtilities.GetCustomAppResourceStream(MEGame.UDK)))
             {
                 ExportEntry normDiffMat = udkResources.Exports.First(exp => exp.ObjectName == "NormDiffMat");
                 foreach (int matUIndex in allMats)

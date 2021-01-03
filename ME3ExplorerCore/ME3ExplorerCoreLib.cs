@@ -1,8 +1,5 @@
 ﻿using ME3ExplorerCore.Packages;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Unreal;
 
@@ -11,7 +8,8 @@ namespace ME3ExplorerCore
     /// <summary>
     /// Entrypoint for the ME3Explorer Library
     /// </summary>
-    public static class CoreLib
+    public static class ME3ExplorerCoreLib
+
     {
         public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
         public static string BugReportURL => $"{RepositoryURL}issues/";
@@ -64,7 +62,7 @@ namespace ME3ExplorerCore
                 ME3UnrealObjectInfo.loadfromJSON
             };
             Parallel.ForEach(jsonLoaders, action => action());
-            CoreLibSettings.Instance = new CoreLibSettings();
+            ME3ExplorerCoreLibSettings.Instance = new ME3ExplorerCoreLibSettings();
             initialized = true;
         }
 

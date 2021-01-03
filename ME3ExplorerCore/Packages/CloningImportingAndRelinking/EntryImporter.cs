@@ -237,7 +237,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
                 }
             }
-            catch (Exception exception) when (!CoreLib.IsDebug)
+            catch (Exception exception) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 //restore namelist in event of failure.
                 destPackage.restoreNames(names);

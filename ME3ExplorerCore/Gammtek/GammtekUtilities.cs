@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ME3ExplorerCore.Gammtek
 {
-	public class Utilities
+	public class GammtekUtilities
 	{
 		/// <summary>
 		///     Correctly collapses any ../ or ./ entries in a path.

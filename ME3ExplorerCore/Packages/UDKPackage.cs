@@ -343,7 +343,7 @@ namespace ME3ExplorerCore.Packages
             return ms;
         }
 
-        private byte[] GetDefaultThumbnailBytes() => Utilities.LoadEmbeddedFile("udkdefaultthumb.png").ToArray();
+        private byte[] GetDefaultThumbnailBytes() => ME3ExplorerCoreUtilities.LoadEmbeddedFile("udkdefaultthumb.png").ToArray();
 
         private void WriteHeader(Stream ms)
         {

@@ -25,7 +25,7 @@ namespace ME3ExplorerCore.Misc
             {
                 //Force concurrency
                 Task.Factory.StartNew(() => TrackedMemoryObjects.Add(new MemoryAnalyzerObject(objectname, reference)),
-                    default, TaskCreationOptions.None, CoreLib.SYNCHRONIZATION_CONTEXT);
+                    default, TaskCreationOptions.None, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
             }
         }
 
@@ -36,7 +36,7 @@ namespace ME3ExplorerCore.Misc
             {
                 //Force concurrency
                 Task.Factory.StartNew(() => TrackedMemoryObjects.Add(obj),
-                    default, TaskCreationOptions.None, CoreLib.SYNCHRONIZATION_CONTEXT);
+                    default, TaskCreationOptions.None, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
             }
         }
 

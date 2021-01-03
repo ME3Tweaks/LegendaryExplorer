@@ -50,7 +50,7 @@ namespace ME3Explorer.Packages
                 Stream loadStream = null;
                 if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                 {
-                    loadStream = Utilities.GetCustomAppResourceStream(pcc.Game);
+                    loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
                     //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
                     //if (File.Exists(resourceFilePath))
                     //{

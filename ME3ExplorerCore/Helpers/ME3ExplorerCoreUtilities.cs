@@ -8,7 +8,7 @@ using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Helpers
 {
-    public static class Utilities
+    public static class ME3ExplorerCoreUtilities
     {
 #if WINDOWS
         public static bool OpenAndSelectFileInExplorer(string filePath)
@@ -25,7 +25,7 @@ namespace ME3ExplorerCore.Helpers
 #endif
         public static string LoadStringFromCompressedResource(string resourceName, string assetName)
         {
-            var resource = Utilities.LoadEmbeddedFile(resourceName);
+            var resource = ME3ExplorerCoreUtilities.LoadEmbeddedFile(resourceName);
             if (resource != null)
             {
                 var strdata = LoadFileFromZipStream(resource, assetName);
@@ -41,7 +41,7 @@ namespace ME3ExplorerCore.Helpers
 
         public static MemoryStream LoadFileFromCompressedResource(string resourceName, string assetName)
         {
-            var resource = Utilities.LoadEmbeddedFile(resourceName);
+            var resource = ME3ExplorerCoreUtilities.LoadEmbeddedFile(resourceName);
             if (resource != null)
             {
                 return LoadFileFromZipStream(resource, assetName);
@@ -108,7 +108,7 @@ namespace ME3ExplorerCore.Helpers
             var zStream = LoadEmbeddedFile("GameResources.zip");
             if (zStream != null)
             {
-                return LoadFileFromZipStream(zStream, CoreLib.CustomResourceFileName(game));
+                return LoadFileFromZipStream(zStream, ME3ExplorerCoreLib.CustomResourceFileName(game));
             }
 
             return null;
