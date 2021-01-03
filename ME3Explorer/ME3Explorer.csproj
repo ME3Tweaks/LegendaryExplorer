@@ -1636,7 +1636,7 @@
 xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib"
 
 mkdir "$(ProjectDir)\exec"
-xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec"
+xcopy /f /e /y "$(ProjectDir)Resources\exec" "$(ProjectDir)$(OutDir)\exec\"
 rmdir /s /q "$(ProjectDir)$(OutDir)x86"
 rmdir /s /q "$(ProjectDir)$(OutDir)x64"
 rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
