@@ -133,11 +133,11 @@ namespace ME3ExplorerCore.Unreal
                         }
                         else if (info.pccPath == Me3ExplorerCustomNativeAdditionsName)
                         {
-                            var resourcesZip = Utilities.LoadEmbeddedFile("GameResources.zip");
+                            var resourcesZip = ME3ExplorerCoreUtilities.LoadEmbeddedFile("GameResources.zip");
                             if (resourcesZip != null)
                             {
-                                var filename = CoreLib.CustomResourceFileName(game);
-                                loadStream = Utilities.LoadFileFromZipStream(resourcesZip, filename);
+                                var filename = ME3ExplorerCoreLib.CustomResourceFileName(game);
+                                loadStream = ME3ExplorerCoreUtilities.LoadFileFromZipStream(resourcesZip, filename);
                             }
                         }
                         else if (File.Exists(filepathTL))
@@ -744,7 +744,7 @@ namespace ME3ExplorerCore.Unreal
                         else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                         {
                             filepath = "GAMERESOURCES_ME3";
-                            loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME3));
+                            loadStream = ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", ME3ExplorerCoreLib.CustomResourceFileName(MEGame.ME3));
                         }
                         else if (filepath != null && File.Exists(filepath))
                         {

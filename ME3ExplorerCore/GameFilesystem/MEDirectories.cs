@@ -246,19 +246,19 @@ namespace ME3ExplorerCore.GameFilesystem
             {
                 if (!string.IsNullOrEmpty(BIOGames[0]))
                 {
-                    CoreLibSettings.Instance.ME1Directory = BIOGames[0];
+                    ME3ExplorerCoreLibSettings.Instance.ME1Directory = BIOGames[0];
                     ME1Directory.DefaultGamePath = BIOGames[0];
                 }
 
                 if (!string.IsNullOrEmpty(BIOGames[1]))
                 {
-                    CoreLibSettings.Instance.ME2Directory = BIOGames[1];
+                    ME3ExplorerCoreLibSettings.Instance.ME2Directory = BIOGames[1];
                     ME2Directory.DefaultGamePath = BIOGames[1];
                 }
 
                 if (!string.IsNullOrEmpty(BIOGames[2]))
                 {
-                    CoreLibSettings.Instance.ME3Directory = BIOGames[2];
+                    ME3ExplorerCoreLibSettings.Instance.ME3Directory = BIOGames[2];
                     ME3Directory.DefaultGamePath = BIOGames[2];
                 }
             }

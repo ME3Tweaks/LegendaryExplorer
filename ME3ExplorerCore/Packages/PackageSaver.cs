@@ -11,7 +11,7 @@ namespace ME3ExplorerCore.Packages
     public static class PackageSaver
     {
         private static List<string> _me1TextureFiles;
-        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
+        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(ME3ExplorerCoreUtilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
 
         /// <summary>
         /// Callback that is invoked when a package fails to save, hook this up to show a message to the user that something failed
@@ -123,10 +123,10 @@ namespace ME3ExplorerCore.Packages
                 }
                 else
                 {
-                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {CoreLib.BugReportURL}");
+                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {ME3ExplorerCoreLib.BugReportURL}");
                 }
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }
@@ -152,7 +152,7 @@ namespace ME3ExplorerCore.Packages
             {
                 UDKSaveDelegate(pcc, path, isSaveAs);
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }

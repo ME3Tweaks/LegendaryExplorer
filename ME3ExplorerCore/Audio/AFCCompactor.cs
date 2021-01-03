@@ -124,7 +124,7 @@ namespace ME3ExplorerCore.Audio
             Action<string> currentScanningFileCallback = null, 
             Action<string> debugOut = null)
         {
-            var sizesJsonStr = new StreamReader(Utilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
+            var sizesJsonStr = new StreamReader(ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("Infos.zip", $"{game}-vanillaaudiosizes.json")).ReadToEnd();
             var vanillaSizesMap = JsonConvert.DeserializeObject<CaseInsensitiveDictionary<int>>(sizesJsonStr);
             var pccFiles = Directory.GetFiles(inputPath, "*.pcc", SearchOption.AllDirectories);
 

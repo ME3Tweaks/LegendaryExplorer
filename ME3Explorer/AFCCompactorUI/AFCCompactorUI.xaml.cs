@@ -153,7 +153,7 @@ namespace ME3Explorer.AFCCompactorUI
                     }).Select(x => getDlcDependencyForAFC(x.afcName)).Distinct().ToList();
                 if (finalAfcPath != null && File.Exists(finalAfcPath))
                 {
-                    Utilities.OpenAndSelectFileInExplorer(finalAfcPath);
+                    ME3ExplorerCoreUtilities.OpenAndSelectFileInExplorer(finalAfcPath);
 
                 }
                 return (compactionResult, dependencyList);

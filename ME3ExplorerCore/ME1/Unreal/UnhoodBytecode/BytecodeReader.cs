@@ -1261,10 +1261,10 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             if (ME1NativeInfoLoaded) return; //already loaded
             try
             {
-                var infosStream = Utilities.LoadEmbeddedFile("Infos.zip");
+                var infosStream = ME3ExplorerCoreUtilities.LoadEmbeddedFile("Infos.zip");
                 if (infosStream != null)
                 {
-                    var decompressedStream = Utilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
+                    var decompressedStream = ME3ExplorerCoreUtilities.LoadFileFromZipStream(infosStream, $"ME1NativeFunctionInfo.json");
                     using StreamReader reader = new StreamReader(decompressedStream);
                     var raw = reader.ReadToEnd();
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { NativeFunctionInfo });

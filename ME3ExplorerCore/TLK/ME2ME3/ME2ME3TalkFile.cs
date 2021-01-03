@@ -218,7 +218,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", CoreLib.GetVersion());
+            xr.WriteAttributeString("TLKToolVersion", ME3ExplorerCoreLib.GetVersion());
 
             xr.WriteComment("Male entries section begin");
 

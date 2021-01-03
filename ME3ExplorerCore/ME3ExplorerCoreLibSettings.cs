@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace ME3ExplorerCore
 {
-    public class CoreLibSettings : INotifyPropertyChanged
+    public class ME3ExplorerCoreLibSettings : INotifyPropertyChanged
     {
         // In ME3Explorer (not this lib) the property changed event is listened to for changes and maps them into the .net framework defaults system
-        public static CoreLibSettings Instance { get; set; }
+        public static ME3ExplorerCoreLibSettings Instance { get; set; }
 
-        public CoreLibSettings()
+        public ME3ExplorerCoreLibSettings()
         {
             Instance = this;
         }

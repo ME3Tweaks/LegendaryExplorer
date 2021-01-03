@@ -213,7 +213,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     return relinkFailedReport;
                 }
             }
-            catch (Exception e) when (!CoreLib.IsDebug)
+            catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }

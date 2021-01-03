@@ -179,7 +179,7 @@ namespace ME3Explorer
                     MessageBox.Show(message);
                 });
             }
-            CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+            ME3ExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
             CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {

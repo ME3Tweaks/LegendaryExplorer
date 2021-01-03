@@ -22,25 +22,25 @@ namespace ME3ExplorerCore.Helpers
         //no argument passed to continuation
         public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //no argument passed to and result returned from continuation
         public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to continuation
         public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
 
         //argument passed to and result returned from continuation
         public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
         {
-            return task.ContinueWith(continuationAction, CoreLib.SYNCHRONIZATION_CONTEXT);
+            return task.ContinueWith(continuationAction, ME3ExplorerCoreLib.SYNCHRONIZATION_CONTEXT);
         }
     }
     public static class EnumerableExtensions

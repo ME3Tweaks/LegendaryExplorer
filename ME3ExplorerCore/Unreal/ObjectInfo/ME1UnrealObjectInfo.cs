@@ -321,7 +321,7 @@ namespace ME3ExplorerCore.Unreal
                     else if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
                     {
                         filepath = "GAMERESOURCES_ME1"; //used for cache
-                        loadStream = Utilities.LoadFileFromCompressedResource("GameResources.zip", CoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
+                        loadStream = ME3ExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", ME3ExplorerCoreLib.CustomResourceFileName(MEGame.ME1)); // should this be ME3 (it was originally before corelib move)
                     }
                     else if (filepath != null && File.Exists(filepath))
                     {

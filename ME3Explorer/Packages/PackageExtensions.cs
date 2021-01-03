@@ -191,7 +191,7 @@ namespace ME3Explorer.Packages
             {
 
                 //change all materials to default material, but try to preserve diff and norm textures
-                using var resourcePCC = MEPackageHandler.OpenMEPackageFromStream(Utilities.GetCustomAppResourceStream(MEGame.ME3));
+                using var resourcePCC = MEPackageHandler.OpenMEPackageFromStream(ME3ExplorerCoreUtilities.GetCustomAppResourceStream(MEGame.ME3));
                 var defaultmaster = resourcePCC.Exports.First(exp => exp.ObjectName == "NormDiffMaterial");
                 var materiallist = package.Exports.Where(exp => exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant").ToList();
                 foreach (var mat in materiallist)
