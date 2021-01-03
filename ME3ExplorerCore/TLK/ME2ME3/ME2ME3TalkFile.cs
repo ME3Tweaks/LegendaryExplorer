@@ -319,6 +319,41 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             return null;
         }
 
+        /// <summary>
+        /// If the TLK instance has been modified by the ReplaceString method.
+        /// </summary>
+        public bool IsModified { get; private set; }
+
+        /// <summary>
+        /// Replaces a string in the list of StringRefs. Does not work for Female strings as they share the same string ID.
+        /// </summary>
+        /// <param name="stringID">The ID of the string to replace.</param>
+        /// <param name="newText">The new text of the string.</param>
+        /// <param name="addIfNotFound">If the string should be added as new stringref if it is not found. Default is false.</param>
+        /// <returns>True if the string was found, false otherwise.</returns>
+        public bool ReplaceString(int stringID, string newText, bool addIfNotFound = false)
+        {
+            var strRef = StringRefs.FirstOrDefault(x => x.StringID == stringID);
+            if (strRef != null)
+            {
+                IsModified = true;
+                strRef.Data = newText;
+            }
+            else if (addIfNotFound)
+            {
+                IsModified = true;
+                StringRefs.Add(new TLKStringRef(stringID, 0, newText));
+                return false; // Was not found, but was added.
+            }
+            else
+            {
+                // Not found, not added
+                return false;
+            }
+
+            return true;
+        }
+
         /* for sorting */
         private static int CompareTlkStringRef(ME1TalkFile.TLKStringRef strRef1, ME1TalkFile.TLKStringRef strRef2)
         {
