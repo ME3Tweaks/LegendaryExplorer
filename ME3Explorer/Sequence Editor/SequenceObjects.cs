@@ -12,6 +12,7 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
 using ME3Explorer.Sequence_Editor;
+using ME3Explorer.TlkManagerNS;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -137,6 +138,25 @@ namespace ME3Explorer.SequenceObjects
                     case "SeqAct_Delay":
                         var delayValue = properties.GetProp<FloatProperty>("Duration");
                         res += $"Delay: {delayValue?.Value ?? 1}s";
+                        break;
+                    case "SFXSeqAct_InitLoadingMovies":
+                        if (properties.GetProp<ObjectProperty>(@"Movie")?.ResolveToEntry(export.FileRef) is ExportEntry movieExp)
+                        {
+                            var movieName = movieExp.GetProperty<StrProperty>("MovieName");
+                            res += $"Movie: {movieName?.Value}";
+                            if (properties.GetProp<ObjectProperty>(@"ScreenTip")?.ResolveToEntry(export.FileRef) is
+                                ExportEntry tipExp)
+                            {
+                                var defaultTip = tipExp.GetProperty<StringRefProperty>(@"Default_Body");
+                                var defTipId = defaultTip?.Value;
+                                if (defTipId != null)
+                                {
+                                    res +=
+                                        $"\nDefaultTip: {TLKManagerWPF.GlobalFindStrRefbyID(defTipId.Value, export.FileRef).WordWrap(40)}";
+                                }
+                            }
+                        }
+
                         break;
                     case "SeqEvent_Death":
                         var originator = properties.GetProp<ObjectProperty>("Originator");
