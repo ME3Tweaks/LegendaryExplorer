@@ -57,25 +57,26 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string path)
-            {
-                if (path.StartsWith(ME3Directory.CookedPCPath) || path.StartsWith(ME2Directory.CookedPCPath) || path.StartsWith(ME1Directory.CookedPCPath))
-                {
-                    return "Basegame";
-                }
-                if (path.StartsWith(ME3Directory.DLCPath) || path.StartsWith(ME2Directory.DLCPath))
-                {
-                    return System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(path)));
-                }
-                if (path.StartsWith(ME1Directory.DLCPath))
-                {
-                    int startIndex = path.IndexOf("DLC_");
-                    return path.Substring(startIndex, path.Skip(startIndex).ToList().IndexOf('\\'));
-                }
+            return "Feature deprecated";
+            //if (value is string path)
+            //{
+            //    if (path.StartsWith(ME3Directory.CookedPCPath) || path.StartsWith(ME2Directory.CookedPCPath) || path.StartsWith(ME1Directory.CookedPCPath))
+            //    {
+            //        return "Basegame";
+            //    }
+            //    if (path.StartsWith(ME3Directory.DLCPath) || path.StartsWith(ME2Directory.DLCPath))
+            //    {
+            //        return System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(path)));
+            //    }
+            //    if (path.StartsWith(ME1Directory.DLCPath))
+            //    {
+            //        int startIndex = path.IndexOf("DLC_");
+            //        return path.Substring(startIndex, path.Skip(startIndex).ToList().IndexOf('\\'));
+            //    }
 
-                return "External";
-            }
-            return "";
+            //    return "External";
+            //}
+            //return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
