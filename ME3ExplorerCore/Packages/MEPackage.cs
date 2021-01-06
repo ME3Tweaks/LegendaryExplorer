@@ -837,7 +837,7 @@ namespace ME3ExplorerCore.Packages
                 foreach (ExportEntry e in mePackage.exports)
                 {
                     //update offsets
-                    e.DataOffset = (int)ms.Position;
+                    var newDataStartOffset = (int) ms.Position;
 
                     ObjectBinary objBin = null;
                     if (!e.IsDefaultObject)
@@ -853,7 +853,7 @@ namespace ME3ExplorerCore.Packages
                             {
                                 if (binStart == -1)
                                 {
-                                    binStart = e.DataOffset + e.propsEnd();
+                                    binStart = newDataStartOffset + e.propsEnd();
                                 }
                                 // This is 
                                 mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
@@ -864,7 +864,7 @@ namespace ME3ExplorerCore.Packages
                         {
                             switch (e.ClassName)
                             {
-                                case "WwiseBank":
+                                //case "WwiseBank":
                                 case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
                                 case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
                                     objBin = ObjectBinary.From(e);
@@ -881,7 +881,8 @@ namespace ME3ExplorerCore.Packages
                         e.WriteBinary(objBin);
                     }
 
-
+                    // Update the header position
+                    e.DataOffset = (int)ms.Position;
 
                     ms.WriteFromBuffer(e.Data);
                     //update size and offset in already-written header
