@@ -20,6 +20,7 @@ using System.IO;
 using System.Text;
 using ME3ExplorerCore.Gammtek.IO.Converters;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.IO
 {
@@ -344,6 +345,8 @@ namespace ME3ExplorerCore.Gammtek.IO
             LittleEndianStream?.WriteInt16(val);
             return val;
         }
+        
+
 
         /// <summary>
         ///     Reads a 4-byte signed integer from the current stream and advances the current position of the stream by four bytes.
@@ -566,6 +569,31 @@ namespace ME3ExplorerCore.Gammtek.IO
         public bool ReadBoolInt()
         {
             return ReadUInt32() > 0;
+        }
+
+        /// <summary>
+        /// Reads a FaceFX string
+        /// </summary>
+        /// <param name="er"></param>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public string ReadFaceFXString(MEGame game, bool extended = false)
+        {
+            if (game == MEGame.ME2)
+            {
+                // ME2 strings appear to have a Int16 before the actual string.
+                // This appears to be the 'count' of an array as strings were serialized as an array
+                // But the length is also included. So it's just a length of 1 then the string.
+                // ME1/ME3 use 1.7 SDK which doesn't appear to do this
+                if (extended) ReadInt16(); //It's 4 bytes
+                var shouldBe1 = ReadInt16();
+                if (shouldBe1 != 1)
+                {
+                    Debug.WriteLine($@"Expected pre-string value was not 1! Value was: {shouldBe1}, position 0x{(Position - 2):X8}");
+                }
+            }
+
+            return ReadUnrealString();
         }
 
         public float ReadFloat16()
