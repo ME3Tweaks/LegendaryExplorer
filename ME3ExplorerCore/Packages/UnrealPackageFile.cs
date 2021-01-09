@@ -18,17 +18,9 @@ namespace ME3ExplorerCore.Packages
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;
         public string FilePath { get; }
-
-        public bool IsModified
-        {
-            get
-            {
-                return exports.Any(entry => entry.DataChanged || entry.HeaderChanged) || imports.Any(entry => entry.HeaderChanged) || namesAdded > 0;
-            }
-        }
+        public bool IsModified { get; internal set; }
         public int FullHeaderSize { get; protected set; }
         public UnrealFlags.EPackageFlags Flags { get; protected set; }
-
         public int NameCount { get; protected set; }
         public int NameOffset { get; protected set; }
         public int ExportCount { get; protected set; }
@@ -97,17 +89,18 @@ namespace ME3ExplorerCore.Packages
 
                 updateTools(PackageChange.NameAdd, NameCount - 1);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameCount)));
+                IsModified = true;
             }
         }
 
         public void replaceName(int idx, string newName)
         {
-            if (IsName(idx))
+            if (IsName(idx) && names[idx] != newName) //should we also have a case sensitive check/make sure there are not duplicates?
             {
                 nameLookupTable.Remove(names[idx]);
                 names[idx] = newName;
                 nameLookupTable[newName] = idx;
-
+                IsModified = true; // Package has become modified
                 updateTools(PackageChange.NameEdit, idx);
             }
         }
@@ -340,6 +333,7 @@ namespace ME3ExplorerCore.Packages
                 lastImport.PropertyChanged -= importChanged;
                 imports.RemoveAt(i);
                 updateTools(PackageChange.ImportRemove, lastImport.UIndex);
+                IsModified = true;
             }
             if (ImportCount != imports.Count)
             {
@@ -360,6 +354,7 @@ namespace ME3ExplorerCore.Packages
                 lastExport.PropertyChanged -= importChanged;
                 exports.RemoveAt(i);
                 updateTools(PackageChange.ExportRemove, lastExport.UIndex);
+                IsModified = true;
             }
             if (ExportCount != exports.Count)
             {
@@ -372,6 +367,7 @@ namespace ME3ExplorerCore.Packages
                 trashPackage.PropertyChanged -= importChanged;
                 exports.Remove(trashPackage);
                 updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
+                IsModified = true;
             }
             if (ExportCount != exports.Count)
             {
@@ -438,7 +434,7 @@ namespace ME3ExplorerCore.Packages
             lastSaved = DateTime.Now;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSaved)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileSize)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
+            IsModified = false;
         }
 
         #region packageHandler stuff
@@ -589,7 +585,6 @@ namespace ME3ExplorerCore.Packages
                         {
                             item.handleUpdate(pendingUpdatesList);
                         }
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsModified)));
                     }
                 });
             }

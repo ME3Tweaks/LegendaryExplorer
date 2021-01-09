@@ -127,7 +127,6 @@ namespace ME3ExplorerCore.Packages
     {
         EPackageFlags Flags { get; }
         bool IsCompressed { get; }
-        bool IsModified { get; }
         int NameCount { get; }
         int ExportCount { get; }
         int ImportCount { get; }
@@ -177,9 +176,26 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         /// <param name="uIndex">unreal-based index</param>
         ImportEntry GetImport(int uIndex);
-
+        /// <summary>
+        /// Try to get an ExportEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="export"></param>
+        /// <returns></returns>
         bool TryGetUExport(int uIndex, out ExportEntry export);
+        /// <summary>
+        /// Try to get an ImportEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="import"></param>
+        /// <returns></returns>
         bool TryGetImport(int uIndex, out ImportEntry import);
+        /// <summary>
+        /// Try to get an IEntry by UIndex.
+        /// </summary>
+        /// <param name="uIndex"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         bool TryGetEntry(int uIndex, out IEntry entry);
 
         int findName(string nameToFind);
@@ -189,7 +205,6 @@ namespace ME3ExplorerCore.Packages
         /// <param name="index">unreal index</param>
         string getObjectName(int index);
         string GetNameEntry(int index);
-
         int GetNextIndexForName(string name);
 
         NameReference GetNextIndexedName(string name);

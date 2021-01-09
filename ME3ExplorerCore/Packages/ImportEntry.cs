@@ -52,6 +52,8 @@ namespace ME3ExplorerCore.Packages
                 _header = value;
                 if (!isFirstLoad)
                 {
+                    // This is a hack cause FileRef is IMEPackage
+                    (FileRef as UnrealPackageFile).IsModified = true; // mark package as modified if the existing header is changing.
                     HeaderChanged = true;
                     EntryHasPendingChanges = true;
                 }

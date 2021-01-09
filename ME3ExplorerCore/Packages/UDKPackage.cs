@@ -29,6 +29,9 @@ namespace ME3ExplorerCore.Packages
 
         List<ME1TalkFile> IMEPackage.LocalTalkFiles => throw new NotImplementedException(); //not supported on this package type
 
+        public bool IsModified { get; internal set; }
+
+
         #region HeaderMisc
         private class Thumbnail
         {

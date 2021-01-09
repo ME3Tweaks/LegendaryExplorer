@@ -204,6 +204,8 @@ namespace ME3ExplorerCore.Packages
 
                 EntryHasPendingChanges = true;
                 HeaderChanged = true;
+                // This is a hack cause FileRef is IMEPackage
+                (FileRef as UnrealPackageFile).IsModified = true;
             }
         }
 
@@ -519,12 +521,16 @@ namespace ME3ExplorerCore.Packages
                     return; //if the data is the same don't write it and trigger the side effects
                 }
 
+                // This is a hack cause FileRef is IMEPackage
+                (FileRef as UnrealPackageFile).IsModified = true; // mark package as modified if the existing header is changing.
+
                 _data = value;
                 DataSize = value.Length;
                 DataChanged = true;
                 properties = null;
                 propsEndOffset = null;
                 EntryHasPendingChanges = true;
+
             }
         }
 
