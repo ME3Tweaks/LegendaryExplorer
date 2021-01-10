@@ -92,6 +92,15 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         public List<string> AdditionalPackagesToCook = new List<string>();
 
+        /// <summary>
+        /// Passthrough to UnrealPackageFile's IsModified
+        /// </summary>
+        bool IMEPackage.IsModified
+        {
+            // Not sure why I can't use a private setter here.
+            get => IsModified;
+            set => IsModified = value;
+        }
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class

@@ -29,8 +29,14 @@ namespace ME3ExplorerCore.Packages
 
         List<ME1TalkFile> IMEPackage.LocalTalkFiles => throw new NotImplementedException(); //not supported on this package type
 
-        public bool IsModified { get; internal set; }
-
+        /// <summary>
+        /// Passthrough to UnrealPackageFile's IsModified
+        /// </summary>
+        bool IMEPackage.IsModified
+        {
+            get => IsModified;
+            set => IsModified = value;
+        }
 
         #region HeaderMisc
         private class Thumbnail
