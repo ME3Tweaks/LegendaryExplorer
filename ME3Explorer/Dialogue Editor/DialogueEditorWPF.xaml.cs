@@ -643,7 +643,7 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedConv.ParseSpeakers();
                 GenerateSpeakerList();
                 SelectedConv.ParseEntryList(TLKLookup);
-                SelectedConv.ParseReplyList();
+                SelectedConv.ParseReplyList(TLKLookup);
                 SelectedConv.ParseScripts();
                 SelectedConv.ParseNSFFX();
                 SelectedConv.ParseSequence();
@@ -659,7 +659,7 @@ namespace ME3Explorer.Dialogue_Editor
                 conv.ParseStartingList();
                 conv.ParseSpeakers();
                 conv.ParseEntryList(TLKLookup);
-                conv.ParseReplyList();
+                conv.ParseReplyList(TLKLookup);
                 conv.ParseScripts();
                 conv.ParseNSFFX();
                 conv.ParseSequence();
