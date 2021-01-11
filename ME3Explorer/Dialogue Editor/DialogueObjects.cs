@@ -6,16 +6,15 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using ME3Explorer.SharedUI;
+using ME3ExplorerCore.Dialogue;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
-using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
-using EReplyCategory = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyCategory;
 
 namespace ME3Explorer.Dialogue_Editor
 {
@@ -74,21 +73,21 @@ namespace ME3Explorer.Dialogue_Editor
         public virtual void Layout(float x, float y) => SetOffset(x, y);
         public virtual IEnumerable<DiagEdEdge> Edges => Enumerable.Empty<DiagEdEdge>();
 
-        protected Color getColor(EReplyCategory t)
+        protected Color getColor(EBCReplyCategory t)
         {
             switch (t)
             {
-                case EReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT:
+                case EBCReplyCategory.REPLY_CATEGORY_PARAGON_INTERRUPT:
                     return paraintColor;
-                case EReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT:
+                case EBCReplyCategory.REPLY_CATEGORY_RENEGADE_INTERRUPT:
                     return renintColor;
-                case EReplyCategory.REPLY_CATEGORY_AGREE:
+                case EBCReplyCategory.REPLY_CATEGORY_AGREE:
                     return agreeColor;
-                case EReplyCategory.REPLY_CATEGORY_DISAGREE:
+                case EBCReplyCategory.REPLY_CATEGORY_DISAGREE:
                     return disagreeColor;
-                case EReplyCategory.REPLY_CATEGORY_FRIENDLY:
+                case EBCReplyCategory.REPLY_CATEGORY_FRIENDLY:
                     return friendlyColor;
-                case EReplyCategory.REPLY_CATEGORY_HOSTILE:
+                case EBCReplyCategory.REPLY_CATEGORY_HOSTILE:
                     return hostileColor;
                 default:
                     return Color.Black;
@@ -117,7 +116,7 @@ namespace ME3Explorer.Dialogue_Editor
             public int InputIndices;
             public string Desc;
             public List<DiagEdEdge> Edges;
-            public EReplyCategory RCat;
+            public EBCReplyCategory RCat;
         }
 
         public struct InputLink
@@ -429,7 +428,7 @@ namespace ME3Explorer.Dialogue_Editor
                 InputIndices = new int(),
                 Edges = new List<DiagEdEdge>(),
                 Desc = $"Out {StartNbr}",
-                RCat = EReplyCategory.REPLY_CATEGORY_DEFAULT
+                RCat = EBCReplyCategory.REPLY_CATEGORY_DEFAULT
             };
             int linkedOp = StartNbr;
             l.Links.Add(linkedOp);
@@ -871,7 +870,7 @@ namespace ME3Explorer.Dialogue_Editor
                     {
                         foreach (var rc in rcarray)
                         {
-                            var replychoice = new ReplyChoiceNode(-1, "", -1, EReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
+                            var replychoice = new ReplyChoiceNode(-1, "", -1, EBCReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
                             var nIDprop = rc.GetProp<IntProperty>("nIndex");
                             if (nIDprop != null)
                             {
@@ -888,7 +887,7 @@ namespace ME3Explorer.Dialogue_Editor
                             var rcatprop = rc.GetProp<EnumProperty>("Category");
                             if (rcatprop != null)
                             {
-                                Enum.TryParse(rcatprop.Value.Name, out EReplyCategory eReply);
+                                Enum.TryParse(rcatprop.Value.Name, out EBCReplyCategory eReply);
                                 replychoice.RCategory = eReply;
                             }
                             Links.Add(replychoice);
@@ -958,7 +957,7 @@ namespace ME3Explorer.Dialogue_Editor
                         InputIndices = new int(),
                         Edges = new List<DiagEdEdge>(),
                         Desc = "Out:",
-                        RCat = EReplyCategory.REPLY_CATEGORY_DEFAULT,
+                        RCat = EBCReplyCategory.REPLY_CATEGORY_DEFAULT,
                         node = CreateActionLinkBox()
                     };
 
@@ -1080,7 +1079,7 @@ namespace ME3Explorer.Dialogue_Editor
                                 InputIndices = new int(),
                                 Edges = new List<DiagEdEdge>(),
                                 Desc = n.ToString(),
-                                RCat = EReplyCategory.REPLY_CATEGORY_DEFAULT
+                                RCat = EBCReplyCategory.REPLY_CATEGORY_DEFAULT
                             };
 
                             int linkedOp = prop.Value;
@@ -1101,7 +1100,7 @@ namespace ME3Explorer.Dialogue_Editor
                             n++;
 
                             //Add to links package
-                            var replychoice = new ReplyChoiceNode(linkedOp, "", -1, EReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
+                            var replychoice = new ReplyChoiceNode(linkedOp, "", -1, EBCReplyCategory.REPLY_CATEGORY_DEFAULT, "No data");
                             Links.Add(replychoice);
                         }
                     }
@@ -1113,7 +1112,7 @@ namespace ME3Explorer.Dialogue_Editor
                             InputIndices = new int(),
                             Edges = new List<DiagEdEdge>(),
                             Desc = "Out:",
-                            RCat = EReplyCategory.REPLY_CATEGORY_DEFAULT,
+                            RCat = EBCReplyCategory.REPLY_CATEGORY_DEFAULT,
                             node = CreateActionLinkBox()
                         };
 

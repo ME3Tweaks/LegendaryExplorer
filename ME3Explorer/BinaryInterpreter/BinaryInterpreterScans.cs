@@ -3929,6 +3929,41 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Reads the common header for FaceFX archives.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="binaryStart"></param>
+        /// <param name="tree"></param>
+        private MEGame ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
+        {
+            var archiveSize = bin.ReadInt32();
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Archive size: {archiveSize} ({FileSize.FormatSize(archiveSize)})"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
+            int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
+            var game = versionID == 1710 ? MEGame.ME1 :
+                versionID == 1610 ? MEGame.ME2 :
+                versionID == 1731 ? MEGame.ME3 :
+                MEGame.Unknown;
+            var vIdStr = versionID.ToString();
+            var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
+            if (game == MEGame.ME3)
+            {
+                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
+            }
+
+            subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadFaceFXString(game)}"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadFaceFXString(game)}"));
+
+            var licenseeVersion = bin.ReadInt32();
+            vIdStr = licenseeVersion.ToString();
+            vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
+
+            return game;
+        }
+
         private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();
@@ -3936,25 +3971,8 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                bin.Skip(4);
-                subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                subnodes.Add(new BinInterpNode(bin.Position, $"Version?: {bin.ReadInt32():X8}") { Length = 4 });
-                if (Pcc.Game == MEGame.ME3)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-                }
+                ReadFaceFXHeader(bin, subnodes);
 
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.BaseStream.ReadStringASCII(bin.ReadInt32())}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
                 if (Pcc.Game == MEGame.ME2)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
@@ -4118,30 +4136,8 @@ namespace ME3Explorer
             {
                 var bin = new EndianReader(new MemoryStream(CurrentLoadedExport.Data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-                bin.Skip(4);
-                subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-                int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
-                var game = versionID == 1710 ? MEGame.ME1 :
-                    versionID == 1610 ? MEGame.ME2 :
-                    versionID == 1731 ? MEGame.ME3 :
-                    MEGame.Unknown;
-                var vIdStr = versionID.ToString();
-                var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
-                if (game == MEGame.ME3)
-                {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-                }
+                var game = ReadFaceFXHeader(bin, subnodes);
 
-                subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadFaceFXString(game)}"));
-                subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadFaceFXString(game)}"));
-
-                var licenseeVersion = bin.ReadInt32();
-                vIdStr = licenseeVersion.ToString();
-                vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
-
-                // End of FaceFX header
                 if (game == MEGame.ME2)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
@@ -4178,9 +4174,9 @@ namespace ME3Explorer
                 }
 
                 //Name Table
-                
-                
-                
+
+
+
                 var nameTable = new List<string>();
                 int nameCount = bin.ReadInt32();
                 var nametablePos = bin.Position - 4;

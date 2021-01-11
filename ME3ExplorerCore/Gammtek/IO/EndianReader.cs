@@ -353,7 +353,7 @@ namespace ME3ExplorerCore.Gammtek.IO
 #endif
             return val;
         }
-        
+
 
 
         /// <summary>
@@ -428,7 +428,7 @@ namespace ME3ExplorerCore.Gammtek.IO
             }
             val = _endianConverter.Convert(val);
 #if DEBUG
-LittleEndianStream?.WriteFloat(val);
+            LittleEndianStream?.WriteFloat(val);
 #endif
             return val;
         }
@@ -531,7 +531,7 @@ LittleEndianStream?.WriteFloat(val);
             {
                 _source.BaseStream.Position = value;
 #if DEBUG
-if (LittleEndianStream != null)
+                if (LittleEndianStream != null)
                     LittleEndianStream.Position = value;
 #endif
             }
@@ -609,14 +609,12 @@ if (LittleEndianStream != null)
             if (game == MEGame.ME2)
             {
                 // ME2 strings appear to have a Int16 before the actual string.
-                // This appears to be the 'count' of an array as strings were serialized as an array
-                // But the length is also included. So it's just a length of 1 then the string.
-                // ME1/ME3 use 1.7 SDK which doesn't appear to do this
+                // This appears to be the 'version' of the object.
                 if (extended) ReadInt16(); //It's 4 bytes
-                var shouldBe1 = ReadInt16();
-                if (shouldBe1 != 1)
+                var objectVersion = ReadInt16(); // This seems like it's always 1. Older versions set it to zero. Looks like some sort of parser flag but it's on every string
+                if (objectVersion != 1)
                 {
-                    Debug.WriteLine($@"Expected pre-string value was not 1! Value was: {shouldBe1}, position 0x{(Position - 2):X8}");
+                    Debug.WriteLine($@"Expected pre-string value was not 1! Value was: {objectVersion}, position 0x{(Position - 2):X8}");
                 }
             }
 

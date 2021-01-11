@@ -664,7 +664,6 @@
     <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
-    <Compile Include="Dialogue Editor\BioConversation.cs" />
     <Compile Include="Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -752,9 +751,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InitialSetup.xaml.cs">
       <DependentUpon>InitialSetup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Main Window\TaskPaneInfoPanel.xaml.cs">
-      <DependentUpon>TaskPaneInfoPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main Window\Utilities\FileAssociations.cs" />
     <Compile Include="Main.cs" />
@@ -1037,9 +1033,6 @@
     <Compile Include="SharedUI\StatusBarGameIDIndicator.xaml.cs">
       <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main Window\TaskPane.xaml.cs">
-      <DependentUpon>TaskPane.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Splash\DPIAwareSplashScreen.xaml.cs">
       <DependentUpon>DPIAwareSplashScreen.xaml</DependentUpon>
     </Compile>
@@ -1126,10 +1119,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Main Window\TaskPaneInfoPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ME1TlkEditor\ME1TlkEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1147,10 +1136,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MetadataEditor\MetadataEditorWPF.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main Window\TaskPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
