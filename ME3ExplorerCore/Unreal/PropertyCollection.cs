@@ -814,6 +814,19 @@ namespace ME3ExplorerCore.Unreal
                 }, StaticArrayIndex);
             }
         }
+
+        public static StructProperty FromGuid(Guid tfcGuid, string name = null)
+        {
+            // NEEDS TESTED AND VALIDATED
+            PropertyCollection pc = new PropertyCollection();
+            //todo
+            pc.Add(new IntProperty(0,"A"));
+            pc.Add(new IntProperty(0,"B"));
+            pc.Add(new IntProperty(0,"C"));
+            pc.Add(new IntProperty(0,"D"));
+            return new StructProperty("Guid", pc, name, true);
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

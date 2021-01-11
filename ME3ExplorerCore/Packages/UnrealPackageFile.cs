@@ -95,6 +95,11 @@ namespace ME3ExplorerCore.Packages
 
         public void replaceName(int idx, string newName)
         {
+            if (newName == null)
+            {
+                // Cannot add a null name!
+                throw new ArgumentException(nameof(newName), new Exception("Cannot replace a name with a null value!"));
+            }
             if (IsName(idx) && names[idx] != newName) //should we also have a case sensitive check/make sure there are not duplicates?
             {
                 nameLookupTable.Remove(names[idx]);
