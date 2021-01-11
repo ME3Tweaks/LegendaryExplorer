@@ -82,7 +82,7 @@ namespace ME3ExplorerCore.Dialogue
             ParseSpeakers();
             //GenerateSpeakerList();
             ParseEntryList(tlkLookup);
-            ParseReplyList();
+            ParseReplyList(tlkLookup);
             ParseScripts();
             ParseNSFFX();
             ParseSequence();
@@ -102,7 +102,7 @@ namespace ME3ExplorerCore.Dialogue
                 cnt++;
             }
         }
-        public void ParseReplyList()
+        public void ParseReplyList(Func<int, IMEPackage, string> tlkLookup = null)
         {
             ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
             var replyprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
@@ -111,7 +111,7 @@ namespace ME3ExplorerCore.Dialogue
                 int cnt = 0;
                 foreach (StructProperty Node in replyprop)
                 {
-                    ReplyList.Add(ParseSingleLine(Node, cnt, true));
+                    ReplyList.Add(ParseSingleLine(Node, cnt, true, tlkLookup));
                     cnt++;
                 }
             }
