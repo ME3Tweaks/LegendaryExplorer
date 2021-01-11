@@ -21,8 +21,8 @@ using System.Windows.Threading;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using ME3Explorer.Dialogue_Editor.BioConversationExtended;
 using ME3Explorer.SharedUI.Interfaces;
+using ME3ExplorerCore.Dialogue;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Packages;
@@ -31,9 +31,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using static ME3Explorer.TlkManagerNS.TLKManagerWPF;
-using EConvGUIStyles = ME3Explorer.Dialogue_Editor.BioConversationExtended.EConvGUIStyles;
-using Enums = ME3ExplorerCore.Helpers.Enums;
-using EReplyTypes = ME3Explorer.Dialogue_Editor.BioConversationExtended.EReplyTypes;
+//using Enums = ME3ExplorerCore.Helpers.Enums;
 using InterpEditor = ME3Explorer.Matinee.InterpEditor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -247,8 +245,8 @@ namespace ME3Explorer.Dialogue_Editor
             this.graphEditor.DragDrop += DialogueEditor_DragDrop;
             this.graphEditor.DragEnter += DialogueEditor_DragEnter;
 
-            Node_Combo_GUIStyle.ItemsSource = Enums.GetValues<EConvGUIStyles>();
-            Node_Combo_ReplyType.ItemsSource = Enums.GetValues<EReplyTypes>();
+            Node_Combo_GUIStyle.ItemsSource = Enums.GetValues<EBCConvGUIStyles>();
+            Node_Combo_ReplyType.ItemsSource = Enums.GetValues<EBCReplyTypes>();
             if (File.Exists(OptionsPath)) //Handle options
             {
                 var options = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(OptionsPath));
@@ -790,7 +788,7 @@ namespace ME3Explorer.Dialogue_Editor
             string line = "Unknown Reference";
             int stevent = -1;
             bool bcond = false;
-            EReplyTypes eReply = EReplyTypes.REPLY_STANDARD;
+            EBCReplyTypes eReply = EBCReplyTypes.REPLY_STANDARD;
             try
             {
                 linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
@@ -1146,7 +1144,7 @@ namespace ME3Explorer.Dialogue_Editor
                 node.IsAmbient = nodeprop.GetProp<BoolProperty>("bAmbient");
                 node.IsNonTextLine = nodeprop.GetProp<BoolProperty>("bNonTextLine");
                 node.IgnoreBodyGesture = nodeprop.GetProp<BoolProperty>("bIgnoreBodyGestures");
-                node.GUIStyle = Enums.Parse<EConvGUIStyles>(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name);
+                node.GUIStyle = Enums.Parse<EBCConvGUIStyles>(nodeprop.GetProp<EnumProperty>("eGUIStyle").Value.Name);
                 if (Pcc.Game == MEGame.ME3)
                 {
                     node.HideSubtitle = nodeprop.GetProp<BoolProperty>("bAlwaysHideSubtitle");
@@ -1829,8 +1827,8 @@ namespace ME3Explorer.Dialogue_Editor
                     prop.Properties.AddOrReplaceProp(nScriptIndex);
                     break;
                 case "GUIStyle":
-                    var EConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), "EConvGUIStyles", Pcc.Game, "eGUIStyle");
-                    prop.Properties.AddOrReplaceProp(EConvGUIStyles);
+                    var EBCConvGUIStyles = new EnumProperty(node.GUIStyle.ToString(), "EBCConvGUIStyles", Pcc.Game, "eGUIStyle");
+                    prop.Properties.AddOrReplaceProp(EBCConvGUIStyles);
                     break;
                 default:
                     break;
@@ -1860,7 +1858,7 @@ namespace ME3Explorer.Dialogue_Editor
                 prop.Properties.AddOrReplaceProp(bUnskippable);
                 if (e.PropertyName == "ReplyType")
                 {
-                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), "EReplyTypes", Pcc.Game, "ReplyType");
+                    var ReplyType = new EnumProperty(node.ReplyType.ToString(), "EBCReplyTypes", Pcc.Game, "ReplyType");
                     prop.Properties.AddOrReplaceProp(ReplyType);
                     needsRefresh = true;
                 }
@@ -3054,8 +3052,8 @@ namespace ME3Explorer.Dialogue_Editor
                 var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList") ??
                             new ArrayProperty<StructProperty>("m_ReplyList");
                 //Set to needed defaults.
-                newprop.AddOrReplaceProp(new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle"));
-                newprop.AddOrReplaceProp(new EnumProperty("REPLY_STANDARD", "EReplyTypes", Pcc.Game, "ReplyType"));
+                newprop.AddOrReplaceProp(new EnumProperty("GUI_STYLE_NONE", "EBCConvGUIStyles", Pcc.Game, "eGUIStyle"));
+                newprop.AddOrReplaceProp(new EnumProperty("REPLY_STANDARD", "EBCReplyTypes", Pcc.Game, "ReplyType"));
                 newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
                 newprop.GetProp<BoolProperty>("bFireConditional").Value = true;
                 newprop.GetProp<IntProperty>("nConditionalFunc").Value = -1;
@@ -3074,8 +3072,8 @@ namespace ME3Explorer.Dialogue_Editor
                 PropertyCollection newprop = UnrealObjectInfo.getDefaultStructValue(Pcc.Game, "BioDialogEntryNode", true);
                 var props = SelectedConv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList") ??
                             new ArrayProperty<StructProperty>("m_EntryList");
-                var EConvGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", Pcc.Game, "eGUIStyle");
-                newprop.AddOrReplaceProp(EConvGUIStyles);
+                var EBCConvGUIStyles = new EnumProperty("GUI_STYLE_NONE", "EBCConvGUIStyles", Pcc.Game, "eGUIStyle");
+                newprop.AddOrReplaceProp(EBCConvGUIStyles);
                 newprop.GetProp<IntProperty>("nSpeakerIndex").Value = -1;
                 newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
                 newprop.GetProp<BoolProperty>("bFireConditional").Value = true;

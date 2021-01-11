@@ -4006,9 +4006,9 @@ namespace ME3Explorer
             PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(Pcc);
         }
 
-        private void FindAllFilesWithSpecificClass(object sender, RoutedEventArgs e)
+        private void FindAllFilesWithSpecificName(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.FindAllFilesWithClass(this);
+            PackageEditorExperimentsM.FindNamedObject(this);
         }
 
         private void FindME12DATables_Click(object sender, RoutedEventArgs e)

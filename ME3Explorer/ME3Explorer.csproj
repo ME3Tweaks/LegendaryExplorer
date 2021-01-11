@@ -664,7 +664,6 @@
     <Compile Include="SharedUI\Converters\BoolEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToIndexConverter.cs" />
     <Compile Include="CodeWriter.cs" />
-    <Compile Include="Dialogue Editor\BioConversation.cs" />
     <Compile Include="Dialogue Editor\ConvGraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
