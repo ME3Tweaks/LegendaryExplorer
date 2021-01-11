@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -16,6 +17,7 @@ namespace ME3ExplorerCore.Dialogue
     // - DialogueNodeExtended has InterpData, WwiseStream_M, Wwisestream_F, FaceFX_ID_M, FaceFX_ID_F.
 
 
+    [DebuggerDisplay("ConversationExtended {ExportUID} {ConvName}")]
     public class ConversationExtended : INotifyPropertyChanged
     {
         public int ExportUID { get; set; }
@@ -44,7 +46,6 @@ namespace ME3ExplorerCore.Dialogue
         public IEntry NonSpkrFFX { get; set; }
 
         public ObservableCollectionExtended<NameReference> ScriptList { get; } = new ObservableCollectionExtended<NameReference>();
-
         public ConversationExtended(ExportEntry export)
         {
             Export = export;
@@ -428,6 +429,9 @@ namespace ME3ExplorerCore.Dialogue
 #pragma warning restore
     }
 
+
+    [DebuggerDisplay("SpeakerExtended {SpeakerID} {SpeakerName}")]
+
     public class SpeakerExtended : INotifyPropertyChanged
     {
         public int SpeakerID { get; set; }
@@ -463,6 +467,9 @@ namespace ME3ExplorerCore.Dialogue
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
     }
+
+
+    [DebuggerDisplay("DNExtended {ReplyType} IsReply: {IsReply}, Line: {Line}")]
 
     public class DialogueNodeExtended : INotifyPropertyChanged
     {
