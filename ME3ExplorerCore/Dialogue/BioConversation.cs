@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
@@ -422,6 +423,111 @@ namespace ME3ExplorerCore.Dialogue
             }
 
             return null;
+        }
+
+        public void SerializeNodes(bool commitToExport = true)
+        {
+            AutoGenerateSpeakerArrays();
+            var newstartlist = new ArrayProperty<IntProperty>("m_StartingList");
+            foreach ((var _, int value) in StartingList)
+            {
+                newstartlist.Add(value);
+            }
+
+            var newentryList = new ArrayProperty<StructProperty>("m_EntryList");
+            foreach (var entry in EntryList.OrderBy(entry => entry.NodeCount))
+            {
+                newentryList.Add(entry.NodeProp);
+            }
+            var newreplyList = new ArrayProperty<StructProperty>("m_ReplyList");
+            foreach (var reply in ReplyList.OrderBy(reply => reply.NodeCount))
+            {
+                newreplyList.Add(reply.NodeProp);
+            }
+
+            if (newstartlist.Count > 0)
+            {
+                BioConvo.AddOrReplaceProp(newstartlist);
+            }
+
+            if (newentryList.Count > 0)
+            {
+                BioConvo.AddOrReplaceProp(newentryList);
+            }
+
+            if (newreplyList.Count >= 0)
+            {
+                BioConvo.AddOrReplaceProp(newreplyList);
+            }
+
+            if (commitToExport)
+                Export.WriteProperties(BioConvo);
+        }
+
+        public bool AutoGenerateSpeakerArrays()
+        {
+            bool hasLoopingPaths = false;
+
+            var blankaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
+            foreach (var dnode in EntryList)
+            {
+                dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
+            }
+
+            foreach ((var _, int entryIndex) in StartingList)
+            {
+                var aSpkrs = new SortedSet<int>();
+                var startNode = EntryList[entryIndex];
+                var visitedNodes = new HashSet<DialogueNodeExtended>();
+                var newNodes = new Queue<DialogueNodeExtended>();
+                aSpkrs.Add(startNode.SpeakerIndex);
+                var startprop = startNode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                foreach (var e in startprop)
+                {
+                    var lprop = e.GetProp<IntProperty>("nIndex");
+                    newNodes.Enqueue(ReplyList[lprop.Value]);
+
+                }
+                visitedNodes.Add(startNode);
+                while (newNodes.Any())
+                {
+                    var thisnode = newNodes.Dequeue();
+                    if (!visitedNodes.Contains(thisnode))
+                    {
+                        if (thisnode.IsReply)
+                        {
+                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+                            if (thisprop != null)
+                            {
+                                foreach (var r in thisprop)
+                                {
+                                    newNodes.Enqueue(EntryList[r.Value]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            aSpkrs.Add(thisnode.SpeakerIndex);
+                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+                            foreach (var e in thisprop)
+                            {
+                                var eprop = e.GetProp<IntProperty>("nIndex");
+                                newNodes.Enqueue(ReplyList[eprop.Value]);
+
+                            }
+                        }
+                        visitedNodes.Add(thisnode);
+                    }
+                    else { hasLoopingPaths = true; }
+                }
+                var newaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
+                foreach (var a in aSpkrs)
+                {
+                    newaSpkr.Add(a);
+                }
+                startNode.NodeProp.Properties.AddOrReplaceProp(newaSpkr);
+            }
+            return hasLoopingPaths;
         }
 
 #pragma warning disable

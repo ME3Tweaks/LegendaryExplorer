@@ -1036,7 +1036,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-       
+
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
             if (Pcc.Game == MEGame.ME1)
@@ -1091,71 +1091,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
 
         }
-        private bool AutoGenerateSpeakerArrays(ConversationExtended conv)
-        {
-            bool hasLoopingPaths = false;
 
-            var blankaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
-            foreach (var dnode in SelectedConv.EntryList)
-            {
-                dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
-            }
-
-            foreach ((var _, int entryIndex) in conv.StartingList)
-            {
-                var aSpkrs = new SortedSet<int>();
-                var startNode = conv.EntryList[entryIndex];
-                var visitedNodes = new HashSet<DialogueNodeExtended>();
-                var newNodes = new Queue<DialogueNodeExtended>();
-                aSpkrs.Add(startNode.SpeakerIndex);
-                var startprop = startNode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
-                foreach (var e in startprop)
-                {
-                    var lprop = e.GetProp<IntProperty>("nIndex");
-                    newNodes.Enqueue(conv.ReplyList[lprop.Value]);
-
-                }
-                visitedNodes.Add(startNode);
-                while (newNodes.Any())
-                {
-                    var thisnode = newNodes.Dequeue();
-                    if (!visitedNodes.Contains(thisnode))
-                    {
-                        if (thisnode.IsReply)
-                        {
-                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
-                            if (thisprop != null)
-                            {
-                                foreach (var r in thisprop)
-                                {
-                                    newNodes.Enqueue(conv.EntryList[r.Value]);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            aSpkrs.Add(thisnode.SpeakerIndex);
-                            var thisprop = thisnode.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
-                            foreach (var e in thisprop)
-                            {
-                                var eprop = e.GetProp<IntProperty>("nIndex");
-                                newNodes.Enqueue(conv.ReplyList[eprop.Value]);
-
-                            }
-                        }
-                        visitedNodes.Add(thisnode);
-                    }
-                    else { hasLoopingPaths = true; }
-                }
-                var newaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
-                foreach (var a in aSpkrs)
-                {
-                    newaSpkr.Add(a);
-                }
-                startNode.NodeProp.Properties.AddOrReplaceProp(newaSpkr);
-            }
-            return hasLoopingPaths;
-        }
         private void SaveSpeakersToProperties(IEnumerable<SpeakerExtended> speakerCollection)
         {
             try
@@ -1228,43 +1164,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         public void RecreateNodesToProperties(ConversationExtended conv, bool pushtofile = true)
         {
-            AutoGenerateSpeakerArrays(conv);
-            var newstartlist = new ArrayProperty<IntProperty>("m_StartingList");
-            foreach ((var _, int value) in conv.StartingList)
-            {
-                newstartlist.Add(value);
-            }
-
-            var newentryList = new ArrayProperty<StructProperty>("m_EntryList");
-            foreach (var entry in conv.EntryList.OrderBy(entry => entry.NodeCount))
-            {
-                newentryList.Add(entry.NodeProp);
-            }
-            var newreplyList = new ArrayProperty<StructProperty>("m_ReplyList");
-            foreach (var reply in conv.ReplyList.OrderBy(reply => reply.NodeCount))
-            {
-                newreplyList.Add(reply.NodeProp);
-            }
-
-            if (newstartlist.Count > 0)
-            {
-                conv.BioConvo.AddOrReplaceProp(newstartlist);
-            }
-
-            if (newentryList.Count > 0)
-            {
-                conv.BioConvo.AddOrReplaceProp(newentryList);
-            }
-
-            if (newreplyList.Count >= 0)
-            {
-                conv.BioConvo.AddOrReplaceProp(newreplyList);
-            }
-
-            if (pushtofile)
-            {
-                PushConvoToFile(conv);
-            }
+            conv.SerializeNodes(pushtofile);
         }
         private void SaveScriptsToProperties(ConversationExtended conv, bool pushtofile = true)
         {
@@ -3442,7 +3342,7 @@ namespace ME3Explorer.Dialogue_Editor
         }
         private void TestPaths()
         {
-            if (AutoGenerateSpeakerArrays(SelectedConv))
+            if (SelectedConv.AutoGenerateSpeakerArrays())
             {
                 MessageBox.Show("There are possible looping pathways to this conversation.\r\nThis can be a problem unless the player has control of the loop via choices.", "Dialogue Editor");
             }
