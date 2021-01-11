@@ -292,10 +292,10 @@ namespace ME3Explorer.PathfindingNodes
         public class Volume
         {
             public int ActorUIndex;
-            public UnrealGUID ActorReference;
+            public FGuid ActorReference;
             public Volume(StructProperty volumestruct)
             {
-                ActorReference = new UnrealGUID(volumestruct.GetProp<StructProperty>("Guid"));
+                ActorReference = new FGuid(volumestruct.GetProp<StructProperty>("Guid"));
                 ActorUIndex = volumestruct.GetProp<ObjectProperty>("Actor").Value;
             }
         }

@@ -278,7 +278,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                     {
                                         //COMPARE GUIDS
                                         var guid = outgoingEndStructProp.GetProp<StructProperty>("Guid");
-                                        UnrealGUID endGuid = new UnrealGUID(guid);
+                                        FGuid endGuid = new FGuid(guid);
                                         if (endGuid == uguid)
                                         {
                                             return false; //DUPLICATE SPEC
@@ -486,7 +486,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
 
                 StructProperty outgoingEndStructProp = props.GetProp<StructProperty>("End"); //Embeds END
-                DestinationNavGUIDText = new UnrealGUID(outgoingEndStructProp.GetProp<StructProperty>("Guid")).ToString();
+                DestinationNavGUIDText = new FGuid(outgoingEndStructProp.GetProp<StructProperty>("Guid")).ToString();
             }
             else
             {

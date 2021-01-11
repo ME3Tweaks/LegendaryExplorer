@@ -343,12 +343,12 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export"></param>
         /// <returns></returns>
-        public static UnrealGUID GetNavGUID(ExportEntry export)
+        public static FGuid GetNavGUID(ExportEntry export)
         {
             StructProperty navGuid = export.GetProperty<StructProperty>("NavGuid");
             if (navGuid != null)
             {
-                return new UnrealGUID(navGuid)
+                return new FGuid(navGuid)
                 {
                     export = export
                 };
@@ -570,12 +570,18 @@ namespace ME3Explorer.Pathfinding_Editor
 
     }
 
-    public class UnrealGUID
+    /// <summary>
+    /// An Unreal Engine 3 GUID
+    /// </summary>
+    public class FGuid
     {
         public readonly int A, B, C, D;
+        /// <summary>
+        /// The export that contains this FGuid. Only used for identifying the source of this FGuid
+        /// </summary>
         public ExportEntry export;
 
-        public UnrealGUID(StructProperty guid)
+        public FGuid(StructProperty guid)
         {
             if (guid.StructType != "Guid")
             {
@@ -588,7 +594,16 @@ namespace ME3Explorer.Pathfinding_Editor
             D = guid.GetProp<IntProperty>("D");
         }
 
-        public static bool operator ==(UnrealGUID b1, UnrealGUID b2)
+        public FGuid(Guid guid)
+        {
+            var ba = guid.ToByteArray();
+            A = BitConverter.ToInt32(ba, 0);
+            B = BitConverter.ToInt32(ba, 4);
+            C = BitConverter.ToInt32(ba, 8);
+            D = BitConverter.ToInt32(ba, 12);
+        }
+
+        public static bool operator ==(FGuid b1, FGuid b2)
         {
             if (b1 is null)
                 return b2 is null;
@@ -596,13 +611,13 @@ namespace ME3Explorer.Pathfinding_Editor
             return b1.Equals(b2);
         }
 
-        public static bool operator !=(UnrealGUID b1, UnrealGUID b2) => !(b1 == b2);
+        public static bool operator !=(FGuid b1, FGuid b2) => !(b1 == b2);
 
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
-            UnrealGUID other = (UnrealGUID)obj;
+            FGuid other = (FGuid)obj;
             return other.A == A && other.B == B && other.C == C && other.D == D;
         }
 
@@ -610,12 +625,17 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public override string ToString()
         {
+            return ToGuid().ToString();
+        }
+
+        public Guid ToGuid()
+        {
             MemoryStream ms = new MemoryStream();
             ms.WriteInt32(A);
             ms.WriteInt32(B);
             ms.WriteInt32(C);
             ms.WriteInt32(D);
-            return new Guid(ms.ToArray()).ToString();
+            return new Guid(ms.ToArray());
         }
     }
 
