@@ -234,7 +234,7 @@ namespace ME3Explorer.Dialogue_Editor
 
 
             InitializeComponent();
-            RecentsController.InitRecentControl(Toolname,Recents_MenuItem, fileName=>LoadFile(fileName));
+            RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
 
             graphEditor = (ConvGraphEditor)GraphHost.Child;
             graphEditor.BackColor = Color.FromArgb(130, 130, 130);
@@ -377,7 +377,7 @@ namespace ME3Explorer.Dialogue_Editor
             OpenCommand = new GenericCommand(OpenPackage);
             SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
-            SaveViewCommand = new GenericCommand(() => saveView(), ()=>CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), () => CurrentObjects.Any);
             SaveImageCommand = new GenericCommand(SaveImage, () => CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, () => CurrentObjects.Any);
             GoToCommand = new GenericCommand(GoToBoxOpen);
@@ -639,16 +639,16 @@ namespace ME3Explorer.Dialogue_Editor
 
             if (SelectedConv != null && SelectedConv.IsFirstParsed == false) //Get Active setup pronto.
             {
-                ParseStartingList(SelectedConv);
-                ParseSpeakers(SelectedConv);
+                SelectedConv.ParseStartingList();
+                SelectedConv.ParseSpeakers();
                 GenerateSpeakerList();
-                ParseEntryList(SelectedConv);
-                ParseReplyList(SelectedConv);
-                ParseScripts(SelectedConv);
-                ParseNSFFX(SelectedConv);
-                ParseSequence(SelectedConv);
-                ParseWwiseBank(SelectedConv);
-                ParseStageDirections(SelectedConv);
+                SelectedConv.ParseEntryList(TLKLookup);
+                SelectedConv.ParseReplyList();
+                SelectedConv.ParseScripts();
+                SelectedConv.ParseNSFFX();
+                SelectedConv.ParseSequence();
+                SelectedConv.ParseWwiseBank();
+                SelectedConv.ParseStageDirections(TLKLookup);
 
                 SelectedConv.IsFirstParsed = true;
                 DetailParse(SelectedConv);
@@ -656,15 +656,15 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (var conv in Conversations.Where(conv => conv.IsFirstParsed == false)) //Get Speakers entry and replies plus convo data first
             {
-                ParseStartingList(conv);
-                ParseSpeakers(conv);
-                ParseEntryList(conv);
-                ParseReplyList(conv);
-                ParseScripts(conv);
-                ParseNSFFX(conv);
-                ParseSequence(conv);
-                ParseWwiseBank(conv);
-                ParseStageDirections(conv);
+                conv.ParseStartingList();
+                conv.ParseSpeakers();
+                conv.ParseEntryList(TLKLookup);
+                conv.ParseReplyList();
+                conv.ParseScripts();
+                conv.ParseNSFFX();
+                conv.ParseSequence();
+                conv.ParseWwiseBank();
+                conv.ParseStageDirections(TLKLookup);
                 conv.IsFirstParsed = true;
 
                 if (!conv.IsParsed)
@@ -700,8 +700,8 @@ namespace ME3Explorer.Dialogue_Editor
 
             foreach (var spkr in conv.Speakers)
             {
-                spkr.FaceFX_Male = GetFaceFX(conv, spkr.SpeakerID, true);
-                spkr.FaceFX_Female = GetFaceFX(conv, spkr.SpeakerID, false);
+                spkr.FaceFX_Male = conv.GetFaceFX(spkr.SpeakerID, true);
+                spkr.FaceFX_Female = conv.GetFaceFX(spkr.SpeakerID, false);
             }
             GenerateSpeakerTags(conv);
             ParseLinesInterpData(conv);
@@ -711,175 +711,12 @@ namespace ME3Explorer.Dialogue_Editor
 
             conv.IsParsed = true;
         }
-        private void ParseSpeakers(ConversationExtended conv)
-        {
-            conv.Speakers = new ObservableCollectionExtended<SpeakerExtended>
-            {
-                new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""),
-                new SpeakerExtended(-1, "owner", null, null, 0, "No data")
-            };
-            try
-            {
-                if (Pcc.Game != MEGame.ME3)
-                {
-                    var s_speakers = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
-                    if (s_speakers != null)
-                    {
-                        for (int id = 0; id < s_speakers.Count; id++)
-                        {
-                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").Value.Instanced);
-                            conv.Speakers.Add(spkr);
-                        }
-                    }
-                }
-                else
-                {
-                    var a_speakers = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aSpeakerList");
-                    if (a_speakers != null)
-                    {
-                        int id = 0;
-                        foreach (NameProperty n in a_speakers)
-                        {
-                            var spkr = new SpeakerExtended(id, n.Value.Instanced);
-                            conv.Speakers.Add(spkr);
-                            id++;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-#if DEBUG
-                throw new Exception("Starting List Parse failed", e);
-#endif
-            }
-        }
-        private void ParseEntryList(ConversationExtended conv)
-        {
-            conv.EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
-            var entryprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
-            int cnt = 0;
 
-            foreach (StructProperty Node in entryprop)
-            {
-                conv.EntryList.Add(ParseSingleLine(Node, cnt, false));
-                cnt++;
-            }
-        }
-        private void ParseReplyList(ConversationExtended conv)
+        private string TLKLookup(int id, IMEPackage package)
         {
-            conv.ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
-            var replyprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
-            if (replyprop != null)
-            {
-                int cnt = 0;
-                foreach (StructProperty Node in replyprop)
-                {
-                    conv.ReplyList.Add(ParseSingleLine(Node, cnt, true));
-                    cnt++;
-                }
-            }
+            return GlobalFindStrRefbyID(id, package);
         }
-        private DialogueNodeExtended ParseSingleLine(StructProperty Node, int count, bool isReply)
-        {
-            int linestrref = 0;
-            int spkridx = -2;
-            int cond = -1;
-            string line = "Unknown Reference";
-            int stevent = -1;
-            bool bcond = false;
-            EBCReplyTypes eReply = EBCReplyTypes.REPLY_STANDARD;
-            try
-            {
-                linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
-                line = GlobalFindStrRefbyID(linestrref, Pcc);
-                cond = Node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
-                stevent = Node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
-                bcond = Node.GetProp<BoolProperty>("bFireConditional");
-                if (isReply)
-                {
-                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
-                }
-                else
-                {
-                    spkridx = Node.GetProp<IntProperty>("nSpeakerIndex");
-                }
 
-                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
-            }
-            catch (Exception e)
-            {
-#if DEBUG
-                throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
-#endif
-                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
-            }
-        }
-        private void ParseScripts(ConversationExtended conv)
-        {
-            conv.ScriptList.Add("None");
-            if (Pcc.Game == MEGame.ME3)
-            {
-                var a_scripts = conv.BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aScriptList");
-                if (a_scripts != null)
-                {
-                    foreach (var scriptprop in a_scripts)
-                    {
-                        var scriptname = scriptprop.Value;
-                        conv.ScriptList.Add(scriptname);
-                    }
-                }
-            }
-            else
-            {
-                var a_sscripts = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ScriptList");
-                if (a_sscripts != null)
-                {
-                    foreach (var scriptprop in a_sscripts)
-                    {
-                        var s = scriptprop.GetProp<NameProperty>("sScriptTag");
-                        conv.ScriptList.Add(s.Value);
-                    }
-                }
-            }
-        }
-        private void ParseStageDirections(ConversationExtended conv)
-        {
-            if (Pcc.Game == MEGame.ME3)
-            {
-                var dprop = conv.BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
-                if (dprop != null)
-                {
-                    foreach (var direction in dprop)
-                    {
-                        int strref = 0;
-                        string line = "No data";
-                        string action = "None";
-                        try
-                        {
-                            var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
-                            if (strrefprop != null)
-                            {
-                                strref = strrefprop.Value;
-                                line = GlobalFindStrRefbyID(strref, Pcc);
-                            }
-                            var actionprop = direction.GetProp<StrProperty>("sText");
-                            if (actionprop != null)
-                            {
-                                action = actionprop.Value;
-                            }
-                            conv.StageDirections.Add(new StageDirection(strref, line, action));
-                        }
-                        catch (Exception e)
-                        {
-#if DEBUG
-                            throw new Exception($"stage directions parse failed {conv.ConvName}", e);
-#endif
-                        }
-                    }
-                }
-            }
-        }
         private void GenerateSpeakerList()
         {
             SelectedSpeakerList.ClearEx();
@@ -1199,143 +1036,7 @@ namespace ME3Explorer.Dialogue_Editor
             }
         }
 
-        /// <summary>
-        /// Returns the IEntry of FaceFXAnimSet
-        /// </summary>
-        /// <param name="conv"></param>
-        /// <param name="speakerID">SpeakerID: -1 = Owner, -2 = Player</param>
-        /// <param name="isMale">will pull female by default</param>
-        public IEntry GetFaceFX(ConversationExtended conv, int speakerID, bool isMale = false)
-        {
-            string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
-            if (isMale)
-            {
-                ffxPropName = "m_aMaleFaceSets";
-            }
-            var ffxList = conv.BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
-            if (ffxList != null && ffxList.Count > speakerID + 2)
-            {
-                return Pcc.GetEntry(ffxList[speakerID + 2].Value);
-            }
-
-            return null;
-        }
-        /// <summary>
-        /// Sets the IEntry of appropriate sequence
-        /// </summary>
-        public void ParseSequence(ConversationExtended conv)
-        {
-            string propname = "MatineeSequence";
-            if (Pcc.Game == MEGame.ME1)
-            {
-                propname = "m_pEvtSystemSeq";
-            }
-
-            var seq = conv.BioConvo.GetProp<ObjectProperty>(propname);
-            if (seq != null)
-            {
-                conv.Sequence = Pcc.GetEntry(seq.Value);
-            }
-            else
-            {
-                conv.Sequence = null;
-            }
-        }
-        /// <summary>
-        /// Sets the IEntry of NonSpeaker FaceFX
-        /// </summary>
-        public void ParseNSFFX(ConversationExtended conv)
-        {
-            string propname = "m_pNonSpeakerFaceFXSet";
-            if (Pcc.Game == MEGame.ME1)
-            {
-                propname = "m_pConvFaceFXSet";
-            }
-
-            var seq = conv.BioConvo.GetProp<ObjectProperty>(propname);
-            if (seq != null)
-            {
-                conv.NonSpkrFFX = Pcc.GetEntry(seq.Value);
-            }
-            else
-            {
-                conv.NonSpkrFFX = null;
-            }
-        }
-        /// <summary>
-        /// Sets the Uindex of WwiseBank
-        /// </summary>
-        public void ParseWwiseBank(ConversationExtended conv)
-        {
-            conv.WwiseBank = null;
-            if (Pcc.Game != MEGame.ME1)
-            {
-                try
-                {
-                    ArrayProperty<ObjectProperty> wwevents;
-                    IEntry ffxo = GetFaceFX(conv, -1, true); //find owner animset
-
-                    if (ffxo == null) //if no facefx then maybe soundobject conversation
-                    {
-                        wwevents = conv.Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
-
-                    }
-                    else
-                    {
-                        ExportEntry ffxoExport = (ExportEntry)ffxo;
-
-                        wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull an owner wwiseevent array
-                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
-                        {
-                            IEntry ffxp = GetFaceFX(conv, -2, true); //find player as alternative
-                            if (!Pcc.IsUExport(ffxp.UIndex))
-                                return;
-                            ExportEntry ffxpExport = (ExportEntry)ffxp;
-                            wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                        }
-                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
-                        {
-                            IEntry ffxS = GetFaceFX(conv, 0, true); //find speaker 1 as alternative
-                            if (ffxS == null || !Pcc.IsUExport(ffxS.UIndex))
-                                return;
-                            ExportEntry ffxSExport = (ExportEntry)ffxS;
-                            wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
-                        }
-                    }
-
-                    if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
-                    {
-                        conv.WwiseBank = null;
-                        return;
-                    }
-
-                    if (Pcc.Game == MEGame.ME3)
-                    {
-                        StructProperty r = Pcc.GetUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
-                        var bank = r.GetProp<ObjectProperty>("Bank");
-                        conv.WwiseBank = Pcc.GetUExport(bank.Value);
-                    }
-                    else if (Pcc.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
-                    {
-                        var wwiseEvent = Pcc.GetUExport(wwevents[0].Value).GetBinaryData<WwiseEvent>();
-                        foreach (var link in wwiseEvent.Links)
-                        {
-                            if (link.WwiseBanks.FirstOrDefault() is UIndex bankIdx)
-                            {
-                                conv.WwiseBank = Pcc.GetUExport(bankIdx);
-                                break;
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-#if DEBUG
-                    throw new Exception($"WwiseBank Parse Failed. {conv.ConvName}", e);
-#endif
-                }
-            }
-        }
+       
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
             if (Pcc.Game == MEGame.ME1)
@@ -1361,24 +1062,6 @@ namespace ME3Explorer.Dialogue_Editor
             // ME2/ME3 need to load non-LOC file.  Or parse a JSON.
 
             return 0;
-        }
-        /// <summary>
-        /// Gets dictionary of starting list and position
-        /// </summary>
-        /// <returns>Key = position on list, Value = Outlink</returns>
-        public void ParseStartingList(ConversationExtended conv)
-        {
-            conv.StartingList = new SortedDictionary<int, int>();
-            var prop = conv.Export.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
-            if (prop != null)
-            {
-                int pos = 0;
-                foreach (var sl in prop)
-                {
-                    conv.StartingList.Add(pos, sl.Value);
-                    pos++;
-                }
-            }
         }
         #endregion Parsing
 
@@ -2659,9 +2342,9 @@ namespace ME3Explorer.Dialogue_Editor
         {
 
             var ffxMaleNew = SelectedSpeaker.FaceFX_Male;
-            var ffxMaleOld = GetFaceFX(SelectedConv, SelectedSpeaker.SpeakerID, true);
+            var ffxMaleOld = SelectedConv.GetFaceFX(SelectedSpeaker.SpeakerID, true);
             var ffxFemaleNew = SelectedSpeaker.FaceFX_Female;
-            var ffxFemaleOld = GetFaceFX(SelectedConv, SelectedSpeaker.SpeakerID, false);
+            var ffxFemaleOld = SelectedConv.GetFaceFX(SelectedSpeaker.SpeakerID, false);
             if (ffxMaleNew == ffxMaleOld && ffxFemaleNew == ffxFemaleOld)
                 return;
 
@@ -3116,7 +2799,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 props.AddOrReplaceProp(new NoneProperty());
                 replyprop.Add(new StructProperty(typeName, props));
-                var nodeExtended = ParseSingleLine(replyprop[newIndex], newIndex, isReply);
+                var nodeExtended = SelectedConv.ParseSingleLine(replyprop[newIndex], newIndex, isReply, TLKLookup);
                 nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
                 nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
                 nodeExtended.Line = SelectedDialogueNode.Line;
@@ -3146,7 +2829,7 @@ namespace ME3Explorer.Dialogue_Editor
                 }
                 props.AddOrReplaceProp(new NoneProperty());
                 entryprop.Add(new StructProperty(typeName, props));
-                var nodeExtended = ParseSingleLine(entryprop[newIndex], newIndex, isReply);
+                var nodeExtended = SelectedConv.ParseSingleLine(entryprop[newIndex], newIndex, isReply, TLKLookup);
                 nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
                 nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
                 nodeExtended.Line = SelectedDialogueNode.Line;

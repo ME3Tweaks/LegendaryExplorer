@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3ExplorerCore.Dialogue
 {
@@ -70,6 +73,354 @@ namespace ME3ExplorerCore.Dialogue
             NonSpkrFFX = other.NonSpkrFFX;
             ScriptList.AddRange(other.ScriptList);
             StageDirections.AddRange(other.StageDirections);
+        }
+
+        public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null)
+        {
+            ParseStartingList();
+            ParseSpeakers();
+            //GenerateSpeakerList();
+            ParseEntryList(tlkLookup);
+            ParseReplyList();
+            ParseScripts();
+            ParseNSFFX();
+            ParseSequence();
+            ParseWwiseBank();
+            ParseStageDirections(tlkLookup);
+        }
+
+        public void ParseEntryList(Func<int, IMEPackage, string> tlkLookup = null)
+        {
+            EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
+            var entryprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+            int cnt = 0;
+
+            foreach (StructProperty Node in entryprop)
+            {
+                EntryList.Add(ParseSingleLine(Node, cnt, false, tlkLookup));
+                cnt++;
+            }
+        }
+        public void ParseReplyList()
+        {
+            ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
+            var replyprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ReplyList"); //ME3
+            if (replyprop != null)
+            {
+                int cnt = 0;
+                foreach (StructProperty Node in replyprop)
+                {
+                    ReplyList.Add(ParseSingleLine(Node, cnt, true));
+                    cnt++;
+                }
+            }
+        }
+
+        public DialogueNodeExtended ParseSingleLine(StructProperty Node, int count, bool isReply, Func<int, IMEPackage, string> tlkLookupFunc = null)
+        {
+            int linestrref = 0;
+            int spkridx = -2;
+            int cond = -1;
+            string line = "Unknown Reference";
+            int stevent = -1;
+            bool bcond = false;
+            EBCReplyTypes eReply = EBCReplyTypes.REPLY_STANDARD;
+            try
+            {
+                linestrref = Node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
+                line = tlkLookupFunc?.Invoke(linestrref, Export.FileRef);
+                cond = Node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
+                stevent = Node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
+                bcond = Node.GetProp<BoolProperty>("bFireConditional");
+                if (isReply)
+                {
+                    Enum.TryParse(Node.GetProp<EnumProperty>("ReplyType").Value.Name, out eReply);
+                }
+                else
+                {
+                    spkridx = Node.GetProp<IntProperty>("nSpeakerIndex");
+                }
+
+                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw new Exception($"List Parse failed: N{count} Reply?:{isReply}, {linestrref}, {line}, {cond}, {stevent}, {bcond.ToString()}, {eReply.ToString()}", e);  //Note some convos don't have replies.
+#endif
+                return new DialogueNodeExtended(Node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+            }
+        }
+
+        /// <summary>
+        /// Gets dictionary of starting list and position
+        /// </summary>
+        /// <returns>Key = position on list, Value = Outlink</returns>
+        public void ParseStartingList()
+        {
+            StartingList = new SortedDictionary<int, int>();
+            var prop = Export.GetProperty<ArrayProperty<IntProperty>>("m_StartingList"); //ME1/ME2/ME3
+            if (prop != null)
+            {
+                int pos = 0;
+                foreach (var sl in prop)
+                {
+                    StartingList.Add(pos, sl.Value);
+                    pos++;
+                }
+            }
+        }
+
+        public void ParseSpeakers()
+        {
+            Speakers = new ObservableCollectionExtended<SpeakerExtended>
+            {
+                new SpeakerExtended(-2, "player", null, null, 125303, "\"Shepard\""),
+                new SpeakerExtended(-1, "owner", null, null, 0, "No data")
+            };
+            try
+            {
+                if (Export.FileRef.Game != MEGame.ME3)
+                {
+                    var s_speakers = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_SpeakerList");
+                    if (s_speakers != null)
+                    {
+                        for (int id = 0; id < s_speakers.Count; id++)
+                        {
+                            var spkr = new SpeakerExtended(id, s_speakers[id].GetProp<NameProperty>("sSpeakerTag").Value.Instanced);
+                            Speakers.Add(spkr);
+                        }
+                    }
+                }
+                else
+                {
+                    var a_speakers = BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aSpeakerList");
+                    if (a_speakers != null)
+                    {
+                        int id = 0;
+                        foreach (NameProperty n in a_speakers)
+                        {
+                            var spkr = new SpeakerExtended(id, n.Value.Instanced);
+                            Speakers.Add(spkr);
+                            id++;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw new Exception("Starting List Parse failed", e);
+#endif
+            }
+        }
+
+        public void ParseScripts()
+        {
+            ScriptList.Add("None");
+            if (Export.FileRef.Game == MEGame.ME3)
+            {
+                var a_scripts = BioConvo.GetProp<ArrayProperty<NameProperty>>("m_aScriptList");
+                if (a_scripts != null)
+                {
+                    foreach (var scriptprop in a_scripts)
+                    {
+                        var scriptname = scriptprop.Value;
+                        ScriptList.Add(scriptname);
+                    }
+                }
+            }
+            else
+            {
+                var a_sscripts = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_ScriptList");
+                if (a_sscripts != null)
+                {
+                    foreach (var scriptprop in a_sscripts)
+                    {
+                        var s = scriptprop.GetProp<NameProperty>("sScriptTag");
+                        ScriptList.Add(s.Value);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the IEntry of NonSpeaker FaceFX
+        /// </summary>
+        public void ParseNSFFX()
+        {
+            string propname = "m_pNonSpeakerFaceFXSet";
+            if (Export.FileRef.Game == MEGame.ME1)
+            {
+                propname = "m_pConvFaceFXSet";
+            }
+
+            var seq = BioConvo.GetProp<ObjectProperty>(propname);
+            if (seq != null)
+            {
+                NonSpkrFFX = Export.FileRef.GetEntry(seq.Value);
+            }
+            else
+            {
+                NonSpkrFFX = null;
+            }
+        }
+        /// <summary>
+        /// Sets the Uindex of WwiseBank
+        /// </summary>
+        public void ParseWwiseBank()
+        {
+            WwiseBank = null;
+            if (Export.FileRef.Game != MEGame.ME1)
+            {
+                try
+                {
+                    ArrayProperty<ObjectProperty> wwevents;
+                    IEntry ffxo = GetFaceFX(-1, true); //find owner animset
+
+                    if (ffxo == null) //if no facefx then maybe soundobject conversation
+                    {
+                        wwevents = Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
+
+                    }
+                    else
+                    {
+                        ExportEntry ffxoExport = (ExportEntry)ffxo;
+
+                        wwevents = ffxoExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues"); //pull an owner wwiseevent array
+                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                        {
+                            IEntry ffxp = GetFaceFX(-2, true); //find player as alternative
+                            if (!Export.FileRef.IsUExport(ffxp.UIndex))
+                                return;
+                            ExportEntry ffxpExport = (ExportEntry)ffxp;
+                            wwevents = ffxpExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                        }
+                        if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                        {
+                            IEntry ffxS = GetFaceFX(0, true); //find speaker 1 as alternative
+                            if (ffxS == null || !Export.FileRef.IsUExport(ffxS.UIndex))
+                                return;
+                            ExportEntry ffxSExport = (ExportEntry)ffxS;
+                            wwevents = ffxSExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                        }
+                    }
+
+                    if (wwevents == null || wwevents.Count == 0 || wwevents[0].Value == 0)
+                    {
+                        WwiseBank = null;
+                        return;
+                    }
+
+                    if (Export.FileRef.Game == MEGame.ME3)
+                    {
+                        StructProperty r = Export.FileRef.GetUExport(wwevents[0].Value).GetProperty<StructProperty>("Relationships"); //lookup bank
+                        var bank = r.GetProp<ObjectProperty>("Bank");
+                        WwiseBank = Export.FileRef.GetUExport(bank.Value);
+                    }
+                    else if (Export.FileRef.Game == MEGame.ME2) //Game is ME2.  Wwisebank ref in Binary.
+                    {
+                        var wwiseEvent = Export.FileRef.GetUExport(wwevents[0].Value).GetBinaryData<WwiseEvent>();
+                        foreach (var link in wwiseEvent.Links)
+                        {
+                            if (link.WwiseBanks.FirstOrDefault() is UIndex bankIdx)
+                            {
+                                WwiseBank = Export.FileRef.GetUExport(bankIdx);
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    throw new Exception($"WwiseBank Parse Failed. {ConvName}", e);
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the IEntry of appropriate sequence
+        /// </summary>
+        public void ParseSequence()
+        {
+            string propname = "MatineeSequence";
+            if (Export.FileRef.Game == MEGame.ME1)
+            {
+                propname = "m_pEvtSystemSeq";
+            }
+
+            var seq = BioConvo.GetProp<ObjectProperty>(propname);
+            if (seq != null)
+            {
+                Sequence = Export.FileRef.GetEntry(seq.Value);
+            }
+            else
+            {
+                Sequence = null;
+            }
+        }
+
+        public void ParseStageDirections(Func<int, IMEPackage, string> tlkLookup = null)
+        {
+            if (Export.FileRef.Game == MEGame.ME3)
+            {
+                var dprop = BioConvo.GetProp<ArrayProperty<StructProperty>>("m_aStageDirections"); //ME3 Only not in ME1/2
+                if (dprop != null)
+                {
+                    foreach (var direction in dprop)
+                    {
+                        int strref = 0;
+                        string line = "No data";
+                        string action = "None";
+                        try
+                        {
+                            var strrefprop = direction.GetProp<StringRefProperty>("srStrRef");
+                            if (strrefprop != null)
+                            {
+                                strref = strrefprop.Value;
+                                line = tlkLookup?.Invoke(strref, Export.FileRef);
+                            }
+                            var actionprop = direction.GetProp<StrProperty>("sText");
+                            if (actionprop != null)
+                            {
+                                action = actionprop.Value;
+                            }
+                            StageDirections.Add(new StageDirection(strref, line, action));
+                        }
+                        catch (Exception e)
+                        {
+#if DEBUG
+                            throw new Exception($"stage directions parse failed {ConvName}", e);
+#endif
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the IEntry of FaceFXAnimSet
+        /// </summary>
+        /// <param name="conv"></param>
+        /// <param name="speakerID">SpeakerID: -1 = Owner, -2 = Player</param>
+        /// <param name="isMale">will pull female by default</param>
+        public IEntry GetFaceFX(int speakerID, bool isMale = false)
+        {
+            string ffxPropName = "m_aFemaleFaceSets"; //ME2/M£3
+            if (isMale)
+            {
+                ffxPropName = "m_aMaleFaceSets";
+            }
+            var ffxList = BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
+            if (ffxList != null && ffxList.Count > speakerID + 2)
+            {
+                return Export.FileRef.GetEntry(ffxList[speakerID + 2].Value);
+            }
+
+            return null;
         }
 
 #pragma warning disable
