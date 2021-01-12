@@ -126,6 +126,7 @@ namespace ME3Explorer.FaceFX
 
         public override void Dispose()
         {
+            UnloadExport();
             if (treeView_WinFormsHost != null)
             {
                 if (treeView_WinFormsHost.Child != null)

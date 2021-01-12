@@ -2155,8 +2155,8 @@ namespace ME3Explorer
             }
 
             Interpreter_Hexbox = null;
-            Interpreter_Hexbox_Host.Child.Dispose();
-            Interpreter_Hexbox_Host.Dispose();
+            Interpreter_Hexbox_Host?.Child.Dispose();
+            Interpreter_Hexbox_Host?.Dispose();
             Interpreter_Hexbox_Host = null;
         }
 
