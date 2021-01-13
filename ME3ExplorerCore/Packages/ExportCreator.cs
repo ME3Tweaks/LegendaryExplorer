@@ -3,7 +3,6 @@ using ME3ExplorerCore.Unreal;
 
 namespace ME3ExplorerCore.Packages
 {
-#if ME3EXPLORERAPP
     public static class ExportCreator
     {
         public static ExportEntry CreatePackageExport(IMEPackage pcc, string packageName, IEntry parent = null)
@@ -32,5 +31,4 @@ namespace ME3ExplorerCore.Packages
             return exp;
         }
     }
-#endif
 }
