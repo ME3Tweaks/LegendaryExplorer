@@ -336,6 +336,13 @@ namespace ME3Explorer.SequenceObjects
                                 return "Plot Int\n#" + m_nIndex.Value;
                             }
                         }
+
+                        if (export.ClassName == "SeqVar_RandomInt")
+                        {
+                            var minV = props.GetProp<IntProperty>("Min") ?? 0;
+                            var maxV = props.GetProp<IntProperty>("Max") ?? 0;
+                            return $"Rand({minV.Value},{maxV.Value})";
+                        }
                         if (props.GetProp<IntProperty>("IntValue") is IntProperty intValue)
                         {
                             return intValue.Value.ToString();
