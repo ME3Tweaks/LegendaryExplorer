@@ -1360,9 +1360,13 @@ namespace ME3Explorer.AssetDatabase
                 if (uexpIdx <= textPcc.ExportCount)
                 {
                     var textExp = textPcc.GetUExport(uexpIdx);
-                    string cubemapParent = textExp.Parent.ClassName == "CubeMap" ? selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1) : null;
+                    string cubemapParent = null;
+                    if (textExp.Parent != null)
+                    {
+                        cubemapParent = textExp.Parent.ClassName == "CubeMap" ? selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1) : null;
+                    }
                     string indexedName = $"{textExp.ObjectNameString}_{textExp.indexValue - 1}";
-                    if (textExp.ClassName.StartsWith("Texture") && (textExp.ObjectNameString == selecteditem.TextureName || selecteditem.TextureName == indexedName || textExp.ObjectNameString == cubemapParent))
+                    if (textExp.ClassName.StartsWith("Texture") && (textExp.ObjectNameString == selecteditem.TextureName || selecteditem.TextureName == indexedName || (cubemapParent != null && textExp.ObjectNameString == cubemapParent)))
                     {
                         if (selecteditem.CFormat == "TextureMovie")
                         {
