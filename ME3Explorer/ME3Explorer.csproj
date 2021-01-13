@@ -441,7 +441,6 @@
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsO.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsS.cs" />
     <Compile Include="Packages\EntryImporterExtended.cs" />
-    <Compile Include="Packages\ExportCreator.cs" />
     <Compile Include="Packages\PackageExtensions.cs" />
     <Compile Include="SFAREditor\Converters.cs" />
     <Compile Include="SFAREditor\SFARExplorer.xaml.cs">

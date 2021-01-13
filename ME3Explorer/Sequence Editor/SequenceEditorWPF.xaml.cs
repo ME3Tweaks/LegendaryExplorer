@@ -260,12 +260,12 @@ namespace ME3Explorer.Sequence_Editor
             if (Pcc.Exports.Any(exp => exp.ObjectName == info.ClassName) || Pcc.Imports.Any(imp => imp.ObjectName == info.ClassName) ||
                 UnrealObjectInfo.GetClassOrStructInfo(Pcc.Game, info.ClassName) is { } classInfo && EntryImporter.IsSafeToImportFrom(classInfo.pccPath, Pcc.Game))
             {
-                classEntry = EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName);
+                classEntry = EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
             }
             else
             {
                 SetBusy($"Adding {info.ClassName}");
-                classEntry = await Task.Run(() => EntryImporterExtended.EnsureClassIsInFile(Pcc, info.ClassName)).ConfigureAwait(true);
+                classEntry = await Task.Run(() => EntryImporter.EnsureClassIsInFile(Pcc, info.ClassName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)).ConfigureAwait(true);
             }
             if (classEntry is null)
             {

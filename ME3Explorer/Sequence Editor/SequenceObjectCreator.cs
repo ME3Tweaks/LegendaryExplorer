@@ -148,7 +148,7 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -167,7 +167,7 @@ namespace ME3Explorer.Sequence_Editor
                                     {
                                         if (eventLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
-                                            EntryImporterExtended.EnsureClassIsInFile(pcc, expectedVar.ObjectName) is IEntry portedExpectedVar)
+                                            EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults) is IEntry portedExpectedVar)
                                         {
                                             expectedTypeProp.Value = portedExpectedVar.UIndex;
                                         }
@@ -234,7 +234,7 @@ namespace ME3Explorer.Sequence_Editor
             var seqObj = new ExportEntry(pcc, properties: GetSequenceObjectDefaults(pcc, className, game))
             {
                 ObjectName = pcc.GetNextIndexedName(className),
-                Class = EntryImporterExtended.EnsureClassIsInFile(pcc, className)
+                Class = EntryImporter.EnsureClassIsInFile(pcc, className, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults)
             };
             seqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             pcc.AddExport(seqObj);
