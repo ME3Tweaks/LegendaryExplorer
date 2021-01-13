@@ -1213,7 +1213,7 @@ namespace ME3Script.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).FullPath}.{s.Name}", "State");
 
-        private IEntry ResolveClass(Class c) => EntryImporterExtended.EnsureClassIsInFile(Pcc, c.Name);
+        private IEntry ResolveClass(Class c) => EntryImporter.EnsureClassIsInFile(Pcc, c.Name, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);
