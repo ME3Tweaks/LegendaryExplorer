@@ -126,7 +126,7 @@ namespace ME3ExplorerCore.Packages
 
                     IMEPackage enumerateExtras = thisPackage;
                     string file = "this file";
-                    if (compareFile.ExportCount > numImportsToEnumerate)
+                    if (compareFile.ImportCount > numImportsToEnumerate)
                     {
                         file = "other file";
                         enumerateExtras = compareFile;
