@@ -207,21 +207,8 @@ namespace ME3Explorer.PackageDumper
             }
         }
 
-        private void DumpGame(MEGame game)
+        private async void DumpGame(MEGame game)
         {
-            string rootPath = null;
-            switch (game)
-            {
-                case MEGame.ME1:
-                    rootPath = ME1Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME2:
-                    rootPath = ME2Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME3:
-                    rootPath = ME3Directory.DefaultGamePath;
-                    break;
-            }
             CommonOpenFileDialog m = new CommonOpenFileDialog
             {
                 IsFolderPicker = true,
@@ -231,7 +218,7 @@ namespace ME3Explorer.PackageDumper
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
-                dumpPackagesFromFolder(rootPath, outputDir);
+                await dumpPackages(MELoadedFiles.GetAllFiles(game).ToList(), outputDir);
             }
         }
 
@@ -343,7 +330,7 @@ namespace ME3Explorer.PackageDumper
                     outputFilename += ".txt";
 
                     string outfolder = outputfolder;
-                    if (outfolder != null)
+                    if (outfolder == null)
                     {
                         string relative = GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
                         outfolder = Path.Combine(outfolder, relative);
