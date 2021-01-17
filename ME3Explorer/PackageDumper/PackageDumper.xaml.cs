@@ -218,7 +218,7 @@ namespace ME3Explorer.PackageDumper
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
-                await dumpPackages(MELoadedFiles.GetAllFiles(game).ToList(), outputDir);
+                await dumpPackages(MELoadedFiles.GetFilesLoadedInGame(game).Values.ToList(), outputDir);
             }
         }
 
