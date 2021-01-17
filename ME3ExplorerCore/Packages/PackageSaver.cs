@@ -59,7 +59,7 @@ namespace ME3ExplorerCore.Packages
                     MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                     break;
                 case UDKPackage udkPackage:
-                    Save(udkPackage, savePath);
+                    UDKSave(udkPackage, savePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(package));
