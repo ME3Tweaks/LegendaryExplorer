@@ -579,6 +579,7 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
+            RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)
             {
@@ -846,7 +847,7 @@ namespace ME3ExplorerCore.Packages
                 foreach (ExportEntry e in mePackage.exports)
                 {
                     //update offsets
-                    var newDataStartOffset = (int) ms.Position;
+                    var newDataStartOffset = (int)ms.Position;
 
                     ObjectBinary objBin = null;
                     if (!e.IsDefaultObject)

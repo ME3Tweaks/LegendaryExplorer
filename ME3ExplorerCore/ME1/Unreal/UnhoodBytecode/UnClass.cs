@@ -22,7 +22,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         public ExportEntry Export { get { return _self; } }
         public IMEPackage Package { get { return _self.FileRef; } }
 
-        public abstract void Decompile(TextBuilder result);
+        public abstract void Decompile(TextBuilder result, bool parseSignature);
 
         protected StatementList ReadBytecode(out BytecodeReader bcReader)
         {
@@ -170,7 +170,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
             _interfaces = interfaces;
         }
 
-        public override void Decompile(TextBuilder result)
+        public override void Decompile(TextBuilder result, bool parseSignature)
         {
             result.Append("class ").Append(_self.ObjectName.Instanced);
             if (_super != null)

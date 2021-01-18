@@ -316,6 +316,7 @@ namespace ME3ExplorerCore.Packages
             get => EndianReader.ToInt32(_header, 12, FileRef.Endian);
             set
             {
+                // TODO: Somehow rebuild the lookup table for the package. This could get really expensive
                 Buffer.BlockCopy(EndianBitConverter.GetBytes(value, FileRef.Endian), 0, _header, 12, sizeof(int));
                 HeaderChanged = true;
             }

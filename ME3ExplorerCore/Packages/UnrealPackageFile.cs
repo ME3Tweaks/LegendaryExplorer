@@ -33,6 +33,13 @@ namespace ME3ExplorerCore.Packages
 
         public bool IsCompressed => Flags.HasFlag(UnrealFlags.EPackageFlags.Compressed);
 
+        /// <summary>
+        /// A lookup table that maps the full instanced path of an entry to that entry, which makes looking up entries by name quick.
+        /// ONLY WORKS properly if there are NO duplicate indexes (besides trash) in the package.
+        /// Is not used if the table is not populated, methods will perform a full search.
+        /// </summary>
+        internal CaseInsensitiveDictionary<IEntry> EntryLookupTable = new CaseInsensitiveDictionary<IEntry>();
+
         public enum CompressionType
         {
             None = 0,
@@ -180,10 +187,57 @@ namespace ME3ExplorerCore.Packages
             exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
+            EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
+
             ExportCount = exports.Count;
 
             updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
+        }
+
+        public IEntry FindEntry(string instancedname)
+        {
+            if (EntryLookupTable != null && EntryLookupTable.Any())
+            {
+                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+                return matchingEntry as ExportEntry;
+            }
+            else
+            {
+                // Look at imports first
+                var entry = Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname) as IEntry;
+                if (entry == null)
+                {
+                    // Look at exports
+                    entry = Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname) as IEntry;
+                }
+                return entry;
+            }
+        }
+        public ImportEntry FindImport(string instancedname)
+        {
+            if (EntryLookupTable != null && EntryLookupTable.Any())
+            {
+                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+                return matchingEntry as ImportEntry;
+            }
+            else
+            {
+                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
+        }
+
+        public ExportEntry FindExport(string instancedname)
+        {
+            if (EntryLookupTable != null && EntryLookupTable.Any())
+            {
+                EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+                return matchingEntry as ExportEntry;
+            }
+            else
+            {
+                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -225,11 +279,30 @@ namespace ME3ExplorerCore.Packages
             importEntry.PropertyChanged += importChanged;
             importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             imports.Add(importEntry);
+            EntryLookupTable[importEntry.InstancedFullPath] = importEntry; // ADD TO LOOKUP CACHE
+
             importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
 
             updateTools(PackageChange.ImportAdd, importEntry.UIndex);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImportCount)));
+        }
+
+        /// <summary>
+        /// Rebuilds the lookup table for this package. Call when there are name changes or the name of an entry is changed. May
+        /// need to be optimized in a way so this is not called during things like porting so the list is not constantly rebuilt.
+        /// </summary>
+        internal void RebuildLookupTable()
+        {
+            EntryLookupTable.Clear();
+            foreach (var exportEntry in exports)
+            {
+                EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
+            }
+            foreach (var importEntry in imports)
+            {
+                EntryLookupTable[importEntry.InstancedFullPath] = importEntry; // ADD TO LOOKUP CACHE
+            }
         }
 
         public ImportEntry GetImport(int uIndex) => imports[Math.Abs(uIndex) - 1];

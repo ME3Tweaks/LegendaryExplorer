@@ -1855,5 +1855,18 @@ namespace ME3ExplorerCore.SharpDX
             return *(Vector3*)&value;
         }
 #endif
+        public float MinValue()
+        {
+            float minV = Math.Min(X, Y);
+            minV = Math.Min(minV, Z);
+            return minV;
+        }
+
+        public float MaxValue()
+        {
+            float maxV = Math.Max(X, Y);
+            maxV = Math.Max(maxV, Z);
+            return maxV;
+        }
     }
 }
