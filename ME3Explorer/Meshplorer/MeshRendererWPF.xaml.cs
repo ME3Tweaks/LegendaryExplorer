@@ -990,8 +990,14 @@ namespace ME3Explorer.Meshplorer
                 tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
             }
             Preview?.Dispose();
-            SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
-            SceneViewer.Dispose();
+            if (SceneViewer != null)
+            {
+                if (SceneViewer.Context != null)
+                {
+                    SceneViewer.Context.Update -= MeshRenderer_ViewUpdate;
+                }
+                SceneViewer.Dispose();
+            }
             CurrentLoadedExport = null;
             SceneViewer = null;
         }
