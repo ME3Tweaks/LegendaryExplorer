@@ -328,28 +328,19 @@ namespace ME3Explorer.AssetDatabase
 
             Properties.Settings.Default.AssetDBPath = CurrentDBPath;
             Properties.Settings.Default.AssetDBGame = CurrentGame.ToString();
-            EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
-            BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
-            MeshRendererTab_MeshRenderer.UnloadExport();
-            SoundpanelWPF_ADB.UnloadExport();
-            SoundpanelWPF_ADB.FreeAudioResources();
-
-            MeshRendererTab_MeshRenderer.Dispose();
-            SoundpanelWPF_ADB.Dispose();
-            BIKExternalExportLoaderTab_BIKExternalExportLoader.Dispose();
-            EmbeddedTextureViewerTab_EmbeddedTextureViewer.Dispose();
+            
+            MeshRendererTab_MeshRenderer?.Dispose();
+            SoundpanelWPF_ADB?.Dispose();
+            BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
+            EmbeddedTextureViewerTab_EmbeddedTextureViewer?.Dispose();
 
             audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
-#if DEBUG
-            await Task.Delay(6000);
 
-            if (audioPcc != null || meshPcc != null || textPcc != null)
-            {
-                MessageBox.Show("Still stuff in memory!", "Asset DB");
-            }
-#endif
+            audioPcc = null;
+            meshPcc = null;
+            textPcc = null;
         }
 
         #endregion

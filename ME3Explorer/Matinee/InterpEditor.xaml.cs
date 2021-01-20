@@ -198,6 +198,8 @@ namespace ME3Explorer.Matinee
                 return;
 
             timelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+            Properties_InterpreterWPF?.Dispose();
+            CurveTab_CurveEditor?.Dispose();
         }
 
         public void PropogateRecentsChange(IEnumerable<string> newRecents)
