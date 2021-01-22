@@ -91,9 +91,10 @@ namespace ME3ExplorerCore.Packages
         public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
         {
             bool added = false;
-            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
+            var levelE = pcc.FindExport("TheWorld.PersistentLevel");
+            if (levelE != null && levelE.ClassName == "Level")
             {
-                Level level = ObjectBinary.From<Level>(levelExport);
+                Level level = ObjectBinary.From<Level>(levelE);
                 foreach (ExportEntry actor in actors)
                 {
                     if (!level.Actors.Contains(actor.UIndex))
@@ -102,7 +103,7 @@ namespace ME3ExplorerCore.Packages
                         level.Actors.Add(actor.UIndex);
                     }
                 }
-                levelExport.WriteBinary(level);
+                levelE.WriteBinary(level);
             }
 
             return added;
