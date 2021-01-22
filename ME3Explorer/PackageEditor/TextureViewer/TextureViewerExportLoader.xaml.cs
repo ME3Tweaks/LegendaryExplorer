@@ -307,15 +307,7 @@ namespace ME3Explorer
                     // Some textures list a tfc but are stored locally still
                     // so the tfc is never actually used
                     AvailableTFCNames.Insert(0, PACKAGE_STORED_STRING);
-
-#if RELEASE
-asdfadsfasdf // DO NOT COMMIT THIS INTO BETA!!!
-#endif
-                    if (topmip.storageType == StorageTypes.pccUnc)
-                    {
-                        TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(PACKAGE_STORED_STRING);
-                    }
-
+                    
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
                         AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);
