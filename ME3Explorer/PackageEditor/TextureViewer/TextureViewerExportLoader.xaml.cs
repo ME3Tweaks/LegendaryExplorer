@@ -223,8 +223,8 @@ namespace ME3Explorer
                 replaceTextures(image, props, selectDDS.FileName, forcedTFCName);
 
                 // ME2R: Dump to disk
-                var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
-                File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
+                //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
+                //File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
             }
 
         }
