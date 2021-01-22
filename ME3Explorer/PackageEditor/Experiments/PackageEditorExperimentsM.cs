@@ -1322,7 +1322,7 @@ namespace ME3Explorer.PackageEditor.Experiments
                         ConcurrentDictionary<string, string> threadSafeList = new ConcurrentDictionary<string, string>();
                         packageEditorWpf.BusyText = "Getting list of all package files";
                         int numPackageFiles = 0;
-                        var files = Directory.GetFiles(dlg.FileName, "*Nor*.pcc", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+                        var files = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
                         var totalfiles = files.Count;
                         long filesDone = 0;
                         Parallel.ForEach(files, pf =>
@@ -1335,7 +1335,8 @@ namespace ME3Explorer.PackageEditor.Experiments
                                 {
                                     threadSafeList.TryAdd(pf, pf);
                                 }
-                            } catch
+                            }
+                            catch
                             {
 
                             }
@@ -1351,6 +1352,35 @@ namespace ME3Explorer.PackageEditor.Experiments
                         ld.Show();
                     });
                 }
+            }
+        }
+
+        public static void CheckImports(IMEPackage Pcc)
+        {
+            List<IMEPackage> packages = new List<IMEPackage>();
+            // Enumerate and resolve all imports.
+            foreach (var import in Pcc.Imports)
+            {
+                Debug.WriteLine($@"Resolving {import.FullPath}");
+                var export = EntryImporter.ResolveImport(import);
+                if (export != null)
+                {
+                    if (!packages.Any(x=>export.FileRef.FilePath == x.FilePath))
+                    {
+                        packages.Add(MEPackageHandler.OpenMEPackage(export.FileRef)); // Hold in memory
+                        MEPackageHandler.ForcePackageIntoCache(export.FileRef);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
+                }
+            }
+
+            foreach (var v in packages)
+            {
+                // Do not hold open longer
+                v.Dispose();
             }
         }
 
