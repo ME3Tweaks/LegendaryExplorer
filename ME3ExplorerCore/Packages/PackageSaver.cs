@@ -90,7 +90,7 @@ namespace ME3ExplorerCore.Packages
         //}
 
         /// <summary>
-        /// Used to test if ME3 is running. USed by ME3Explorer GameController class
+        /// Used to test if ME3 is running. Used by ME3Explorer GameController class
         /// </summary>
         public static Func<bool> CheckME3Running { get; set; }
         /// <summary>
