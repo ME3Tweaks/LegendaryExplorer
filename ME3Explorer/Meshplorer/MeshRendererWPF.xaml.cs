@@ -688,8 +688,14 @@ namespace ME3Explorer.Meshplorer
         /// </summary>
         public void EnsureUModel()
         {
-            var savewarning = Xceed.Wpf.Toolkit.MessageBox.Show(null, "Exporting a model via UModel requires this package to be saved. Confirm it's OK to save this package before UModel processes exporting from this file.", "Package save warning", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-
+            if (CurrentLoadedExport == null) return;
+            var savewarning = CurrentLoadedExport.FileRef.IsModified ? MessageBoxResult.None : MessageBoxResult.OK;
+            
+            // show if we have not shown before
+            if (savewarning == MessageBoxResult.None)
+            {
+                savewarning = Xceed.Wpf.Toolkit.MessageBox.Show(null, "Exporting a model via UModel requires this package to be saved. Confirm it's OK to save this package before UModel processes exporting from this file.", "Package save warning", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+            }
             if (savewarning == MessageBoxResult.OK)
             {
                 CurrentLoadedExport.FileRef.Save();
