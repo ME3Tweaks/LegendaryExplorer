@@ -883,9 +883,15 @@ namespace ME3Explorer
         public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(Property prop, UPropertyTreeViewEntry parent, ExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             string displayName = displayPrefix;
+
             if (!(parent.Property is ArrayPropertyBase))
             {
-                displayName += $" {prop.Name.Instanced}:";
+                displayName += $" {prop.Name.Instanced}";
+                if (prop.StaticArrayIndex > 0)
+                {
+                    displayName += $"[{prop.StaticArrayIndex}]";
+                }
+                displayName += ":";
             }
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
@@ -2149,8 +2155,8 @@ namespace ME3Explorer
             }
 
             Interpreter_Hexbox = null;
-            Interpreter_Hexbox_Host.Child.Dispose();
-            Interpreter_Hexbox_Host.Dispose();
+            Interpreter_Hexbox_Host?.Child.Dispose();
+            Interpreter_Hexbox_Host?.Dispose();
             Interpreter_Hexbox_Host = null;
         }
 

@@ -110,7 +110,7 @@ namespace ME3Explorer
         private void DropTopMip()
         {
             var props = CurrentLoadedExport.GetProperties();
-            
+
             // Note: This will not remove TFC data if streamed mips are all removed.
             // Hopefully a dev doesn't do this
             // I'm sure someday I will read this comment again and regret it
@@ -120,7 +120,7 @@ namespace ME3Explorer
             props.GetProp<IntProperty>("SizeX").Value = tex.Mips[0].SizeX;
             props.GetProp<IntProperty>("SizeY").Value = tex.Mips[0].SizeY;
             props.GetProp<IntProperty>("MipTailBaseIdx").Value = tex.Mips.Count - 1; // 0 based
-            CurrentLoadedExport.WritePropertiesAndBinary(props,tex);
+            CurrentLoadedExport.WritePropertiesAndBinary(props, tex);
         }
 
         private bool CanDropTopMip()
@@ -221,6 +221,10 @@ namespace ME3Explorer
                 }
                 if (forcedTFCName == PACKAGE_STORED_STRING) forcedTFCName = null;
                 replaceTextures(image, props, selectDDS.FileName, forcedTFCName);
+
+                // ME2R: Dump to disk
+                //var binName = Path.Combine(Directory.GetParent(selectDDS.FileName).FullName, Path.GetFileNameWithoutExtension(selectDDS.FileName) + ".bin");
+                //File.WriteAllBytes(binName, CurrentLoadedExport.GetBinaryData());
             }
 
         }
@@ -292,7 +296,7 @@ namespace ME3Explorer
                     AvailableTFCNames.Add(CREATE_NEW_TFC_STRING);
                 }
 
-                
+
                 List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(exportEntry, CurrentLoadedCacheName);
                 CurrentLoadedExport = exportEntry;
 
@@ -302,12 +306,8 @@ namespace ME3Explorer
 
                     // Some textures list a tfc but are stored locally still
                     // so the tfc is never actually used
-                    if (topmip.storageType == StorageTypes.pccUnc)
-                    {
-                        AvailableTFCNames.Insert(0,PACKAGE_STORED_STRING);
-                        TextureCacheComboBox.SelectedIndex = AvailableTFCNames.IndexOf(PACKAGE_STORED_STRING);
-                    }
-
+                    AvailableTFCNames.Insert(0, PACKAGE_STORED_STRING);
+                    
                     if (cache == null && exportEntry.Game > MEGame.ME1)
                     {
                         AvailableTFCNames.Add(STORE_EXTERNALLY_STRING);

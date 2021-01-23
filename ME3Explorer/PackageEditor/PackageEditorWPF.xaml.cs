@@ -4806,5 +4806,13 @@ namespace ME3Explorer
         {
             PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
         }
+
+        private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() => PackageEditorExperimentsM.CheckImports(Pcc)).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+            });
+        }
     }
 }

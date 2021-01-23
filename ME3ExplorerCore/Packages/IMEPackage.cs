@@ -78,14 +78,14 @@ namespace ME3ExplorerCore.Packages
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((PropertyInfo) obj);
+            return obj.GetType() == this.GetType() && Equals((PropertyInfo)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                int hashCode = (int) Type;
+                int hashCode = (int)Type;
                 hashCode = (hashCode * 397) ^ (Reference != null ? Reference.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Transient.GetHashCode();
                 return hashCode;
@@ -255,5 +255,27 @@ namespace ME3ExplorerCore.Packages
         /// <param name="stream"></param>
         /// <returns></returns>
         List<EntryStringPair> CompareToPackage(Stream stream);
+        /// <summary>
+        /// Looks for an export with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ExportEntry FindExport(string instancedname);
+        /// <summary>
+        /// Looks for an import with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ImportEntry FindImport(string instancedname);
+        /// <summary>
+        /// Looks for an entry (imports first, then exports) with the same instanced name.
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        IEntry FindEntry(string instancedname);
+        /// <summary>
+        /// Rebuilds the entry lookup table. Is an expensive operation, use sparingly.
+        /// </summary>
+        //void RebuildLookupTable();
     }
 }
