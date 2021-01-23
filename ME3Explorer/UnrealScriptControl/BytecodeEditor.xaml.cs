@@ -239,7 +239,7 @@ namespace ME3Explorer
                 pos += 4;
                 BytecodeStart = pos;
                 var func = CurrentLoadedExport.ClassName == "State" ? UE3FunctionReader.ReadState(CurrentLoadedExport, data) : UE3FunctionReader.ReadFunction(CurrentLoadedExport, data);
-                func.Decompile(new TextBuilder(), false); //parse bytecode
+                func.Decompile(new TextBuilder(), false, true); //parse bytecode
 
                 bool defined = func.HasFlag("Defined");
                 if (defined)
