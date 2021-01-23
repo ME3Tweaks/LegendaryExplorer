@@ -718,7 +718,15 @@ namespace ME3ExplorerCore.Unreal
         public static string[] NativeClasses = new[]
         {
             // NEEDS CHECKED FOR ME2
-            @"Engine.CodecMovieBink"
+            @"Engine.CodecMovieBink",
+
+            // These are shared across all games
+            @"Core.Class",
+            @"Engine.StaticMesh",
+            @"Engine.SkeletalMesh",
+            @"Engine.ShaderCache",
+            @"Engine.Engine",
+            @"Engine.Level",
         };
     }
 }

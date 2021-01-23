@@ -101,6 +101,9 @@ namespace ME3ExplorerCore.Packages
                     pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
                 }
                 openPackages[pathToFile] = package;
+            } else
+            {
+                Debug.WriteLine("Global Package Cache is disabled, cannot force packages into cache");
             }
         }
 

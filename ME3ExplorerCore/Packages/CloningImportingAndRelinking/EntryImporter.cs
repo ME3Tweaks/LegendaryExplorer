@@ -789,7 +789,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         public static ExportEntry ResolveImport(ImportEntry entry)
         {
-            var entryFullPath = entry.FullPath;
+            var entryFullPath = entry.InstancedFullPath;
 
 
             string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
@@ -901,11 +901,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (packName == packageParts[0])
                 {
-                    //it's literally the file itself
+                    //it's literally the file itself (an imported package like SFXGame)
                     return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
                 }
 
-                return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
+                return package.FindExport(entryFullPath);
             }
         }
 
@@ -918,26 +918,27 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
-                string bioXNextFileLookup(string filename)
+                // Do not include extensions in the results of this, they will be appended in resulting file
+                string bioXNextFileLookup(string filenameWithoutExtensionX)
                 {
                     //Lookup parents
-                    var bioType = filename[3];
-                    string[] parts = filename.Split('_');
-                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
+                    var bioType = filenameWithoutExtensionX[3];
+                    string[] parts = filenameWithoutExtensionX.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310
                     {
                         var levelName = parts[1];
                         switch (bioType)
                         {
                             case 'a' when parts.Length > 2:
-                                return $"bioa_{levelName}{bioFileExt}";
+                                return $"bioa_{levelName}";
                             case 'd' when parts.Length > 2:
-                                return $"biod_{levelName}{bioFileExt}";
+                                return $"biod_{levelName}";
                             case 's' when parts.Length > 2:
-                                return $"bios_{levelName}{bioFileExt}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
+                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
                             case 'a' when parts.Length == 2:
                             case 'd' when parts.Length == 2:
                             case 's' when parts.Length == 2:
-                                return $"biop_{levelName}{bioFileExt}";
+                                return $"biop_{levelName}";
                         }
                     }
 
@@ -947,9 +948,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
-                    associatedFiles.Add(nextfile);
+                    associatedFiles.Add($"{nextfile}{bioFileExt}");
                     associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
-                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
+                    nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
             }
 
@@ -1064,5 +1065,114 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export)
+        {
+            List<IEntry> referencedItems = new List<IEntry>();
+            RecursiveGetDependencies(export, referencedItems);
+            return referencedItems.Distinct().ToList();
+        }
+
+        private static void AddEntryReference(int referenceIdx, IMEPackage package, List<IEntry> referencedItems)
+        {
+            if (package.TryGetEntry(referenceIdx, out var reference) && !referencedItems.Contains(reference))
+            {
+                referencedItems.Add(reference);
+            }
+        }
+
+        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems)
+        {
+            // For reaching out into
+            List<ExportEntry> localExportReferences = new List<ExportEntry>();
+
+            // Compiles list of items local to this entry
+            void AddReferenceLocal(int entryUIndex)
+            {
+                if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out var exp) && !referencedItems.Any(x => x.UIndex == entryUIndex))
+                {
+                    localExportReferences.Add(exp);
+                }
+                // Global add
+                AddEntryReference(entryUIndex, relinkingExport.FileRef, referencedItems);
+            }
+
+            // Pre-props binary
+            byte[] prePropBinary = relinkingExport.GetPrePropBinary();
+
+            //Relink stack
+            if (relinkingExport.HasStack)
+            {
+                int uIndex = BitConverter.ToInt32(prePropBinary, 0);
+                AddReferenceLocal(uIndex);
+
+                uIndex = BitConverter.ToInt32(prePropBinary, 4);
+                AddReferenceLocal(uIndex);
+            }
+            //Relink Component's TemplateOwnerClass
+            else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+            {
+
+                int uIndex = BitConverter.ToInt32(prePropBinary, toci);
+                AddReferenceLocal(uIndex);
+            }
+
+            // Properties
+            var props = relinkingExport.GetProperties();
+            foreach (var prop in props)
+            {
+                RecursiveGetPropDependencies(prop, AddReferenceLocal);
+            }
+
+            // Binary
+            var bin = ObjectBinary.From(relinkingExport);
+            if (bin != null)
+            {
+                var binUIndexes = bin.GetUIndexes(relinkingExport.Game);
+                foreach (var binUIndex in binUIndexes)
+                {
+                    AddReferenceLocal(binUIndex.Item1);
+                }
+            }
+
+            // We have now collected all local references
+            // We should reach out and see if we need to index others.
+            foreach(var v in localExportReferences)
+            {
+                RecursiveGetDependencies(v, referencedItems);
+            }
+        }
+
+        private static void RecursiveGetPropDependencies(Property prop, Action<int> addReference)
+        {
+            if (prop is ObjectProperty op)
+            {
+                addReference(op.Value);
+            }
+            else if (prop is StructProperty sp)
+            {
+                foreach (var p in sp.Properties)
+                {
+                    RecursiveGetPropDependencies(p, addReference);
+                }
+            }
+            else if (prop is ArrayProperty<StructProperty> asp)
+            {
+                foreach (var p in asp.Properties)
+                {
+                    RecursiveGetPropDependencies(p, addReference);
+                }
+            }
+            else if (prop is ArrayProperty<ObjectProperty> aop)
+            {
+                foreach (var p in aop)
+                {
+                    addReference(p.Value);
+                }
+            }
+            else if (prop is DelegateProperty dp)
+            {
+                addReference(dp.Value.Object);
+            }
+        }
     }
 }

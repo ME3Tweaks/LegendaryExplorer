@@ -197,6 +197,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
         protected abstract void Serialize(SerializingContainer2 sc);
 
+        /// <summary>
+        /// Gets a list of entry references made in this ObjectBinary. Values are UIndex mapped to the name of the variable name of that list item, e.g. (25, "DataOffset")
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
         public virtual List<(UIndex, string)> GetUIndexes(MEGame game) => new List<(UIndex, string)>();
         public virtual List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>();
 
