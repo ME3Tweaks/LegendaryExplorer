@@ -379,8 +379,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.InstancedFullPath == instancedFullPath);
-                    existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.InstancedFullPath == instancedFullPath);
+                    existingEntry = destinationPcc.FindExport(instancedFullPath);
+                    existingEntry ??= destinationPcc.FindImport(instancedFullPath);
                 }
                 if (existingEntry != null)
                 {

@@ -262,7 +262,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
                     break;
                 case ExportEntry sourceClassExport:
-                    classValue = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceClassExport.FullPath && x.indexValue == sourceClassExport.indexValue);
+                    classValue = destPackage.FindExport(sourceClassExport.InstancedFullPath);
                     if (classValue is null && importExportDependencies)
                     {
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, true, objectMapping, relinkerCache: relinkerCache);
@@ -282,7 +282,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
                         break;
                     case ExportEntry sourceSuperClassExport:
-                        superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
+                        superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
                         if (superclass is null && importExportDependencies)
                         {
                             IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
@@ -302,7 +302,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     break;
                 case ExportEntry sourceArchetypeExport:
                     // Should the below line use instanced full path?
-                    archetype = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceArchetypeExport.FullPath && x.indexValue == sourceArchetypeExport.indexValue);
+                    archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && importExportDependencies)
                     {
                         IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage,
