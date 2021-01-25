@@ -316,7 +316,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     //Get the original import
                     ImportEntry origImport = importingPCC.GetImport(n);
-                    string origImportFullName = origImport.FullPath;
+                    string origImportFullName = origImport.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                     IEntry crossImport = null;

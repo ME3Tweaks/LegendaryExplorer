@@ -112,12 +112,20 @@ namespace ME3ExplorerCore.Misc
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            //bool isFirst = true;
+            bool isFirst = true;
             foreach (var section in Sections)
             {
                 if (!section.Entries.Any())
                 {
                     continue; //Do not write out empty sections.
+                }
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.Append("\n");
                 }
                 sb.Append($"[{section.Header}]");
                 sb.Append("\n"); //AppendLine does \r\n which we don't want.

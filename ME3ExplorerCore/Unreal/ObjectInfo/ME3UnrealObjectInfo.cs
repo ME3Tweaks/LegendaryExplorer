@@ -324,6 +324,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 KeyComparer = StringComparer.OrdinalIgnoreCase
             };
+
             ClassInfo info = GetClassOrStructInfo(game, typeName);
             while (info != null)
             {
