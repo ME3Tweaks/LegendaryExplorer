@@ -1357,31 +1357,22 @@ namespace ME3Explorer.PackageEditor.Experiments
 
         public static void CheckImports(IMEPackage Pcc)
         {
-            List<IMEPackage> packages = new List<IMEPackage>();
+            PackageCache pc = new PackageCache();
             // Enumerate and resolve all imports.
             foreach (var import in Pcc.Imports)
             {
                 Debug.WriteLine($@"Resolving {import.FullPath}");
-                var export = EntryImporter.ResolveImport(import);
+                var export = EntryImporter.ResolveImport(import, pc);
                 if (export != null)
                 {
-                    if (!packages.Any(x=>export.FileRef.FilePath == x.FilePath))
-                    {
-                        packages.Add(MEPackageHandler.OpenMEPackage(export.FileRef)); // Hold in memory
-                        MEPackageHandler.ForcePackageIntoCache(export.FileRef);
-                    }
+
                 }
                 else
                 {
                     Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
                 }
             }
-
-            foreach (var v in packages)
-            {
-                // Do not hold open longer
-                v.Dispose();
-            }
+            pc.ReleasePackages();
         }
 
         public static void RandomizeTerrain(IMEPackage Pcc)

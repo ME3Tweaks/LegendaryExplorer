@@ -244,6 +244,7 @@ namespace ME3Explorer
         public ICommand ReplaceNamesCommand { get; set; }
         public ICommand NavigateToEntryCommand { get; set; }
         public ICommand ResolveImportCommand { get; set; }
+        public ICommand ExtractToPackageCommand { get; set; }
         public ICommand PackageExportIsSelectedCommand { get; set; }
         public ICommand ReindexDuplicateIndexesCommand { get; set; }
         public ICommand ReplaceReferenceLinksCommand { get; set; }
@@ -308,6 +309,34 @@ namespace ME3Explorer
                 () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
             FindAllClassInstancesCommand = new GenericCommand(FindAllInstancesofClass, PackageIsLoaded);
+            ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
+        }
+
+        private void ExtractEntryToNewPackage()
+        {
+            // This method is useful if you need to extract a portable asset easily
+            // It's very slow
+            string fileFilter;
+            switch (Pcc.Game)
+            {
+                case MEGame.ME1:
+                    fileFilter = App.ME1SaveFileFilter;
+                    break;
+                case MEGame.ME2:
+                case MEGame.ME3:
+                    fileFilter = App.ME3ME2SaveFileFilter;
+                    break;
+                default:
+                    string extension = Path.GetExtension(Pcc.FilePath);
+                    fileFilter = $"*{extension}|*{extension}";
+                    break;
+            }
+
+            SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
+            if (d.ShowDialog() == true)
+            {
+                EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName);
+            }
         }
 
         private void FindAllInstancesofClass()
@@ -1691,7 +1720,7 @@ namespace ME3Explorer
                     var TemplateOwnerClassIdx = EndianReader.ToInt32(exp.Data, toci, exp.FileRef.Endian);
                     if (TemplateOwnerClassIdx != 0 && !Pcc.IsEntry(TemplateOwnerClassIdx))
                     {
-                        badReferences.Add(new EntryStringPair(exp, 
+                        badReferences.Add(new EntryStringPair(exp,
                             $"TemplateOwnerClass (Data offset 0x{toci:X}) ({TemplateOwnerClassIdx}) is outside of import/export table, Export #{exp.UIndex} {exp.InstancedFullPath}"));
                     }
                 }
@@ -1745,7 +1774,8 @@ namespace ME3Explorer
                 if (imp.idxLink != 0 && !Pcc.TryGetEntry(imp.idxLink, out _))
                 {
                     badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has an invalid link value that is outside of the import/export table {imp.idxLink}"));
-                } else if (imp.idxLink == imp.UIndex)
+                }
+                else if (imp.idxLink == imp.UIndex)
                 {
                     badReferences.Add(new EntryStringPair(imp, $"Import #{imp.UIndex} has a circular self reference for it's link. The game and the toolset may be unable to handle this condition"));
                 }
@@ -2666,13 +2696,25 @@ namespace ME3Explorer
 
             List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd))
                 .OrderBy(x => x.Index).ToList();
+            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index)
+                .ToHashSet();
+
+            // Reduces tree enumeration
+            var treeViewItems = AllTreeViewNodesX[0].FlattenTree();
+            Dictionary<int, TreeViewEntry> uindexMap = new Dictionary<int, TreeViewEntry>();
+            if (addedChanges.Any() || headerChanges.Any())
+            {
+                foreach (var tv in treeViewItems)
+                {
+                    uindexMap[tv.UIndex] = tv;
+                }
+            }
+
             if (addedChanges.Count > 0)
             {
                 InitClassDropDown();
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
-
-                List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
 
                 //filter to only nodes that don't exist yet (created by external tools)
                 foreach (TreeViewEntry tvi in treeViewItems)
@@ -2685,19 +2727,19 @@ namespace ME3Explorer
                 //Generate new nodes
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
                 //might have to loop a few times if it contains children before parents
+
                 while (entriesToAdd.Any())
                 {
                     var orphans = new List<IEntry>();
                     foreach (IEntry entry in entriesToAdd)
                     {
-
-                        TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
-                        if (parent != null)
+                        if (uindexMap.TryGetValue(entry.idxLink, out var parent))
                         {
                             TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
                             parent.Sublinks.Add(newEntry);
                             treeViewItems.Add(newEntry); //used to find parents
                             nodesToSortChildrenFor.Add(parent);
+                            uindexMap[entry.UIndex] = newEntry;
                         }
                         else
                         {
@@ -2742,22 +2784,17 @@ namespace ME3Explorer
                 }
             }
 
-            var headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index)
-                .ToHashSet();
             if (headerChanges.Count > 0)
             {
-                List<TreeViewEntry> tree = AllTreeViewNodesX[0].FlattenTree();
+                //List<TreeViewEntry> tree = AllTreeViewNodesX[0].FlattenTree();
                 var nodesNeedingResort = new List<TreeViewEntry>();
-
-                List<TreeViewEntry> tviWithChangedHeaders =
-                    tree.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.UIndex)).ToList();
+                List<TreeViewEntry> tviWithChangedHeaders = uindexMap.Values.Where(x => x.UIndex != 0 && headerChanges.Contains(x.Entry.UIndex)).ToList();
                 foreach (TreeViewEntry tvi in tviWithChangedHeaders)
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
                     {
                         //Debug.WriteLine("Reorder req for " + tvi.UIndex);
-                        TreeViewEntry newParent = tree.FirstOrDefault(x => x.UIndex == tvi.Entry.idxLink);
-                        if (newParent == null)
+                        if (!uindexMap.TryGetValue(tvi.Entry.idxLink, out var newParent))
                         {
                             Debugger.Break();
                         }

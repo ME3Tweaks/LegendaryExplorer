@@ -200,7 +200,7 @@ namespace ME3ExplorerCore.Packages
             if (EntryLookupTable != null && EntryLookupTable.Any())
             {
                 EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
-                return matchingEntry as ExportEntry;
+                return matchingEntry;
             }
             else
             {

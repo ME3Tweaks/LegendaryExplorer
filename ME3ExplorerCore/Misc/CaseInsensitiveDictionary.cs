@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ME3ExplorerCore.Misc
@@ -10,6 +11,13 @@ namespace ME3ExplorerCore.Misc
         }
 
         public CaseInsensitiveDictionary(IDictionary<string, TValue> dictionary) : base(dictionary, StringComparer.OrdinalIgnoreCase)
+        {
+        }
+    }
+
+    public class CaseInsensitiveConcurrentDictionary<V> : ConcurrentDictionary<string, V>
+    {
+        public CaseInsensitiveConcurrentDictionary() : base(StringComparer.OrdinalIgnoreCase)
         {
         }
     }
