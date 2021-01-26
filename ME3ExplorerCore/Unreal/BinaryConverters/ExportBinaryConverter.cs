@@ -115,7 +115,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     break;
             }
 
-            return export.Data.Slice(0, export.GetPropertyStart());
+            return export.DataReadOnly.Slice(0, export.GetPropertyStart());
         }
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)

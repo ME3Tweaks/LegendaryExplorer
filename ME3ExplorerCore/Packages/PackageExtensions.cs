@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Unreal;
@@ -142,7 +143,7 @@ namespace ME3ExplorerCore.Packages
 
                     if ((!exp.IsDefaultObject && exp.IsA("Component") || pcc.Game == MEGame.UDK && exp.ClassName.EndsWith("Component")) &&
                         exp.ParentFullPath.Contains("Default__") &&
-                        exp.DataSize >= 12 && BitConverter.ToInt32(exp.Data, 4) is int nameIdx && pcc.IsName(nameIdx) &&
+                        exp.DataSize >= 12 && EndianReader.ToInt32(exp.DataReadOnly, 4, exp.FileRef.Endian) is int nameIdx && pcc.IsName(nameIdx) &&
                         pcc.GetNameEntry(nameIdx) == name)
                     {
                         result.AddToListAt(exp, "Component TemplateName (0x4)");
@@ -668,7 +669,7 @@ namespace ME3ExplorerCore.Packages
                             result.AddToListAt(exp, "Stack");
                         }
                     }
-                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == BitConverter.ToInt32(exp.Data, toci))
+                    else if (exp.TemplateOwnerClassIdx is var toci && toci >= 0 && baseUIndex == EndianReader.ToInt32(exp.DataReadOnly, toci, exp.FileRef.Endian))
                     {
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }

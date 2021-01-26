@@ -200,7 +200,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             if (sourceExport.HasStack)
             {
                 var ms = new MemoryStream();
-                ms.WriteFromBuffer(sourceExport.Data.Slice(0, 8));
+                ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8)); 
                 ms.WriteFromBuffer(destPackage.Game switch
                 {
                     MEGame.UDK => UDKStackDummy,
@@ -214,7 +214,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
-                    var ms = new MemoryStream(sourceExport.Data.Slice(0, 16));
+                    var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16));
                     ms.JumpTo(4);
                     int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(ms.ReadInt32()));
                     ms.JumpTo(4);
@@ -223,7 +223,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    prePropBinary = sourceExport.Data.Slice(0, start);
+                    prePropBinary = sourceExport.DataReadOnly.Slice(0, start);
                 }
             }
 
@@ -342,7 +342,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             EndianReader res = new EndianReader(new MemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
-                res.Writer.WriteFromBuffer(incomingExport.Data.Slice(0, 8));
+                res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
                 res.Writer.WriteFromBuffer(targetExport.Game switch
                 {
                     MEGame.UDK => UDKStackDummy,

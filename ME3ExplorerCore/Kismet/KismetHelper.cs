@@ -54,33 +54,57 @@ namespace ME3ExplorerCore.Kismet
             }
         }
 
-        public static void RemoveAllLinks(ExportEntry export)
+        public static void RemoveOutputLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, true, false,false);
+        }
+
+        public static void RemoveVariableLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, false, true,false);
+        }
+
+        public static void RemoveEventLinks(ExportEntry export)
+        {
+            RemoveAllLinks(export, false, false, true);
+        }
+
+        public static void RemoveAllLinks(ExportEntry export, bool outlinks = true, bool variablelinks = true, bool eventlinks = true)
         {
             var props = export.GetProperties();
-            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outLinksProp != null)
+            if (outlinks)
             {
-                foreach (var prop in outLinksProp)
+                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                    foreach (var prop in outLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                    }
                 }
             }
 
-            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (varLinksProp != null)
+            if (variablelinks)
             {
-                foreach (var prop in varLinksProp)
+                var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                if (varLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                    foreach (var prop in varLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                    }
                 }
             }
 
-            var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
-            if (eventLinksProp != null)
+            if (eventlinks)
             {
-                foreach (var prop in eventLinksProp)
+                var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                if (eventLinksProp != null)
                 {
-                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                    foreach (var prop in eventLinksProp)
+                    {
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents").Clear();
+                    }
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -171,6 +172,16 @@ namespace ME3ExplorerCore.Helpers
         {
             var slice = new byte[length];
             Buffer.BlockCopy(src, start, slice, 0, length);
+            return slice;
+        }
+        
+        public static T[] Slice<T>(this ReadOnlyCollection<T> src, int start, int length)
+        {
+            var slice = new T[length];
+            for (int i = 0; i < length; i++)
+            {
+                slice[i] = src[i + start];
+            }
             return slice;
         }
 

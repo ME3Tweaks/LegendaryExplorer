@@ -350,7 +350,7 @@ namespace ME3ExplorerCore.Unreal
                         using (IMEPackage importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true))
                         {
                             var exportToRead = importPCC.GetUExport(info.exportIndex);
-                            byte[] buff = exportToRead.Data.Skip(0x30).ToArray();
+                            byte[] buff = exportToRead.DataReadOnly.Skip(0x30).ToArray();
                             PropertyCollection defaults = PropertyCollection.ReadProps(exportToRead, new MemoryStream(buff), className);
                             foreach (var prop in defaults)
                             {
