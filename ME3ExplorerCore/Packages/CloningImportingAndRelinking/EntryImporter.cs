@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ME3ExplorerCore.GameFilesystem;
@@ -442,7 +443,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                                                          importNonPackageExportsToo, objectMapping);
 
             var sourceImport = sourcePcc.FindImport(importFullNameInstanced);
-            if (sourceImport != null)
+            if (sourceImport != null) // import not found
             {
                 var newImport = new ImportEntry(destinationPCC)
                 {
@@ -784,7 +785,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return ms.ToArray();
         }
 
-        public static ExportEntry ResolveImport(ImportEntry entry)
+        /// <summary>
+        /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="cache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <returns></returns>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache = null)
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -888,7 +895,16 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry containsImportedExport(string packagePath)
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
-                using var package = MEPackageHandler.OpenMEPackage(packagePath);
+                IMEPackage package;
+                if (cache != null)
+                {
+                    package = cache.GetCachedPackage(packagePath);
+                }
+                else
+                {
+                    package = MEPackageHandler.OpenMEPackage(packagePath);
+                }
+
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
                 if (packageParts.Count > 1 && packName == packageParts[0])

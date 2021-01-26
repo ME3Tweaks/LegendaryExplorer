@@ -62,6 +62,7 @@
 
             <MenuItem Header="Find references" ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Extract to file (EXPERIMENTAL)" ToolTip="Extracts this export and all references to a new package file. Attempts to convert imports into exports that are located in the level-specific files" Command="{Binding ExtractToPackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
             <MenuItem Header="Multi-cloning">
