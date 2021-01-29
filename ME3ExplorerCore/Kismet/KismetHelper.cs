@@ -1,5 +1,8 @@
 ﻿using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ME3ExplorerCore.Kismet
 {
@@ -39,6 +42,20 @@ namespace ME3ExplorerCore.Kismet
             }
         }
 
+        /// <summary>
+        /// Gets a list of non-null objects in the sequence. Returns IEntry, as some sequences are referenced as imports.
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
+        public static List<IEntry> GetSequenceObjects(ExportEntry sequence)
+        {
+            var objects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (objects == null)
+                return new List<IEntry>();
+
+            return objects.Where(x => x.Value != 0).Select(x => x.ResolveToEntry(sequence.FileRef)).ToList();
+        }
+
         public static void CreateEventLink(ExportEntry src, string linkDescription, ExportEntry dest)
         {
             if (src.GetProperty<ArrayProperty<StructProperty>>("EventLinks") is { } eventLinksProp)
@@ -56,12 +73,12 @@ namespace ME3ExplorerCore.Kismet
 
         public static void RemoveOutputLinks(ExportEntry export)
         {
-            RemoveAllLinks(export, true, false,false);
+            RemoveAllLinks(export, true, false, false);
         }
 
         public static void RemoveVariableLinks(ExportEntry export)
         {
-            RemoveAllLinks(export, false, true,false);
+            RemoveAllLinks(export, false, true, false);
         }
 
         public static void RemoveEventLinks(ExportEntry export)
