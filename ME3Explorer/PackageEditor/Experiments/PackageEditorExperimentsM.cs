@@ -1361,6 +1361,10 @@ namespace ME3Explorer.PackageEditor.Experiments
             // Enumerate and resolve all imports.
             foreach (var import in Pcc.Imports)
             {
+                if (import.InstancedFullPath.StartsWith("Core."))
+                    continue; // Most of these are native-native
+                if (UnrealObjectInfo.IsAKnownNativeClass(import))
+                    continue; // Native is always loaded iirc
                 Debug.WriteLine($@"Resolving {import.FullPath}");
                 var export = EntryImporter.ResolveImport(import, pc);
                 if (export != null)

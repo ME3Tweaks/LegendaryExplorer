@@ -335,7 +335,31 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName);
+                Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName))
+                    .ContinueWithOnUIThread(results =>
+                        {
+                            IsBusy = false;
+                            var result = results.Result;
+                            if (result.Any())
+                            {
+                                MessageBox.Show("Extraction completed with issues.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                var ld = new ListDialog(result, "Extraction issues", "The following issues were detected while extracting to a new file", this);
+                                ld.DoubleClickEntryHandler = entryDoubleClick;
+                                ld.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Extracted into a new package.");
+                                PackageEditorWPF nwpf = new PackageEditorWPF();
+                                nwpf.LoadFile(d.FileName);
+                                nwpf.Show();
+                                nwpf.Activate();
+                            }
+                        }
+                    );
+                BusyText = "Exporting to new package";
+                IsBusy = true;
+
             }
         }
 

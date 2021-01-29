@@ -13,6 +13,7 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
+using GenericCommand = ME3Explorer.SharedUI.GenericCommand;
 using Token = ME3ExplorerCore.Unreal.Token;
 
 namespace ME3Explorer
@@ -54,7 +55,32 @@ namespace ME3Explorer
 
         public BytecodeEditor() : base("BytecodeEditor")
         {
+            LoadCommands();
             InitializeComponent();
+        }
+
+        public RelayCommand NopOutStatementCommand { get; set; }
+        private void LoadCommands()
+        {
+            NopOutStatementCommand = new RelayCommand(NopOutStatement, CanNopOutStatement);
+        }
+
+        private void NopOutStatement(object obj)
+        {
+            if (obj is Statement st)
+            {
+                var objBin = (UStruct)ObjectBinary.From(CurrentLoadedExport);
+                for (int i = st.StartOffset; i < st.EndOffset; i++)
+                {
+                    objBin.ScriptBytes[i] = 0x0B; // OP_Nothing
+                }
+                CurrentLoadedExport.WriteBinary(objBin);
+            }
+        }
+
+        private bool CanNopOutStatement(object obj)
+        {
+            return obj is Statement && CurrentLoadedExport != null && CurrentLoadedExport.Game < MEGame.ME3; // We only support nop on ME1/ME2 cause they don't use memory jumps. memory jumps complicate things
         }
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -293,7 +319,8 @@ namespace ME3Explorer
                     ScriptFooterBlocks.Add(
                         new ScriptHeaderItem("Friendly Name", Pcc.GetNameEntry(friendlyNameIndex), pos) { length = 8 });
                     pos += 8;
-                } else if (CurrentLoadedExport.ClassName == "State")
+                }
+                else if (CurrentLoadedExport.ClassName == "State")
                 {
                     // There's labeltable offset but not very useful otherwise. Would probably use objectbinary to just get it.
                     // Maybe this will be overhauled someday
