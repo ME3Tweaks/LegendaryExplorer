@@ -641,12 +641,12 @@ namespace ME3ExplorerCore.Packages
             Data = m.ToArray();
         }
 
-        public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props)
+        public void WritePrePropsAndProperties(byte[] prePropBytes, PropertyCollection props, int binStart = -1)
         {
             var m = new EndianReader { Endian = FileRef.Endian };
             m.Writer.WriteBytes(prePropBytes);
             props.WriteTo(m.Writer, FileRef);
-            int binStart = propsEnd();
+            binStart = binStart == -1 ? propsEnd() : binStart; // this allows us to precompute the starting position, which can avoid issues during relink as props may not have resolved yet
             m.Writer.Write(_data, binStart, _data.Length - binStart);
             Data = m.ToArray();
         }

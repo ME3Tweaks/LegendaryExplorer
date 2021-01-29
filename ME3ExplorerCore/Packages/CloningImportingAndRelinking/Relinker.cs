@@ -149,7 +149,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //Relink Properties
-            PropertyCollection props = relinkingExport.GetProperties();
+
+            // DEBUG: this used to be relinkingExport, not source
+            PropertyCollection props = sourceExport.GetProperties();
             relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies, relinkerCache));
 
             //Relink Binary
@@ -219,7 +221,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
-            relinkingExport.WritePrePropsAndProperties(prePropBinary, props);
+            relinkingExport.WritePrePropsAndProperties(prePropBinary, props, sourceExport.propsEnd());
             return relinkFailedReport;
         }
 

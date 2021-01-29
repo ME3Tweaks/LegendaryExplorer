@@ -12,14 +12,14 @@ namespace ME3ExplorerCore.Packages
         {
             var exp = new ExportEntry(pcc)
             {
-                ObjectName = pcc.GetNextIndexedName(packageName),
+                ObjectName = new NameReference(packageName, 0), // I cna't think a single time where a non-zero instanced package could be useful, but i may be wrong someday.
                 Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", RelinkResultsAvailable: relinkResultsAvailable),
                 Parent = parent
             };
             exp.ObjectFlags |= UnrealFlags.EObjectFlags.Public;
             exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
             pcc.AddExport(exp);
-            exp.indexValue = 0; // Why would you want this not index starting at 0
+            // Why would you want this not index starting at 0
             return exp;
         }
 

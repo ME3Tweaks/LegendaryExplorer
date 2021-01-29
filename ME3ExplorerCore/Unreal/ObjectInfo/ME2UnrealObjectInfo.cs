@@ -567,13 +567,17 @@ namespace ME3ExplorerCore.Unreal
                 UClass classBinary = ObjectBinary.From<UClass>(export);
                 info.isAbstract = classBinary.ClassFlags.HasFlag(UnrealFlags.EClassFlags.Abstract);
             }
-            if (pcc.FilePath.Contains("BioGame"))
+
+            if (pcc.FilePath != null)
             {
-                info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
-            }
-            else
-            {
-                info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
+                if (pcc.FilePath.Contains("BioGame"))
+                {
+                    info.pccPath = new string(pcc.FilePath.Skip(pcc.FilePath.LastIndexOf("BioGame") + 8).ToArray());
+                }
+                else
+                {
+                    info.pccPath = pcc.FilePath; //used for dynamic resolution of files outside the game directory.
+                }
             }
 
             int nextExport = BitConverter.ToInt32(export.Data, isStruct ? 0x18 : 0x10);

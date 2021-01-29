@@ -42,7 +42,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             pc.ReleasePackages();
         }
 
-        private static IEntry PortParents(IEntry source, IMEPackage target)
+        /// <summary>
+        /// Ports in the parents of the source entry into the target package. They should be Package exports. Items that are found in the target already are not ported. The direct parent of the source IEntry is returned, in the target package.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static IEntry PortParents(IEntry source, IMEPackage target)
         {
             Stack<IEntry> parentStack = new Stack<IEntry>();
             IEntry entry = source;
