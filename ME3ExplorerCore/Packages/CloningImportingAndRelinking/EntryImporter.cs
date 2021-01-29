@@ -72,25 +72,22 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-            RelinkerCache cache = null;
             if (portingOption == PortingOption.MergeTreeChildren || portingOption == PortingOption.ReplaceSingular)
             {
                 newEntry = targetLinkEntry; //Root item is the one we just dropped. Use that as the root.
             }
             else
             {
-                cache = new RelinkerCache(sourceEntry.FileRef, destPcc);
-
                 int link = targetLinkEntry?.UIndex ?? 0;
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export
-                    newEntry = ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, cache);
+                    newEntry = ImportExport(destPcc, sourceExport, link, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
                 }
                 else
                 {
                     newEntry = GetOrAddCrossImportOrPackage(sourceEntry.FullPath, sourcePcc, destPcc,
-                                                            forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap, relinkerCache: cache);
+                                                            forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
                 newEntry.idxLink = link;
@@ -101,13 +98,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             if ((portingOption == PortingOption.CloneTreeAsChild || portingOption == PortingOption.MergeTreeChildren || portingOption == PortingOption.CloneAllDependencies)
              && sourcePackageTree.NumChildrenOf(sourceEntry) > 0)
             {
-                importChildrenOf(sourceEntry, newEntry, cache);
+                importChildrenOf(sourceEntry, newEntry);
             }
 
             List<EntryStringPair> relinkResults = null;
             if (shouldRelink)
             {
-                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies, cache);
+                relinkResults = Relinker.RelinkAll(relinkMap, portingOption == PortingOption.CloneAllDependencies);
             }
 
             // Reindex - disabled for now as it causes issues
@@ -125,10 +122,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //    ReindexExportEntriesWithSamePath(item.Value);
             //}
 
-            cache?.Dispose();
             return relinkResults;
 
-            void importChildrenOf(IEntry sourceNode, IEntry newParent, RelinkerCache cache)
+            void importChildrenOf(IEntry sourceNode, IEntry newParent)
             {
                 foreach (IEntry node in sourcePackageTree.GetDirectChildrenOf(sourceNode))
                 {
@@ -143,7 +139,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             relinkMap[node] = sameObjInTarget;
 
                             //merge children to this node instead
-                            importChildrenOf(node, sameObjInTarget, cache);
+                            importChildrenOf(node, sameObjInTarget);
 
                             continue;
                         }
@@ -152,16 +148,16 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry entry;
                     if (node is ExportEntry exportNode)
                     {
-                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback, cache);
+                        entry = ImportExport(destPcc, exportNode, newParent.UIndex, portingOption == PortingOption.CloneAllDependencies, relinkMap, errorOccuredCallback);
                     }
                     else
                     {
-                        entry = GetOrAddCrossImportOrPackage(node.FullPath, sourcePcc, destPcc, objectMapping: relinkMap, relinkerCache: cache);
+                        entry = GetOrAddCrossImportOrPackage(node.FullPath, sourcePcc, destPcc, objectMapping: relinkMap);
                     }
 
                     entry.Parent = newParent;
 
-                    importChildrenOf(node, entry, cache);
+                    importChildrenOf(node, entry);
                 }
             }
         }

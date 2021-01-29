@@ -8,11 +8,20 @@ namespace ME3ExplorerCore.Packages
 {
     public static class ExportCreator
     {
-        public static ExportEntry CreatePackageExport(IMEPackage pcc, string packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
+        /// <summary>
+        /// Creates a package export. The default implementation does not use zero index (it will start at 1). Usages should be investigate to see if this is ever useful, I don't think it is
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="packageName"></param>
+        /// <param name="parent"></param>
+        /// <param name="relinkResultsAvailable"></param>
+        /// <param name="zeroIndexed"></param>
+        /// <returns></returns>
+        public static ExportEntry CreatePackageExport(IMEPackage pcc, string packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, bool zeroIndexed = false)
         {
             var exp = new ExportEntry(pcc)
             {
-                ObjectName = pcc.GetNextIndexedName(packageName),
+                ObjectName = zeroIndexed ? new NameReference(packageName, 0) : pcc.GetNextIndexedName(packageName),
                 Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", RelinkResultsAvailable: relinkResultsAvailable),
                 Parent = parent
             };
