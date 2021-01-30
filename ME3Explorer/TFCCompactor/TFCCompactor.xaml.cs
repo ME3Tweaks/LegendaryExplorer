@@ -160,13 +160,13 @@ namespace ME3Explorer.TFCCompactor
         {
             if (ME2Directory.DLCPath != null)
             {
-                GameList.Add(new GameWrapper(MEGame.ME2, "Mass Effect 2", ME2Directory.DLCPath));
+                GameList.Add(new GameWrapper(MEGame.ME2, "Mass Effect 2", ME2Directory.DefaultGamePath));
             }
 
             if (ME3Directory.DLCPath != null)
             {
-                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3", ME3Directory.DLCPath));
-                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3 (Movies)", ME3Directory.DLCPath));
+                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3", ME3Directory.DefaultGamePath));
+                GameList.Add(new GameWrapper(MEGame.ME3, "Mass Effect 3 (Movies)", ME3Directory.DefaultGamePath));
             }
 
             GameList.Add(new GameWrapper(MEGame.Unknown, "Select game...", null) { IsBrowseForCustom = true, IsCustomPath = true });
@@ -845,15 +845,21 @@ namespace ME3Explorer.TFCCompactor
                 get => _displayName;
                 set => SetProperty(ref _displayName, value);
             }
+
+            public string RootPath;
             public string DLCPath;
             public bool IsBrowseForCustom;
             public bool IsCustomPath;
 
-            public GameWrapper(MEGame game, string displayName, string dlcPath)
+            public GameWrapper(MEGame game, string displayName, string rootPath)
             {
                 Game = game;
                 DisplayName = displayName;
-                DLCPath = dlcPath;
+                if (game != MEGame.Unknown)
+                {
+                    DLCPath = MEDirectories.GetDLCPath(game, rootPath);
+                    RootPath = rootPath;
+                }
             }
         }
 
@@ -919,6 +925,7 @@ namespace ME3Explorer.TFCCompactor
 
                         if (gameSelected == MEGame.ME3)
                             result = Path.GetDirectoryName(result); //up one more because of win32 directory.
+                        var root = result;
                         string displayPath = result;
                         result = Path.Combine(result, @"BioGame\DLC");
 
@@ -926,6 +933,7 @@ namespace ME3Explorer.TFCCompactor
                         {
                             newItem.Game = gameSelected;
                             newItem.DisplayName = displayPath;
+                            newItem.RootPath = root;
                             newItem.DLCPath = result;
                             newItem.IsCustomPath = true;
                             newItem.IsBrowseForCustom = false;
@@ -943,7 +951,7 @@ namespace ME3Explorer.TFCCompactor
                     ScanForGameCompleted = false;
                     SelectedGame = newItem;
                     var officialDLC = newItem.Game == MEGame.ME3 ? ME3Directory.OfficialDLC : ME2Directory.OfficialDLC;
-                    var DLC = MELoadedFiles.GetEnabledDLCFolders(newItem.Game, newItem.DLCPath).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
+                    var DLC = MELoadedFiles.GetEnabledDLCFolders(newItem.Game, newItem.RootPath).Select(Path.GetFileName).Where(x => !officialDLC.Contains(x));
                     CustomDLCFolderList.ReplaceAll(DLC);
                     movieScan = newItem.DisplayName == "Mass Effect 3 (Movies)";
                 }
