@@ -12,7 +12,7 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
-		<DefineConstants>TRACE;AZURE</DefineConstants>
+		<DefineConstants>TRACE;NIGHTLY</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
 	  <DefineConstants>TRACE;AZURE</DefineConstants>
