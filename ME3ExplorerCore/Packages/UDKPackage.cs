@@ -209,7 +209,7 @@ namespace ME3ExplorerCore.Packages
         private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
         {
             var datastream = udkPackage.SaveToStream(false);
-            datastream.WriteToFile(path);
+            datastream.WriteToFile(path ?? udkPackage.FilePath);
 
             if (!isSaveAs)
             {
