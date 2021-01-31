@@ -174,9 +174,12 @@ namespace ME3Explorer.Sequence_Editor
                                     }
                                 }
 
-                                if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
-                                {
-                                    inLinksProp = ilp;
+                                // Jan 31 2021 change by Mgamerz: Not sure why it only adds input links if it's ME1
+                                // I removed it to let other games work too
+                                //if (game == MEGame.ME1 && inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
+                                if (inLinksProp is null && prop.Name == "InputLinks" && prop is ArrayProperty<StructProperty> ilp)
+                                    {
+                                        inLinksProp = ilp;
                                 }
                             }
                         }
