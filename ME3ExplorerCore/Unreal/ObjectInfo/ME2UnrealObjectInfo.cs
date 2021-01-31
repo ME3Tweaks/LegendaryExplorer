@@ -269,9 +269,10 @@ namespace ME3ExplorerCore.Unreal
             return null;
         }
 
-        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null)
+        public static bool InheritsFrom(string className, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperclass = null)
         {
             if (baseClass == @"Object") return true; //Everything inherits from Object
+            if (knownSuperclass != null && baseClass == knownSuperclass) return true; // We already know it's a direct descendant
             while (true)
             {
                 if (className == baseClass)
@@ -287,7 +288,13 @@ namespace ME3ExplorerCore.Unreal
                 {
                     className = Classes[className].baseClass;
                 }
-                else
+                else if (knownSuperclass != null && Classes.ContainsKey(knownSuperclass))
+                {
+                    // We don't have this class in DB but we have super class (e.g. this is custom class without custom class info generated).
+                    // We will just ignore this class and jump to our known super class
+                    className = Classes[knownSuperclass].baseClass;
+                    knownSuperclass = null; // Don't use it again
+                } else
                 {
                     break;
                 }

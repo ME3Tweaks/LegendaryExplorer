@@ -11,14 +11,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, string newPackagePath)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, PackageCache pc = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
-            MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
-            using var newP = MEPackageHandler.OpenMEPackage(newPackagePath);
 
             // We will want to cache files in memory to greatly speed this up
-            PackageCache pc = new PackageCache();
+            var newCache = pc == null;
+            pc ??= new PackageCache();
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
@@ -30,12 +29,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
             foreach (var mapping in impToExpMapList)
             {
-                if (newP.FindEntry(mapping.Key.InstancedFullPath) == null)
+                if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
                 {
                     // port it in
                     Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
-                    var parent = PortParents(mapping.Value, newP);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, newP, parent, true, out _);
+                    var parent = PortParents(mapping.Value, targetPackage);
+                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, out _);
                     issues.AddRange(relinkResults1);
                 }
                 else
@@ -45,14 +44,25 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Import the original item now
-            var lParent = PortParents(sourceExport, newP);
-            var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, newP, lParent, true, out _);
+            var lParent = PortParents(sourceExport, targetPackage);
+            var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out _);
             issues.AddRange(relinkResults2);
 
-            newP.Save();
-            pc.ReleasePackages();
+            if (newCache)
+            {
+                pc.ReleasePackages();
+            }
 
             return issues;
+        }
+
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, string newPackagePath, bool compress = false)
+        {
+            MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
+            using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
+            var exp = ExportExportToPackage(sourceExport, p);
+            p.Save(compress: compress);
+            return exp;
         }
 
         /// <summary>
@@ -64,10 +74,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         public static IEntry PortParents(IEntry source, IMEPackage target)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
-            if (IsGlobalNonStartupFile(packagename))
+            if (packagename != null && IsGlobalNonStartupFile(packagename))
             {
                 PrepareGlobalFileForPorting(source.FileRef, packagename);
-
             }
 
 
@@ -79,7 +88,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 entry = entry.Parent;
             }
 
-            
+
 
             var parentCount = parentStack.Count;
 
@@ -137,9 +146,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 // We need to enumerate all referenced objects. They are the items unique in this 'package' that are not sourced from others.
                 // We only care about the roots as the rest will cascade the change
-                var refed = objReferencer.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedObjects").Select(x=>x.ResolveToEntry(sourcePackage) as ExportEntry).Where(x=>x != null && x.idxLink == 0).ToList();
+                var refed = objReferencer.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedObjects").Select(x => x.ResolveToEntry(sourcePackage) as ExportEntry).Where(x => x != null && x.idxLink == 0).ToList();
 
-                foreach(var refX in refed)
+                foreach (var refX in refed)
                 {
                     // Point under package so it matches how it would be
                     // if it was cooked into a non-master file
