@@ -4,14 +4,14 @@
     <Description>Core library for ME3Explorer, a toolset for modding the Mass Effect Trilogy</Description>
     <Company>ME3Tweaks</Company>
     <Authors>ME3Tweaks</Authors>
-    <Version>5.1.0.0</Version>
+    <Version>5.0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <Platforms>x64</Platforms>
-    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease</Configurations>
+    <Configurations>WinDebug;WinRelease;LinuxDebug;LinuxRelease;MacDebug;MacRelease;WPFDebug;WPFRelease;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
@@ -34,8 +34,17 @@
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <!-- Nightly release from Azure-->
   <PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
+  <PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>x64</PlatformTarget>

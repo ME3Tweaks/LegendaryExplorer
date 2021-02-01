@@ -59,7 +59,7 @@ namespace ME3Explorer
 
 #if DEBUG
                 version += " DEBUG";
-#elif AZURE
+#elif NIGHTLY
                 //This is what will be placed in release. Comment this out when building for a stable!
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #elif RELEASE
