@@ -651,7 +651,7 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedConv.ParseStageDirections(TLKLookup);
 
                 SelectedConv.IsFirstParsed = true;
-                DetailParse(SelectedConv);
+                SelectedConv.DetailedParse();
             }
 
             foreach (var conv in Conversations.Where(conv => conv.IsFirstParsed == false)) //Get Speakers entry and replies plus convo data first
@@ -683,7 +683,7 @@ namespace ME3Explorer.Dialogue_Editor
             //Do minor stuff
             foreach (var conv in BackQueue.GetConsumingEnumerable(CancellationToken.None))
             {
-                DetailParse(conv);
+                conv.DetailedParse();
             }
 
         }
@@ -694,22 +694,6 @@ namespace ME3Explorer.Dialogue_Editor
 #if DEBUG
             Debug.WriteLine("BackParse Done");
 #endif
-        }
-        private void DetailParse(ConversationExtended conv)
-        {
-
-            foreach (var spkr in conv.Speakers)
-            {
-                spkr.FaceFX_Male = conv.GetFaceFX(spkr.SpeakerID, true);
-                spkr.FaceFX_Female = conv.GetFaceFX(spkr.SpeakerID, false);
-            }
-            GenerateSpeakerTags(conv);
-            ParseLinesInterpData(conv);
-            ParseLinesFaceFX(conv);
-            ParseLinesAudioStreams(conv);
-            ParseLinesScripts(conv);
-
-            conv.IsParsed = true;
         }
 
         private string TLKLookup(int id, IMEPackage package)
@@ -726,235 +710,7 @@ namespace ME3Explorer.Dialogue_Editor
                 SelectedSpeakerList.Add(spkr);
             }
         }
-        private static void GenerateSpeakerTags(ConversationExtended conv)
-        {
-            foreach (var e in conv.EntryList)
-            {
-                int spkridx = e.SpeakerIndex;
-                var spkrtag = conv.Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
-                if (spkrtag != null)
-                    e.SpeakerTag = spkrtag;
-            }
-
-            foreach (var r in conv.ReplyList)
-            {
-                int spkridx = r.SpeakerIndex;
-                var spkrtag = conv.Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
-                if (spkrtag != null)
-                    r.SpeakerTag = spkrtag;
-            }
-        }
-        /// <summary>
-        /// Gets the interpdata for each node in conversation
-        /// </summary>
-        /// <param name="conv"></param>
-        private void ParseLinesInterpData(ConversationExtended conv)
-        {
-            if (conv.Sequence == null || conv.Sequence.UIndex < 1)
-                return;
-            //Get sequence from convo
-            //Get list of BioConvoStarts
-            //Match to export id => SeqAct_Interp => Interpdata
-            if (conv.Sequence is ExportEntry sequence)
-            {
-                var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-
-                var convStarts = new Dictionary<int, ExportEntry>();
-                foreach (var prop in seqobjs)
-                {
-                    var seqobj = Pcc.GetUExport(prop.Value);
-                    if (seqobj.ClassName == "BioSeqEvt_ConvNode")
-                    {
-                        int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
-                        if (!convStarts.ContainsKey(key))
-                        {
-                            convStarts.Add(key, seqobj);
-                        }
-                    }
-                }
-
-                foreach (var entry in conv.EntryList)
-                {
-                    try
-                    {
-                        entry.Interpdata = ParseSingleNodeInterpData(conv, entry, convStarts);
-                    }
-                    catch (Exception e)
-                    {
-#if DEBUG
-                        throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
-#endif
-                    }
-                }
-
-                foreach (var reply in conv.ReplyList)
-                {
-                    try
-                    {
-                        reply.Interpdata = ParseSingleNodeInterpData(conv, reply, convStarts);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception($"ReplyList parse interpdata failed: {reply.NodeCount}", e);
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Gets the interpdata for a single node
-        /// </summary>
-        /// <param name="conv"></param>
-        private ExportEntry ParseSingleNodeInterpData(ConversationExtended conv, DialogueNodeExtended node, Dictionary<int, ExportEntry> convStarts = null)
-        {
-            if (conv.Sequence == null || node == null || conv.Sequence.UIndex < 1)
-                return null;
-
-            if (convStarts == null && conv.Sequence is ExportEntry sequence)
-            {
-                var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                convStarts = new Dictionary<int, ExportEntry>();
-                foreach (var prop in seqobjs)
-                {
-                    var seqobj = Pcc.GetUExport(prop.Value);
-                    if (seqobj.ClassName == "BioSeqEvt_ConvNode")
-                    {
-                        int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
-                        if (!convStarts.ContainsKey(key))
-                        {
-                            convStarts.Add(key, seqobj);
-                        }
-                    }
-                }
-            }
-
-            //Match to export id => SeqAct_Interp => Interpdata
-            node.ExportID = node.NodeProp.GetProp<IntProperty>("nExportID");
-            if (node.ExportID != 0)
-            {
-                var convstart = convStarts.Where(s => s.Key == node.ExportID).FirstOrDefault().Value;
-                if (convstart != null)
-                {
-                    var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                    if (outLinksProp != null && outLinksProp.Count > 0)
-                    {
-                        var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                        if (linksProp != null)
-                        {
-                            var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                            var interpseqact = Pcc.GetUExport(link);
-                            if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
-                            {
-                                var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                if (outLinksProp2 != null && outLinksProp2.Count > 0)
-                                {
-                                    var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                    if (linksProp2 != null && linksProp2.Count > 0)
-                                    {
-                                        var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                        interpseqact = Pcc.GetUExport(link2);
-                                        if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
-                                        {
-                                            var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-                                            if (outLinksProp3 != null && outLinksProp3.Count > 0)
-                                            {
-                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
-                                                if (linksProp3 != null)
-                                                {
-                                                    var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
-                                                    interpseqact = Pcc.GetUExport(link3);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
-                            if (varLinksProp != null)
-                            {
-                                foreach (var prop in varLinksProp)
-                                {
-                                    var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
-                                    if (desc == "Data") //ME3/ME1
-                                    {
-                                        var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                                        if (linkedVars != null && linkedVars.Count > 0)
-                                        {
-                                            var datalink = linkedVars[0].Value;
-                                            return Pcc.GetUExport(datalink);
-
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        /// <summary>
-        /// Parses for male and female wwisestream IEntry for every line in the conversation.
-        /// </summary>
-        private void ParseLinesAudioStreams(ConversationExtended conv)
-        {
-            try
-            {
-
-                if (Pcc.Game != MEGame.ME1)
-                {
-                    Dictionary<string, ExportEntry> streams = Pcc.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.Name.ToLower()}_{x.UIndex}");
-
-                    foreach (var node in conv.EntryList)
-                    {
-                        string srchFem = $"{node.LineStrRef}_f";
-                        string srchM = $"{node.LineStrRef}_m";
-                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
-                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
-                    }
-
-                    foreach (var node in conv.ReplyList)
-                    {
-                        string srchFem = $"{node.LineStrRef}_f";
-                        string srchM = $"{node.LineStrRef}_m";
-                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
-                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-#if DEBUG
-                throw new Exception("Failure to parse wwisestreams for lines", e);
-#endif
-            }
-        }
-        private static void ParseLinesScripts(ConversationExtended conv)
-        {
-            if (conv.IsFirstParsed)
-            {
-                try
-                {
-                    foreach (var entry in conv.EntryList)
-                    {
-                        var scriptidx = entry.NodeProp.GetProp<IntProperty>("nScriptIndex");
-                        entry.Script = conv.ScriptList[scriptidx + 1];
-                    }
-                    foreach (var reply in conv.ReplyList)
-                    {
-                        var scriptidx = reply.NodeProp.GetProp<IntProperty>("nScriptIndex");
-                        reply.Script = conv.ScriptList[scriptidx + 1];
-                    }
-                }
-                catch (Exception e)
-                {
-#if DEBUG
-                    throw new Exception("Parse failure on script list", e);
-#endif
-                }
-            }
-        }
+        
         private void ParseNodeData(DialogueNodeExtended node)
         {
             try
@@ -1005,38 +761,7 @@ namespace ME3Explorer.Dialogue_Editor
 #endif
             }
         }
-        private static void ParseLinesFaceFX(ConversationExtended conv)
-        {
-            foreach (var entry in conv.EntryList)
-            {
-                if (entry.Line != "No data" && !string.IsNullOrWhiteSpace(entry.Line))
-                {
-                    entry.FaceFX_Female = $"FXA_{entry.LineStrRef}_F";
-                    entry.FaceFX_Male = $"FXA_{entry.LineStrRef}_M";
-                }
-                else
-                {
-                    entry.FaceFX_Female = "None";
-                    entry.FaceFX_Male = "None";
-                }
-            }
-
-            foreach (var reply in conv.ReplyList)
-            {
-                if (reply.Line != "No data" && !string.IsNullOrWhiteSpace(reply.Line))
-                {
-                    reply.FaceFX_Female = $"FXA_{reply.LineStrRef}_F";
-                    reply.FaceFX_Male = $"FXA_{reply.LineStrRef}_M";
-                }
-                else
-                {
-                    reply.FaceFX_Female = "None";
-                    reply.FaceFX_Male = "None";
-                }
-            }
-        }
-
-
+        
         public int ParseActorsNames(ConversationExtended conv, string tag)
         {
             if (Pcc.Game == MEGame.ME1)
@@ -1378,7 +1103,7 @@ namespace ME3Explorer.Dialogue_Editor
                 case "ExportID":
                     var nExportID = new IntProperty(node.ExportID, "nExportID");
                     prop.Properties.AddOrReplaceProp(nExportID);
-                    node.Interpdata = ParseSingleNodeInterpData(SelectedConv, node);
+                    node.Interpdata = SelectedConv.ParseSingleNodeInterpData(node);
                     var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
                     node.InterpLength = lengthprop?.Value ?? -1;
                     needsRefresh = true;

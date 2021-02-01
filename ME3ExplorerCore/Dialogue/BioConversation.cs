@@ -77,7 +77,7 @@ namespace ME3ExplorerCore.Dialogue
             StageDirections.AddRange(other.StageDirections);
         }
 
-        public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null)
+        public void LoadConversation(Func<int, IMEPackage, string> tlkLookup = null, bool detailedLoad = false)
         {
             ParseStartingList();
             ParseSpeakers();
@@ -89,6 +89,291 @@ namespace ME3ExplorerCore.Dialogue
             ParseSequence();
             ParseWwiseBank();
             ParseStageDirections(tlkLookup);
+
+            if (detailedLoad)
+            {
+                DetailedParse();
+            }
+        }
+
+        public void DetailedParse()
+        {
+
+            foreach (var spkr in Speakers)
+            {
+                spkr.FaceFX_Male = GetFaceFX(spkr.SpeakerID, true);
+                spkr.FaceFX_Female = GetFaceFX(spkr.SpeakerID, false);
+            }
+            GenerateSpeakerTags();
+            ParseLinesInterpData();
+            ParseLinesFaceFX();
+            ParseLinesAudioStreams();
+            ParseLinesScripts();
+
+            IsParsed = true;
+        }
+
+        private void GenerateSpeakerTags()
+        {
+            foreach (var e in EntryList)
+            {
+                int spkridx = e.SpeakerIndex;
+                var spkrtag = Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
+                if (spkrtag != null)
+                    e.SpeakerTag = spkrtag;
+            }
+
+            foreach (var r in ReplyList)
+            {
+                int spkridx = r.SpeakerIndex;
+                var spkrtag = Speakers.FirstOrDefault(s => s.SpeakerID == spkridx);
+                if (spkrtag != null)
+                    r.SpeakerTag = spkrtag;
+            }
+        }
+        /// <summary>
+        /// Gets the interpdata for each node in conversation
+        /// </summary>
+        /// <param name="conv"></param>
+        private void ParseLinesInterpData()
+        {
+            if (Sequence == null || Sequence.UIndex < 1)
+                return;
+            //Get sequence from convo
+            //Get list of BioConvoStarts
+            //Match to export id => SeqAct_Interp => Interpdata
+            if (Sequence is ExportEntry sequence)
+            {
+                var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+
+                var convStarts = new Dictionary<int, ExportEntry>();
+                foreach (var prop in seqobjs)
+                {
+                    var seqobj = Export.FileRef.GetUExport(prop.Value);
+                    if (seqobj.ClassName == "BioSeqEvt_ConvNode")
+                    {
+                        int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
+                        if (!convStarts.ContainsKey(key))
+                        {
+                            convStarts.Add(key, seqobj);
+                        }
+                    }
+                }
+
+                foreach (var entry in EntryList)
+                {
+                    try
+                    {
+                        entry.Interpdata = ParseSingleNodeInterpData(entry, convStarts);
+                    }
+                    catch (Exception e)
+                    {
+#if DEBUG
+                        throw new Exception($"EntryList parse interpdata failed: {entry.NodeCount}", e);
+#endif
+                    }
+                }
+
+                foreach (var reply in ReplyList)
+                {
+                    try
+                    {
+                        reply.Interpdata = ParseSingleNodeInterpData(reply, convStarts);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception($"ReplyList parse interpdata failed: {reply.NodeCount}", e);
+                    }
+                }
+            }
+        }
+
+
+        private void ParseLinesFaceFX()
+        {
+            foreach (var entry in EntryList)
+            {
+                if (entry.Line != "No data" && !string.IsNullOrWhiteSpace(entry.Line))
+                {
+                    entry.FaceFX_Female = $"FXA_{entry.LineStrRef}_F";
+                    entry.FaceFX_Male = $"FXA_{entry.LineStrRef}_M";
+                }
+                else
+                {
+                    entry.FaceFX_Female = "None";
+                    entry.FaceFX_Male = "None";
+                }
+            }
+
+            foreach (var reply in ReplyList)
+            {
+                if (reply.Line != "No data" && !string.IsNullOrWhiteSpace(reply.Line))
+                {
+                    reply.FaceFX_Female = $"FXA_{reply.LineStrRef}_F";
+                    reply.FaceFX_Male = $"FXA_{reply.LineStrRef}_M";
+                }
+                else
+                {
+                    reply.FaceFX_Female = "None";
+                    reply.FaceFX_Male = "None";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the interpdata for a single node
+        /// </summary>
+        /// <param name="conv"></param>
+        public ExportEntry ParseSingleNodeInterpData(DialogueNodeExtended node, Dictionary<int, ExportEntry> convStarts = null)
+        {
+            if (Sequence == null || node == null || Sequence.UIndex < 1)
+                return null;
+
+            if (convStarts == null && Sequence is ExportEntry sequence)
+            {
+                var seqobjs = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                convStarts = new Dictionary<int, ExportEntry>();
+                foreach (var prop in seqobjs)
+                {
+                    var seqobj = Export.FileRef.GetUExport(prop.Value);
+                    if (seqobj.ClassName == "BioSeqEvt_ConvNode")
+                    {
+                        int key = seqobj.GetProperty<IntProperty>("m_nNodeID"); //ME3
+                        if (!convStarts.ContainsKey(key))
+                        {
+                            convStarts.Add(key, seqobj);
+                        }
+                    }
+                }
+            }
+
+            //Match to export id => SeqAct_Interp => Interpdata
+            node.ExportID = node.NodeProp.GetProp<IntProperty>("nExportID");
+            if (node.ExportID != 0)
+            {
+                var convstart = convStarts.Where(s => s.Key == node.ExportID).FirstOrDefault().Value;
+                if (convstart != null)
+                {
+                    var outLinksProp = convstart.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null && outLinksProp.Count > 0)
+                    {
+                        var linksProp = outLinksProp[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                        if (linksProp != null)
+                        {
+                            var link = linksProp[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                            var interpseqact = Export.FileRef.GetUExport(link);
+                            if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                            {
+                                var outLinksProp2 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                if (outLinksProp2 != null && outLinksProp2.Count > 0)
+                                {
+                                    var linksProp2 = outLinksProp2[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                    if (linksProp2 != null && linksProp2.Count > 0)
+                                    {
+                                        var link2 = linksProp2[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                        interpseqact = Export.FileRef.GetUExport(link2);
+                                        if (interpseqact.ClassName != "SeqAct_Interp") //Double check egm facefx not in the loop. Go two nodes deeper. "past conditional / BioSeqAct_SetFaceFX"
+                                        {
+                                            var outLinksProp3 = interpseqact.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+                                            if (outLinksProp3 != null && outLinksProp3.Count > 0)
+                                            {
+                                                var linksProp3 = outLinksProp3[0].GetProp<ArrayProperty<StructProperty>>("Links");
+                                                if (linksProp3 != null)
+                                                {
+                                                    var link3 = linksProp3[0].GetProp<ObjectProperty>("LinkedOp").Value;
+                                                    interpseqact = Export.FileRef.GetUExport(link3);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            var varLinksProp = interpseqact.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+                            if (varLinksProp != null)
+                            {
+                                foreach (var prop in varLinksProp)
+                                {
+                                    var desc = prop.GetProp<StrProperty>("LinkDesc").Value; //ME3/ME2/ME1
+                                    if (desc == "Data") //ME3/ME1
+                                    {
+                                        var linkedVars = prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                                        if (linkedVars != null && linkedVars.Count > 0)
+                                        {
+                                            var datalink = linkedVars[0].Value;
+                                            return Export.FileRef.GetUExport(datalink);
+
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// Parses for male and female wwisestream IEntry for every line in the conversation.
+        /// </summary>
+        private void ParseLinesAudioStreams()
+        {
+            try
+            {
+
+                if (Export.FileRef.Game != MEGame.ME1)
+                {
+                    Dictionary<string, ExportEntry> streams = Export.FileRef.Exports.Where(x => x.ClassName == "WwiseStream").ToDictionary(x => $"{x.ObjectName.Name.ToLower()}_{x.UIndex}");
+
+                    foreach (var node in EntryList)
+                    {
+                        string srchFem = $"{node.LineStrRef}_f";
+                        string srchM = $"{node.LineStrRef}_m";
+                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
+                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
+                    }
+
+                    foreach (var node in ReplyList)
+                    {
+                        string srchFem = $"{node.LineStrRef}_f";
+                        string srchM = $"{node.LineStrRef}_m";
+                        node.WwiseStream_Female = streams.FirstOrDefault(s => s.Key.Contains(srchFem)).Value;
+                        node.WwiseStream_Male = streams.FirstOrDefault(s => s.Key.Contains(srchM)).Value;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw new Exception("Failure to parse wwisestreams for lines", e);
+#endif
+            }
+        }
+        private void ParseLinesScripts()
+        {
+            if (IsFirstParsed)
+            {
+                try
+                {
+                    foreach (var entry in EntryList)
+                    {
+                        var scriptidx = entry.NodeProp.GetProp<IntProperty>("nScriptIndex");
+                        entry.Script = ScriptList[scriptidx + 1];
+                    }
+                    foreach (var reply in ReplyList)
+                    {
+                        var scriptidx = reply.NodeProp.GetProp<IntProperty>("nScriptIndex");
+                        reply.Script = ScriptList[scriptidx + 1];
+                    }
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    throw new Exception("Parse failure on script list", e);
+#endif
+                }
+            }
         }
 
         public void ParseEntryList(Func<int, IMEPackage, string> tlkLookup = null)
@@ -536,230 +821,9 @@ namespace ME3ExplorerCore.Dialogue
     }
 
 
-    [DebuggerDisplay("SpeakerExtended {SpeakerID} {SpeakerName}")]
-
-    public class SpeakerExtended : INotifyPropertyChanged
-    {
-        public int SpeakerID { get; set; }
-        public string SpeakerName { get; set; }
-        /// <summary>
-        /// Male UIndex object reference
-        /// </summary>
-        public IEntry FaceFX_Male { get; set; }
-        /// <summary>
-        /// Female UIndex object reference
-        /// </summary>
-        public IEntry FaceFX_Female { get; set; }
-        public int StrRefID { get; set; }
-        public string FriendlyName { get; set; }
-
-        public SpeakerExtended(int SpeakerID, string SpeakerName)
-        {
-            this.SpeakerID = SpeakerID;
-            this.SpeakerName = SpeakerName;
-        }
-
-        public SpeakerExtended(int SpeakerID, string SpeakerName, IEntry FaceFX_Male, IEntry FaceFX_Female, int StrRefID, string FriendlyName)
-        {
-            this.SpeakerID = SpeakerID;
-            this.SpeakerName = SpeakerName;
-            this.FaceFX_Male = FaceFX_Male;
-            this.FaceFX_Female = FaceFX_Female;
-            this.StrRefID = StrRefID;
-            this.FriendlyName = FriendlyName;
-        }
-
-#pragma warning disable
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-    }
 
 
-    [DebuggerDisplay("DNExtended {ReplyType} IsReply: {IsReply}, Line: {Line}")]
 
-    public class DialogueNodeExtended : INotifyPropertyChanged
-    {
-        public bool IsReply { get; set; }
-        public int NodeCount { get; set; } //This is the count for reply and node.
-        public StructProperty NodeProp { get; set; }
-        public int SpeakerIndex { get; set; }
-        public int LineStrRef { get; set; }
-        public string Line { get; set; }
-        public bool FiresConditional { get; set; }
-        public int ConditionalOrBool { get; set; }
-        public int Transition { get; set; }
-        /// <summary>
-        /// Tag of speaker - generated.
-        /// </summary>
-        public SpeakerExtended SpeakerTag { get; set; }
-        /// <summary>
-        /// InterpData object reference UIndex
-        /// </summary>
-        public ExportEntry Interpdata { get; set; }
-        /// <summary>
-        /// Length of interpdata
-        /// </summary>
-        public float InterpLength { get; set; }
-        /// <summary>
-        /// WwiseStream object reference Male UIndex
-        /// </summary>
-        public ExportEntry WwiseStream_Male { get; set; }
-        /// <summary>
-        /// WwiseStream object reference Female UIndex
-        /// </summary>
-        public ExportEntry WwiseStream_Female { get; set; }
-        /// <summary>
-        /// FaceFX reference Male TBD
-        /// </summary>
-        public string FaceFX_Male { get; set; }
-        /// <summary>
-        /// FaceFX reference female TBD
-        /// </summary>
-        public string FaceFX_Female { get; set; }
-        public int Listener { get; set; }
-        public int ConditionalParam { get; set; }
-        public int TransitionParam { get; set; }
-        public int ExportID { get; set; }
-        public bool IsSkippable { get; set; }
-        public bool IsUnskippable { get; set; }
-        public bool IsDefaultAction { get; set; }
-        public bool IsMajorDecision { get; set; }
-        public bool IsNonTextLine { get; set; }
-        public bool IgnoreBodyGesture { get; set; }
-        public bool IsAmbient { get; set; }
-        public int CameraIntimacy { get; set; }
-        public bool HideSubtitle { get; set; }
-        public NameReference Script { get; set; }
-        public EBCConvGUIStyles GUIStyle { get; set; }
-        public EBCReplyTypes ReplyType { get; set; }
-
-        public DialogueNodeExtended(StructProperty NodeProp, bool IsReply, int NodeCount, int SpeakerIndex, int LineStrRef, string Line, bool FiresConditional, int ConditionalOrBool, int Transition, EBCReplyTypes ReplyType)
-        {
-            this.NodeProp = NodeProp;
-            this.IsReply = IsReply;
-            this.NodeCount = NodeCount;
-            this.SpeakerIndex = SpeakerIndex;
-            this.LineStrRef = LineStrRef;
-            this.Line = Line;
-            this.FiresConditional = FiresConditional;
-            this.ConditionalOrBool = ConditionalOrBool;
-            this.Transition = Transition;
-            this.ReplyType = ReplyType;
-        }
-
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="nodeExtended"></param>
-        public DialogueNodeExtended(DialogueNodeExtended nodeExtended)
-        {
-            NodeProp = nodeExtended.NodeProp;
-            IsReply = nodeExtended.IsReply;
-            NodeCount = nodeExtended.NodeCount;
-            SpeakerIndex = nodeExtended.SpeakerIndex;
-            LineStrRef = nodeExtended.LineStrRef;
-            Line = nodeExtended.Line;
-            FiresConditional = nodeExtended.FiresConditional;
-            ConditionalOrBool = nodeExtended.ConditionalOrBool;
-            Transition = nodeExtended.Transition;
-            SpeakerTag = nodeExtended.SpeakerTag;
-            Interpdata = nodeExtended.Interpdata;
-            WwiseStream_Male = nodeExtended.WwiseStream_Male;
-            WwiseStream_Female = nodeExtended.WwiseStream_Female;
-            FaceFX_Male = nodeExtended.FaceFX_Male;
-            FaceFX_Female = nodeExtended.FaceFX_Female;
-            Listener = nodeExtended.Listener;
-            ConditionalParam = nodeExtended.ConditionalParam;
-            TransitionParam = nodeExtended.TransitionParam;
-            ExportID = nodeExtended.ExportID;
-            IsSkippable = nodeExtended.IsSkippable;
-            IsUnskippable = nodeExtended.IsUnskippable;
-            IsDefaultAction = nodeExtended.IsDefaultAction;
-            IsMajorDecision = nodeExtended.IsMajorDecision;
-            IsNonTextLine = nodeExtended.IsNonTextLine;
-            IgnoreBodyGesture = nodeExtended.IgnoreBodyGesture;
-            IsAmbient = nodeExtended.IsAmbient;
-            CameraIntimacy = nodeExtended.CameraIntimacy;
-            HideSubtitle = nodeExtended.HideSubtitle;
-            Script = nodeExtended.Script;
-            GUIStyle = nodeExtended.GUIStyle;
-            ReplyType = nodeExtended.ReplyType;
-        }
-
-#pragma warning disable
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-    }
-
-    public class ReplyChoiceNode : INotifyPropertyChanged
-    {
-        public int Order { get; set; }
-        public int Index { get; set; }
-        public string Paraphrase { get; set; }
-        /// <summary>
-        /// Reply choice strref
-        /// </summary>
-        public int ReplyStrRef { get; set; }
-        /// <summary>
-        /// reply choice category
-        /// </summary>
-        public EBCReplyCategory RCategory { get; set; }
-        public string ReplyLine { get; set; }
-        public string NodeIDLink { get; set; }
-        public string Ordinal { get; set; }
-        public int TgtCondition { get; set; }
-        public string TgtFireCnd { get; set; }
-        public string TgtLine { get; set; }
-        public string TgtSpeaker { get; set; }
-
-        public ReplyChoiceNode(int Index, string Paraphrase, int ReplyStrRef, EBCReplyCategory RCategory, string ReplyLine)
-        {
-            this.Index = Index;
-            this.Paraphrase = Paraphrase;
-            this.ReplyStrRef = ReplyStrRef;
-            this.RCategory = RCategory;
-            this.ReplyLine = ReplyLine;
-        }
-
-        public ReplyChoiceNode(ReplyChoiceNode other)
-        {
-            Order = other.Order;
-            Index = other.Index;
-            Paraphrase = other.Paraphrase;
-            ReplyStrRef = other.ReplyStrRef;
-            RCategory = other.RCategory;
-            ReplyLine = other.ReplyLine;
-            NodeIDLink = other.NodeIDLink;
-            Ordinal = other.Ordinal;
-            TgtCondition = other.TgtCondition;
-            TgtFireCnd = other.TgtFireCnd;
-            TgtLine = other.TgtLine;
-            TgtSpeaker = other.TgtSpeaker;
-        }
-
-#pragma warning disable
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-    }
-
-    public class StageDirection : INotifyPropertyChanged
-    {
-        public int StageStrRef { get; set; }
-        public string StageLine { get; set; }
-        public string Direction { get; set; }
-
-        public StageDirection(int StageStrRef, string StageLine, string Direction)
-        {
-
-            this.StageStrRef = StageStrRef;
-            this.StageLine = StageLine;
-            this.Direction = Direction;
-        }
-
-#pragma warning disable
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore
-    }
 
     /// <summary>
     /// EGUIStyles enum with the MAX item removed
