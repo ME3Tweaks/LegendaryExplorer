@@ -187,9 +187,17 @@ namespace ME3ExplorerCore.Packages
             exportEntry.Index = exports.Count;
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
+            // For debugging
+            //if (EntryLookupTable.ContainsKey(exportEntry.InstancedFullPath))
+            //{
+            //    Debugger.Break();
+            //}
             EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
 
             ExportCount = exports.Count;
+
+            //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
+
 
             updateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));

@@ -12,56 +12,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
-    /// <summary>
-    /// Object that can be passed through to various relinker methods
-    /// </summary>
-    public class RelinkerCache : IDisposable
-    {
-        // This class is so we don't have to bolt more and more and more things onto relinker signatures to pass data through.
-        // They can just be accessed through here
 
-        public Dictionary<string, IEntry> sourceFullPathToEntryMap = new Dictionary<string, IEntry>();
-        public Dictionary<string, IEntry> sourceInstancedFullPathToEntryMap = new Dictionary<string, IEntry>();
-        public Dictionary<string, IEntry> destFullPathToEntryMap = new Dictionary<string, IEntry>();
-        public Dictionary<string, IEntry> destInstancedFullPathToEntryMap = new Dictionary<string, IEntry>();
-
-        public RelinkerCache(IMEPackage sourcePackage, IMEPackage destPackage)
-        {
-            // These items will prevent having to loop over the tables to find the 
-            // matching items
-            foreach (var im in sourcePackage.Imports)
-            {
-                sourceFullPathToEntryMap[im.FullPath] = im;
-                sourceInstancedFullPathToEntryMap[im.InstancedFullPath] = im;
-            }
-            foreach (var ex in sourcePackage.Exports)
-            {
-                sourceFullPathToEntryMap[ex.FullPath] = ex;
-                sourceInstancedFullPathToEntryMap[ex.InstancedFullPath] = ex;
-            }
-            foreach (var im in destPackage.Imports)
-            {
-                destFullPathToEntryMap[im.FullPath] = im;
-                destInstancedFullPathToEntryMap[im.InstancedFullPath] = im;
-            }
-            foreach (var ex in destPackage.Exports)
-            {
-                destFullPathToEntryMap[ex.FullPath] = ex;
-                destInstancedFullPathToEntryMap[ex.InstancedFullPath] = ex;
-            }
-        }
-
-        /// <summary>
-        /// Clears the hashtables
-        /// </summary>
-        public void Dispose()
-        {
-            sourceFullPathToEntryMap.Clear();
-            sourceInstancedFullPathToEntryMap.Clear();
-            destFullPathToEntryMap.Clear();
-            destInstancedFullPathToEntryMap.Clear();
-        }
-    }
     public static class Relinker
     {
         /// <summary>
