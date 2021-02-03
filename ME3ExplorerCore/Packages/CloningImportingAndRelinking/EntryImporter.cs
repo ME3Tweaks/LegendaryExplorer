@@ -191,7 +191,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="objectMapping"></param>
         /// <returns></returns>
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, IDictionary<IEntry, IEntry> objectMapping = null,
-            Action<string> errorOccuredCallback = null, RelinkerCache relinkerCache = null)
+            Action<string> errorOccuredCallback = null)
         {
             byte[] prePropBinary;
             if (sourceExport.HasStack)
@@ -256,14 +256,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 case ImportEntry sourceClassImport:
                     //The class of the export we are importing is an import. We should attempt to relink this.
-                    classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
+                    classValue = GetOrAddCrossImportOrPackage(sourceClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
                     break;
                 case ExportEntry sourceClassExport:
                     classValue = destPackage.FindExport(sourceClassExport.InstancedFullPath);
                     if (classValue is null && importExportDependencies)
                     {
-                        IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, true, objectMapping, relinkerCache: relinkerCache);
-                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, true, objectMapping, relinkerCache: relinkerCache);
+                        IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, true, objectMapping);
+                        classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, true, objectMapping);
                     }
                     break;
             }
@@ -276,15 +276,15 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     case ImportEntry sourceSuperClassImport:
                         //The class of the export we are importing is an import. We should attempt to relink this.
-                        superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
+                        superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.InstancedFullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping);
                         break;
                     case ExportEntry sourceSuperClassExport:
                         superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
                         if (superclass is null && importExportDependencies)
                         {
                             IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
-                                                                                   true, objectMapping, relinkerCache: relinkerCache);
-                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping, relinkerCache: relinkerCache);
+                                                                                   true, objectMapping);
+                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, true, objectMapping);
                         }
                         break;
                 }
@@ -304,7 +304,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage,
                                                                               true, objectMapping);
-                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping, relinkerCache: relinkerCache);
+                        archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, true, objectMapping);
                     }
                     break;
             }
@@ -325,11 +325,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 objectMapping[sourceExport] = newExport;
             }
 
-            if (relinkerCache != null)
-            {
-                relinkerCache.destInstancedFullPathToEntryMap[newExport.InstancedFullPath] = newExport;
-                relinkerCache.destFullPathToEntryMap[newExport.FullPath] = newExport;
-            }
             return newExport;
         }
 
@@ -385,7 +380,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="objectMapping"></param>
         /// <returns></returns>
         public static IEntry GetOrAddCrossImportOrPackage(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC,
-                                                          bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null, RelinkerCache relinkerCache = null)
+                                                          bool importNonPackageExportsToo = false, IDictionary<IEntry, IEntry> objectMapping = null, int? forcedLink = null)
         {
             if (string.IsNullOrEmpty(importFullNameInstanced))
             {
@@ -454,11 +449,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     objectMapping[sourceImport] = newImport;
                 }
 
-                if (relinkerCache != null)
-                {
-                    relinkerCache.destFullPathToEntryMap[newImport.FullPath] = newImport;
-                    relinkerCache.destInstancedFullPathToEntryMap[newImport.InstancedFullPath] = newImport;
-                }
                 return newImport;
             }
 
@@ -466,7 +456,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if ((importNonPackageExportsToo || sourceExport.ClassName == "Package") && sourceExport.InstancedFullPath == importFullNameInstanced)
                 {
-                    return ImportExport(destinationPCC, sourceExport, parent?.UIndex ?? 0, importNonPackageExportsToo, objectMapping, relinkerCache: relinkerCache);
+                    return ImportExport(destinationPCC, sourceExport, parent?.UIndex ?? 0, importNonPackageExportsToo, objectMapping);
                 }
             }
 
@@ -483,7 +473,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="objectMapping"></param>
         /// <returns></returns>
         public static IEntry GetOrAddCrossImportOrPackageFromGlobalFile(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, IDictionary<IEntry, IEntry> objectMapping = null,
-            Action<EntryStringPair> doubleClickCallback = null, RelinkerCache relinkerCache = null)
+            Action<EntryStringPair> doubleClickCallback = null)
         {
             string packageName = Path.GetFileNameWithoutExtension(sourcePcc.FilePath);
             if (string.IsNullOrEmpty(importFullNameInstanced))
@@ -569,12 +559,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     objectMapping[matchingSourceImport] = newImport;
                 }
 
-                if (relinkerCache != null)
-                {
-                    relinkerCache.destInstancedFullPathToEntryMap[newImport.InstancedFullPath] = newImport;
-                    relinkerCache.destFullPathToEntryMap[newImport.FullPath] = newImport;
-                }
-
                 return newImport;
             }
 
@@ -613,128 +597,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     objectMapping[matchingSourceExport] = newImport;
                 }
-                if (relinkerCache != null)
-                {
-                    relinkerCache.destInstancedFullPathToEntryMap[newImport.InstancedFullPath] = newImport;
-                    relinkerCache.destFullPathToEntryMap[newImport.FullPath] = newImport;
-                }
+                
                 return newImport;
-
             }
 
             throw new Exception($"Unable to add {importFullNameInstanced} to file! Could not find it!");
         }
-
-#if ME3EXPLORERAPP
-        public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className)
-        {
-            //check to see class is already in file
-            foreach (ImportEntry import in pcc.Imports)
-            {
-                if (import.IsClass && import.ObjectName == className)
-                {
-                    return import;
-                }
-            }
-            foreach (ExportEntry export in pcc.Exports)
-            {
-                if (export.IsClass && export.ObjectName == className)
-                {
-                    return export;
-                }
-            }
-
-            ClassInfo info = UnrealObjectInfo.GetClassOrStructInfo(pcc.Game, className);
-
-            //backup some package state so we can undo changes if something goes wrong
-            int exportCount = pcc.ExportCount;
-            int importCount = pcc.ImportCount;
-            List<string> nameListBackup = pcc.Names.ToList();
-            try
-            {
-                if (IsSafeToImportFrom(info.pccPath, pcc.Game))
-                {
-                    string package = Path.GetFileNameWithoutExtension(info.pccPath);
-                    return pcc.getEntryOrAddImport($"{package}.{className}");
-                }
-
-                //It's a class that's defined locally in every file that uses it.
-                string sourceFilePath = null;
-                if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
-                {
-                    string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
-                    if (File.Exists(resourceFilePath))
-                    {
-                        sourceFilePath = resourceFilePath;
-                    }
-                }
-                else
-                {
-                    string testPath = Path.Combine(MEDirectories.MEDirectories.BioGamePath(pcc.Game), info.pccPath);
-                    if (File.Exists(testPath))
-                    {
-                        sourceFilePath = testPath;
-                    }
-                    else if (pcc.Game == MEGame.ME1)
-                    {
-                        testPath = Path.Combine(ME1Directory.gamePath, info.pccPath);
-                        if (File.Exists(testPath))
-                        {
-                            sourceFilePath = testPath;
-                        }
-                    }
-                }
-
-                if (sourceFilePath is null)
-                {
-                    //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
-                    return null;
-                }
-
-                using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackage(sourceFilePath);
-
-                if (!sourcePackage.IsUExport(info.exportIndex))
-                {
-                    return null; //not sure how this would happen
-                }
-
-                ExportEntry sourceClassExport = sourcePackage.GetUExport(info.exportIndex);
-
-                if (sourceClassExport.ObjectName != className)
-                {
-                    return null;
-                }
-
-                //Will make sure that, if the class is in a package, that package will exist in pcc
-                IEntry parent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourcePackage, pcc);
-
-                var relinkResults = ImportAndRelinkEntries(PortingOption.CloneAllDependencies, sourceClassExport, pcc, parent, true, out IEntry result);
-                if (relinkResults?.Count > 0)
-                {
-                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", null);
-                    ld.Show();
-                }
-                return result;
-            }
-            catch (Exception e)
-            {
-                //remove added entries
-                var entriesToRemove = new List<IEntry>();
-                for (int i = exportCount; i < pcc.Exports.Count; i++)
-                {
-                    entriesToRemove.Add(pcc.Exports[i]);
-                }
-                for (int i = importCount; i < pcc.Imports.Count; i++)
-                {
-                    entriesToRemove.Add(pcc.Imports[i]);
-                }
-                EntryPruner.TrashEntries(pcc, entriesToRemove);
-                pcc.restoreNames(nameListBackup);
-                return null;
-            }
-        }
-
-#endif
 
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
         private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "BIOC_Base.u", "BIOC_BaseDLC_Vegas.u", "BIOC_BaseDLC_UNC.u" };

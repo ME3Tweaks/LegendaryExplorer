@@ -16,7 +16,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
         private readonly LevelViewportInfo[] EditorViews = new LevelViewportInfo[4];
         private UIndex DecalManager; //ME1
         private float unkFloat; //UDK
-        private UIndex[] ExtraReferencedObjects;
+        public UIndex[] ExtraReferencedObjects;
 
         protected override void Serialize(SerializingContainer2 sc)
         {

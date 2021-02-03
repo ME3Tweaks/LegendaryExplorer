@@ -10,8 +10,10 @@ namespace ME3ExplorerCore.Packages
     public class PackageCache
     {
         private object syncObj = new object();
-
-        private CaseInsensitiveConcurrentDictionary<IMEPackage> Cache = new CaseInsensitiveConcurrentDictionary<IMEPackage>();
+        /// <summary>
+        /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
+        /// </summary>
+        public CaseInsensitiveConcurrentDictionary<IMEPackage> Cache { get; }= new CaseInsensitiveConcurrentDictionary<IMEPackage>();
 
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening. Packages opened with this method do not use the global ME3ExplorerCore caching system and will always load from disk if not in this local cache.
