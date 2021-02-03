@@ -198,7 +198,7 @@ namespace ME3Explorer
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
-                
+
             }
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
@@ -242,6 +242,7 @@ namespace ME3Explorer
         public ICommand AddArrayElementCommand { get; set; }
         public ICommand RemoveArrayElementCommand { get; set; }
         public ICommand ClearArrayCommand { get; set; }
+        public ICommand CopyValueCommand { get; set; }
         public ICommand GenerateGUIDCommand { get; set; }
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand OpenInMeshplorerCommand { get; set; }
@@ -273,6 +274,33 @@ namespace ME3Explorer
             NavigateToEntryCommandInternal = new GenericCommand(FireNavigateCallback, CanFireNavigateCallback);
             OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, ObjectPropertyExportIsSelected);
             AttemptOpenImportDefinitionCommand = new GenericCommand(AttemptOpenImport, ObjectPropertyImportIsSelected);
+
+            CopyValueCommand = new GenericCommand(CopyPropertyValue, CanCopyPropertyValue);
+        }
+
+        private void CopyPropertyValue()
+        {
+            try
+            {
+                if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+                {
+                    Clipboard.SetText(tvi.ParsedValue);
+                }
+            }
+            catch
+            {
+                // sometimes errors occur on copy when clipboard is locked. Dont do anything
+            }
+        }
+
+        private bool CanCopyPropertyValue()
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && !string.IsNullOrWhiteSpace(tvi.ParsedValue))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void AttemptOpenImport()
@@ -2143,7 +2171,7 @@ namespace ME3Explorer
         public override void Dispose()
         {
             Settings.Default.PropertyChanged -= SettingChanged;
-            
+
 
             if (Interpreter_Hexbox != null)
             {
