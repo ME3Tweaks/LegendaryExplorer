@@ -728,12 +728,30 @@ namespace ME3Explorer.Sequence_Editor
             var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
             {
+                // Resolve imports
+                //var convertedImports = new List<ExportEntry>();
+                //var imports = seqObjs.Where(x => x.Value < 0).Select(x => x.ResolveToEntry(export.FileRef) as ImportEntry);
+
+                //foreach (var import in imports)
+                //{
+                //    var resolved = EntryImporter.ResolveImport(import);
+                //    if (resolved != null)
+                //    {
+                //        convertedImports.Add(resolved);
+                //    }
+                //}
+
+                var nullCount = seqObjs.Count(x => x.Value == 0);
+
                 CurrentObjects.AddRange(seqObjs.OrderBy(prop => prop.Value)
                                                .Where(prop => Pcc.IsUExport(prop.Value))
                                                .Select(prop => Pcc.GetUExport(prop.Value))
                                                .ToHashSet() //remove duplicate exports
                                                .Select(LoadObject));
-                if (CurrentObjects.Count != seqObjs.Count)
+                //CurrentObjects.AddRange(convertedImports.Select(LoadObject));
+
+                // Subtrack imports. But they should be shown still
+                if (CurrentObjects.Count != (seqObjs.Count - nullCount))
                 {
                     MessageBox.Show(this, "Sequence contains invalid or duplicate exports! Correct this by editing the SequenceObject array in the Interpreter");
                 }

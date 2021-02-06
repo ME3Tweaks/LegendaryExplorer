@@ -46,7 +46,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             Analytics.TrackEvent("Used feature", new Dictionary<string, string>() { { "Feature name", "Kismet Logger for " + game } });
             Pcc = pcc;
-            PccFileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
+            PccFileName = Pcc == null ? null :Path.GetFileNameWithoutExtension(Pcc.FilePath);
             SequenceToFilterTo = filterToSequence;
             Game = game;
             LogLines.ClearEx();
