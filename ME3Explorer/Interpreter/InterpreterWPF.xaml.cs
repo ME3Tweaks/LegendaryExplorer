@@ -2460,6 +2460,24 @@ namespace ME3Explorer
                             }
                         case StructProperty sp:
                             return $"{(sp.IsImmutable ? "Immutable " : "")}StructProperty({sp.StructType})";
+                        case ObjectProperty op:
+                            if (op.Name.Name != null)
+                            {
+                                var type = UnrealObjectInfo.GetPropertyInfo(AttachedExport.Game, op.Name.Name, AttachedExport.ClassName, containingExport: AttachedExport);
+                                if (type != null)
+                                {
+                                    return $"ObjectProperty ({type.Reference})";
+                                }
+                                else
+                                {
+                                    return "ObjectProperty (???)";
+                                }
+                            }
+                            else
+                            {
+                                return "ObjectProperty";
+                            }
+
                         case EnumProperty ep:
                             return $"ByteProperty(Enum): {ep.EnumType}";
                         default:
