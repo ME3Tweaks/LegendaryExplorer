@@ -29,7 +29,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>false</SignAssembly>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -59,13 +59,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureRelease|x64'">
     <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureTest|x64'">
     <OutputPath>bin\x64\WinAzureTest\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>

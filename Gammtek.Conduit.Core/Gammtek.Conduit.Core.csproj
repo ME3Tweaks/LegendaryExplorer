@@ -10,7 +10,7 @@
     <RootNamespace>Gammtek.Conduit</RootNamespace>
     <AssemblyName>Gammtek.Conduit.Core</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
