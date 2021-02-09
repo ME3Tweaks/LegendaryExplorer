@@ -60,6 +60,9 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXNav_InteractionListening","SFXNav_InteractionListening2", "SFXNav_InteractionRavager","SFXNav_InteractionTalking",
             "SFXNav_InteractionTalking2","SFXNav_InteractionTalking3", "SFXNav_KaiLengShield",
 
+            // ME2
+            "SFXNav_WayPoint",
+
             //ME1
             "BioWp_DefensePoint", "BioWp_AssaultPoint", "BioWp_ActionStation"
         };
@@ -1086,6 +1089,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     case "SFXDynamicPathNode":
                     case "BioPathPoint":
                         pathNode = new BioPathPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
+                    case "SFXNav_WayPoint":
+                        pathNode = new SFXNav_WayPoint(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "PathNode_Dynamic":
                         pathNode = new PathNode_Dynamic(uindex, x, y, exportToLoad.FileRef, graphEditor);
