@@ -1189,11 +1189,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         break;
                     case "SkeletalMeshActor":
                     case "SkeletalMeshCinematicActor":
-                    case "SkeletalMeshActorMAT":
                     case "SFXSkeletalMeshActor":
                     case "SFXSkeletalMeshCinematicActor":
-                    case "SFXSkeletalMeshActorMAT":
                         actorNode = new SkeletalMeshActor(uindex, x, y, exportToLoad.FileRef, graphEditor);
+                        break;
+                    case "SFXSkeletalMeshActorMAT":
+                    case "SkeletalMeshActorMAT":
+                        actorNode = new SkeletalMeshActorArchetyped(uindex, x, y, exportToLoad.FileRef, graphEditor);
                         break;
                     case "SFXPlaceable_Generator":
                     case "SFXPlaceable_ShieldGenerator":
