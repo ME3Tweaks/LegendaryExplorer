@@ -11,6 +11,18 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 {
     public static class EntryPruner
     {
+        public static void TrashEntriesAndDescendants(IEnumerable<IEntry> itemsToTrash)
+        {
+            if (!itemsToTrash.Any()) return;
+            var entriesToTrash = new List<IEntry>();
+            entriesToTrash.AddRange(itemsToTrash);
+            foreach (var entry in itemsToTrash)
+            {
+                entriesToTrash.AddRange(entry.GetAllDescendants());
+            }
+
+            TrashEntries(entriesToTrash[0].FileRef, entriesToTrash);
+        }
         public static void TrashEntryAndDescendants(IEntry entry)
         {
             var entriesToTrash = new List<IEntry> { entry };
@@ -45,10 +57,12 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             IMEPackage pcc = entry.FileRef;
             if (entry is ImportEntry imp)
             {
+                (pcc as UnrealPackageFile).EntryLookupTable.Remove(imp.InstancedFullPath);
                 if (trashContainer == null)
                 {
-                    trashContainer = TrashEntry(new ExportEntry(pcc), null, packageClass);
+                    trashContainer = new ExportEntry(pcc);
                     pcc.AddExport(trashContainer);
+                    trashContainer = TrashEntry(trashContainer, null, packageClass);
                     trashContainer.indexValue = 0;
                 }
                 imp.ClassName = "Package";
@@ -56,9 +70,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 imp.idxLink = trashContainer.UIndex;
                 imp.ObjectName = "Trash";
                 imp.indexValue = 0;
+                (pcc as UnrealPackageFile).EntryLookupTable[imp.InstancedFullPath] = imp;
             }
             else if (entry is ExportEntry exp)
             {
+                (pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath);
                 MemoryStream trashData = new MemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(pcc.FindNameOrAdd("None"));
@@ -77,7 +93,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     exp.idxLink = 0;
                     if (exp.idxLink == exp.UIndex)
                     {
-                        Debugger.Break();
+                        Debugger.Break(); // RECURSIVE LOOP DETECTION!!
                     }
                     exp.PackageGUID = UnrealPackageFile.TrashPackageGuid;
                     trashContainer = exp;
@@ -93,6 +109,8 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     exp.ObjectName = "Trash";
                     exp.PackageGUID = Guid.Empty;
                 }
+                (pcc as UnrealPackageFile).EntryLookupTable[exp.InstancedFullPath] = exp;
+
             }
             return trashContainer;
         }
@@ -178,13 +196,13 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                             }
                             break;
                         case ObjectProperty objectProperty:
-                        {
-                            if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
                             {
-                                newProps.Add(objectProperty);
+                                if (objectProperty.Value == 0 || sourcePcc.GetEntry(objectProperty.Value) is IEntry entry && !entry.FullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                                {
+                                    newProps.Add(objectProperty);
+                                }
+                                break;
                             }
-                            break;
-                        }
                         case StructProperty structProperty:
                             string structType = structProperty.StructType;
                             if (UnrealObjectInfo.GetStructs(newGame).ContainsKey(structType))
@@ -208,7 +226,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 bool sourceIsImmutable = UnrealObjectInfo.IsImmutable(structType, sourcePcc.Game);
                 newImmutability = UnrealObjectInfo.IsImmutable(structType, newGame);
-                
+
                 if (sourceIsImmutable && newImmutability && !UnrealObjectInfo.GetClassOrStructInfo(sourcePcc.Game, structType).properties
                                                                              .SequenceEqual(UnrealObjectInfo.GetClassOrStructInfo(newGame, structType).properties))
                 {

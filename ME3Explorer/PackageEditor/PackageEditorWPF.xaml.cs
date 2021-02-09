@@ -335,7 +335,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName))
+                Task.Run(() => EntryExporter.ExportExportToPackage(SelectedItem.Entry as ExportEntry, d.FileName, out _))
                     .ContinueWithOnUIThread(results =>
                         {
                             IsBusy = false;

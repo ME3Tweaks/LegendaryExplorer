@@ -11,7 +11,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, PackageCache pc = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache pc = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
@@ -45,7 +45,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
             // Import the original item now
             var lParent = PortParents(sourceExport, targetPackage);
-            var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out _);
+            var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out var newEntry);
             issues.AddRange(relinkResults2);
 
             if (newCache)
@@ -53,14 +53,17 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 pc.ReleasePackages();
             }
 
+            portedEntry = newEntry;
+
             return issues;
         }
 
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, string newPackagePath, bool compress = false)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, string newPackagePath, out IEntry newEntry, bool compress = false)
         {
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
-            var exp = ExportExportToPackage(sourceExport, p);
+            var exp = ExportExportToPackage(sourceExport, p, out var nEntry);
+            newEntry = nEntry;
             p.Save(compress: compress);
             return exp;
         }
@@ -126,7 +129,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return parent;
         }
 
-        private static void PrepareGlobalFileForPorting(IMEPackage sourcePackage, string packagename)
+        /// <summary>
+        /// Prepares a global package for porting by moving all objects referenced by it's objectreferencer into the subpackage of the same name
+        /// </summary>
+        /// <param name="sourcePackage"></param>
+        /// <param name="packagename"></param>
+        public static void PrepareGlobalFileForPorting(IMEPackage sourcePackage, string packagename)
         {
             // SirC if you ever see this i'm really sorry lol
             // This is an absolute hackjob cause changing relinker to do this would be hell
