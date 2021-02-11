@@ -1020,7 +1020,7 @@ namespace ME3Explorer
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
-
+                    // CUSTOM UI TEMPLATES GO HERE
                     if (sp.StructType == "Vector" || sp.StructType == "Rotator" || sp.StructType == "Cylinder")
                     {
                         string loc = string.Join(", ", sp.Properties.Where(x => !(x is NoneProperty)).Select(p =>
@@ -1156,6 +1156,17 @@ namespace ME3Explorer
                                 }
                             }));
                             parsedValue += $" {parmName}: {structParam}";
+                        }
+                    }
+                    else if (sp.StructType == "PowerLevelUp")
+                    {
+                        var powerClass = sp.GetProp<ObjectProperty>("PowerClass");
+                        var rank = sp.GetProp<FloatProperty>("Rank");
+                        var evolvedPowerClass = sp.GetProp<ObjectProperty>("EvolvedPowerClass");
+                        parsedValue += $" {powerClass.ResolveToEntry(parsingExport.FileRef).ObjectName} Rank {rank.Value}";
+                        if (evolvedPowerClass.Value != 0)
+                        {
+                            parsedValue += $" => {evolvedPowerClass.ResolveToEntry(parsingExport.FileRef).ObjectName}";
                         }
                     }
                     else
