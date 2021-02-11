@@ -818,6 +818,26 @@ namespace ME3Explorer.PackageEditor.Experiments
             }
         }
 
+        public static void ShiftInterpTrackMove(ExportEntry interpTrackMove)
+        {
+            var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
+            var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
+            var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
+
+            var props = interpTrackMove.GetProperties();
+            var posTrack = props.GetProp<StructProperty>("PosTrack");
+            var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+            foreach (var point in points)
+            {
+                var outval = point.GetProp<StructProperty>("OutVal");
+                outval.GetProp<FloatProperty>("X").Value += offsetX;
+                outval.GetProp<FloatProperty>("Y").Value += offsetY;
+                outval.GetProp<FloatProperty>("Z").Value += offsetZ;
+            }
+
+            interpTrackMove.WriteProperties(props);
+        }
+
         /// <summary>
         /// Shifts an ME1 AnimCutscene by specified X Y Z values. Only supports 96NoW (3 32-bit float) animations
         /// By Mgamerz 
