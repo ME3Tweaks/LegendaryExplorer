@@ -220,10 +220,13 @@
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check exports for invalid object references in properties" ToolTip="Enumerates all exports, reads their properties, and checks if any ObjectProperty items have invalid values" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
+                    <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These featuers are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
-                <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebugVisibility}">
+                <MenuItem Header="Experiments" Padding="4" Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
-                    <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
                     <MenuItem Header="Rebuild Object Infos">
@@ -263,6 +266,7 @@
                         <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
                         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
                         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
+                        <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
                     </MenuItem>
                     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
                         <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>

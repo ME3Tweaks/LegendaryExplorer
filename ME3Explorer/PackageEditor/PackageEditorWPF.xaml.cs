@@ -192,6 +192,13 @@ namespace ME3Explorer
             set => SetProperty(ref _gotoHintText, value);
         }
 
+        private bool _showExperiments = App.IsDebug;
+        public bool ShowExperiments
+        {
+            get => _showExperiments;
+            set => SetProperty(ref _showExperiments, value);
+        }
+
         #region Commands
 
         public ICommand ComparePackagesCommand { get; set; }
@@ -4755,6 +4762,15 @@ namespace ME3Explorer
             if (selected && uindex > 0)
             {
                 PackageEditorExperimentsM.ShiftME1AnimCutscene(Pcc.GetUExport(uindex));
+            }
+        }
+
+        private void ShiftInterpTrackMove(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelected(out var uindex);
+            if (selected && uindex > 0)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMove(Pcc.GetUExport(uindex));
             }
         }
 
