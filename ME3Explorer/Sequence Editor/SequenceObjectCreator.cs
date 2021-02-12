@@ -42,48 +42,24 @@ namespace ME3Explorer.Sequence_Editor
         public static List<ClassInfo> GetSequenceVariables(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceVariableName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceActions(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceActionName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceEvents(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceEventName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 
         public static List<ClassInfo> GetSequenceConditions(MEGame game)
         {
             List<ClassInfo> classes = UnrealObjectInfo.GetNonAbstractDerivedClassesOf(SequenceConditionName, game);
-
-            if (game == MEGame.ME2)
-            {
-                return classes.Where(info => EntryImporter.CanImport(info, MEGame.ME2)).ToList();
-            }
-
             return classes;
         }
 

@@ -183,10 +183,10 @@ namespace ME3Explorer
             CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {
-                GameController.TryGetME3Process(out var me3Proc);
+                GameController.TryGetMEProcess(MEGame.ME3, out var me3Proc);
                 return me3Proc != null;
             };
-            PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendTOCUpdateMessage;
+            PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
             PackageSaver.GetPNGForThumbnail = texture2D => texture2D.GetPNG(texture2D.GetTopMip());
         }
 

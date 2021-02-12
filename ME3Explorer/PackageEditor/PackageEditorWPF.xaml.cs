@@ -766,39 +766,50 @@ namespace ME3Explorer
 
         private void NewLevelFile()
         {
-            var dlg = new SaveFileDialog
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose game to create a level file for:",
+                                                          "Create new level file", new[] { "ME3", "ME2" }, "ME3");
+            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2)
             {
-                Filter = "ME3 package file|*.pcc",
-                OverwritePrompt = true
-            };
-
-            if (dlg.ShowDialog() == true)
-            {
-                if (File.Exists(dlg.FileName))
+                var dlg = new SaveFileDialog
                 {
-                    File.Delete(dlg.FileName);
-                }
-
-
-                File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), dlg.FileName);
-                LoadFile(dlg.FileName);
-                for (int i = 0; i < Pcc.Names.Count; i++)
+                    Filter = App.ME3ME2SaveFileFilter,
+                    OverwritePrompt = true
+                };
+                if (dlg.ShowDialog() == true)
                 {
-                    string name = Pcc.Names[i];
-                    if (name.Equals("ME3EmptyLevel"))
+                    if (File.Exists(dlg.FileName))
                     {
-                        var newName = name.Replace("ME3EmptyLevel", Path.GetFileNameWithoutExtension(dlg.FileName));
-                        Pcc.replaceName(i, newName);
+                        File.Delete(dlg.FileName);
                     }
-                }
+                    string emptyLevelName = game switch
+                    {
+                        MEGame.ME2 => "ME2EmptyLevel",
+                        _ => "ME3EmptyLevel"
+                    };
+                    File.Copy(Path.Combine(App.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
+                    LoadFile(dlg.FileName);
+                    for (int i = 0; i < Pcc.Names.Count; i++)
+                    {
+                        string name = Pcc.Names[i];
+                        if (name.Equals(emptyLevelName))
+                        {
+                            var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(dlg.FileName));
+                            Pcc.replaceName(i, newName);
+                        }
+                    }
 
-                var packguid = Guid.NewGuid();
-                var package = Pcc.GetUExport(1);
-                package.PackageGUID = packguid;
-                Pcc.PackageGuid = packguid;
-                SaveFile();
-                RecentsController.AddRecent(dlg.FileName, false);
-                RecentsController.SaveRecentList(true);
+                    var packguid = Guid.NewGuid();
+                    var package = Pcc.GetUExport(game switch
+                    {
+                        MEGame.ME2 => 7,
+                        _ => 1
+                    });
+                    package.PackageGUID = packguid;
+                    Pcc.PackageGuid = packguid;
+                    SaveFile();
+                    RecentsController.AddRecent(dlg.FileName, false);
+                    RecentsController.SaveRecentList(true);
+                }
             }
         }
 

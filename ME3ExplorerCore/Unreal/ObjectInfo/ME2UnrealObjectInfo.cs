@@ -507,9 +507,9 @@ namespace ME3ExplorerCore.Unreal
                 }
             }
 
-            //CUSTOM ADDITIONS
             try
             {
+                //native classes not defined in data files
                 NewClasses.Add("LightMapTexture2D", new ClassInfo
                 {
                     baseClass = "Texture2D",
@@ -534,6 +534,71 @@ namespace ME3ExplorerCore.Unreal
                         new KeyValuePair<string, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
                     }
                 };
+
+
+                //CUSTOM ADDITIONS
+                NewClasses.Add("SeqAct_SendMessageToME3Explorer", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 2,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                });
+                NewSequenceObjects.Add("SeqAct_SendMessageToME3Explorer", new SequenceObjectInfo{ObjInstanceVersion = 2});
+
+                NewClasses.Add("SeqAct_ME3ExpDumpActors", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 4,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                });
+                NewSequenceObjects.Add("SeqAct_ME3ExpDumpActors", new SequenceObjectInfo { ObjInstanceVersion = 2 });
+
+                NewClasses.Add("SeqAct_ME3ExpAcessDumpedActorsList", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 6,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                });
+                NewSequenceObjects.Add("SeqAct_ME3ExpAcessDumpedActorsList", new SequenceObjectInfo { ObjInstanceVersion = 2 });
+
+                NewClasses.Add("SeqAct_ME3ExpGetPlayerCamPOV", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 8,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
+                });
+                NewSequenceObjects.Add("SeqAct_ME3ExpGetPlayerCamPOV", new SequenceObjectInfo { ObjInstanceVersion = 2 });
+
+                NewClasses.Add("SeqAct_GetLocationAndRotation", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 10,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                    properties =
+                    {
+                        new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                        new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                        new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
+                    }
+                });
+                NewSequenceObjects.Add("SeqAct_GetLocationAndRotation", new SequenceObjectInfo { ObjInstanceVersion = 0 });
+
+                NewClasses.Add("SeqAct_SetLocationAndRotation", new ClassInfo
+                {
+                    baseClass = "SequenceAction",
+                    exportIndex = 16,
+                    pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                    properties =
+                    {
+                        new KeyValuePair<string, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
+                        new KeyValuePair<string, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
+                        new KeyValuePair<string, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                        new KeyValuePair<string, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
+                    }
+                });
+                NewSequenceObjects.Add("SeqAct_SetLocationAndRotation", new SequenceObjectInfo { ObjInstanceVersion = 0 });
+
             }
             catch (Exception)
             {
@@ -556,7 +621,7 @@ namespace ME3ExplorerCore.Unreal
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
             IMEPackage pcc = export.FileRef;
-            ClassInfo info = new ClassInfo
+            ClassInfo info = new()
             {
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,

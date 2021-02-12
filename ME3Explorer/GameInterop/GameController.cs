@@ -14,11 +14,22 @@ namespace ME3Explorer.GameInterop
 {
     public static class GameController
     {
-        public const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
-        public const string TempMapName = "AAAME3EXPDEBUGLOAD";
-        public static bool TryGetME3Process(out Process me3Process)
+        public static string InteropAsiName(MEGame game) => game switch
         {
-            me3Process = Process.GetProcessesByName("MassEffect3").FirstOrDefault();
+            MEGame.ME2 => "ME3ExplorerInteropME2.asi",
+            MEGame.ME3 => "ME3ExplorerInterop.asi",
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
+
+        public const string TempMapName = "AAAME3EXPDEBUGLOAD";
+        public static bool TryGetMEProcess(MEGame game, out Process me3Process)
+        {
+            me3Process = Process.GetProcessesByName(game switch {
+                MEGame.ME1 => "MassEffect",
+                MEGame.ME2 => "ME2Game",
+                MEGame.ME3 => "MassEffect3",
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+            }).FirstOrDefault();
             return me3Process != null;
         }
 
@@ -33,22 +44,50 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        public static event Action<string> RecieveME3Message; 
+        public static event Action<string> RecieveME3Message;
+
+        public static event Action<string> RecieveME2Message;
+
+        public static event Action<string> RecieveME1Message;
         public static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
 
+        public static void ExecuteConsoleCommands(MEGame game, params string[] commands)
+        {
+            switch (game)
+            {
+                case MEGame.ME2:
+                    ExecuteME2ConsoleCommands(commands.AsEnumerable());
+                    break;
+                case MEGame.ME3:
+                    ExecuteME3ConsoleCommands(commands.AsEnumerable());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(game), game, null);
+            }
+        }
 
         public static void ExecuteME3ConsoleCommands(params string[] commands) => ExecuteME3ConsoleCommands(commands.AsEnumerable());
         public static void ExecuteME3ConsoleCommands(IEnumerable<string> commands)
         {
-            if (TryGetME3Process(out Process me3Process))
+            if (TryGetMEProcess(MEGame.ME3, out Process me3Process))
             {
                 ExecuteConsoleCommands(me3Process.MainWindowHandle, MEGame.ME3, commands);
             }
         }
 
-        public static bool SendTOCUpdateMessage()
+
+        public static void ExecuteME2ConsoleCommands(params string[] commands) => ExecuteME2ConsoleCommands(commands.AsEnumerable());
+        public static void ExecuteME2ConsoleCommands(IEnumerable<string> commands)
         {
-            if (TryGetME3Process(out Process me3Process))
+            if (TryGetMEProcess(MEGame.ME2, out Process me2Process))
+            {
+                ExecuteConsoleCommands(me2Process.MainWindowHandle, MEGame.ME2, commands);
+            }
+        }
+
+        public static bool SendME3TOCUpdateMessage()
+        {
+            if (TryGetMEProcess(MEGame.ME3, out Process me3Process))
             {
                 const uint ME3_TOCUPDATE = 0x8000 + 'T' + 'O' + 'C';
                 return SendMessage(me3Process.MainWindowHandle, ME3_TOCUPDATE, 0, 0);
@@ -80,15 +119,34 @@ namespace ME3Explorer.GameInterop
         {
             const int WM_COPYDATA = 0x004a;
             const uint SENT_FROM_ME3 = 0x02AC00C2;
+            const uint SENT_FROM_ME2 = 0x02AC00C3;
+            const uint SENT_FROM_ME1 = 0x02AC00C4;
             if (msg == WM_COPYDATA)
             {
                 COPYDATASTRUCT cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
-                if (cds.dwData == SENT_FROM_ME3)
+                switch (cds.dwData)
                 {
-                    string value = Marshal.PtrToStringUni(cds.lpData);
-                    handled = true;
-                    RecieveME3Message?.Invoke(value);
-                    return (IntPtr)1;
+                    case SENT_FROM_ME3:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveME3Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
+                    case SENT_FROM_ME2:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveME2Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
+                    case SENT_FROM_ME1:
+                    {
+                        string value = Marshal.PtrToStringUni(cds.lpData);
+                        handled = true;
+                        RecieveME1Message?.Invoke(value);
+                        return (IntPtr)1;
+                    }
                 }
             }
 

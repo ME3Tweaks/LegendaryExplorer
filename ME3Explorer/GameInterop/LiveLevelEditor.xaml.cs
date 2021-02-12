@@ -26,7 +26,16 @@ namespace ME3Explorer.GameInterop
     /// </summary>
     public partial class LiveLevelEditor : TrackingNotifyPropertyChangedWindowBase
     {
-        public static LiveLevelEditor Instance;
+        static LiveLevelEditor ME3Instance;
+        static LiveLevelEditor ME2Instance;
+
+        public static LiveLevelEditor Instance(MEGame game) => game switch
+        {
+            MEGame.ME3 => ME3Instance,
+            MEGame.ME2 => ME2Instance,
+            _ => throw new ArgumentException("Live Level Editor only supports ME3 and ME2", nameof(game))
+        };
+
         private enum FloatVarIndexes
         {
             XPos = 1,
@@ -50,8 +59,16 @@ namespace ME3Explorer.GameInterop
         public bool ReadyToView
         {
             get => _readyToView;
-            set => SetProperty(ref _readyToView, value);
+            set
+            {
+                if (SetProperty(ref _readyToView, value))
+                {
+                    OnPropertyChanged(nameof(CamPathReadyToView));
+                }
+            }
         }
+
+        public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
 
         private bool _readyToInitialize;
         public bool ReadyToInitialize
@@ -60,33 +77,76 @@ namespace ME3Explorer.GameInterop
             set => SetProperty(ref _readyToInitialize, value);
         }
 
-        public LiveLevelEditor() : base("Live Level Editor", true)
+        private readonly MEGame Game;
+
+        public LiveLevelEditor(MEGame game) : base("Live Level Editor", true)
         {
-            if (Instance != null)
+            if (game is not MEGame.ME3 and not MEGame.ME2)
             {
-                throw new Exception("Can only have one instance of LiveLevelEditor open!");
+                throw new Exception("Live Level Editor is only supported for ME2 and ME3!");
             }
 
-            Instance = this;
+            Game = game;
+            if (game is MEGame.ME3)
+            {
+                if (ME3Instance is not null)
+                {
+                    throw new Exception("Can only have one instance of ME3 LiveLevelEditor open!");
+                }
+                ME3Instance = this;
+                GameController.RecieveME3Message += GameControllerOnRecieveMessage;
+            }
+            else
+            {
+                if (ME2Instance is not null)
+                {
+                    throw new Exception("Can only have one instance of ME2 LiveLevelEditor open!");
+                }
+                ME2Instance = this;
+                GameController.RecieveME2Message += GameControllerOnRecieveMessage;
+            }
+
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            GameController.RecieveME3Message += GameControllerOnRecieveMe3Message;
-            ME3OpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            ME3OpenTimer.Tick += CheckIfME3Open;
+            GameOpenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            GameOpenTimer.Tick += CheckIfGameOpen;
             RetryLoadTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
             RetryLoadTimer.Tick += RetryLoadLiveEditor;
+
+            switch (game)
+            {
+                case MEGame.ME3:
+                    gameInstalledReq.FullfilledText = "Mass Effect 3 is installed";
+                    gameInstalledReq.UnFullfilledText = "Can't find Mass Effect 3 installation!";
+                    gameInstalledReq.ButtonText = "Set ME3 path";
+                    break;
+                case MEGame.ME2:
+                    gameInstalledReq.FullfilledText = "Mass Effect 2 is installed";
+                    gameInstalledReq.UnFullfilledText = "Can't find Mass Effect 2 installation!";
+                    gameInstalledReq.ButtonText = "Set ME2 path";
+                    break;
+            }
         }
 
         private void LiveLevelEditor_OnClosing(object sender, CancelEventArgs e)
         {
             DisposeCamPath();
-            GameController.RecieveME3Message -= GameControllerOnRecieveMe3Message;
             DataContext = null;
-            Instance = null;
+            switch (Game)
+            {
+                case MEGame.ME2:
+                    GameController.RecieveME2Message -= GameControllerOnRecieveMessage;
+                    ME2Instance = null;
+                    break;
+                case MEGame.ME3:
+                    GameController.RecieveME3Message -= GameControllerOnRecieveMessage;
+                    ME3Instance = null;
+                    break;
+            }
         }
 
-        public Requirement.RequirementCommand ME3InstalledRequirementCommand { get; set; }
+        public Requirement.RequirementCommand GameInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand ASILoaderInstalledRequirementCommand { get; set; }
         public Requirement.RequirementCommand SupportFilesInstalledRequirementCommand { get; set; }
         public ICommand LoadLiveEditorCommand { get; set; }
@@ -95,8 +155,8 @@ namespace ME3Explorer.GameInterop
         public ICommand RegenActorListCommand { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
+            GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), InteropHelper.OpenASILoaderDownload);
             SupportFilesInstalledRequirementCommand = new Requirement.RequirementCommand(AreSupportFilesInstalled, InstallSupportFiles);
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
@@ -107,7 +167,7 @@ namespace ME3Explorer.GameInterop
         private void RegenActorList()
         {
             SetBusy("Building Actor List", () => {});
-            GameController.ExecuteME3ConsoleCommands("ce DumpActors");
+            GameController.ExecuteConsoleCommands(Game, "ce DumpActors");
         }
 
         private bool CanOpenInPackEd() => SelectedActor != null;
@@ -132,7 +192,7 @@ namespace ME3Explorer.GameInterop
 
         private void OpenInPackEd(string fileName, int uIndex = 0)
         {
-            if (MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3).TryGetValue(fileName, out string filePath))
+            if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(fileName, out string filePath))
             {
                 if (WPFBase.TryOpenInExisting(filePath, out PackageEditorWPF packEd))
                 {
@@ -140,7 +200,7 @@ namespace ME3Explorer.GameInterop
                 }
                 else
                 {
-                    PackageEditorWPF p = new PackageEditorWPF();
+                    PackageEditorWPF p = new();
                     p.Show();
                     p.LoadFile(filePath, uIndex);
                 }
@@ -151,33 +211,33 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        private bool CanLoadLiveEditor() => ReadyToInitialize && me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled && 
-                                            GameController.TryGetME3Process(out _);
+        private bool CanLoadLiveEditor() => ReadyToInitialize && gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && supportFilesInstalledReq.IsFullfilled && 
+                                            GameController.TryGetMEProcess(Game, out _);
 
         private void LoadLiveEditor()
         {
             SetBusy("Loading Live Editor", () => RetryLoadTimer.Stop());
-            GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
+            GameController.ExecuteConsoleCommands(Game, "ce LoadLiveEditor");
             RetryLoadTimer.Start();
         }
 
-        private static bool AreSupportFilesInstalled()
+        private bool AreSupportFilesInstalled()
         {
-            if (!InteropHelper.IsME3Installed())
+            if (!InteropHelper.IsGameInstalled(Game))
             {
                 return false;
             }
-            string installedASIPath = InteropHelper.GetInteropAsiWritePath();
+            string installedASIPath = InteropHelper.GetInteropAsiWritePath(Game);
             if (!File.Exists(installedASIPath))
             {
                 return false;
             }
 
-            string newAsiPath = Path.Combine(App.ExecFolder, GameController.Me3ExplorerinteropAsiName);
+            string newAsiPath = Path.Combine(App.ExecFolder, GameController.InteropAsiName(Game));
             string newAsiMD5 = InteropHelper.CalculateMD5(newAsiPath);
             string installedAsiMD5 = InteropHelper.CalculateMD5(installedASIPath);
 
-            return newAsiMD5 == installedAsiMD5 && LiveEditHelper.IsModInstalledAndUpToDate();
+            return newAsiMD5 == installedAsiMD5 && LiveEditHelper.IsModInstalledAndUpToDate(Game);
         }
 
         private void InstallSupportFiles()
@@ -185,23 +245,23 @@ namespace ME3Explorer.GameInterop
             SetBusy("Installing Support Files");
             Task.Run(() =>
             {
-                InteropHelper.InstallInteropASI();
-                LiveEditHelper.InstallDLC_MOD_Interop();
+                InteropHelper.InstallInteropASI(Game);
+                LiveEditHelper.InstallDLC_MOD_Interop(Game);
                 EndBusy();
                 CommandManager.InvalidateRequerySuggested();
             });
         }
 
-        private void GameControllerOnRecieveMe3Message(string msg)
+        private void GameControllerOnRecieveMessage(string msg)
         {
             if (msg == LiveEditHelper.LoaderLoadedMessage)
             {
                 ReadyToView = false;
                 ReadyToInitialize = true;
                 instructionsTab.IsSelected = true;
-                if (!ME3OpenTimer.IsEnabled)
+                if (!GameOpenTimer.IsEnabled)
                 {
-                    ME3OpenTimer.Start();
+                    GameOpenTimer.Start();
                 }
 
                 ActorDict.Clear();
@@ -229,7 +289,7 @@ namespace ME3Explorer.GameInterop
             {
                 Vector3 pos = defaultPosition;
                 if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
+                    msg.Substring(idx + 7).Split(' ') is string[] {Length: 3} strings)
                 {
                     var floats = new float[3];
                     for (int i = 0; i < 3; i++)
@@ -259,7 +319,7 @@ namespace ME3Explorer.GameInterop
             {
                 Rotator rot = defaultRotation;
                 if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] strings && strings.Length == 3)
+                    msg.Substring(idx + 7).Split(' ') is string[] {Length: 3} strings)
                 {
                     var floats = new float[3];
                     for (int i = 0; i < 3; i++)
@@ -284,17 +344,17 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        private readonly DispatcherTimer ME3OpenTimer;
-        private void CheckIfME3Open(object sender, EventArgs e)
+        private readonly DispatcherTimer GameOpenTimer;
+        private void CheckIfGameOpen(object sender, EventArgs e)
         {
-            if (!GameController.TryGetME3Process(out _))
+            if (!GameController.TryGetMEProcess(Game, out _))
             {
                 ReadyToInitialize = false;
                 EndBusy();
                 ReadyToView = false;
                 SelectedActor = null;
                 instructionsTab.IsSelected = true;
-                ME3OpenTimer.Stop();
+                GameOpenTimer.Stop();
             }
         }
 
@@ -308,16 +368,16 @@ namespace ME3Explorer.GameInterop
             }
             else
             {
-                GameController.ExecuteME3ConsoleCommands("ce LoadLiveEditor");
+                GameController.ExecuteConsoleCommands(Game, "ce LoadLiveEditor");
             }
         }
 
-        public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry>> ActorDict { get; } = new ObservableDictionary<string, ObservableCollectionExtended<ActorEntry>>();
+        public ObservableDictionary<string, ObservableCollectionExtended<ActorEntry>> ActorDict { get; } = new();
 
         private void BuildActorDict()
         {
             ActorDict.Clear();
-            string actorDumpPath = Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "Win32", "ME3ExpActorDump.txt");
+            string actorDumpPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), "ME3ExpActorDump.txt");
             if (!File.Exists(actorDumpPath))
             {
                 return;
@@ -325,7 +385,7 @@ namespace ME3Explorer.GameInterop
 
             var actors = new Dictionary<string, List<ActorEntry>>();
             string[] lines = File.ReadAllLines(actorDumpPath);
-            Dictionary<string, string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3);
+            Dictionary<string, string> gameFiles = MELoadedFiles.GetFilesLoadedInGame(Game);
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] parts = lines[i].Split(':');
@@ -422,14 +482,14 @@ namespace ME3Explorer.GameInterop
                 if (SetProperty(ref _selectedActor, value) && !noUpdate && value != null)
                 {
                     SetBusy($"Selecting {value.ActorName}", () => {});
-                    GameController.ExecuteME3ConsoleCommands(VarCmd(value.ActorListIndex, IntVarIndexes.ActorArrayIndex), "ce SelectActor");
+                    GameController.ExecuteConsoleCommands(Game, VarCmd(value.ActorListIndex, IntVarIndexes.ActorArrayIndex), "ce SelectActor");
                 }
             }
         }
 
         #region Position/Rotation
         private static readonly Vector3 defaultPosition = Vector3.Zero;
-        private readonly Rotator defaultRotation = new Rotator(0,0,0);
+        private readonly Rotator defaultRotation = new(0,0,0);
         private int _xPos = (int)defaultPosition.X;
         public int XPos
         {
@@ -513,7 +573,7 @@ namespace ME3Explorer.GameInterop
         private void UpdateLocation()
         {
             if (noUpdate) return;
-            GameController.ExecuteME3ConsoleCommands(VarCmd(XPos, FloatVarIndexes.XPos),
+            GameController.ExecuteConsoleCommands(Game, VarCmd(XPos, FloatVarIndexes.XPos),
                                                      VarCmd(YPos, FloatVarIndexes.YPos),
                                                      VarCmd(ZPos, FloatVarIndexes.ZPos),
                                                      "ce SetLocation");
@@ -524,7 +584,7 @@ namespace ME3Explorer.GameInterop
             if (noUpdate) return;
 
             (float x, float y, float z) = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteME3ConsoleCommands(VarCmd(x, FloatVarIndexes.XRotComponent),
+            GameController.ExecuteConsoleCommands(Game, VarCmd(x, FloatVarIndexes.XRotComponent),
                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),
                                                      "ce SetRotation");
@@ -593,14 +653,14 @@ namespace ME3Explorer.GameInterop
         {
             playbackState = PlaybackState.Playing;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-            GameController.ExecuteME3ConsoleCommands("ce playcam");
+            GameController.ExecuteConsoleCommands(Game, "ce playcam");
         }
 
         private void pauseCam()
         {
             playbackState = PlaybackState.Paused;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameController.ExecuteME3ConsoleCommands("ce pausecam");
+            GameController.ExecuteConsoleCommands(Game, "ce pausecam");
         }
 
         private bool _shouldLoop;
@@ -612,7 +672,7 @@ namespace ME3Explorer.GameInterop
             {
                 if (SetProperty(ref _shouldLoop, value) && !noUpdate)
                 {
-                    GameController.ExecuteME3ConsoleCommands(_shouldLoop ? "ce loopcam" : "ce noloopcam");
+                    GameController.ExecuteConsoleCommands(Game, _shouldLoop ? "ce loopcam" : "ce noloopcam");
                 }
             }
         }
@@ -622,7 +682,7 @@ namespace ME3Explorer.GameInterop
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            GameController.ExecuteME3ConsoleCommands("ce stopcam");
+            GameController.ExecuteConsoleCommands(Game, "ce stopcam");
         }
 
         private void SaveCamPath(object sender, RoutedEventArgs e)
@@ -630,20 +690,24 @@ namespace ME3Explorer.GameInterop
             camPathPackage.GetUExport(CamPath_InterpDataIDX).WriteProperty(new FloatProperty(Math.Max(Move_CurveEditor.Time, FOV_CurveEditor.Time), "InterpLength"));
             camPathPackage.GetUExport(CamPath_LoopGateIDX).WriteProperty(new BoolProperty(ShouldLoop, "bOpen"));
             camPathPackage.Save();
-            LiveEditHelper.PadCamPathFile();
-            GameController.ExecuteME3ConsoleCommands("ce stopcam", "ce LoadCamPath");
+            LiveEditHelper.PadCamPathFile(Game);
+            GameController.ExecuteConsoleCommands(Game, "ce stopcam", "ce LoadCamPath");
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
         }
 
         private void InitializeCamPath()
         {
-            camPathPackage = MEPackageHandler.OpenME3Package(LiveEditHelper.CamPathFilePath);
+            if (Game is not MEGame.ME3)
+            {
+                return;
+            }
+            camPathPackage = MEPackageHandler.OpenMEPackage(LiveEditHelper.CamPathFilePath(Game));
             interpTrackMove = camPathPackage.GetUExport(CamPath_InterpTrackMoveIDX);
             fovTrackExport = camPathPackage.GetUExport(CamPath_FOVTrackIDX);
             ReloadCurveEdExports();
 
-            savedCamsFileWatcher = new FileSystemWatcher(ME3Directory.ExecutableFolder, "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
+            savedCamsFileWatcher = new FileSystemWatcher(MEDirectories.GetExecutableFolderPath(Game), "savedCams") {NotifyFilter = NotifyFilters.LastWrite};
             savedCamsFileWatcher.Changed += SavedCamsFileWatcher_Changed;
             savedCamsFileWatcher.EnableRaisingEvents = true;
 
@@ -671,7 +735,7 @@ namespace ME3Explorer.GameInterop
             savedCamsFileWatcher?.Dispose();
         }
 
-        public ObservableCollectionExtended<POV> SavedCams { get; } = new ObservableCollectionExtended<POV>();
+        public ObservableCollectionExtended<POV> SavedCams { get; } = new();
 
         private void AddSavedCamAsKey(object sender, RoutedEventArgs e)
         {
@@ -688,13 +752,13 @@ namespace ME3Explorer.GameInterop
                 interpCurvePos.AddPoint(time, pov.Position, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
                 interpCurveRot.AddPoint(time, pov.Rotation, Vector3.Zero, Vector3.Zero, EInterpCurveMode.CIM_CurveUser);
 
-                props.AddOrReplaceProp(interpCurvePos.ToStructProperty(MEGame.ME3, "PosTrack"));
-                props.AddOrReplaceProp(interpCurveRot.ToStructProperty(MEGame.ME3, "EulerTrack"));
+                props.AddOrReplaceProp(interpCurvePos.ToStructProperty(Game, "PosTrack"));
+                props.AddOrReplaceProp(interpCurveRot.ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
                 var floatTrack = InterpCurve<float>.FromStructProperty(fovTrackExport.GetProperty<StructProperty>("FloatTrack"));
                 floatTrack.AddPoint(time, pov.FOV, 0, 0, EInterpCurveMode.CIM_CurveUser);
-                fovTrackExport.WriteProperty(floatTrack.ToStructProperty(MEGame.ME3, "FloatTrack"));
+                fovTrackExport.WriteProperty(floatTrack.ToStructProperty(Game, "FloatTrack"));
 
                 ReloadCurveEdExports();
             }
@@ -707,11 +771,11 @@ namespace ME3Explorer.GameInterop
             if (MessageBoxResult.Yes == MessageBox.Show("Are you sure you want to clear all keys from the Curve Editors?", "Clear Keys confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
                 var props = interpTrackMove.GetProperties();
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "PosTrack"));
-                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(MEGame.ME3, "EulerTrack"));
+                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "PosTrack"));
+                props.AddOrReplaceProp(new InterpCurve<Vector3>().ToStructProperty(Game, "EulerTrack"));
                 interpTrackMove.WriteProperties(props);
 
-                fovTrackExport.WriteProperty(new InterpCurve<float>().ToStructProperty(MEGame.ME3, "FloatTrack"));
+                fovTrackExport.WriteProperty(new InterpCurve<float>().ToStructProperty(Game, "FloatTrack"));
 
                 ReloadCurveEdExports();
             }
