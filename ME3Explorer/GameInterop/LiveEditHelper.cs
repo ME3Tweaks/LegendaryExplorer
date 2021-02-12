@@ -19,37 +19,44 @@ namespace ME3Explorer.GameInterop
     public static class LiveEditHelper
     {
         //INCREMENT THIS WHEN CHANGES ARE MADE THAT WOULD REQUIRE REGENERATION OF DLC_MOD_Interop
-        public const int CURRENT_VERSION = 6;
+        public const int CURRENT_VERSION = 7;
 
-        const string liveEditorFileName = "ME3LiveEditor";
+        static string liveEditorFileName(MEGame game) => game switch
+        {
+            MEGame.ME3 => "ME3LiveEditor",
+            MEGame.ME2 => "ME2LiveEditor",
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
 
         public const string LoaderLoadedMessage = "BioP_Global";
 
-        //me3 pcc to augment must be a map, and must have at least one BioTriggerStream and LevelStreamingKismet
+        //me3 or me2 pcc to augment must be a map, and must have at least one BioTriggerStream and LevelStreamingKismet
         static void AugmentMapToLoadLiveEditor(IMEPackage pcc)
         {
             const string stateName = "SS_LIVEEDITOR";
+
+            MEGame game = pcc.Game;
 
             var mainSequence = pcc.Exports.First(exp => exp.ObjectName == "Main_Sequence" && exp.ClassName == "Sequence");
             var bioWorldInfo = pcc.Exports.First(exp => exp.ClassName == "BioWorldInfo");
 
             #region Sequencing
 
-            var consoleEvent = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console", MEGame.ME3);
+            var consoleEvent = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_Console", game);
             consoleEvent.WriteProperty(new NameProperty("LoadLiveEditor", "ConsoleEventName"));
             KismetHelper.AddObjectToSequence(consoleEvent, mainSequence);
-            var setStreamingState = SequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState", MEGame.ME3);
+            var setStreamingState = SequenceObjectCreator.CreateSequenceObject(pcc, "BioSeqAct_SetStreamingState", game);
             setStreamingState.WriteProperty(new NameProperty(stateName, "StateName"));
             setStreamingState.WriteProperty(new BoolProperty(true, "NewValue"));
             KismetHelper.AddObjectToSequence(setStreamingState, mainSequence);
             KismetHelper.CreateOutputLink(consoleEvent, "Out", setStreamingState);
 
-            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded", MEGame.ME3);
+            var levelLoaded = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqEvent_LevelLoaded", game);
             KismetHelper.AddObjectToSequence(levelLoaded, mainSequence);
-            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqAct_SendMessageToME3Explorer", MEGame.ME3);
+            var sendMessageToME3Exp = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqAct_SendMessageToME3Explorer", game);
             KismetHelper.AddObjectToSequence(sendMessageToME3Exp, mainSequence);
-            KismetHelper.CreateOutputLink(levelLoaded, "Loaded and Visible", sendMessageToME3Exp);
-            var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String", MEGame.ME3);
+            KismetHelper.CreateOutputLink(levelLoaded, game is MEGame.ME3 ? "Loaded and Visible" : "Out", sendMessageToME3Exp);
+            var stringVar = SequenceObjectCreator.CreateSequenceObject(pcc, "SeqVar_String", game);
             stringVar.WriteProperty(new StrProperty(LoaderLoadedMessage, "StrValue"));
             KismetHelper.AddObjectToSequence(stringVar, mainSequence);
             KismetHelper.CreateVariableLink(sendMessageToME3Exp, "MessageName", stringVar);
@@ -57,7 +64,7 @@ namespace ME3Explorer.GameInterop
             #endregion
 
             ExportEntry lsk = EntryCloner.CloneEntry(pcc.Exports.First(exp => exp.ClassName == "LevelStreamingKismet"));
-            lsk.WriteProperty(new NameProperty(liveEditorFileName, "PackageName"));
+            lsk.WriteProperty(new NameProperty(liveEditorFileName(game), "PackageName"));
 
             var streamingLevels = bioWorldInfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels");
             streamingLevels.Add(new ObjectProperty(lsk));
@@ -74,7 +81,7 @@ namespace ME3Explorer.GameInterop
                   new NameProperty(stateName, "StateName"),
                   new ArrayProperty<NameProperty>("VisibleChunkNames")
                   {
-                      new NameProperty(liveEditorFileName)
+                      new NameProperty(liveEditorFileName(game))
                   }
             }));
             bts.WriteProperty(streamingStates);
@@ -82,29 +89,37 @@ namespace ME3Explorer.GameInterop
             pcc.AddToLevelActorsIfNotThere(bts);
         }
 
-        public const string modName = "DLC_MOD_Interop";
-        public static string ModInstallPath => Path.Combine(ME3Directory.DLCPath, modName);
-        public static string InstallInfoPath => Path.Combine(ModInstallPath, "InstallInfo.json");
+        static string modName(MEGame game) => game switch
+        {
+            MEGame.ME2 => "DLC_MOD_Interop2",
+            MEGame.ME3 => "DLC_MOD_Interop",
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+        };
+        public static string ModInstallPath(MEGame game) => Path.Combine(MEDirectories.GetDLCPath(game), modName(game));
+        public static string InstallInfoPath(MEGame game) => Path.Combine(ModInstallPath(game), "InstallInfo.json");
 
         private const string camPathFileName = "ME3LiveEditorCamPath.pcc";
-        public static string CamPathFilePath => Path.Combine(ModInstallPath, "CookedPCConsole", camPathFileName);
+        public static string CamPathFilePath(MEGame game) => Path.Combine(ModInstallPath(game), "CookedPCConsole", camPathFileName);
 
         private const string consoleExtASIName = "ConsoleExtension-v1.0.asi";
 
-        public static void InstallDLC_MOD_Interop()
+        public static void InstallDLC_MOD_Interop(MEGame game)
         {
-            if (Directory.Exists(ModInstallPath))
+            if (Directory.Exists(ModInstallPath(game)))
             {
-                FileSystemHelper.DeleteFilesAndFoldersRecursively(ModInstallPath);
+                FileSystemHelper.DeleteFilesAndFoldersRecursively(ModInstallPath(game));
             }
-            Dictionary<string, string> fileMap = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME3, true);
+            Dictionary<string, string> fileMap = MELoadedFiles.GetFilesLoadedInGame(game, true);
 
-            string sourcePath = Path.Combine(App.ExecFolder, modName);
-            FileSystem.CopyDirectory(sourcePath, ModInstallPath);
-            PadCamPathFile();
+            string sourcePath = Path.Combine(App.ExecFolder, modName(game));
+            FileSystem.CopyDirectory(sourcePath, ModInstallPath(game));
+            if (game == MEGame.ME3)
+            {
+                PadCamPathFile(game);
+            }
 
-            InteropHelper.InstallInteropASI();
-            string consoleExtASIWritePath = Path.Combine(ME3Directory.ExecutableFolder, "asi", consoleExtASIName);
+            InteropHelper.InstallInteropASI(game);
+            string consoleExtASIWritePath = Path.Combine(MEDirectories.GetExecutableFolderPath(game), "asi", consoleExtASIName);
             if (File.Exists(consoleExtASIWritePath))
             {
                 File.Delete(consoleExtASIWritePath);
@@ -113,36 +128,46 @@ namespace ME3Explorer.GameInterop
 
             const string bioPGlobalFileName = "BioP_Global.pcc";
             const string bioPGlobalNCFileName = "BioP_Global_NC.pcc";
+
             var sourceFiles = new List<(string filePath, string md5)>
             {
-                AugmentAndInstall(bioPGlobalFileName),
-                AugmentAndInstall(bioPGlobalNCFileName)
+                AugmentAndInstall(bioPGlobalFileName)
             };
-            File.WriteAllText(InstallInfoPath, JsonConvert.SerializeObject(new InstallInfo
+            if (game == MEGame.ME3)
+            {
+                sourceFiles.Add(AugmentAndInstall(bioPGlobalNCFileName));
+            }
+
+            File.WriteAllText(InstallInfoPath(game), JsonConvert.SerializeObject(new InstallInfo
             {
                 InstallTime = DateTime.Now,
                 Version = CURRENT_VERSION,
                 SourceFiles = sourceFiles
             }));
-            AutoTOCWPF.GenerateAllTOCs();
+            if (game == MEGame.ME3)
+            {
+                AutoTOCWPF.GenerateAllTOCs();
+            }
 
             (string, string) AugmentAndInstall(string fileName)
             {
                 string existingFile = fileMap[fileName];
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(existingFile))
+                string destFile = Path.Combine(ModInstallPath(game), game is MEGame.ME3 ? "CookedPCConsole" : "CookedPC", fileName);
+                File.Copy(existingFile, destFile, true);
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(destFile))
                 {
                     AugmentMapToLoadLiveEditor(pcc);
-                    pcc.Save(Path.Combine(ModInstallPath, "CookedPCConsole", fileName));
+                    pcc.Save();
                 }
                 return (existingFile, InteropHelper.CalculateMD5(existingFile));
             }
         }
 
-        public static bool IsModInstalledAndUpToDate()
+        public static bool IsModInstalledAndUpToDate(MEGame game)
         {
-            if (File.Exists(InstallInfoPath))
+            if (File.Exists(InstallInfoPath(game)))
             {
-                InstallInfo info = JsonConvert.DeserializeObject<InstallInfo>(File.ReadAllText(InstallInfoPath));
+                InstallInfo info = JsonConvert.DeserializeObject<InstallInfo>(File.ReadAllText(InstallInfoPath(game)));
                 if (info.Version == CURRENT_VERSION && info.SourceFiles != null)
                 {
                     foreach ((string filePath, string md5) in info.SourceFiles)
@@ -167,9 +192,9 @@ namespace ME3Explorer.GameInterop
             public List<(string filePath, string md5)> SourceFiles;
         }
 
-        public static void UninstallDLC_MOD_Interop()
+        public static void UninstallDLC_MOD_Interop(MEGame game)
         {
-            string installPath = Path.Combine(ME3Directory.DLCPath, modName);
+            string installPath = Path.Combine(MEDirectories.GetDLCPath(game), modName(game));
             if (Directory.Exists(installPath))
             {
                 Directory.Delete(installPath);
@@ -250,9 +275,9 @@ namespace ME3Explorer.GameInterop
             export.WriteProperties(props);
         }
 
-        public static void PadCamPathFile()
+        public static void PadCamPathFile(MEGame game)
         {
-            InteropHelper.TryPadFile(CamPathFilePath, 10_485_760);
+            InteropHelper.TryPadFile(CamPathFilePath(game), 10_485_760);
         }
     }
 

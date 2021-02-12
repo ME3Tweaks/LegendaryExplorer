@@ -14,6 +14,7 @@ using ME3Explorer.Matinee;
 using ME3Explorer.SFAREditor;
 using ME3Explorer.TextureStudio;
 using ME3ExplorerCore.GameFilesystem;
+using ME3ExplorerCore.Packages;
 
 namespace ME3Explorer
 {
@@ -56,7 +57,7 @@ namespace ME3Explorer
 
         public static void Initialize()
         {
-            HashSet<Tool> set = new HashSet<Tool>();
+            HashSet<Tool> set = new();
 
             #region Install Mods
             set.Add(new Tool
@@ -143,13 +144,19 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
                 open = () =>
                 {
-                    if (GameInterop.LiveLevelEditor.Instance == null)
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
+                                              new[] {"ME3", "ME2"}, "ME3");
+
+                    if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        (new GameInterop.LiveLevelEditor()).Show();
-                    }
-                    else
-                    {
-                        GameInterop.LiveLevelEditor.Instance.RestoreAndBringToFront();
+                        if (GameInterop.LiveLevelEditor.Instance(game) is {} instance)
+                        {
+                            instance.RestoreAndBringToFront();
+                        }
+                        else
+                        {
+                            (new GameInterop.LiveLevelEditor(game)).Show();
+                        }
                     }
                 },
                 tags = new List<string> { "utility" },
