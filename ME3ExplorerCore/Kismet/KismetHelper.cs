@@ -143,5 +143,65 @@ namespace ME3ExplorerCore.Kismet
             }
             newObject.Parent = sequenceExport;
         }
+
+        #region Links
+
+        /// <summary>
+        /// Builds a list of OutputLinkIdx => [List of nodes pointed to]
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static List<List<OutboundLink>> GetOutboundLinksOfNode(ExportEntry node)
+        {
+            var outputLinksMapping = new List<List<OutboundLink>>();
+            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outlinksProp != null)
+            {
+                int i = 0;
+                foreach (var ol in outlinksProp)
+                {
+                    List<OutboundLink> oLinks = new List<OutboundLink>();
+                    outputLinksMapping.Add(oLinks);
+
+                    var links = ol.GetProp<ArrayProperty<StructProperty>>("Links");
+                    if (links != null)
+                    {
+                        foreach (var l in links)
+                        {
+                            oLinks.Add(OutboundLink.FromStruct(l, node.FileRef));
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            return outputLinksMapping;
+        }
+
+        public class OutboundLink
+        {
+            public IEntry? LinkedOp { get; set; }
+            public int InputLinkIdx { get; set; }
+
+            public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
+            {
+                return new OutboundLink()
+                {
+                    LinkedOp = sp.GetProp<ObjectProperty>("LinkedOp")?.ResolveToEntry(package),
+                    InputLinkIdx = sp.GetProp<IntProperty>("InputLinkIdx")
+                };
+            }
+
+            public StructProperty GenerateStruct()
+            {
+                return new StructProperty("SeqOpOutputInputLink", false,
+                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
+                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
+                    new NoneProperty());
+            }
+        }
+
+        #endregion
     }
 }
