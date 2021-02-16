@@ -28,8 +28,7 @@ namespace ME3Explorer.AnimationExplorer
     public partial class AnimationViewer : TrackingNotifyPropertyChangedWindowBase
     {
         public static AnimationViewer Instance;
-
-        private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
+        
         public Animation AnimQueuedForFocus;
         private enum FloatVarIndexes
         {
