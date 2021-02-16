@@ -212,7 +212,7 @@ namespace ME3Script.Analysis.Visitors
             return true;
         }
 
-        void AppendTypeName(VariableType node)
+        public void AppendTypeName(VariableType node)
         {
             switch (node)
             {

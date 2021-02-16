@@ -1576,7 +1576,7 @@ namespace ME3Script.Parsing
                     case Function fn:
                         func = fn;
                         break;
-                    case VariableDeclaration varDecl when varDecl.VarType is DelegateType delType:
+                    case VariableDeclaration {VarType: DelegateType delType}:
                         isDelegateCall = true;
                         func = delType.DefaultFunction;
                         break;
@@ -1657,9 +1657,9 @@ namespace ME3Script.Parsing
                     {
                         //ugly hack
                         var builder = new CodeBuilderVisitor();
-                        dynArrType.ElementType.AcceptVisitor(builder);
+                        builder.AppendTypeName(dynArrType.ElementType);
                         string elementType = builder.GetCodeString();
-                        throw Error($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'");
+                        throw Error($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", CurrentPosition);
                     }
                     if (!(valueArg is SymbolReference))
                     {

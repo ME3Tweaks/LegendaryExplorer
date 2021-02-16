@@ -1071,6 +1071,75 @@ namespace ME3ExplorerCore.Unreal
             };
             newSequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 5 };
 
+            //SirCxyrtyx - New Class - SFXSeqVar_Rotator
+            NewClasses["SFXSeqVar_Rotator"] = new ClassInfo
+            {
+                baseClass = "SeqVar_Int",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 415, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("m_Rotator", new PropertyInfo(PropertyType.StructProperty, "Rotator")),
+                }
+            };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_GetRotation
+            NewClasses["SFXSeqAct_GetRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 419, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SFXSeqAct_GetRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_SetRotation
+            NewClasses["SFXSeqAct_SetRotation"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 424, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SFXSeqAct_SetRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_SetRotatorComponents
+            NewClasses["SFXSeqAct_SetRotatorComponents"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 431, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("Pitch", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("Yaw", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("Roll", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+            newSequenceObjects["SFXSeqAct_SetRotatorComponents"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_GetRotatorComponents
+            NewClasses["SFXSeqAct_GetRotatorComponents"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 439, //in ME3Resources.pcc
+                properties =
+                {
+                    new KeyValuePair<string, PropertyInfo>("Pitch", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("Yaw", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<string, PropertyInfo>("Roll", new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+            newSequenceObjects["SFXSeqAct_GetRotatorComponents"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
+            //SirCxyrtyx - New Class - SFXSeqAct_SetRotator
+            NewClasses["SFXSeqAct_SetRotator"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 447, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SFXSeqAct_SetRotator"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",

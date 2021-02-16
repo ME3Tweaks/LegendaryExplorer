@@ -22,7 +22,7 @@ namespace ME3Script.Parsing
 
         protected SourcePosition CurrentPosition => Tokens.CurrentItem.StartPos ?? new SourcePosition(-1, -1, -1);
 
-        public static readonly List<ASTNodeType> SemiColonExceptions = new List<ASTNodeType>
+        public static readonly List<ASTNodeType> SemiColonExceptions = new()
         {
             ASTNodeType.WhileLoop,
             ASTNodeType.ForLoop,
@@ -34,7 +34,7 @@ namespace ME3Script.Parsing
             ASTNodeType.StateLabel,
         };
 
-        public static readonly List<ASTNodeType> CompositeTypes = new List<ASTNodeType>
+        public static readonly List<ASTNodeType> CompositeTypes = new()
         {
             ASTNodeType.Class,
             ASTNodeType.Struct,
@@ -303,28 +303,28 @@ namespace ME3Script.Parsing
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
             {
-                throw Error($"Expected '(' after '{ROT}' in rotator literal!");
+                throw Error($"Expected '(' after '{ROT}' in rotator literal!", CurrentPosition);
             }
 
             int pitch = ParseInt();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after pitch component in rotator literal!");
+                throw Error("Expected ',' after pitch component in rotator literal!", CurrentPosition);
             }
 
             int yaw = ParseInt();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after yaw component in rotator literal!");
+                throw Error("Expected ',' after yaw component in rotator literal!", CurrentPosition);
             }
 
             int roll = ParseInt();
 
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error("Expected ')' after roll component in rotator literal!");
+                throw Error("Expected ')' after roll component in rotator literal!", CurrentPosition);
             }
 
             return new RotatorLiteral(pitch, yaw, roll, start, Tokens.Prev().EndPos);
@@ -335,28 +335,28 @@ namespace ME3Script.Parsing
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
             {
-                throw Error($"Expected '(' after '{VECT}' in vector literal!");
+                throw Error($"Expected '(' after '{VECT}' in vector literal!", CurrentPosition);
             }
 
             float x = ParseFloat();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after x component in vector literal!");
+                throw Error("Expected ',' after x component in vector literal!", CurrentPosition);
             }
 
             float y = ParseFloat();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after y component in vector literal!");
+                throw Error("Expected ',' after y component in vector literal!", CurrentPosition);
             }
 
             float z = ParseFloat();
 
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error("Expected ')' after z component in vector literal!");
+                throw Error("Expected ')' after z component in vector literal!", CurrentPosition);
             }
 
             return new VectorLiteral(x, y, z, start, Tokens.Prev().EndPos);
@@ -367,7 +367,7 @@ namespace ME3Script.Parsing
             bool isNegative = Matches(TokenType.MinusSign);
             if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
             {
-                throw Error("Expected number literal!");
+                throw Error("Expected number literal!", CurrentPosition);
             }
 
             var val = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
@@ -379,7 +379,7 @@ namespace ME3Script.Parsing
             bool isNegative = Matches(TokenType.MinusSign);
             if (!Matches(TokenType.IntegerNumber))
             {
-                throw Error("Expected integer literal!");
+                throw Error("Expected integer literal!", CurrentPosition);
             }
 
             var val = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
