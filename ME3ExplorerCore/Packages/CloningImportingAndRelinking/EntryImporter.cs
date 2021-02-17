@@ -197,7 +197,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             if (sourceExport.HasStack)
             {
                 var ms = new MemoryStream();
-                ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8)); 
+                ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8));
                 ms.WriteFromBuffer(destPackage.Game switch
                 {
                     MEGame.UDK => UDKStackDummy,
@@ -597,7 +597,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     objectMapping[matchingSourceExport] = newImport;
                 }
-                
+
                 return newImport;
             }
 
@@ -654,8 +654,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="entry">The import to resolve</param>
         /// <param name="cache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache = null, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -694,7 +695,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
-            filesToCheck.AddRange(GetPossibleAssociatedFiles(entry.FileRef));
+            filesToCheck.AddRange(GetPossibleAssociatedFiles(entry.FileRef, localization));
 
             if (addPackageFile)
             {
@@ -724,7 +725,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             IEnumerable<string> startups;
             if (entry.Game == MEGame.ME2)
             {
-                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains("_INT", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
+                startups = gameFiles.Keys.Where(x => x.Contains("Startup_", StringComparison.InvariantCultureIgnoreCase) && x.Contains($"_{localization}", StringComparison.InvariantCultureIgnoreCase)); //me2 this will unfortunately include the main startup file
             }
             else
             {
@@ -786,12 +787,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        public static List<string> GetPossibleAssociatedFiles(IMEPackage package)
+        public static List<string> GetPossibleAssociatedFiles(IMEPackage package, string localization = "INT")
         {
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
             var associatedFiles = new List<string>();
             string bioFileExt = package.Game == MEGame.ME1 ? ".sfm" : ".pcc";
-            associatedFiles.Add($"{filenameWithoutExtension}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+            associatedFiles.Add($"{filenameWithoutExtension}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
             var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
@@ -826,7 +827,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 while (nextfile != null)
                 {
                     associatedFiles.Add($"{nextfile}{bioFileExt}");
-                    associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+                    associatedFiles.Add($"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
             }
