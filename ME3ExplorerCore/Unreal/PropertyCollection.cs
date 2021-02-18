@@ -1086,6 +1086,12 @@ namespace ME3ExplorerCore.Unreal
             // System.Object, which defines Equals as reference equality.
             return (Value == p.Value);
         }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

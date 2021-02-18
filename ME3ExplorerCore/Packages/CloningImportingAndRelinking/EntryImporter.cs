@@ -943,10 +943,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export)
+        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export, bool includeLink = false)
         {
             List<IEntry> referencedItems = new List<IEntry>();
-            RecursiveGetDependencies(export, referencedItems);
+            RecursiveGetDependencies(export, referencedItems, includeLink);
             return referencedItems.Distinct().ToList();
         }
 
@@ -958,9 +958,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems)
+        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems, bool includeLink)
         {
-            // For reaching out into
             List<ExportEntry> localExportReferences = new List<ExportEntry>();
 
             // Compiles list of items local to this entry
@@ -968,10 +967,16 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out var exp) && !referencedItems.Any(x => x.UIndex == entryUIndex))
                 {
+                    // Add objects that we have not referenced yet.
                     localExportReferences.Add(exp);
                 }
                 // Global add
                 AddEntryReference(entryUIndex, relinkingExport.FileRef, referencedItems);
+            }
+
+            if (includeLink && relinkingExport.Parent != null)
+            {
+                AddReferenceLocal(relinkingExport.Parent.UIndex);
             }
 
             // Pre-props binary
@@ -993,6 +998,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
                 AddReferenceLocal(uIndex);
             }
+
+            // Metadata
+            if (relinkingExport.SuperClass != null)
+                AddReferenceLocal(relinkingExport.idxSuperClass);
+            if (relinkingExport.Archetype != null)
+                AddReferenceLocal(relinkingExport.idxArchetype);
+            if (relinkingExport.Class != null)
+                AddReferenceLocal(relinkingExport.idxClass);
 
             // Properties
             var props = relinkingExport.GetProperties();
@@ -1016,7 +1029,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             // We should reach out and see if we need to index others.
             foreach (var v in localExportReferences)
             {
-                RecursiveGetDependencies(v, referencedItems);
+                RecursiveGetDependencies(v, referencedItems, true);
             }
         }
 
