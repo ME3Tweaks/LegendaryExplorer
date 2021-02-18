@@ -49,17 +49,21 @@ namespace ME3ExplorerCore.Packages
         }
 
         //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
-        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string fullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
+        public static IEntry getEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className = "Class", string packageFile = "Core", int? objIdx = null)
         {
-            if (string.IsNullOrEmpty(fullPath))
+            if (string.IsNullOrEmpty(instancedFullPath))
             {
                 return null;
             }
 
             //see if this import exists locally
-            foreach (ImportEntry imp in pcc.Imports)
+            var entry = pcc.FindEntry(instancedFullPath);
+            if (entry != null)
+                return entry;
+
+            /*foreach (ImportEntry imp in pcc.Imports)
             {
-                if (imp.FullPath == fullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
+                if (imp.FullPath == instancedFullPath && (objIdx == null || objIdx == imp.ObjectName.Number))
                 {
                     return imp;
                 }
@@ -68,13 +72,13 @@ namespace ME3ExplorerCore.Packages
             //see if this is an export and exists locally
             foreach (ExportEntry exp in pcc.Exports)
             {
-                if (exp.FullPath == fullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
+                if (exp.FullPath == instancedFullPath && (objIdx == null || objIdx == exp.ObjectName.Number))
                 {
                     return exp;
                 }
-            }
+            }*/
 
-            string[] pathParts = fullPath.Split('.');
+            string[] pathParts = instancedFullPath.Split('.');
 
             IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
 

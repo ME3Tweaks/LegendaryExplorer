@@ -120,7 +120,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                     int spos = (int)s.BaseStream.Position;
                     var name = bytecodeReader.ReadName();
                     var entry = bytecodeReader.ReadEntryRef(out var _);
-                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.FullPath}()"), bytecodeReader));
+                    Statements.statements.Add(new Statement(spos, (int)s.BaseStream.Position, new NothingToken(spos, $"  {name} => {entry.InstancedFullPath}()"), bytecodeReader));
                 }
             }
 #if !DEBUG && !AZURE

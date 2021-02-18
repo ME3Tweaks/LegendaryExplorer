@@ -129,14 +129,6 @@ namespace ME3ExplorerCore.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
-            if (file.Game == MEGame.ME1 && ClassName.Contains("Property") || file.Game != MEGame.ME1 && HasStack)
-            {
-                ReadsFromConfig = _data.Length > 25 && (_data[25] & 64) != 0; //this is endian specific!
-            }
-            else
-            {
-                ReadsFromConfig = false;
-            }
         }
 
         public bool HasStack => ObjectFlags.HasFlag(EObjectFlags.HasStack);
@@ -533,7 +525,6 @@ namespace ME3ExplorerCore.Packages
         }
 
         public int OriginalDataSize { get; protected set; }
-        public bool ReadsFromConfig { get; protected set; }
 
         bool dataChanged;
 

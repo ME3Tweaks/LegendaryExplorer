@@ -109,7 +109,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
                 {
-                    relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
+                    relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
                 }
                 else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
@@ -168,7 +168,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
             catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
-                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
+                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
             relinkingExport.WritePrePropsAndProperties(prePropBinary, props, sourceExport.propsEnd());
@@ -335,7 +335,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (importingFromGlobalFile)
                     {
-                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.FullPath, importingPCC, destinationPcc, crossPCCObjectMappingList).UIndex;
+                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, destinationPcc, crossPCCObjectMappingList).UIndex;
                     }
                     else
                     {
@@ -366,7 +366,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
 
             int uIndex = entry.UIndex;
-            var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.FullPath} at 0x{position:X8}",
+            var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.InstancedFullPath} at 0x{position:X8}",
                 crossFileRefObjectMap, "", importExportDependencies);
             if (relinkResult is null)
             {

@@ -86,7 +86,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.FullPath, sourcePcc, destPcc,
+                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc,
                                                             forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
@@ -133,7 +133,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         //we must check to see if there is an item already matching what we are trying to port.
 
                         //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
-                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.FullPath == x.FullPath);
+                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.InstancedFullPath == x.InstancedFullPath);
                         if (sameObjInTarget != null)
                         {
                             relinkMap[node] = sameObjInTarget;
@@ -152,7 +152,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else
                     {
-                        entry = GetOrAddCrossImportOrPackage(node.FullPath, sourcePcc, destPcc, objectMapping: relinkMap);
+                        entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap);
                     }
 
                     entry.Parent = newParent;
@@ -563,26 +563,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
-            /*
-            if (relinkerCache != null)
-            {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullNameInstanced, out var me) && me is ExportEntry exp)
-                {
-                    matchingSourceExport = exp;
-                }
-            }
-            else
-            {
-                foreach (ExportEntry sourceExport in sourcePcc.Exports)
-                {
-                    if (sourceExport.FullPath == importFullNameInstanced)
-                    {
-                        matchingSourceExport = sourceExport;
-                        break;
-                    }
-                }
-            }*/
-
             if (matchingSourceExport != null)
             {
                 var newImport = new ImportEntry(destinationPCC)
