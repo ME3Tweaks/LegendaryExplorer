@@ -89,6 +89,7 @@
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
+        <KeyBinding Key="R" Modifiers="Control+Shift" Command="{Binding ForceReloadPackageCommand}"/>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveFileCommand}"/>
@@ -106,6 +107,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4" >
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                    <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="Create new empty package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
                     <MenuItem Header="Create new ME3 or ME2 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 or ME2 package with the minimum setup to load as a level"/>
                     <MenuItem Header="Save"  Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>

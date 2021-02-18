@@ -200,7 +200,7 @@ namespace ME3Explorer
         }
 
         #region Commands
-
+        public ICommand ForceReloadPackageCommand { get; set; }
         public ICommand ComparePackagesCommand { get; set; }
         public ICommand CompareToUnmoddedCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
@@ -258,6 +258,7 @@ namespace ME3Explorer
 
         private void LoadCommands()
         {
+            ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, PackageIsLoaded);
             CompareToUnmoddedCommand = new GenericCommand(CompareUnmodded, CanCompareToUnmodded);
             ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
             ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
@@ -2486,6 +2487,19 @@ namespace ME3Explorer
             else
             {
                 IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// Forcibly reloads the package from disk. The package loaded in this instance will no longer be shared.
+        /// </summary>
+        private void ForceReloadPackageWithoutSharing()
+        {
+            var fileOnDisk = Pcc.FilePath;
+            if (fileOnDisk != null && File.Exists(fileOnDisk))
+            {
+                using var fStream = File.OpenRead(fileOnDisk);
+                LoadFileFromStream(fStream, fileOnDisk);
             }
         }
 
