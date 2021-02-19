@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
+using ME3Script.Analysis.Visitors;
 using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Parsing
@@ -42,10 +43,31 @@ namespace ME3Script.Parsing
             ASTNodeType.ObjectLiteral
         };
 
-        protected ParseError Error(string msg, SourcePosition start = null, SourcePosition end = null)
+        protected ParseException ParseError(string msg, Token<string> token)
+        {
+            token.SyntaxType = EF.ERROR;
+            return ParseError(msg, token.StartPos, token.EndPos);
+        }
+
+        protected ParseException ParseError(string msg, ASTNode node) => ParseError(msg, node.StartPos, node.EndPos);
+
+        protected ParseException ParseError(string msg, SourcePosition start = null, SourcePosition end = null)
         {
             Log.LogError(msg, start, end);
-            return new ParseError(msg);
+            return new ParseException(msg);
+        }
+
+        protected void TypeError(string msg, Token<string> token)
+        {
+            token.SyntaxType = EF.ERROR;
+            TypeError(msg, token.StartPos, token.EndPos);
+        }
+
+        protected void TypeError(string msg, ASTNode node) => TypeError(msg, node.StartPos, node.EndPos);
+
+        protected void TypeError(string msg, SourcePosition start = null, SourcePosition end = null)
+        {
+            Log.LogError(msg, start, end);
         }
 
         public VariableIdentifier ParseVariableName()
@@ -72,12 +94,12 @@ namespace ME3Script.Parsing
                     var size = Consume(TokenType.IntegerNumber);
                     if (size == null)
                     {
-                        throw Error("Expected an integer number for size!", CurrentPosition);
+                        throw ParseError("Expected an integer number for size!", CurrentPosition);
                     }
 
                     if (Consume(TokenType.RightSqrBracket) == null)
                     {
-                        throw Error("Expected ']'!", CurrentPosition);
+                        throw ParseError("Expected ']'!", CurrentPosition);
                     }
 
                     return new VariableIdentifier(name.Value, name.StartPos, name.EndPos, int.Parse(size.Value));
@@ -92,36 +114,36 @@ namespace ME3Script.Parsing
             return (VariableType)Tokens.TryGetTree(TypeParser);
             ASTNode TypeParser()
             {
-                if (Matches(ARRAY))
+                if (Matches(ARRAY, EF.Keyword))
                 {
                     var arrayToken = Tokens.Prev();
                     if (Consume(TokenType.LeftArrow) is null)
                     {
-                        throw Error("Expected '<' after 'array'!", CurrentPosition);
+                        throw ParseError("Expected '<' after 'array'!", CurrentPosition);
                     }
                     var elementType = TryParseType();
                     if (elementType == null)
                     {
-                        throw Error("Expected element type for array!", CurrentPosition);
+                        throw ParseError("Expected element type for array!", CurrentPosition);
                     }
 
                     if (elementType is DynamicArrayType)
                     {
-                        throw Error("Arrays of Arrays are not supported!", elementType.StartPos, elementType.EndPos);
+                        throw ParseError("Arrays of Arrays are not supported!", elementType.StartPos, elementType.EndPos);
                     }
                     if (Consume(TokenType.RightArrow) is null)
                     {
-                        throw Error("Expected '>' after array type!", CurrentPosition);
+                        throw ParseError("Expected '>' after array type!", CurrentPosition);
                     }
                     return new DynamicArrayType(elementType, arrayToken.StartPos, CurrentPosition);
                 }
 
-                if (Matches(DELEGATE))
+                if (Matches(DELEGATE, EF.Keyword))
                 {
                     var delegateToken = Tokens.Prev();
                     if (Consume(TokenType.LeftArrow) is null)
                     {
-                        throw Error("Expected '<' after 'delegate'!", CurrentPosition);
+                        throw ParseError("Expected '<' after 'delegate'!", CurrentPosition);
                     }
 
                     string functionName = "";
@@ -129,6 +151,7 @@ namespace ME3Script.Parsing
                     {
                         if (Consume(TokenType.Word) is Token<string> identifier)
                         {
+                            identifier.SyntaxType = EF.Function;
                             if (functionName.Length > 0)
                             {
                                 functionName += ".";
@@ -137,18 +160,19 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            throw Error("Expected function name for delegate!", CurrentPosition);
+                            throw ParseError("Expected function name for delegate!", CurrentPosition);
                         }
-                    } while (Matches(TokenType.Dot));
+                    } while (Matches(TokenType.Dot, EF.Function));
                     if (Consume(TokenType.RightArrow) is null)
                     {
-                        throw Error("Expected '>' after function name!", CurrentPosition);
+                        throw ParseError("Expected '>' after function name!", CurrentPosition);
                     }
                     return new DelegateType(new Function(functionName, default, null, null, null), delegateToken.StartPos, CurrentPosition);
                 }
 
                 if (Consume(CLASS) is {} classToken)
                 {
+                    classToken.SyntaxType = EF.Keyword;
                     if (Consume(TokenType.LeftArrow) is null)
                     {
                         return new ClassType(new VariableType(OBJECT));
@@ -156,12 +180,14 @@ namespace ME3Script.Parsing
 
                     if (!(Consume(TokenType.Word) is {} classNameToken))
                     {
-                        throw Error("Expected class name!", CurrentPosition);
+                        throw ParseError("Expected class name!", CurrentPosition);
                     }
+
+                    classNameToken.SyntaxType = EF.TypeName;
 
                     if (Consume(TokenType.RightArrow) is null)
                     {
-                        throw Error("Expected '>' after class name!", CurrentPosition);
+                        throw ParseError("Expected '>' after class name!", CurrentPosition);
                     }
                     return new ClassType(new VariableType(classNameToken.Value), classToken.StartPos, PrevToken.EndPos);
                 }
@@ -171,6 +197,8 @@ namespace ME3Script.Parsing
                 {
                     return null;
                 }
+
+                type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.TypeName;
                 return new VariableType(type.Value, type.StartPos, type.EndPos);
             }
 
@@ -178,11 +206,15 @@ namespace ME3Script.Parsing
 
         #region Helpers
 
-        public bool Matches(string str)
+        public bool Matches(string str, EF syntaxType = EF.None)
         {
             bool matches = CurrentIs(str);
             if (matches)
             {
+                if (syntaxType != EF.None)
+                {
+                    CurrentToken.SyntaxType = syntaxType;
+                }
                 Tokens.Advance();
             }
             return matches;
@@ -198,18 +230,20 @@ namespace ME3Script.Parsing
             return matches;
         }
 
-        public bool Matches(TokenType tokenType)
+        public bool Matches(TokenType tokenType, EF syntaxType = EF.None)
         {
             if (Tokens.CurrentItem.Type == tokenType)
             {
+                if (syntaxType != EF.None)
+                {
+                    CurrentToken.SyntaxType = syntaxType;
+                }
                 Tokens.Advance();
                 return true;
             }
 
             return false;
         }
-
-        public bool Matches(params TokenType[] tokenTypes) => tokenTypes.Any(Matches);
 
         public bool CurrentIs(string str)
         {
@@ -275,22 +309,25 @@ namespace ME3Script.Parsing
 
             if (Matches(TRUE, FALSE))
             {
+                token.SyntaxType = EF.Keyword;
                 return new BooleanLiteral(bool.Parse(token.Value), token.StartPos, token.EndPos);
             }
 
-            if (Matches(NONE))
+            if (Matches(NONE, EF.Keyword))
             {
                 return new NoneLiteral(token.StartPos, token.EndPos);
             }
 
             if (CurrentIs(VECT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
+                token.SyntaxType = EF.Keyword;
                 Tokens.Advance();
                 return ParseVectorLiteral();
             }
 
             if (CurrentIs(ROT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
+                token.SyntaxType = EF.Keyword;
                 Tokens.Advance();
                 return ParseRotatorLiteral();
             }
@@ -303,28 +340,28 @@ namespace ME3Script.Parsing
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
             {
-                throw Error($"Expected '(' after '{ROT}' in rotator literal!", CurrentPosition);
+                throw ParseError($"Expected '(' after '{ROT}' in rotator literal!", CurrentPosition);
             }
 
             int pitch = ParseInt();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after pitch component in rotator literal!", CurrentPosition);
+                throw ParseError("Expected ',' after pitch component in rotator literal!", CurrentPosition);
             }
 
             int yaw = ParseInt();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after yaw component in rotator literal!", CurrentPosition);
+                throw ParseError("Expected ',' after yaw component in rotator literal!", CurrentPosition);
             }
 
             int roll = ParseInt();
 
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error("Expected ')' after roll component in rotator literal!", CurrentPosition);
+                throw ParseError("Expected ')' after roll component in rotator literal!", CurrentPosition);
             }
 
             return new RotatorLiteral(pitch, yaw, roll, start, Tokens.Prev().EndPos);
@@ -335,28 +372,28 @@ namespace ME3Script.Parsing
             var start = CurrentPosition;
             if (!Matches(TokenType.LeftParenth))
             {
-                throw Error($"Expected '(' after '{VECT}' in vector literal!", CurrentPosition);
+                throw ParseError($"Expected '(' after '{VECT}' in vector literal!", CurrentPosition);
             }
 
             float x = ParseFloat();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after x component in vector literal!", CurrentPosition);
+                throw ParseError("Expected ',' after x component in vector literal!", CurrentPosition);
             }
 
             float y = ParseFloat();
 
             if (!Matches(TokenType.Comma))
             {
-                throw Error("Expected ',' after y component in vector literal!", CurrentPosition);
+                throw ParseError("Expected ',' after y component in vector literal!", CurrentPosition);
             }
 
             float z = ParseFloat();
 
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error("Expected ')' after z component in vector literal!", CurrentPosition);
+                throw ParseError("Expected ')' after z component in vector literal!", CurrentPosition);
             }
 
             return new VectorLiteral(x, y, z, start, Tokens.Prev().EndPos);
@@ -365,9 +402,9 @@ namespace ME3Script.Parsing
         float ParseFloat()
         {
             bool isNegative = Matches(TokenType.MinusSign);
-            if (!Matches(TokenType.FloatingNumber, TokenType.IntegerNumber))
+            if (!Matches(TokenType.FloatingNumber) && !Matches(TokenType.IntegerNumber))
             {
-                throw Error("Expected number literal!", CurrentPosition);
+                throw ParseError("Expected number literal!", CurrentPosition);
             }
 
             var val = float.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
@@ -379,7 +416,7 @@ namespace ME3Script.Parsing
             bool isNegative = Matches(TokenType.MinusSign);
             if (!Matches(TokenType.IntegerNumber))
             {
-                throw Error("Expected integer literal!", CurrentPosition);
+                throw ParseError("Expected integer literal!", CurrentPosition);
             }
 
             var val = int.Parse(Tokens.Prev().Value, CultureInfo.InvariantCulture);
@@ -387,13 +424,8 @@ namespace ME3Script.Parsing
         }
     }
 
-    public class ParseError : Exception
+    public class ParseException : Exception
     {
-        public ParseError(string msg) : base(msg){}
-    }
-
-    public static class ParserExtensions
-    {
-
+        public ParseException(string msg) : base(msg){}
     }
 }

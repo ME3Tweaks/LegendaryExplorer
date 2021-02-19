@@ -6,11 +6,11 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Script.Language.Tree
 {
-    public class State : ASTNode
+    public class State : ASTNode, IContainsByteCode
     {
         public StateFlags Flags;
         public string Name;
-        public CodeBody Body;
+        public CodeBody Body { get; set; }
         public State Parent;
         public List<Function> Functions;
         public List<Function> Ignores;

@@ -26,7 +26,7 @@ namespace ME3Script.Parsing
         private readonly CodeBody Body;
         private readonly Class Self;
 
-        private readonly CaseInsensitiveDictionary<Label> Labels = new CaseInsensitiveDictionary<Label>();
+        private readonly CaseInsensitiveDictionary<Label> Labels = new();
 
         private readonly Stack<string> ExpressionScopes;
 
@@ -43,9 +43,9 @@ namespace ME3Script.Parsing
         private bool InNew;
 
         //these have to be checked against labels after the whole body is parsed
-        private readonly List<Statement> gotoStatements = new List<Statement>();
+        private readonly List<Statement> gotoStatements = new();
 
-        public static void ParseFunction(Function func, string source, SymbolTable symbols, MessageLog log = null)
+        public static TokenStream<string> ParseFunction(Function func, string source, SymbolTable symbols, MessageLog log = null)
         {
             symbols.PushScope(func.Name);
 
@@ -55,7 +55,7 @@ namespace ME3Script.Parsing
             var body = bodyParser.ParseBody();
 
             //remove redundant return;
-            if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement r && r.Value is null)
+            if (body.Statements.Count > 0 && body.Statements.Last() is ReturnStatement {Value: null})
             {
                 body.Statements.RemoveAt(body.Statements.Count - 1);
             }
@@ -76,13 +76,13 @@ namespace ME3Script.Parsing
                     var parsed = paramParser.ParseExpression();
                     if (parsed is null)
                     {
-                        throw paramParser.Error("Could not parse default parameter value!", unparsedBody.StartPos, unparsedBody.EndPos);
+                        throw paramParser.ParseError("Could not parse default parameter value!", unparsedBody);
                     }
 
                     VariableType valueType = parsed.ResolveType();
                     if (!NodeUtils.TypeCompatible(param.VarType, valueType))
                     {
-                        throw paramParser.Error($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody.StartPos, unparsedBody.EndPos);
+                        paramParser.TypeError($"Could not assign value of type '{valueType}' to variable of type '{param.VarType}'!", unparsedBody);
                     }
                     AddConversion(param.VarType, ref parsed);
                     param.DefaultParameter = parsed;
@@ -92,6 +92,8 @@ namespace ME3Script.Parsing
             func.Body = body;
 
             symbols.PopScope();
+            
+            return tokenStream;
         }
 
         public static void ParseState(State state, string source, SymbolTable symbols, MessageLog log = null)
@@ -151,7 +153,7 @@ namespace ME3Script.Parsing
             } while (!Tokens.AtEnd());
 
             if (Tokens.AtEnd())
-                throw Error("Could not find the code body for the current node, please contact the maintainers of this compiler!");
+                throw ParseError("Could not find the code body for the current node, please contact the maintainers of this compiler!");
 
             var body = TryParseBody(false, IsFunction);
             if (body == null)
@@ -159,7 +161,7 @@ namespace ME3Script.Parsing
             Body.Statements = body.Statements;
 
             if (Tokens.CurrentItem.Type != TokenType.EOF && !Tokens.CurrentItem.StartPos.Equals(Body.EndPos))
-                throw Error("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
+                throw ParseError("Could not parse a valid statement, even though the current code body has supposedly not ended yet.", CurrentPosition);
             var labels = LabelNests.Peek();
             foreach (Statement stmnt in gotoStatements)
             {
@@ -173,13 +175,14 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            throw Error($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)");
+                            ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g.Label);
                         }
 
                         break;
                     }
                     case StateGoto sg when sg.LabelExpression is NameLiteral nameLiteral && labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(nameLiteral.Value)) is null:
-                        throw Error($"Could not find label '{nameLiteral.Value}'! (gotos cannot jump out of or into a foreach)");
+                        ParseError($"Could not find label '{nameLiteral.Value}'! (gotos cannot jump out of or into a foreach)", sg);
+                        break;
                 }
             }
             return Body;
@@ -190,7 +193,7 @@ namespace ME3Script.Parsing
             return (CodeBody)Tokens.TryGetTree(CodeParser);
             ASTNode CodeParser()
             {
-                if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw Error("Expected '{'!", CurrentPosition);
+                if (requireBrackets && Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
                 bool pastVarDecls = false;
                 var statements = new List<Statement>();
@@ -198,7 +201,11 @@ namespace ME3Script.Parsing
                 var current = ParseDeclarationOrStatement();
                 while (current != null)
                 {
-                    if (!SemiColonExceptions.Contains(current.Type) && Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after statement!", CurrentPosition);
+                    if (!SemiColonExceptions.Contains(current.Type) && Consume(TokenType.SemiColon) == null)
+                    {
+                        ParseError("Expected semi-colon after statement!", CurrentPosition);
+                    }
+
                     if (!(current is VariableDeclaration))
                     {
                         pastVarDecls = true;
@@ -207,21 +214,25 @@ namespace ME3Script.Parsing
                         {
                             if (Labels.ContainsKey(label.Name))
                             {
-                                throw Error($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label.StartPos, label.EndPos);
+                                ParseError($"Label '{label.Name}' already exists on line {Labels[label.Name].StartPos.Line}!", label);
                             }
-                            Labels.Add(label.Name, label);
-                            LabelNests.Peek().Add(label);
+                            else
+                            {
+                                Labels.Add(label.Name, label);
+                                LabelNests.Peek().Add(label);
+                            }
                         }
                         statements.Add(current);
                     }
                     else if (pastVarDecls)
                     {
-                        throw Error("Variable declarations must come before all other statements", CurrentPosition);
+                        ParseError("Variable declarations must come before all other statements", current);
                     }
                     else if (!functionBody)
                     {
-                        throw Error("Can only declare variables at the top of a function!", CurrentPosition);
+                        ParseError("Can only declare variables at the top of a function!", current);
                     }
+
 
                     if (CurrentToken.Type == TokenType.EOF)
                     {
@@ -231,7 +242,7 @@ namespace ME3Script.Parsing
                 }
 
                 var endPos = CurrentPosition;
-                if (requireBrackets && Consume(TokenType.RightBracket) == null) throw Error("Expected '}'!", CurrentPosition);
+                if (requireBrackets && Consume(TokenType.RightBracket) == null) throw ParseError("Expected '}'!", CurrentPosition);
 
                 return new CodeBody(statements, startPos, endPos);
             }
@@ -263,27 +274,82 @@ namespace ME3Script.Parsing
                         body = new CodeBody(null, CurrentPosition.GetModifiedPosition(0, -1, -1), CurrentPosition);
                     }
                     else
-                        throw Error("Expected a code body or single statement!", CurrentPosition);
+                    {
+                        throw ParseError("Expected a code body or single statement!", CurrentPosition);
+                    }
                 }
 
                 return body;
             }
         }
 
-        public Statement ParseDeclarationOrStatement(bool throwError = false)
+        public Statement ParseDeclarationOrStatement()
         {
-            if (CurrentIs(LOCAL))
+            while (true)
             {
-                return ParseLocalVarDecl();
+                try
+                {
+                    if (CurrentIs(LOCAL))
+                    {
+                        return ParseLocalVarDecl();
+                    }
+                    return ParseStatement();
+                }
+                catch (ParseException)
+                {
+                    if (!Synchronize())
+                    {
+                        return null;
+                    }
+                }
             }
-            return ParseStatement(throwError);
         }
 
-        public Statement ParseStatement(bool throwError = false)
+        //makes a rough attempt to find the next statement after a parse error has occured
+        //returns false if it gets to the end of a block or file without finding one
+        public bool Synchronize()
+        {
+            Tokens.Advance();
+            while (!Tokens.AtEnd() && !CurrentIs(TokenType.LeftBracket))
+            {
+                if (PrevToken.Type == TokenType.SemiColon)// || CurrentToken.StartPos.Line > PrevToken.EndPos.Line)
+                {
+                    return true;
+                }
+
+                if (CurrentTokenType is TokenType.Word)
+                {
+                    switch (CurrentToken.Value)
+                    {
+                        case RETURN:
+                        case IF:
+                        case SWITCH:
+                        case WHILE:
+                        case FOR:
+                        case FOREACH:
+                        case DO:
+                        case CONTINUE:
+                        case BREAK:
+                        case GOTO:
+                        case STOP:
+                        case CASE:
+                        case ASSERT:
+                            return true;
+                    }
+                }
+
+                Tokens.Advance();
+            }
+            return false;
+        }
+
+        public Statement ParseStatement()
         {
             if (CurrentIs(LOCAL))
             {
-                throw Error("Can only declare variables at the top of a function!", CurrentPosition);
+                var errorStatement = new ErrorStatement(ParseLocalVarDecl());
+                ParseError("Can only declare variables at the top of a function!", errorStatement);
+                return errorStatement;
             }
             if (CurrentIs(RETURN))
             {
@@ -348,16 +414,13 @@ namespace ME3Script.Parsing
             if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.Colon)
             {
                 Token<string> labelToken = Consume(TokenType.Word);
+                labelToken.SyntaxType = EF.Label;
                 return new Label(labelToken.Value, 0, labelToken.StartPos, Consume(TokenType.Colon).EndPos);
             }
 
             Expression expr = ParseExpression();
             if (expr == null)
             {
-                if (throwError)
-                {
-                    throw Error("Expected a valid statement!", CurrentPosition);
-                }
                 return null;
             }
 
@@ -366,47 +429,50 @@ namespace ME3Script.Parsing
             {
                 if (!IsLValue(expr))
                 {
-                    throw Error("Assignments require a variable target (LValue expected).", CurrentPosition);
+                    ParseError("Assignments require a variable on the left! (LValue expected).", expr);
                 }
 
                 var value = ParseExpression();
-                if (value == null) throw Error("Assignments require a resolvable expression as value! (RValue expected).", CurrentPosition);
+                if (value == null) throw ParseError("Assignments require an expression on the right! (RValue expected).", CurrentPosition);
 
                 VariableType exprType = expr.ResolveType();
                 if (!NodeUtils.TypeCompatible(exprType, value.ResolveType()))
                 {
-                    throw Error($"Cannot assign a value of type '{value.ResolveType()?.Name ?? "None"}' to a variable of type '{exprType?.Name}'.", assign.StartPos, assign.EndPos);
+                    TypeError($"Cannot assign a value of type '{value.ResolveType()?.Name ?? "None"}' to a variable of type '{exprType?.Name}'.", assign);
                 }
                 AddConversion(exprType, ref value);
 
-                return new AssignStatement(expr, value, assign.StartPos, assign.EndPos);
+                return new AssignStatement(expr, value, expr.StartPos, value.EndPos);
             }
 
             if (expr is FunctionCall || expr is DelegateCall || expr is CompositeSymbolRef csr && (csr.InnerSymbol is FunctionCall || csr.InnerSymbol is DelegateCall) 
              || expr is PostOpReference || expr is PreOpReference preOp && preOp.Operator.HasOutParams || expr is InOpReference inOp && inOp.Operator.HasOutParams 
              || expr is DynArrayOperation && !(expr is DynArrayLength))
             {
-                return new ExpressionOnlyStatement(expr, expr.StartPos, expr.EndPos);
+            }
+            else
+            {
+                ParseError("Expression-only statements must have an effect!", expr);
             }
 
-            throw Error("Expression-only statements must have an effect!", expr.StartPos, expr.EndPos);
+            return new ExpressionOnlyStatement(expr, expr.StartPos, expr.EndPos);
         }
 
         public VariableDeclaration ParseLocalVarDecl()
         {
             var startPos = CurrentPosition;
-            if (!Matches(LOCAL)) return null;
+            if (!Matches(LOCAL, EF.Keyword)) return null;
 
             VariableType type = TryParseType();
-            if (type == null) throw Error("Expected variable type!", CurrentPosition);
+            if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
             type.Outer = Body;
-            if (!Symbols.TryResolveType(ref type)) throw Error($"The type '{type.Name}' does not exist in the current scope!", type.StartPos, type.EndPos);
+            if (!Symbols.TryResolveType(ref type)) TypeError($"The type '{type.Name}' does not exist in the current scope!", type);
 
             var var = ParseVariableName();
-            if (var == null) throw Error("Malformed variable name!", CurrentPosition);
+            if (var == null) throw ParseError("Malformed or missing variable name!", CurrentPosition);
 
 
-            if (Symbols.SymbolExistsInCurrentScope(var.Name)) throw Error($"A variable named '{var.Name}' already exists in this scope!", var.StartPos, var.EndPos);
+            if (Symbols.SymbolExistsInCurrentScope(var.Name)) TypeError($"A variable named '{var.Name}' already exists in this scope!", var);
 
             VariableDeclaration varDecl = new VariableDeclaration(type, UnrealFlags.EPropertyFlags.None, var.Name, var.Size, null, startPos, var.EndPos);
             Symbols.AddSymbol(varDecl.Name, varDecl);
@@ -416,7 +482,7 @@ namespace ME3Script.Parsing
             }
             else
             {
-                throw Error("States cannot declare variables!", startPos, CurrentPosition);
+                ParseError("States cannot declare variables!", varDecl);
             }
             varDecl.Outer = Node;
 
@@ -427,55 +493,63 @@ namespace ME3Script.Parsing
         {
             var token = Consume(IF);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError($"Expected '(' after '{IF}'!", CurrentPosition);
 
             var condition = ParseExpression();
-            if (condition == null) throw Error("Expected an expression as the if-condition!", CurrentPosition);
+            if (condition == null) throw ParseError($"Expected an expression as the {IF} condition!", CurrentPosition);
 
             VariableType conditionType = condition.ResolveType();
             if (conditionType != SymbolTable.BoolType)
             {
-                throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+                TypeError("Expected a boolean result from the condition!", condition);
             }
 
-            if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
+            if (Consume(TokenType.RightParenth) == null) throw ParseError($"Expected ')' after {IF} condition!", CurrentPosition);
 
             CodeBody thenBody = TryParseBodyOrStatement();
-            if (thenBody == null) throw Error("Expected a statement or code block!", CurrentPosition);
+            if (thenBody == null) throw ParseError("Expected a statement or code block!", CurrentPosition);
 
             CodeBody elseBody = null;
             var elsetoken = Consume(ELSE);
             if (elsetoken != null)
             {
+                elsetoken.SyntaxType = EF.Keyword;
                 elseBody = TryParseBodyOrStatement();
-                if (elseBody == null) throw Error("Expected a statement or code block!", CurrentPosition);
+                if (elseBody == null) throw ParseError("Expected a statement or code block!", CurrentPosition);
             }
 
-            return new IfStatement(condition, thenBody, elseBody, token.StartPos, token.EndPos);
+            return new IfStatement(condition, thenBody, elseBody, token.StartPos, elseBody?.EndPos ?? thenBody.EndPos);
         }
 
         public ReturnStatement ParseReturn()
         {
             var token = Consume(RETURN);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!IsFunction) throw Error("Return statements can only exist in functions!", CurrentPosition);
+            if (!IsFunction) ParseError("Return statements can only exist in functions!", CurrentPosition);
 
             if (CurrentTokenType == TokenType.SemiColon) return new ReturnStatement(null, token.StartPos, token.EndPos);
 
             var value = ParseExpression();
-            if (value == null) throw Error("Expected a return value or a semi-colon!", CurrentPosition);
+            if (value == null) throw ParseError("Expected a return value or a semi-colon!", CurrentPosition);
 
             var type = value.ResolveType();
             if (IsFunction)
             {
                 var func = (Function)Node;
-                if (func.ReturnType == null) throw Error("Function should not return a value!", token.StartPos, token.EndPos);
+                if (func.ReturnType == null)
+                {
+                    ParseError("Function should not return a value!", token);
+                }
+                else if (!NodeUtils.TypeCompatible(func.ReturnType, type))
+                {
+                    TypeError($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token);
+                }
 
-                if (!NodeUtils.TypeCompatible(func.ReturnType, type)) throw Error($"Cannot return a value of type '{type.Name}', function should return '{func.ReturnType.Name}'.", token.StartPos, token.EndPos);
                 AddConversion(func.ReturnType, ref value);
-
             }
 
             return new ReturnStatement(value, token.StartPos, token.EndPos);
@@ -485,31 +559,32 @@ namespace ME3Script.Parsing
         {
             var token = Consume(SWITCH);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError($"Expected '(' after '{SWITCH}'!", CurrentPosition);
 
             var expression = ParseExpression();
-            if (expression == null) throw Error("Expected an expression as the switch value!", CurrentPosition);
+            if (expression == null) throw ParseError("Expected an expression as the switch value!", CurrentPosition);
 
-            if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
+            if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             SwitchTypes.Push(expression.ResolveType());
             CodeBody body = TryParseBodyOrStatement();
+            SwitchTypes.Pop();
+            if (body == null) throw ParseError("Expected switch code block!", CurrentPosition);
             if (body.Statements.Any())
             {
                 Statement firstStatement = body.Statements[0];
                 if (!(firstStatement is CaseStatement) && !(firstStatement is DefaultCaseStatement))
                 {
-                    throw Error($"First statement in a Switch body must be a '{CASE}' or '{DEFAULT}' statement!", firstStatement.StartPos, firstStatement.EndPos);
+                    ParseError($"First statement in a '{SWITCH}' body must be a '{CASE}' or '{DEFAULT}' statement!", firstStatement);
                 }
             }
             else
             {
-                throw Error("Switch statement must have a body!", body.StartPos, body.EndPos);
+                ParseError("Switch statement must have a body!", body);
             }
 
-            SwitchTypes.Pop();
-            if (body == null) throw Error("Expected switch code block!", CurrentPosition);
 
             return new SwitchStatement(expression, body, token.StartPos, token.EndPos);
         }
@@ -518,15 +593,18 @@ namespace ME3Script.Parsing
         {
             var token = Consume(WHILE);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
 
             var condition = ParseExpression();
-            if (condition == null) throw Error("Expected an expression as the while condition!", CurrentPosition);
+            if (condition == null) throw ParseError("Expected an expression as the while condition!", CurrentPosition);
             if (condition.ResolveType() != SymbolTable.BoolType)
-                throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+            {
+                TypeError("Expected a boolean result from the condition!", condition);
+            }
 
-            if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
+            if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             _loopCount++;
             CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
@@ -540,23 +618,26 @@ namespace ME3Script.Parsing
         {
             var token = Consume(FOR);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
 
             var initStatement = ParseStatement();
             if (initStatement != null && initStatement.Type != ASTNodeType.AssignStatement && initStatement.Type != ASTNodeType.FunctionCall)
             {
-                throw Error("Init statement in a for-loop must be an assignment or a function call!", CurrentPosition);
+                TypeError("Init statement in a for-loop must be an assignment or a function call!", initStatement);
             }
 
-            if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after init statement!", CurrentPosition);
+            if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon after init statement!", CurrentPosition);
 
             var condition = ParseExpression();
-            if (condition == null) throw Error("Expected an expression as the for condition!", CurrentPosition);
+            if (condition == null) throw ParseError("Expected an expression as the for condition!", CurrentPosition);
             if (condition.ResolveType() != SymbolTable.BoolType)
-                throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+            {
+                TypeError("Expected a boolean result from the condition!", condition);
+            }
 
-            if (Consume(TokenType.SemiColon) == null) throw Error("Expected semi-colon after condition!", CurrentPosition);
+            if (Consume(TokenType.SemiColon) == null) throw ParseError("Expected semi-colon after condition!", CurrentPosition);
 
             var updateStatement = ParseStatement();
             //if (updateStatement is null) //this should technically be limited to assignment, increment, decrement, or function call. Don't think it really matters though
@@ -564,7 +645,7 @@ namespace ME3Script.Parsing
             //    throw Error("Expected an update statement!", CurrentPosition);
             //}
 
-            if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
+            if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             _loopCount++;
             CodeBody body = TryParseBodyOrStatement(allowEmpty: true);
@@ -578,6 +659,7 @@ namespace ME3Script.Parsing
         {
             var token = Consume(FOREACH);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
             InForEachIterator = true;
             Expression iterator = CompositeRef();
@@ -586,28 +668,28 @@ namespace ME3Script.Parsing
             FunctionCall fc = iterator switch
             {
                 FunctionCall call => call,
-                CompositeSymbolRef csf when csf.InnerSymbol is FunctionCall cfc => cfc,
+                CompositeSymbolRef {InnerSymbol: FunctionCall cfc} => cfc,
                 _ => null
             };
             if (fc != null)
             {
                 if (!(fc.Function.Node is Function func) || !func.Flags.Has(FunctionFlags.Iterator))
                 {
-                    throw Error($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator.StartPos, iterator.EndPos);
+                    TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
                 }
-                if (func.Parameters.Count >= 2)
+                else if (func.Parameters.Count >= 2)
                 {
                     var limiter = ((ClassType)fc.Arguments[0].ResolveType()).ClassLimiter;
                     Class objClass = (Class)fc.Arguments[1].ResolveType();
                     if (!objClass.SameAsOrSubClassOf(limiter.Name))
                     {
-                        throw Error("Second argument to iterator function must be the same class or a subclass of the class passed as the first argument!", fc.Arguments[1].StartPos, fc.Arguments[1].EndPos);
+                        TypeError("Second argument to iterator function must be the same class or a subclass of the class passed as the first argument!", fc.Arguments[1]);
                     }
                 }
             }
-            else if (!(iterator is DynArrayIterator) && !(iterator is CompositeSymbolRef c && c.InnerSymbol is DynArrayIterator))
+            else if (!(iterator is DynArrayIterator) && !(iterator is CompositeSymbolRef {InnerSymbol: DynArrayIterator}))
             {
-                throw Error($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator.StartPos, iterator.EndPos);
+                TypeError($"Expected an iterator function call or dynamic array iterator after '{FOREACH}'!", iterator);
             }
 
             int gotoStatementsIdx = gotoStatements.Count;
@@ -629,7 +711,7 @@ namespace ME3Script.Parsing
                 for (; gotoStatementsIdx < gotoStatements.Count; gotoStatementsIdx++)
                 {
                     var stmnt = gotoStatements[gotoStatementsIdx];
-                    if (stmnt is Goto g && g.ContainingForEach is null)
+                    if (stmnt is Goto {ContainingForEach: null} g)
                     {
                         g.ContainingForEach = forEach;
                         if (labels.FirstOrDefault(l => l.Name.CaseInsensitiveEquals(g.LabelName)) is Label label)
@@ -638,7 +720,7 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            throw Error($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)");
+                            ParseError($"Could not find label '{g.LabelName}'! (gotos cannot jump out of or into a foreach)", g.Label);
                         }
                     }
                 }
@@ -651,6 +733,7 @@ namespace ME3Script.Parsing
         {
             var doToken = Consume(DO);
             if (doToken == null) return null;
+            doToken.SyntaxType = EF.Keyword;
 
             _loopCount++;
             CodeBody body = TryParseBodyOrStatement();
@@ -658,16 +741,19 @@ namespace ME3Script.Parsing
             if (body == null) return null;
 
             var untilToken = Consume(UNTIL);
-            if (untilToken == null) throw Error("Expected 'until'!", CurrentPosition);
+            if (untilToken == null) throw ParseError("Expected 'until'!", CurrentPosition);
+            untilToken.SyntaxType = EF.Keyword;
 
-            if (Consume(TokenType.LeftParenth) == null) throw Error("Expected '('!", CurrentPosition);
+            if (Consume(TokenType.LeftParenth) == null) throw ParseError("Expected '('!", CurrentPosition);
 
             var condition = ParseExpression();
-            if (condition == null) throw Error("Expected an expression as the until condition!", CurrentPosition);
+            if (condition == null) throw ParseError("Expected an expression as the until condition!", CurrentPosition);
             if (condition.ResolveType() != SymbolTable.BoolType)
-                throw Error("Expected a boolean result from the condition!", condition.StartPos, condition.EndPos);
+            {
+                TypeError("Expected a boolean result from the condition!", condition);
+            }
 
-            if (Consume(TokenType.RightParenth) == null) throw Error("Expected ')'!", CurrentPosition);
+            if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 
             return new DoUntilLoop(condition, body, untilToken.StartPos, untilToken.EndPos);
         }
@@ -676,8 +762,9 @@ namespace ME3Script.Parsing
         {
             var token = Consume(CONTINUE);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!InLoop) throw Error("The continue keyword is only valid inside loops!", token.StartPos, token.EndPos);
+            if (!InLoop) ParseError("The continue keyword is only valid inside loops!", token);
 
             return new ContinueStatement(token.StartPos, token.EndPos);
         }
@@ -686,8 +773,9 @@ namespace ME3Script.Parsing
         {
             var token = Consume(BREAK);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!InLoop && !InSwitch) throw Error("The break keyword is only valid inside loops and switch statements!", token.StartPos, token.EndPos);
+            if (!InLoop && !InSwitch) ParseError("The break keyword is only valid inside loops and switch statements!", token);
 
             return new BreakStatement(token.StartPos, token.EndPos);
         }
@@ -696,17 +784,25 @@ namespace ME3Script.Parsing
         {
             var gotoToken = Consume(GOTO);
             if (gotoToken == null) return null;
+            gotoToken.SyntaxType = EF.Keyword;
 
             if (IsState && !InForEachBody)
             {
+                Expression labelExpr;
                 if (CurrentIs(TokenType.Word) && Tokens.LookAhead(1).Type == TokenType.SemiColon)
                 {
-                    throw Error("gotos in State bodies expect an expression that evaluates to a name, not a bare label. Put single quotes around a label name to make it a name literal");
+                    //error production
+                    Token<string> label = Consume(TokenType.Word);
+                    labelExpr = new ErrorExpression(label.StartPos, label.EndPos, label);
+                    ParseError("gotos in State bodies expect an expression that evaluates to a name, not a bare label. Put single quotes around a label name to make it a name literal", label);
                 }
-                var labelExpr = ParseExpression();
-                if (labelExpr == null)
+                else
                 {
-                    throw Error($"Expected a name expression after '{GOTO}'!");
+                    labelExpr = ParseExpression();
+                    if (labelExpr == null)
+                    {
+                        throw ParseError($"Expected a name expression after '{GOTO}'!");
+                    }
                 }
 
                 var stateGoto = new StateGoto(labelExpr, gotoToken.StartPos, labelExpr.EndPos);
@@ -714,7 +810,8 @@ namespace ME3Script.Parsing
                 return stateGoto;
             }
 
-            var labelToken = Consume(TokenType.Word) ?? throw Error($"Expected a label after '{GOTO}'!");
+            var labelToken = Consume(TokenType.Word) ?? throw ParseError($"Expected a label after '{GOTO}'!");
+            labelToken.SyntaxType = EF.Label;
             var gotoStatement = new Goto(labelToken.Value, gotoToken.StartPos, labelToken.EndPos);
             gotoStatements.Add(gotoStatement);
             return gotoStatement;
@@ -724,8 +821,9 @@ namespace ME3Script.Parsing
         {
             var token = Consume(STOP);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!IsState) throw Error("The stop keyword is only valid inside state code!", token.StartPos, token.EndPos);
+            if (!IsState) ParseError("The stop keyword is only valid inside state code!", token);
 
             return new StopStatement(token.StartPos, token.EndPos);
         }
@@ -734,22 +832,23 @@ namespace ME3Script.Parsing
         {
             var token = Consume(CASE);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!InSwitch) throw Error("Case statements can only exist inside switch blocks!", CurrentPosition);
+            if (!InSwitch) ParseError("Case statements can only exist inside switch blocks!", token);
 
             var value = ParseExpression();
-            if (value == null) throw Error("Expected an expression specifying the case value", CurrentPosition);
-            var switchType = SwitchTypes.Peek();
+            if (value == null) throw ParseError("Expected an expression specifying the case value", CurrentPosition);
+            var switchType = SwitchTypes.Count > 0 ? SwitchTypes.Peek() : null;
             if (switchType == SymbolTable.IntType && value is IntegerLiteral caseLit)
             {
                 caseLit.NumType = INT;
             }
             if (!NodeUtils.TypeEqual(switchType, value.ResolveType()))
             {
-                throw Error("Case expression must evaluate to the same type as the switch expression!", value.StartPos, value.EndPos);
+                TypeError("Case expression must evaluate to the same type as the switch expression!", value);
             }
             AddConversion(switchType, ref value);
-            if (Consume(TokenType.Colon) == null) throw Error("Expected colon after case expression!", CurrentPosition);
+            if (Consume(TokenType.Colon) == null) throw ParseError("Expected colon after case expression!", CurrentPosition);
 
             return new CaseStatement(value, token.StartPos, token.EndPos);
         }
@@ -758,10 +857,11 @@ namespace ME3Script.Parsing
         {
             var token = Consume(DEFAULT);
             if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
 
-            if (!InSwitch) throw Error("Default statements can only exist inside switch blocks!", CurrentPosition);
+            if (!InSwitch) ParseError("Default statements can only exist inside switch blocks!", token);
 
-            if (Consume(TokenType.Colon) == null) throw Error("Expected colon after default statement!", CurrentPosition);
+            if (Consume(TokenType.Colon) == null) throw ParseError("Expected colon after default statement!", CurrentPosition);
 
             return new DefaultCaseStatement(token.StartPos, token.EndPos);
         }
@@ -769,21 +869,24 @@ namespace ME3Script.Parsing
         public AssertStatement ParseAssert()
         {
             var token = Consume(ASSERT);
+            if (token == null) return null;
+            token.SyntaxType = EF.Keyword;
+
             if (!Matches(TokenType.LeftParenth))
             {
-                throw Error($"Expected '(' after {ASSERT}!", CurrentPosition);
+                throw ParseError($"Expected '(' after {ASSERT}!", CurrentPosition);
             }
 
-            var expr = ParseExpression() ?? throw Error($"Expected an expression in {ASSERT} statement!", CurrentPosition);
+            var expr = ParseExpression() ?? throw ParseError($"Expected an expression in {ASSERT} statement!", CurrentPosition);
             VariableType conditionType = expr.ResolveType();
             if (conditionType != SymbolTable.BoolType)
             {
-                throw Error($"Expected a boolean result from the {ASSERT} expression!", expr.StartPos, expr.EndPos);
+                TypeError($"Expected a boolean result from the {ASSERT} expression!", expr.StartPos, expr.EndPos);
             }
 
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error($"Expected ')' after expression in {ASSERT} statement!", CurrentPosition);
+                throw ParseError($"Expected ')' after expression in {ASSERT} statement!", CurrentPosition);
             }
             return new AssertStatement(expr, token.StartPos, PrevToken.EndPos);
         }
@@ -803,17 +906,17 @@ namespace ME3Script.Parsing
             {
                 if (!NodeUtils.TypeCompatible(SymbolTable.BoolType, expr.ResolveType()))
                 {
-                    throw Error("Expected a boolean expression before a '?'!", CurrentPosition);
+                    TypeError("Expected a boolean expression before a '?'!", expr);
                 }
                 Expression trueExpr = Ternary();
                 if (trueExpr is null)
                 {
-                    throw Error("Expected expression after '?'!", CurrentPosition);
+                    throw ParseError("Expected expression after '?'!", CurrentPosition);
                 }
 
                 if (!Matches(TokenType.Colon))
                 {
-                    throw Error("Expected ':' after true branch in conditional statement!", CurrentPosition);
+                    throw ParseError("Expected ':' after true branch in conditional statement!", CurrentPosition);
                 }
                 Expression falseExpr = Ternary();
                 VariableType trueType = trueExpr.ResolveType();
@@ -842,7 +945,7 @@ namespace ME3Script.Parsing
                 }
                 else
                 {
-                    throw Error("True and false results in conditional expression must match types!");
+                    TypeError("True and false results in conditional expression must match types!", trueExpr.StartPos, falseExpr.EndPos);
                 }
             }
 
@@ -860,7 +963,7 @@ namespace ME3Script.Parsing
 
                 if (lhs is DynArrayLength && (opKeyword == "+=" || opKeyword == "-=" || opKeyword == "*=" || opKeyword == "/="))
                 {
-                    throw Error($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", CurrentPosition);
+                    ParseError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", lhs);
                 }
 
                 var possibleMatches = new List<InOpDeclaration>();
@@ -884,7 +987,7 @@ namespace ME3Script.Parsing
                 Expression rhs = BinaryExpression(precedence);
                 if (rhs == null)
                 {
-                    throw Error($"Expected expression after '{opKeyword}' operator!", CurrentPosition);
+                    throw ParseError($"Expected expression after '{opKeyword}' operator!", CurrentPosition);
                 }
 
                 var lType = lhs.ResolveType();
@@ -940,7 +1043,7 @@ namespace ME3Script.Parsing
                         }
                         else
                         {
-                            throw Error("Cannot compare structs of different types!", opToken.StartPos);
+                            TypeError("Cannot compare structs of different types!", opToken);
                         }
                     }
                     else if (isComparison && lType is DelegateType && rType == SymbolTable.BoolType)
@@ -951,16 +1054,19 @@ namespace ME3Script.Parsing
                     }
                     else
                     {
-                        throw Error($"No valid operator found for '{lType?.Name ?? "None"}' '{opKeyword}' '{rType?.Name ?? "None"}'!", opToken.StartPos);
+                        ParseError($"No valid operator found for '{lType?.Name ?? "None"}' '{opKeyword}' '{rType?.Name ?? "None"}'!", opToken);
+                        expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                     }
                 }
                 else if (matches > 1)
                 {
-                    throw Error($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType?.Name ?? "None"}' '{opKeyword}' '{rType?.Name ?? "None"}'!", opToken.StartPos);
+                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType?.Name ?? "None"}' '{opKeyword}' '{rType?.Name ?? "None"}'!", opToken);
+                    expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                 }
                 else
                 {
-                    if (bestMatch.LeftOperand.VarType is Class c && c.IsInterface)
+                    
+                    if (bestMatch.LeftOperand.VarType is Class {IsInterface: true} c)
                     {
                         VariableType varType = lhs.ResolveType() ?? rhs.ResolveType() ?? c;
                         AddConversion(varType, ref lhs);
@@ -971,6 +1077,7 @@ namespace ME3Script.Parsing
                         AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
                         AddConversion(bestMatch.RightOperand.VarType, ref rhs);
                     }
+                    
                     expr = new InOpReference(bestMatch, lhs, rhs, lhs.StartPos, rhs.EndPos);
                 }
             }
@@ -999,32 +1106,32 @@ namespace ME3Script.Parsing
                 expr = CompositeRef();
                 if (expr is DynArrayLength)
                 {
-                    throw Error($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", CurrentPosition);
+                    ParseError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", expr);
                 }
                 if (!IsLValue(expr))
                 {
-                    throw Error($"Cannot {(preFixToken.Type == TokenType.Increment ? "in" : "de")}crement an rvalue!");
+                    TypeError($"Cannot {(preFixToken.Type == TokenType.Increment ? "in" : "de")}crement an rvalue!", expr);
                 }
                 VariableType exprType = expr.ResolveType();
-                if (exprType == SymbolTable.IntType || exprType == SymbolTable.ByteType)
+                if (exprType != SymbolTable.IntType && exprType != SymbolTable.ByteType)
                 {
-                    PreOpDeclaration opDeclaration = Symbols.GetPreOp(preFixToken.Value, exprType);
-                    return new PreOpReference(opDeclaration, expr, preFixToken.StartPos, expr.EndPos);
+                    TypeError($"Only ints and bytes can be {(preFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
                 }
-
-                throw Error($"Only ints and bytes can be {(preFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!");
+                PreOpDeclaration opDeclaration = Symbols.GetPreOp(preFixToken.Value, exprType);
+                return new PreOpReference(opDeclaration, expr, preFixToken.StartPos, expr.EndPos);
             }
             if (Matches(TokenType.ExclamationMark))
             {
                 expr = Unary();
                 VariableType exprType = expr.ResolveType();
-                if (exprType == SymbolTable.BoolType)
+                if (exprType != SymbolTable.BoolType)
                 {
-                    PreOpDeclaration opDeclaration = Symbols.GetPreOp("!", exprType);
-                    return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
+                    TypeError("'!' can only be used with expressions that evaluate to a boolean!", expr);
                 }
 
-                throw Error("'!' can only be used with expressions that evaluate to a boolean!");
+                PreOpDeclaration opDeclaration = Symbols.GetPreOp("!", exprType);
+                return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
+
             }
             if (Matches(TokenType.MinusSign))
             {
@@ -1034,23 +1141,23 @@ namespace ME3Script.Parsing
                 {
                     exprType = SymbolTable.IntType;
                 }
-                if (exprType == SymbolTable.FloatType || exprType == SymbolTable.IntType || exprType.Name.CaseInsensitiveEquals("Vector"))
+                switch (expr)
                 {
-                    switch (expr)
-                    {
-                        case IntegerLiteral intLit:
-                            intLit.Value *= -1;
-                            intLit.NumType = INT;
-                            return intLit;
-                        case FloatLiteral floatLit:
-                            floatLit.Value *= -1;
-                            return floatLit;
-                        default:
-                            return new PreOpReference(Symbols.GetPreOp("-", exprType), expr, start, expr.EndPos);
-                    }
+                    case IntegerLiteral intLit:
+                        intLit.Value *= -1;
+                        intLit.NumType = INT;
+                        return intLit;
+                    case FloatLiteral floatLit:
+                        floatLit.Value *= -1;
+                        return floatLit;
                 }
 
-                throw Error("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!");
+                if (exprType != SymbolTable.FloatType && exprType != SymbolTable.IntType && !exprType.Name.CaseInsensitiveEquals("Vector"))
+                {
+                    TypeError("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!", expr);
+                }
+
+                return new PreOpReference(Symbols.GetPreOp("-", exprType), expr, start, expr.EndPos);
             }
             if (Matches(TokenType.Complement))
             {
@@ -1060,13 +1167,14 @@ namespace ME3Script.Parsing
                     intLit.NumType = INT;
                 }
                 VariableType exprType = expr.ResolveType();
-                if (exprType == SymbolTable.IntType)
+                if (exprType != SymbolTable.IntType)
                 {
-                    PreOpDeclaration opDeclaration = Symbols.GetPreOp("~", exprType);
-                    return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
+                    TypeError("'~' can only be used with expressions that evaluate to int!", expr);
                 }
 
-                throw Error("'~' can only be used with expressions that evaluate to int!");
+                PreOpDeclaration opDeclaration = Symbols.GetPreOp("~", exprType);
+                return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
+
             }
 
             expr = CompositeRef();
@@ -1075,22 +1183,20 @@ namespace ME3Script.Parsing
             {
                 if (expr is DynArrayLength)
                 {
-                    throw Error($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", CurrentPosition);
+                    TypeError($"The {LENGTH} property of a dynamic array can only be changed by direct assignment!", expr);
                 }
                 VariableType exprType = expr.ResolveType();
                 if (!IsLValue(expr))
                 {
-                    throw Error($"Cannot {(postFixToken.Type == TokenType.Increment ? "in" : "de")}crement an rvalue!");
+                    TypeError($"Cannot {(postFixToken.Type == TokenType.Increment ? "in" : "de")}crement an rvalue!", expr);
                 }
-                if (exprType == SymbolTable.IntType || exprType == SymbolTable.ByteType)
+
+                if (exprType != SymbolTable.IntType && exprType != SymbolTable.ByteType)
                 {
-                    PostOpDeclaration opDeclaration = Symbols.GetPostOp(postFixToken.Value, exprType);
-                    expr = new PostOpReference(opDeclaration, expr, expr.StartPos, postFixToken.EndPos);
+                    TypeError($"Only ints and bytes can be {(postFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
                 }
-                else
-                {
-                    throw Error($"Only ints and bytes can be {(postFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!");
-                }
+                PostOpDeclaration opDeclaration = Symbols.GetPostOp(postFixToken.Value, exprType);
+                expr = new PostOpReference(opDeclaration, expr, expr.StartPos, postFixToken.EndPos);
             }
 
             return expr;
@@ -1161,7 +1267,7 @@ namespace ME3Script.Parsing
             Expression result = InnerCompositeRef();
 
             //if this is a reference to a constant, we need to replace it with the constant's value
-            if (result is SymbolReference symbolRef && symbolRef.Node is Const c)
+            if (result is SymbolReference {Node: Const c})
             {
                 result = c.Literal;
             }
@@ -1189,24 +1295,24 @@ namespace ME3Script.Parsing
 
                     bool isConst = false;
                     bool isStatic = false;
-                    if (Matches(CONST))
+                    if (Matches(CONST, EF.Keyword))
                     {
                         if (!Matches(TokenType.Dot))
                         {
-                            throw Error($"Expected '.' after '{CONST}'!", CurrentPosition);
+                            throw ParseError($"Expected '.' after '{CONST}'!", CurrentPosition);
                         }
                         isConst = true;
                     }
-                    else if (Matches(STATIC))
+                    else if (Matches(STATIC, EF.Keyword))
                     {
                         if (!Matches(TokenType.Dot))
                         {
-                            throw Error($"Expected '.' after '{STATIC}'!", CurrentPosition);
+                            throw ParseError($"Expected '.' after '{STATIC}'!", CurrentPosition);
                         }
                         isStatic = true;
                         if (lhsType?.PropertyType != EPropertyType.Object)
                         {
-                            throw Error($"'{STATIC}' can only be used with class or object references!", CurrentPosition);
+                            throw ParseError($"'{STATIC}' can only be used with class or object references!", lhs.EndPos, CurrentPosition);
                         }
                         //else
                         //{
@@ -1217,14 +1323,14 @@ namespace ME3Script.Parsing
 
                     if (!(lhsType is ClassType) && !isStatic && !CompositeTypes.Contains(lhsType?.NodeType ?? ASTNodeType.INVALID))
                     {
-                        throw Error("Left side symbol is not of a composite type!", PrevToken.StartPos); //TODO: write a better error message
+                        TypeError("Left side symbol is not of a composite type!", PrevToken.StartPos); //TODO: write a better error message
                     }
                     Class containingClass = NodeUtils.GetContainingClass(lhsType);
                     if (containingClass == null)
                     {
-                        throw Error("Could not resolve type of expression!", lhs.StartPos, lhs.EndPos);
+                        TypeError("Could not resolve type of expression!", lhs);
                     }
-                    string specificScope = containingClass.GetInheritanceString();
+                    string specificScope = containingClass?.GetInheritanceString();
                     if (lhsType is Struct lhsStruct)
                     {
                         var outerStructs = new Stack<string>();
@@ -1256,15 +1362,15 @@ namespace ME3Script.Parsing
                     ExpressionScopes.Pop();
                     if (rhs is null)
                     {
-                        throw Error("Expected a valid member name to follow the dot!", CurrentPosition);
+                        throw ParseError("Expected a valid member name to follow the dot!", CurrentPosition);
                     }
                     //TODO: check if rhs is a type that makes sense eg. no int literals
 
                     if (isConst)
                     {
-                        if (!(rhs is SymbolReference symRef) || !(symRef.Node is Const))
+                        if (!(rhs is SymbolReference {Node: Const}))
                         {
-                            throw Error("Expected property after 'const.' to be a Const!", rhs.StartPos, rhs.EndPos);
+                            TypeError("Expected property after 'const.' to be a Const!", rhs);
                         }
                     }
 
@@ -1310,7 +1416,7 @@ namespace ME3Script.Parsing
                             lhs = dal;
                             break;
                         }
-                        case SymbolReference sr when sr.Node is EnumValue ev:
+                        case SymbolReference {Node: EnumValue ev} sr:
                             lhs = NewSymbolReference(ev, new Token<string>(TokenType.Word, sr.Name, sr.StartPos, sr.EndPos), false);
                             break;
                         default:
@@ -1333,21 +1439,21 @@ namespace ME3Script.Parsing
             {
                 return new DynArrayLength(dynArrayRef, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(ADD))
+            if (Matches(ADD, EF.Function))
             {
                 ExpectLeftParen(ADD);
                 Expression countArg = ValidateArgument("count", ADD, SymbolTable.IntType);
                 ExpectRightParen();
                 return new DynArrayAdd(dynArrayRef, countArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(ADDITEM))
+            if (Matches(ADDITEM, EF.Function))
             {
                 ExpectLeftParen(ADDITEM);
                 Expression valueArg = ValidateArgument("value", ADDITEM, elementType);
                 ExpectRightParen();
                 return new DynArrayAddItem(dynArrayRef, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(INSERT))
+            if (Matches(INSERT, EF.Function))
             {
                 ExpectLeftParen(INSERT);
                 Expression indexArg = ValidateArgument("index", INSERT, SymbolTable.IntType);
@@ -1356,7 +1462,7 @@ namespace ME3Script.Parsing
                 ExpectRightParen();
                 return new DynArrayInsert(dynArrayRef, indexArg, countArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(INSERTITEM))
+            if (Matches(INSERTITEM, EF.Function))
             {
                 ExpectLeftParen(INSERTITEM);
                 Expression indexArg = ValidateArgument("index", INSERTITEM, SymbolTable.IntType);
@@ -1365,7 +1471,7 @@ namespace ME3Script.Parsing
                 ExpectRightParen();
                 return new DynArrayInsertItem(dynArrayRef, indexArg, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(REMOVE))
+            if (Matches(REMOVE, EF.Function))
             {
                 ExpectLeftParen(REMOVE);
                 Expression indexArg = ValidateArgument("index", REMOVE, SymbolTable.IntType);
@@ -1374,14 +1480,14 @@ namespace ME3Script.Parsing
                 ExpectRightParen();
                 return new DynArrayRemove(dynArrayRef, indexArg, countArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(REMOVEITEM))
+            if (Matches(REMOVEITEM, EF.Function))
             {
                 ExpectLeftParen(REMOVEITEM);
                 Expression valueArg = ValidateArgument("value", REMOVEITEM, elementType);
                 ExpectRightParen();
                 return new DynArrayRemoveItem(dynArrayRef, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
-            if (Matches(FIND))
+            if (Matches(FIND, EF.Function))
             {
                 ExpectLeftParen(FIND);
                 if (elementType is Struct s)
@@ -1389,22 +1495,29 @@ namespace ME3Script.Parsing
                     Expression memberNameArg = ParseExpression();
                     if (memberNameArg == null)
                     {
-                        throw Error("Expected function argument!", CurrentPosition);
+                        throw ParseError("Expected function argument!", CurrentPosition);
                     }
-                    if (memberNameArg is NameLiteral nameLiteral)
+
+                    if (!(memberNameArg is NameLiteral nameLiteral))
                     {
-                        if (s.VariableDeclarations.FirstOrDefault(varDecl => varDecl.Name.CaseInsensitiveEquals(nameLiteral.Value)) is VariableDeclaration variableDeclaration)
-                        {
-                            ExpectComma();
-                            Expression valueArg = ValidateArgument("value", FIND, variableDeclaration.VarType);
-                            ExpectRightParen();
-                            return new DynArrayFindStructMember(dynArrayRef, memberNameArg, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
-                        }
-
-                        throw Error($"Struct '{s.Name}' does not have a member named '{nameLiteral.Value}'!");
+                        ParseError($"Expected 'membername' argument to '{FIND}' to be a name literal!", memberNameArg);
+                        nameLiteral = new NameLiteral("");
                     }
 
-                    throw Error($"Expected 'membername' argument to '{FIND}' to be a name literal!");
+                    if (!(s.VariableDeclarations.FirstOrDefault(varDecl => varDecl.Name.CaseInsensitiveEquals(nameLiteral.Value)) is VariableDeclaration variableDeclaration))
+                    {
+                        ParseError($"Struct '{s.Name}' does not have a member named '{nameLiteral.Value}'!", memberNameArg);
+                        variableDeclaration = null;
+                    }
+
+                    ExpectComma();
+                    Expression valueArg = ValidateArgument("value", FIND, variableDeclaration?.VarType);
+                    ExpectRightParen();
+                    return new DynArrayFindStructMember(dynArrayRef, memberNameArg, valueArg, dynArrayRef.StartPos, PrevToken.EndPos)
+                    {
+                        MemberType = variableDeclaration?.VarType
+                    };
+
                 }
                 else
                 {
@@ -1413,52 +1526,58 @@ namespace ME3Script.Parsing
                     return new DynArrayFind(dynArrayRef, valueArg, dynArrayRef.StartPos, PrevToken.EndPos);
                 }
             }
-            else if (Matches(SORT))
+            else if (Matches(SORT, EF.Function))
             {
                 ExpectLeftParen(SORT);
                 Expression comparefunctionArg = ParseExpression();
                 if (comparefunctionArg == null)
                 {
-                    throw Error("Expected function argument!", CurrentPosition);
+                    throw ParseError("Expected function argument!", CurrentPosition);
                 }
 
+                bool correctType = false;
                 if (comparefunctionArg.ResolveType() is DelegateType delType)
                 {
                     Function delFunc = delType.DefaultFunction;
                     if (delFunc.ReturnType == SymbolTable.IntType && delFunc.Parameters.Count == 2 && NodeUtils.TypeCompatible(delFunc.Parameters[0].VarType, elementType)
                                                                                                    && NodeUtils.TypeCompatible(delFunc.Parameters[1].VarType, elementType))
                     {
-                        ExpectRightParen();
-                        return new DynArraySort(dynArrayRef, comparefunctionArg, dynArrayRef.StartPos, PrevToken.EndPos);
+                        correctType = true;
                     }
                 }
 
-                throw Error($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.Name}' and returns an int!");
+                if (!correctType)
+                {
+                    TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.Name}' and returns an int!", comparefunctionArg);
+                }
+                
+                ExpectRightParen();
+                return new DynArraySort(dynArrayRef, comparefunctionArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
             else
             {
-                throw Error($"Expected a dynamic array operation!", CurrentPosition);
+                throw ParseError("Expected a dynamic array operation!", CurrentPosition);
             }
 
             void ExpectLeftParen(string funcName)
             {
                 if (!Matches(TokenType.LeftParenth))
                 {
-                    throw Error($"Expected '(' after '{funcName}'!", CurrentPosition);
+                    throw ParseError($"Expected '(' after '{funcName}'!", CurrentPosition);
                 }
             }
             void ExpectComma()
             {
                 if (!Matches(TokenType.Comma))
                 {
-                    throw Error($"Expected ',' after argument!", CurrentPosition);
+                    throw ParseError($"Expected ',' after argument!", CurrentPosition);
                 }
             }
             void ExpectRightParen()
             {
                 if (!Matches(TokenType.RightParenth))
                 {
-                    throw Error($"Expected ')' after argument list!", CurrentPosition);
+                    throw ParseError($"Expected ')' after argument list!", CurrentPosition);
                 }
             }
 
@@ -1467,14 +1586,14 @@ namespace ME3Script.Parsing
                 Expression arg = ParseExpression();
                 if (arg == null)
                 {
-                    throw Error("Expected function argument!", CurrentPosition);
+                    throw ParseError("Expected function argument!", CurrentPosition);
                 }
 
                 if (!NodeUtils.TypeCompatible(expectedType, arg.ResolveType()))
                 {
                     if (!(expectedType is DelegateType)) //seems wrong, but required to parse bioware classes, so...
                     {
-                        throw Error($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType.Name}'!");
+                        TypeError($"Expected '{argumentName}' argument to '{functionName}' to evaluate to '{expectedType?.Name ?? "None"}'!", arg);
                     }
                 }
                 AddConversion(expectedType, ref arg);
@@ -1492,9 +1611,9 @@ namespace ME3Script.Parsing
 
             if (isStatic)
             {
-                if (!(expr is SymbolReference symRef) || !(symRef.Node is Function fun) || !fun.Flags.Has(FunctionFlags.Static))
+                if (!(expr is SymbolReference {Node: Function fun}) || !fun.Flags.Has(FunctionFlags.Static))
                 {
-                    throw Error("'static.' can only be used for calling a function with the 'static' modifier!", expr.StartPos, expr.EndPos);
+                    TypeError("'static.' can only be used for calling a function with the 'static' modifier!", expr);
                 }
             }
             while (true)
@@ -1522,7 +1641,7 @@ namespace ME3Script.Parsing
             var exprType = expr.ResolveType();
             if (!(exprType is DynamicArrayType) && !(exprType is StaticArrayType))
             {
-                throw Error("Can only use array access operator on an array!", CurrentPosition);
+                TypeError("Can only use array access operator on an array!", expr);
             }
 
             ExpressionScopes.Push(ExpressionScopes.Last());
@@ -1530,7 +1649,7 @@ namespace ME3Script.Parsing
             ExpressionScopes.Pop();
             if (arrIndex == null)
             {
-                throw Error("Expected an array index!", CurrentPosition);
+                throw ParseError("Expected an array index!", CurrentPosition);
             }
 
             //basic sanity checking for literal indexes
@@ -1539,17 +1658,17 @@ namespace ME3Script.Parsing
                 intLiteral.NumType = INT;
                 if (intLiteral.Value < 0)
                 {
-                    throw Error("Array index cannot be negative!");
+                    TypeError("Array index cannot be negative!", intLiteral);
                 }
-                if (exprType is StaticArrayType staticArrayType && intLiteral.Value >= staticArrayType.Size)
+                if (exprType is StaticArrayType staticArrayType && intLiteral.Value >= staticArrayType.Length)
                 {
-                    throw Error("Array index cannot be outside bounds of static array size!");
+                    TypeError("Array index cannot be outside bounds of static array size!", intLiteral);
                 }
             }
 
             if (!NodeUtils.TypeCompatible(SymbolTable.IntType, arrIndex.ResolveType()))
             {
-                throw Error("Array index must be or evaluate to an integer!");
+                TypeError("Array index must be or evaluate to an integer!");
             }
 
             if (Consume(TokenType.RightSqrBracket) is {} endTok)
@@ -1558,7 +1677,7 @@ namespace ME3Script.Parsing
             }
             else
             {
-                throw Error("Expected ']'!", CurrentPosition);
+                throw ParseError("Expected ']'!", CurrentPosition);
             }
 
             return expr;
@@ -1596,22 +1715,32 @@ namespace ME3Script.Parsing
                                 continue;
                             }
 
-                            throw Error("Missing non-optional parameter!", CurrentPosition);
+                            ParseError("Missing non-optional parameter!", CurrentPosition);
                         }
 
                         var paramStartPos = CurrentPosition;
                         Expression currentParam = ParseExpression();
 
-                        if (currentParam == null || !NodeUtils.TypeCompatible(p.VarType, currentParam.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
+                        if (currentParam == null)
                         {
-                            throw Error($"Expected a parameter of type '{p.VarType.Name}'!", paramStartPos, currentParam?.EndPos);
+                            throw ParseError($"Expected a parameter of type '{p.VarType.Name}'!", paramStartPos);
                         }
-                        AddConversion(p.VarType, ref currentParam);
-                        if (p.IsOut && !(currentParam is SymbolReference) 
-                                    && !(currentParam is ConditionalExpression condExpr && condExpr.TrueExpression is SymbolReference 
-                                                                                        && condExpr.FalseExpression is SymbolReference))
+                        if (!NodeUtils.TypeCompatible(p.VarType, currentParam.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
                         {
-                            throw Error("Argument given to an out parameter must be an lvalue!", currentParam.StartPos, currentParam.EndPos);
+                            TypeError($"Expected a parameter of type '{p.VarType.Name}'!", currentParam);
+                        }
+
+                        AddConversion(p.VarType, ref currentParam);
+                        if (p.IsOut)
+                        {
+                            if (!(currentParam is SymbolReference) && !(currentParam is ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference}))
+                            {
+                                TypeError("Argument given to an out parameter must be an lvalue!", currentParam);
+                            }
+                            if (!NodeUtils.TypeEqual(p.VarType, currentParam.ResolveType()))
+                            {
+                                TypeError($"Expected a parameter of type '{p.VarType.Name}'!", currentParam);
+                            }
                         }
 
                         parameters.Add(currentParam);
@@ -1626,16 +1755,16 @@ namespace ME3Script.Parsing
                             int numRequiredParams = func.Parameters.Count(param => !param.IsOptional);
                             if (parameters.Count > func.Parameters.Count || parameters.Count < numRequiredParams)
                             {
-                                throw Error($"Expected between {numRequiredParams} and {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef.StartPos, funcRef.EndPos);
+                                ParseError($"Expected between {numRequiredParams} and {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef);
                             }
                         }
                         else
                         {
-                            throw Error($"Expected {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef.StartPos, funcRef.EndPos);
+                            ParseError($"Expected {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef);
                         }
                     }
 
-                    if (!Matches(TokenType.RightParenth)) throw Error("Expected ')'!", CurrentPosition);
+                    if (!Matches(TokenType.RightParenth)) throw ParseError("Expected ')'!", CurrentPosition);
 
                     if (isDelegateCall)
                     {
@@ -1652,18 +1781,18 @@ namespace ME3Script.Parsing
                 {
                     ExpressionScopes.Push(ExpressionScopes.Last());
 
-                    Expression valueArg = CompositeRef() ?? throw Error("Expected argument to dynamic array iterator!", CurrentPosition);
+                    Expression valueArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
                     if (!NodeUtils.TypeEqual(valueArg.ResolveType(), dynArrType.ElementType))
                     {
                         //ugly hack
                         var builder = new CodeBuilderVisitor();
                         builder.AppendTypeName(dynArrType.ElementType);
-                        string elementType = builder.GetCodeString();
-                        throw Error($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", CurrentPosition);
+                        string elementType = builder.GetOutput();
+                        TypeError($"Iterator variable for an '{ARRAY}<{elementType}>' must be of type '{elementType}'", dynArrType);
                     }
                     if (!(valueArg is SymbolReference))
                     {
-                        throw Error("Iterator variable must be an lvalue!", valueArg.StartPos, valueArg.EndPos);
+                        TypeError("Iterator variable must be an lvalue!", valueArg);
                     }
 
                     Expression indexArg = null;
@@ -1671,24 +1800,24 @@ namespace ME3Script.Parsing
                     {
                         if (!Matches(TokenType.Comma))
                         {
-                            throw Error("Expected either a ')' after the first argument, or a ',' before a second argument!", CurrentPosition);
+                            throw ParseError("Expected either a ')' after the first argument, or a ',' before a second argument!", CurrentPosition);
                         }
 
                         if (!Matches(TokenType.RightParenth))
                         {
-                            indexArg = CompositeRef() ?? throw Error("Expected argument to dynamic array iterator!", CurrentPosition);
+                            indexArg = CompositeRef() ?? throw ParseError("Expected argument to dynamic array iterator!", CurrentPosition);
                             if (indexArg.ResolveType() != SymbolTable.IntType)
                             {
-                                throw Error("Index variable must be an int!", indexArg.StartPos, indexArg.EndPos);
+                                TypeError("Index variable must be an int!", indexArg);
                             }
                             if (!(indexArg is SymbolReference))
                             {
-                                throw Error("Index variable must be an lvalue!", valueArg.StartPos, valueArg.EndPos);
+                                TypeError("Index variable must be an lvalue!", valueArg);
                             }
 
                             if (!Matches(TokenType.RightParenth))
                             {
-                                throw Error("Expected a ')' after second argument!", CurrentPosition);
+                                throw ParseError("Expected a ')' after second argument!", CurrentPosition);
                             }
                         }
                     }
@@ -1696,7 +1825,7 @@ namespace ME3Script.Parsing
                     return new DynArrayIterator(expr, (SymbolReference)valueArg, (SymbolReference)indexArg, expr.StartPos, PrevToken.EndPos);
                 }
 
-                throw Error($"Expected an iterator function or dynamic array after {FOREACH}!", expr.StartPos, expr.EndPos);
+                throw ParseError($"Expected an iterator function or dynamic array after {FOREACH}!", expr);
             }
 
             //bit hacky. dynamic cast when the typename is also a variable name in this scope
@@ -1718,7 +1847,7 @@ namespace ME3Script.Parsing
                 return FinishCall(NewSymbolReference(secondChanceFunc, new Token<string>(TokenType.Word, notFunc.Name, expr.StartPos, expr.EndPos), expr is DefaultReference), out succeeded);
             }
 
-            throw Error("Can only call functions and delegates!", expr.StartPos, expr.EndPos);
+            throw ParseError("Can only call functions and delegates!", expr);
         }
 
         public Expression MetaCast()
@@ -1727,53 +1856,58 @@ namespace ME3Script.Parsing
             {
                 //metacast
                 var castToken = Consume(CLASS);
+                castToken.SyntaxType = EF.Keyword;
                 Consume(TokenType.LeftArrow);
                 if (Consume(TokenType.Word) is { } limiter)
                 {
                     if (!Matches(TokenType.RightArrow))
                     {
-                        throw Error("Expected '>' after limiter class!", CurrentPosition);
+                        throw ParseError("Expected '>' after limiter class!", CurrentPosition);
                     }
 
                     if (Symbols.TryGetType(limiter.Value, out VariableType destType) && destType is Class limiterType)
                     {
+                        limiter.SyntaxType = EF.TypeName;
                         if (!Matches(TokenType.LeftParenth))
                         {
-                            throw Error("Expected '(' at start of cast!");
+                            throw ParseError("Expected '(' at start of cast!", CurrentPosition);
                         }
                         Expression expr = ParseExpression();
                         if (!Matches(TokenType.RightParenth))
                         {
-                            throw Error("Expected ')' at end of cast expression!", CurrentPosition);
+                            throw ParseError("Expected ')' at end of cast expression!", CurrentPosition);
                         }
                         var exprType = expr.ResolveType();
                         if (exprType is ClassType exprClassType)
                         {
                             if (exprClassType.ClassLimiter == limiterType)
                             {
-                                throw Error("Cannot cast to same type!", CurrentPosition);
+                                TypeError("Cannot cast to same type!", expr);
                             }
-                            if (!limiterType.SameAsOrSubClassOf(exprClassType.ClassLimiter.Name))
+                            else if (!limiterType.SameAsOrSubClassOf(exprClassType.ClassLimiter.Name))
                             {
                                 if (((Class)exprClassType.ClassLimiter).SameAsOrSubClassOf(limiterType.Name))
                                 {
-                                    throw Error("Casting to a less-derived type is pointless!", CurrentPosition);
+                                    TypeError("Casting to a less-derived type is pointless!", expr);
                                 }
-                                throw Error("Cannot cast to an unrelated type!", CurrentPosition);
+                                else
+                                {
+                                    TypeError("Cannot cast to an unrelated type!", expr);
+                                }
                             }
                         }
                         else if (!(exprType is Class classType) || !classType.Name.CaseInsensitiveEquals(OBJECT))
                         {
-                            throw Error("Cannot cast to a class type from a non-class type!", CurrentPosition);
+                            TypeError("Cannot cast to a class type from a non-class type!", expr);
                         }
                         //TODO: different AST type for Metaclass?
                         return new CastExpression(new ClassType(destType), expr, castToken.StartPos, PrevToken.EndPos);
                     }
 
-                    throw Error($"'{limiter.Value}' is not a Class!", CurrentPosition);
+                    throw ParseError($"'{limiter.Value}' is not a Class!", CurrentPosition);
                 }
 
-                throw Error("Expecting class name in class limiter!", CurrentPosition);
+                throw ParseError("Expecting class name in class limiter!", CurrentPosition);
             }
 
             return Primary();
@@ -1788,26 +1922,26 @@ namespace ME3Script.Parsing
             }
 
             Token<string> token = CurrentToken;
-            if (Matches(SELF))
+            if (Matches(SELF, EF.Keyword))
             {
                 return new SymbolReference(new VariableDeclaration(Self, default, "Self"), SELF, token.StartPos, token.EndPos);
             }
 
-            if (Matches(NEW))
+            if (Matches(NEW, EF.Keyword))
             {
                 return ParseNew();
             }
 
-            if (Matches(SUPER))
+            if (Matches(SUPER, EF.Keyword))
             {
                 return ParseSuper();
             }
 
-            if (Matches(GLOBAL))
+            if (Matches(GLOBAL, EF.Keyword))
             {
                 if (!Matches(TokenType.Dot))
                 {
-                    throw Error($"Expected '.' after '{GLOBAL}'!", CurrentPosition);
+                    throw ParseError($"Expected '.' after '{GLOBAL}'!", CurrentPosition);
                 }
 
                 bool isState = false;
@@ -1819,13 +1953,14 @@ namespace ME3Script.Parsing
                 
                 if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
                 {
-                    throw Error($"Expected function name after '{GLOBAL}'!", CurrentPosition);
+                    throw ParseError($"Expected function name after '{GLOBAL}'!", CurrentPosition);
                 }
 
+                PrevToken.SyntaxType = EF.Function;
                 var basicRef = ParseBasicRefOrCast(PrevToken) as SymbolReference;
                 if (!(basicRef?.Node is Function))
                 {
-                    throw Error($"Expected function name after '{GLOBAL}'!", basicRef.StartPos, basicRef.EndPos);
+                    throw ParseError($"Expected function name after '{GLOBAL}'!", basicRef?.StartPos ?? CurrentPosition, basicRef?.EndPos);
                 }
 
                 basicRef.IsGlobal = true;
@@ -1838,11 +1973,11 @@ namespace ME3Script.Parsing
             }
 
             bool isDefaultRef = false;
-            if (Matches(DEFAULT))
+            if (Matches(DEFAULT, EF.Keyword))
             {
                 if (!Matches(TokenType.Dot))
                 {
-                    throw Error($"Expected '.' after '{DEFAULT}'!", CurrentPosition);
+                    throw ParseError($"Expected '.' after '{DEFAULT}'!", CurrentPosition);
                 }
 
                 token = CurrentToken;
@@ -1888,7 +2023,7 @@ namespace ME3Script.Parsing
 
             if (isDefaultRef)
             {
-                throw Error("Expected property name after 'default.'!", CurrentPosition);
+                throw ParseError("Expected property name after 'default.'!", CurrentPosition);
             }
 
             if (NotInContext && Matches(TokenType.LeftParenth))
@@ -1896,11 +2031,11 @@ namespace ME3Script.Parsing
                 Expression expr = Ternary();
                 if (expr == null)
                 {
-                    throw Error("Expected expression after '('!", CurrentPosition);
+                    throw ParseError("Expected expression after '('!", CurrentPosition);
                 }
                 if (!Matches(TokenType.RightParenth))
                 {
-                    throw Error("Expected closing ')' after expression!", token.StartPos, CurrentPosition);
+                    throw ParseError("Expected closing ')' after expression!", token.StartPos, CurrentPosition);
                 }
 
                 return expr;
@@ -1908,7 +2043,7 @@ namespace ME3Script.Parsing
 
             return null;
             //currently making callers handle nulls, which allows for more specific error messages
-            throw Error("Expected Expression!");
+            throw ParseError("Expected Expression!");
         }
 
         private bool NotInContext => ExpressionScopes.Count == 1 || ExpressionScopes.First() == ExpressionScopes.Last();
@@ -1917,36 +2052,36 @@ namespace ME3Script.Parsing
         {
             Class superClass;
             State state = null;
-            string superSpecifier = null;
+            Class superSpecifier = null;
             if (Matches(TokenType.LeftParenth))
             {
                 if (Consume(TokenType.Word) is {} className)
                 {
-                    superSpecifier = className.Value;
+                    className.SyntaxType = EF.TypeName;
                     if (!Symbols.TryGetType(className.Value, out VariableType vartype))
                     {
-                        throw Error($"No class named '{className.Value}' found!", className.StartPos, className.EndPos);
+                        throw ParseError($"No class named '{className.Value}' found!", className);
                     }
 
                     if (!(vartype is Class super))
                     {
-                        throw Error($"'{vartype.Name}' is not a class!", className.StartPos, className.EndPos);
+                        throw ParseError($"'{vartype.Name}' is not a class!", className);
                     }
-
+                    superSpecifier = super;
                     superClass = super;
                     if (!Self.SameAsOrSubClassOf(superClass.Name))
                     {
-                        throw Error($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className.StartPos, className.EndPos);
+                        TypeError($"'{superClass.Name}' is not a superclass of '{Self.Name}'!", className);
                     }
                 }
                 else
                 {
-                    throw Error("Expected superclass specifier after '('!", CurrentPosition);
+                    throw ParseError("Expected superclass specifier after '('!", CurrentPosition);
                 }
 
                 if (!Matches(TokenType.RightParenth))
                 {
-                    throw Error("Expected ')' after superclass specifier!", CurrentPosition);
+                    throw ParseError("Expected ')' after superclass specifier!", CurrentPosition);
                 }
             }
             else
@@ -1954,7 +2089,7 @@ namespace ME3Script.Parsing
                 state = Node switch
                 {
                     State s => s,
-                    Function func when func.Outer is State s2 => s2,
+                    Function {Outer: State s2} => s2,
                     _ => null
                 };
                 if (state?.Parent != null)
@@ -1965,16 +2100,17 @@ namespace ME3Script.Parsing
                 else
                 {
                     state = null;
-                    superClass = Self.Parent as Class ?? throw Error($"Can't use '{SUPER}' in a class with no parent!", PrevToken.StartPos, PrevToken.EndPos);
+                    superClass = Self.Parent as Class ?? throw ParseError($"Can't use '{SUPER}' in a class with no parent!", PrevToken);
                 }
             }
 
             if (!Matches(TokenType.Dot) || !Matches(TokenType.Word))
             {
-                throw Error($"Expected function name after '{SUPER}'!", CurrentPosition);
+                throw ParseError($"Expected function name after '{SUPER}'!", CurrentPosition);
             }
 
             Token<string> functionName = PrevToken;
+            functionName.SyntaxType = EF.Function;
             string specificScope;
             //try to find function in parent states
             while (state != null)
@@ -1995,12 +2131,12 @@ namespace ME3Script.Parsing
             specificScope = superClass.GetInheritanceString();
             if (!Symbols.TryGetSymbolInScopeStack(functionName.Value, out ASTNode symbol, specificScope))
             {
-                throw Error($"No function named '{functionName.Value}' found in a superclass!", functionName.StartPos, functionName.EndPos);
+                throw ParseError($"No function named '{functionName.Value}' found in a superclass!", functionName);
             }
 
             if (!(symbol is Function))
             {
-                throw Error($"Expected function name after '{SUPER}'!", functionName.StartPos, functionName.EndPos);
+                TypeError($"Expected function name after '{SUPER}'!", functionName);
             }
 
             return new SymbolReference(symbol, functionName.Value, functionName.StartPos, functionName.EndPos)
@@ -2022,7 +2158,7 @@ namespace ME3Script.Parsing
                 outerObj = ParseExpression();
                 if (outerObj == null)
                 {
-                    throw Error($"Expected 'outerobject' argument to '{NEW}' expression!", CurrentPosition);
+                    throw ParseError($"Expected 'outerobject' argument to '{NEW}' expression!", CurrentPosition);
                 }
 
                 if (Matches(TokenType.Comma))
@@ -2030,12 +2166,12 @@ namespace ME3Script.Parsing
                     objName = ParseExpression();
                     if (objName == null)
                     {
-                        throw Error($"Expected 'name' argument to '{NEW}' expression!", CurrentPosition);
+                        throw ParseError($"Expected 'name' argument to '{NEW}' expression!", CurrentPosition);
                     }
 
-                    if (!NodeUtils.TypeCompatible(SymbolTable.StringType, objName.ResolveType())) //TODO: should this really be a string, and not a name?
+                    if (!NodeUtils.TypeCompatible(SymbolTable.StringType, objName.ResolveType()))
                     {
-                        throw Error($"The 'name' argument to a '{NEW}' expression must be a string!", flags.StartPos, flags.EndPos);
+                        TypeError($"The 'name' argument to a '{NEW}' expression must be a string!", objName);
                     }
 
                     if (Matches(TokenType.Comma))
@@ -2043,19 +2179,19 @@ namespace ME3Script.Parsing
                         flags = ParseExpression();
                         if (flags == null)
                         {
-                            throw Error($"Expected 'flags' argument to '{NEW}' expression!", CurrentPosition);
+                            throw ParseError($"Expected 'flags' argument to '{NEW}' expression!", CurrentPosition);
                         }
 
                         if (!NodeUtils.TypeCompatible(SymbolTable.IntType, flags.ResolveType()))
                         {
-                            throw Error($"The 'flags' argument to a '{NEW}' expression must be an int!", flags.StartPos, flags.EndPos);
+                            TypeError($"The 'flags' argument to a '{NEW}' expression must be an int!", flags);
                         }
                     }
                 }
 
                 if (!Matches(TokenType.RightParenth))
                 {
-                    throw Error($"Expected ')' at end of '{NEW}' expression's argument list!");
+                    throw ParseError($"Expected ')' at end of '{NEW}' expression's argument list!");
                 }
             }
 
@@ -2064,18 +2200,18 @@ namespace ME3Script.Parsing
             InNew = false;
             if (objClass == null)
             {
-                throw Error($"Expected '{NEW}' expression's class type!", CurrentPosition);
+                throw ParseError($"Expected '{NEW}' expression's class type!", CurrentPosition);
             }
 
             var newClass = (objClass.ResolveType() as ClassType)?.ClassLimiter as Class;
             if (newClass is null)
             {
-                throw Error($"'{NEW}' expression must specify a class type!", objClass.StartPos, objClass.EndPos); //TODO: write better error message
+                throw ParseError($"'{NEW}' expression must specify a class type!", objClass); //TODO: write better error message
             }
 
             if (newClass.SameAsOrSubClassOf("Actor"))
             {
-                throw Error($"'{newClass.Name}' is a subclass of 'Actor'! Use the 'Spawn' function to create new 'Actor' instances.", objClass.StartPos, objClass.EndPos);
+                TypeError($"'{newClass.Name}' is a subclass of 'Actor'! Use the 'Spawn' function to create new 'Actor' instances.", objClass);
             }
 
             var outerObjType = outerObj?.ResolveType();
@@ -2083,7 +2219,7 @@ namespace ME3Script.Parsing
             {
                 if (!(outerObjType is Class outerClass) || !outerClass.SameAsOrSubClassOf(newClass.OuterClass.Name))
                 {
-                    throw Error($"OuterObject argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of class '{newClass.OuterClass.Name}'!");
+                    TypeError($"OuterObject argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of class '{newClass.OuterClass.Name}'!", outerObj);
                 }
             }
 
@@ -2093,18 +2229,18 @@ namespace ME3Script.Parsing
                 template = ParseExpression();
                 if (template == null)
                 {
-                    throw Error($"Expected 'template' argument to '{NEW}' expression!", CurrentPosition);
+                    throw ParseError($"Expected 'template' argument to '{NEW}' expression!", CurrentPosition);
                 }
 
                 var templateType = template.ResolveType();
                 if (!(templateType is Class templateClass) || !newClass.SameAsOrSubClassOf(templateClass.Name))
                 {
-                    throw Error($"Template argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of that class or a parent class!");
+                    TypeError($"Template argument for a '{NEW}' expression of type '{newClass.Name}' must be an object of that class or a parent class!");
                 }
 
                 if (!Matches(TokenType.RightParenth))
                 {
-                    throw Error($"Expected ')' after 'template' argument in '{NEW}' expression!", CurrentPosition);
+                    throw ParseError($"Expected ')' after 'template' argument in '{NEW}' expression!", CurrentPosition);
                 }
             }
 
@@ -2121,12 +2257,13 @@ namespace ME3Script.Parsing
                 {
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
+                        token.SyntaxType = EF.Enum;
                         if (Consume(TokenType.Word) is {} enumValName 
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
                             return NewSymbolReference(enumValue, enumValName, false);
                         }
-                        throw Error("Expected valid enum value!", CurrentPosition);
+                        throw ParseError("Expected valid enum value!", CurrentPosition);
                     }
                     if (destType is Const cnst)
                     {
@@ -2134,12 +2271,15 @@ namespace ME3Script.Parsing
                     }
                     if (!Matches(TokenType.LeftParenth))
                     {
-                        throw Error("Expected '(' after typename in cast expression!", CurrentPosition);
+                        throw ParseError("Expected '(' after typename in cast expression!", CurrentPosition);
                     }
+
+                    token.SyntaxType = SymbolTable.IsPrimitive(destType) ? EF.Keyword : EF.TypeName;
                     return ParsePrimitiveOrDynamicCast(token, destType);
                 }
                 //TODO: better error message
-                throw Error($"{specificScope} has no member named '{token.Value}'!", token.StartPos, token.EndPos);
+                TypeError($"{specificScope} has no member named '{token.Value}'!", token);
+                symbol = new VariableType("ERROR");
             }
 
             return NewSymbolReference(symbol, token, isDefaultRef);
@@ -2157,9 +2297,13 @@ namespace ME3Script.Parsing
                 symRef = new SymbolReference(symbol, token.Value, token.StartPos, token.EndPos);
             }
 
-            if (isDefaultRef && symRef.Node is Function)
+            if (symRef.Node is Function)
             {
-                throw Error("Expected property name!", CurrentPosition);
+                token.SyntaxType = EF.Function;
+                if (isDefaultRef)
+                {
+                    TypeError("Expected property name!", token);
+                }
             }
 
             return symRef;
@@ -2173,7 +2317,7 @@ namespace ME3Script.Parsing
             Expression expr = ParseExpression();
             if (!Matches(TokenType.RightParenth))
             {
-                throw Error("Expected ')' at end of cast expression!", CurrentPosition);
+                throw ParseError("Expected ')' at end of cast expression!", CurrentPosition);
             }
 
             var exprType = expr.ResolveType();
@@ -2187,15 +2331,15 @@ namespace ME3Script.Parsing
             {
                 //dynamic cast
                 bool isInterfaceCast = destClass.IsInterface || srcClass.IsInterface;
-                if (srcClass.SameAsOrSubClassOf(destClass.Name) || destClass.SameAsOrSubClassOf(srcClass.Name) 
-                                                                || isInterfaceCast) //interface casts are checked at runtime 
+                if (!srcClass.SameAsOrSubClassOf(destClass.Name) && !destClass.SameAsOrSubClassOf(srcClass.Name) && !isInterfaceCast)
                 {
-                    return new CastExpression(destType, expr, castToken.StartPos, CurrentPosition)
-                    {
-                        IsInterfaceCast = isInterfaceCast
-                    };
+                    TypeError($"Cannot cast between unrelated classes '{exprType.Name}' and '{destType?.Name}'!", castToken.StartPos, CurrentPosition);
                 }
-                throw Error($"Cannot cast between unrelated classes '{exprType.Name}' and '{destType?.Name}'!", CurrentPosition);
+
+                return new CastExpression(destType, expr, castToken.StartPos, CurrentPosition)
+                {
+                    IsInterfaceCast = isInterfaceCast
+                };
             }
 
             if (destType == SymbolTable.StringRefType && expr is IntegerLiteral intLit)
@@ -2207,7 +2351,7 @@ namespace ME3Script.Parsing
             ECast cast = CastHelper.GetConversion(destType, exprType);
             if (cast == ECast.Max)
             {
-                throw Error($"Cannot cast from '{exprType?.Name}' to '{destType?.Name}'!", CurrentPosition);
+                TypeError($"Cannot cast from '{exprType?.Name}' to '{destType?.Name}'!", castToken.StartPos, CurrentPosition);
             }
 
             return new PrimitiveCast(CastHelper.PureCastType(cast), destType, expr, castToken.StartPos, CurrentPosition);
@@ -2215,12 +2359,13 @@ namespace ME3Script.Parsing
 
         private Expression ParseObjectLiteral(Token<string> className, Token<string> objName)
         {
+            className.SyntaxType = EF.TypeName;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
 
             var classType = new VariableType((isClassLiteral ? objName : className).Value);
             if (!Symbols.TryResolveType(ref classType))
             {
-                throw Error($"No type named '{classType.Name}' exists!", className.StartPos, className.EndPos);
+                throw ParseError($"No type named '{classType.Name}' exists!", className);
             }
 
             if (classType is Class cls)
@@ -2231,14 +2376,14 @@ namespace ME3Script.Parsing
                 }
                 else if (cls.SameAsOrSubClassOf("Actor"))
                 {
-                    throw Error("Object constants must not be Actors!", className.StartPos, objName.EndPos);
+                    TypeError("Object constants must not be Actors!", className);
                 }
                 
 
                 return new ObjectLiteral(new NameLiteral(objName.Value, objName.StartPos, objName.EndPos), classType, className.StartPos, objName.EndPos);
             }
 
-            throw Error($"'{classType.Name}' is not a class!", className.StartPos, className.EndPos);
+            throw ParseError($"'{classType.Name}' is not a class!", className);
         }
 
         #endregion

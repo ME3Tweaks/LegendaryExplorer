@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ME3Script.Lexing.Tokenizing
 {
-    public class TokenizableDataStream<D> where D : class
+    public class TokenizableDataStream<D> : IEnumerable<D> where D : class
     {
         #region Members
         protected readonly List<D> Data;
@@ -64,5 +65,15 @@ namespace ME3Script.Lexing.Tokenizing
             return CurrentIndex + ahead >= Data.Count;
         }
         #endregion
+
+        public IEnumerator<D> GetEnumerator()
+        {
+            return Data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Data).GetEnumerator();
+        }
     }
 }

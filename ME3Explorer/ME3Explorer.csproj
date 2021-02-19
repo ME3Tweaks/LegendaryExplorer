@@ -109,6 +109,9 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.3.0, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.3\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.Profiler.Api, Version=1.1.7.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.Api.1.1.7\lib\net471\JetBrains.Profiler.Api.dll</HintPath>
     </Reference>
@@ -318,6 +321,7 @@
     <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\IAcceptASTVisitor.cs" />
     <Compile Include="ME3Script\Analysis\Visitors\IASTVisitor.cs" />
+    <Compile Include="ME3Script\Analysis\Visitors\SyntaxInfoCodeFormatter.cs" />
     <Compile Include="ME3Script\Compiling\ByteCodeCompilerVisitor.cs" />
     <Compile Include="ME3Script\Compiling\BytecodeWriter.cs" />
     <Compile Include="ME3Script\Compiling\Errors\Error.cs" />
@@ -336,6 +340,10 @@
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
     <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
     <Compile Include="ME3Script\FileLib.cs" />
+    <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
+    <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
+    <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
+    <Compile Include="ME3Script\IDE\UnrealScriptTextEditor.cs" />
     <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
     <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
     <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
@@ -364,6 +372,7 @@
     <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
     <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
     <Compile Include="ME3Script\Language\Tree\EnumValue.cs" />
+    <Compile Include="ME3Script\Language\Tree\ErrorProductions.cs" />
     <Compile Include="ME3Script\Language\Tree\Expression.cs" />
     <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
     <Compile Include="ME3Script\Language\Tree\FloatLiteral.cs" />
@@ -410,7 +419,7 @@
     <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
     <Compile Include="ME3Script\Language\Tree\VectorLiteral.cs" />
     <Compile Include="ME3Script\Language\Tree\WhileLoop.cs" />
-    <Compile Include="ME3Script\Language\Util\IContainsLocals.cs" />
+    <Compile Include="ME3Script\Language\Util\IContainsByteCode.cs" />
     <Compile Include="ME3Script\Language\Util\NodeUtils.cs" />
     <Compile Include="ME3Script\Lexing\LexerBase.cs" />
     <Compile Include="ME3Script\Lexing\Matching\ITokenMatcher.cs" />
@@ -1428,6 +1437,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
+    <EmbeddedResource Include="Resources\Unrealscript-Mode.xshd" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />

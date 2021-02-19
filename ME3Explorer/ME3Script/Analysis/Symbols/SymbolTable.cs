@@ -28,6 +28,8 @@ namespace ME3Script.Analysis.Symbols
         public static readonly VariableType StringRefType = new VariableType(STRINGREF) { PropertyType = EPropertyType.StringRef };
         public static readonly VariableType NameType = new VariableType(NAME) { PropertyType = EPropertyType.Name };
 
+        public static bool IsPrimitive(VariableType vt) =>
+            vt == IntType || vt == FloatType || vt == BoolType || vt == ByteType || vt == BioMask4Type || vt == StringType || vt == StringRefType || vt == NameType;
         #endregion
 
         private readonly CaseInsensitiveDictionary<ASTNodeDict> Cache;
@@ -753,7 +755,7 @@ namespace ME3Script.Analysis.Symbols
                 }
             }
 
-            return null;
+            return new PreOpDeclaration(name, null, 0, null);
         }
 
         public IEnumerable<InOpDeclaration> GetInfixOperators(string name)
@@ -793,7 +795,7 @@ namespace ME3Script.Analysis.Symbols
                 }
             }
 
-            return null;
+            return new PostOpDeclaration(name, null, 0, null);
         }
 
         public bool TryGetType<T>(string nameValue, out T variableType) where T : VariableType

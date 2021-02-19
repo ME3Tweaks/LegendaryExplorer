@@ -1,8 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Indentation.CSharp;
+using ME3Explorer;
+using ME3Explorer.ME3Script;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
@@ -10,35 +22,41 @@ using ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
+using ME3Script.Lexing.Tokenizing;
+using ME3Script.Parsing;
 
-namespace ME3Explorer.ME3Script
+namespace ME3Explorer.ME3Script.IDE
 {
     /// <summary>
     /// Interaction logic for UnrealScriptIDE.xaml
     /// </summary>
     public partial class UnrealScriptIDE : ExportLoaderControl
     {
-        private string _scriptText;
         public string ScriptText
         {
-            get => _scriptText;
-            set => SetProperty(ref _scriptText, value);
+            get => Document?.Text;
+            set => Dispatcher.Invoke(() =>
+            {
+                if (Document is not null)
+                {
+                    Document.TextChanged -= TextAreaOnTextEntered;
+                }
+
+                if (foldingManager != null)
+                {
+                    FoldingManager.Uninstall(foldingManager);
+                }
+                Document = new TextDocument(value);
+                foldingManager = FoldingManager.Install(textEditor.TextArea);
+                foldingStrategy.UpdateFoldings(foldingManager, Document);
+            });
         }
 
         private ASTNode _rootNode;
-
         public ASTNode RootNode
         {
             get => _rootNode;
             set => SetProperty(ref _rootNode, value);
-        }
-
-        private bool _fullyInitialized;
-
-        public bool FullyInitialized
-        {
-            get => _fullyInitialized;
-            set => SetProperty(ref _fullyInitialized, value);
         }
 
         private FileLib CurrentFileLib;
@@ -65,6 +83,160 @@ namespace ME3Explorer.ME3Script
             }
         }
 
+        static UnrealScriptIDE()
+        {
+            using Stream s = typeof(UnrealScriptIDE).Assembly.GetManifestResourceStream("ME3Explorer.Resources.Unrealscript-Mode.xshd");
+            if (s != null)
+            {
+                using var reader = new XmlTextReader(s);
+                HighlightingManager.Instance.RegisterHighlighting("Unrealscript", new []{".uc"}, HighlightingLoader.Load(reader, HighlightingManager.Instance));
+            }
+        }
+
+        public override bool CanParse(ExportEntry exportEntry) =>
+            exportEntry.Game == MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
+            {
+                "Class" => true,
+                "State" => true,
+                "Function" => true,
+                "Enum" => true,
+                "ScriptStruct" => true,
+                _ => false
+            } || exportEntry.IsDefaultObject);
+
+        public override void LoadExport(ExportEntry export)
+        {
+            if (CurrentLoadedExport != export)
+            {
+                UnloadExport();
+            }
+            CurrentLoadedExport = export;
+            if (IsStandardLibFile())
+            {
+                UnloadFileLib();
+                FullyInitialized = StandardLibrary.IsInitialized;
+            }
+            else if (Pcc != CurrentFileLib?.Pcc)
+            {
+                FullyInitialized = false;
+                IsBusy = true;
+                BusyText = "Compiling local classes";
+                UnloadFileLib();
+                CurrentFileLib = new FileLib(Pcc);
+                CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
+                if (IsVisible)
+                {
+                    CurrentFileLib?.Initialize();
+                }
+            }
+            if (!IsBusy)
+            {
+                Decompile();
+            }
+        }
+
+        public override void UnloadExport()
+        {
+            CurrentLoadedExport = null;
+            ScriptText = string.Empty;
+            RootNode = null;
+            outputListBox.ItemsSource = null;
+        }
+
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
+                {
+                    Title = $"Script Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
+                };
+                elhw.Show();
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (progressBarTimer != null)
+            {
+                progressBarTimer.IsEnabled = false; //Stop timer
+                progressBarTimer.Tick -= ProgressBarTimer_Tick;
+            }
+            StandardLibrary.Initialized -= StandardLibrary_Initialized;
+
+            if (Document is not null)
+            {
+                Document.TextChanged -= TextAreaOnTextEntered;
+            }
+        }
+
+        private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window window = Window.GetWindow(this);
+            if (window is { })
+            {
+                window.Closed += (o, args) => UnloadFileLib();
+            }
+        }
+
+        #region Busy variables
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                if (SetProperty(ref _isBusy, value))
+                {
+                    IsBusyChanged?.Invoke(this, EventArgs.Empty); //caller will just fetch and update this value
+                }
+            }
+        }
+
+        public event EventHandler IsBusyChanged;
+
+        private bool _busyProgressIndeterminate = true;
+        public bool BusyProgressIndeterminate
+        {
+            get => _busyProgressIndeterminate;
+            set => SetProperty(ref _busyProgressIndeterminate, value);
+        }
+
+        private string _busyText;
+        public string BusyText
+        {
+            get => _busyText;
+            set => SetProperty(ref _busyText, value);
+        }
+
+        private int _busyProgressBarMax = 100;
+        public int BusyProgressBarMax
+        {
+            get => _busyProgressBarMax;
+            set => SetProperty(ref _busyProgressBarMax, value);
+        }
+
+        private int _busyProgressBarValue;
+        public int BusyProgressBarValue
+        {
+            get => _busyProgressBarValue;
+            set => SetProperty(ref _busyProgressBarValue, value);
+        }
+        #endregion
+
+        #region ScriptLib Handling
+
+        private bool _fullyInitialized;
+        public bool FullyInitialized
+        {
+            get => _fullyInitialized;
+            set => SetProperty(ref _fullyInitialized, value);
+        }
+
+        private FileLib CurrentFileLib;
+
+        private readonly DispatcherTimer progressBarTimer;
         private void ProgressBarTimer_Tick(object sender, EventArgs e)
         {
             if (!IsBusy)
@@ -111,7 +283,8 @@ namespace ME3Explorer.ME3Script
                 {
                     if (IsStandardLibFile())
                     {
-                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport);
+                        CurrentFileLib = null;
+                        Decompile();
                     }
                     else
                     {
@@ -122,59 +295,17 @@ namespace ME3Explorer.ME3Script
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game == MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
-            {
-                "Class" => true,
-                "State" => true,
-                "Function" => true,
-                "Enum" => true,
-                "ScriptStruct" => true,
-                _ => false
-            } || exportEntry.IsDefaultObject);
-
-        public bool IsStandardLibFile() => Pcc != null &&
-            Path.GetFileName(Pcc.FilePath) switch
-            {
-                "Core.pcc" => true,
-                "Engine.pcc" => true,
-                "GameFramework.pcc" => true,
-                "GFxUI.pcc" => true,
-                "WwiseAudio.pcc" => true,
-                "SFXOnlineFoundation.pcc" => true,
-                "SFXGame.pcc" => true,
-                _ => false
-            };
-
-        public override void LoadExport(ExportEntry export)
-        {
-            if (CurrentLoadedExport != export)
-            {
-                UnloadExport();
-            }
-            CurrentLoadedExport = export;
-            if (IsStandardLibFile())
-            {
-                UnloadFileLib();
-                FullyInitialized = StandardLibrary.IsInitialized;
-            }
-            else if (Pcc != CurrentFileLib?.Pcc)
-            {
-                FullyInitialized = false;
-                IsBusy = true;
-                BusyText = "Compiling local classes";
-                UnloadFileLib();
-                CurrentFileLib = new FileLib(Pcc);
-                CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
-                if (IsVisible)
-                {
-                    CurrentFileLib?.Initialize();
-                }
-            }
-            if (!IsBusy)
-            {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
-            }
-        }
+            exportEntry.Game == MEGame.ME3 && (exportEntry.ClassName switch
+                                           {
+                                               "Core.pcc" => true,
+                                               "Engine.pcc" => true,
+                                               "GameFramework.pcc" => true,
+                                               "GFxUI.pcc" => true,
+                                               "WwiseAudio.pcc" => true,
+                                               "SFXOnlineFoundation.pcc" => true,
+                                               "SFXGame.pcc" => true,
+                                               _ => false
+                                           };
 
         private void UnloadFileLib()
         {
@@ -205,7 +336,7 @@ namespace ME3Explorer.ME3Script
                     }
                     if (CurrentLoadedExport != null)
                     {
-                        (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                        Decompile();
                     }
                 }
             }
@@ -221,7 +352,6 @@ namespace ME3Explorer.ME3Script
             }
         }
 
-        private readonly DispatcherTimer progressBarTimer;
         private void ExportLoaderControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is true)
@@ -243,92 +373,14 @@ namespace ME3Explorer.ME3Script
             }
         }
 
-        #region Busy variables
-        private bool _isBusy;
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set
-            {
-                if (SetProperty(ref _isBusy, value))
-                {
-                    IsBusyChanged?.Invoke(this, EventArgs.Empty); //caller will just fetch and update this value
-                }
-            }
-        }
-
-        public event EventHandler IsBusyChanged;
-
-        private bool _busyProgressIndeterminate = true;
-
-        public bool BusyProgressIndeterminate
-        {
-            get => _busyProgressIndeterminate;
-            set => SetProperty(ref _busyProgressIndeterminate, value);
-        }
-
-        private string _busyText;
-
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        private int _busyProgressBarMax = 100;
-
-        public int BusyProgressBarMax
-        {
-            get => _busyProgressBarMax;
-            set => SetProperty(ref _busyProgressBarMax, value);
-        }
-
-        private int _busyProgressBarValue;
-        public int BusyProgressBarValue
-        {
-            get => _busyProgressBarValue;
-            set => SetProperty(ref _busyProgressBarValue, value);
-        }
         #endregion
-
-        public override void UnloadExport()
-        {
-            CurrentLoadedExport = null;
-            ScriptText = string.Empty;
-            RootNode = null;
-            outputListBox.ItemsSource = null;
-        }
-
-        public override void PopOut()
-        {
-            if (CurrentLoadedExport != null)
-            {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new BytecodeEditor(), CurrentLoadedExport)
-                {
-                    Title = $"Script Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
-                };
-                elhw.Show();
-            }
-        }
-
-        public override void Dispose()
-        {
-            if (progressBarTimer != null)
-            {
-                progressBarTimer.IsEnabled = false; //Stop timer
-                progressBarTimer.Tick -= ProgressBarTimer_Tick;
-            }
-            StandardLibrary.Initialized -= StandardLibrary_Initialized;
-
-        }
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems?.Count == 1 && e.AddedItems[0] is PositionedMessage msg)
             {
-                scriptTextBox.Focus();
-                scriptTextBox.Select(msg.Start.CharIndex, msg.End.CharIndex - msg.Start.CharIndex);
+                textEditor.Focus();
+                textEditor.Select(msg.Start.CharIndex, msg.End.CharIndex - msg.Start.CharIndex);
             }
         }
 
@@ -350,8 +402,120 @@ namespace ME3Explorer.ME3Script
         {
             if (CurrentLoadedExport != null)
             {
-                (RootNode, ScriptText) = ME3ScriptCompiler.DecompileExport(CurrentLoadedExport, CurrentFileLib);
+                Decompile();
             }
+        }
+
+        private void Decompile()
+        {
+            try
+            {
+                ASTNode ast = ME3ScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib);
+                if (ast is null)
+                {
+                    (RootNode, ScriptText) = (null, "Could not decompile!");
+                    return;
+                }
+                var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                ast.AcceptVisitor(codeBuilder);
+                (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                Dispatcher.Invoke(() =>
+                {
+                    textEditor.SyntaxHighlighting = syntaxInfo;
+                });
+                RootNode = ast;
+                ScriptText = text;
+                Dispatcher.Invoke(() =>
+                {
+                    if (RootNode is Function func)
+                    {
+                        textEditor.IsReadOnly = false;
+                        int numLocals = func.Locals.Count;
+                        int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
+                        var segments = new TextSegmentCollection<TextSegment>
+                        {
+                            new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }
+                        };
+                        textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
+                        Document.TextChanged += TextAreaOnTextEntered;
+                    }
+                    else
+                    {
+                        textEditor.IsReadOnly = true;
+                    }
+                });
+
+            }
+            catch (Exception e) when (!App.IsDebug)
+            {
+                (RootNode, ScriptText) = (null, $"Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}");
+            }
+        }
+
+        private void TextAreaOnTextEntered(object sender, EventArgs e)
+        {
+            (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
+            try
+            {
+
+                if (ast != null && log.AllErrors.IsEmpty())
+                {
+                    if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
+                    {
+                        TokenStream<string> tokens;
+                        (ast, tokens) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+
+                        var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                        ast.AcceptVisitor(codeBuilder);
+                        (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+
+                        if (tokens.Any())
+                        {
+                            int firstLine = tokens.First().StartPos.Line - 1;
+                            int lastLine = tokens.Last().EndPos.Line - 1;
+                            while (lastLine >= firstLine)
+                            {
+                                syntaxInfo[lastLine].Clear();
+                                lastLine--;
+                            }
+
+                            int currentLine = firstLine;
+                            int currentPos = 0;
+                            foreach (Token<string> token in tokens)
+                            {
+                                int tokLine = token.StartPos.Line - 1;
+                                if (tokLine > currentLine)
+                                {
+                                    currentLine = tokLine;
+                                    currentPos = 0;
+                                }
+
+                                int tokStart = token.StartPos.Column;
+                                int tokEnd = token.EndPos.Column;
+                                if (tokStart > currentPos)
+                                {
+                                    syntaxInfo[currentLine].Add(new SyntaxSpan(EF.None, tokStart - currentPos));
+                                }
+
+                                syntaxInfo[currentLine].Add(new SyntaxSpan(token.SyntaxType, tokEnd - tokStart));
+                                currentPos = tokEnd;
+                            }
+                        }
+
+                        textEditor.SyntaxHighlighting = syntaxInfo;
+                    }
+                }
+            }
+            catch (ParseException)
+            {
+                log.LogError("Parse Failed!");
+            }
+            catch (Exception exception)
+            {
+                log.LogError($"Exception: {exception.Message}");
+            }
+
+            outputListBox.ItemsSource = log.Content;
         }
 
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)
@@ -365,24 +529,32 @@ namespace ME3Explorer.ME3Script
                 {
                     if (RootNode is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        RootNode = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                        (RootNode, _) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
                     }
-                    var codeBuilder = new CodeBuilderVisitor();
+                    var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);
-                    ScriptText = codeBuilder.GetCodeString();
+                    (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+                    textEditor.SyntaxHighlighting = syntaxInfo;
                 }
 
                 outputListBox.ItemsSource = log.Content;
             }
         }
 
-        private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
+
+
+        #region AvalonEditor
+
+        private TextDocument _document;
+        public TextDocument Document
         {
-            Window window = Window.GetWindow(this);
-            if (window is { })
-            {
-                window.Closed += (o, args) => UnloadFileLib();
-            }
+            get => _document;
+            set => SetProperty(ref _document, value);
         }
+
+        private FoldingManager foldingManager;
+        private readonly BraceFoldingStrategy foldingStrategy = new();
+
+        #endregion
     }
 }

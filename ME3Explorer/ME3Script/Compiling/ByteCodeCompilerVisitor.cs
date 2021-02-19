@@ -21,6 +21,7 @@ namespace ME3Script.Compiling
     public class ByteCodeCompilerVisitor : BytecodeWriter, IASTVisitor
     {
         private readonly UStruct Target;
+        private IContainsByteCode CompilationUnit;
         private readonly IEntry ContainingClass;
 
         readonly CaseInsensitiveDictionary<UProperty> parameters = new CaseInsensitiveDictionary<UProperty>();
@@ -47,6 +48,7 @@ namespace ME3Script.Compiling
         {
             public readonly NestType Type;
             public JumpPlaceholder CaseJumpPlaceholder;
+            public VariableType SwitchType;
 
             public Nest(NestType type)
             {
@@ -80,6 +82,7 @@ namespace ME3Script.Compiling
         {
             if (Target is UFunction uFunction)
             {
+                CompilationUnit = func;
                 var nextItem = uFunction.Children;
                 UProperty returnValue = null;
                 while (uFunction.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
@@ -116,7 +119,7 @@ namespace ME3Script.Compiling
 
                         using (WriteSkipPlaceholder())
                         {
-                            Emit(expr);
+                            Emit(AddConversion(parameter.VarType, expr));
                             WriteOpCode(OpCodes.EndParmValue);
                         }
                     }
@@ -164,6 +167,7 @@ namespace ME3Script.Compiling
         {
             if (Target is UState uState)
             {
+                CompilationUnit = state;
                 uState.LabelTableOffset = 0;
                 Emit(state.Body);
 
@@ -295,7 +299,7 @@ namespace ME3Script.Compiling
             WriteOpCode(OpCodes.Switch);
             EmitProperty(node.Expression);
             Emit(node.Expression);
-            Nests.Push(new Nest(NestType.Switch));
+            Nests.Push(new Nest(NestType.Switch) { SwitchType = node.Expression.ResolveType() });
             Emit(node.Body);
             Nest nest = Nests.Pop();
             nest.CaseJumpPlaceholder?.End();
@@ -309,7 +313,7 @@ namespace ME3Script.Compiling
             nest.CaseJumpPlaceholder?.End();
             WriteOpCode(OpCodes.Case);
             nest.CaseJumpPlaceholder = WriteJumpPlaceholder(JumpType.Case);
-            Emit(node.Value);
+            Emit(AddConversion(nest.SwitchType, node.Value));
             return true;
         }
 
@@ -342,7 +346,7 @@ namespace ME3Script.Compiling
             inAssignTarget = true;
             Emit(node.Target);
             inAssignTarget = false;
-            Emit(node.Value);
+            Emit(AddConversion(targetType, node.Value));
             return true;
         }
 
@@ -452,7 +456,7 @@ namespace ME3Script.Compiling
             }
             else
             {
-                Emit(node.Value);
+                Emit(AddConversion(((Function)CompilationUnit).ReturnType, node.Value));
             }
 
             return true;
@@ -488,6 +492,18 @@ namespace ME3Script.Compiling
             }
             Emit(node.Value);
             return true;
+        }
+
+        public bool VisitNode(ErrorStatement node)
+        {
+            //an ast with errors should never be passed to the compiler
+            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
+        }
+
+        public bool VisitNode(ErrorExpression node)
+        {
+            //an ast with errors should never be passed to the compiler
+            throw new Exception($"Line {node.StartPos.Line}: Cannot compile an error!");
         }
 
         private static Function GetAffector(Expression expr) =>
@@ -532,11 +548,18 @@ namespace ME3Script.Compiling
                 WriteObjectRef(ResolveFunction(op.Implementer));
             }
 
+            VariableType lType = node.Operator.LeftOperand.VarType;
+            VariableType rType = node.Operator.RightOperand.VarType;
+            if (node.Operator.LeftOperand.VarType is Class c && c.IsInterface)
+            {
+                lType = rType = node.LeftOperand.ResolveType() ?? node.RightOperand.ResolveType() ?? c;
+            }
+
             if (op.LeftOperand.IsOut)
             {
                 inAssignTarget = true;
             }
-            Emit(node.LeftOperand);
+            Emit(AddConversion(lType, node.LeftOperand));
             inAssignTarget = false;
             SkipPlaceholder skip = null;
             if (op.RightOperand.Flags.Has(UnrealFlags.EPropertyFlags.SkipParm))
@@ -545,7 +568,7 @@ namespace ME3Script.Compiling
                 skip = WriteSkipPlaceholder();
             }
 
-            Emit(node.RightOperand);
+            Emit(AddConversion(rType, node.RightOperand));
             WriteOpCode(OpCodes.EndFunctionParms);
             skip?.End();
             return true;
@@ -699,11 +722,12 @@ namespace ME3Script.Compiling
                 }
                 else
                 {
-                    if (funcParams[i].IsOut)
+                    FunctionParameter funcParam = funcParams[i];
+                    if (funcParam.IsOut)
                     {
                         inAssignTarget = true;
                     }
-                    Emit(arg);
+                    Emit(AddConversion(funcParam.VarType, arg));
                     inAssignTarget = false;
                 }
             }
@@ -965,7 +989,7 @@ namespace ME3Script.Compiling
         {
             WriteOpCode(OpCodes.DynArrayAdd);
             Emit(node.DynArrayExpression);
-            Emit(node.CountArg);
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
             WriteOpCode(OpCodes.EndFunctionParms);
             return true;
         }
@@ -976,7 +1000,8 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.ValueArg);
+                DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
@@ -986,8 +1011,8 @@ namespace ME3Script.Compiling
         {
             WriteOpCode(OpCodes.DynArrayInsert);
             Emit(node.DynArrayExpression);
-            Emit(node.IndexArg);
-            Emit(node.CountArg);
+            Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
             WriteOpCode(OpCodes.EndFunctionParms);
             return true;
         }
@@ -998,8 +1023,9 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.IndexArg);
-                Emit(node.ValueArg);
+                DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
+                Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
@@ -1009,8 +1035,8 @@ namespace ME3Script.Compiling
         {
             WriteOpCode(OpCodes.DynArrayRemove);
             Emit(node.DynArrayExpression);
-            Emit(node.IndexArg);
-            Emit(node.CountArg);
+            Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
+            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
             WriteOpCode(OpCodes.EndFunctionParms);
             return true;
         }
@@ -1021,7 +1047,8 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.ValueArg);
+                DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
@@ -1033,7 +1060,8 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             using (WriteSkipPlaceholder())
             {
-                Emit(node.ValueArg);
+                DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
+                Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
@@ -1046,7 +1074,7 @@ namespace ME3Script.Compiling
             using (WriteSkipPlaceholder())
             {
                 Emit(node.MemberNameArg);
-                Emit(node.ValueArg);
+                Emit(AddConversion(node.MemberType, node.ValueArg));
                 WriteOpCode(OpCodes.EndFunctionParms);
             }
             return true;
@@ -1183,6 +1211,65 @@ namespace ME3Script.Compiling
         {
             WriteOpCode(node.IsDelegateNone ? OpCodes.EmptyDelegate : OpCodes.NoObject);
             return true;
+        }
+
+        //TODO: remove? alreaty done in parser. doing again should have no effect
+        static Expression AddConversion(VariableType destType, Expression expr)
+        {
+
+            if (expr is NoneLiteral noneLit)
+            {
+                if (destType.PropertyType == EPropertyType.Delegate)
+                {
+                    noneLit.IsDelegateNone = true;
+                }
+                else if (destType.PropertyType == EPropertyType.Interface)
+                {
+                    return new PrimitiveCast(ECast.ObjectToInterface, destType, noneLit, noneLit.StartPos, noneLit.EndPos);
+                }
+            }
+            else if (expr?.ResolveType() is { } type && type.PropertyType != destType.PropertyType)
+            {
+                ECast cast = CastHelper.PureCastType(CastHelper.GetConversion(destType, type));
+                switch (expr)
+                {
+                    case IntegerLiteral intLit:
+                        switch (cast)
+                        {
+                            case ECast.ByteToInt:
+                                intLit.NumType = Keywords.INT;
+                                return intLit;
+                            case ECast.IntToByte:
+                                intLit.NumType = Keywords.BYTE;
+                                return intLit;
+                            case ECast.IntToFloat:
+                                return new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
+                            case ECast.ByteToFloat:
+                                return new FloatLiteral(intLit.Value, intLit.StartPos, intLit.EndPos);
+                        }
+                        break;
+                    case FloatLiteral floatLit:
+                        switch (cast)
+                        {
+                            case ECast.FloatToByte:
+                                return new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = Keywords.BYTE };
+                            case ECast.FloatToInt:
+                                return new IntegerLiteral((int)floatLit.Value, floatLit.StartPos, floatLit.EndPos) { NumType = Keywords.INT };
+                        }
+                        break;
+                    case ConditionalExpression condExpr:
+                        //TODO: create new ConditionalExpression to avoid modifying original?
+                        condExpr.TrueExpression = AddConversion(destType, condExpr.TrueExpression);
+                        condExpr.FalseExpression = AddConversion(destType, condExpr.FalseExpression);
+                        return condExpr;
+                }
+                if ((byte)cast != 0 && cast != ECast.Max)
+                {
+                    return new PrimitiveCast(cast, destType, expr, expr.StartPos, expr.EndPos);
+                }
+            }
+
+            return expr;
         }
 
         private IEntry ResolveSymbol(ASTNode node) =>

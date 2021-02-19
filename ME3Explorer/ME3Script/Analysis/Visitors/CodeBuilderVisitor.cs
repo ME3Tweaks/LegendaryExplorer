@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Language.Tree;
@@ -8,141 +9,162 @@ using ME3Script.Parsing;
 using static ME3Script.Utilities.Keywords;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal;
+using ME3Script.Analysis.Symbols;
+using ME3Script.Lexing.Tokenizing;
 
 namespace ME3Script.Analysis.Visitors
 {
-    public class CodeBuilderVisitor : IASTVisitor
+    public enum EF
     {
-        private readonly List<string> Lines;
-        private int NestingLevel;
-        private int ForcedAlignment;
-        private bool ForceNoNewLines;
-        private readonly Stack<int> ExpressionPrescedence;
+        None,
+        Keyword,
+        Specifier,
+        TypeName,
+        String,
+        Name,
+        Number,
+        Enum,
+        Comment,
+        ERROR,
+        Function,
+        State,
+        Label,
+        Operator
+    }
+
+    public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
+    {
+        public readonly TFormatter Formatter = new TFormatter();
+        private readonly Stack<int> ExpressionPrescedence = new Stack<int>(new []{NOPRESCEDENCE});
 
         private const int NOPRESCEDENCE = int.MaxValue;
 
-        public CodeBuilderVisitor()
+        public int NestingLevel
         {
-            Lines = new List<string>();
-            NestingLevel = 0;
-            ExpressionPrescedence = new Stack<int>();
-            ExpressionPrescedence.Push(NOPRESCEDENCE);
+            get => Formatter.NestingLevel;
+            set => Formatter.NestingLevel = value;
         }
 
-        public IList<string> GetCodeLines()
+        public int ForcedAlignment
         {
-            return Lines.AsReadOnly();
+            get => Formatter.ForcedAlignment;
+            set => Formatter.ForcedAlignment = value;
         }
 
-        public string GetCodeString()
+        public bool ForceNoNewLines
         {
-            return string.Join("\n", Lines);
+            get => Formatter.ForceNoNewLines;
+            set => Formatter.ForceNoNewLines = value;
         }
 
-        private void Write(string text)
-        {
-            if (ForceNoNewLines)
-            {
-                Append(text);
-            }
-            else
-            {
-                Lines.Add(new string(' ', ForcedAlignment + NestingLevel * 4) + text);
-            }
-        }
+        public TOutput GetOutput() => Formatter.GetOutput();
 
-        private void Append(string text)
-        {
-            if (Lines.Count == 0)
-                Lines.Add("");
-            Lines[Lines.Count - 1] += text;
-        }
+        private EF? ForcedFormatType = null;
+
+        private void Write(string text = "", EF formatType = EF.None) => Formatter.Write(text, ForcedFormatType ?? formatType);
+
+        private void Append(string text, EF formatType = EF.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
+        private void Space() => Formatter.Space();
+
+        private void ForceAlignment() => Formatter.ForceAlignment();
 
         public bool VisitNode(Class node)
         {
-            // class classname extends parentclass [within outerclass] [specifiers] ;
-            Write($"{CLASS} {node.Name}");
+            Write(CLASS, EF.Keyword);
+            Space();
+            Append(node.Name, EF.TypeName);
 
             if (node.Parent != null && !node.Parent.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
-                Append($" {EXTENDS} {node.Parent.Name}");
+                Space();
+                Append(EXTENDS, EF.Keyword);
+                Space();
+                Append(node.Parent.Name, EF.TypeName);
             }
             if (node.OuterClass != null && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
-                Append($" {WITHIN} {node.OuterClass.Name}");
+                Space();
+                Append(WITHIN, EF.Keyword);
+                Space();
+                Append(node.OuterClass.Name, EF.TypeName);
             }
 
             NestingLevel++;
 
             if (node.Interfaces.Any())
             {
-                Write($"implements({string.Join(", ", node.Interfaces.Select(i => i.Name))})");
+                Write("implements", EF.Keyword);
+                Append("(");
+                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.TypeName);
+                Append(")");
             }
+
 
             UnrealFlags.EClassFlags flags = node.Flags;
             if (flags.Has(UnrealFlags.EClassFlags.Native))
             {
-                Write("native");
+                Write("native", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.NativeOnly))
             {
-                Write("nativeonly");
+                Write("nativeonly", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.NoExport))
             {
-                Write("noexport");
+                Write("noexport", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.EditInlineNew))
             {
-                Write("editinlinenew");
+                Write("editinlinenew", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Placeable))
             {
-                Write("placeable");
+                Write("placeable", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.HideDropDown))
             {
-                Write("hidedropdown");
+                Write("hidedropdown", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.NativeReplication))
             {
-                Write("nativereplication");
+                Write("nativereplication", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.PerObjectConfig))
             {
-                Write("perobjectconfig");
+                Write("perobjectconfig", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Localized))
             {
-                Write("localized");
+                Write("localized", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Abstract))
             {
-                Write("abstract");
+                Write("abstract", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Deprecated))
             {
-                Write("deprecated");
+                Write("deprecated", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Transient))
             {
-                Write("transient");
+                Write("transient", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Config))
             {
-                Write($"config({node.ConfigName})");
+                Write("config", EF.Specifier);
+                Append($"({node.ConfigName})");
             }
             if (flags.Has(UnrealFlags.EClassFlags.SafeReplace))
             {
-                Write("safereplace");
+                Write("safereplace", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.Hidden))
             {
-                Write("hidden");
+                Write("hidden", EF.Specifier);
             }
             if (flags.Has(UnrealFlags.EClassFlags.CollapseCategories))
             {
-                Write("collapsecategories");
+                Write("collapsecategories", EF.Specifier);
             }
 
             NestingLevel--;
@@ -151,37 +173,37 @@ namespace ME3Script.Analysis.Visitors
             // print the rest of the class, according to the standard "anatomy of an unrealscript" article.
             if (node.TypeDeclarations.Count > 0)
             {
-                Write("");
-                Write("// Types");
+                Write();
+                Write("// Types", EF.Comment);
                 foreach (VariableType type in node.TypeDeclarations)
                     type.AcceptVisitor(this);
             }
 
             if (node.VariableDeclarations.Count > 0)
             {
-                Write("");
-                Write("// Variables");
+                Write();
+                Write("// Variables", EF.Comment);
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                     decl.AcceptVisitor(this);
             }
 
             if (node.Functions.Count > 0)
             {
-                Write("");
-                Write("// Functions");
+                Write();
+                Write("// Functions", EF.Comment);
                 foreach (Function func in node.Functions)
                     func.AcceptVisitor(this);
             }
 
             if (node.States.Count > 0)
             {
-                Write("");
-                Write("// States");
+                Write();
+                Write("// States", EF.Comment);
                 foreach (State state in node.States)
                     state.AcceptVisitor(this);
             }
 
-            Write("");
+            Write();
             node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
@@ -190,25 +212,36 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            string type = "ERROR";
             if (node.Outer.Type == ASTNodeType.Class || node.Outer.Type == ASTNodeType.Struct)
             {
-                type = VAR;
+                Write(VAR, EF.Keyword);
                 if (!string.IsNullOrEmpty(node.Category))
                 {
-                    type += $"({node.Category})";
+                    Append($"({node.Category})");
                 }
             }
             else if (node.Outer.Type == ASTNodeType.Function)
-                type = LOCAL;
+            {
+                Write(LOCAL, EF.Keyword);
+            }
+            else
+            {
+                Write("ERROR", EF.ERROR);
+            }
 
-            // var|local [specifiers] variabletype variablename[[staticarraysize]];
-            Write($"{type} ");
+            Space();
             WritePropertyFlags(node.Flags);
-            string staticarray = node.IsStaticArray ? $"[{node.ArrayLength}]" : "";
             AppendTypeName(node.VarType);
-            Append($" {node.Name}{staticarray};");
-            
+            Space();
+            Append(node.Name);
+            if (node.IsStaticArray)
+            {
+                Append("[");
+                Append($"{node.ArrayLength}", EF.Number);
+                Append("]");
+            }
+            Append(";");
+
             return true;
         }
 
@@ -221,9 +254,22 @@ namespace ME3Script.Analysis.Visitors
                 case DelegateType _:
                 case ClassType _:
                     node.AcceptVisitor(this);
-                    return;
+                    break;
+                case Enumeration _:
+                    Append(node.Name, EF.Enum);
+                    break;
+                case Const _:
+                    Append(node.Name);
+                    break;
+                case VariableType v when SymbolTable.IsPrimitive(v):
+                    Append(node.Name, EF.Keyword);
+                    break;
+                case Class _:
+                case Struct _:
+                default:
+                    Append(node.Name, EF.TypeName);
+                    break;
             }
-            Append(node.Name);
         }
 
         public bool VisitNode(VariableType node)
@@ -240,7 +286,8 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayType node)
         {
-            Append($"{ARRAY}<");
+            Append(ARRAY, EF.Keyword);
+            Append("<");
             AppendTypeName(node.ElementType);
             Append(">");
             return true;
@@ -248,21 +295,27 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DelegateType node)
         {
-            Append($"{DELEGATE}<{node.DefaultFunction.Name}>");
+            Append(DELEGATE, EF.Keyword);
+            Append("<");
+            Append(node.DefaultFunction.Name, EF.Function);
+            Append(">");
             return true;
         }
 
         public bool VisitNode(ClassType node)
         {
-            Append($"{CLASS}<{node.ClassLimiter.Name}>");
+            Append(CLASS, EF.Keyword);
+            Append("<");
+            Append(node.ClassLimiter.Name, EF.TypeName);
+            Append(">");
             return true;
         }
 
         public bool VisitNode(Struct node)
         {
             // struct [specifiers] structname [extends parentstruct] { \n contents \n };
-            Write($"{STRUCT} ");
-            
+            Write(STRUCT, EF.Keyword);
+            Space();
             var specs = new List<string>();
             ScriptStructFlags flags = node.Flags;
             if (flags.Has(ScriptStructFlags.Native))
@@ -294,14 +347,22 @@ namespace ME3Script.Analysis.Visitors
                 specs.Add("strictconfig");
             }
 
-            if (specs.Any())
+            foreach (string spec in specs)
             {
-                Append($"{string.Join(" ", specs)} ");
+                Append(spec, EF.Specifier);
+                Space();
             }
 
-            Append($"{node.Name} ");
+            Append(node.Name, EF.TypeName);
+            Space();
             if (node.Parent != null)
-                Append($"{EXTENDS} {node.Parent.Name} ");
+            {
+                Append(EXTENDS, EF.Keyword);
+                Space();
+                Append(node.Parent.Name, EF.TypeName);
+                Space();
+            }
+
             Write("{");
             NestingLevel++;
 
@@ -315,7 +376,7 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.DefaultProperties.Statements.Any())
             {
-                Write("");
+                Write();
                 node.DefaultProperties.AcceptVisitor(this);
             }
 
@@ -328,12 +389,16 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(Enumeration node)
         {
             // enum enumname { \n contents \n };
-            Write($"{ENUM} {node.Name}");
+            Write(ENUM, EF.Keyword);
+            Space();
+            Append(node.Name, EF.Enum);
             Write("{");
             NestingLevel++;
 
             foreach (EnumValue value in node.Values)
+            {
                 Write($"{value.Name},");
+            }
 
             NestingLevel--;
             Write("};");
@@ -349,7 +414,14 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Const node)
         {
-            Write($"{CONST} {node.Name} = {node.Value};");
+            Write(CONST, EF.Keyword);
+            Space();
+            Append(node.Name);
+            Space();
+            Append("=");
+            Space();
+            Append(node.Value);
+            Append(";");
 
             return true;
         }
@@ -357,7 +429,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(Function node)
         {
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
-            Write("");
+            Write();
 
             var specs = new List<string>();
             FunctionFlags flags = node.Flags;
@@ -398,14 +470,6 @@ namespace ME3Script.Analysis.Visitors
             {
                 specs.Add("operator");
             }
-            if (flags.Has(FunctionFlags.Native) && node.NativeIndex > 0)
-            {
-                specs.Add($"native({node.NativeIndex})");
-            }
-            else if (flags.Has(FunctionFlags.Native))
-            {
-                specs.Add("native");
-            }
             if (flags.Has(FunctionFlags.Iterator))
             {
                 specs.Add("iterator");
@@ -443,28 +507,48 @@ namespace ME3Script.Analysis.Visitors
                 specs.Add("simulated");
             }
 
-            if (specs.Count > 0)
+            foreach (string spec in specs)
             {
-                Append($"{string.Join(" ", specs)} ");
+                Append(spec, EF.Specifier);
+                Space();
+            }
+            if (flags.Has(FunctionFlags.Native))
+            {
+                Append("native", EF.Specifier);
+                if (node.NativeIndex > 0)
+                {
+                    Append("(");
+                    Append(node.NativeIndex.ToString(), EF.Number);
+                    Append(")");
+                }
+                Space();
             }
 
-            Append($"{FUNCTION} ");
+            Append(FUNCTION, EF.Keyword);
+            Space();
             if (node.ReturnType != null)
             {
                 if (node.CoerceReturn)
                 {
-                    Append("coerce ");
+                    Append("coerce", EF.Specifier);
+                    Space();
                 }
                 AppendTypeName(node.ReturnType);
-                Append(" ");
+                Space();
             }
-            Append($"{node.Name}(");
-            foreach (FunctionParameter p in node.Parameters)
+            Append(node.Name, EF.Function);
+            Append("(");
+            if (node.Parameters.Any())
             {
-                p.AcceptVisitor(this);
-                if (node.Parameters.IndexOf(p) != node.Parameters.Count - 1)
-                    Append(", ");
+                node.Parameters[0].AcceptVisitor(this);
+                for (int i = 1; i < node.Parameters.Count; i++)
+                {
+                    Append(",");
+                    Space();
+                    node.Parameters[i].AcceptVisitor(this);
+                }
             }
+
             Append(")");
 
             if (flags.Has(FunctionFlags.Defined) && node.Body.Statements != null)
@@ -475,7 +559,7 @@ namespace ME3Script.Analysis.Visitors
                 {
                     foreach (VariableDeclaration v in node.Locals)
                         v.AcceptVisitor(this);
-                    Write("");
+                    Write();
                 }
                 node.Body.AcceptVisitor(this);
                 NestingLevel--;
@@ -484,7 +568,7 @@ namespace ME3Script.Analysis.Visitors
             else
             {
                 Append(";");
-                Write("");
+                Write();
             }
 
             return true;
@@ -494,12 +578,20 @@ namespace ME3Script.Analysis.Visitors
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
             WritePropertyFlags(node.Flags);
-            string staticarray = node.IsStaticArray ? "[" + node.ArrayLength + "]" : "";
             AppendTypeName(node.VarType);
-            Append($" {node.Name}{staticarray}");
+            Space();
+            Append(node.Name);
+            if (node.IsStaticArray)
+            {
+                Append("[");
+                Append($"{node.ArrayLength}", EF.Number);
+                Append("]");
+            }
             if (node.DefaultParameter != null)
             {
-                Append(" = ");
+                Space();
+                Append("=");
+                Space();
                 node.DefaultParameter.AcceptVisitor(this);
             }
 
@@ -509,7 +601,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(State node)
         {
             // [specifiers] state statename [extends parentstruct] { \n contents \n };
-            Write("");
+            Write();
 
             var specs = new List<string>();
             StateFlags flags = node.Flags;
@@ -523,24 +615,38 @@ namespace ME3Script.Analysis.Visitors
                 specs.Add("auto");
             }
 
-            if (specs.Count > 0)
+            foreach (string spec in specs)
             {
-                Append($"{string.Join(" ", specs)} ");
+                Append(spec, EF.Specifier);
+                Space();
             }
 
-            Append($"{STATE}");
+            Append(STATE, EF.Keyword);
             if (flags.Has(StateFlags.Editable))
             {
                 Append("()");
             }
-            Append($" {node.Name} ");
+            Space();
+            Append(node.Name, EF.State);
+            Space();
             if (node.Parent != null)
-                Append($"{EXTENDS} {node.Parent.Name} ");
+            {
+                Append(EXTENDS);
+                Space();
+                Append(node.Parent.Name, EF.State);
+                Space();
+            }
+
             Write("{");
             NestingLevel++;
 
             if (node.Ignores.Count > 0)
-                Write($"{IGNORES} {string.Join(", ", node.Ignores.Select(x => x.Name))};");
+            {
+                Write(IGNORES);
+                Space();
+                Join(node.Ignores.Select(x => x.Name).ToList(), ", ", EF.Function);
+                Write(";");
+            }
 
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
@@ -548,8 +654,8 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Body.Statements.Count != 0)
             {
-                Write("");
-                Write("// State code");
+                Write();
+                Write("// State code", EF.Comment);
                 node.Body.AcceptVisitor(this);
             }
 
@@ -561,7 +667,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(CodeBody node)
         {
-            foreach (Statement s in node.Statements) //TODO: make this proper
+            foreach (Statement s in node.Statements)
             {
                 if (s.AcceptVisitor(this) && !StringParserBase.SemiColonExceptions.Contains(s.Type))
                 {
@@ -574,7 +680,7 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DefaultPropertiesBlock node)
         {
-            Write(node.Outer is Struct ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES);
+            Write(node.Outer is Struct ? STRUCTDEFAULTPROPERTIES : DEFAULTPROPERTIES, EF.Keyword);
             Write("{");
             NestingLevel++;
             foreach (Statement s in node.Statements)
@@ -589,27 +695,46 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(Subobject node)
         {
-            Write($"Begin Object Class={node.Class} Name={node.Name.Name}");
+            Write("Begin", EF.Keyword);
+            Space();
+            Append("Object", EF.Keyword);
+            Space();
+            Append("Class", EF.Keyword);
+            Append("=");
+            Append(node.Class, EF.TypeName);
+            Space();
+            Append(NAME, EF.Keyword);
+            Append("=");
+            Append(node.Name.Name);
+
             NestingLevel++;
             foreach (Statement s in node.Statements)
             {
                 s.AcceptVisitor(this);
             }
             NestingLevel--;
-            Write("End Object");
+            Write("End", EF.Keyword);
+            Space();
+            Append("Object", EF.Keyword);
             return true;
         }
 
         public bool VisitNode(DoUntilLoop node)
         { 
             // do { /n contents /n } until(condition);
-            Write($"{DO} {{");
+            Write(DO, EF.Keyword);
+            Space();
+            Append("{");
             NestingLevel++;
 
             node.Body.AcceptVisitor(this);
             NestingLevel--;
 
-            Write($"}} {UNTIL} (");
+            Write("}");
+            Space();
+            Append(UNTIL, EF.Keyword);
+            Space();
+            Append("(");
             node.Condition.AcceptVisitor(this);
             Append(")");
 
@@ -619,12 +744,16 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ForLoop node)
         {
             // for (initstatement; loopcondition; updatestatement) { /n contents /n }
-            Write($"{FOR} (");
+            Write(FOR, EF.Keyword);
+            Space();
+            Append("(");
             ForceNoNewLines = true;
             node.Init?.AcceptVisitor(this);
-            Append("; ");
+            Append(";");
+            Space();
             node.Condition?.AcceptVisitor(this);
-            Append("; ");
+            Append(";");
+            Space();
             node.Update?.AcceptVisitor(this);
             Append(")");
             ForceNoNewLines = false;
@@ -641,7 +770,8 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ForEachLoop node)
         {
             // foreach IteratorFunction(parameters) { /n contents /n }
-            Write($"{FOREACH} ");
+            Write(FOREACH, EF.Keyword);
+            Space();
             node.IteratorCall.AcceptVisitor(this);
             Write("{");
 
@@ -656,7 +786,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(WhileLoop node)
         {
             // while (condition) { /n contents /n }
-            Write($"{WHILE} (");
+            Write(WHILE, EF.Keyword);
+            Space();
+            Append("(");
             node.Condition.AcceptVisitor(this);
             Append(")");
             Write("{");
@@ -672,7 +804,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(SwitchStatement node)
         {
             // switch (expression) { /n contents /n }
-            Write($"{SWITCH} (");
+            Write(SWITCH, EF.Keyword);
+            Space();
+            Append("(");
             node.Expression.AcceptVisitor(this);
             Append(")");
             Write("{");
@@ -688,7 +822,8 @@ namespace ME3Script.Analysis.Visitors
         {
             // case expression:
             NestingLevel--; // de-indent this line only
-            Write($"{CASE} ");
+            Write(CASE, EF.Keyword);
+            Space();
             node.Value.AcceptVisitor(this);
             Append(":");
             NestingLevel++;
@@ -699,7 +834,8 @@ namespace ME3Script.Analysis.Visitors
         {
             // default:
             NestingLevel--; // de-indent this line only
-            Write($"{DEFAULT}:");
+            Write(DEFAULT, EF.Keyword);
+            Append(":");
             NestingLevel++;
             return true;
         }
@@ -707,9 +843,11 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(AssignStatement node)
         {
             // reference = expression;
-            Write("");
+            Write();
             node.Target.AcceptVisitor(this);
-            Append(" = ");
+            Space();
+            Append("=", EF.Operator);
+            Space();
             node.Value.AcceptVisitor(this);
 
             return true;
@@ -718,7 +856,8 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(AssertStatement node)
         {
             // assert(condition)
-            Write($"{ASSERT}(");
+            Write(ASSERT, EF.Keyword);
+            Append("(");
             node.Condition.AcceptVisitor(this);
             Append(")");
 
@@ -728,28 +867,29 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(BreakStatement node)
         {
             // break;
-            Write($"{BREAK}");
+            Write(BREAK, EF.Keyword);
             return true;
         }
 
         public bool VisitNode(ContinueStatement node)
         {
             // continue;
-            Write($"{CONTINUE}");
+            Write(CONTINUE, EF.Keyword);
             return true;
         }
 
         public bool VisitNode(StopStatement node)
         {
             // stop;
-            Write($"{STOP}");
+            Write(STOP, EF.Keyword);
             return true;
         }
 
         public bool VisitNode(StateGoto node)
         {
             // goto expression;
-            Write($"{GOTO} ");
+            Write(GOTO, EF.Keyword);
+            Space();
             node.LabelExpression.AcceptVisitor(this);
             return true;
         }
@@ -757,17 +897,19 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(Goto node)
         {
             // goto labelName;
-            Write($"{GOTO} {node.LabelName}");
+            Write(GOTO, EF.Keyword);
+            Space();
+            Append(node.LabelName, EF.Label);
             return true;
         }
 
         public bool VisitNode(ReturnStatement node)
         {
             // return expression;
-            Write(RETURN);
+            Write(RETURN, EF.Keyword);
             if (node.Value != null)
             {
-                Append(" ");
+                Space();
                 node.Value.AcceptVisitor(this);
             }
 
@@ -783,8 +925,57 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(ExpressionOnlyStatement node)
         {
             // expression;
-            Write("");
+            Write();
             node.Value.AcceptVisitor(this);
+            return true;
+        }
+
+        public bool VisitNode(ErrorStatement node)
+        {
+            // expression;
+            Write();
+            if (node.InnerStatement != null)
+            {
+                ForcedFormatType = EF.ERROR;
+                node.InnerStatement.AcceptVisitor(this);
+                ForcedFormatType = null;
+            }
+            else if (node.ErrorTokens != null)
+            {
+                foreach (Token<string> errorToken in node.ErrorTokens)
+                {
+                    Append(errorToken.Value, EF.ERROR);
+                }
+            }
+            else
+            {
+                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                Append(new string('_', len), EF.ERROR);
+            }
+
+            return true;
+        }
+
+        public bool VisitNode(ErrorExpression node)
+        {
+            if (node.InnerExpression != null)
+            {
+                ForcedFormatType = EF.ERROR;
+                node.InnerExpression.AcceptVisitor(this);
+                ForcedFormatType = null;
+            }
+            else if (node.ErrorTokens != null)
+            {
+                foreach (Token<string> errorToken in node.ErrorTokens)
+                {
+                    Append(errorToken.Value, EF.ERROR);
+                }
+            }
+            else
+            {
+                int len = node.EndPos.CharIndex - node.StartPos.CharIndex;
+                Append(new string('_', len), EF.ERROR);
+            }
 
             return true;
         }
@@ -793,15 +984,16 @@ namespace ME3Script.Analysis.Visitors
         {
             // if (condition) { /n contents /n } [else...]
             VisitIf(node);
-
             return true;
         }
 
         private void VisitIf(IfStatement node, bool ifElse = false)
         {
             if (!ifElse)
-                Write(""); // New line only if we're not chaining
-            Append($"{IF} (");
+                Write(); // New line only if we're not chaining
+            Append(IF, EF.Keyword);
+            Space();
+            Append("(");
             node.Condition.AcceptVisitor(this);
             Append(")");
             Write("{");
@@ -813,15 +1005,14 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Else != null && node.Else.Statements.Any())
             {
-                if (node.Else.Statements.Count == 1
-                    && node.Else.Statements[0] is IfStatement)
+                Write(ELSE, EF.Keyword);
+                if (node.Else.Statements.Count == 1 && node.Else.Statements[0] is IfStatement)
                 {
-                    Write($"{ELSE} ");
+                    Space();
                     VisitIf(node.Else.Statements[0] as IfStatement, true);
                 }
                 else
                 {
-                    Write(ELSE);
                     Write("{");
                     NestingLevel++;
                     node.Else.AcceptVisitor(this);
@@ -840,9 +1031,13 @@ namespace ME3Script.Analysis.Visitors
 
             if (scopeNeeded) Append("(");
             node.Condition.AcceptVisitor(this);
-            Append(" ? ");
+            Space();
+            Append("?", EF.Operator);
+            Space();
             node.TrueExpression.AcceptVisitor(this);
-            Append(" : ");
+            Space();
+            Append(":", EF.Operator);
+            Space();
             node.FalseExpression.AcceptVisitor(this);
             if (scopeNeeded) Append(")");
 
@@ -866,7 +1061,9 @@ namespace ME3Script.Analysis.Visitors
             {
                 node.LeftOperand.AcceptVisitor(this);
             }
-            Append($" {node.Operator.OperatorKeyword} ");
+            Space();
+            Append(node.Operator.OperatorKeyword, EF.Operator);
+            Space();
             if (node.Operator.OperatorKeyword switch { "@" => true, "$" => true, "@=" => true, "$=" => true, _ => false } && node.RightOperand is PrimitiveCast rpc && rpc.CastType?.Name == "string")
             {
                 rpc.CastTarget.AcceptVisitor(this);
@@ -885,7 +1082,7 @@ namespace ME3Script.Analysis.Visitors
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
-            Append($"{node.Operator.OperatorKeyword}");
+            Append(node.Operator.OperatorKeyword, EF.Operator);
             node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
@@ -897,7 +1094,7 @@ namespace ME3Script.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
-            Append(node.Operator.OperatorKeyword);
+            Append(node.Operator.OperatorKeyword, EF.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
@@ -912,7 +1109,9 @@ namespace ME3Script.Analysis.Visitors
             if (scopeNeeded)
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
-            Append($" {(node.IsEqual ? "==" : "!=")} ");
+            Space();
+            Append(node.IsEqual ? "==" : "!=", EF.Operator);
+            Space();
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
@@ -930,7 +1129,9 @@ namespace ME3Script.Analysis.Visitors
             if (scopeNeeded)
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
-            Append($" {(node.IsEqual ? "==" : "!=")} ");
+            Space();
+            Append(node.IsEqual ? "==" : "!=", EF.Operator);
+            Space();
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
                 Append(")");
@@ -944,18 +1145,21 @@ namespace ME3Script.Analysis.Visitors
             // new [( [outer [, name [, flags]]] )] class [( template )]
             ExpressionPrescedence.Push(NOPRESCEDENCE);
 
-            Append("new ");
+            Append(NEW, EF.Keyword);
+            Space();
             if (node.OuterObject != null)
             {
                 Append("(");
                 node.OuterObject.AcceptVisitor(this);
                 if (node.ObjectName != null)
                 {
-                    Append(", ");
+                    Append(",");
+                    Space();
                     node.ObjectName.AcceptVisitor(this);
                     if (node.Flags != null)
                     {
-                        Append(", ");
+                        Append(",");
+                        Space();
                         node.Flags.AcceptVisitor(this);
                     }
                 }
@@ -966,7 +1170,8 @@ namespace ME3Script.Analysis.Visitors
 
             if (node.Template != null)
             {
-                Append(" (");
+                Space();
+                Append("(");
                 node.Template.AcceptVisitor(this);
                 Append(")");
             }
@@ -981,23 +1186,30 @@ namespace ME3Script.Analysis.Visitors
             // functionName( parameter1, parameter2.. )
             if (node.Function.IsGlobal)
             {
-                Append($"{GLOBAL}.");
+                Append(GLOBAL);
+                Append(".", EF.Operator);
             }
             else if (node.Function.IsSuper)
             {
                 Append(SUPER);
-                if (node.Function.SuperSpecifier is string s)
+                if (node.Function.SuperSpecifier is {} superSpecifier)
                 {
-                    Append($"({s})");
+                    Append("(");
+                    Append(superSpecifier.Name, EF.TypeName);
+                    Append(")");
                 }
-                Append(".");
+                Append(".", EF.Operator);
             }
-            Append($"{node.Function.Name}(");
+            Append(node.Function.Name, EF.Function);
+            Append("(");
             for (int i = 0; i < node.Arguments.Count; i++)
             {
                 node.Arguments[i]?.AcceptVisitor(this);
                 if (i < node.Arguments.Count - 1)
-                    Append(", ");
+                {
+                    Append(",");
+                    Space();
+                }
             }
 
             Append(")");
@@ -1010,12 +1222,16 @@ namespace ME3Script.Analysis.Visitors
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
-            Append($"{node.DelegateReference.Name}(");
+            Append(node.DelegateReference.Name);
+            Append("(");
             for (int i = 0; i < node.Arguments.Count; i++)
             {
                 node.Arguments[i]?.AcceptVisitor(this);
                 if (i < node.Arguments.Count - 1)
-                    Append(", ");
+                {
+                    Append(",");
+                    Space();
+                }
             }
 
             Append(")");
@@ -1054,9 +1270,10 @@ namespace ME3Script.Analysis.Visitors
             node.OuterSymbol.AcceptVisitor(this);
             if (node.IsClassContext && !(node.InnerSymbol is DefaultReference))
             {
-                Append($".{STATIC}");
+                Append(".", EF.Operator);
+                Append(STATIC, EF.Keyword);
             }
-            Append(".");
+            Append(".", EF.Operator);
             node.InnerSymbol.AcceptVisitor(this);
             return true;
         }
@@ -1065,7 +1282,9 @@ namespace ME3Script.Analysis.Visitors
         {
             if (node.Node is EnumValue ev)
             {
-                Append($"{ev.Enum.Name}.{ev.Name}");
+                Append(ev.Enum.Name, EF.Enum);
+                Append(".", EF.Operator);
+                Append(ev.Name);
                 return true;
             }
             Append(node.Name);
@@ -1075,21 +1294,26 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DefaultReference node)
         {
             // symbolname
-            Append($"{DEFAULT}.{node.Name}");
+            Append(DEFAULT, EF.Keyword);
+            Append(".", EF.Operator);
+            Append(node.Name);
             return true;
         }
 
         public bool VisitNode(DynArrayLength node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{LENGTH}");
+            Append(".", EF.Operator);
+            Append(LENGTH);
             return true;
         }
 
         public bool VisitNode(DynArrayAdd node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{ADD}(");
+            Append(".", EF.Operator);
+            Append(ADD, EF.Function);
+            Append("(");
             node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1098,7 +1322,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayAddItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{ADDITEM}(");
+            Append(".", EF.Operator);
+            Append(ADDITEM, EF.Function);
+            Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1107,9 +1333,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayInsert node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{INSERT}(");
+            Append(".", EF.Operator);
+            Append(INSERT, EF.Function);
+            Append("(");
             node.IndexArg.AcceptVisitor(this);
-            Append(", ");
+            Append(",");
+            Space();
             node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1118,9 +1347,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayInsertItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{INSERTITEM}(");
+            Append(".", EF.Operator);
+            Append(INSERTITEM, EF.Function);
+            Append("(");
             node.IndexArg.AcceptVisitor(this);
-            Append(", ");
+            Append(",");
+            Space();
             node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1129,9 +1361,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayRemove node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{REMOVE}(");
+            Append(".", EF.Operator);
+            Append(REMOVE, EF.Function);
+            Append("(");
             node.IndexArg.AcceptVisitor(this);
-            Append(", ");
+            Append(",");
+            Space();
             node.CountArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1140,7 +1375,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayRemoveItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{REMOVEITEM}(");
+            Append(".", EF.Operator);
+            Append(REMOVEITEM, EF.Function);
+            Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1149,7 +1386,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayFind node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{FIND}(");
+            Append(".", EF.Operator);
+            Append(FIND, EF.Function);
+            Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1158,9 +1397,12 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArrayFindStructMember node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{FIND}(");
+            Append(".", EF.Operator);
+            Append(FIND, EF.Function);
+            Append("(");
             node.MemberNameArg.AcceptVisitor(this);
-            Append(", ");
+            Append(",");
+            Space();
             node.ValueArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1169,7 +1411,9 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(DynArraySort node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append($".{SORT}(");
+            Append(".", EF.Operator);
+            Append(SORT, EF.Function);
+            Append("(");
             node.CompareFuncArg.AcceptVisitor(this);
             Append(")");
             return true;
@@ -1182,7 +1426,8 @@ namespace ME3Script.Analysis.Visitors
             node.ValueArg.AcceptVisitor(this);
             if (node.IndexArg != null)
             {
-                Append(", ");
+                Append(",");
+                Space();
                 node.IndexArg.AcceptVisitor(this);
             }
             Append(")");
@@ -1192,13 +1437,13 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(BooleanLiteral node)
         {
             // true|false
-            Append(node.Value.ToString().ToLower());
+            Append(node.Value ? TRUE : FALSE, EF.Keyword);
             return true;
         }
 
         public bool VisitNode(FloatLiteral node)
         {
-            Append(FormatFloat(node.Value));
+            Append(FormatFloat(node.Value), EF.Number); //TODO: seperate out the minus?
             return true;
         }
 
@@ -1236,7 +1481,7 @@ namespace ME3Script.Analysis.Visitors
         public bool VisitNode(IntegerLiteral node)
         {
             // integervalue
-            Append($"{node.Value}");
+            Append($"{node.Value}", EF.Number);
             return true;
         }
 
@@ -1244,45 +1489,76 @@ namespace ME3Script.Analysis.Visitors
         {
             //commented version is unrealscript compliant, but harder to parse
             //Append(node.Outer is StructLiteral ? "\"{EncodeName(node.Value)}\"" : "'{EncodeName(node.Value)}'");
-            Append($"'{EncodeName(node.Value)}'");
+            Append($"'{EncodeName(node.Value)}'", EF.Name);
             return true;
         }
 
         public bool VisitNode(ObjectLiteral node)
         {
-            Append(node.Class.Name);
+            Append(node.Class.Name, EF.TypeName);
             node.Name.AcceptVisitor(this);
             return true;
         }
 
         public bool VisitNode(NoneLiteral node)
         {
-            Append(NONE);
+            Append(NONE, EF.Keyword);
             return true;
         }
 
         public bool VisitNode(VectorLiteral node)
         {
-            Append($"{VECT}({FormatFloat(node.X)}, {FormatFloat(node.Y)}, {FormatFloat(node.Z)})");
+            Append(VECT, EF.Keyword);
+            Append("(");
+            Append(FormatFloat(node.X), EF.Number);
+            Append(",");
+            Space();
+            Append(FormatFloat(node.Y), EF.Number);
+            Append(",");
+            Space();
+            Append(FormatFloat(node.Z), EF.Number);
+            Append(")");
             return true;
         }
 
         public bool VisitNode(RotatorLiteral node)
         {
-            Append($"{ROT}(0x{node.Pitch:X8}, 0x{node.Yaw:X8}, 0x{node.Roll:X8})");
+            Append(VECT, EF.Keyword);
+            Append("(");
+            Append(FormatRotator(node.Pitch), EF.Number);
+            Append(",");
+            Space();
+            Append(FormatRotator(node.Yaw), EF.Number);
+            Append(",");
+            Space();
+            Append(FormatRotator(node.Roll), EF.Number);
+            Append(")");
             return true;
+
+            static string FormatRotator(int n)
+            {
+                return n.ToString();
+                //string s = "";
+                //if (n < 0)
+                //{
+                //    s += '-';
+                //}
+
+                //s += $"0x{Math.Abs(n):X8}";
+                //return s;
+            }
         }
 
         public bool VisitNode(StringLiteral node)
         {
             // "string"
-            Append($"\"{EncodeString(node.Value)}\"");
+            Append($"\"{EncodeString(node.Value)}\"", EF.String);
             return true;
         }
 
         public bool VisitNode(StringRefLiteral node)
         {
-            Append($"${node.Value}");
+            Append($"${node.Value}", EF.Number);
             return true;
         }
         public bool VisitNode(StructLiteral node)
@@ -1294,7 +1570,7 @@ namespace ME3Script.Analysis.Visitors
             if (multiLine)
             {
                 Append("{(");
-                ForcedAlignment = Lines.Last().Length - NestingLevel * 4;
+                ForceAlignment();
             }
             else
             {
@@ -1305,7 +1581,8 @@ namespace ME3Script.Analysis.Visitors
             {
                 if (i > 0)
                 {
-                    Append(", ");
+                    Append(",");
+                    Space();
                 }
                 node.Statements[i].AcceptVisitor(this);
             }
@@ -1326,14 +1603,14 @@ namespace ME3Script.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayLiteral node)
         {
-            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral || expr is DynamicArrayLiteral));
+            bool multiLine = !ForceNoNewLines && (node.Values.Any(expr => expr is StructLiteral || expr is DynamicArrayLiteral) || node.Values.Count > 7);
 
             bool oldForceNoNewLines = ForceNoNewLines;
             int oldForcedAlignment = ForcedAlignment;
             Append("(");
             if (multiLine)
             {
-                ForcedAlignment = Lines.Last().Length - NestingLevel * 4;
+                ForceAlignment();
             }
             else
             {
@@ -1343,10 +1620,11 @@ namespace ME3Script.Analysis.Visitors
             {
                 if (i > 0)
                 {
-                    Append(", ");
+                    Append(",");
+                    Space();
                     if (multiLine)
                     {
-                        Write("");
+                        Write();
                     }
                 }
                 node.Values[i].AcceptVisitor(this);
@@ -1370,7 +1648,8 @@ namespace ME3Script.Analysis.Visitors
             // Label
             var temp = NestingLevel;
             NestingLevel = 0;
-            Write(node.Name + ":");
+            Write(node.Name, EF.Label);
+            Append(":");
             NestingLevel = temp;
 
             return true;
@@ -1560,9 +1839,10 @@ namespace ME3Script.Analysis.Visitors
                 specs.Add("crosslevelpassive");
             }
 
-            if (specs.Any())
+            foreach (string spec in specs)
             {
-                Append($"{string.Join(" ", specs)} ");
+                Append(spec, EF.Specifier);
+                Space();
             }
         }
 
@@ -1619,11 +1899,191 @@ namespace ME3Script.Analysis.Visitors
             return sb.ToString();
         }
 
+        private void Join(List<string> items, string seperator, EF formatType = EF.None)
+        {
+            Append(items[0], formatType);
+            for (int i = 1; i < items.Count; i++)
+            {
+                Append(seperator);
+                Append(items[i], formatType);
+            }
+        }
+
         #region Unused
 
         public bool VisitNode(VariableIdentifier node)
         { throw new NotImplementedException(); }
 
         #endregion
+    }
+    public class CodeBuilderVisitor<TFormatter> : CodeBuilderVisitor<TFormatter, string> where TFormatter : class, ICodeFormatter<string>, new()
+    { }
+
+    public class CodeBuilderVisitor : CodeBuilderVisitor<PlainTextCodeFormatter> {}
+
+    public interface ICodeFormatter<out TOutput>
+    {
+        TOutput GetOutput();
+
+        void Write(string text, EF formatType);
+
+        void Append(string text, EF formatType);
+
+        void Space();
+
+        void ForceAlignment();
+
+        int NestingLevel { get; set; }
+        int ForcedAlignment { get; set; }
+        bool ForceNoNewLines { get; set; }
+    }
+
+    public class PlainTextCodeFormatter : ICodeFormatter<string>
+    {
+        public int NestingLevel { get; set; }
+        public int ForcedAlignment { get; set; }
+        public bool ForceNoNewLines { get; set; }
+
+        protected readonly List<string> Lines = new();
+        protected string currentLine;
+
+        public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
+
+        public void Write(string text, EF _)
+        {
+            if (!ForceNoNewLines)
+            {
+                if (currentLine != null)
+                {
+                    Lines.Add(currentLine);
+                }
+
+                currentLine = new string(' ', ForcedAlignment + NestingLevel * 4);
+            }
+            Append(text, _);
+        }
+
+        public virtual void Append(string text, EF _)
+        {
+            currentLine += text;
+        }
+
+        public void Space() => Append(" ", EF.None);
+
+        public void ForceAlignment()
+        {
+            ForcedAlignment = currentLine.Length - NestingLevel * 4;
+        }
+    }
+
+    public class HTMLCodeFormatter : ICodeFormatter<string>
+    {
+        public int NestingLevel { get; set; }
+        public int ForcedAlignment { get; set; }
+        public bool ForceNoNewLines { get; set; }
+
+        private readonly List<string> Lines = new List<string>();
+        private string currentLine;
+        private int lineDisplayLength;
+
+        public string GetOutput()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html>");
+            sb.AppendLine("    <head>");
+            sb.AppendLine("        <style>");
+            sb.Append(css());
+            sb.AppendLine("        </style>");
+            sb.AppendLine("    </head>");
+            sb.Append("<body><pre><code>");
+            foreach (string line in Lines)
+            {
+                sb.AppendLine(line);
+            }
+            sb.Append(currentLine);
+            sb.AppendLine("</code></pre></body>");
+            sb.AppendLine("</html>");
+            return sb.ToString();
+        }
+
+        private static string css()
+        {
+            return @"
+        html, body, pre { background-color: #1E1E1E;}
+        .EF-None, code { color: #DBDBDB; }
+        .EF-Keyword { color: #569BBF; }
+        .EF-Specifier { color: #569BBF; }
+        .EF-TypeName { color: #4EC8AF; }
+        .EF-String { color: #D59C7C; }
+        .EF-Name { color: #D59C7C; }
+        .EF-Number { color: #B1CDA7; }
+        .EF-Enum { color: #B7D6A2; }
+        .EF-Comment { color: #57A54A; }
+        .EF-ERROR { color: #FF0000; }
+        .EF-Function { color: #DBDBDB; }
+        .EF-State { color: #DBDBDB; }
+        .EF-Label { color: #DBDBDB; }
+        .EF-Operator { color: #B3B3B3; }
+.
+";
+        }
+
+        public void Write(string text, EF formatType)
+        {
+            if (!ForceNoNewLines)
+            {
+                if (currentLine != null)
+                {
+                    Lines.Add(currentLine);
+                }
+
+                currentLine = new string(' ', ForcedAlignment + NestingLevel * 4);
+                lineDisplayLength = ForcedAlignment;
+            }
+            Append(text, formatType);
+        }
+
+        public void Append(string text, EF formatType)
+        {
+            lineDisplayLength += text.Length;
+            switch (formatType)
+            {
+                case EF.None:
+                    currentLine += WebUtility.HtmlEncode(text);
+                    break;
+                case EF.Keyword:
+                case EF.Specifier:
+                case EF.TypeName:
+                case EF.String:
+                case EF.Name:
+                case EF.Number:
+                case EF.Enum:
+                case EF.Comment:
+                case EF.ERROR:
+                case EF.Function:
+                case EF.State:
+                case EF.Label:
+                case EF.Operator:
+                default:
+                    Span(text, formatType);
+                    break;
+            }
+        }
+
+        private void Span(string text, EF formatType)
+        {
+            currentLine += $"<span class=\"{nameof(EF)}-{formatType}\">{WebUtility.HtmlEncode(text)}</span>";
+        }
+
+        public void Space()
+        {
+            currentLine += " ";
+            lineDisplayLength += 1;
+        }
+
+        public void ForceAlignment()
+        {
+            ForcedAlignment = lineDisplayLength;
+        }
     }
 }

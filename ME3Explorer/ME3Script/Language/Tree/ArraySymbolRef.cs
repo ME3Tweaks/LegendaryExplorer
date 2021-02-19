@@ -24,7 +24,7 @@ namespace ME3Script.Language.Tree
             {
                  DynamicArrayType dynArrType => dynArrType.ElementType,
                  StaticArrayType staticArrayType => staticArrayType.ElementType,
-                _ => throw new ParseError("Expected an array!")
+                _ => throw new ParseException("Expected an array!")
             };
         }
 

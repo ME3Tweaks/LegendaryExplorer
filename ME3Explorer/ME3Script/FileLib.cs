@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ME3Explorer;
 using ME3Explorer.ME3Script;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
@@ -77,7 +78,7 @@ namespace ME3Script
                 }
                 return StandardLibrary.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
-            catch (Exception e)
+            catch (Exception e) when(!App.IsDebug)
             {
                 return false;
             }

@@ -495,7 +495,7 @@ namespace ME3Script.Decompiling
                         {       // TODO: weird, research how to deal with this
                             var builder = new CodeBuilderVisitor(); // what a wonderful hack, TODO.
                             value.AcceptVisitor(builder);
-                            var comment = new SymbolReference(null, "// Orphaned Default Parm: " + builder.GetCodeString(), null, null);
+                            var comment = new SymbolReference(null, "// Orphaned Default Parm: " + builder.GetOutput(), null, null);
                             var statement = new ExpressionOnlyStatement(comment, null, null);
                             StatementLocations.Add(StartPositions.Pop(), statement);
                             statements.Add(statement);
