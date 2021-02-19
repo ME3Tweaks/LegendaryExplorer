@@ -45,6 +45,10 @@ namespace ME3Script.Language.Tree
         public ErrorExpression(SourcePosition start, SourcePosition end, params Token<string>[] tokens) : base(ASTNodeType.INVALID, start, end)
         {
             ErrorTokens = tokens;
+            foreach (Token<string> token in tokens)
+            {
+                token.SyntaxType = EF.ERROR;
+            }
         }
 
         public override VariableType ResolveType()

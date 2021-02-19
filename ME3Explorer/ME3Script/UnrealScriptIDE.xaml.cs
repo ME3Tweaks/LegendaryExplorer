@@ -22,6 +22,7 @@ using ME3Script;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Language.Tree;
+using ME3Script.Lexing.Tokenizing;
 using ME3Script.Parsing;
 
 namespace ME3Explorer.ME3Script.IDE
@@ -36,7 +37,11 @@ namespace ME3Explorer.ME3Script.IDE
             get => Document?.Text;
             set => Dispatcher.Invoke(() =>
             {
-                textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
+                if (Document is not null)
+                {
+                    Document.TextChanged -= TextAreaOnTextEntered;
+                }
+
                 if (foldingManager != null)
                 {
                     FoldingManager.Uninstall(foldingManager);
@@ -156,7 +161,10 @@ namespace ME3Explorer.ME3Script.IDE
                 progressBarTimer.Tick -= ProgressBarTimer_Tick;
             }
 
-            textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
+            if (Document is not null)
+            {
+                Document.TextChanged -= TextAreaOnTextEntered;
+            }
         }
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
@@ -423,11 +431,10 @@ namespace ME3Explorer.ME3Script.IDE
                         int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
                         var segments = new TextSegmentCollection<TextSegment>
                         {
-                            new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) },
-                            new TextSegment { StartOffset = Document.GetOffset(Document.LineCount, 0), Length = 1}
+                            new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }
                         };
                         textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
-                        textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
+                        Document.TextChanged += TextAreaOnTextEntered;
                     }
                     else
                     {
@@ -442,7 +449,7 @@ namespace ME3Explorer.ME3Script.IDE
             }
         }
 
-        private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
+        private void TextAreaOnTextEntered(object sender, EventArgs e)
         {
             (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
             try
@@ -452,13 +459,48 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (ast is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        ast = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
-                    }
+                        TokenStream<string> tokens;
+                        (ast, tokens) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
 
-                    var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
-                    ast.AcceptVisitor(codeBuilder);
-                    (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
-                    textEditor.SyntaxHighlighting = syntaxInfo;
+                        var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
+                        ast.AcceptVisitor(codeBuilder);
+                        (_, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
+
+                        if (tokens.Any())
+                        {
+                            int firstLine = tokens.First().StartPos.Line - 1;
+                            int lastLine = tokens.Last().EndPos.Line - 1;
+                            while (lastLine >= firstLine)
+                            {
+                                syntaxInfo[lastLine].Clear();
+                                lastLine--;
+                            }
+
+                            int currentLine = firstLine;
+                            int currentPos = 0;
+                            foreach (Token<string> token in tokens)
+                            {
+                                int tokLine = token.StartPos.Line - 1;
+                                if (tokLine > currentLine)
+                                {
+                                    currentLine = tokLine;
+                                    currentPos = 0;
+                                }
+
+                                int tokStart = token.StartPos.Column;
+                                int tokEnd = token.EndPos.Column;
+                                if (tokStart > currentPos)
+                                {
+                                    syntaxInfo[currentLine].Add(new SyntaxSpan(EF.None, tokStart - currentPos));
+                                }
+
+                                syntaxInfo[currentLine].Add(new SyntaxSpan(token.SyntaxType, tokEnd - tokStart));
+                                currentPos = tokEnd;
+                            }
+                        }
+
+                        textEditor.SyntaxHighlighting = syntaxInfo;
+                    }
                 }
             }
             catch (ParseException)
@@ -484,7 +526,7 @@ namespace ME3Explorer.ME3Script.IDE
                 {
                     if (RootNode is Function func && FullyInitialized && CurrentLoadedExport.Parent is ExportEntry parentExport)
                     {
-                        RootNode = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
+                        (RootNode, _) = ME3ScriptCompiler.CompileFunctionBodyAST(parentExport, ScriptText, func, log, CurrentFileLib);
                     }
                     var codeBuilder = new CodeBuilderVisitor<SyntaxInfoCodeFormatter, (string, SyntaxInfo)>();
                     RootNode.AcceptVisitor(codeBuilder);
@@ -508,7 +550,7 @@ namespace ME3Explorer.ME3Script.IDE
         }
 
         private FoldingManager foldingManager;
-        private readonly BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
+        private readonly BraceFoldingStrategy foldingStrategy = new();
 
         #endregion
     }

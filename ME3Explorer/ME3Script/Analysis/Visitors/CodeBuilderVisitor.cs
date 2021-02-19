@@ -240,11 +240,12 @@ namespace ME3Script.Analysis.Visitors
                 Append($"{node.ArrayLength}", EF.Number);
                 Append("]");
             }
-            
+            Append(";");
+
             return true;
         }
 
-        void AppendTypeName(VariableType node)
+        public void AppendTypeName(VariableType node)
         {
             switch (node)
             {
@@ -1943,7 +1944,7 @@ namespace ME3Script.Analysis.Visitors
         public int ForcedAlignment { get; set; }
         public bool ForceNoNewLines { get; set; }
 
-        protected readonly List<string> Lines = new List<string>();
+        protected readonly List<string> Lines = new();
         protected string currentLine;
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));

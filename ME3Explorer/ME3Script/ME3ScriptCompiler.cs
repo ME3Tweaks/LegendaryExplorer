@@ -74,7 +74,7 @@ namespace ME3Script
             return astNode;
         }
 
-        public static Function CompileFunctionBodyAST(ExportEntry parentExport, string scriptText, Function func, MessageLog log, FileLib lib = null)
+        public static (Function, TokenStream<string>) CompileFunctionBodyAST(ExportEntry parentExport, string scriptText, Function func, MessageLog log, FileLib lib = null)
         {
             var symbols = lib?.GetSymbolTable() ?? StandardLibrary.GetSymbolTable();
             symbols.RevertToObjectStack();
@@ -97,8 +97,8 @@ namespace ME3Script
                     symbols.PushScope(containingClass.Name);
                 }
 
-                CodeBodyParser.ParseFunction(originalFunction, scriptText, symbols, log);
-                return originalFunction;
+                var tokens = CodeBodyParser.ParseFunction(originalFunction, scriptText, symbols, log);
+                return (originalFunction, tokens);
             }
             //in state
             if (parentExport.Parent is ExportEntry classExport && classExport.IsClass && symbols.TryGetType(classExport.ObjectNameString, out Class cls)
@@ -117,11 +117,11 @@ namespace ME3Script
                 symbols.PushScope(cls.Name);
                 symbols.PushScope(state.Name);
 
-                CodeBodyParser.ParseFunction(canonicalFunction, scriptText, symbols, log);
-                return canonicalFunction;
+                var tokens = CodeBodyParser.ParseFunction(canonicalFunction, scriptText, symbols, log);
+                return (canonicalFunction, tokens);
             }
 
-            return null;
+            return (null, null);
         }
 
         public static (ASTNode ast, MessageLog log) CompileAST(string script, string type)
@@ -151,7 +151,12 @@ namespace ME3Script
                 {
                     try
                     {
-                        astNode = CompileFunctionBodyAST(parent, scriptText, func, log, lib);
+                        (astNode, _) = CompileFunctionBodyAST(parent, scriptText, func, log, lib);
+                        if (log.AllErrors.Count > 0)
+                        {
+                            log.LogError("Parse failed!");
+                            return (astNode, log);
+                        }
                     }
                     catch (ParseException)
                     {
@@ -180,7 +185,7 @@ namespace ME3Script
                             }
                             return (astNode, log);
                         }
-                        catch (Exception exception)
+                        catch (Exception exception) when(!App.IsDebug)
                         {
                             log.LogError($"Compilation failed! Exception: {exception}");
                             return (astNode, log);

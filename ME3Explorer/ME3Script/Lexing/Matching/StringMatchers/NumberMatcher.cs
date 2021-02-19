@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ME3ExplorerCore.Helpers;
+using ME3Script.Analysis.Visitors;
 
 namespace ME3Script.Lexing.Matching.StringMatchers
 {
@@ -97,7 +98,7 @@ namespace ME3Script.Lexing.Matching.StringMatchers
             }
             streamPos = streamPos.GetModifiedPosition(0, data.CurrentIndex - start.CharIndex, data.CurrentIndex - start.CharIndex);
             SourcePosition end = new SourcePosition(streamPos);
-            return new Token<string>(type, value, start, end);
+            return new Token<string>(type, value, start, end) {SyntaxType = EF.Number};
         }
 
         private static string SubNumber(TokenizableDataStream<string> data, Regex regex)

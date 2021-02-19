@@ -1213,6 +1213,7 @@ namespace ME3Script.Compiling
             return true;
         }
 
+        //TODO: remove? alreaty done in parser. doing again should have no effect
         static Expression AddConversion(VariableType destType, Expression expr)
         {
 

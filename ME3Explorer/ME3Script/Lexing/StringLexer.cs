@@ -4,6 +4,7 @@ using ME3Script.Lexing.Matching.StringMatchers;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Utilities;
 using System.Collections.Generic;
+using ME3Script.Analysis.Visitors;
 
 namespace ME3Script.Lexing
 {
@@ -16,7 +17,6 @@ namespace ME3Script.Lexing
             : base(new StringTokenizer(code))
         {
             delimiters ??= GlobalLists.Delimiters;
-            //keywords ??= GlobalLists.Keywords;
             Log = log ?? new MessageLog();
 
             TokenMatchers = new List<ITokenMatcher<string>>();
@@ -26,7 +26,6 @@ namespace ME3Script.Lexing
             TokenMatchers.Add(new NameLiteralMatcher());
             TokenMatchers.Add(new StringRefLiteralMatcher());
             TokenMatchers.AddRange(delimiters);
-            //TokenMatchers.AddRange(keywords);
             TokenMatchers.Add(new WhiteSpaceMatcher());
             TokenMatchers.Add(new NumberMatcher(delimiters));
             TokenMatchers.Add(new WordMatcher(delimiters));
@@ -57,7 +56,7 @@ namespace ME3Script.Lexing
                 Log.LogError("Could not lex '" + Data.CurrentItem + "'",
                     StreamPosition, StreamPosition.GetModifiedPosition(0, 1, 1));
                 Data.Advance();
-                return new Token<string>(TokenType.INVALID);
+                return new Token<string>(TokenType.INVALID) { SyntaxType = EF.ERROR };
             }
             return result;
         }
