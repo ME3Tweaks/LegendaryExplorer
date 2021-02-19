@@ -59,8 +59,6 @@ namespace ME3Explorer.ME3Script.IDE
             set => SetProperty(ref _rootNode, value);
         }
 
-        private FileLib CurrentFileLib;
-
         public UnrealScriptIDE() : base("UnrealScript IDE")
         {
             InitializeComponent();
@@ -89,7 +87,7 @@ namespace ME3Explorer.ME3Script.IDE
             if (s != null)
             {
                 using var reader = new XmlTextReader(s);
-                HighlightingManager.Instance.RegisterHighlighting("Unrealscript", new []{".uc"}, HighlightingLoader.Load(reader, HighlightingManager.Instance));
+                HighlightingManager.Instance.RegisterHighlighting("Unrealscript", new[] { ".uc" }, HighlightingLoader.Load(reader, HighlightingManager.Instance));
             }
         }
 
@@ -273,7 +271,7 @@ namespace ME3Explorer.ME3Script.IDE
                     MessageBox.Show("Could not build standard lib! One or more of these files in your ME3 installation is missing or corrupted!\n" +
                                     "Core.pcc, Engine.pcc, GameFramework.pcc, GFxUI.pcc, WwiseAudio.pcc, SFXOnlineFoundation.pcc, SFXGame.pcc\n\n" +
                                     "Functionality will be limited to script decompilation.");
-                    
+
                 }
                 else
                 {
@@ -294,8 +292,8 @@ namespace ME3Explorer.ME3Script.IDE
             }
         }
 
-        public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game == MEGame.ME3 && (exportEntry.ClassName switch
+        public bool IsStandardLibFile() => Pcc != null &&
+                                           Path.GetFileName(Pcc.FilePath) switch
                                            {
                                                "Core.pcc" => true,
                                                "Engine.pcc" => true,
@@ -309,7 +307,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private void UnloadFileLib()
         {
-            if (CurrentFileLib is {})
+            if (CurrentFileLib is { })
             {
                 CurrentFileLib.Dispose();
                 CurrentFileLib.InitializationStatusChange -= CurrentFileLibOnInitialized;
@@ -390,7 +388,7 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 if (CurrentLoadedExport.ClassName != "Function")
                 {
-                    outputListBox.ItemsSource = new[] {$"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update."};
+                    outputListBox.ItemsSource = new[] { $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
                     return;
                 }
                 (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
