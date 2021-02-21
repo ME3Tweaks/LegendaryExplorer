@@ -107,7 +107,7 @@ namespace ME3ExplorerCore.Packages
                 // Cannot add a null name!
                 throw new ArgumentException(nameof(newName), new Exception("Cannot replace a name with a null value!"));
             }
-            if (IsName(idx) && names[idx].Equals(newName, StringComparison.InvariantCultureIgnoreCase))
+            if (IsName(idx) && !names[idx].Equals(newName, StringComparison.InvariantCultureIgnoreCase))
             {
                 nameLookupTable.Remove(names[idx]);
                 names[idx] = newName;
