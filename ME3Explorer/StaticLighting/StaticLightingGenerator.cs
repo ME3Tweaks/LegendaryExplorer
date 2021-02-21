@@ -133,11 +133,12 @@ namespace ME3Explorer.StaticLighting
                 }
 
                 var relinkMapping = new OrderedMultiValueDictionary<IEntry, IEntry>(relinkMap);
+                List<EntryStringPair> relinkReport = new List<EntryStringPair>();
                 foreach (ExportEntry stmExport in staticMeshes)
                 {
                     if (relinkMap.TryGetValue(stmExport, out IEntry destEnt) && destEnt is ExportEntry destExp)
                     {
-                        Relinker.Relink(stmExport, destExp, relinkMapping);
+                        Relinker.Relink(stmExport, destExp, relinkMapping, relinkReport);
                     }
                 }
             }

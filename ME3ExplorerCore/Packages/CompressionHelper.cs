@@ -680,8 +680,9 @@ namespace ME3ExplorerCore.Packages
                         default:
                             throw new Exception("Unknown compression type for this package.");
                     }
-                    for (int j = 0; j < b.uncompressedsize; j++)
-                        c.Uncompressed[outpos + j] = dataout[j];
+                    Buffer.BlockCopy(dataout, 0, c.Uncompressed, outpos, b.uncompressedsize);
+                    //for (int j = 0; j < b.uncompressedsize; j++)
+                    //    c.Uncompressed[outpos + j] = dataout[j];
                     outpos += b.uncompressedsize;
                     blocknum++;
                 }

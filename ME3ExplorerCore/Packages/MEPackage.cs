@@ -219,6 +219,9 @@ namespace ME3ExplorerCore.Packages
         /// <param name="filePath"></param>
         private MEPackage(MEGame game, string filePath = null) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
+            names = new List<string>();
+            imports = new List<ImportEntry>();
+            exports = new List<ExportEntry>();
             //new Package
             Game = game;
             //reasonable defaults?
@@ -475,6 +478,7 @@ namespace ME3ExplorerCore.Packages
             packageReader = new EndianReader(inStream) { Endian = endian };
             //read namelist
             inStream.JumpTo(NameOffset);
+            names = new List<string>(NameCount);
             for (int i = 0; i < NameCount; i++)
             {
                 var name = packageReader.ReadUnrealString();
@@ -488,19 +492,23 @@ namespace ME3ExplorerCore.Packages
 
             //read importTable
             inStream.JumpTo(ImportOffset);
+            imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry imp = new ImportEntry(this, packageReader) { Index = i };
-                imp.PropertyChanged += importChanged;
+                if (MEPackageHandler.GlobalSharedCacheEnabled)
+                    imp.PropertyChanged += importChanged; // If packages are not shared there is no point to attaching this
                 imports.Add(imp);
             }
 
             //read exportTable (ExportEntry constructor reads export data)
             inStream.JumpTo(ExportOffset);
+            exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
                 ExportEntry e = new ExportEntry(this, packageReader) { Index = i };
-                e.PropertyChanged += exportChanged;
+                if (MEPackageHandler.GlobalSharedCacheEnabled)
+                    e.PropertyChanged += exportChanged; // If packages are not shared there is no point to attaching this
                 exports.Add(e);
                 if (platformNeedsResolved && e.ClassName == "ShaderCache")
                 {

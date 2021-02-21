@@ -106,6 +106,9 @@ namespace ME3ExplorerCore.Packages
         /// <param name="filePath">full path + file name of desired udk file.</param>
         private UDKPackage(string filePath) : base(filePath != null ? Path.GetFullPath(filePath) : null)
         {
+            names = new List<string>();
+            imports = new List<ImportEntry>();
+            exports = new List<ExportEntry>();
             folderName = "None";
             engineVersion = 12791;
             //reasonable defaults?
@@ -189,6 +192,7 @@ namespace ME3ExplorerCore.Packages
                                                      //through to methods that can use endianness
 
             inStream.JumpTo(NameOffset);
+            names = new List<string>(NameCount);
             for (int i = 0; i < NameCount; i++)
             {
                 var name = inStream.ReadUnrealString();
@@ -198,6 +202,7 @@ namespace ME3ExplorerCore.Packages
             }
 
             inStream.JumpTo(ImportOffset);
+            imports = new List<ImportEntry>(ImportCount);
             for (int i = 0; i < ImportCount; i++)
             {
                 ImportEntry imp = new ImportEntry(this, reader) { Index = i };
@@ -207,6 +212,7 @@ namespace ME3ExplorerCore.Packages
 
             //read exportTable (ExportEntry constructor reads export data)
             inStream.JumpTo(ExportOffset);
+            exports = new List<ExportEntry>(ExportCount);
             for (int i = 0; i < ExportCount; i++)
             {
                 ExportEntry e = new ExportEntry(this, reader) { Index = i };

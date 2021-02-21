@@ -296,11 +296,8 @@ namespace ME3Explorer
 
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
                         {
-                            var data = ee.Data;
-                            //This is kind of a hack. 
-                            UnrealFlags.EPropertyFlags objectFlags =
-                                (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(data, 0x18, ee.FileRef.Endian);
-                            if ((objectFlags & UnrealFlags.EPropertyFlags.Config) != 0)
+                            var objectFlags = ee.GetPropertyFlags();
+                            if (objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
                             {
                                 if (_subtext != null)
                                 {

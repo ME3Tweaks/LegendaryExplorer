@@ -101,7 +101,8 @@ namespace ME3ExplorerCore.Packages
                     pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
                 }
                 openPackages[pathToFile] = package;
-            } else
+            }
+            else
             {
                 Debug.WriteLine("Global Package Cache is disabled, cannot force packages into cache");
             }
@@ -145,20 +146,35 @@ namespace ME3ExplorerCore.Packages
             IMEPackage package;
             if (forceLoadFromDisk || !GlobalSharedCacheEnabled || quickLoad) //Quick loaded packages cannot be cached
             {
-                using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                if (quickLoad)
                 {
-                    package = LoadPackage(fs, pathToFile, false, quickLoad);
+                    // Quickload: Don't read entire file.
+                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                    {
+                        package = LoadPackage(fs, pathToFile, false, quickLoad);
+                    }
                 }
+                else
+                {
+                    // Reading and operating on memory is faster than seeking on disk
+                    var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                    return LoadPackage(ms, pathToFile, true);
+                }
+
             }
             else
             {
                 package = openPackages.GetOrAdd(pathToFile, fpath =>
                 {
+                    // Performance test.
+                    var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                    return LoadPackage(ms, fpath, true);
+                    /*
                     using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                     {
                         Debug.WriteLine($"Adding package to package cache (File): {fpath}");
                         return LoadPackage(fs, fpath, true);
-                    }
+                    }*/
                 });
             }
 

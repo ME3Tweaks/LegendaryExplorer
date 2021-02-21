@@ -11,7 +11,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache pc = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
@@ -21,7 +21,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, pc);
+            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc);
             issues.AddRange(unresolvableImports);
 
             // Imports are resolvable. We should port in level imports then port in the rest
@@ -32,21 +32,27 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
                 {
                     // port it in
-                    Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
+                    //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                     var parent = PortParents(mapping.Value, targetPackage);
                     var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, out _);
                     issues.AddRange(relinkResults1);
                 }
                 else
                 {
-                    Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
+                    //Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
                 }
             }
 
             // Import the original item now
             var lParent = PortParents(sourceExport, targetPackage);
-            var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out var newEntry);
-            issues.AddRange(relinkResults2);
+
+            // Test the entry was not ported in already, such as from a Parent reference
+            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
+            if (newEntry == null)
+            {
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, out newEntry);
+                issues.AddRange(relinkResults2);
+            }
 
             if (newCache)
             {
@@ -167,7 +173,15 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         }
 
-        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache cache)
+        /// <summary>
+        /// Attempts to resolve all imports in a level file. 
+        /// </summary>
+        /// <param name="sourceExport"></param>
+        /// <param name="resolutionMap"></param>
+        /// <param name="globalCache">Global cache that will not have it's contents modified. Should contain things like SFXGame, Startup, etc.</param>
+        /// <param name="cache">Cache for the local operation, such as the localization files, the upstream level files. This cache will be modified as packages are opened</param>
+        /// <returns></returns>
+        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache)
         {
             List<EntryStringPair> unresolvableImports = new List<EntryStringPair>();
             var references = EntryImporter.GetAllReferencesOfExport(sourceExport);
@@ -180,9 +194,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     continue; // A lot of these are not resolvable cause they're native
                 if (import.Game == MEGame.ME2 && instancedFullPath == "BioVFX_Z_TEXTURES.Generic.Glass_Shards_Norm")
                     continue; // This texture for some reason is not stored in package files... not sure where, or how it is loaded into memory
-                if (UnrealObjectInfo.IsAKnownNativeClass(import))
+                if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
-                var resolved = EntryImporter.ResolveImport(import, cache);
+                var resolved = EntryImporter.ResolveImport(import, globalCache,cache);
                 if (resolved == null)
                 {
                     unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} could not be resolved - cannot be safely used"));
@@ -195,7 +209,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
 
                     resolutionMap[import] = resolved;
-                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, cache);
+                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache);
                 }
             }
 

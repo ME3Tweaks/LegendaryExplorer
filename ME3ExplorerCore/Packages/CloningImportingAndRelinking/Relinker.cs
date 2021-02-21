@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.Collections.ObjectModel;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -28,28 +29,50 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //This is a list because otherwise we would get a concurrent modification exception.
             //Since we only enumerate exports and append imports to this list we will not need to worry about recursive links
             //I am sure this won't come back to be a pain for me.
-            var crossPCCObjectMappingList = new OrderedMultiValueDictionary<IEntry, IEntry>(crossPccObjectMap);
 
+            // Used for quick mapping lookups
+            var crossPackageMap = new ListenableDictionary<IEntry, IEntry>(crossPccObjectMap);
+            
+            // Used to perform a full relink
+            var mappingList = crossPackageMap.ToList();
+
+            crossPackageMap.OnDictionaryChanged += (sender, args) =>
+            {
+                if (args.Type == DictChangeType.AddItem)
+                {
+                    mappingList.Add(new KeyValuePair<IEntry, IEntry>(args.Key, args.Value));
+                    //Debug.WriteLine($"Adding relink mapping {args.Key.ObjectName} {args.Key.UIndex} -> {args.Value.UIndex}");
+                }
+            };
             //can't be a foreach since we might append things to the list
             // ReSharper disable once ForCanBeConvertedToForeach
-            for (int i = 0; i < crossPCCObjectMappingList.Count; i++)
-            {
-                (IEntry src, IEntry dest) = crossPCCObjectMappingList[i];
-                if (src is ExportEntry sourceExport && dest is ExportEntry relinkingExport)
-                {
-                    relinkReport.AddRange(Relink(sourceExport, relinkingExport, crossPCCObjectMappingList, importExportDependencies));
-                }
-            }
 
-            crossPccObjectMap.Clear();
-            crossPccObjectMap.AddRange(crossPCCObjectMappingList);
+            // Used for forcing further relinks
+            int i = 0;
+            while (i < mappingList.Count)
+            {
+                var entryMap = mappingList[i];
+                if (entryMap.Key is ExportEntry sourceExport && entryMap.Value is ExportEntry relinkingExport)
+                {
+                    Relink(sourceExport, relinkingExport, crossPackageMap, relinkReport, importExportDependencies);
+                }
+                i++;
+
+                // Have we reached the end of the current pass? If so, recreate the list. This means we only have to generate the list
+                // a few times instead of thousands
+                // If we are at end pass this won't make a difference
+                //if (i == mappingList.Count && crossPackageMap.Count != mappingList.Count)
+                //{
+                //    mappingList = crossPackageMap.ToList();
+                //}
+            }
+            crossPccObjectMap.ReplaceAll(crossPccObjectMap);
             return relinkReport;
         }
 
-        public static List<EntryStringPair> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList,
-            bool importExportDependencies = false)
+        public static void Relink(ExportEntry sourceExport, ExportEntry relinkingExport, IDictionary<IEntry, IEntry> crossPCCObjectMappingList,
+            List<EntryStringPair> relinkReport, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<EntryStringPair>();
             IMEPackage sourcePcc = sourceExport.FileRef;
 
             byte[] prePropBinary = relinkingExport.GetPrePropBinary();
@@ -67,7 +90,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    relinkFailedReport.Add(relinkResult);
+                    relinkReport.Add(relinkResult);
                 }
 
                 uIndex = BitConverter.ToInt32(prePropBinary, 4);
@@ -79,10 +102,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    relinkFailedReport.Add(relinkResult);
+                    relinkReport.Add(relinkResult);
                 }
             }
             //Relink Component's TemplateOwnerClass
+            // Do you relink if it's 0? Should this be > 0? -Mgamerz Feb 21 2020
             else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
             {
 
@@ -95,21 +119,21 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    relinkFailedReport.Add(relinkResult);
+                    relinkReport.Add(relinkResult);
                 }
             }
 
             //Relink Properties
             // NOTES: this used to be relinkingExport, not source, Changed near end of jan 2021 - Mgamerz - Due to ported items possibly not having way to reference original items
             PropertyCollection props = sourceExport.GetProperties();
-            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies));
+            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport,importExportDependencies);
 
             //Relink Binary
             try
             {
                 if (relinkingExport.Game != sourcePcc.Game && (relinkingExport.IsClass || relinkingExport.ClassName == "State" || relinkingExport.ClassName == "Function"))
                 {
-                    relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
+                    relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed. Cannot port {relinkingExport.ClassName} between games!"));
                 }
                 else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
@@ -122,7 +146,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             crossPCCObjectMappingList, "", importExportDependencies);
                         if (result != null)
                         {
-                            relinkFailedReport.Add(result);
+                            relinkReport.Add(result);
                         }
                     }
 
@@ -134,8 +158,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             (List<Token> tokens, _) = Bytecode.ParseBytecode(uStructBinary.ScriptBytes, sourceExport);
                             foreach (Token token in tokens)
                             {
-                                relinkFailedReport.AddRange(RelinkToken(token, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
-                                    crossPCCObjectMappingList, importExportDependencies));
+                                RelinkToken(token, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
+                                    crossPCCObjectMappingList, relinkReport, importExportDependencies);
                             }
                         }
                         else
@@ -156,45 +180,43 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 if (position < uStructBinary.ScriptBytes.Length)
                                 {
-                                    relinkFailedReport.AddRange(RelinkUnhoodEntryReference(entry, position, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
-                                         crossPCCObjectMappingList, importExportDependencies));
+                                    RelinkUnhoodEntryReference(entry, position, uStructBinary.ScriptBytes, sourceExport, relinkingExport,
+                                         crossPCCObjectMappingList, relinkReport, importExportDependencies);
                                 }
                             }
                         }
                     }
                     relinkingExport.WritePrePropsAndPropertiesAndBinary(prePropBinary, props, objBin);
-                    return relinkFailedReport;
+                    return;
                 }
             }
             catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
-                relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
+                relinkReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.InstancedFullPath} binary relinking failed due to exception: {e.Message}"));
             }
 
             relinkingExport.WritePrePropsAndProperties(prePropBinary, props, sourceExport.propsEnd());
-            return relinkFailedReport;
         }
 
-        private static List<EntryStringPair> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
-                                                              OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix,
+        private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
+                                                              IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, List<EntryStringPair> relinkResults,
                                                               bool importExportDependencies = false)
         {
-            var relinkResults = new List<EntryStringPair>();
             foreach (Property prop in transplantProps)
             {
                 //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
                 if (prop is StructProperty structProperty)
                 {
-                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
-                                                                     $"{prefix}{structProperty.Name}.", importExportDependencies));
+                    relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
+                        $"{prefix}{structProperty.Name}.", relinkResults, importExportDependencies);
                 }
                 else if (prop is ArrayProperty<StructProperty> structArrayProp)
                 {
                     for (int i = 0; i < structArrayProp.Count; i++)
                     {
                         StructProperty arrayStructProperty = structArrayProp[i];
-                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList,
-                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", importExportDependencies));
+                        relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList,
+                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", relinkResults, importExportDependencies);
                     }
                 }
                 else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
@@ -231,11 +253,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
             }
-            return relinkResults;
         }
 
         private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
-                                           OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false)
+                                           IDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, bool importExportDependencies = false)
         {
             if (uIndex == 0)
             {
@@ -250,8 +271,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             int sourceObjReference = uIndex;
 
             //Debug.WriteLine($"{prefix} Relinking:{propertyName}");
-
-            if (crossPCCObjectMappingList.TryGetValue(entry => entry.UIndex == sourceObjReference, out IEntry targetEntry))
+            if (crossPCCObjectMappingList.TryGetValue(importingPCC.GetEntry(uIndex), out IEntry targetEntry))
             {
                 //relink
                 uIndex = targetEntry.UIndex;
@@ -335,7 +355,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     if (importingFromGlobalFile)
                     {
-                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.FullPath, importingPCC, destinationPcc, crossPCCObjectMappingList).UIndex;
+                        uIndex = EntryImporter.GetOrAddCrossImportOrPackageFromGlobalFile(sourceExport.InstancedFullPath, importingPCC, destinationPcc, crossPCCObjectMappingList).UIndex;
                     }
                     else
                     {
@@ -359,14 +379,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
 
-        private static List<EntryStringPair> RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
-                                            OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
+        private static void RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
+                                            IDictionary<IEntry, IEntry> crossFileRefObjectMap, List<EntryStringPair> relinkFailedReport, bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<EntryStringPair>();
             //Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
 
             int uIndex = entry.UIndex;
-            var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.FullPath} at 0x{position:X8}",
+            var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.InstancedFullPath} at 0x{position:X8}",
                 crossFileRefObjectMap, "", importExportDependencies);
             if (relinkResult is null)
             {
@@ -376,14 +395,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 relinkFailedReport.Add(relinkResult);
             }
-
-            return relinkFailedReport;
         }
 
-        private static List<EntryStringPair> RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
-                                                OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false)
+        private static void RelinkToken(Token t, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport,
+                                                IDictionary<IEntry, IEntry> crossFileRefObjectMap, List<EntryStringPair> relinkFailedReport,
+        bool importExportDependencies = false)
         {
-            var relinkFailedReport = new List<EntryStringPair>();
             //Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
             foreach ((int pos, int type, int value) in t.inPackageReferences)
@@ -400,8 +417,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         break;
                 }
             }
-
-            return relinkFailedReport;
 
             void relinkAtPosition(int binaryPosition, int uIndex, string propertyName)
             {

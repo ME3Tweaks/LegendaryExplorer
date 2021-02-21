@@ -53,10 +53,11 @@ namespace ME3ExplorerCore.Packages
         /// <summary>
         /// Releases packages referenced by this cache and forces a garbage collection to reclaim memory they may have used
         /// </summary>
-        public void ReleasePackages()
+        public void ReleasePackages(bool gc = false)
         {
             Cache.Clear();
-            GC.Collect(); // This may drop a large amount of memory so we should just force a GC
+            if (gc)
+                GC.Collect();
         }
     }
 }

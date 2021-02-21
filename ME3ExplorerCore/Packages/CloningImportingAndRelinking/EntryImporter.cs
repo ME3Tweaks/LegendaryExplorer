@@ -86,7 +86,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.FullPath, sourcePcc, destPcc,
+                    newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc,
                                                             forcedLink: sourcePackageTree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null, objectMapping: relinkMap);
                 }
 
@@ -133,7 +133,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         //we must check to see if there is an item already matching what we are trying to port.
 
                         //Todo: We may need to enhance target checking here as fullpath may not be reliable enough. Maybe have to do indexing, or something.
-                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.FullPath == x.FullPath);
+                        IEntry sameObjInTarget = newParent.GetChildren().FirstOrDefault(x => node.InstancedFullPath == x.InstancedFullPath);
                         if (sameObjInTarget != null)
                         {
                             relinkMap[node] = sameObjInTarget;
@@ -152,7 +152,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else
                     {
-                        entry = GetOrAddCrossImportOrPackage(node.FullPath, sourcePcc, destPcc, objectMapping: relinkMap);
+                        entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap);
                     }
 
                     entry.Parent = newParent;
@@ -190,8 +190,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, IDictionary<IEntry, IEntry> objectMapping = null,
-            Action<string> errorOccuredCallback = null)
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, 
+            IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
             byte[] prePropBinary;
             if (sourceExport.HasStack)
@@ -563,26 +563,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             ExportEntry matchingSourceExport = sourcePcc.FindExport(importFullNameInstanced);
-            /*
-            if (relinkerCache != null)
-            {
-                if (relinkerCache.sourceFullPathToEntryMap.TryGetValue(importFullNameInstanced, out var me) && me is ExportEntry exp)
-                {
-                    matchingSourceExport = exp;
-                }
-            }
-            else
-            {
-                foreach (ExportEntry sourceExport in sourcePcc.Exports)
-                {
-                    if (sourceExport.FullPath == importFullNameInstanced)
-                    {
-                        matchingSourceExport = sourceExport;
-                        break;
-                    }
-                }
-            }*/
-
             if (matchingSourceExport != null)
             {
                 var newImport = new ImportEntry(destinationPCC)
@@ -653,10 +633,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
-        /// <param name="cache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="globalCache">PAckage cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
+        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache = null, PackageCache lookupCache = null, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -760,15 +741,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry containsImportedExport(string packagePath)
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
-                IMEPackage package;
-                if (cache != null)
+                IMEPackage package = null;
+                if (globalCache != null)
                 {
-                    package = cache.GetCachedPackage(packagePath);
+                    package = globalCache.GetCachedPackage(packagePath, false);
                 }
-                else
-                {
-                    package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true); // Do not hold in shared memory
-                }
+
+                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath) : MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
 
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();
@@ -943,10 +922,10 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export)
+        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export, bool includeLink = false)
         {
             List<IEntry> referencedItems = new List<IEntry>();
-            RecursiveGetDependencies(export, referencedItems);
+            RecursiveGetDependencies(export, referencedItems, includeLink);
             return referencedItems.Distinct().ToList();
         }
 
@@ -958,9 +937,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems)
+        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems, bool includeLink)
         {
-            // For reaching out into
             List<ExportEntry> localExportReferences = new List<ExportEntry>();
 
             // Compiles list of items local to this entry
@@ -968,10 +946,16 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out var exp) && !referencedItems.Any(x => x.UIndex == entryUIndex))
                 {
+                    // Add objects that we have not referenced yet.
                     localExportReferences.Add(exp);
                 }
                 // Global add
                 AddEntryReference(entryUIndex, relinkingExport.FileRef, referencedItems);
+            }
+
+            if (includeLink && relinkingExport.Parent != null)
+            {
+                AddReferenceLocal(relinkingExport.Parent.UIndex);
             }
 
             // Pre-props binary
@@ -993,6 +977,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
                 AddReferenceLocal(uIndex);
             }
+
+            // Metadata
+            if (relinkingExport.SuperClass != null)
+                AddReferenceLocal(relinkingExport.idxSuperClass);
+            if (relinkingExport.Archetype != null)
+                AddReferenceLocal(relinkingExport.idxArchetype);
+            if (relinkingExport.Class != null)
+                AddReferenceLocal(relinkingExport.idxClass);
 
             // Properties
             var props = relinkingExport.GetProperties();
@@ -1016,7 +1008,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             // We should reach out and see if we need to index others.
             foreach (var v in localExportReferences)
             {
-                RecursiveGetDependencies(v, referencedItems);
+                RecursiveGetDependencies(v, referencedItems, true);
             }
         }
 
