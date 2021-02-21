@@ -59,7 +59,7 @@ namespace ME3ExplorerCore.Packages
         // quite often
         protected CaseInsensitiveDictionary<int> nameLookupTable = new CaseInsensitiveDictionary<int>();
 
-        protected List<string> names = new List<string>();
+        protected List<string> names;
         public IReadOnlyList<string> Names => names;
 
         public bool IsName(int index) => index >= 0 && index < names.Count;
@@ -107,7 +107,7 @@ namespace ME3ExplorerCore.Packages
                 // Cannot add a null name!
                 throw new ArgumentException(nameof(newName), new Exception("Cannot replace a name with a null value!"));
             }
-            if (IsName(idx) && names[idx] != newName) //should we also have a case sensitive check/make sure there are not duplicates?
+            if (IsName(idx) && names[idx].Equals(newName, StringComparison.InvariantCultureIgnoreCase))
             {
                 nameLookupTable.Remove(names[idx]);
                 names[idx] = newName;
@@ -172,7 +172,7 @@ namespace ME3ExplorerCore.Packages
         #endregion
 
         #region Exports
-        protected List<ExportEntry> exports = new List<ExportEntry>();
+        protected List<ExportEntry> exports;
         public IReadOnlyList<ExportEntry> Exports => exports;
 
         public bool IsUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
@@ -192,6 +192,8 @@ namespace ME3ExplorerCore.Packages
             //{
             //    Debugger.Break();
             //}
+
+            // We need a way to handle a clone that doesn't have a unique name! Or this system will not work
             EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry; // ADD TO LOOKUP CACHE
 
             ExportCount = exports.Count;
@@ -264,7 +266,7 @@ namespace ME3ExplorerCore.Packages
         #endregion
 
         #region Imports
-        protected List<ImportEntry> imports = new List<ImportEntry>();
+        protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
         /// <summary>
@@ -572,6 +574,9 @@ namespace ME3ExplorerCore.Packages
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
+            // If we are never using the global cache there is no point
+            // to notifying other things because nothing will share the 
+            // package file
             if (sender is ExportEntry exp)
             {
                 switch (e.PropertyName)
@@ -588,8 +593,7 @@ namespace ME3ExplorerCore.Packages
 
         protected void importChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is ImportEntry imp
-             && e.PropertyName == nameof(ImportEntry.HeaderChanged))
+            if (MEPackageHandler.GlobalSharedCacheEnabled && sender is ImportEntry imp && e.PropertyName == nameof(ImportEntry.HeaderChanged))
             {
                 updateTools(PackageChange.ImportHeader, imp.UIndex);
             }

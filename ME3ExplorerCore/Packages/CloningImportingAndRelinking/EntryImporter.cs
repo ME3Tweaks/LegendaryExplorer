@@ -633,10 +633,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
-        /// <param name="cache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="globalCache">PAckage cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
+        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache = null, PackageCache lookupCache = null, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -740,15 +741,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             ExportEntry containsImportedExport(string packagePath)
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
-                IMEPackage package;
-                if (cache != null)
+                IMEPackage package = null;
+                if (globalCache != null)
                 {
-                    package = cache.GetCachedPackage(packagePath);
+                    package = globalCache.GetCachedPackage(packagePath, false);
                 }
-                else
-                {
-                    package = MEPackageHandler.OpenMEPackage(packagePath);
-                }
+
+                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath) : MEPackageHandler.OpenMEPackage(packagePath);
 
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
                 var packageParts = entryFullPath.Split('.').ToList();

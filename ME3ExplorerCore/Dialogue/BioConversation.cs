@@ -729,6 +729,18 @@ namespace ME3ExplorerCore.Dialogue
                 newreplyList.Add(reply.NodeProp);
             }
 
+            var newSpeakerList = new ArrayProperty<StructProperty>("m_SpeakerList");
+            foreach(var speaker in Speakers.OrderBy(x => x.SpeakerID))
+            {
+                if (speaker.SpeakerID < 0)
+                    continue; // They don't belong here
+                PropertyCollection ssProps = new PropertyCollection();
+                ssProps.Add(new NameProperty(speaker.SpeakerNameRef, "sSpeakerTag"));
+                var speakerStruct = new StructProperty("BioDialogSpeaker", ssProps);
+                newSpeakerList.Add(speakerStruct);
+            }
+            BioConvo.AddOrReplaceProp(newSpeakerList);
+
             if (newstartlist.Count > 0)
             {
                 BioConvo.AddOrReplaceProp(newstartlist);
@@ -752,13 +764,15 @@ namespace ME3ExplorerCore.Dialogue
         {
             bool hasLoopingPaths = false;
 
+            // Set blank speakers/listeners
             var blankaSpkr = new ArrayProperty<IntProperty>("aSpeakerList");
             foreach (var dnode in EntryList)
             {
                 dnode.NodeProp.Properties.AddOrReplaceProp(blankaSpkr);
             }
 
-            foreach ((var _, int entryIndex) in StartingList)
+            // Traverse conversation graph
+            foreach (int entryIndex in StartingList.Values)
             {
                 var aSpkrs = new SortedSet<int>();
                 var startNode = EntryList[entryIndex];

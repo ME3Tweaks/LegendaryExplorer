@@ -102,7 +102,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Properties
             // NOTES: this used to be relinkingExport, not source, Changed near end of jan 2021 - Mgamerz - Due to ported items possibly not having way to reference original items
             PropertyCollection props = sourceExport.GetProperties();
-            relinkFailedReport.AddRange(relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", importExportDependencies));
+            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkFailedReport,importExportDependencies);
 
             //Relink Binary
             try
@@ -175,26 +175,25 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return relinkFailedReport;
         }
 
-        private static List<EntryStringPair> relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
-                                                              OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix,
+        private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps,
+                                                              OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, string prefix, List<EntryStringPair> relinkResults,
                                                               bool importExportDependencies = false)
         {
-            var relinkResults = new List<EntryStringPair>();
             foreach (Property prop in transplantProps)
             {
                 //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
                 if (prop is StructProperty structProperty)
                 {
-                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
-                                                                     $"{prefix}{structProperty.Name}.", importExportDependencies));
+                    relinkPropertiesRecursive(importingPCC, relinkingExport, structProperty.Properties, crossPCCObjectMappingList,
+                        $"{prefix}{structProperty.Name}.", relinkResults, importExportDependencies);
                 }
                 else if (prop is ArrayProperty<StructProperty> structArrayProp)
                 {
                     for (int i = 0; i < structArrayProp.Count; i++)
                     {
                         StructProperty arrayStructProperty = structArrayProp[i];
-                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList,
-                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", importExportDependencies));
+                        relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList,
+                                                                         $"{prefix}{arrayStructProperty.Name}[{i}].", relinkResults, importExportDependencies);
                     }
                 }
                 else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
@@ -231,7 +230,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
             }
-            return relinkResults;
         }
 
         private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName,
