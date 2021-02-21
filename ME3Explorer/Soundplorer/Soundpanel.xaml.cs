@@ -155,13 +155,16 @@ namespace ME3Explorer
                         try
                         {
                             var samefolderpath = Directory.GetParent(exportEntry.FileRef.FilePath);
-                            string samefolderfilepath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
+                            string afcPath = Path.Combine(samefolderpath.FullName, w.Filename + ".afc");
                             var headerbytes = new byte[0x56];
                             bool bytesread = false;
-
-                            if (File.Exists(samefolderfilepath))
+                            if (!File.Exists(afcPath))
                             {
-                                using FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                afcPath = w.GetPathToAFC();
+                            }
+                            if (File.Exists(afcPath))
+                            {
+                                using FileStream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                                 fs.Seek(w.DataOffset, SeekOrigin.Begin);
                                 fs.Read(headerbytes, 0, 0x56);
                                 bytesread = true;
