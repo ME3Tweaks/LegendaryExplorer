@@ -226,6 +226,7 @@ namespace ME3Explorer
         public ICommand SetIndicesInTreeToZeroCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
+        public ICommand RestoreExportCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
         public ICommand PopoutCurrentViewCommand { get; set; }
@@ -318,6 +319,44 @@ namespace ME3Explorer
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
             FindAllClassInstancesCommand = new GenericCommand(FindAllInstancesofClass, PackageIsLoaded);
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
+
+            RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
+        }
+
+        private void RestoreExportData()
+        {
+            if (Pcc.Game != MEGame.ME1 && Pcc.Game != MEGame.ME2 && Pcc.Game != MEGame.ME3)
+            {
+                MessageBox.Show(this, "Not a trilogy file!");
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                BusyText = "Finding unmodded candidates...";
+                IsBusy = true;
+                return GetUnmoddedCandidatesForPackage();
+            }).ContinueWithOnUIThread(foundCandidates =>
+            {
+                IsBusy = false;
+                if (!foundCandidates.Result.Any()) MessageBox.Show(this, "Cannot find any candidates for this file!");
+
+                var choices = foundCandidates.Result.DiskFiles.ToList(); //make new list
+                choices.AddRange(foundCandidates.Result.SFARPackageStreams.Select(x => x.Key));
+
+                var choice = InputComboBoxWPF.GetValue(this, "Choose file to compare to:", "Unmodified file comparison", choices, choices.Last());
+                if (string.IsNullOrEmpty(choice))
+                {
+                    return;
+                }
+
+                var restorePackage = MEPackageHandler.OpenMEPackage(choice, forceLoadFromDisk: true);
+                if (TryGetSelectedExport(out var exportToOvewrite))
+                {
+                    var sourceExport = restorePackage.GetUExport(exportToOvewrite.UIndex);
+                    exportToOvewrite.Data = sourceExport.Data;
+                }
+            });
         }
 
         private void ExtractEntryToNewPackage()
@@ -2213,101 +2252,7 @@ namespace ME3Explorer
             {
                 BusyText = "Finding unmodded candidates...";
                 IsBusy = true;
-                string lookupFilename = Path.GetFileName(Pcc.FilePath);
-                string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
-                var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
-                var unmoddedCandidates = new UnmoddedCandidatesLookup();
-
-                // Lookup unmodded ON DISK files
-                List<string> unModdedFileLookup(string filename)
-                {
-                    List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
-                        .Select(dlcName => Path.Combine(dlcPath, dlcName))
-                        .Prepend(MEDirectories.GetCookedPath(Pcc.Game))
-                        .Where(Directory.Exists)
-                        .Select(cookedPath =>
-                            Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                                .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                        .NonNull().ToList();
-
-                    if (backupPath != null)
-                    {
-                        var backupDlcPath = MEDirectories.GetDLCPath(Pcc.Game, backupPath);
-                        inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
-                            .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
-                            .Prepend(MEDirectories.GetCookedPath(Pcc.Game, backupPath))
-                            .Where(Directory.Exists)
-                            .Select(cookedPath =>
-                                Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
-                                    .FirstOrDefault(path => Path.GetFileName(path) == filename))
-                            .NonNull());
-                    }
-
-                    return inGameCandidates;
-                }
-
-                unmoddedCandidates.DiskFiles.AddRange(unModdedFileLookup(lookupFilename));
-                if (unmoddedCandidates.DiskFiles.IsEmpty())
-                {
-                    //Try to lookup using info in this file
-                    var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
-                    foreach (var p in packages)
-                    {
-                        if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
-                        {
-                            //try this one
-                            var objName = p.ObjectName;
-                            if (p.indexValue > 0) objName += $"_{p.indexValue - 1}"; //Some ME3 map files are indexed
-                            var cookedPackageName = objName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
-                            unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
-                            break;
-                        }
-                    }
-                }
-
-                //if (filecandidates.Any())
-                //{
-                //    // Use em'
-                //    string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
-                //        "Unmodified file comparison", filecandidates, filecandidates.Last());
-
-                //    if (string.IsNullOrEmpty(filePath))
-                //    {
-                //        return null;
-                //    }
-
-                //    ComparePackage(filePath);
-                //    return true;
-                //}
-
-                if (Pcc.Game == MEGame.ME3 && backupPath != null)
-                {
-                    var backupDlcPath = Path.Combine(backupPath, "BIOGame", "DLC");
-                    if (Directory.Exists(dlcPath))
-                    {
-                        var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
-
-                        var testPatch = Path.Combine(backupDlcPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
-                        if (File.Exists(testPatch))
-                        {
-                            sfars.Add(testPatch);
-                        }
-
-                        foreach (var sfar in sfars)
-                        {
-                            DLCPackage dlc = new DLCPackage(sfar);
-                            // Todo: Port in M3's better SFAR lookup code
-                            var sfarIndex = dlc.FindFileEntry(Path.GetFileName(lookupFilename));
-                            if (sfarIndex >= 0)
-                            {
-                                var uiName = Path.GetFileName(sfar) == "Patch_001.sfar" ? "TestPatch" : Directory.GetParent(sfar).Parent.Name;
-                                unmoddedCandidates.SFARPackageStreams[$"{uiName} SFAR"] = dlc.DecompressEntry(sfarIndex);
-                            }
-                        }
-                    }
-                }
-
-                return unmoddedCandidates;
+                return GetUnmoddedCandidatesForPackage();
             }).ContinueWithOnUIThread(foundCandidates =>
            {
                IsBusy = false;
@@ -2335,6 +2280,105 @@ namespace ME3Explorer
                    MessageBox.Show("Selected candidate not found in the lists! This is a bug", "OH NO");
                }
            });
+        }
+
+        private UnmoddedCandidatesLookup GetUnmoddedCandidatesForPackage()
+        {
+            string lookupFilename = Path.GetFileName(Pcc.FilePath);
+            string dlcPath = MEDirectories.GetDLCPath(Pcc.Game);
+            var backupPath = ME3TweaksBackups.GetGameBackupPath(Pcc.Game);
+            var unmoddedCandidates = new UnmoddedCandidatesLookup();
+
+            // Lookup unmodded ON DISK files
+            List<string> unModdedFileLookup(string filename)
+            {
+                List<string> inGameCandidates = MEDirectories.OfficialDLC(Pcc.Game)
+                    .Select(dlcName => Path.Combine(dlcPath, dlcName))
+                    .Prepend(MEDirectories.GetCookedPath(Pcc.Game))
+                    .Where(Directory.Exists)
+                    .Select(cookedPath =>
+                        Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                            .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                    .NonNull().ToList();
+
+                if (backupPath != null)
+                {
+                    var backupDlcPath = MEDirectories.GetDLCPath(Pcc.Game, backupPath);
+                    inGameCandidates.AddRange(MEDirectories.OfficialDLC(Pcc.Game)
+                        .Select(dlcName => Path.Combine(backupDlcPath, dlcName))
+                        .Prepend(MEDirectories.GetCookedPath(Pcc.Game, backupPath))
+                        .Where(Directory.Exists)
+                        .Select(cookedPath =>
+                            Directory.EnumerateFiles(cookedPath, "*", SearchOption.AllDirectories)
+                                .FirstOrDefault(path => Path.GetFileName(path) == filename))
+                        .NonNull());
+                }
+
+                return inGameCandidates;
+            }
+
+            unmoddedCandidates.DiskFiles.AddRange(unModdedFileLookup(lookupFilename));
+            if (unmoddedCandidates.DiskFiles.IsEmpty())
+            {
+                //Try to lookup using info in this file
+                var packages = Pcc.Exports.Where(x => x.ClassName == "Package" && x.idxLink == 0).ToList();
+                foreach (var p in packages)
+                {
+                    if ((p.PackageFlags & EPackageFlags.Cooked) != 0)
+                    {
+                        //try this one
+                        var objName = p.ObjectName;
+                        if (p.indexValue > 0) objName += $"_{p.indexValue - 1}"; //Some ME3 map files are indexed
+                        var cookedPackageName = objName + (Pcc.Game == MEGame.ME1 ? ".sfm" : ".pcc");
+                        unmoddedCandidates.DiskFiles.ReplaceAll(unModdedFileLookup(cookedPackageName)); //ME1 could be upk/u too I guess, but I think only sfm have packages cooked into them
+                        break;
+                    }
+                }
+            }
+
+            //if (filecandidates.Any())
+            //{
+            //    // Use em'
+            //    string filePath = InputComboBoxWPF.GetValue(this, "Choose file to compare to:",
+            //        "Unmodified file comparison", filecandidates, filecandidates.Last());
+
+            //    if (string.IsNullOrEmpty(filePath))
+            //    {
+            //        return null;
+            //    }
+
+            //    ComparePackage(filePath);
+            //    return true;
+            //}
+
+            if (Pcc.Game == MEGame.ME3 && backupPath != null)
+            {
+                var backupDlcPath = Path.Combine(backupPath, "BIOGame", "DLC");
+                if (Directory.Exists(dlcPath))
+                {
+                    var sfars = Directory.GetFiles(backupDlcPath, "*.sfar", SearchOption.AllDirectories).ToList();
+
+                    var testPatch = Path.Combine(backupDlcPath, "BIOGame", "Patches", "PCConsole", "Patch_001.sfar");
+                    if (File.Exists(testPatch))
+                    {
+                        sfars.Add(testPatch);
+                    }
+
+                    foreach (var sfar in sfars)
+                    {
+                        DLCPackage dlc = new DLCPackage(sfar);
+                        // Todo: Port in M3's better SFAR lookup code
+                        var sfarIndex = dlc.FindFileEntry(Path.GetFileName(lookupFilename));
+                        if (sfarIndex >= 0)
+                        {
+                            var uiName = Path.GetFileName(sfar) == "Patch_001.sfar" ? "TestPatch" : Directory.GetParent(sfar).Parent.Name;
+                            unmoddedCandidates.SFARPackageStreams[$"{uiName} SFAR"] = dlc.DecompressEntry(sfarIndex);
+                        }
+                    }
+                }
+            }
+
+            return unmoddedCandidates;
         }
 
         private class UnmoddedCandidatesLookup

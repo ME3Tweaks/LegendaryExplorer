@@ -74,6 +74,7 @@
                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             </MenuItem>
+            <MenuItem Header="Restore export data" ToolTip="Restores this exports' data from the vanilla version. Ensure you have a backup from an ME3Tweaks Tool to ensure vanilla." Command="{Binding RestoreExportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Trash entry and children" ToolTip="Converts this entry and its children into empty data" Command="{Binding TrashCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Set all object indexes in this tree to 0 " Command="{Binding SetIndicesInTreeToZeroCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
