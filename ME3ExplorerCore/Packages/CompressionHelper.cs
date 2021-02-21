@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using static ME3ExplorerCore.Packages.MEPackage;
 
 namespace ME3ExplorerCore.Packages
@@ -45,7 +46,7 @@ namespace ME3ExplorerCore.Packages
             public int compressedOffset;
             public int compressedSize;
             public byte[] Compressed;
-            public byte[] Uncompressed;
+            //public byte[] Uncompressed;
             public ChunkHeader header;
             public List<Block> blocks;
         }
@@ -556,17 +557,6 @@ namespace ME3ExplorerCore.Packages
             return outStream;
         }
 
-        public static MemoryStream DecompressPackage(string packagePath)
-        {
-            Debug.WriteLine("DECOMPRESSPACKAGE NOT YET IMPLEMENTED~!");
-            var p = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
-            if (p.IsCompressed)
-            {
-
-            }
-            return new MemoryStream();
-        }
-
         /// <summary>
         /// Decompresses a compressed package. Works with ME1/ME2/ME3/UDK
         /// </summary>
@@ -585,7 +575,7 @@ namespace ME3ExplorerCore.Packages
 
             if (NumChunks == 0)
                 NumChunks = raw.ReadInt32();
-            var Chunks = new List<Chunk>();
+            var Chunks = new List<Chunk>(NumChunks);
             var chunkTableStart = raw.Position;
 
             //DebugOutput.PrintLn("Reading chunk headers...");
@@ -599,10 +589,13 @@ namespace ME3ExplorerCore.Packages
                     compressedSize = raw.ReadInt32()
                 };
                 c.Compressed = new byte[c.compressedSize];
-                c.Uncompressed = new byte[c.uncompressedSize];
+                //c.Uncompressed = new byte[c.uncompressedSize];
                 Chunks.Add(c);
             }
 
+            var firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
+            var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
+            var result = MemoryManager.GetMemoryStream(fullUncompressedSize + firstChunkOffset);
 
             //DebugOutput.PrintLn("\tRead Chunks...");
             int count = 0;
@@ -641,7 +634,7 @@ namespace ME3ExplorerCore.Packages
                     pos += 8;
                     BlockList.Add(b);
                 }
-                int outpos = 0;
+                int currentUncompChunkOffset = 0;
                 int blocknum = 0;
                 //DebugOutput.PrintLn("\t\t" + count + " Read and decompress Blocks...");
                 foreach (Block b in BlockList)
@@ -650,10 +643,7 @@ namespace ME3ExplorerCore.Packages
                     var datain = new byte[b.compressedsize];
                     var dataout = new byte[b.uncompressedsize];
                     Buffer.BlockCopy(c.Compressed, pos, datain, 0, b.compressedsize);
-                    //for (int j = 0; j < b.compressedsize; j++)
-                    //    datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
-
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
@@ -680,29 +670,22 @@ namespace ME3ExplorerCore.Packages
                         default:
                             throw new Exception("Unknown compression type for this package.");
                     }
-                    Buffer.BlockCopy(dataout, 0, c.Uncompressed, outpos, b.uncompressedsize);
-                    //for (int j = 0; j < b.uncompressedsize; j++)
-                    //    c.Uncompressed[outpos + j] = dataout[j];
-                    outpos += b.uncompressedsize;
+
+                    result.Seek(c.uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
+                    result.WriteFromBuffer(dataout);
+                    currentUncompChunkOffset += b.uncompressedsize;
                     blocknum++;
                 }
-                c.header = h;
-                c.blocks = BlockList;
+                //c.header = h;
+                //c.blocks = BlockList;
                 count++;
-                Chunks[i] = c;
-            }
-
-            MemoryStream result = new MemoryStream();
-            foreach (Chunk c in Chunks)
-            {
-                result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
-                result.WriteFromBuffer(c.Uncompressed);
+                //Chunks[i] = c;
             }
 
             // Reattach the original header
             result.Position = 0;
             raw.Position = 0;
-            raw.BaseStream.CopyToEx(result, Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset); // Copy the header in
+            raw.BaseStream.CopyToEx(result, firstChunkOffset); // Copy the header in
             // Does header need adjusted here to be accurate? 
             // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
 
