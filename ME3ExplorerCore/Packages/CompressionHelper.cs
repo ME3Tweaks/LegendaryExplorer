@@ -579,6 +579,7 @@ namespace ME3ExplorerCore.Packages
             var chunkTableStart = raw.Position;
 
             //DebugOutput.PrintLn("Reading chunk headers...");
+            int maxUncompressedBlockSize = 0;
             for (int i = 0; i < NumChunks; i++)
             {
                 Chunk c = new Chunk
@@ -586,27 +587,16 @@ namespace ME3ExplorerCore.Packages
                     uncompressedOffset = raw.ReadInt32(),
                     uncompressedSize = raw.ReadInt32(),
                     compressedOffset = raw.ReadInt32(),
-                    compressedSize = raw.ReadInt32()
+                    compressedSize = raw.ReadInt32(),
                 };
+
+                var nextChunkPos = raw.Position;
+                // Read in compressed data (this seems like it should be optimizable - like with Span<T>) 
                 c.Compressed = new byte[c.compressedSize];
-                //c.Uncompressed = new byte[c.uncompressedSize];
-                Chunks.Add(c);
-            }
-
-            var firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
-            var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
-            var result = MemoryManager.GetMemoryStream(fullUncompressedSize + firstChunkOffset);
-
-            //DebugOutput.PrintLn("\tRead Chunks...");
-            int count = 0;
-            for (int i = 0; i < Chunks.Count; i++)
-            {
-                Chunk c = Chunks[i];
-                //Debug.WriteLine($"Compressed offset at {c.compressedOffset:X8}");
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 raw.Read(c.Compressed, 0, c.compressedSize);
 
-                ChunkHeader h = new ChunkHeader
+                c.header = new ChunkHeader
                 {
                     magic = EndianReader.ToInt32(c.Compressed, 0, raw.Endian),
                     // must force block size for ME1 xbox cause in place of block size it seems to list package tag again which breaks loads of things
@@ -615,13 +605,15 @@ namespace ME3ExplorerCore.Packages
                     uncompressedsize = EndianReader.ToInt32(c.Compressed, 12, raw.Endian)
                 };
 
-                if (h.magic != -1641380927)
+                // Parse block table
+                if (c.header.magic != -1641380927)
                     throw new FormatException("Chunk magic number incorrect");
                 //DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
                 int pos = 16;
-                int blockCount = h.uncompressedsize / h.blocksize;
-                if (h.uncompressedsize % h.blocksize != 0) blockCount++;
-                var BlockList = new List<Block>();
+                int blockCount = c.header.uncompressedsize / c.header.blocksize;
+                if (c.header.uncompressedsize % c.header.blocksize != 0) blockCount++;
+
+                c.blocks = new List<Block>(blockCount);
                 //DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
                 for (int j = 0; j < blockCount; j++)
                 {
@@ -630,25 +622,72 @@ namespace ME3ExplorerCore.Packages
                         compressedsize = EndianReader.ToInt32(c.Compressed, pos, raw.Endian),
                         uncompressedsize = EndianReader.ToInt32(c.Compressed, pos + 4, raw.Endian)
                     };
+                    maxUncompressedBlockSize = Math.Max(b.uncompressedsize, maxUncompressedBlockSize); // find the max size to reduce allocations
                     //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
                     pos += 8;
-                    BlockList.Add(b);
+                    c.blocks.Add(b);
                 }
+
+                //c.Uncompressed = new byte[c.uncompressedSize];
+                Chunks.Add(c);
+
+
+
+                raw.Seek(nextChunkPos, SeekOrigin.Begin);
+            }
+
+            var firstChunkOffset = Chunks.MinBy(x => x.uncompressedOffset).uncompressedOffset;
+            var fullUncompressedSize = Chunks.Sum(x => x.uncompressedSize);
+            var result = MemoryManager.GetMemoryStream(fullUncompressedSize + firstChunkOffset);
+
+            //DebugOutput.PrintLn("\tRead Chunks...");
+            int count = 0;
+
+            // Just re-use the dataout buffer to prevent memory allocations. 
+            // We will allocate the largest uncompressed size block we can find
+
+            var dataout = new byte[maxUncompressedBlockSize];
+
+
+            for (int i = 0; i < Chunks.Count; i++)
+            {
+
+
+                //if (h.magic != -1641380927)
+                //    throw new FormatException("Chunk magic number incorrect");
+                ////DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
+                //int blockCount = h.uncompressedsize / h.blocksize;
+                //if (h.uncompressedsize % h.blocksize != 0) blockCount++;
+                //var BlockList = new List<Block>();
+                ////DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
+                //for (int j = 0; j < blockCount; j++)
+                //{
+                //    Block b = new Block
+                //    {
+                //        compressedsize = EndianReader.ToInt32(Chunks[i].Compressed, pos, raw.Endian),
+                //        uncompressedsize = EndianReader.ToInt32(Chunks[i].Compressed, pos + 4, raw.Endian)
+                //    };
+                //    //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
+                //    pos += 8;
+                //    BlockList.Add(b);
+                //}
+
+                int pos = 16 + 8 * Chunks[i].blocks.Count;
+
                 int currentUncompChunkOffset = 0;
                 int blocknum = 0;
                 //DebugOutput.PrintLn("\t\t" + count + " Read and decompress Blocks...");
-                foreach (Block b in BlockList)
+                foreach (Block b in Chunks[i].blocks)
                 {
                     //Debug.WriteLine("Decompressing block " + blocknum);
                     var datain = new byte[b.compressedsize];
-                    var dataout = new byte[b.uncompressedsize];
-                    Buffer.BlockCopy(c.Compressed, pos, datain, 0, b.compressedsize);
+                    Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
                             {
-                                if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                if (LZO2.Decompress(datain, (uint)b.compressedsize, dataout, (uint)b.uncompressedsize) != b.uncompressedsize)
                                     throw new Exception("LZO decompression failed!");
                                 break;
                             }
@@ -671,7 +710,7 @@ namespace ME3ExplorerCore.Packages
                             throw new Exception("Unknown compression type for this package.");
                     }
 
-                    result.Seek(c.uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
+                    result.Seek(Chunks[i].uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
                     result.WriteFromBuffer(dataout);
                     currentUncompChunkOffset += b.uncompressedsize;
                     blocknum++;
