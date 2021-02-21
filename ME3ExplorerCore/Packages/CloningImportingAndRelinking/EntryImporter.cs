@@ -767,7 +767,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    package = MEPackageHandler.OpenMEPackage(packagePath);
+                    package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true); // Do not hold in shared memory
                 }
 
                 var packName = Path.GetFileNameWithoutExtension(packagePath);
