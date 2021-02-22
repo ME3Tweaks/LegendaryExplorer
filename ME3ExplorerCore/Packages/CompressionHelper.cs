@@ -674,7 +674,7 @@ namespace ME3ExplorerCore.Packages
                             }
                         case UnrealPackageFile.CompressionType.Zlib:
                             {
-                                if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                if (Zlib.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != b.uncompressedsize)
                                     throw new Exception("Zlib decompression failed!");
                                 break;
                             }
