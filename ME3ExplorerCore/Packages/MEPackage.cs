@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -119,7 +120,7 @@ namespace ME3ExplorerCore.Packages
 
         public byte[] getHeader()
         {
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms, includeAdditionalPackageToCook: true);
             return ms.ToArray();
         }
@@ -626,7 +627,7 @@ namespace ME3ExplorerCore.Packages
         private static MemoryStream compressPackage(MEPackage package, MemoryStream uncompressedStream, bool includeAdditionalPackageToCook = true)
         {
             uncompressedStream.Position = 0;
-            MemoryStream compressedStream = new MemoryStream();
+            MemoryStream compressedStream = MemoryManager.GetMemoryStream();
             package.WriteHeader(compressedStream, includeAdditionalPackageToCook: includeAdditionalPackageToCook); //for positioning
             var chunks = new List<CompressionHelper.Chunk>();
             var compressionType = package.Game != MEGame.ME3 ? CompressionType.LZO : CompressionType.Zlib;
@@ -688,7 +689,7 @@ namespace ME3ExplorerCore.Packages
             //Rewrite header with chunk table information so we can position the data blocks after table
             compressedStream.Position = 0;
             package.WriteHeader(compressedStream, compressionType, chunks, includeAdditionalPackageToCook: includeAdditionalPackageToCook);
-            MemoryStream m1 = new MemoryStream();
+            //MemoryStream m1 = new MemoryStream();
 
             for (int c = 0; c < chunks.Count; c++)
             {
@@ -791,7 +792,7 @@ namespace ME3ExplorerCore.Packages
 
             try
             {
-                var ms = new MemoryStream();
+                var ms = MemoryManager.GetMemoryStream();
 
                 //just for positioning. We write over this later when the header values have been updated
                 mePackage.WriteHeader(ms, includeAdditionalPackageToCook: includeAdditionalPackageToCook);

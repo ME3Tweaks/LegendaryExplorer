@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.TLK.ME1;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.Classes;
@@ -20,7 +21,7 @@ namespace ME3ExplorerCore.Packages
         public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()
         {
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms);
             return ms.ToArray();
         }
@@ -255,7 +256,7 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
 
             //just for positioning. We write over this later when the header values have been updated
             WriteHeader(ms);

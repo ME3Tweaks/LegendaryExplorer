@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.Gammtek.IO
 {
@@ -90,7 +91,7 @@ namespace ME3ExplorerCore.Gammtek.IO
 
 		public virtual byte[] ToArray()
 		{
-			using (var stream = new MemoryStream())
+			using (var stream = MemoryManager.GetMemoryStream())
 			{
 				BaseStream.CopyTo(stream);
 

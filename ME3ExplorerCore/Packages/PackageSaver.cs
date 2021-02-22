@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
 
@@ -134,7 +135,7 @@ namespace ME3ExplorerCore.Packages
             if (originalLength > 0)
             {
                 string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.DefaultGamePath).Length);
-                var bin = new MemoryStream();
+                var bin = MemoryManager.GetMemoryStream();
                 bin.WriteInt32(originalLength);
                 bin.WriteStringASCIINull(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());

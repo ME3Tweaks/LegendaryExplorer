@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Helpers
@@ -63,7 +64,7 @@ namespace ME3ExplorerCore.Helpers
                 Debug.WriteLine($"{assetName} not found in embedded resources");
                 return null;
             }
-            MemoryStream ms = new MemoryStream();
+            MemoryStream ms = MemoryManager.GetMemoryStream();
             stream.CopyTo(ms);
             ms.Position = 0;
             return ms;
@@ -79,7 +80,7 @@ namespace ME3ExplorerCore.Helpers
                     var objectinfoEntry = archive.Entries.FirstOrDefault(x => x.FullName == filename);
                     if (objectinfoEntry != null)
                     {
-                        MemoryStream ms = new MemoryStream();
+                        MemoryStream ms = MemoryManager.GetMemoryStream();
                         objectinfoEntry.Open().CopyTo(ms);
                         ms.Position = 0;
                         return ms;

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.GameFilesystem
 {
@@ -90,7 +91,7 @@ namespace ME3ExplorerCore.GameFilesystem
         /// <param name="path">Path to write mount file to</param>
         public void WriteMountFile(string path)
         {
-            MemoryStream ms = new MemoryStream();
+            MemoryStream ms = MemoryManager.GetMemoryStream();
             if (IsME2)
             {
                 ms.WriteByte(0x0);
@@ -160,7 +161,7 @@ namespace ME3ExplorerCore.GameFilesystem
                 ms.WriteFromBuffer(guidbytes);
 
             }
-            File.WriteAllBytes(path, ms.ToArray());
+            ms.WriteToFile(path);
         }
     }
 }

@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.Helpers
 {
@@ -33,7 +34,7 @@ namespace ME3ExplorerCore.Helpers
 
         public static MemoryStream ReadToMemoryStream(this Stream stream, long size)
         {
-            var memory = new MemoryStream();
+            var memory = MemoryManager.GetMemoryStream((int)size);
 
             var left = size;
             var data = new byte[4096];
@@ -49,7 +50,7 @@ namespace ME3ExplorerCore.Helpers
             return memory;
         }
 
-           
+
         public static byte[] ReadToBuffer(this Stream stream, int count)
         {
             var buffer = new byte[count];
@@ -459,7 +460,7 @@ namespace ME3ExplorerCore.Helpers
             }
             // We could do all our own work here, but using MemoryStream is easier
             // and likely to be just as efficient.
-            using (var tempStream = new MemoryStream())
+            using (var tempStream = new MemoryStream()) // do not use memory manager as GetBuffer() should not be used with it
             {
                 Copy(input, tempStream, buffer);
                 // No need to copy the buffer if it's the right size

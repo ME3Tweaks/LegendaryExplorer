@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.Paths;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
@@ -75,7 +76,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             else if (entry is ExportEntry exp)
             {
                 (pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath);
-                MemoryStream trashData = new MemoryStream();
+                MemoryStream trashData = MemoryManager.GetMemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(pcc.FindNameOrAdd("None"));
                 trashData.WriteInt32(0);

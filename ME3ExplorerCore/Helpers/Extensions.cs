@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Gammtek.IO;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
@@ -579,7 +580,8 @@ namespace ME3ExplorerCore.Helpers
         /// <param name="bytes">The number of bytes to copy</param>
         public static void CopyToEx(this Stream input, Stream output, int bytes)
         {
-            var buffer = new byte[32768];
+            var bufSize = 32768;
+            var buffer = MemoryManager.GetByteArray(bufSize);
             int read;
             while (bytes > 0 &&
                    (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
@@ -587,6 +589,7 @@ namespace ME3ExplorerCore.Helpers
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
+            MemoryManager.ReturnByteArray(buffer);
         }
 
         public static NameReference ReadNameReference(this Stream stream, IMEPackage pcc)

@@ -23,6 +23,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.Unreal
 {
@@ -81,7 +82,7 @@ namespace ME3ExplorerCore.Unreal
 
         public static byte[] CompressTexture(byte[] inputData, StorageTypes type)
         {
-            using (MemoryStream ouputStream = new MemoryStream())
+            using (MemoryStream ouputStream = MemoryManager.GetMemoryStream())
             {
                 uint compressedSize = 0;
                 uint dataBlockLeft = (uint)inputData.Length;

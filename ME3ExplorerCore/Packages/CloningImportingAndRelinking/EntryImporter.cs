@@ -6,6 +6,7 @@ using System.Linq;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -193,10 +194,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, 
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
+            var exportData = sourceExport.GetExportDatas();
+
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
-                var ms = new MemoryStream();
+                var ms = MemoryManager.GetMemoryStream();
                 ms.WriteFromBuffer(sourceExport.DataReadOnly.Slice(0, 8));
                 ms.WriteFromBuffer(destPackage.Game switch
                 {
@@ -208,7 +211,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
             else
             {
-                int start = sourceExport.GetPropertyStart();
+                int start = exportData.PropStartOffset;
                 if (start == 16)
                 {
                     var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16));
@@ -226,21 +229,25 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
             PropertyCollection props = sourceExport.GetProperties();
             //store copy of names list in case something goes wrong
-            List<string> names = destPackage.Names.ToList();
-            try
+            if (sourceExport.Game != destPackage.Game)
             {
-                if (sourceExport.Game != destPackage.Game)
+                List<string> names = destPackage.Names.ToList(); 
+                try
                 {
-                    props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
+                    if (sourceExport.Game != destPackage.Game)
+                    {
+                        props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
+                    }
+                }
+                catch (Exception exception) when (!ME3ExplorerCoreLib.IsDebug)
+                {
+                    //restore namelist in event of failure.
+                    destPackage.restoreNames(names);
+                    errorOccuredCallback?.Invoke($"Error occurred while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
+                    throw; //should we throw?
                 }
             }
-            catch (Exception exception) when (!ME3ExplorerCoreLib.IsDebug)
-            {
-                //restore namelist in event of failure.
-                destPackage.restoreNames(names);
-                errorOccuredCallback?.Invoke($"Error occurred while trying to import {sourceExport.ObjectName.Instanced} : {exception.Message}");
-                throw; //should we throw?
-            }
+            
 
             //takes care of slight header differences between ME1/2 and ME3
             byte[] newHeader = sourceExport.GenerateHeader(destPackage.Game, true);
@@ -331,7 +338,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, Action<string> errorOccuredCallback = null)
         {
 
-            EndianReader res = new EndianReader(new MemoryStream()) { Endian = targetExport.FileRef.Endian };
+            EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
                 res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
@@ -617,7 +624,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
         {
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteFromBuffer(game switch

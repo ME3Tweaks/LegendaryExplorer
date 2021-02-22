@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Unreal.BinaryConverters
@@ -407,7 +408,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
         public virtual byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
         {
-            var ms = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+            var ms = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
             WriteTo(ms.Writer, pcc, fileOffset);
             return ms.ToArray();
         }

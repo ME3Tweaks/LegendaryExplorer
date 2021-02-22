@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using static ME3ExplorerCore.TLK.ME1.ME1TalkFile;
@@ -137,7 +138,7 @@ namespace ME3ExplorerCore.TLK.ME1
             /* writing properties */
             export.WriteProperty(new IntProperty(_inputData.Count, "m_nHashTableSize"));
 
-            MemoryStream m = new MemoryStream();
+            MemoryStream m = MemoryManager.GetMemoryStream();
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
             foreach (TLKStringRef entry in _inputData)

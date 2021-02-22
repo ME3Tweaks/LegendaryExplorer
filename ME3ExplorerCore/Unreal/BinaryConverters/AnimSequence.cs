@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ME3ExplorerCore.Gammtek;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.SharpDX;
 
@@ -317,7 +318,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             posCompression = AnimationCompressionFormat.ACF_None;
             rotCompression = newRotationCompression;
             TrackOffsets = new int[Bones.Count * 4];
-            var ms = new MemoryStream();
+            var ms = MemoryManager.GetMemoryStream();
 
             for (int i = 0; i < Bones.Count; i++)
             {
