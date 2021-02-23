@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Memory;
@@ -218,7 +219,7 @@ namespace ME3ExplorerCore.Packages
 
         private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
         {
-            var bin = MemoryManager.GetMemoryStream();
+            using var bin = MemoryManager.GetMemoryStream(36 * 4); // This should hopefully ensure we don't have extra allocations, assuming 5 component items
             bin.WriteInt32(idxClass);
             bin.WriteInt32(idxSuperClass);
             bin.WriteInt32(idxLink);
@@ -459,7 +460,6 @@ namespace ME3ExplorerCore.Packages
         public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
-
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         public bool HasParent => FileRef.IsEntry(idxLink);
@@ -721,6 +721,10 @@ namespace ME3ExplorerCore.Packages
         }
 
         private int? propsEndOffset;
+        /// <summary>
+        /// Gets the ending offset of the properties for this export, where binary data begins (if any). This call caches the position, the cached value is invalidated when the .Data attribute of this export is updated.
+        /// </summary>
+        /// <returns></returns>
         public int propsEnd()
         {
             propsEndOffset ??= GetProperties(true, true).endOffset;

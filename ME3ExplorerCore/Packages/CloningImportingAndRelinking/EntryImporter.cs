@@ -196,7 +196,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         {
             var exportData = sourceExport.GetExportDatas();
 
-            byte[] prePropBinary;
+            /*byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
                 var ms = MemoryManager.GetMemoryStream();
@@ -207,7 +207,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     MEGame.ME3 => me3StackDummy,
                     _ => me1Me2StackDummy
                 });
-                prePropBinary = ms.ToArray();
+                prePropBinary = ms.ToArray(); // kind of poor performance-wise but not sure how to do when we have .DataReadOnly and everything takes byte[]
             }
             else
             {
@@ -225,7 +225,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     prePropBinary = sourceExport.DataReadOnly.Slice(0, start);
                 }
-            }
+            }*/
 
             PropertyCollection props = sourceExport.GetProperties();
             //store copy of names list in case something goes wrong
@@ -316,7 +316,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     break;
             }
 
-            var newExport = new ExportEntry(destPackage, prePropBinary, props, binaryData, sourceExport.IsClass)
+            var newExport = new ExportEntry(destPackage, exportData.prePropBinary, exportData.Properties, exportData.postPropsBinary, sourceExport.IsClass)
             {
                 Header = newHeader,
                 Class = classValue,

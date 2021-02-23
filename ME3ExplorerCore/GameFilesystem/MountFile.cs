@@ -91,7 +91,7 @@ namespace ME3ExplorerCore.GameFilesystem
         /// <param name="path">Path to write mount file to</param>
         public void WriteMountFile(string path)
         {
-            MemoryStream ms = MemoryManager.GetMemoryStream();
+            using MemoryStream ms = MemoryManager.GetMemoryStream();
             if (IsME2)
             {
                 ms.WriteByte(0x0);

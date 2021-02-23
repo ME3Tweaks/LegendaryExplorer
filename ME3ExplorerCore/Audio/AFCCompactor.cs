@@ -283,7 +283,7 @@ namespace ME3ExplorerCore.Audio
             // Mapping of old reference => new reference
             var referenceMap = new Dictionary<AFCCompactor.ReferencedAudio, AFCCompactor.ReferencedAudio>();
 
-            MemoryStream memoryNewAfc = MemoryManager.GetMemoryStream();
+            using MemoryStream memoryNewAfc = MemoryManager.GetMemoryStream();
             var brokenAudio = new List<(ReferencedAudio brokenRef, string brokenReason)>();
             int i = 0;
             foreach (var referencedAudio in referencesToCompact)
