@@ -17,6 +17,8 @@ using ME3Script.Compiling.Errors;
 using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
 using ME3ExplorerCore.Helpers;
+using ME3Script.Lexing;
+using ME3Script.Parsing;
 
 namespace ME3Explorer.ME3Script
 {
@@ -91,7 +93,7 @@ namespace ME3Explorer.ME3Script
         {
             string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
-            string dumpFolderPath = Path.Combine(ME3Directory.gamePath, "ScriptDump", fileName);
+            string dumpFolderPath = Path.Combine(ME3Directory.DefaultGamePath, "ScriptDump", fileName);
             Directory.CreateDirectory(dumpFolderPath);
 #endif
             var log = new MessageLog();
@@ -100,13 +102,17 @@ namespace ME3Explorer.ME3Script
             foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
             {
                 Class cls = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false);
+                if (!cls.IsFullyDefined)
+                {
+                    continue;
+                }
                 string scriptText = "";
                 try
                 {
 #if DEBUGSCRIPT
                     var codeBuilder = new CodeBuilderVisitor();
                     cls.AcceptVisitor(codeBuilder);
-                    scriptText = codeBuilder.GetCodeString();
+                    scriptText = codeBuilder.GetOutput();
                     File.WriteAllText(Path.Combine(dumpFolderPath, $"{cls.Name}.uc"), scriptText);
                     var parser = new ClassOutlineParser(new TokenStream<string>(new StringLexer(scriptText, log)), log);
                     cls = parser.TryParseClass();

@@ -1757,6 +1757,13 @@ namespace ME3Script.Parsing
                             {
                                 ParseError($"Expected between {numRequiredParams} and {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef);
                             }
+                            else
+                            {
+                                for (int i = parameters.Count; i < func.Parameters.Count; i++)
+                                {
+                                    parameters.Add(null);
+                                }
+                            }
                         }
                         else
                         {

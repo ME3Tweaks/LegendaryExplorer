@@ -264,7 +264,6 @@ namespace ME3Explorer.ME3Script.IDE
         {
             if (IsBusy)
             {
-                IsBusy = false;
                 if (StandardLibrary.HadInitializationError)
                 {
                     FullyInitialized = false;
@@ -275,7 +274,7 @@ namespace ME3Explorer.ME3Script.IDE
                 }
                 else
                 {
-                    FullyInitialized = IsStandardLibFile();
+                    FullyInitialized |= IsStandardLibFile();
                 }
                 if (CurrentLoadedExport != null)
                 {
@@ -287,8 +286,10 @@ namespace ME3Explorer.ME3Script.IDE
                     else
                     {
                         CurrentFileLib?.Initialize();
+                        return;
                     }
                 }
+                IsBusy = false;
             }
         }
 

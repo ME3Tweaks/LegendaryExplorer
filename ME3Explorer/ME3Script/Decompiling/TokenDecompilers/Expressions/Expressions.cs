@@ -718,7 +718,7 @@ namespace ME3Script.Decompiling
             var parameters = new List<Expression>();
             while (!CurrentIs(OpCodes.EndFunctionParms))
             {
-                if (CurrentIs(OpCodes.Nothing))
+                if (CurrentIs(OpCodes.Nothing) || CurrentIs(OpCodes.EmptyParmValue))
                 {
                     PopByte(); // TODO: is this reasonable? what does it mean?
                     parameters.Add(null);

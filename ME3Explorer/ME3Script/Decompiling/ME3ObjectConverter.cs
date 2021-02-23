@@ -79,13 +79,18 @@ namespace ME3Script.Decompiling
                         break;
                 }
             }
-            var propObject = pcc.GetUExport(uClass.Defaults);
-            var defaultProperties = ConvertDefaultProperties(propObject);
+            var propEntry = pcc.GetEntry(uClass.Defaults);
+            DefaultPropertiesBlock defaultProperties = null; ;
+            if (propEntry is ExportEntry propExport)
+            {
+                defaultProperties = ConvertDefaultProperties(propExport);
+            }
 
             Class AST = new Class(uClass.Export.ObjectName.Instanced, parent, outer, uClass.ClassFlags, interfaces, Types, Vars, Funcs, States, defaultProperties)
             {
                 ConfigName = uClass.ClassConfigName,
                 Package = uClass.Export.Parent is null ? Path.GetFileNameWithoutExtension(pcc.FilePath) : uClass.Export.ParentInstancedFullPath,
+                IsFullyDefined = nextItem.value == 0 && defaultProperties != null
             };
             // Ugly quick fix:
             foreach (var member in Types)

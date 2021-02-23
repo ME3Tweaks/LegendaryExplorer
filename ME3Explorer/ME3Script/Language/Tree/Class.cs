@@ -28,6 +28,8 @@ namespace ME3Script.Language.Tree
 
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);
 
+        public bool IsFullyDefined = true;
+
         public Class(string name, VariableType parent, VariableType outer, UnrealFlags.EClassFlags flags,
                      List<VariableType> interfaces = null,
                      List<VariableType> types = null,

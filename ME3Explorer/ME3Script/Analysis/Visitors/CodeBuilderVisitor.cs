@@ -34,8 +34,8 @@ namespace ME3Script.Analysis.Visitors
 
     public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
     {
-        public readonly TFormatter Formatter = new TFormatter();
-        private readonly Stack<int> ExpressionPrescedence = new Stack<int>(new []{NOPRESCEDENCE});
+        public readonly TFormatter Formatter = new();
+        private readonly Stack<int> ExpressionPrescedence = new(new []{NOPRESCEDENCE});
 
         private const int NOPRESCEDENCE = int.MaxValue;
 
@@ -1202,10 +1202,11 @@ namespace ME3Script.Analysis.Visitors
             }
             Append(node.Function.Name, EF.Function);
             Append("(");
-            for (int i = 0; i < node.Arguments.Count; i++)
+            int countOfNonNullArgs = node.Arguments.FindLastIndex(arg => arg is not null) + 1;
+            for (int i = 0; i < countOfNonNullArgs; i++)
             {
                 node.Arguments[i]?.AcceptVisitor(this);
-                if (i < node.Arguments.Count - 1)
+                if (i < countOfNonNullArgs - 1)
                 {
                     Append(",");
                     Space();
