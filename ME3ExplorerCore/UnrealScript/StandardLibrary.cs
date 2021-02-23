@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ME3ExplorerCore;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -20,7 +21,7 @@ using ME3ExplorerCore.Helpers;
 using ME3Script.Lexing;
 using ME3Script.Parsing;
 
-namespace ME3Explorer.ME3Script
+namespace ME3Script
 {
 
     public static class StandardLibrary
@@ -38,9 +39,9 @@ namespace ME3Explorer.ME3Script
 
         public static event EventHandler Initialized;
 
-        private static readonly object initializationLock = new object();
+        private static readonly object initializationLock = new();
 
-        public static async Task<bool> InitializeStandardLib()
+        public static async Task<bool> InitializeStandardLib(params string[] additionalFiles)
         {
             if (IsInitialized)
             {
@@ -60,7 +61,7 @@ namespace ME3Explorer.ME3Script
                     {
                         return true;
                     }
-                    success = InternalInitialize();
+                    success = InternalInitialize(additionalFiles);
                     IsInitialized = success;
                     HadInitializationError = !success;
                 }
@@ -69,12 +70,18 @@ namespace ME3Explorer.ME3Script
             });
         }
 
-        private static bool InternalInitialize()
+        private static bool InternalInitialize(params string[] additionalFiles)
         {
             try
             {
+#if AZURE
+                var filePaths = new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc" }
+                    .Select(f => Path.Combine(ME3Directory.CookedPCPath, f)).ToList();
+#else 
                 var filePaths = new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" }
                     .Select(f => Path.Combine(ME3Directory.CookedPCPath, f)).ToList();
+#endif
+                filePaths.AddRange(additionalFiles);
                 if (!filePaths.All(File.Exists))
                 {
                     return false;
@@ -134,7 +141,7 @@ namespace ME3Explorer.ME3Script
 
                     classes.Add(cls, scriptText);
                 }
-                catch (Exception e) when (!App.IsDebug)
+                catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
                 {
                     DisplayError(scriptText, log.ToString());
                     return false;
@@ -155,7 +162,7 @@ namespace ME3Explorer.ME3Script
                             return false;
                         }
                     }
-                    catch (Exception e) when(!App.IsDebug)
+                    catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
                     {
                         DisplayError(scriptText, log.ToString());
                         return false;
@@ -206,8 +213,8 @@ namespace ME3Explorer.ME3Script
         [Conditional("DEBUGSCRIPT")]
         static void DisplayError(string scriptText, string logText)
         {
-            string scriptFile = Path.Combine(App.ExecFolder, "TEMPME3Script.txt");
-            string logFile = Path.Combine(App.ExecFolder, "TEMPME3Script.log");
+            string scriptFile = Path.Combine("TEMPME3Script.txt");
+            string logFile = Path.Combine("TEMPME3Script.log");
             File.WriteAllText(scriptFile, scriptText);
             File.WriteAllText(logFile, logText);
             Process.Start("notepad++", $"\"{scriptFile}\" \"{logFile}\"");

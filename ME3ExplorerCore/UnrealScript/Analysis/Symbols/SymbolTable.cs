@@ -19,14 +19,14 @@ namespace ME3Script.Analysis.Symbols
     {
         #region Primitives
 
-        public static readonly VariableType IntType = new VariableType(INT) { PropertyType = EPropertyType.Int};
-        public static readonly VariableType FloatType = new VariableType(FLOAT) { PropertyType = EPropertyType.Float };
-        public static readonly VariableType BoolType = new VariableType(BOOL) { PropertyType = EPropertyType.Bool };
-        public static readonly VariableType ByteType = new VariableType(BYTE) { PropertyType = EPropertyType.Byte };
-        public static readonly VariableType BioMask4Type = new VariableType(BIOMASK4) { PropertyType = EPropertyType.Byte };
-        public static readonly VariableType StringType = new VariableType(STRING) { PropertyType = EPropertyType.String };
-        public static readonly VariableType StringRefType = new VariableType(STRINGREF) { PropertyType = EPropertyType.StringRef };
-        public static readonly VariableType NameType = new VariableType(NAME) { PropertyType = EPropertyType.Name };
+        public static readonly VariableType IntType = new(INT) { PropertyType = EPropertyType.Int};
+        public static readonly VariableType FloatType = new(FLOAT) { PropertyType = EPropertyType.Float };
+        public static readonly VariableType BoolType = new(BOOL) { PropertyType = EPropertyType.Bool };
+        public static readonly VariableType ByteType = new(BYTE) { PropertyType = EPropertyType.Byte };
+        public static readonly VariableType BioMask4Type = new(BIOMASK4) { PropertyType = EPropertyType.Byte };
+        public static readonly VariableType StringType = new(STRING) { PropertyType = EPropertyType.String };
+        public static readonly VariableType StringRefType = new(STRINGREF) { PropertyType = EPropertyType.StringRef };
+        public static readonly VariableType NameType = new(NAME) { PropertyType = EPropertyType.Name };
 
         public static bool IsPrimitive(VariableType vt) =>
             vt == IntType || vt == FloatType || vt == BoolType || vt == ByteType || vt == BioMask4Type || vt == StringType || vt == StringRefType || vt == NameType;
@@ -37,10 +37,10 @@ namespace ME3Script.Analysis.Symbols
         private readonly LinkedList<string> ScopeNames;
         private readonly CaseInsensitiveDictionary<VariableType> Types;
 
-        private static readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new CaseInsensitiveDictionary<List<PreOpDeclaration>>();
-        private static readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new CaseInsensitiveDictionary<List<InOpDeclaration>>();
-        private static readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new CaseInsensitiveDictionary<List<PostOpDeclaration>>();
-        public static readonly List<string> InFixOperatorSymbols = new List<string>();
+        private static readonly CaseInsensitiveDictionary<List<PreOpDeclaration>> PrefixOperators = new();
+        private static readonly CaseInsensitiveDictionary<List<InOpDeclaration>> InfixOperators = new();
+        private static readonly CaseInsensitiveDictionary<List<PostOpDeclaration>> PostfixOperators = new();
+        public static readonly List<string> InFixOperatorSymbols = new();
 
         public string CurrentScopeName => ScopeNames.Count == 0 ? "" : ScopeNames.Last();
 
@@ -448,7 +448,7 @@ namespace ME3Script.Analysis.Symbols
             operatorsInitialized = true;
         }
 
-        private readonly List<Class> intrinsicClasses = new List<Class>();
+        private readonly List<Class> intrinsicClasses = new();
         public void ValidateIntrinsics()
         {
             foreach (var validationPass in Enums.GetValues<ValidationPass>())
@@ -666,7 +666,7 @@ namespace ME3Script.Analysis.Symbols
                     AddType(netConType);
                     var childConType = new Class("ChildConnection", netConType, objClass, EClassFlags.Intrinsic | EClassFlags.Transient | EClassFlags.Config, vars: new List<VariableDeclaration>
                     {
-                        new VariableDeclaration(netConType, default, "Parent")
+                        new(netConType, default, "Parent")
                     }) { ConfigName = "Engine" };
                     AddType(childConType);
                     netConType.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(childConType), default, "Children"));
@@ -812,9 +812,9 @@ namespace ME3Script.Analysis.Symbols
 
         public SymbolTable Clone()
         {
-            return new SymbolTable(new LinkedList<string>(ScopeNames), new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
-                                   new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
-                                   new CaseInsensitiveDictionary<VariableType>(Types));
+            return new(new LinkedList<string>(ScopeNames), new LinkedList<ASTNodeDict>(Scopes.Select(dict => new ASTNodeDict(dict))), 
+                       new CaseInsensitiveDictionary<ASTNodeDict>(Cache.ToDictionary(kvp => kvp.Key, kvp => new ASTNodeDict(kvp.Value))),
+                       new CaseInsensitiveDictionary<VariableType>(Types));
         }
     }
 

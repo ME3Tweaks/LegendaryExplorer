@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using ME3Explorer;
-using ME3Explorer.ME3Script;
+using ME3ExplorerCore;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -30,7 +29,7 @@ namespace ME3Script
                     return (astNode, codeBuilder.GetOutput());
                 }
             }
-            catch (Exception e) when (!App.IsDebug)
+            catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 return (null, $"Error occured while decompiling {export?.InstancedFullPath}:\n\n{e.FlattenException()}");
             }
@@ -185,7 +184,7 @@ namespace ME3Script
                             }
                             return (astNode, log);
                         }
-                        catch (Exception exception) when(!App.IsDebug)
+                        catch (Exception exception) when(!ME3ExplorerCoreLib.IsDebug)
                         {
                             log.LogError($"Compilation failed! Exception: {exception}");
                             return (astNode, log);

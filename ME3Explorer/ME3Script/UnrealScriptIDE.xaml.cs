@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using ICSharpCode.AvalonEdit.Document;
@@ -12,9 +11,6 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.AvalonEdit.Indentation.CSharp;
-using ME3Explorer;
-using ME3Explorer.ME3Script;
 using ME3Explorer.SharedUI;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
@@ -431,6 +427,10 @@ namespace ME3Explorer.ME3Script.IDE
                         textEditor.IsReadOnly = false;
                         int numLocals = func.Locals.Count;
                         int numHeaderLines = numLocals > 0 ? numLocals + 4 : 3;
+                        if (func.IsNative)
+                        {
+                            numHeaderLines = 2;
+                        }
                         var segments = new TextSegmentCollection<TextSegment>
                         {
                             new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ME3Explorer;
-using ME3Explorer.ME3Script;
+using ME3ExplorerCore;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
@@ -78,7 +77,7 @@ namespace ME3Script
                 }
                 return StandardLibrary.ResolveAllClassesInPackage(Pcc, ref _symbols);
             }
-            catch (Exception e) when(!App.IsDebug)
+            catch (Exception e) when(!ME3ExplorerCoreLib.IsDebug)
             {
                 return false;
             }
@@ -86,7 +85,7 @@ namespace ME3Script
 
         public IMEPackage Pcc { get; }
 
-        public readonly List<int> ScriptUIndexes = new List<int>();
+        public readonly List<int> ScriptUIndexes = new();
 
         public FileLib(IMEPackage pcc)
         {

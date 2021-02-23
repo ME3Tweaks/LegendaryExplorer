@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ME3Script.Analysis.Visitors;
 
-namespace ME3Script.Analysis.Visitors
+namespace ME3Explorer.ME3Script.IDE
 {
     public class SyntaxInfoCodeFormatter : PlainTextCodeFormatter , ICodeFormatter<(string, SyntaxInfo)>
     {

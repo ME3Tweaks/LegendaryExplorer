@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ME3Explorer.Packages;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
@@ -24,15 +23,15 @@ namespace ME3Script.Compiling
         private IContainsByteCode CompilationUnit;
         private readonly IEntry ContainingClass;
 
-        readonly CaseInsensitiveDictionary<UProperty> parameters = new CaseInsensitiveDictionary<UProperty>();
-        readonly CaseInsensitiveDictionary<UProperty> locals = new CaseInsensitiveDictionary<UProperty>();
+        readonly CaseInsensitiveDictionary<UProperty> parameters = new();
+        readonly CaseInsensitiveDictionary<UProperty> locals = new();
 
         private bool inAssignTarget;
         private bool inIteratorCall;
         private bool useInstanceDelegate;
         private SkipPlaceholder iteratorCallSkip;
 
-        private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new Dictionary<Label, List<JumpPlaceholder>>();
+        private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new();
 
         [Flags]
         private enum NestType
@@ -64,7 +63,7 @@ namespace ME3Script.Compiling
             }
         }
 
-        private readonly Stack<Nest> Nests = new Stack<Nest>();
+        private readonly Stack<Nest> Nests = new();
 
         public ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
         {
@@ -1300,7 +1299,9 @@ namespace ME3Script.Compiling
 
         private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).FullPath}.{s.Name}", "State");
 
-        private IEntry ResolveClass(Class c) => EntryImporter.EnsureClassIsInFile(Pcc, c.Name, RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
+        private IEntry ResolveClass(Class c) =>
+            EntryImporter.EnsureClassIsInFile(Pcc, c.Name,RelinkResultsAvailable: relinkResults =>
+                    throw new Exception($"Unable to resolve class '{c.Name}'! There were relinker errors: {string.Join("\n\t", relinkResults.Select(pair => pair.Message))}"));
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.Exports.FirstOrDefault(exp => exp.InstancedFullPath == instancedFullPath) ??
                                                                   (IEntry)Pcc.Imports.FirstOrDefault(imp => imp.InstancedFullPath == instancedFullPath);

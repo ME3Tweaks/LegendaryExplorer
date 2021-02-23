@@ -1702,7 +1702,7 @@ namespace ME3Script.Parsing
                 }
                 if (func != null)
                 {
-                    var parameters = new List<Expression>();
+                    var arguments = new List<Expression>();
                     ExpressionScopes.Push(ExpressionScopes.Last());
                     for (int i = 0; i < func.Parameters.Count; i++)
                     {
@@ -1711,57 +1711,65 @@ namespace ME3Script.Parsing
                         {
                             if (p.IsOptional)
                             {
-                                parameters.Add(null);
+                                arguments.Add(null);
                                 continue;
                             }
 
-                            ParseError("Missing non-optional parameter!", CurrentPosition);
+                            ParseError("Missing non-optional argument!", CurrentPosition);
                         }
 
                         var paramStartPos = CurrentPosition;
-                        Expression currentParam = ParseExpression();
+                        Expression currentArg = ParseExpression();
 
-                        if (currentParam == null)
+                        if (currentArg == null)
                         {
-                            throw ParseError($"Expected a parameter of type '{p.VarType.Name}'!", paramStartPos);
+                            throw ParseError($"Expected an argument of type '{p.VarType.Name}'!", paramStartPos);
                         }
-                        if (!NodeUtils.TypeCompatible(p.VarType, currentParam.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
+                        if (!NodeUtils.TypeCompatible(p.VarType, currentArg.ResolveType(), p.Flags.Has(UnrealFlags.EPropertyFlags.CoerceParm)))
                         {
-                            TypeError($"Expected a parameter of type '{p.VarType.Name}'!", currentParam);
+                            var cbv = new CodeBuilderVisitor();
+                            cbv.AppendTypeName(p.VarType);
+                            TypeError($"Expected an argument of type '{cbv.GetOutput()}'!", currentArg);
                         }
 
-                        AddConversion(p.VarType, ref currentParam);
+                        AddConversion(p.VarType, ref currentArg);
                         if (p.IsOut)
                         {
-                            if (!(currentParam is SymbolReference) && !(currentParam is ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference}))
+                            if (!(currentArg is SymbolReference) && !(currentArg is ConditionalExpression {TrueExpression: SymbolReference, FalseExpression: SymbolReference}))
                             {
-                                TypeError("Argument given to an out parameter must be an lvalue!", currentParam);
+                                TypeError("Argument given to an out parameter must be an lvalue!", currentArg);
                             }
-                            if (!NodeUtils.TypeEqual(p.VarType, currentParam.ResolveType()))
+
+                            VariableType parmType = p.VarType;
+                            if (func.Flags.Has(FunctionFlags.Iterator) && arguments.Count > 0 && arguments[0]?.ResolveType() is ClassType cType)
                             {
-                                TypeError($"Expected a parameter of type '{p.VarType.Name}'!", currentParam);
+                                parmType = cType.ClassLimiter;
+                            }
+                            if (!NodeUtils.TypeEqual(parmType, currentArg.ResolveType()))
+                            {
+                                TypeError($"Expected an argument of type '{p.VarType.Name}'! Arguments given to an out parameter must be the exact same type.", currentArg);
                             }
                         }
 
-                        parameters.Add(currentParam);
+                        arguments.Add(currentArg);
                         if (Consume(TokenType.Comma) == null) break;
                     }
 
                     ExpressionScopes.Pop();
-                    if (parameters.Count != func.Parameters.Count)
+                    if (arguments.Count != func.Parameters.Count)
                     {
                         if (func.Flags.Has(FunctionFlags.HasOptionalParms))
                         {
                             int numRequiredParams = func.Parameters.Count(param => !param.IsOptional);
-                            if (parameters.Count > func.Parameters.Count || parameters.Count < numRequiredParams)
+                            if (arguments.Count > func.Parameters.Count || arguments.Count < numRequiredParams)
                             {
                                 ParseError($"Expected between {numRequiredParams} and {func.Parameters.Count} parameters to function '{func.Name}'!", funcRef);
                             }
                             else
                             {
-                                for (int i = parameters.Count; i < func.Parameters.Count; i++)
+                                for (int i = arguments.Count; i < func.Parameters.Count; i++)
                                 {
-                                    parameters.Add(null);
+                                    arguments.Add(null);
                                 }
                             }
                         }
@@ -1775,9 +1783,9 @@ namespace ME3Script.Parsing
 
                     if (isDelegateCall)
                     {
-                        return new DelegateCall(funcRef, parameters, funcRef.StartPos, PrevToken.EndPos);
+                        return new DelegateCall(funcRef, arguments, funcRef.StartPos, PrevToken.EndPos);
                     }
-                    return new FunctionCall(funcRef, parameters, funcRef.StartPos, PrevToken.EndPos);
+                    return new FunctionCall(funcRef, arguments, funcRef.StartPos, PrevToken.EndPos);
                 }
             }
 
