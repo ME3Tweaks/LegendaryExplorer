@@ -7,6 +7,7 @@ using System.Text;
 using ME3ExplorerCore.Compression;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
@@ -299,7 +300,7 @@ namespace ME3ExplorerCore.Unreal
         public MemoryStream DecompressEntry(FileEntryStruct e)
         {
             //Debug.WriteLine("Decompressing " + e.FileName);
-            MemoryStream result = new MemoryStream();
+            MemoryStream result = MemoryManager.GetMemoryStream();
             uint count = 0;
             byte[] inputBlock;
             long left = e.RealUncompressedSize;
@@ -408,7 +409,7 @@ namespace ME3ExplorerCore.Unreal
 
         public MemoryStream DecompressEntry(int Index, FileStream fs)
         {
-            MemoryStream result = new MemoryStream();
+            MemoryStream result = MemoryManager.GetMemoryStream();
             FileEntryStruct e = Files[Index];
             uint count = 0;
             byte[] inputBlock;
@@ -996,7 +997,7 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                MemoryStream decompressedData = new MemoryStream();
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
                 fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
 
                 // Seek to the first block we must decompress that contains the data offset we are looking for
@@ -1108,7 +1109,7 @@ namespace ME3ExplorerCore.Unreal
             }
             else
             {
-                MemoryStream decompressedData = new MemoryStream();
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
                 fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
 
                 // Seek to the first block we must decompress that contains the data offset we are looking for

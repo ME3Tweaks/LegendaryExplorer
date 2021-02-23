@@ -20,6 +20,7 @@ using System.IO;
 using System.Text;
 using ME3ExplorerCore.Gammtek.IO.Converters;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.IO
@@ -83,8 +84,7 @@ namespace ME3ExplorerCore.Gammtek.IO
          ///     Initializes a new instance of the <see cref="EndianReader" /> class
          ///     using a MemoryStream.
          /// </summary>
-        public EndianReader()
-            : this(new MemoryStream(), Encoding.UTF8)
+        public EndianReader() : this(MemoryManager.GetMemoryStream(), Encoding.UTF8)
         {
         }
 
@@ -838,7 +838,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// </summary>
         public void SetupEndianReverser()
         {
-            LittleEndianStream = new MemoryStream();
+            LittleEndianStream = MemoryManager.GetMemoryStream();
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using ME3ExplorerCore.Memory;
 
 namespace ME3ExplorerCore.Helpers
 {
@@ -23,7 +24,7 @@ namespace ME3ExplorerCore.Helpers
             if (offset + size > fs.Length)
                 return null; //invalid pointer, outside bounds
 
-            outStream ??= new MemoryStream();
+            outStream ??= MemoryManager.GetMemoryStream();
             fs.Seek(offset, SeekOrigin.Begin);
             var startPos = outStream.Position;
             fs.CopyToEx(outStream, size);

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
@@ -154,7 +155,8 @@ namespace ME3ExplorerCore.Packages
                 {
                     throw new ArgumentException($"Expected pre-property binary to be {minLen} bytes, not {bytes.Length}!", nameof(bytes));
                 }
-                var ms = new MemoryStream();
+
+                var ms = MemoryManager.GetMemoryStream();
                 ms.WriteFromBuffer(bytes);
                 ms.Write(_data, oldLen, _data.Length - oldLen);
                 Data = ms.ToArray();
@@ -216,7 +218,7 @@ namespace ME3ExplorerCore.Packages
 
         private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
         {
-            var bin = new MemoryStream();
+            var bin = MemoryManager.GetMemoryStream();
             bin.WriteInt32(idxClass);
             bin.WriteInt32(idxSuperClass);
             bin.WriteInt32(idxLink);
@@ -587,7 +589,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
         /// <param name="includeNoneProperties">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
-        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false)
+        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false, int propStartPos = 0)
         {
             if (properties != null && !forceReload && !includeNoneProperties)
             {
@@ -614,9 +616,10 @@ namespace ME3ExplorerCore.Packages
             //}
             //else
             //{
-            int start = GetPropertyStart();
+            if (propStartPos == 0)
+                propStartPos = GetPropertyStart();
             MemoryStream stream = new MemoryStream(_data, false);
-            stream.Seek(start, SeekOrigin.Current);
+            stream.Seek(propStartPos, SeekOrigin.Current);
             // Do not cache
             return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
             //}
@@ -809,6 +812,37 @@ namespace ME3ExplorerCore.Packages
                 return (UnrealFlags.EPropertyFlags)EndianReader.ToUInt64(_data, 0x18, FileRef.Endian);
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets preprops binary, properties, and binary, all without having to do multiple passes on the export
+        /// </summary>
+        /// <returns></returns>
+        public ExportDatas GetExportDatas()
+        {
+            ExportDatas ed = new ExportDatas();
+            if (IsClass)
+            {
+                ed.IsClass = true;
+                return ed;
+            }
+            else
+            {
+                ed.PropStartOffset = GetPropertyStart();
+                ed.prePropBinary = _data.Slice(0, ed.PropStartOffset);
+                ed.Properties = GetProperties(propStartPos: ed.PropStartOffset);
+                ed.prePropBinary = _data.Slice(ed.Properties.endOffset, _data.Length - ed.Properties.endOffset);
+            }
+            return ed;
+        }
+
+        public class ExportDatas
+        {
+            public bool IsClass { get; set; }
+            public byte[] prePropBinary { get; set; }
+            public PropertyCollection Properties { get; set; }
+            public byte[] postPropsBinary { get; set; }
+            public int PropStartOffset { get; set; }
         }
     }
 }

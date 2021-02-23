@@ -30,6 +30,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Compression
@@ -56,16 +57,18 @@ namespace ME3ExplorerCore.Compression
 
         public static byte[] Compress(byte[] src)
         {
-            byte[] tmpbuf = new byte[src.Length + src.Length / 16 + 64 + 3];
+            var bufLen = src.Length + src.Length / 16 + 64 + 3;
+            byte[] tmpBuf = MemoryManager.GetByteArray(bufLen);
             uint dstLen = 0;
 
-            int status = LZOCompress(src, (uint)src.Length, tmpbuf, ref dstLen);
+            int status = LZOCompress(src, (uint)src.Length, tmpBuf, ref dstLen);
             if (status != 0)
                 return new byte[0];
 
             byte[] dst = new byte[dstLen];
-            Array.Copy(tmpbuf, dst, dstLen);
+            Array.Copy(tmpBuf, dst, dstLen);
 
+            MemoryManager.ReturnByteArray(tmpBuf);
             return dst;
         }
     }

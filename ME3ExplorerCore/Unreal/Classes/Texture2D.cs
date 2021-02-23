@@ -7,6 +7,7 @@ using System.Linq;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -142,7 +143,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         public byte[] SerializeNewData()
         {
-            MemoryStream ms = new MemoryStream();
+            MemoryStream ms = MemoryManager.GetMemoryStream();
             if (Export.FileRef.Game != MEGame.ME3)
             {
                 for (int i = 0; i < 12; i++)

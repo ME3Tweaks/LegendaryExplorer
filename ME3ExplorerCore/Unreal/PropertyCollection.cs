@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -722,7 +723,7 @@ namespace ME3ExplorerCore.Unreal
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
-            var stream = new EndianReader(new MemoryStream());
+            var stream = new EndianReader(MemoryManager.GetMemoryStream());
             WriteTo(stream.Writer, pcc, valueOnly);
             return stream.Length;
         }
@@ -808,7 +809,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteStructProperty(pcc, Name, StructType, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     Properties.WriteTo(m.Writer, pcc);
                     return m.BaseStream;
                 }, StaticArrayIndex);
@@ -1423,7 +1424,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, bytes.Length, () =>
                 {
-                    Stream m = new MemoryStream();
+                    Stream m = MemoryManager.GetMemoryStream();
                     m.WriteFromBuffer(bytes);
                     return m;
                 }, StaticArrayIndex);
@@ -1481,7 +1482,7 @@ namespace ME3ExplorerCore.Unreal
             {
                 stream.WriteArrayProperty(pcc, Name, Values.Count, () =>
                 {
-                    EndianReader m = new EndianReader(new MemoryStream()) { Endian = pcc.Endian };
+                    EndianReader m = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
                     foreach (var prop in Values)
                     {
                         prop.WriteTo(m.Writer, pcc, true);

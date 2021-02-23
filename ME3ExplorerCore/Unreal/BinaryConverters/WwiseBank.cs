@@ -6,6 +6,7 @@ using System.Text;
 using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 
@@ -241,7 +242,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 writer.WriteUInt32(didx);
                 writer.WriteInt32(EmbeddedFiles.Count * 12);
-                var dataChunk = new MemoryStream();
+                var dataChunk = MemoryManager.GetMemoryStream();
                 foreach ((uint id, byte[] bytes) in EmbeddedFiles)
                 {
                     dataChunk.WriteZeros((int)(dataChunk.Position.Align(16) - dataChunk.Position)); //files must be 16-byte aligned in the data chunk
@@ -397,7 +398,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
             protected MemoryStream WriteHIRCObjectHeader(MEGame game)
             {
-                var ms = new MemoryStream();
+                var ms = MemoryManager.GetMemoryStream();
                 if (game == MEGame.ME3)
                 {
                     ms.WriteByte((byte)Type);

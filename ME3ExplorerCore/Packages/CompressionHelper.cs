@@ -484,7 +484,7 @@ namespace ME3ExplorerCore.Packages
             }
 
 
-            MemoryStream outStream = new MemoryStream();
+            MemoryStream outStream = MemoryManager.GetMemoryStream();
             List<(int blockCompressedSize, int blockDecompressedSize)> blockTable = new List<(int blockCompressedSize, int blockDecompressedSize)>();
 
             // Read Block Table
@@ -500,7 +500,7 @@ namespace ME3ExplorerCore.Packages
             {
                 // Decompress
                 //Debug.WriteLine($"Decompressing data at 0x{raw.Position:X8}");
-                var datain = rawInput.ReadToBuffer(btInfo.blockCompressedSize);
+                var datain = rawInput.ReadToBuffer(btInfo.blockCompressedSize); // This is kinda poor performance. But fully compressed packages aren't on PC
                 if (compressionType == UnrealPackageFile.CompressionType.None)
                 {
                     // We have to determine if it's LZMA or LZX based on first few bytes
@@ -517,7 +517,8 @@ namespace ME3ExplorerCore.Packages
                     }
                 }
 
-                var dataout = new byte[btInfo.blockDecompressedSize];
+                var dataout = MemoryManager.GetByteArray(btInfo.blockDecompressedSize);
+                //var dataout = new byte[btInfo.blockDecompressedSize];
                 if (dataout.Length == datain.Length)
                 {
                     // WiiU SFXGame has weird case where one single block has same sizes and does not have LZMA compression flag for some reason
@@ -550,7 +551,8 @@ namespace ME3ExplorerCore.Packages
                 }
 
                 index++;
-                outStream.WriteFromBuffer(dataout);
+                outStream.Write(dataout, 0,btInfo.blockDecompressedSize);
+                MemoryManager.ReturnByteArray(dataout);
             }
 
             outStream.Position = 0;
@@ -592,7 +594,8 @@ namespace ME3ExplorerCore.Packages
 
                 var nextChunkPos = raw.Position;
                 // Read in compressed data (this seems like it should be optimizable - like with Span<T>) 
-                c.Compressed = new byte[c.compressedSize];
+                c.Compressed = MemoryManager.GetByteArray(c.compressedSize); // Make sure we return!!
+                //c.Compressed  = new byte[c.compressedSize]); // old way
                 raw.Seek(c.compressedOffset, SeekOrigin.Begin);
                 raw.Read(c.Compressed, 0, c.compressedSize);
 
@@ -631,8 +634,6 @@ namespace ME3ExplorerCore.Packages
                 //c.Uncompressed = new byte[c.uncompressedSize];
                 Chunks.Add(c);
 
-
-
                 raw.Seek(nextChunkPos, SeekOrigin.Begin);
             }
 
@@ -646,32 +647,12 @@ namespace ME3ExplorerCore.Packages
             // Just re-use the dataout buffer to prevent memory allocations. 
             // We will allocate the largest uncompressed size block we can find
 
-            var dataout = new byte[maxUncompressedBlockSize];
+            var dataout = MemoryManager.GetByteArray(maxUncompressedBlockSize);
+            //var dataout = new byte[maxUncompressedBlockSize]); // Make sure we return!
 
 
             for (int i = 0; i < Chunks.Count; i++)
             {
-
-
-                //if (h.magic != -1641380927)
-                //    throw new FormatException("Chunk magic number incorrect");
-                ////DebugOutput.PrintLn("Chunkheader read: Magic = " + h.magic + ", Blocksize = " + h.blocksize + ", Compressed Size = " + h.compressedsize + ", Uncompressed size = " + h.uncompressedsize);
-                //int blockCount = h.uncompressedsize / h.blocksize;
-                //if (h.uncompressedsize % h.blocksize != 0) blockCount++;
-                //var BlockList = new List<Block>();
-                ////DebugOutput.PrintLn("\t\t" + count + " Read Blockheaders...");
-                //for (int j = 0; j < blockCount; j++)
-                //{
-                //    Block b = new Block
-                //    {
-                //        compressedsize = EndianReader.ToInt32(Chunks[i].Compressed, pos, raw.Endian),
-                //        uncompressedsize = EndianReader.ToInt32(Chunks[i].Compressed, pos + 4, raw.Endian)
-                //    };
-                //    //DebugOutput.PrintLn("Block " + j + ", compressed size = " + b.compressedsize + ", uncompressed size = " + b.uncompressedsize);
-                //    pos += 8;
-                //    BlockList.Add(b);
-                //}
-
                 int pos = 16 + 8 * Chunks[i].blocks.Count;
 
                 int currentUncompChunkOffset = 0;
@@ -680,7 +661,7 @@ namespace ME3ExplorerCore.Packages
                 foreach (Block b in Chunks[i].blocks)
                 {
                     //Debug.WriteLine("Decompressing block " + blocknum);
-                    var datain = new byte[b.compressedsize];
+                    var datain = MemoryManager.GetByteArray(b.compressedsize);
                     Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
                     switch (compressionType)
@@ -693,7 +674,7 @@ namespace ME3ExplorerCore.Packages
                             }
                         case UnrealPackageFile.CompressionType.Zlib:
                             {
-                                if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                                if (Zlib.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != b.uncompressedsize)
                                     throw new Exception("Zlib decompression failed!");
                                 break;
                             }
@@ -711,14 +692,16 @@ namespace ME3ExplorerCore.Packages
                     }
 
                     result.Seek(Chunks[i].uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
-                    result.WriteFromBuffer(dataout);
+                    result.Write(dataout,0,b.uncompressedsize); //cannot trust the length of the array as it's rented
                     currentUncompChunkOffset += b.uncompressedsize;
                     blocknum++;
+                    MemoryManager.ReturnByteArray(datain);
                 }
-                //c.header = h;
-                //c.blocks = BlockList;
+
+                // end of chunk 
                 count++;
-                //Chunks[i] = c;
+                MemoryManager.ReturnByteArray(Chunks[i].Compressed);
+
             }
 
             // Reattach the original header
@@ -727,7 +710,10 @@ namespace ME3ExplorerCore.Packages
             raw.BaseStream.CopyToEx(result, firstChunkOffset); // Copy the header in
             // Does header need adjusted here to be accurate? 
             // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
-
+            
+            
+            // Cleanup memory
+            MemoryManager.ReturnByteArray(dataout);
             return result;
         }
 

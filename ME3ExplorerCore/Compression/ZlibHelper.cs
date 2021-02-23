@@ -19,14 +19,14 @@
  *
  */
 
- /*
-  * This code use lzo2wrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
-  *
-  * The dll is created using Zlib, MiniZlib, FastZlib libraries and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/Zlib
-  *
-  */
+/*
+ * This code use lzo2wrapper.dll copied from MassEffectModder:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
+ *
+ * The dll is created using Zlib, MiniZlib, FastZlib libraries and MassEffectModder wrapper code:
+ * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/Zlib
+ *
+ */
 
 using System;
 using System.Runtime.InteropServices;
@@ -42,9 +42,10 @@ namespace ME3ExplorerCore.Compression
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public static uint Decompress(byte[] src, uint srcLen, byte[] dst)
+        public static uint Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
-            uint dstLen = (uint)dst.Length;
+            if (dstLen == 0)
+                dstLen = (uint)dst.Length;
 
             int status = ZlibDecompress(src, srcLen, dst, ref dstLen);
             if (status != 0)

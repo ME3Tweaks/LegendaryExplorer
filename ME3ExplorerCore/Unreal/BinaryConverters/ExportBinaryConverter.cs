@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Memory;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.Classes;
 using static ME3ExplorerCore.Unreal.BinaryConverters.ObjectBinary;
@@ -84,7 +85,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
                 int netIndex = ms.ReadInt32();
 
-                var os = new MemoryStream();
+                var os = MemoryManager.GetMemoryStream();
                 os.WriteInt32(node);
                 os.WriteInt32(stateNode);
                 os.WriteUInt64(probeMask);
@@ -125,7 +126,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             {
                 return bin.ToArray();
             }
-            var os = new MemoryStream();
+            var os = MemoryManager.GetMemoryStream();
 
             if (export.Game != MEGame.ME3)
             {
