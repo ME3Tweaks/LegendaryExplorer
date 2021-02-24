@@ -36,12 +36,19 @@ namespace ME3Explorer.Meshplorer
 
         #region 3D
 
-        private bool _rotating = true, _wireframe, _solid = true, _firstperson;
+        private bool _rotating = Properties.Settings.Default.MeshplorerViewRotating, _wireframe, _solid = true, _firstperson;
 
         public bool Rotating
         {
             get => _rotating;
-            set => SetProperty(ref _rotating, value);
+            set
+            {
+                if (SetProperty(ref _rotating, value))
+                {
+                    Properties.Settings.Default.MeshplorerViewRotating = value;
+                    Properties.Settings.Default.Save();
+                }
+            } 
         }
 
         public bool Wireframe
