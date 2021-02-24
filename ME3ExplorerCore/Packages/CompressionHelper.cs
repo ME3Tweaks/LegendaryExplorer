@@ -684,7 +684,7 @@ namespace ME3ExplorerCore.Packages
                                 throw new Exception("LZMA decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZX:
-                            if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
+                            if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint) b.uncompressedsize) != 0)
                                 throw new Exception("LZX decompression failed!");
                             break;
                         default:
