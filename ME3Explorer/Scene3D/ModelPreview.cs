@@ -12,6 +12,7 @@ using static ME3Explorer.Scene3D.ModelPreview;
 using SkeletalMesh = ME3ExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using ME3Explorer.Unreal.Classes;
 using ME3ExplorerCore.GameFilesystem;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal.Classes;
 
 
@@ -91,7 +92,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<IMEPackage> cachedPackages, List<PreloadedTextureData> preloadedTextures = null)
+        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
             Properties.Add("Name", mat.Export.ObjectName);
@@ -116,7 +117,7 @@ namespace ME3Explorer.Scene3D
 
                     if (textureEntry is ImportEntry import)
                     {
-                        var extAsset = ModelPreview.FindExternalAsset(import, texcache.cache.Select(x => x.TextureExport).ToList(), cachedPackages);
+                        var extAsset = EntryImporter.ResolveImport(import, null, assetCache);
                         if (extAsset != null)
                         {
                             Textures.Add(textureEntry.FullPath, texcache.LoadTexture(extAsset));
@@ -169,7 +170,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, List<IMEPackage> cachedPackages, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, cachedPackages, preloadedTextures)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
         {
             string matPackage = null;
             if (mat.Export.Parent != null)
@@ -258,7 +259,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="device"></param>
         /// <param name="mesh"></param>
-        public ModelPreview(Device device, WorldMesh mesh, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device device, WorldMesh mesh, PreviewTextureCache texcache, PackageCache assetCache, PreloadedModelData preloadedData = null)
         {
             //Preloaded
             List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
@@ -268,7 +269,7 @@ namespace ME3Explorer.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
                 }
             }
@@ -282,7 +283,7 @@ namespace ME3Explorer.Scene3D
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device Device, StaticMesh m, int selectedLOD, PreviewTextureCache texcache, PackageCache assetCache, PreloadedModelData preloadedData = null)
         {
             if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
                 return;
@@ -424,7 +425,7 @@ namespace ME3Explorer.Scene3D
                         // MaterialInstanceConstant mat has.
                         // For now, just use the default material.
                         ExportEntry entry = m.Export.FileRef.GetUExport(section.Material.value);
-                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), cachedPackages);
+                        material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), assetCache);
                         AddMaterial(material.Properties["Name"], material);
                     }
                     else if (section.Material.value < 0)
@@ -436,7 +437,7 @@ namespace ME3Explorer.Scene3D
                             // TODO: pick what material class best fits based on what properties the 
                             // MaterialInstanceConstant mat has.
                             // For now, just use the default material.
-                            material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), cachedPackages);
+                            material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), assetCache);
                             AddMaterial(material.Properties["Name"], material);
                         }
                         else
@@ -457,7 +458,7 @@ namespace ME3Explorer.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
                 }
             }
@@ -640,7 +641,7 @@ namespace ME3Explorer.Scene3D
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
         /// <param name="m">The mesh to generate a preview for.</param>
         /// <param name="texcache">The texture cache for loading textures.</param>
-        public ModelPreview(Device Device, SkeletalMesh m, PreviewTextureCache texcache, List<IMEPackage> cachedPackages, PreloadedModelData preloadedData = null)
+        public ModelPreview(Device Device, SkeletalMesh m, PreviewTextureCache texcache, PackageCache assetCache, PreloadedModelData preloadedData = null)
         {
             // STEP 1: MATERIALS
             if (preloadedData == null)
@@ -657,7 +658,7 @@ namespace ME3Explorer.Scene3D
                     {
                         // The material instance is an import!
                         ImportEntry matImport = m.Export.FileRef.GetImport(materialUIndex.value);
-                        var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList(), cachedPackages);
+                        var externalAsset = EntryImporter.ResolveImport(matImport, null, assetCache);
                         if (externalAsset != null)
                         {
                             mat = new MaterialInstanceConstant(externalAsset);
@@ -670,7 +671,7 @@ namespace ME3Explorer.Scene3D
                         // TODO: pick what material class best fits based on what properties the 
                         // MaterialInstanceConstant mat has.
                         // For now, just use the default material.
-                        material = new TexturedPreviewMaterial(texcache, mat, cachedPackages);
+                        material = new TexturedPreviewMaterial(texcache, mat, assetCache);
                         AddMaterial(material.Properties["Name"], material);
                     }
                 }
@@ -682,7 +683,7 @@ namespace ME3Explorer.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), cachedPackages, preloadedData.texturePreviewMaterials);
+                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
 
                 }

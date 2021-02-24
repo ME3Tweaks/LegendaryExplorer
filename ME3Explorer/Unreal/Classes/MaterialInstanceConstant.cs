@@ -5,6 +5,7 @@ using System.Linq;
 using ME3Explorer.Scene3D;
 using ME3ExplorerCore.GameFilesystem;
 using ME3ExplorerCore.Packages;
+using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 
@@ -27,39 +28,13 @@ namespace ME3Explorer.Unreal.Classes
         //    public string Desc;
         //}
 
-        public MaterialInstanceConstant(ExportEntry export, List<IMEPackage> cachedPackages = null)
+        public MaterialInstanceConstant(ExportEntry export, PackageCache assetCache = null)
         {
             Export = export;
-            ReadMaterial(export, cachedPackages);
-
-            //bool me1Parsed = false;
-            //if (export.Game == MEGame.ME1 || export.Game == MEGame.ME2) //todo: maybe check to see if textureparametervalues exists first, but in testing me1 didn't seem to have this
-            //{
-            //    try
-            //    {
-            //        me1Parsed = true;
-            //    }
-            //    catch (Exception e)
-            //    {
-
-            //    }
-            //}
-
-
-            //if (export.Game == MEGame.ME3 || !me1Parsed)
-            //{
-            //    if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> paramVals)
-            //    {
-            //        foreach (StructProperty paramVal in paramVals)
-            //        {
-            //            Textures.Add(export.FileRef.getEntry(paramVal.GetProp<ObjectProperty>("ParameterValue").Value));
-            //        }
-            //    }
-            //}
+            ReadMaterial(export, assetCache);
         }
 
-        // TODO: THIS NEEDS MOVED OUT OF LIBRARY AS ITS FOR RENDERING
-        private void ReadMaterial(ExportEntry export, List<IMEPackage> cachedPackages = null)
+        private void ReadMaterial(ExportEntry export, PackageCache assetCache = null)
         {
             if (export.ClassName == "Material")
             {
@@ -88,7 +63,7 @@ namespace ME3Explorer.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
-                        var externalEntry = ModelPreview.FindExternalAsset(ie, null, cachedPackages);
+                        var externalEntry = EntryImporter.ResolveImport(ie, null, assetCache);
                         if (externalEntry != null)
                         {
                             ReadMaterial(externalEntry);

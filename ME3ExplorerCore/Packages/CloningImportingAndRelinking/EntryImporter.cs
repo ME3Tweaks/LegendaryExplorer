@@ -191,7 +191,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, 
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
             var exportData = sourceExport.GetExportDatas();
@@ -231,7 +231,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //store copy of names list in case something goes wrong
             if (sourceExport.Game != destPackage.Game)
             {
-                List<string> names = destPackage.Names.ToList(); 
+                List<string> names = destPackage.Names.ToList();
                 try
                 {
                     if (sourceExport.Game != destPackage.Game)
@@ -247,7 +247,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     throw; //should we throw?
                 }
             }
-            
+
 
             //takes care of slight header differences between ME1/2 and ME3
             byte[] newHeader = sourceExport.GenerateHeader(destPackage.Game, true);
@@ -637,6 +637,18 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <returns></returns>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
+        {
+            return ResolveImport(entry, null, localCache, localization);
+        }
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
@@ -644,7 +656,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache = null, PackageCache lookupCache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
