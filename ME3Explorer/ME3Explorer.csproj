@@ -109,6 +109,9 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.3.0, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.3\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.Profiler.Api, Version=1.1.7.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Profiler.Api.1.1.7\lib\net471\JetBrains.Profiler.Api.dll</HintPath>
     </Reference>
@@ -313,138 +316,14 @@
     </Compile>
     <Compile Include="CoreLibSettingsBridge.cs" />
     <Compile Include="ME3ExpMemoryAnalyzer\MemoryAnalyzerObjectExtended.cs" />
-    <Compile Include="ME3Script\Analysis\Symbols\SymbolTable.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\ClassValidationVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\CodeBuilderVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\IAcceptASTVisitor.cs" />
-    <Compile Include="ME3Script\Analysis\Visitors\IASTVisitor.cs" />
-    <Compile Include="ME3Script\Compiling\ByteCodeCompilerVisitor.cs" />
-    <Compile Include="ME3Script\Compiling\BytecodeWriter.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\Error.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LineError.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LineWarning.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\LogMessage.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\MessageLog.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\PositionedMessage.cs" />
-    <Compile Include="ME3Script\Compiling\Errors\Warning.cs" />
-    <Compile Include="ME3Script\Decompiling\ExtendedNativeTable.cs" />
-    <Compile Include="ME3Script\Decompiling\Intermediate Statements.cs" />
-    <Compile Include="ME3Script\Decompiling\ME3ByteCodeDecompiler.cs" />
-    <Compile Include="ME3Script\Decompiling\ME3ObjectConverter.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\ConstValues.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\DynamicArrays.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Expressions\Expressions.cs" />
-    <Compile Include="ME3Script\Decompiling\TokenDecompilers\Statements\Statements.cs" />
-    <Compile Include="ME3Script\FileLib.cs" />
-    <Compile Include="ME3Script\Language\ByteCode\StandardTokens.cs" />
-    <Compile Include="ME3Script\Language\Tree\ArraySymbolRef.cs" />
-    <Compile Include="ME3Script\Language\Tree\AssertStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ClassType.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateCall.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateComparison.cs" />
-    <Compile Include="ME3Script\Language\Tree\DelegateType.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynamicArrayType.cs" />
-    <Compile Include="ME3Script\Language\Tree\AssignStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ASTNode.cs" />
-    <Compile Include="ME3Script\Language\Tree\BooleanLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\BreakStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\CaseStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\CastExpression.cs" />
-    <Compile Include="ME3Script\Language\Tree\Class.cs" />
-    <Compile Include="ME3Script\Language\Tree\CodeBody.cs" />
-    <Compile Include="ME3Script\Language\Tree\CompositeSymbolRef.cs" />
-    <Compile Include="ME3Script\Language\Tree\ConditionalExpression.cs" />
-    <Compile Include="ME3Script\Language\Tree\Const.cs" />
-    <Compile Include="ME3Script\Language\Tree\ContinueStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultPropertiesBlock.cs" />
-    <Compile Include="ME3Script\Language\Tree\DefaultCaseStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\DoUntilLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynamicArrayLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\DynArray Operations.cs" />
-    <Compile Include="ME3Script\Language\Tree\Enumeration.cs" />
-    <Compile Include="ME3Script\Language\Tree\EnumValue.cs" />
-    <Compile Include="ME3Script\Language\Tree\Expression.cs" />
-    <Compile Include="ME3Script\Language\Tree\ExpressionOnlyStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\FloatLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\ForEachLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\ForLoop.cs" />
-    <Compile Include="ME3Script\Language\Tree\Function.cs" />
-    <Compile Include="ME3Script\Language\Tree\FunctionCall.cs" />
-    <Compile Include="ME3Script\Language\Tree\FunctionParameter.cs" />
-    <Compile Include="ME3Script\Language\Tree\Goto.cs" />
-    <Compile Include="ME3Script\Language\Tree\IfStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\InOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\InOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\IntegerLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\IObjectType.cs" />
-    <Compile Include="ME3Script\Language\Tree\NameLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\NewOperator.cs" />
-    <Compile Include="ME3Script\Language\Tree\NoneLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\ObjectLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\OperatorDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PostOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PostOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\PreOpDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\PreOpReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\PrimitiveCast.cs" />
-    <Compile Include="ME3Script\Language\Tree\ReturnNothingStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\ReturnStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\RotatorLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\State.cs" />
-    <Compile Include="ME3Script\Language\Tree\Label.cs" />
-    <Compile Include="ME3Script\Language\Tree\StateGoto.cs" />
-    <Compile Include="ME3Script\Language\Tree\Statement.cs" />
-    <Compile Include="ME3Script\Language\Tree\StaticArrayType.cs" />
-    <Compile Include="ME3Script\Language\Tree\StopStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\StringLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\StringRefLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\Struct.cs" />
-    <Compile Include="ME3Script\Language\Tree\StructComparison.cs" />
-    <Compile Include="ME3Script\Language\Tree\StructLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\Subobject.cs" />
-    <Compile Include="ME3Script\Language\Tree\SwitchStatement.cs" />
-    <Compile Include="ME3Script\Language\Tree\SymbolReference.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableDeclaration.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableIdentifier.cs" />
-    <Compile Include="ME3Script\Language\Tree\VariableType.cs" />
-    <Compile Include="ME3Script\Language\Tree\VectorLiteral.cs" />
-    <Compile Include="ME3Script\Language\Tree\WhileLoop.cs" />
-    <Compile Include="ME3Script\Language\Util\IContainsLocals.cs" />
-    <Compile Include="ME3Script\Language\Util\NodeUtils.cs" />
-    <Compile Include="ME3Script\Lexing\LexerBase.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\ITokenMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\KeywordMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NameLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\NumberMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\SingleLineCommentMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\StringRefLiteralMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WhiteSpaceMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\StringMatchers\WordMatcher.cs" />
-    <Compile Include="ME3Script\Lexing\Matching\TokenMatcherBase.cs" />
-    <Compile Include="ME3Script\Lexing\StringLexer.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\StringTokenizer.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\Token.cs" />
-    <Compile Include="ME3Script\Lexing\Tokenizing\TokenizableDataStream.cs" />
-    <Compile Include="ME3Script\ME3ScriptCompiler.cs" />
-    <Compile Include="ME3Script\Parsing\ClassOutlineParser.cs" />
-    <Compile Include="ME3Script\Parsing\CodeBodyParser.cs" />
-    <Compile Include="ME3Script\Parsing\StringParserBase.cs" />
-    <Compile Include="ME3Script\Parsing\TokenStream.cs" />
-    <Compile Include="ME3Script\StandardLibrary.cs" />
+    <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
+    <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
+    <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
+    <Compile Include="ME3Script\IDE\SyntaxInfoCodeFormatter.cs" />
+    <Compile Include="ME3Script\IDE\UnrealScriptTextEditor.cs" />
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">
       <DependentUpon>UnrealScriptIDE.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ME3Script\Utilities\CastHelper.cs" />
-    <Compile Include="ME3Script\Utilities\GlobalLists.cs" />
-    <Compile Include="ME3Script\Utilities\Keywords.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Keywords.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ME3Script\Utilities\ObjectReader.cs" />
-    <Compile Include="ME3Script\Utilities\SourcePosition.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsK.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsM.cs" />
     <Compile Include="PackageEditor\Experiments\PackageEditorExperimentsO.cs" />
@@ -1428,6 +1307,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
+    <EmbeddedResource Include="Resources\Unrealscript-Mode.xshd" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
@@ -1608,10 +1488,6 @@
     <Resource Include="Resources\audiolocalizer_256x256.ico" />
     <Resource Include="Resources\liveleveleditor_256x256.ico" />
     <Resource Include="Resources\WwiseEditor_256x256.ico" />
-    <Content Include="ME3Script\Utilities\Keywords.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Keywords.cs</LastGenOutput>
-    </Content>
     <Resource Include="Resources\placeholder_256x256.ico" />
     <Resource Include="Resources\sfarexplorer_256x256.ico" />
     <Resource Include="Resources\afccompactor_256x256.ico" />

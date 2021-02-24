@@ -640,6 +640,18 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <returns></returns>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
+        {
+            return ResolveImport(entry, null, localCache, localization);
+        }
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
@@ -647,7 +659,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache = null, PackageCache lookupCache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -693,14 +705,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 filesToCheck.Add(Path.GetFileName(efxPath));
             }
 
-            if (entry.Game == MEGame.ME3)
-            {
-                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-                {
-                    filesToCheck.Add(Path.GetFileName(efPath));
-                }
-            }
+            //if (entry.Game == MEGame.ME3)
+            //{
+            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efPath));
+            //    }
+            //}
 
 
             //add base definition files that are always loaded (Core, Engine, etc.)
@@ -819,6 +831,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     associatedFiles.Add($"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
+            }
+
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
 
             return associatedFiles;

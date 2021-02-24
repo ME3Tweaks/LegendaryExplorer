@@ -529,20 +529,23 @@ namespace ME3ExplorerCore.Packages
                     switch (compressionType)
                     {
                         case UnrealPackageFile.CompressionType.LZO:
-                            if (LZO2.Decompress(datain, (uint) datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
                                 throw new Exception("LZO decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.Zlib:
-                            if (Zlib.Decompress(datain, (uint) datain.Length, dataout) != btInfo.blockDecompressedSize)
+                            if (Zlib.Decompress(datain, (uint)datain.Length, dataout) != btInfo.blockDecompressedSize)
                                 throw new Exception("Zlib decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZMA:
-                            dataout = LZMA.Decompress(datain, (uint) btInfo.blockDecompressedSize);
+                            // Todo: This needs to use MemoryManager system. But it's internally different from others so will take 
+                            // a bit more work to do
+                            // Mgamerz 2/23/2021
+                            dataout = LZMA.Decompress(datain, (uint)btInfo.blockDecompressedSize);
                             if (dataout.Length != btInfo.blockDecompressedSize)
                                 throw new Exception("LZMA decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZX:
-                            if (LZX.Decompress(datain, (uint) datain.Length, dataout) != 0)
+                            if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)btInfo.blockDecompressedSize) != 0)
                                 throw new Exception("LZX decompression failed!");
                             break;
                         default:
@@ -551,7 +554,7 @@ namespace ME3ExplorerCore.Packages
                 }
 
                 index++;
-                outStream.Write(dataout, 0,btInfo.blockDecompressedSize);
+                outStream.Write(dataout, 0, btInfo.blockDecompressedSize);
                 MemoryManager.ReturnByteArray(dataout);
             }
 
@@ -684,7 +687,7 @@ namespace ME3ExplorerCore.Packages
                                 throw new Exception("LZMA decompression failed!");
                             break;
                         case UnrealPackageFile.CompressionType.LZX:
-                            if (LZX.Decompress(datain, (uint)datain.Length, dataout) != 0)
+                            if (LZX.Decompress(datain, (uint)datain.Length, dataout, (uint)b.uncompressedsize) != 0)
                                 throw new Exception("LZX decompression failed!");
                             break;
                         default:
@@ -692,7 +695,7 @@ namespace ME3ExplorerCore.Packages
                     }
 
                     result.Seek(Chunks[i].uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
-                    result.Write(dataout,0,b.uncompressedsize); //cannot trust the length of the array as it's rented
+                    result.Write(dataout, 0, b.uncompressedsize); //cannot trust the length of the array as it's rented
                     currentUncompChunkOffset += b.uncompressedsize;
                     blocknum++;
                     MemoryManager.ReturnByteArray(datain);
@@ -708,10 +711,10 @@ namespace ME3ExplorerCore.Packages
             result.Position = 0;
             raw.Position = 0;
             raw.BaseStream.CopyToEx(result, firstChunkOffset); // Copy the header in
-            // Does header need adjusted here to be accurate? 
-            // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
-            
-            
+                                                               // Does header need adjusted here to be accurate? 
+                                                               // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
+
+
             // Cleanup memory
             MemoryManager.ReturnByteArray(dataout);
             return result;
