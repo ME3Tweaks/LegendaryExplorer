@@ -83,6 +83,14 @@
     <None Remove="Embedded\GameResources.zip" />
     <None Remove="Embedded\Infos.zip" />
     <None Remove="Embedded\udkdefaultthumb.png" />
+    <None Remove="UnrealScript\Utilities\Keywords.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UnrealScript\Utilities\Keywords.tt">
+      <LastGenOutput>Keywords.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -126,6 +134,18 @@
 
   <ItemGroup>
     <Folder Include="Sequencing\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UnrealScript\Utilities\Keywords.cs">
+      <DependentUpon>Keywords.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>

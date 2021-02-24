@@ -19,7 +19,7 @@ using ME3ExplorerCore.Unreal;
 
 namespace ME3Explorer.SequenceObjects
 {
-    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String, Vector };
+    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String, Vector, Rotator };
     public abstract class SeqEdEdge : PPath
     {
         public PNode start;
@@ -53,6 +53,7 @@ namespace ME3Explorer.SequenceObjects
         static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         static readonly Color stringColor = Color.FromArgb(24, 219, 12);//lime green
         static readonly Color vectorColor = Color.FromArgb(127, 123, 32);//dark gold
+        static readonly Color rotatorColor = Color.FromArgb(176, 97, 63);//burnt sienna
         protected static readonly Color EventColor = Color.FromArgb(214, 30, 28);
         protected static readonly Color titleColor = Color.FromArgb(255, 255, 128);
         protected static readonly Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
@@ -241,6 +242,8 @@ namespace ME3Explorer.SequenceObjects
                     return stringColor;
                 case VarTypes.Vector:
                     return vectorColor;
+                case VarTypes.Rotator:
+                    return rotatorColor;
                 default:
                     return Color.Black;
             }
@@ -264,6 +267,8 @@ namespace ME3Explorer.SequenceObjects
                 return VarTypes.String;
             if (s.Contains("Vector"))
                 return VarTypes.Vector;
+            if (s.Contains("Rotator"))
+                return VarTypes.Rotator;
             return VarTypes.Extern;
         }
 
@@ -475,6 +480,12 @@ namespace ME3Explorer.SequenceObjects
                         if (props.GetProp<StructProperty>("VectValue") is { } vecStruct)
                         {
                             return CommonStructs.GetVector3(vecStruct).ToString();
+                        }
+                        return unknownValue;
+                    case VarTypes.Rotator:
+                        if (props.GetProp<StructProperty>("m_Rotator") is { } rotStruct)
+                        {
+                            return CommonStructs.GetRotator(rotStruct).ToString();
                         }
                         return unknownValue;
                     default:

@@ -19,7 +19,7 @@ namespace ME3Explorer.GameInterop
     public static class LiveEditHelper
     {
         //INCREMENT THIS WHEN CHANGES ARE MADE THAT WOULD REQUIRE REGENERATION OF DLC_MOD_Interop
-        public const int CURRENT_VERSION = 7;
+        public const int CURRENT_VERSION = 8;
 
         static string liveEditorFileName(MEGame game) => game switch
         {

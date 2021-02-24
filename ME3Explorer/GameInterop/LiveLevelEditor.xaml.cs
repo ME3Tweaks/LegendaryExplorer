@@ -52,7 +52,10 @@ namespace ME3Explorer.GameInterop
 
         private enum IntVarIndexes
         {
-            ActorArrayIndex = 1
+            ActorArrayIndex = 1,
+            ME3Pitch = 2,
+            ME3Yaw = 3,
+            ME3Roll = 4,
         }
 
         private bool _readyToView;
@@ -68,7 +71,9 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        public bool CamPathReadyToView => _readyToView && Game is MEGame.ME3;
+        public bool IsME3 => Game is MEGame.ME3;
+
+        public bool CamPathReadyToView => _readyToView && IsME3;
 
         private bool _readyToInitialize;
         public bool ReadyToInitialize
@@ -319,7 +324,7 @@ namespace ME3Explorer.GameInterop
             {
                 Rotator rot = defaultRotation;
                 if (msg.IndexOf("vector") is int idx && idx > 0 &&
-                    msg.Substring(idx + 7).Split(' ') is string[] {Length: 3} strings)
+                    msg.Substring(idx + 7).Split(' ') is string[] {Length: >= 3} strings)
                 {
                     var floats = new float[3];
                     for (int i = 0; i < 3; i++)
@@ -335,10 +340,16 @@ namespace ME3Explorer.GameInterop
                         }
                     }
                     rot = Rotator.FromDirectionVector(new Vector3(floats));
+                    if (msg.IndexOf("int") is int rollIdx && rollIdx > 0 &&
+                        msg.Substring(rollIdx + 4).Split(' ') is string[] { Length: >= 1 } rollStrings &&  int.TryParse(rollStrings[0], out int roll))
+                    {
+                        rot = new Rotator(rot.Pitch, rot.Yaw, roll);
+                    }
                 }
                 noUpdate = true;
                 Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
                 Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
+                Roll = (int)rot.Roll.UnrealRotationUnitsToDegrees();
                 noUpdate = false;
                 EndBusy();
             }
@@ -536,6 +547,19 @@ namespace ME3Explorer.GameInterop
             set => SetProperty(ref _posIncrement, value);
         }
 
+        private int _pitch;
+        public int Pitch
+        {
+            get => _pitch;
+            set
+            {
+                if (SetProperty(ref _pitch, value))
+                {
+                    UpdateRotation();
+                }
+            }
+        }
+
         private int _yaw;
         public int Yaw
         {
@@ -549,13 +573,13 @@ namespace ME3Explorer.GameInterop
             }
         }
 
-        private int _pitch;
-        public int Pitch
+        private int _roll;
+        public int Roll
         {
-            get => _pitch;
+            get => _roll;
             set
             {
-                if (SetProperty(ref _pitch, value))
+                if (SetProperty(ref _roll, value))
                 {
                     UpdateRotation();
                 }
@@ -583,11 +607,24 @@ namespace ME3Explorer.GameInterop
         {
             if (noUpdate) return;
 
-            (float x, float y, float z) = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameController.ExecuteConsoleCommands(Game, VarCmd(x, FloatVarIndexes.XRotComponent),
-                                                     VarCmd(y, FloatVarIndexes.YRotComponent),
-                                                     VarCmd(z, FloatVarIndexes.ZRotComponent),
-                                                     "ce SetRotation");
+            int pitch = ((float)Pitch).DegreesToUnrealRotationUnits();
+            int yaw = ((float)Yaw).DegreesToUnrealRotationUnits();
+            if (Game is MEGame.ME3)
+            {
+                int roll = ((float)Roll).DegreesToUnrealRotationUnits();
+                GameController.ExecuteConsoleCommands(Game, VarCmd(pitch, IntVarIndexes.ME3Pitch),
+                                                      VarCmd(yaw, IntVarIndexes.ME3Yaw),
+                                                      VarCmd(roll, IntVarIndexes.ME3Roll),
+                                                      "ce SetRotation");
+            }
+            else
+            {
+                (float x, float y, float z) = new Rotator(pitch, yaw, 0).GetDirectionalVector();
+                GameController.ExecuteConsoleCommands(Game, VarCmd(x, FloatVarIndexes.XRotComponent),
+                                                      VarCmd(y, FloatVarIndexes.YRotComponent),
+                                                      VarCmd(z, FloatVarIndexes.ZRotComponent),
+                                                      "ce SetRotation");
+            }
         }
 
         private static string VarCmd(float value, FloatVarIndexes index)
