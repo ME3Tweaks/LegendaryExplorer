@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -191,12 +192,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, 
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
-            var exportData = sourceExport.GetExportDatas();
+            //var exportData = sourceExport.GetExportDatasForPorting(destPackage);
 
-            /*byte[] prePropBinary;
+            var exportData = sourceExport.GetProperties();
+            byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
                 var ms = MemoryManager.GetMemoryStream();
@@ -211,7 +213,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
             else
             {
-                int start = exportData.PropStartOffset;
+                int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
                     var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16));
@@ -225,13 +227,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     prePropBinary = sourceExport.DataReadOnly.Slice(0, start);
                 }
-            }*/
+            }
 
             PropertyCollection props = sourceExport.GetProperties();
+
             //store copy of names list in case something goes wrong
             if (sourceExport.Game != destPackage.Game)
             {
-                List<string> names = destPackage.Names.ToList(); 
+                List<string> names = destPackage.Names.ToList();
                 try
                 {
                     if (sourceExport.Game != destPackage.Game)
@@ -247,14 +250,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     throw; //should we throw?
                 }
             }
-            
+
 
             //takes care of slight header differences between ME1/2 and ME3
             byte[] newHeader = sourceExport.GenerateHeader(destPackage.Game, true);
 
-            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
-            //for unsupported classes, this will just copy over the binary
-            //sometimes converting binary requires altering the properties as well
+            ////for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
+            ////for unsupported classes, this will just copy over the binary
+            ////sometimes converting binary requires altering the properties as well
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
@@ -316,7 +319,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     break;
             }
 
-            var newExport = new ExportEntry(destPackage, exportData.prePropBinary, exportData.Properties, exportData.postPropsBinary, sourceExport.IsClass)
+            var newExport = new ExportEntry(destPackage, prePropBinary, props, binaryData, sourceExport.IsClass)
             {
                 Header = newHeader,
                 Class = classValue,
@@ -338,7 +341,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, Action<string> errorOccuredCallback = null)
         {
 
-            EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
+            using EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
                 res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
@@ -624,7 +627,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
         {
-            var ms = MemoryManager.GetMemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteFromBuffer(game switch

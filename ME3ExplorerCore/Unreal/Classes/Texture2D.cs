@@ -143,7 +143,7 @@ namespace ME3ExplorerCore.Unreal.Classes
 
         public byte[] SerializeNewData()
         {
-            MemoryStream ms = MemoryManager.GetMemoryStream();
+            using MemoryStream ms = MemoryManager.GetMemoryStream();
             if (Export.FileRef.Game != MEGame.ME3)
             {
                 for (int i = 0; i < 12; i++)

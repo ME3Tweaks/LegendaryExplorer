@@ -21,7 +21,7 @@ namespace ME3ExplorerCore.Packages
         public MELocalization Localization => MELocalization.None;
         public byte[] getHeader()
         {
-            var ms = MemoryManager.GetMemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms);
             return ms.ToArray();
         }
