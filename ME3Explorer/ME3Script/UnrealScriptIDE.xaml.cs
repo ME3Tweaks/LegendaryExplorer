@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
@@ -35,7 +37,7 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 if (Document is not null)
                 {
-                    Document.TextChanged -= TextAreaOnTextEntered;
+                    Document.TextChanged -= TextChanged;
                 }
 
                 if (foldingManager != null)
@@ -75,20 +77,12 @@ namespace ME3Explorer.ME3Script.IDE
                     StandardLibrary_Initialized(null, EventArgs.Empty);
                 }
             }
-        }
 
-        static UnrealScriptIDE()
-        {
-            using Stream s = typeof(UnrealScriptIDE).Assembly.GetManifestResourceStream("ME3Explorer.Resources.Unrealscript-Mode.xshd");
-            if (s != null)
-            {
-                using var reader = new XmlTextReader(s);
-                HighlightingManager.Instance.RegisterHighlighting("Unrealscript", new[] { ".uc" }, HighlightingLoader.Load(reader, HighlightingManager.Instance));
-            }
+            textEditor.TextArea.TextEntered += TextAreaOnTextEntered;
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
-            exportEntry.Game == MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
+            exportEntry.Game <= MEGame.ME3 && exportEntry.FileRef.Platform == MEPackage.GamePlatform.PC && (exportEntry.ClassName switch
             {
                 "Class" => true,
                 "State" => true,
@@ -105,22 +99,25 @@ namespace ME3Explorer.ME3Script.IDE
                 UnloadExport();
             }
             CurrentLoadedExport = export;
-            if (IsStandardLibFile())
+            if (Pcc.Game is MEGame.ME3)
             {
-                UnloadFileLib();
-                FullyInitialized = StandardLibrary.IsInitialized;
-            }
-            else if (Pcc != CurrentFileLib?.Pcc)
-            {
-                FullyInitialized = false;
-                IsBusy = true;
-                BusyText = "Compiling local classes";
-                UnloadFileLib();
-                CurrentFileLib = new FileLib(Pcc);
-                CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
-                if (IsVisible)
+                if (IsStandardLibFile())
                 {
-                    CurrentFileLib?.Initialize();
+                    UnloadFileLib();
+                    FullyInitialized = StandardLibrary.IsInitialized;
+                }
+                else if (Pcc != CurrentFileLib?.Pcc)
+                {
+                    FullyInitialized = false;
+                    IsBusy = true;
+                    BusyText = "Compiling local classes";
+                    UnloadFileLib();
+                    CurrentFileLib = new FileLib(Pcc);
+                    CurrentFileLib.InitializationStatusChange += CurrentFileLibOnInitialized;
+                    if (IsVisible)
+                    {
+                        CurrentFileLib?.Initialize();
+                    }
                 }
             }
             if (!IsBusy)
@@ -160,9 +157,11 @@ namespace ME3Explorer.ME3Script.IDE
 
             if (Document is not null)
             {
-                Document.TextChanged -= TextAreaOnTextEntered;
+                Document.TextChanged -= TextChanged;
             }
+            textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
         }
+
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -349,7 +348,7 @@ namespace ME3Explorer.ME3Script.IDE
 
         private void ExportLoaderControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is true)
+            if (e.NewValue is true && Pcc.Game is MEGame.ME3)
             {
                 if (!StandardLibrary.IsInitialized && !StandardLibrary.HadInitializationError)
                 {
@@ -365,6 +364,11 @@ namespace ME3Explorer.ME3Script.IDE
                 }
 
                 CurrentFileLib?.Initialize();
+            }
+            else
+            {
+                IsBusy = false;
+                FullyInitialized = false;
             }
         }
 
@@ -385,7 +389,7 @@ namespace ME3Explorer.ME3Script.IDE
             {
                 if (CurrentLoadedExport.ClassName != "Function")
                 {
-                    outputListBox.ItemsSource = new[] { $"Can only compile functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
+                    outputListBox.ItemsSource = new[] { $"Can only compile ME3 functions right now. {(CurrentLoadedExport.IsDefaultObject ? "Defaults" : CurrentLoadedExport.ClassName)} compilation will be added in a future update." };
                     return;
                 }
                 (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(CurrentLoadedExport, ScriptText, CurrentFileLib);
@@ -436,7 +440,7 @@ namespace ME3Explorer.ME3Script.IDE
                             new TextSegment { StartOffset = 0, EndOffset = Document.GetOffset(numHeaderLines, 0) }
                         };
                         textEditor.TextArea.ReadOnlySectionProvider = new TextSegmentReadOnlySectionProvider<TextSegment>(segments);
-                        Document.TextChanged += TextAreaOnTextEntered;
+                        Document.TextChanged += TextChanged;
                     }
                     else
                     {
@@ -451,7 +455,7 @@ namespace ME3Explorer.ME3Script.IDE
             }
         }
 
-        private void TextAreaOnTextEntered(object sender, EventArgs e)
+        private void TextChanged(object sender, EventArgs e)
         {
             (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(ScriptText, CurrentLoadedExport.ClassName);
             try
@@ -515,6 +519,24 @@ namespace ME3Explorer.ME3Script.IDE
             }
 
             outputListBox.ItemsSource = log.Content;
+        }
+
+
+        CompletionWindow completionWindow;
+        private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            //TODO: code completion
+            // if (e.Text == ".")
+            // {
+            //     completionWindow = new CompletionWindow(textEditor.TextArea);
+            //     IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+            //     data.Add(new CompletionData("foo", "baz"));
+            //     data.Add(new CompletionData("bar"));
+            //     completionWindow.Show();
+            //     completionWindow.Closed += delegate {
+            //         completionWindow = null;
+            //     };
+            // }
         }
 
         private void CompileAST_OnClick(object sender, RoutedEventArgs e)

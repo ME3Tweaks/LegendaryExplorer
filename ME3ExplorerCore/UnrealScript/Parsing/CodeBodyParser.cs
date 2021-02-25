@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
+using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3Script.Analysis.Visitors;
@@ -25,6 +26,7 @@ namespace ME3Script.Parsing
         private readonly ASTNode Node;
         private readonly CodeBody Body;
         private readonly Class Self;
+        private readonly MEGame Game;
 
         private readonly CaseInsensitiveDictionary<Label> Labels = new();
 
@@ -45,12 +47,12 @@ namespace ME3Script.Parsing
         //these have to be checked against labels after the whole body is parsed
         private readonly List<Statement> gotoStatements = new();
 
-        public static TokenStream<string> ParseFunction(Function func, string source, SymbolTable symbols, MessageLog log = null)
+        public static TokenStream<string> ParseFunction(Function func, MEGame game, string source, SymbolTable symbols, MessageLog log = null)
         {
             symbols.PushScope(func.Name);
 
             var tokenStream = new TokenStream<string>(new StringLexer(source, log), func.Body.StartPos, func.Body.EndPos);
-            var bodyParser = new CodeBodyParser(tokenStream, func.Body, symbols, func, log);
+            var bodyParser = new CodeBodyParser(tokenStream, game, func.Body, symbols, func, log);
 
             var body = bodyParser.ParseBody();
 
@@ -72,7 +74,7 @@ namespace ME3Script.Parsing
                     }
 
                     var paramTokenStream = new TokenStream<string>(new StringLexer(source, log), unparsedBody.StartPos, unparsedBody.EndPos);
-                    var paramParser = new CodeBodyParser(paramTokenStream, unparsedBody, symbols, func, log);
+                    var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log);
                     var parsed = paramParser.ParseExpression();
                     if (parsed is null)
                     {
@@ -96,12 +98,12 @@ namespace ME3Script.Parsing
             return tokenStream;
         }
 
-        public static void ParseState(State state, string source, SymbolTable symbols, MessageLog log = null)
+        public static void ParseState(State state, MEGame game, string source, SymbolTable symbols, MessageLog log = null)
         {
             symbols.PushScope(state.Name);
 
             var tokenStream = new TokenStream<string>(new StringLexer(source, log), state.Body.StartPos, state.Body.EndPos);
-            var bodyParser = new CodeBodyParser(tokenStream, state.Body, symbols, state, log);
+            var bodyParser = new CodeBodyParser(tokenStream, game, state.Body, symbols, state, log);
 
             var body = bodyParser.ParseBody();
 
@@ -118,8 +120,9 @@ namespace ME3Script.Parsing
             symbols.PopScope();
         }
 
-        public CodeBodyParser(TokenStream<string> tokens, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
+        public CodeBodyParser(TokenStream<string> tokens, MEGame game, CodeBody body, SymbolTable symbols, ASTNode containingNode, MessageLog log = null)
         {
+            Game = game;
             Log = log ?? new MessageLog();
             Symbols = symbols;
             Tokens = tokens;
@@ -1528,6 +1531,10 @@ namespace ME3Script.Parsing
             }
             else if (Matches(SORT, EF.Function))
             {
+                if (Game <= MEGame.ME2)
+                {
+                    throw ParseError($"'{SORT}' is not a valid dynamic array function in {Game}", CurrentPosition);
+                }
                 ExpectLeftParen(SORT);
                 Expression comparefunctionArg = ParseExpression();
                 if (comparefunctionArg == null)
@@ -2241,6 +2248,10 @@ namespace ME3Script.Parsing
             Expression template = null;
             if (Matches(TokenType.LeftParenth))
             {
+                if (Game <= MEGame.ME2)
+                {
+                    throw ParseError($"Template argument for a '{NEW}' expression is not valid in {Game}!", CurrentPosition);
+                }
                 template = ParseExpression();
                 if (template == null)
                 {

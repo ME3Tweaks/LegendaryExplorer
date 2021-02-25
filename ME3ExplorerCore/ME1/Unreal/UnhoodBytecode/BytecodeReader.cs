@@ -1043,7 +1043,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         {
             int pos = (int)_reader.BaseStream.Position - 1;
 
-            ReadEntryRef(out int structClass);
+            ReadEntryRef(out int structClassUIndex);
             var operand1 = ReadNext();
             if (IsInvalid(operand1)) return operand1;
             var operand2 = ReadNext();

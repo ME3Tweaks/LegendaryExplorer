@@ -13,11 +13,14 @@ using ME3Script.Analysis.Symbols;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler : ObjectReader 
+    public partial class ByteCodeDecompiler : ObjectReader 
     {
         private readonly UStruct DataContainer;
         private readonly UClass ContainingClass;
         private readonly FileLib FileLib;
+
+        private readonly MEGame Game;
+        private readonly byte extNativeIndex;
 
         private bool LibInitialized => FileLib?.IsInitialized ?? StandardLibrary.IsInitialized;
         private SymbolTable ReadOnlySymbolTable => FileLib?.ReadonlySymbolTable ?? StandardLibrary.ReadonlySymbolTable;
@@ -33,7 +36,7 @@ namespace ME3Script.Decompiling
         private Stack<ushort> StartPositions;
         private List<List<Statement>> Scopes;
         private Stack<int> CurrentScope;
-        private readonly List<ForEachLoop> decompiledForEachLoops = new List<ForEachLoop>();
+        private readonly List<ForEachLoop> decompiledForEachLoops = new();
 
         private Queue<FunctionParameter> OptionalParams;
         private readonly List<FunctionParameter> Parameters;
@@ -54,12 +57,17 @@ namespace ME3Script.Decompiling
         private IEntry ReadObject()
         {
             var index = ReadInt32();
-            var remaining = DataContainer.ScriptStorageSize - (Position - _totalPadding);
-            Buffer.BlockCopy(_data, Position, _data, Position + 4, remaining); // copy the data forward
-            Buffer.BlockCopy(new byte[]{0,0,0,0}, 0, _data, Position, 4); // write 0 padding
 
-            _totalPadding += 4;
-            Position += 4;
+            //in ME3, script object references have 4 extra 0 bytes 
+            if (Game >= MEGame.ME3)
+            {
+                var remaining = DataContainer.ScriptStorageSize - (Position - _totalPadding);
+                Buffer.BlockCopy(_data, Position, _data, Position + 4, remaining); // copy the data forward
+                Buffer.BlockCopy(new byte[]{0,0,0,0}, 0, _data, Position, 4); // write 0 padding
+
+                _totalPadding += 4;
+                Position += 4;
+            }
 
             return PCC.GetEntry(index);
         }
@@ -68,7 +76,7 @@ namespace ME3Script.Decompiling
             return new NameReference(PCC.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
-        public ME3ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, List<FunctionParameter> parameters = null, VariableType returnType = null, FileLib lib = null)
+        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, List<FunctionParameter> parameters = null, VariableType returnType = null, FileLib lib = null)
             :base(new byte[dataContainer.ScriptBytecodeSize])
         {
             Buffer.BlockCopy(dataContainer.ScriptBytes, 0, _data, 0, dataContainer.ScriptStorageSize);
@@ -77,6 +85,8 @@ namespace ME3Script.Decompiling
             Parameters = parameters;
             ReturnType = returnType;
             FileLib = lib;
+            Game = dataContainer.Export.Game;
+            extNativeIndex = Game is MEGame.ME3 ? 0x70 : 0x60;
         }
 
         public CodeBody Decompile()
@@ -482,7 +492,7 @@ namespace ME3Script.Decompiling
 
                         ReadInt16(); //MemLength of value
                         var value = DecompileExpression();
-                        PopByte(); // end of value
+                        PopByte(); // Opcodes.EndParmValue
 
 
                         if (OptionalParams.Count != 0)

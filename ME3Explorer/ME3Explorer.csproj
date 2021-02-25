@@ -319,6 +319,7 @@
     <Compile Include="ME3Script\IDE\ASTColorizer.cs" />
     <Compile Include="ME3Script\IDE\ASTHighlighter.cs" />
     <Compile Include="ME3Script\IDE\BraceFoldingStrategy.cs" />
+    <Compile Include="ME3Script\IDE\CompletionData.cs" />
     <Compile Include="ME3Script\IDE\SyntaxInfoCodeFormatter.cs" />
     <Compile Include="ME3Script\IDE\UnrealScriptTextEditor.cs" />
     <Compile Include="ME3Script\UnrealScriptIDE.xaml.cs">

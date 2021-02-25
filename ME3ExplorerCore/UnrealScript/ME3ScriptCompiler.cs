@@ -43,28 +43,28 @@ namespace ME3Script
             switch (export.ClassName)
             {
                 case "Class":
-                    astNode = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
+                    astNode = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), true, lib);
                     break;
                 case "Function":
-                    astNode = ME3ObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
+                    astNode = ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(), lib: lib);
                     break;
                 case "State":
-                    astNode = ME3ObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
+                    astNode = ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(), lib: lib);
                     break;
                 case "Enum":
-                    astNode = ME3ObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
+                    astNode = ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>());
                     break;
                 case "ScriptStruct":
-                    astNode = ME3ObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
+                    astNode = ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>());
                     break;
                 default:
                     if (export.ClassName.EndsWith("Property") && ObjectBinary.From(export) is UProperty uProp)
                     {
-                        astNode = ME3ObjectToASTConverter.ConvertVariable(uProp);
+                        astNode = ScriptObjectToASTConverter.ConvertVariable(uProp);
                     }
                     else
                     {
-                        astNode = ME3ObjectToASTConverter.ConvertDefaultProperties(export);
+                        astNode = ScriptObjectToASTConverter.ConvertDefaultProperties(export);
                     }
 
                     break;
@@ -96,7 +96,7 @@ namespace ME3Script
                     symbols.PushScope(containingClass.Name);
                 }
 
-                var tokens = CodeBodyParser.ParseFunction(originalFunction, scriptText, symbols, log);
+                var tokens = CodeBodyParser.ParseFunction(originalFunction, parentExport.Game, scriptText, symbols, log);
                 return (originalFunction, tokens);
             }
             //in state
@@ -116,7 +116,7 @@ namespace ME3Script
                 symbols.PushScope(cls.Name);
                 symbols.PushScope(state.Name);
 
-                var tokens = CodeBodyParser.ParseFunction(canonicalFunction, scriptText, symbols, log);
+                var tokens = CodeBodyParser.ParseFunction(canonicalFunction, parentExport.Game, scriptText, symbols, log);
                 return (canonicalFunction, tokens);
             }
 

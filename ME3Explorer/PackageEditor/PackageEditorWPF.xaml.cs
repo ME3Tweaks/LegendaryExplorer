@@ -4637,6 +4637,45 @@ namespace ME3Explorer
             }
         }
 
+        private void FindOpCode_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (PackageIsLoaded())
+            {
+                if (!short.TryParse(PromptDialog.Prompt(this, "enter opcode"), out short opCode))
+                {
+                    return;
+                }
+                var exportsWithOpcode = new List<EntryStringPair>();
+                foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.ClassName == "Function"))
+                {
+                    if (Pcc.Game is MEGame.ME3)
+                    {
+                        (List<Token> tokens, _) = Bytecode.ParseBytecode(export.GetBinaryData<UFunction>().ScriptBytes, export);
+                        if (tokens.FirstOrDefault(tok => tok.op == opCode) is Token token)
+                        {
+                            exportsWithOpcode.Add(new EntryStringPair(export, token.posStr));
+                        }
+                    }
+                    else
+                    {
+                        var func = ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export); 
+                        func.Decompile(new ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
+                        if (func.Statements.statements.Count > 0 
+                         && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is {})
+                        {
+                            exportsWithOpcode.Add(new EntryStringPair(export, ""));
+                        }
+                    }
+                }
+
+                var dlg = new ListDialog(exportsWithOpcode, $"functions with opcode 0x{opCode:X}", "", this)
+                {
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                dlg.Show();
+            }
+        }
+
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
         {
             BusyText = "Scanning audio and updating events";
@@ -4840,6 +4879,11 @@ namespace ME3Explorer
             {
                 IsBusy = false;
             });
+        }
+
+        private void BuildNativeTable_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.BuildNativeTable(this);
         }
     }
 }

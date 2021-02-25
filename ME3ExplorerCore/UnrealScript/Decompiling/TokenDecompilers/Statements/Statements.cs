@@ -9,7 +9,7 @@ using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler
+    public partial class ByteCodeDecompiler
     {
         public Statement DecompileStatement(ushort? startPosition = null)
         {
@@ -213,7 +213,7 @@ namespace ME3Script.Decompiling
                     return null; //ERROR ?
             }
 
-            if (ReturnType is Enumeration enm && expr is IntegerLiteral intLit && intLit.Value >= 0 && intLit.Value < enm.Values.Count)
+            if (ReturnType is Enumeration enm && expr is IntegerLiteral {Value: >= 0} intLit && intLit.Value < enm.Values.Count)
             {
                 expr = new CompositeSymbolRef(new SymbolReference(enm, enm.Name), new SymbolReference(null, enm.Values[intLit.Value].Name));
             }
@@ -279,7 +279,10 @@ namespace ME3Script.Decompiling
         public SwitchStatement DecompileSwitch()
         {
             PopByte();
-            var objIndex = ReadObject();
+            if (Game >= MEGame.ME3)
+            {
+                var objIndex = ReadObject();
+            }
             var unknByte = ReadByte();
             var expr = DecompileExpression();
             //var scopeStatements = new List<Statement>();
@@ -323,7 +326,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var offs = ReadUInt16(); // MemOff
-            Statement statement = null;
+            Statement statement;
 
             if (offs == (ushort)0xFFFF)
             {

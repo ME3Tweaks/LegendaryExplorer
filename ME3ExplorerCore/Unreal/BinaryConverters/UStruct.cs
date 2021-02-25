@@ -41,6 +41,10 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 ScriptStorageSize = ScriptBytes.Length;
             }
             sc.Serialize(ref ScriptStorageSize);
+            if (sc.Game <= MEGame.ME2)
+            {
+                ScriptBytecodeSize = ScriptStorageSize;
+            }
             sc.Serialize(ref ScriptBytes, ScriptStorageSize);
         }
 

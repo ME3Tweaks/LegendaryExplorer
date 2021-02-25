@@ -1,8 +1,9 @@
-﻿using ME3Script.Language.Tree;
+﻿using ME3ExplorerCore.Packages;
+using ME3Script.Language.Tree;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler
+    public partial class ByteCodeDecompiler
     {
         public DynArrayLength DecompileDynArrLength()
         {
@@ -28,7 +29,10 @@ namespace ME3Script.Decompiling
             var countArg = DecompileExpression();
             if (countArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayRemove(arr, indexArg, countArg);
         }
@@ -40,10 +44,17 @@ namespace ME3Script.Decompiling
             var arr = DecompileExpression();
             if (arr == null)
                 return null;
+            if (Game is MEGame.ME2)
+            {
+                ReadInt16(); // MemSize
+            }
             var countArg = DecompileExpression();
             if (countArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayAdd(arr, countArg);
         }
@@ -61,7 +72,10 @@ namespace ME3Script.Decompiling
             var countArg = DecompileExpression();
             if (countArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayInsert(arr, indexArg, countArg);
         }
@@ -80,7 +94,10 @@ namespace ME3Script.Decompiling
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayFindStructMember(arr, memberNameArg, valueArg);
         }
@@ -99,7 +116,10 @@ namespace ME3Script.Decompiling
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayInsertItem(arr, indexArg, valueArg);
         }
@@ -115,7 +135,10 @@ namespace ME3Script.Decompiling
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayFind(arr, valueArg);
         }
@@ -131,7 +154,10 @@ namespace ME3Script.Decompiling
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayAddItem(arr, valueArg);
         }
@@ -147,7 +173,10 @@ namespace ME3Script.Decompiling
             var valueArg = DecompileExpression();
             if (valueArg == null)
                 return null;
-            PopByte(); //EndFuncParms
+            if (Game >= MEGame.ME3)
+            {
+                PopByte(); //EndFuncParms
+            }
             StartPositions.Pop();
             return new DynArrayRemoveItem(arr, valueArg);
         }
