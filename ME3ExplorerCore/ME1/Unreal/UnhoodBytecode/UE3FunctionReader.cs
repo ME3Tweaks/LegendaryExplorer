@@ -49,8 +49,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                 int textPos = reader.ReadInt32(); //??
                 int scriptSize = reader.ReadInt32();
                 byte[] bytecode = reader.BaseStream.ReadFully(); //read the rest of the state
-                return new UnFunction(export, "STATE",
-                    new FlagValues(0, _flagSet), bytecode, 0, 0);
+                return new UnFunction(export, "STATE", new FlagValues(0, _flagSet), bytecode, 0, 0);
             }
         }
 
@@ -62,7 +61,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
         /// <returns></returns>
         public static UnFunction ReadFunction(ExportEntry export, byte[] dataOverride = null)
         {
-            if (dataOverride == null) dataOverride = export.Data;
+            if (dataOverride == null) dataOverride = export.Data; // Is there a way we could improve the performance of this?
             using var reader = new EndianReader(dataOverride) { Endian = export.FileRef.Endian };
             reader.ReadBytes(12); //netindex?, none
             int super = reader.ReadInt32();

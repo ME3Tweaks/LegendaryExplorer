@@ -6643,7 +6643,7 @@ namespace ME3Explorer
                         {
                             foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
                             {
-                                matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
+                                matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                             }
                         }
                     }
@@ -7434,7 +7434,7 @@ namespace ME3Explorer
                             {
                                 foreach (IEntry texture in new MaterialInstanceConstant(matExport).Textures)
                                 {
-                                    matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {CurrentLoadedExport.FileRef.GetEntryString(texture.UIndex)}"));
+                                    matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {matExport.FileRef.GetEntryString(texture.UIndex)}"));
                                 }
                             }
                         }

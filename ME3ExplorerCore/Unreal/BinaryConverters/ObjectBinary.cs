@@ -408,7 +408,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
 
         public virtual byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
         {
-            var ms = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
+            using var ms = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = pcc.Endian };
             WriteTo(ms.Writer, pcc, fileOffset);
             return ms.ToArray();
         }

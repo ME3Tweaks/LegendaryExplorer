@@ -76,7 +76,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             else if (entry is ExportEntry exp)
             {
                 (pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath);
-                MemoryStream trashData = MemoryManager.GetMemoryStream();
+                using MemoryStream trashData = MemoryManager.GetMemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(pcc.FindNameOrAdd("None"));
                 trashData.WriteInt32(0);

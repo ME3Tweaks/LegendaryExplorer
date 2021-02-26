@@ -135,7 +135,7 @@ namespace ME3ExplorerCore.Packages
             if (originalLength > 0)
             {
                 string relativePath = Path.GetFullPath(pcc.FilePath).Substring(Path.GetFullPath(ME3Directory.DefaultGamePath).Length);
-                var bin = MemoryManager.GetMemoryStream();
+                using var bin = MemoryManager.GetMemoryStream();
                 bin.WriteInt32(originalLength);
                 bin.WriteStringASCIINull(relativePath);
                 File.WriteAllBytes(Path.Combine(ME3Directory.ExecutableFolder, "tocupdate"), bin.ToArray());

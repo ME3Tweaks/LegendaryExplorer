@@ -2575,8 +2575,16 @@ namespace ME3Explorer
             var fileOnDisk = Pcc.FilePath;
             if (fileOnDisk != null && File.Exists(fileOnDisk))
             {
+                if (Pcc.IsModified)
+                {
+                    var warningResult = MessageBox.Show(this, "The current package is modified. Reloading the package will cause you to lose all changes to this package.\n\nReload anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (warningResult != MessageBoxResult.Yes)
+                        return; // Do not continue!
+                }
+
+                var currentSelectedIndex = GetSelected(out var selectedIndex);
                 using var fStream = File.OpenRead(fileOnDisk);
-                LoadFileFromStream(fStream, fileOnDisk);
+                LoadFileFromStream(fStream, fileOnDisk, selectedIndex);
             }
         }
 

@@ -22,15 +22,22 @@ namespace ME3Explorer.GameInterop
         };
 
         public const string TempMapName = "AAAME3EXPDEBUGLOAD";
-        public static bool TryGetMEProcess(MEGame game, out Process me3Process)
+        public static bool TryGetMEProcess(MEGame game, out Process meProcess)
         {
-            me3Process = Process.GetProcessesByName(game switch {
-                MEGame.ME1 => "MassEffect",
-                MEGame.ME2 => "ME2Game",
-                MEGame.ME3 => "MassEffect3",
-                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
-            }).FirstOrDefault();
-            return me3Process != null;
+            if (game is MEGame.ME2)
+            {
+                meProcess = Process.GetProcessesByName("ME2Game").FirstOrDefault() ?? Process.GetProcessesByName("MassEffect2").FirstOrDefault();
+            }
+            else
+            {
+                meProcess = Process.GetProcessesByName(game switch
+                {
+                    MEGame.ME1 => "MassEffect",
+                    MEGame.ME3 => "MassEffect3",
+                    _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
+                }).FirstOrDefault();
+            }
+            return meProcess != null;
         }
 
         private static bool hasRegisteredForMessages; 

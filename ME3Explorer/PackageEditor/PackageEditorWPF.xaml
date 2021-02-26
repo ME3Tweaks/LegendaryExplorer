@@ -22,8 +22,8 @@
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
         xmlns:particleSystems="clr-namespace:ME3Explorer.ParticleSystems"
-        xmlns:me3Script="clr-namespace:ME3Explorer.ME3Script"
         xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        xmlns:ide="clr-namespace:ME3Explorer.ME3Script.IDE"
         Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -547,7 +547,7 @@ v                    <MenuItem Header="Enable experiments (Warning: dangerous)" 
                         <TabItem.Header>
                             <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
                         </TabItem.Header>
-                        <me3Script:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
+                        <ide:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

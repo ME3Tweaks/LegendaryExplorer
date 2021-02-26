@@ -106,7 +106,7 @@ namespace ME3ExplorerCore.Helpers
         /// <returns></returns>
         public static MemoryStream GetCustomAppResourceStream(MEGame game)
         {
-            var zStream = LoadEmbeddedFile("GameResources.zip");
+            using var zStream = LoadEmbeddedFile("GameResources.zip");
             if (zStream != null)
             {
                 return LoadFileFromZipStream(zStream, ME3ExplorerCoreLib.CustomResourceFileName(game));

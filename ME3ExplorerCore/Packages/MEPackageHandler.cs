@@ -157,7 +157,7 @@ namespace ME3ExplorerCore.Packages
                 else
                 {
                     // Reading and operating on memory is faster than seeking on disk
-                    var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                    using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
                     return LoadPackage(ms, pathToFile, true);
                 }
 
@@ -167,7 +167,7 @@ namespace ME3ExplorerCore.Packages
                 package = openPackages.GetOrAdd(pathToFile, fpath =>
                 {
                     // Performance test.
-                    var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                    using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
                     return LoadPackage(ms, fpath, true);
                     /*
                     using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))

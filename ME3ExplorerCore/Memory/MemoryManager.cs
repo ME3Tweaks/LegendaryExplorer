@@ -113,20 +113,21 @@ namespace ME3ExplorerCore.Memory
             if (UsePooledMemory)
             {
                 bool isResetting = false;
-                if (MemManager == null || (MemManager.LargePoolInUseSize == 0 && MemManager.SmallPoolInUseSize == 0)) // Only allow if no items are 'in use'
-                {
-                    // Not really sure what good defaults are here to use.....
-                    if (MemManager != null) isResetting = true;
-                    MemManager = new RecyclableMemoryStreamManager((int)FileSize.KibiByte * 256, (int)FileSize.MebiByte, (int)FileSize.MebiByte * 16);
-                    MemManager.GenerateCallStacks = false;
-                    MemManager.AggressiveBufferReturn = true;
-                }
+                //if (MemManager == null || (MemManager.LargePoolInUseSize == 0 && MemManager.SmallPoolInUseSize == 0)) // Only allow if no items are 'in use'
+                //{
+
+                // Not really sure what good defaults are here to use.....
+                if (MemManager != null) isResetting = true;
+                MemManager = new RecyclableMemoryStreamManager((int)FileSize.KibiByte * 256, (int)FileSize.MebiByte, (int)FileSize.MebiByte * 16);
+                MemManager.GenerateCallStacks = false;
+                MemManager.AggressiveBufferReturn = true;
+                //}
 
                 ByteArrayPool = ArrayPool<byte>.Create();
 
                 if (isResetting)
                 {
-                    int i = 4;
+                    int i = 2;
                     while (i > 0)
                     {
                         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;

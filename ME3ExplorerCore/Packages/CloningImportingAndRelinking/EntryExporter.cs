@@ -79,8 +79,9 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
+        /// <param name="importAsImport">If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</param>
         /// <returns></returns>
-        public static IEntry PortParents(IEntry source, IMEPackage target)
+        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
             if (packagename != null && IsGlobalNonStartupFile(packagename))
@@ -97,8 +98,6 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 entry = entry.Parent;
             }
 
-
-
             var parentCount = parentStack.Count;
 
             // Create parents first
@@ -112,7 +111,21 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     if (pEntry.ClassName == "Package")
                     {
                         // Port in package
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, out parent);
+                        if (importAsImport)
+                        {
+                            var newImport = new ImportEntry(target)
+                            {
+                                idxLink = parent.UIndex,
+                                ClassName = "Package",
+                                ObjectName = pEntry.ObjectName,
+                                PackageFile = "Core"
+                            };
+                            target.AddImport(newImport);
+                            parent = newImport;
+                        } else
+                        {
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, out parent);
+                        }
                     }
                     else
                     {

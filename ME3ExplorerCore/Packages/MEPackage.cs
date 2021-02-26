@@ -120,7 +120,7 @@ namespace ME3ExplorerCore.Packages
 
         public byte[] getHeader()
         {
-            var ms = MemoryManager.GetMemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             WriteHeader(ms, includeAdditionalPackageToCook: true);
             return ms.ToArray();
         }

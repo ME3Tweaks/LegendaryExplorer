@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -183,7 +184,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Imports an export from another package file.
+        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
         /// </summary>
         /// <param name="destPackage">Package to import to</param>
         /// <param name="sourceExport">Export object from the other package to import</param>
@@ -191,11 +192,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
         /// <param name="objectMapping"></param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false, 
+        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, bool importExportDependencies = false,
             IDictionary<IEntry, IEntry> objectMapping = null, Action<string> errorOccuredCallback = null)
         {
-            var exportData = sourceExport.GetExportDatas();
+            //var exportData = sourceExport.GetExportDatasForPorting(destPackage);
 
+            var exportData = sourceExport.GetProperties();
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
@@ -207,11 +209,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     MEGame.ME3 => me3StackDummy,
                     _ => me1Me2StackDummy
                 });
-                prePropBinary = ms.ToArray();
+                prePropBinary = ms.ToArray(); // kind of poor performance-wise but not sure how to do when we have .DataReadOnly and everything takes byte[]
             }
             else
             {
-                int start = exportData.PropStartOffset;
+                int start = sourceExport.GetPropertyStart();
                 if (start == 16)
                 {
                     var ms = new MemoryStream(sourceExport.DataReadOnly.Slice(0, 16));
@@ -228,10 +230,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             PropertyCollection props = sourceExport.GetProperties();
+
             //store copy of names list in case something goes wrong
             if (sourceExport.Game != destPackage.Game)
             {
-                List<string> names = destPackage.Names.ToList(); 
+                List<string> names = destPackage.Names.ToList();
                 try
                 {
                     if (sourceExport.Game != destPackage.Game)
@@ -247,14 +250,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     throw; //should we throw?
                 }
             }
-            
+
 
             //takes care of slight header differences between ME1/2 and ME3
             byte[] newHeader = sourceExport.GenerateHeader(destPackage.Game, true);
 
-            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
-            //for unsupported classes, this will just copy over the binary
-            //sometimes converting binary requires altering the properties as well
+            ////for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
+            ////for unsupported classes, this will just copy over the binary
+            ////sometimes converting binary requires altering the properties as well
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
 
             //Set class.
@@ -338,7 +341,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, Action<string> errorOccuredCallback = null)
         {
 
-            EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
+            using EndianReader res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
                 res.Writer.WriteFromBuffer(incomingExport.DataReadOnly.Slice(0, 8));
@@ -624,7 +627,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         public static byte[] CreateStack(MEGame game, int stateNodeUIndex)
         {
-            var ms = MemoryManager.GetMemoryStream();
+            using var ms = MemoryManager.GetMemoryStream();
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteInt32(stateNodeUIndex);
             ms.WriteFromBuffer(game switch
@@ -637,6 +640,18 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.
+        /// </summary>
+        /// <param name="entry">The import to resolve</param>
+        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
+        /// <returns></returns>
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
+        {
+            return ResolveImport(entry, null, localCache, localization);
+        }
+
+        /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
@@ -644,7 +659,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache = null, PackageCache lookupCache = null, string localization = "INT")
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT")
         {
             var entryFullPath = entry.InstancedFullPath;
 
@@ -690,14 +705,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 filesToCheck.Add(Path.GetFileName(efxPath));
             }
 
-            if (entry.Game == MEGame.ME3)
-            {
-                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-                {
-                    filesToCheck.Add(Path.GetFileName(efPath));
-                }
-            }
+            //if (entry.Game == MEGame.ME3)
+            //{
+            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efPath));
+            //    }
+            //}
 
 
             //add base definition files that are always loaded (Core, Engine, etc.)
@@ -816,6 +831,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     associatedFiles.Add($"{nextfile}_LOC_{localization}{bioFileExt}"); //todo: support users setting preferred language of game files
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
+            }
+
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
 
             return associatedFiles;

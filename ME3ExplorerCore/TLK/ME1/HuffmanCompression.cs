@@ -138,7 +138,7 @@ namespace ME3ExplorerCore.TLK.ME1
             /* writing properties */
             export.WriteProperty(new IntProperty(_inputData.Count, "m_nHashTableSize"));
 
-            MemoryStream m = MemoryManager.GetMemoryStream();
+            using MemoryStream m = MemoryManager.GetMemoryStream();
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
             foreach (TLKStringRef entry in _inputData)

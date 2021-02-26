@@ -41,9 +41,10 @@ namespace ME3ExplorerCore.Compression
         /// <param name="srcLen"></param>
         /// <param name="dst"></param>
         /// <returns></returns>
-        public static int Decompress(byte[] src, uint srcLen, byte[] dst)
+        public static int Decompress(byte[] src, uint srcLen, byte[] dst, uint dstLen = 0)
         {
-            uint dstLen = (uint)dst.Length;
+            if (dstLen == 0)
+                dstLen = (uint)dst.Length;
             return LZXDecompress(src, srcLen, dst, ref dstLen);
         }
     }

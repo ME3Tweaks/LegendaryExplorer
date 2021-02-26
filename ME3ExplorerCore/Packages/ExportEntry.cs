@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Memory;
@@ -156,7 +157,7 @@ namespace ME3ExplorerCore.Packages
                     throw new ArgumentException($"Expected pre-property binary to be {minLen} bytes, not {bytes.Length}!", nameof(bytes));
                 }
 
-                var ms = MemoryManager.GetMemoryStream();
+                using var ms = MemoryManager.GetMemoryStream();
                 ms.WriteFromBuffer(bytes);
                 ms.Write(_data, oldLen, _data.Length - oldLen);
                 Data = ms.ToArray();
@@ -218,7 +219,7 @@ namespace ME3ExplorerCore.Packages
 
         private byte[] GenerateHeader(OrderedMultiValueDictionary<NameReference, int> componentMap, int[] generationNetObjectCount, bool? hasComponentMap = null, bool clearComponentMap = false)
         {
-            var bin = MemoryManager.GetMemoryStream();
+            using var bin = MemoryManager.GetMemoryStream(36 * 4); // This should hopefully ensure we don't have extra allocations, assuming 5 component items
             bin.WriteInt32(idxClass);
             bin.WriteInt32(idxSuperClass);
             bin.WriteInt32(idxLink);
@@ -459,7 +460,6 @@ namespace ME3ExplorerCore.Packages
         public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectName.Name}" : ObjectName.Name;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
-
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? $"{ParentInstancedFullPath}.{ObjectName.Instanced}" : ObjectName.Instanced;
 
         public bool HasParent => FileRef.IsEntry(idxLink);
@@ -721,6 +721,10 @@ namespace ME3ExplorerCore.Packages
         }
 
         private int? propsEndOffset;
+        /// <summary>
+        /// Gets the ending offset of the properties for this export, where binary data begins (if any). This call caches the position, the cached value is invalidated when the .Data attribute of this export is updated.
+        /// </summary>
+        /// <returns></returns>
         public int propsEnd()
         {
             propsEndOffset ??= GetProperties(true, true).endOffset;
@@ -818,30 +822,35 @@ namespace ME3ExplorerCore.Packages
         /// Gets preprops binary, properties, and binary, all without having to do multiple passes on the export
         /// </summary>
         /// <returns></returns>
-        public ExportDatas GetExportDatas()
+        public ExportDatas GetExportDatasForPorting(IMEPackage destPackage)
         {
             ExportDatas ed = new ExportDatas();
             if (IsClass)
             {
+                ed.prePropsBinary = new byte[0];
+                ed.Properties = null;
                 ed.IsClass = true;
-                return ed;
             }
             else
             {
                 ed.PropStartOffset = GetPropertyStart();
-                ed.prePropBinary = _data.Slice(0, ed.PropStartOffset);
+                ed.prePropsBinary = _data.Slice(0, ed.PropStartOffset);
                 ed.Properties = GetProperties(propStartPos: ed.PropStartOffset);
-                ed.prePropBinary = _data.Slice(ed.Properties.endOffset, _data.Length - ed.Properties.endOffset);
             }
+
+            //for supported classes, this will add any names in binary to the Name table, as well as take care of binary differences for cross-game importing
+            //for unsupported classes, this will just copy over the binary
+            //sometimes converting binary requires altering the properties as well
+            ed.postPropsBinary = ExportBinaryConverter.ConvertPostPropBinary(this, destPackage.Game, ed.Properties);
             return ed;
         }
 
         public class ExportDatas
         {
             public bool IsClass { get; set; }
-            public byte[] prePropBinary { get; set; }
+            public byte[] prePropsBinary { get; set; }
             public PropertyCollection Properties { get; set; }
-            public byte[] postPropsBinary { get; set; }
+            public ObjectBinary postPropsBinary { get; set; }
             public int PropStartOffset { get; set; }
         }
     }

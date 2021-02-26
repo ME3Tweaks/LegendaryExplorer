@@ -723,7 +723,7 @@ namespace ME3ExplorerCore.Unreal
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
-            var stream = new EndianReader(MemoryManager.GetMemoryStream());
+            using var stream = new EndianReader(MemoryManager.GetMemoryStream());
             WriteTo(stream.Writer, pcc, valueOnly);
             return stream.Length;
         }
