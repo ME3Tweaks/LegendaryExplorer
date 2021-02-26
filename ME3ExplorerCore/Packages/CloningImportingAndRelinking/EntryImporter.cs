@@ -184,7 +184,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Imports an export from another package file.
+        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
         /// </summary>
         /// <param name="destPackage">Package to import to</param>
         /// <param name="sourceExport">Export object from the other package to import</param>
