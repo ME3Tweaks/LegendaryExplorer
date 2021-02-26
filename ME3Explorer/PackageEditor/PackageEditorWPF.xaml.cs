@@ -212,6 +212,7 @@ namespace ME3Explorer
         public ICommand MultiCloneCommand { get; set; }
         public ICommand MultiCloneTreeCommand { get; set; }
         public ICommand FindEntryViaOffsetCommand { get; set; }
+        public ICommand ResolveImportsTreeViewCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
@@ -317,10 +318,42 @@ namespace ME3Explorer
             OpenMapInGameCommand = new GenericCommand(OpenMapInGame,
                 () => PackageIsLoaded() && Pcc.Game != MEGame.UDK && Pcc.Exports.Any(exp => exp.ClassName == "Level"));
             ResolveImportCommand = new GenericCommand(OpenImportDefinition, ImportIsSelected);
+            ResolveImportsTreeViewCommand = new GenericCommand(ResolveImportsTreeView, PackageIsLoaded);
             FindAllClassInstancesCommand = new GenericCommand(FindAllInstancesofClass, PackageIsLoaded);
             ExtractToPackageCommand = new GenericCommand(ExtractEntryToNewPackage, ExportIsSelected);
 
             RestoreExportCommand = new GenericCommand(RestoreExportData, ExportIsSelected);
+        }
+
+        private void ResolveImportsTreeView()
+        {
+            if (AllTreeViewNodesX.Any())
+            {
+                Task.Run(() =>
+                {
+                    BusyText = "Resolving imports";
+                    IsBusy = true;
+
+                    var treeNodes = AllTreeViewNodesX[0].FlattenTree().Where(x => x.Entry is ImportEntry);
+
+                    PackageCache cache = new PackageCache();
+                    foreach (var impTV in treeNodes)
+                    {
+                        var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
+                        if (resolvedExp != null && resolvedExp.FileRef.FilePath != null)
+                        {
+                            var fname = Path.GetFileName(resolvedExp.FileRef.FilePath);
+                            impTV.SubText = fname;
+                        }
+                    }
+
+
+                    return null;
+                }).ContinueWithOnUIThread(foundCandidates =>
+                {
+                    IsBusy = false;
+                });
+            }
         }
 
         private void RestoreExportData()
@@ -618,7 +651,7 @@ namespace ME3Explorer
 
                     string dir = m.FileName;
                     Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
-                    //your sample code                    
+                                                                //your sample code                    
                     foreach (var export in swfsInFile)
                     {
                         string exportFilename = $"{export.FullPath}.swf";
