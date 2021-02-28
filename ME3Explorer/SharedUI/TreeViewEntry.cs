@@ -11,6 +11,7 @@ using ME3ExplorerCore.ME1.Unreal.UnhoodBytecode;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
+using ME3ExplorerCore.Unreal.BinaryConverters;
 
 namespace ME3Explorer
 {
@@ -297,15 +298,33 @@ namespace ME3Explorer
                         if (BinaryInterpreterWPF.IsNativePropertyType(Entry.ClassName))
                         {
                             var objectFlags = ee.GetPropertyFlags();
-                            if (objectFlags != null && objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
+                            if (objectFlags != null)
                             {
-                                if (_subtext != null)
+                                if (objectFlags.Value.HasFlag(UnrealFlags.EPropertyFlags.Config))
                                 {
-                                    _subtext = "Config, " + _subtext;
+                                    if (_subtext != null)
+                                    {
+                                        _subtext = "Config, " + _subtext;
+                                    }
+                                    else
+                                    {
+                                        _subtext = "Config";
+                                    }
                                 }
-                                else
+                            }
+                            else
+                            {
+                                var bin = ObjectBinary.From<UBoolProperty>(Entry as ExportEntry);
+                                if (bin.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Config))
                                 {
-                                    _subtext = "Config";
+                                    if (_subtext != null)
+                                    {
+                                        _subtext = "Config, " + _subtext;
+                                    }
+                                    else
+                                    {
+                                        _subtext = "Config";
+                                    }
                                 }
                             }
                         }
