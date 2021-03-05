@@ -371,7 +371,7 @@ namespace ME3ExplorerCore.Packages
 
         public void RemoveTrailingTrash()
         {
-            ExportEntry trashPackage = exports.FirstOrDefault(exp => exp.ObjectName == TrashPackageName);
+            ExportEntry trashPackage = FindExport(TrashPackageName);
             if (trashPackage == null)
             {
                 return;
@@ -450,15 +450,32 @@ namespace ME3ExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }
             //if there are no more trashed imports or exports, and if the TrashPackage is the last export, remove it
-            if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage && trashPackage.GetChildren().IsEmpty())
+            List<IEntry> trashChildren = null;
+            if (exports.LastOrDefault() is ExportEntry finalExport && finalExport == trashPackage)
             {
-                trashPackage.PropertyChanged -= importChanged;
-                exports.Remove(trashPackage);
-                updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
-                IsModified = true;
+                trashChildren = trashPackage.GetChildren();
+                if (trashChildren.IsEmpty())
+                {
+                    trashPackage.PropertyChanged -= importChanged;
+                    exports.Remove(trashPackage);
+                    updateTools(PackageChange.ExportRemove, trashPackage.UIndex);
+                    IsModified = true;
+                    EntryLookupTable.Remove(TrashPackageName); // Remove the lookup for the trash package
+                }
             }
+
             if (ExportCount != exports.Count)
             {
+                // Remove subtrash object if none in lookup table. Otherwise update the pointer.
+                if (trashChildren != null)
+                {
+                    EntryLookupTable[$"{TrashPackageName}.Trash"] = trashChildren[0];
+                }
+                else
+                {
+                    EntryLookupTable.Remove($"{TrashPackageName}.Trash");
+                }
+
                 ExportCount = exports.Count;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExportCount)));
             }

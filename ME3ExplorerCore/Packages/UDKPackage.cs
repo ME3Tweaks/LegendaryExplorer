@@ -98,7 +98,7 @@ namespace ME3ExplorerCore.Packages
         }
 
 
-        public static Action<UDKPackage, string, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<UDKPackage, string, bool, object> RegisterSaver() => saveByReconstructing;
 
 
         /// <summary>
@@ -222,10 +222,23 @@ namespace ME3ExplorerCore.Packages
             }
         }
 
-        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
+        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs, object diskIOSyncLock = null)
         {
             var datastream = udkPackage.SaveToStream(false);
-            datastream.WriteToFile(path ?? udkPackage.FilePath);
+            // Lock writing with the sync object (if not null) to prevent disk concurrency issues
+            // (the good old 'This file is in use by another process' message)
+            if (diskIOSyncLock == null)
+            {
+                datastream.WriteToFile(path ?? udkPackage.FilePath);
+            }
+            else
+            {
+                lock (diskIOSyncLock)
+                {
+                    datastream.WriteToFile(path ?? udkPackage.FilePath);
+                }
+            }
+
 
             if (!isSaveAs)
             {

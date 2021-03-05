@@ -243,7 +243,7 @@ namespace ME3ExplorerCore.Packages
                     {
                         bin.WriteInt32(FileRef.FindNameOrAdd(name.Name));
                         bin.WriteInt32(name.Number);
-                        bin.WriteInt32(uIndex);
+                        bin.WriteInt32(uIndex); // 0-based index
                     }
                 }
             }

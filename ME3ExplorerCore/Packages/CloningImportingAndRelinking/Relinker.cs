@@ -32,7 +32,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
             // Used for quick mapping lookups
             var crossPackageMap = new ListenableDictionary<IEntry, IEntry>(crossPccObjectMap);
-            
+
             // Used to perform a full relink
             var mappingList = crossPackageMap.ToList();
 
@@ -58,6 +58,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 i++;
 
+                // Potential way to work around OrderedMultiValueDictionary performance issues - if the concat on listenabledictionary doesn't work
                 // Have we reached the end of the current pass? If so, recreate the list. This means we only have to generate the list
                 // a few times instead of thousands
                 // If we are at end pass this won't make a difference
@@ -75,8 +76,25 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
         {
             IMEPackage sourcePcc = sourceExport.FileRef;
 
-            byte[] prePropBinary = relinkingExport.GetPrePropBinary();
+            // Relink header (component map)
+            if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
+            {
+                OrderedMultiValueDictionary<NameReference, int> newComponentMap = new OrderedMultiValueDictionary<NameReference, int>();
+                foreach (var cmk in sourceExport.ComponentMap)
+                {
+                    // This code makes a lot of assupmtions, like how components are always directly below the current export
+                    var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, out var newComponent);
 
+                    newComponentMap.Add(new KeyValuePair<NameReference, int>(cmk.Key, newComponent.UIndex - 1)); // TODO: Relink the 
+                }
+
+                relinkingExport.ComponentMap = newComponentMap;
+            }
+
+
+
+            byte[] prePropBinary = relinkingExport.GetPrePropBinary();
             //Relink stack
             if (relinkingExport.HasStack)
             {
@@ -126,7 +144,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Properties
             // NOTES: this used to be relinkingExport, not source, Changed near end of jan 2021 - Mgamerz - Due to ported items possibly not having way to reference original items
             PropertyCollection props = sourceExport.GetProperties();
-            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport,importExportDependencies);
+            relinkPropertiesRecursive(sourcePcc, relinkingExport, props, crossPCCObjectMappingList, "", relinkReport, importExportDependencies);
 
             //Relink Binary
             try
@@ -137,6 +155,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
+
                     // This doesn't work on functions! Finding the children through the probe doesn't work
                     List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
 
@@ -347,6 +366,13 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
                 if (existingEntry != null)
                 {
+#if DEBUG
+                    if (existingEntry.InstancedFullPath.StartsWith(UnrealPackageFile.TrashPackageName))
+                    {
+                        // RELINKED TO TRASH!
+                        Debugger.Break();
+                    }
+#endif
                     //Debug.WriteLine($"Relink hit [EXPERIMENTAL]: Existing entry in file was found, linking to it:  {uIndex} {sourceExport.InstancedFullPath} -> {existingEntry.InstancedFullPath}");
                     uIndex = existingEntry.UIndex;
 

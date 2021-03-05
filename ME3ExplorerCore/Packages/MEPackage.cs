@@ -599,7 +599,7 @@ namespace ME3ExplorerCore.Packages
 
 
 
-        public static Action<MEPackage, string, bool, bool, bool, bool> RegisterSaver() => saveByReconstructing;
+        public static Action<MEPackage, string, bool, bool, bool, bool, object> RegisterSaver() => saveByReconstructing;
 
         /// <summary>
         /// Saves the package to disk by reconstructing the package file
@@ -608,10 +608,24 @@ namespace ME3ExplorerCore.Packages
         /// <param name="path"></param>
         /// <param name="isSaveAs"></param>
         /// <param name="compress"></param>
-        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable)
+        private static void saveByReconstructing(MEPackage mePackage, string path, bool isSaveAs, bool compress, bool includeAdditionalPackagesToCook, bool includeDependencyTable, object diskIOSyncLockObject = null)
         {
             var saveStream = saveByReconstructingToStream(mePackage, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
-            saveStream.WriteToFile(path ?? mePackage.FilePath);
+
+            // Lock writing with the sync object (if not null) to prevent disk concurrency issues
+            // (the good old 'This file is in use by another process' message)
+            if (diskIOSyncLockObject == null)
+            {
+                saveStream.WriteToFile(path ?? mePackage.FilePath);
+            }
+            else
+            {
+                lock (diskIOSyncLockObject)
+                {
+                    saveStream.WriteToFile(path ?? mePackage.FilePath);
+                }
+            }
+
             if (!isSaveAs)
             {
                 mePackage.AfterSave();

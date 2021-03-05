@@ -136,7 +136,7 @@ namespace ME3ExplorerCore.Packages
         /// <param name="user">????</param>
         /// <param name="forceLoadFromDisk">If the package being opened should skip the shared package cache and forcibly load from disk. </param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
         {
             if (File.Exists(pathToFile))
             {
@@ -149,16 +149,46 @@ namespace ME3ExplorerCore.Packages
                 if (quickLoad)
                 {
                     // Quickload: Don't read entire file.
-                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                    if (diskIOSyncLock != null)
                     {
-                        package = LoadPackage(fs, pathToFile, false, quickLoad);
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                            {
+                                package = LoadPackage(fs, pathToFile, false, quickLoad);
+                            }
+                        }
                     }
+                    else
+                    {
+                        using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                        {
+                            package = LoadPackage(fs, pathToFile, false, quickLoad);
+                        }
+                    }
+
                 }
                 else
                 {
                     // Reading and operating on memory is faster than seeking on disk
-                    using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
-                    return LoadPackage(ms, pathToFile, true);
+                    if (diskIOSyncLock != null)
+                    {
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        }
+                        var p = LoadPackage(ms, pathToFile, true);
+                        ms.Dispose();
+                        return p;
+                    }
+                    else
+                    {
+                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        return LoadPackage(ms, pathToFile, true);
+                    }
+
                 }
 
             }
@@ -166,15 +196,23 @@ namespace ME3ExplorerCore.Packages
             {
                 package = openPackages.GetOrAdd(pathToFile, fpath =>
                 {
-                    // Performance test.
-                    using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
-                    return LoadPackage(ms, fpath, true);
-                    /*
-                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
+                    // Reading and operating on memory is faster than seeking on disk
+                    if (diskIOSyncLock != null)
                     {
-                        Debug.WriteLine($"Adding package to package cache (File): {fpath}");
-                        return LoadPackage(fs, fpath, true);
-                    }*/
+                        MemoryStream ms;
+                        lock (diskIOSyncLock)
+                        {
+                            ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        }
+                        var p = LoadPackage(ms, pathToFile, true);
+                        ms.Dispose();
+                        return p;
+                    }
+                    else
+                    {
+                        using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
+                        return LoadPackage(ms, pathToFile, true);
+                    }
                 });
             }
 

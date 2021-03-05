@@ -115,7 +115,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             var newImport = new ImportEntry(target)
                             {
-                                idxLink = parent.UIndex,
+                                idxLink = parent?.UIndex ?? 0,
                                 ClassName = "Package",
                                 ObjectName = pEntry.ObjectName,
                                 PackageFile = "Core"
