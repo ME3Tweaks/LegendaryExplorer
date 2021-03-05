@@ -1,9 +1,26 @@
 ﻿using System;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.Extensions
 {
 	public static class StringExtensions
 	{
+        public static int ToGameNum(this MEGame game)
+        {
+            if (game == MEGame.ME1) return 1;
+            if (game == MEGame.ME2) return 2;
+            if (game == MEGame.ME3) return 3;
+            return 0;
+        }
+
+        public static string ToGameName(this MEGame game)
+        {
+            if (game == MEGame.ME1) return "Mass Effect";
+            if (game == MEGame.ME2) return "Mass Effect 2";
+            if (game == MEGame.ME3) return "Mass Effect 3";
+            return "UNKNOWN GAME";
+        }
+
 		public static string Left(this string value, int count)
 		{
 			if (value == null)
