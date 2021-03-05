@@ -151,7 +151,7 @@ namespace ME3ExplorerCore.Packages
                     // Quickload: Don't read entire file.
                     using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                     {
-                        package = LoadPackage(fs, pathToFile, false, quickLoad);
+                        package = LoadPackage(fs, pathToFile, false, true);
                     }
                 }
                 else
@@ -166,15 +166,8 @@ namespace ME3ExplorerCore.Packages
             {
                 package = openPackages.GetOrAdd(pathToFile, fpath =>
                 {
-                    // Performance test.
                     using var ms = new MemoryStream(File.ReadAllBytes(pathToFile));
                     return LoadPackage(ms, fpath, true);
-                    /*
-                    using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
-                    {
-                        Debug.WriteLine($"Adding package to package cache (File): {fpath}");
-                        return LoadPackage(fs, fpath, true);
-                    }*/
                 });
             }
 
