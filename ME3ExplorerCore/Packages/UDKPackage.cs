@@ -29,6 +29,15 @@ namespace ME3ExplorerCore.Packages
 
         List<ME1TalkFile> IMEPackage.LocalTalkFiles => throw new NotImplementedException(); //not supported on this package type
 
+        /// <summary>
+        /// Passthrough to UnrealPackageFile's IsModified
+        /// </summary>
+        bool IMEPackage.IsModified
+        {
+            get => IsModified;
+            set => IsModified = value;
+        }
+
         #region HeaderMisc
         private class Thumbnail
         {
@@ -209,7 +218,7 @@ namespace ME3ExplorerCore.Packages
         private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs)
         {
             var datastream = udkPackage.SaveToStream(false);
-            datastream.WriteToFile(path);
+            datastream.WriteToFile(path ?? udkPackage.FilePath);
 
             if (!isSaveAs)
             {
@@ -343,7 +352,7 @@ namespace ME3ExplorerCore.Packages
             return ms;
         }
 
-        private byte[] GetDefaultThumbnailBytes() => Utilities.LoadEmbeddedFile("udkdefaultthumb.png").ToArray();
+        private byte[] GetDefaultThumbnailBytes() => ME3ExplorerCoreUtilities.LoadEmbeddedFile("udkdefaultthumb.png").ToArray();
 
         private void WriteHeader(Stream ms)
         {

@@ -28,8 +28,7 @@ namespace ME3Explorer.AnimationExplorer
     public partial class AnimationViewer : TrackingNotifyPropertyChangedWindowBase
     {
         public static AnimationViewer Instance;
-
-        private const string Me3ExplorerinteropAsiName = "ME3ExplorerInterop.asi";
+        
         public Animation AnimQueuedForFocus;
         private enum FloatVarIndexes
         {
@@ -119,7 +118,7 @@ namespace ME3Explorer.AnimationExplorer
         {
             if (msg == "AnimViewer string Loaded")
             {
-                if (GameController.TryGetME3Process(out Process me3Process))
+                if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
                 {
                     me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
@@ -173,7 +172,7 @@ namespace ME3Explorer.AnimationExplorer
                 playbackState = PlaybackState.Playing;
                 PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
                 noUpdate = false;
-                if (GameController.TryGetME3Process(out Process me3Process))
+                if (GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
                 {
                     me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
@@ -190,7 +189,7 @@ namespace ME3Explorer.AnimationExplorer
         private readonly DispatcherTimer ME3OpenTimer;
         private void CheckIfME3Open(object sender, EventArgs e)
         {
-            if (!GameController.TryGetME3Process(out _))
+            if (!GameController.TryGetMEProcess(MEGame.ME3, out _))
             {
                 ME3StartingUp = false;
                 LoadingAnimation = false;
@@ -302,9 +301,9 @@ namespace ME3Explorer.AnimationExplorer
         public ICommand StartME3Command { get; set; }
         void LoadCommands()
         {
-            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Installed, InteropHelper.SelectME3Path);
-            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsASILoaderInstalled, InteropHelper.OpenASILoaderDownload);
-            ME3ClosedRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Closed, InteropHelper.KillME3);
+            ME3InstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(MEGame.ME3), () => InteropHelper.SelectGamePath(MEGame.ME3));
+            ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(MEGame.ME3), InteropHelper.OpenASILoaderDownload);
+            ME3ClosedRequirementCommand = new Requirement.RequirementCommand(InteropHelper.IsME3Closed, () => InteropHelper.KillGame(MEGame.ME3));
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
             StartME3Command = new GenericCommand(StartME3, AllRequirementsMet);
         }
@@ -359,7 +358,7 @@ namespace ME3Explorer.AnimationExplorer
             });
             Task.Run(() =>
             {
-                InteropHelper.InstallInteropASI();
+                InteropHelper.InstallInteropASI(MEGame.ME3);
 
 
                 string animViewerBaseFilePath = Path.Combine(App.ExecFolder, "ME3AnimViewer.pcc");
@@ -376,7 +375,7 @@ namespace ME3Explorer.AnimationExplorer
 
         public void LoadAnimation(Animation anim)
         {
-            if (!LoadingAnimation && GameController.TryGetME3Process(out Process me3Process))
+            if (!LoadingAnimation && GameController.TryGetMEProcess(MEGame.ME3, out Process me3Process))
             {
                 LoadingAnimation = true;
                 SetBusy("Loading Animation", () => LoadingAnimation = false);
@@ -584,7 +583,7 @@ namespace ME3Explorer.AnimationExplorer
 
         private void QuitME3_Click(object sender, RoutedEventArgs e)
         {
-            InteropHelper.KillME3();
+            InteropHelper.KillGame(MEGame.ME3);
         }
 
         #region Playback

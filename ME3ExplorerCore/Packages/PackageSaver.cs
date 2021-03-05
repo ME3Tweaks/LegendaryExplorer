@@ -11,7 +11,7 @@ namespace ME3ExplorerCore.Packages
     public static class PackageSaver
     {
         private static List<string> _me1TextureFiles;
-        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(Utilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
+        internal static List<string> ME1TextureFiles => _me1TextureFiles ??= JsonConvert.DeserializeObject<List<string>>(ME3ExplorerCoreUtilities.LoadStringFromCompressedResource("Infos.zip", "ME1TextureFiles.json"));
 
         /// <summary>
         /// Callback that is invoked when a package fails to save, hook this up to show a message to the user that something failed
@@ -59,7 +59,7 @@ namespace ME3ExplorerCore.Packages
                     MESave(mePackage, savePath, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                     break;
                 case UDKPackage udkPackage:
-                    Save(udkPackage, savePath);
+                    UDKSave(udkPackage, savePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(package));
@@ -90,7 +90,7 @@ namespace ME3ExplorerCore.Packages
         //}
 
         /// <summary>
-        /// Used to test if ME3 is running. USed by ME3Explorer GameController class
+        /// Used to test if ME3 is running. Used by ME3Explorer GameController class
         /// </summary>
         public static Func<bool> CheckME3Running { get; set; }
         /// <summary>
@@ -117,16 +117,16 @@ namespace ME3ExplorerCore.Packages
             }
             try
             {
-                if (CanReconstruct(pcc, savePath))
+                if (CanReconstruct(pcc, savePath ?? pcc.FilePath))
                 {
-                    MESaveDelegate(pcc, savePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
+                    MESaveDelegate(pcc, savePath ?? pcc.FilePath, isSaveAs, compress, includeAdditionalPackagesToCook, includeDependencyTable);
                 }
                 else
                 {
-                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {CoreLib.BugReportURL}");
+                    PackageSaveFailedCallback?.Invoke($"Cannot save ME1 packages with externally referenced textures. Please make an issue on github: {ME3ExplorerCoreLib.BugReportURL}");
                 }
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }
@@ -152,7 +152,7 @@ namespace ME3ExplorerCore.Packages
             {
                 UDKSaveDelegate(pcc, path, isSaveAs);
             }
-            catch (Exception ex) when (!CoreLib.IsDebug)
+            catch (Exception ex) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 PackageSaveFailedCallback?.Invoke($"Error saving {pcc.FilePath}:\n{ex.FlattenException()}");
             }

@@ -2470,7 +2470,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void CreateSplineConnection(ExportEntry sourceActor, ExportEntry destActor)
         {
             ArrayProperty<StructProperty> connections = sourceActor.GetProperty<ArrayProperty<StructProperty>>("Connections") ?? new ArrayProperty<StructProperty>("Connections");
-            var splineComponentClass = EntryImporterExtended.EnsureClassIsInFile(Pcc, "SplineComponent");
+            var splineComponentClass = EntryImporter.EnsureClassIsInFile(Pcc, "SplineComponent", RelinkResultsAvailable: EntryImporterExtended.ShowRelinkResults);
             var splineComponent = new ExportEntry(Pcc, new byte[8])
             {
                 Class = splineComponentClass,

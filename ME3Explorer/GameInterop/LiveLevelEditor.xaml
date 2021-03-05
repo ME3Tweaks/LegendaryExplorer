@@ -34,18 +34,18 @@
                                 <TextBlock Text="Welcome to Live Level Editor" Margin="0,5,0,0" />
                                 <TextBlock Text="Requirements:" Margin="0,5,0,0" />
                                 <StackPanel>
-                                    <animationExplorer:Requirement x:Name="me3InstalledReq"
+                                    <animationExplorer:Requirement x:Name="gameInstalledReq"
                                                        FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
                                                        UnFullfilledText="Can't find Mass Effect 3 installation!"
                                                        ButtonText="Set ME3 path"
-                                                       Command="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
+                                                       Command="{Binding GameInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                     <animationExplorer:Requirement x:Name="asiLoaderInstalledReq"
                                                        FullfilledText="Binkw32 asi loader is installed"
                                                        Margin="0,5,0,5"
                                                        UnFullfilledText="Binkw32 asi loader is not installed!"
                                                        ButtonText="Get dlls"
                                                        Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
-                                    <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and 2 ASIs, ME3ExplorerInterop.asi and ConsoleExtension.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc, and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
+                                    <TextBlock Text="For the Live Level Editor to work, it needs to install support files, specifically a mod, DLC_MOD_Interop, and 2 ASIs, ME3ExplorerInterop.asi and ConsoleExtension.asi. DLC_MOD_Interop mounts above all installed mods, uses modified copies of the highest mounted versions of BioP_Global.pcc and BioP_Global_NC.pcc (ME3 only), and should be deleted or regenerated whenever your mod setup changes. Unlike standard DLC mods, this CAN be safely installed after texture mods such as ALOT."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                     <animationExplorer:Requirement x:Name="supportFilesInstalledReq"
                                                                    FullfilledText="Support files are installed"
@@ -53,10 +53,10 @@
                                                                    UnFullfilledText="Support files are not installed or are out of date!"
                                                                    ButtonText="Install support files"
                                                                    Command="{Binding SupportFilesInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
-                                    <TextBlock Text="Once the above requirements are fulfilled, start Mass Effect 3, load into the level you want to edit, and press the button below."
+                                    <TextBlock Text="Once the above requirements are fulfilled, start the game, load into the level you want to edit, and press the button below."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <Button Name="startME3Button" Content="Initialize Editor"
+                                <Button Name="initializeEditorButton" Content="Initialize Editor"
                                         Margin="20,10,20,0"
                                         Command="{Binding LoadLiveEditorCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LiveLevelEditor}}}" />
                                 <TextBlock Text="When you load into a new level, you will have to initialize the editor again"
@@ -120,6 +120,10 @@
                                     <xctk:IntegerUpDown Name="yawUpDown" Value="{Binding Yaw}" Increment="{Binding RotIncrement}"/>
                                     <TextBlock Text=" Pitch:  " VerticalAlignment="Center" />
                                     <xctk:IntegerUpDown Name="pitchUpDown" Value="{Binding Pitch}" Increment="{Binding RotIncrement}"/>
+                                    <TextBlock Text=" Roll:  " VerticalAlignment="Center" 
+                                               Visibility="{Binding IsME3, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <xctk:IntegerUpDown Name="rollUpDown" Value="{Binding Roll}" Increment="{Binding RotIncrement}"
+                                                        Visibility="{Binding IsME3, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
@@ -129,7 +133,7 @@
                         </Border>
                     </StackPanel>
                 </TabItem>
-                <TabItem Name="camPathTab" Header="Create Camera Path" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TabItem Name="camPathTab" Header="Create Camera Path" Visibility="{Binding CamPathReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                     <StackPanel>
                         <Label Content="Curve Editor" Margin="10,0,0,0"/>
                         <Border Margin="10,0,10,10" BorderBrush="#FFD8D8D8" BorderThickness="2" CornerRadius="5" Height="438">
@@ -191,7 +195,7 @@
                         </Border>
                     </StackPanel>
                 </TabItem>
-                <TabItem Name="camPathInstructionsTab" Header="Camera Path Instructions" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TabItem Name="camPathInstructionsTab" Header="Camera Path Instructions" Visibility="{Binding CamPathReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                     <StackPanel>
                         <TextBlock Margin="15,5,15,5" TextWrapping="Wrap" Width="475">
                             To populate the Saved Cameras, turn on the flycam with

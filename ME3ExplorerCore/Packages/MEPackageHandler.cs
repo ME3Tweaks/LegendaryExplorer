@@ -81,6 +81,33 @@ namespace ME3ExplorerCore.Packages
             return package;
         }
 
+
+        /// <summary>
+        /// You should only use this if you know what you're doing! This will forcibly add a package to the open packages cache. Only used when package cache is enabled.
+        /// </summary>
+        public static void ForcePackageIntoCache(IMEPackage package)
+        {
+            if (GlobalSharedCacheEnabled)
+            {
+                Debug.WriteLine($@"Forcing package into cache: {package.FilePath}");
+                if (package is UnrealPackageFile upf && upf.RefCount < 1)
+                {
+                    // Package will immediately be dropped on first dispose
+                    Debugger.Break();
+                }
+                var pathToFile = package.FilePath;
+                if (File.Exists(pathToFile))
+                {
+                    pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT IF FILE EXISTS (it might be a memory file!)
+                }
+                openPackages[pathToFile] = package;
+            } else
+            {
+                Debug.WriteLine("Global Package Cache is disabled, cannot force packages into cache");
+            }
+        }
+
+
         /// <summary>
         /// Opens an already open package, registering it for use in a tool.
         /// </summary>

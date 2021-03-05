@@ -35,7 +35,7 @@ namespace ME3Explorer.PackageDumper
         /// <summary>
         /// Items show in the list that are currently being processed
         /// </summary>
-        public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<PackageDumperSingleFileTask>();
+        public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new();
 
         /// <summary>
         /// All items in the queue
@@ -61,7 +61,7 @@ namespace ME3Explorer.PackageDumper
 
         private async void DumpSpecificFiles(object obj)
         {
-            CommonOpenFileDialog dlg = new CommonOpenFileDialog
+            CommonOpenFileDialog dlg = new()
             {
                 Multiselect = true,
                 EnsureFileExists = true,
@@ -74,7 +74,7 @@ namespace ME3Explorer.PackageDumper
 
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
-                CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
+                CommonOpenFileDialog outputDlg = new()
                 {
                     IsFolderPicker = true,
                     EnsurePathExists = true,
@@ -83,7 +83,7 @@ namespace ME3Explorer.PackageDumper
                 if (outputDlg.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
                     string outputDir = outputDlg.FileName;
-                    await dumpPackages(dlg.FileNames.ToList(), outputDlg.FileName);
+                    await dumpPackages(dlg.FileNames.ToList(), outputDir);
                 }
             }
         }
@@ -201,28 +201,12 @@ namespace ME3Explorer.PackageDumper
 
         public bool Verbose
         {
-            set
-            {
-                verbose = value;
-            }
+            set => verbose = value;
         }
 
-        private void DumpGame(MEGame game)
+        private async void DumpGame(MEGame game)
         {
-            string rootPath = null;
-            switch (game)
-            {
-                case MEGame.ME1:
-                    rootPath = ME1Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME2:
-                    rootPath = ME2Directory.DefaultGamePath;
-                    break;
-                case MEGame.ME3:
-                    rootPath = ME3Directory.DefaultGamePath;
-                    break;
-            }
-            CommonOpenFileDialog m = new CommonOpenFileDialog
+            CommonOpenFileDialog m = new()
             {
                 IsFolderPicker = true,
                 EnsurePathExists = true,
@@ -231,7 +215,7 @@ namespace ME3Explorer.PackageDumper
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
-                dumpPackagesFromFolder(rootPath, outputDir);
+                await dumpPackages(MELoadedFiles.GetFilesLoadedInGame(game).Values.ToList(), outputDir);
             }
         }
 
@@ -342,12 +326,7 @@ namespace ME3Explorer.PackageDumper
 
                     outputFilename += ".txt";
 
-                    string outfolder = outputfolder;
-                    if (outfolder != null)
-                    {
-                        string relative = GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
-                        outfolder = Path.Combine(outfolder, relative);
-                    }
+                    string outfolder = outputfolder ?? GetRelativePath(Path.GetFullPath(item.Key), Directory.GetParent(item.Key).ToString());
 
                     var threadtask = new PackageDumperSingleFileTask(packageF, outputFilename, outfolder);
                     AllDumpingItems.Add(threadtask); //For setting cancellation value
@@ -413,8 +392,8 @@ namespace ME3Explorer.PackageDumper
                 throw new ArgumentNullException(nameof(toPath));
             }
 
-            Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
-            Uri toUri = new Uri(AppendDirectorySeparatorChar(toPath));
+            Uri fromUri = new(AppendDirectorySeparatorChar(fromPath));
+            Uri toUri = new(AppendDirectorySeparatorChar(toPath));
 
             if (fromUri.Scheme != toUri.Scheme)
             {
@@ -429,7 +408,7 @@ namespace ME3Explorer.PackageDumper
             }
             if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
             {
-                relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+                relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             }
 
             return relativePath;
@@ -438,10 +417,10 @@ namespace ME3Explorer.PackageDumper
         private static string AppendDirectorySeparatorChar(string path)
         {
             // Append a slash only if the path is a directory and does not have a slash.
-            if (!System.IO.Path.HasExtension(path) &&
-                !path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+            if (!Path.HasExtension(path) &&
+                !path.EndsWith(Path.DirectorySeparatorChar.ToString()))
             {
-                return path + System.IO.Path.DirectorySeparatorChar;
+                return path + Path.DirectorySeparatorChar;
             }
 
             return path;
@@ -499,7 +478,7 @@ namespace ME3Explorer.PackageDumper
                     string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfm" };
                     foreach (string filename in filenames)
                     {
-                        string extension = System.IO.Path.GetExtension(filename).ToLower();
+                        string extension = Path.GetExtension(filename).ToLower();
                         if (!acceptedExtensions.Contains(extension))
                         {
                             dropEnabled = false;
@@ -554,9 +533,9 @@ namespace ME3Explorer.PackageDumper
         public PackageDumperSingleFileTask(string packageToDump, string outputFilenameNoExtension = null, string outputfolder = null)
         {
             MemoryAnalyzer.AddTrackedMemoryItem($"PDSFT for {packageToDump}", new WeakReference(this));
-            this._packageToDump = packageToDump;
-            this.ShortFileName = outputFilenameNoExtension ?? Path.GetFileNameWithoutExtension(packageToDump);
-            this.OutputFolder = outputfolder;
+            _packageToDump = packageToDump;
+            ShortFileName = outputFilenameNoExtension ?? Path.GetFileNameWithoutExtension(packageToDump);
+            OutputFolder = outputfolder;
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
@@ -590,7 +569,7 @@ namespace ME3Explorer.PackageDumper
                     string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                     Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                    using (StreamWriter stringoutput = new StreamWriter(savepath))
+                    using (StreamWriter stringoutput = new(savepath))
                     //using (StreamWriter stringoutput = new StreamWriter(new MemoryStream()))
                     {
 
@@ -617,7 +596,7 @@ namespace ME3Explorer.PackageDumper
 
                         int numDone = 1;
                         //writeVerboseLine("Enumerating exports");
-                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
+                        string swfoutfolder = outfolder + Path.GetFileNameWithoutExtension(_packageToDump) + "\\";
                         foreach (ExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
@@ -675,7 +654,7 @@ namespace ME3Explorer.PackageDumper
                                         break;
                                     case MEGame.ME3:
 
-                                        Function func3 = new Function(exp.Data, exp);
+                                        Function func3 = new(exp.Data, exp);
                                         func3.ParseFunction();
                                         stringoutput.WriteLine(func3.GetSignature());
                                         foreach (var v in func3.ScriptBlocks)
@@ -695,7 +674,7 @@ namespace ME3Explorer.PackageDumper
                                     if (props.Count > 0)
                                     {
                                         stringoutput.WriteLine("==============Properties==============");
-                                        UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                                        UPropertyTreeViewEntry topLevelTree = new(); //not used, just for holding and building data.
                                         foreach (Property prop in props)
                                         {
                                             InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);

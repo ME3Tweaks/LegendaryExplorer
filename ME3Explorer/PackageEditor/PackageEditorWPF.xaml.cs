@@ -25,6 +25,7 @@ using GongSolutions.Wpf.DragDrop;
 using Newtonsoft.Json;
 using ME3Explorer.PackageEditor.Experiments;
 using ME3Explorer.Packages;
+using ME3Explorer.TextureStudio;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
@@ -189,6 +190,13 @@ namespace ME3Explorer
         {
             get => _gotoHintText;
             set => SetProperty(ref _gotoHintText, value);
+        }
+
+        private bool _showExperiments = App.IsDebug;
+        public bool ShowExperiments
+        {
+            get => _showExperiments;
+            set => SetProperty(ref _showExperiments, value);
         }
 
         #region Commands
@@ -758,39 +766,50 @@ namespace ME3Explorer
 
         private void NewLevelFile()
         {
-            var dlg = new SaveFileDialog
+            string gameString = InputComboBoxWPF.GetValue(this, "Choose game to create a level file for:",
+                                                          "Create new level file", new[] { "ME3", "ME2" }, "ME3");
+            if (Enum.TryParse(gameString, out MEGame game) && game is MEGame.ME3 or MEGame.ME2)
             {
-                Filter = "ME3 package file|*.pcc",
-                OverwritePrompt = true
-            };
-
-            if (dlg.ShowDialog() == true)
-            {
-                if (File.Exists(dlg.FileName))
+                var dlg = new SaveFileDialog
                 {
-                    File.Delete(dlg.FileName);
-                }
-
-
-                File.Copy(Path.Combine(App.ExecFolder, "ME3EmptyLevel.pcc"), dlg.FileName);
-                LoadFile(dlg.FileName);
-                for (int i = 0; i < Pcc.Names.Count; i++)
+                    Filter = App.ME3ME2SaveFileFilter,
+                    OverwritePrompt = true
+                };
+                if (dlg.ShowDialog() == true)
                 {
-                    string name = Pcc.Names[i];
-                    if (name.Equals("ME3EmptyLevel"))
+                    if (File.Exists(dlg.FileName))
                     {
-                        var newName = name.Replace("ME3EmptyLevel", Path.GetFileNameWithoutExtension(dlg.FileName));
-                        Pcc.replaceName(i, newName);
+                        File.Delete(dlg.FileName);
                     }
-                }
+                    string emptyLevelName = game switch
+                    {
+                        MEGame.ME2 => "ME2EmptyLevel",
+                        _ => "ME3EmptyLevel"
+                    };
+                    File.Copy(Path.Combine(App.ExecFolder, $"{emptyLevelName}.pcc"), dlg.FileName);
+                    LoadFile(dlg.FileName);
+                    for (int i = 0; i < Pcc.Names.Count; i++)
+                    {
+                        string name = Pcc.Names[i];
+                        if (name.Equals(emptyLevelName))
+                        {
+                            var newName = name.Replace(emptyLevelName, Path.GetFileNameWithoutExtension(dlg.FileName));
+                            Pcc.replaceName(i, newName);
+                        }
+                    }
 
-                var packguid = Guid.NewGuid();
-                var package = Pcc.GetUExport(1);
-                package.PackageGUID = packguid;
-                Pcc.PackageGuid = packguid;
-                SaveFile();
-                RecentsController.AddRecent(dlg.FileName, false);
-                RecentsController.SaveRecentList(true);
+                    var packguid = Guid.NewGuid();
+                    var package = Pcc.GetUExport(game switch
+                    {
+                        MEGame.ME2 => 7,
+                        _ => 1
+                    });
+                    package.PackageGUID = packguid;
+                    Pcc.PackageGuid = packguid;
+                    SaveFile();
+                    RecentsController.AddRecent(dlg.FileName, false);
+                    RecentsController.SaveRecentList(true);
+                }
             }
         }
 
@@ -4005,9 +4024,9 @@ namespace ME3Explorer
             PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(Pcc);
         }
 
-        private void FindAllFilesWithSpecificClass(object sender, RoutedEventArgs e)
+        private void FindAllFilesWithSpecificName(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsM.FindAllFilesWithClass(this);
+            PackageEditorExperimentsM.FindNamedObject(this);
         }
 
         private void FindME12DATables_Click(object sender, RoutedEventArgs e)
@@ -4618,6 +4637,45 @@ namespace ME3Explorer
             }
         }
 
+        private void FindOpCode_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (PackageIsLoaded())
+            {
+                if (!short.TryParse(PromptDialog.Prompt(this, "enter opcode"), out short opCode))
+                {
+                    return;
+                }
+                var exportsWithOpcode = new List<EntryStringPair>();
+                foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.ClassName == "Function"))
+                {
+                    if (Pcc.Game is MEGame.ME3)
+                    {
+                        (List<Token> tokens, _) = Bytecode.ParseBytecode(export.GetBinaryData<UFunction>().ScriptBytes, export);
+                        if (tokens.FirstOrDefault(tok => tok.op == opCode) is Token token)
+                        {
+                            exportsWithOpcode.Add(new EntryStringPair(export, token.posStr));
+                        }
+                    }
+                    else
+                    {
+                        var func = ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export); 
+                        func.Decompile(new ME3ExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
+                        if (func.Statements.statements.Count > 0 
+                         && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is {})
+                        {
+                            exportsWithOpcode.Add(new EntryStringPair(export, ""));
+                        }
+                    }
+                }
+
+                var dlg = new ListDialog(exportsWithOpcode, $"functions with opcode 0x{opCode:X}", "", this)
+                {
+                    DoubleClickEntryHandler = entryDoubleClick
+                };
+                dlg.Show();
+            }
+        }
+
         private void SetAllWwiseEventDurations_Click(object sender, RoutedEventArgs e)
         {
             BusyText = "Scanning audio and updating events";
@@ -4757,6 +4815,15 @@ namespace ME3Explorer
             }
         }
 
+        private void ShiftInterpTrackMove(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelected(out var uindex);
+            if (selected && uindex > 0)
+            {
+                PackageEditorExperimentsM.ShiftInterpTrackMove(Pcc.GetUExport(uindex));
+            }
+        }
+
         private void PortWiiUBSP(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.PortWiiUBSP();
@@ -4804,6 +4871,19 @@ namespace ME3Explorer
         private void CompactInFile_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CompactFileViaExternalFile(Pcc);
+        }
+
+        private void ResolveAllImports_Clicked(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() => PackageEditorExperimentsM.CheckImports(Pcc)).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+            });
+        }
+
+        private void BuildNativeTable_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.BuildNativeTable(this);
         }
     }
 }

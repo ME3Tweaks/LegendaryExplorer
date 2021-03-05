@@ -18,6 +18,16 @@ namespace ME3Explorer.SharedUI
 
         public ObservableCollectionExtended<string> RecentPaths { get; } = new ObservableCollectionExtended<string>();
 
+        public bool IsFolderRecents
+        {
+            get => (bool)GetValue(IsFolderRecentsProperty);
+            set => SetValue(IsFolderRecentsProperty, value);
+        }
+
+        public static readonly DependencyProperty IsFolderRecentsProperty = DependencyProperty.Register(
+            nameof(IsFolderRecents), typeof(bool), typeof(RecentsControl), new PropertyMetadata(false));
+
+
 
         public RecentsControl()
         {
@@ -29,7 +39,7 @@ namespace ME3Explorer.SharedUI
 
         private void LoadCommands()
         {
-            RecentFileOpenCommand = new RelayCommand(filePath => RecentItemClicked((string) filePath));
+            RecentFileOpenCommand = new RelayCommand(filePath => RecentItemClicked((string)filePath));
         }
 
         private string RecentsAppDataFile => Path.Combine(Directory.CreateDirectory(Path.Combine(App.AppDataFolder, RecentsFoldername)).FullName, "RECENTFILES");
@@ -64,7 +74,14 @@ namespace ME3Explorer.SharedUI
             RecentPaths.ClearEx();
             foreach (string referencedFile in recents)
             {
-                if (File.Exists(referencedFile))
+                if (IsFolderRecents)
+                {
+                    if (Directory.Exists(referencedFile))
+                    {
+                        AddRecent(referencedFile, true);
+                    }
+                }
+                else if (File.Exists(referencedFile))
                 {
                     AddRecent(referencedFile, true);
                 }
@@ -153,7 +170,7 @@ namespace ME3Explorer.SharedUI
                 //we are posting an update to other instances
                 foreach (var form in Application.Current.Windows)
                 {
-                    if (form.GetType() == propogationSource.GetType() && !ReferenceEquals(form, propogationSource) && form is IRecents recentsSupportedWindow && ((Window) form).IsLoaded)
+                    if (form.GetType() == propogationSource.GetType() && !ReferenceEquals(form, propogationSource) && form is IRecents recentsSupportedWindow && ((Window)form).IsLoaded)
                     {
                         recentsSupportedWindow.PropogateRecentsChange(newRecents);
                     }

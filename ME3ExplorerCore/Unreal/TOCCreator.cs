@@ -98,6 +98,7 @@ namespace ME3ExplorerCore.Unreal
         {
             if (filesystemInfo.Count != 0)
             {
+                long selfSizePosition = -1;
                 byte[] SHA1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 MemoryStream fs = new MemoryStream();
 
@@ -120,6 +121,7 @@ namespace ME3ExplorerCore.Unreal
                     }
                     else
                     {
+                        selfSizePosition = fs.Position;
                         fs.WriteInt32(0); //Filesize
                     }
 
@@ -128,6 +130,14 @@ namespace ME3ExplorerCore.Unreal
                     //foreach (char c in file)
                     //    fs.WriteByte((byte)c);
                     fs.WriteByte(0);
+                }
+
+                if (selfSizePosition >= 0)
+                {
+                    // Write the size of our own TOC. This ensures TOC appears up to date when we try to update it later
+                    // (important for DLC TOCs)
+                    fs.Seek(selfSizePosition, SeekOrigin.Begin);
+                    fs.WriteInt32((int)fs.Length);
                 }
 
                 return fs;

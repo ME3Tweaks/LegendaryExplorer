@@ -41,6 +41,10 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 ScriptStorageSize = ScriptBytes.Length;
             }
             sc.Serialize(ref ScriptStorageSize);
+            if (sc.Game <= MEGame.ME2)
+            {
+                ScriptBytecodeSize = ScriptStorageSize;
+            }
             sc.Serialize(ref ScriptBytes, ScriptStorageSize);
         }
 
@@ -74,7 +78,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     try
                     {
                         var func = UE3FunctionReader.ReadFunction(Export);
-                        func.Decompile(new TextBuilder(), false); //parse bytecode
+                        func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
                         var entryRefs = func.EntryReferences;
                         uIndices.AddRange(entryRefs.Select(x =>
                             (new UIndex(x.Value.UIndex), $"Reference inside of function at 0x{x.Key:X}")));

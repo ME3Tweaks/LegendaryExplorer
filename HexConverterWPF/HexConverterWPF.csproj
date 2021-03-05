@@ -9,7 +9,7 @@
     <RootNamespace>HexConverter</RootNamespace>
     <AssemblyName>HexConverter</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -59,6 +59,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureRelease|x64'">
     <OutputPath>bin\x64\WinAzureRelease\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinAzureTest|x64'">
+    <OutputPath>bin\x64\WinAzureTest\</OutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>8.0</LangVersion>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>

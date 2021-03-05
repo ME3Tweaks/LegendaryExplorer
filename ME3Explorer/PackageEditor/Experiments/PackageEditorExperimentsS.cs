@@ -19,6 +19,7 @@ using ME3ExplorerCore.Unreal.BinaryConverters;
 using ME3ExplorerCore.Unreal.Classes;
 using ME3Script;
 using ME3Script.Compiling.Errors;
+using ME3Script.Decompiling;
 using ME3Script.Language.Tree;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -820,6 +821,89 @@ namespace ME3Explorer.PackageEditor.Experiments
                     JsonConvert.SerializeObject(files, Formatting.Indented));
                 ListDialog dlg = new ListDialog(files, "", "ME1 files with externally referenced textures", pewpf);
                 dlg.Show();
+            });
+        }
+
+        public static void BuildNativeTable(PackageEditorWPF pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Building Native Table";
+            Task.Run(() =>
+            {
+                IMEPackage pcc = pewpf.Pcc;
+
+                var entries = new List<(int, string)>();
+                foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
+                {
+                    var func = export.GetBinaryData<UFunction>();
+                    ushort nativeIndex = func.NativeIndex;
+                    if (nativeIndex > 0)
+                    {
+                        NativeType type = NativeType.Function;
+                        if (func.FunctionFlags.Has(FunctionFlags.PreOperator))
+                        {
+                            type = NativeType.PreOperator;
+                        }
+                        else if (func.FunctionFlags.Has(FunctionFlags.Operator))
+                        {
+                            var nextItem = func.Children;
+                            int paramCount = 0;
+                            while (export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
+                            {
+                                var objBin = ObjectBinary.From(nextChild);
+                                switch (objBin)
+                                {
+                                    case UProperty uProperty:
+                                        if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                                        {
+                                        }
+                                        else if (uProperty.PropertyFlags.HasFlag(UnrealFlags.EPropertyFlags.Parm))
+                                        {
+                                            paramCount++;
+                                        }
+                                        nextItem = uProperty.Next;
+                                        break;
+                                    default:
+                                        nextItem = 0;
+                                        break;
+                                }
+                            }
+
+                            type = paramCount == 1 ? NativeType.PostOperator : NativeType.Operator;
+                        }
+                        entries.Add(nativeIndex, $"{{ 0x{nativeIndex:X}, new NativeTableEntry {{ Name=\"{func.FriendlyName}\", Type=NativeType.{type}, Precedence={func.OperatorPrecedence}}} }},");
+                    }
+                }
+
+
+                using var fileStream = new FileStream(Path.Combine(App.ExecFolder, $"{pcc.Game}NativeTable.cs"), FileMode.Create);
+                using var writer = new CodeWriter(fileStream);
+                writer.WriteLine("using System.Collections.Generic;");
+                writer.WriteLine();
+                writer.WriteBlock("namespace ME3Script.Decompiling", () =>
+                {
+                    writer.WriteBlock("public partial class ByteCodeDecompiler", () =>
+                    {
+                        writer.WriteLine($"public static readonly Dictionary<int, NativeTableEntry> {pcc.Game}NativeTable = new() ");
+                        writer.WriteLine("{");
+                        writer.IncreaseIndent();
+
+                        foreach ((_, string entry) in entries.OrderBy(tup => tup.Item1))
+                        {
+                            writer.WriteLine(entry);
+                        }
+
+                        writer.DecreaseIndent();
+                        writer.WriteLine("};");
+                    });
+
+                });
+
+                return;
+
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pewpf.IsBusy = false;
             });
         }
     }

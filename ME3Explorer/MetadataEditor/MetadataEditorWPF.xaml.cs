@@ -752,8 +752,8 @@ namespace ME3Explorer.MetadataEditor
             }
 
             Header_Hexbox = null;
-            Header_Hexbox_Host.Child.Dispose();
-            Header_Hexbox_Host.Dispose();
+            Header_Hexbox_Host?.Child.Dispose();
+            Header_Hexbox_Host?.Dispose();
             Header_Hexbox_Host = null;
         }
 

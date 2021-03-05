@@ -147,8 +147,8 @@ namespace ME3Explorer.WwiseEditor
             OpenCommand = new GenericCommand(OpenFile);
             SaveCommand = new GenericCommand(SavePackage, IsPackageLoaded);
             SaveAsCommand = new GenericCommand(SavePackageAs, IsPackageLoaded);
-            SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
-            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
+            SaveImageCommand = new GenericCommand(SaveImage, () => CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), () => CurrentObjects.Any);
         }
 
         private bool IsPackageLoaded() => Pcc != null;

@@ -138,7 +138,9 @@
                         </Rectangle>
                     </StackPanel>
                 </Button>
-                <Button x:Name="taskPaneButton" Style="{StaticResource MainMenuButton}" Click="taskPaneButton_Click">
+                <!-- Task pane has been removed -->
+                <!-- Replace with something more useful. Like tutorial links or something. -->
+                <!--<Button x:Name="taskPaneButton" Style="{StaticResource MainMenuButton}" Click="taskPaneButton_Click">
                     <StackPanel>
                         <Label Content="TASK PANE"/>
                         <Line Width="73"/>
@@ -148,7 +150,7 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>
-                </Button>
+                </Button>-->
             </StackPanel>
         </StackPanel>
         <Grid x:Name="CICPanel" Grid.Column="1" Width="650" >
@@ -467,7 +469,7 @@
         <local:MainToolPanel x:Name="utilitiesPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:MainToolPanel x:Name="createModsPanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="ToolMouseOver"/>
         <local:ToolInfoPanel x:Name="toolInfoPanel" Width="0" HorizontalAlignment="Left" Grid.Column="2"/>
-        <local:TaskPane x:Name="taskPanePanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="taskPanePanel_ToolMouseOver"/>
-        <local:TaskPaneInfoPanel x:Name="taskPaneInfoPanel" Grid.Column="2" Width="0" HorizontalAlignment="Left" Close="taskPaneInfoPanel_Close"/>
+        <!--<local:TaskPane x:Name="taskPanePanel" Grid.Column="1" Width="0" HorizontalAlignment="Left" ToolMouseOver="taskPanePanel_ToolMouseOver"/>
+        <local:TaskPaneInfoPanel x:Name="taskPaneInfoPanel" Grid.Column="2" Width="0" HorizontalAlignment="Left" Close="taskPaneInfoPanel_Close"/>-->
     </Grid>
 </Window>

@@ -19,7 +19,7 @@ namespace ME3ExplorerCore.Tests
             if (initialized) return;
             var sc = new SynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(sc);
-            CoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
+            ME3ExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), x => { });
 #if AZURE
             ME1Directory.DefaultGamePath = ME1UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME1);
             ME2Directory.DefaultGamePath = ME2UnrealObjectInfo.MiniGameFilesPath = GetTestMiniGamePath(MEGame.ME2);

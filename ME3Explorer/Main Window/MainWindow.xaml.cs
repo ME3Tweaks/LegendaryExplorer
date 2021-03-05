@@ -59,7 +59,7 @@ namespace ME3Explorer
 
 #if DEBUG
                 version += " DEBUG";
-#elif AZURE
+#elif NIGHTLY
                 //This is what will be placed in release. Comment this out when building for a stable!
                 version += " NIGHTLY"; //ENSURE THIS IS CHANGED FOR MAJOR RELEASES AND RELEASE CANDIDATES
 #elif RELEASE
@@ -261,7 +261,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 CICOpen = true;
                 if (SearchBox.Text.Trim() != string.Empty)
@@ -458,7 +458,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 utilitiesButton.OpacityMask = HighlightBrush;
                 utilitiesPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
@@ -503,7 +503,7 @@ namespace ME3Explorer
                 }
                 if (TaskPaneOpen)
                 {
-                    closeTaskPane(100);
+                    //closeTaskPane(100);
                 }
                 createModsButton.OpacityMask = HighlightBrush;
                 createModsPanel.BeginDoubleAnimation(WidthProperty, 650, 300);
@@ -705,69 +705,69 @@ namespace ME3Explorer
 
         private void taskPaneButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TaskPaneOpen)
-            {
-                closeTaskPane();
-            }
-            else
-            {
-                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
-                {
-                    {"Tab Name Opened", "TaskPane"}
-                });
-                TaskPaneOpen = true;
-                if (CICOpen)
-                {
-                    closeCIC(100, false);
-                }
-                if (UtilitiesOpen)
-                {
-                    closeUtilities(100);
-                }
-                if (CreateModsOpen)
-                {
-                    closeCreateMods(100);
-                }
-                taskPaneButton.OpacityMask = HighlightBrush;
-                taskPanePanel.BeginDoubleAnimation(WidthProperty, 650, 300);
-            }
+            //if (TaskPaneOpen)
+            //{
+            //    closeTaskPane();
+            //}
+            //else
+            //{
+            //    Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+            //    {
+            //        {"Tab Name Opened", "TaskPane"}
+            //    });
+            //    TaskPaneOpen = true;
+            //    if (CICOpen)
+            //    {
+            //        closeCIC(100, false);
+            //    }
+            //    if (UtilitiesOpen)
+            //    {
+            //        closeUtilities(100);
+            //    }
+            //    if (CreateModsOpen)
+            //    {
+            //        closeCreateMods(100);
+            //    }
+            //    taskPaneButton.OpacityMask = HighlightBrush;
+            //    taskPanePanel.BeginDoubleAnimation(WidthProperty, 650, 300);
+            //}
         }
 
-        private void closeTaskPane(int duration = 300)
-        {
-            if (TaskPaneInfoPanelOpen)
-            {
-                Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
-                {
-                    {"Tab Name Closed", "TaskPane"}
-                });
-                closeTaskPaneInfoPanel();
-            }
-            TaskPaneOpen = false;
-            taskPanePanel.BeginDoubleAnimation(WidthProperty, 0, duration);
-            taskPaneButton.OpacityMask = LabelTextBrush;
-        }
+        //private void closeTaskPane(int duration = 300)
+        //{
+        //    if (TaskPaneInfoPanelOpen)
+        //    {
+        //        Analytics.TrackEvent("Main Window Tab Changed", new Dictionary<string, string>()
+        //        {
+        //            {"Tab Name Closed", "TaskPane"}
+        //        });
+        //        closeTaskPaneInfoPanel();
+        //    }
+        //    TaskPaneOpen = false;
+        //    taskPanePanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        //    taskPaneButton.OpacityMask = LabelTextBrush;
+        //}
 
-        private void closeTaskPaneInfoPanel(int duration = 100)
-        {
-            TaskPaneInfoPanelOpen = false;
-            taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
-        }
+        //private void closeTaskPaneInfoPanel(int duration = 100)
+        //{
+        //    TaskPaneInfoPanelOpen = false;
+        //    taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
+        //}
 
-        private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
-        {
-            taskPaneInfoPanel.setTool(e.wpf);
-            if (!TaskPaneInfoPanelOpen)
-            {
-                TaskPaneInfoPanelOpen = true;
-                taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
-            }
-        }
+        //private void taskPanePanel_ToolMouseOver(object sender, WPFBaseViewModel e)
+        //{
+        //    taskPaneInfoPanel.setTool(e.wpf);
+        //    if (!TaskPaneInfoPanelOpen)
+        //    {
+        //        TaskPaneInfoPanelOpen = true;
+        //        taskPaneInfoPanel.BeginDoubleAnimation(WidthProperty, 300, 100);
+        //    }
+        //}
 
-        private void taskPaneInfoPanel_Close(object sender, EventArgs e)
-        {
-            closeTaskPaneInfoPanel();
-        }
+        //private void taskPaneInfoPanel_Close(object sender, EventArgs e)
+        //{
+        //    closeTaskPaneInfoPanel();
+        //}
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {

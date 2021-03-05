@@ -237,7 +237,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     props = EntryPruner.RemoveIncompatibleProperties(sourceExport.FileRef, props, sourceExport.ClassName, destPackage.Game);
                 }
             }
-            catch (Exception exception) when (!CoreLib.IsDebug)
+            catch (Exception exception) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 //restore namelist in event of failure.
                 destPackage.restoreNames(names);
@@ -262,7 +262,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     classValue = GetOrAddCrossImportOrPackage(sourceClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
                     break;
                 case ExportEntry sourceClassExport:
-                    classValue = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceClassExport.FullPath && x.indexValue == sourceClassExport.indexValue);
+                    classValue = destPackage.FindExport(sourceClassExport.InstancedFullPath);
                     if (classValue is null && importExportDependencies)
                     {
                         IEntry classParent = GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourceExport.FileRef, destPackage, true, objectMapping, relinkerCache: relinkerCache);
@@ -282,7 +282,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         superclass = GetOrAddCrossImportOrPackage(sourceSuperClassImport.FullPath, sourceExport.FileRef, destPackage, objectMapping: objectMapping, relinkerCache: relinkerCache);
                         break;
                     case ExportEntry sourceSuperClassExport:
-                        superclass = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceSuperClassExport.FullPath && x.indexValue == sourceSuperClassExport.indexValue);
+                        superclass = destPackage.FindExport(sourceSuperClassExport.InstancedFullPath);
                         if (superclass is null && importExportDependencies)
                         {
                             IEntry superClassParent = GetOrAddCrossImportOrPackage(sourceSuperClassExport.ParentFullPath, sourceExport.FileRef, destPackage,
@@ -302,7 +302,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     break;
                 case ExportEntry sourceArchetypeExport:
                     // Should the below line use instanced full path?
-                    archetype = destPackage.Exports.FirstOrDefault(x => x.FullPath == sourceArchetypeExport.FullPath && x.indexValue == sourceArchetypeExport.indexValue);
+                    archetype = destPackage.FindExport(sourceArchetypeExport.InstancedFullPath);
                     if (archetype is null && importExportDependencies)
                     {
                         IEntry archetypeParent = GetOrAddCrossImportOrPackage(sourceArchetypeExport.ParentFullPath, sourceExport.FileRef, destPackage,
@@ -789,7 +789,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 
         public static ExportEntry ResolveImport(ImportEntry entry)
         {
-            var entryFullPath = entry.FullPath;
+            var entryFullPath = entry.InstancedFullPath;
 
 
             string containingDirectory = Path.GetDirectoryName(entry.FileRef.FilePath);
@@ -833,14 +833,14 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 filesToCheck.Add(Path.GetFileName(efxPath));
             }
 
-            if (entry.Game == MEGame.ME3)
-            {
-                // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
-                if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
-                {
-                    filesToCheck.Add(Path.GetFileName(efPath));
-                }
-            }
+            //if (entry.Game == MEGame.ME3)
+            //{
+            //    // Look in BIOP_MP_Common. This is not a 'safe' file but it is always loaded in MP mode and will be commonly referenced by MP files
+            //    if (gameFiles.TryGetValue("BIOP_MP_COMMON.pcc", out var efPath))
+            //    {
+            //        filesToCheck.Add(Path.GetFileName(efPath));
+            //    }
+            //}
 
 
             //add base definition files that are always loaded (Core, Engine, etc.)
@@ -901,11 +901,11 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (packName == packageParts[0])
                 {
-                    //it's literally the file itself
+                    //it's literally the file itself (an imported package like SFXGame)
                     return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
                 }
 
-                return package.Exports.FirstOrDefault(x => x.FullPath == entryFullPath);
+                return package.FindExport(entryFullPath);
             }
         }
 
@@ -918,26 +918,27 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
-                string bioXNextFileLookup(string filename)
+                // Do not include extensions in the results of this, they will be appended in resulting file
+                string bioXNextFileLookup(string filenameWithoutExtensionX)
                 {
                     //Lookup parents
-                    var bioType = filename[3];
-                    string[] parts = filename.Split('_');
-                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310.pcc
+                    var bioType = filenameWithoutExtensionX[3];
+                    string[] parts = filenameWithoutExtensionX.Split('_');
+                    if (parts.Length >= 2) //BioA_Nor_WowThatsAlot310
                     {
                         var levelName = parts[1];
                         switch (bioType)
                         {
                             case 'a' when parts.Length > 2:
-                                return $"bioa_{levelName}{bioFileExt}";
+                                return $"bioa_{levelName}";
                             case 'd' when parts.Length > 2:
-                                return $"biod_{levelName}{bioFileExt}";
+                                return $"biod_{levelName}";
                             case 's' when parts.Length > 2:
-                                return $"bios_{levelName}{bioFileExt}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
+                                return $"bios_{levelName}"; //BioS has no subfiles as far as I know but we'll just put this here anyways.
                             case 'a' when parts.Length == 2:
                             case 'd' when parts.Length == 2:
                             case 's' when parts.Length == 2:
-                                return $"biop_{levelName}{bioFileExt}";
+                                return $"biop_{levelName}";
                         }
                     }
 
@@ -947,13 +948,236 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
-                    associatedFiles.Add(nextfile);
+                    associatedFiles.Add($"{nextfile}{bioFileExt}");
                     associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
-                    nextfile = bioXNextFileLookup(Path.GetFileNameWithoutExtension(nextfile.ToLower()));
+                    nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
             }
 
+            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            {
+                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+            }
+
             return associatedFiles;
+        }
+
+        public static IEntry EnsureClassIsInFile(IMEPackage pcc, string className, string gamePathOverride = null, Action<List<EntryStringPair>> RelinkResultsAvailable = null)
+        {
+            //check to see class is already in file
+            foreach (ImportEntry import in pcc.Imports)
+            {
+                if (import.IsClass && import.ObjectName == className)
+                {
+                    return import;
+                }
+            }
+            foreach (ExportEntry export in pcc.Exports)
+            {
+                if (export.IsClass && export.ObjectName == className)
+                {
+                    return export;
+                }
+            }
+
+            ClassInfo info = UnrealObjectInfo.GetClassOrStructInfo(pcc.Game, className);
+
+            //backup some package state so we can undo changes if something goes wrong
+            int exportCount = pcc.ExportCount;
+            int importCount = pcc.ImportCount;
+            List<string> nameListBackup = pcc.Names.ToList();
+            try
+            {
+                if (EntryImporter.IsSafeToImportFrom(info.pccPath, pcc.Game))
+                {
+                    string package = Path.GetFileNameWithoutExtension(info.pccPath);
+                    return pcc.getEntryOrAddImport($"{package}.{className}");
+                }
+
+                //It's a class that's defined locally in every file that uses it.
+                Stream loadStream = null;
+                if (info.pccPath == UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName)
+                {
+                    loadStream = ME3ExplorerCoreUtilities.GetCustomAppResourceStream(pcc.Game);
+                    //string resourceFilePath = App.CustomResourceFilePath(pcc.Game);
+                    //if (File.Exists(resourceFilePath))
+                    //{
+                    //    sourceFilePath = resourceFilePath;
+                    //}
+                }
+                else
+                {
+                    string testPath = Path.Combine(MEDirectories.GetBioGamePath(pcc.Game, gamePathOverride), info.pccPath);
+                    if (File.Exists(testPath))
+                    {
+                        loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                    }
+                    else if (pcc.Game == MEGame.ME1)
+                    {
+                        testPath = Path.Combine(gamePathOverride ?? ME1Directory.DefaultGamePath, info.pccPath);
+                        if (File.Exists(testPath))
+                        {
+                            loadStream = new MemoryStream(File.ReadAllBytes(testPath));
+                        }
+                    }
+                }
+
+                if (loadStream == null)
+                {
+                    //can't find file to import from. This may occur if user does not have game or neccesary dlc installed 
+                    return null;
+                }
+
+                using IMEPackage sourcePackage = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+
+                if (!sourcePackage.IsUExport(info.exportIndex))
+                {
+                    return null; //not sure how this would happen
+                }
+
+                ExportEntry sourceClassExport = sourcePackage.GetUExport(info.exportIndex);
+
+                if (sourceClassExport.ObjectName != className)
+                {
+                    return null;
+                }
+
+                //Will make sure that, if the class is in a package, that package will exist in pcc
+                IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceClassExport.ParentFullPath, sourcePackage, pcc);
+
+                var relinkResults = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceClassExport, pcc, parent, true, out IEntry result);
+                if (relinkResults?.Count > 0)
+                {
+                    RelinkResultsAvailable?.Invoke(relinkResults);
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                //remove added entries
+                var entriesToRemove = new List<IEntry>();
+                for (int i = exportCount; i < pcc.Exports.Count; i++)
+                {
+                    entriesToRemove.Add(pcc.Exports[i]);
+                }
+                for (int i = importCount; i < pcc.Imports.Count; i++)
+                {
+                    entriesToRemove.Add(pcc.Imports[i]);
+                }
+                EntryPruner.TrashEntries(pcc, entriesToRemove);
+                pcc.restoreNames(nameListBackup);
+                return null;
+            }
+        }
+
+        public static List<IEntry> GetAllReferencesOfExport(ExportEntry export)
+        {
+            List<IEntry> referencedItems = new List<IEntry>();
+            RecursiveGetDependencies(export, referencedItems);
+            return referencedItems.Distinct().ToList();
+        }
+
+        private static void AddEntryReference(int referenceIdx, IMEPackage package, List<IEntry> referencedItems)
+        {
+            if (package.TryGetEntry(referenceIdx, out var reference) && !referencedItems.Contains(reference))
+            {
+                referencedItems.Add(reference);
+            }
+        }
+
+        private static void RecursiveGetDependencies(ExportEntry relinkingExport, List<IEntry> referencedItems)
+        {
+            // For reaching out into
+            List<ExportEntry> localExportReferences = new List<ExportEntry>();
+
+            // Compiles list of items local to this entry
+            void AddReferenceLocal(int entryUIndex)
+            {
+                if (relinkingExport.FileRef.TryGetUExport(entryUIndex, out var exp) && !referencedItems.Any(x => x.UIndex == entryUIndex))
+                {
+                    localExportReferences.Add(exp);
+                }
+                // Global add
+                AddEntryReference(entryUIndex, relinkingExport.FileRef, referencedItems);
+            }
+
+            // Pre-props binary
+            byte[] prePropBinary = relinkingExport.GetPrePropBinary();
+
+            //Relink stack
+            if (relinkingExport.HasStack)
+            {
+                int uIndex = BitConverter.ToInt32(prePropBinary, 0);
+                AddReferenceLocal(uIndex);
+
+                uIndex = BitConverter.ToInt32(prePropBinary, 4);
+                AddReferenceLocal(uIndex);
+            }
+            //Relink Component's TemplateOwnerClass
+            else if (relinkingExport.TemplateOwnerClassIdx is var toci && toci >= 0)
+            {
+
+                int uIndex = BitConverter.ToInt32(prePropBinary, toci);
+                AddReferenceLocal(uIndex);
+            }
+
+            // Properties
+            var props = relinkingExport.GetProperties();
+            foreach (var prop in props)
+            {
+                RecursiveGetPropDependencies(prop, AddReferenceLocal);
+            }
+
+            // Binary
+            var bin = ObjectBinary.From(relinkingExport);
+            if (bin != null)
+            {
+                var binUIndexes = bin.GetUIndexes(relinkingExport.Game);
+                foreach (var binUIndex in binUIndexes)
+                {
+                    AddReferenceLocal(binUIndex.Item1);
+                }
+            }
+
+            // We have now collected all local references
+            // We should reach out and see if we need to index others.
+            foreach(var v in localExportReferences)
+            {
+                RecursiveGetDependencies(v, referencedItems);
+            }
+        }
+
+        private static void RecursiveGetPropDependencies(Property prop, Action<int> addReference)
+        {
+            if (prop is ObjectProperty op)
+            {
+                addReference(op.Value);
+            }
+            else if (prop is StructProperty sp)
+            {
+                foreach (var p in sp.Properties)
+                {
+                    RecursiveGetPropDependencies(p, addReference);
+                }
+            }
+            else if (prop is ArrayProperty<StructProperty> asp)
+            {
+                foreach (var p in asp.Properties)
+                {
+                    RecursiveGetPropDependencies(p, addReference);
+                }
+            }
+            else if (prop is ArrayProperty<ObjectProperty> aop)
+            {
+                foreach (var p in aop)
+                {
+                    addReference(p.Value);
+                }
+            }
+            else if (prop is DelegateProperty dp)
+            {
+                addReference(dp.Value.Object);
+            }
         }
     }
 }

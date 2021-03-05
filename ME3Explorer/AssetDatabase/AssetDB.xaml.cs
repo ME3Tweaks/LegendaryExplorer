@@ -328,28 +328,19 @@ namespace ME3Explorer.AssetDatabase
 
             Properties.Settings.Default.AssetDBPath = CurrentDBPath;
             Properties.Settings.Default.AssetDBGame = CurrentGame.ToString();
-            EmbeddedTextureViewerTab_EmbeddedTextureViewer.UnloadExport();
-            BIKExternalExportLoaderTab_BIKExternalExportLoader.UnloadExport();
-            MeshRendererTab_MeshRenderer.UnloadExport();
-            SoundpanelWPF_ADB.UnloadExport();
-            SoundpanelWPF_ADB.FreeAudioResources();
-
-            MeshRendererTab_MeshRenderer.Dispose();
-            SoundpanelWPF_ADB.Dispose();
-            BIKExternalExportLoaderTab_BIKExternalExportLoader.Dispose();
-            EmbeddedTextureViewerTab_EmbeddedTextureViewer.Dispose();
+            
+            MeshRendererTab_MeshRenderer?.Dispose();
+            SoundpanelWPF_ADB?.Dispose();
+            BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
+            EmbeddedTextureViewerTab_EmbeddedTextureViewer?.Dispose();
 
             audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
-#if DEBUG
-            await Task.Delay(6000);
 
-            if (audioPcc != null || meshPcc != null || textPcc != null)
-            {
-                MessageBox.Show("Still stuff in memory!", "Asset DB");
-            }
-#endif
+            audioPcc = null;
+            meshPcc = null;
+            textPcc = null;
         }
 
         #endregion
@@ -1360,9 +1351,13 @@ namespace ME3Explorer.AssetDatabase
                 if (uexpIdx <= textPcc.ExportCount)
                 {
                     var textExp = textPcc.GetUExport(uexpIdx);
-                    string cubemapParent = textExp.Parent.ClassName == "CubeMap" ? selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1) : null;
+                    string cubemapParent = null;
+                    if (textExp.Parent != null)
+                    {
+                        cubemapParent = textExp.Parent.ClassName == "CubeMap" ? selecteditem.TextureName.Substring(textExp.Parent.ObjectName.ToString().Length + 1) : null;
+                    }
                     string indexedName = $"{textExp.ObjectNameString}_{textExp.indexValue - 1}";
-                    if (textExp.ClassName.StartsWith("Texture") && (textExp.ObjectNameString == selecteditem.TextureName || selecteditem.TextureName == indexedName || textExp.ObjectNameString == cubemapParent))
+                    if (textExp.ClassName.StartsWith("Texture") && (textExp.ObjectNameString == selecteditem.TextureName || selecteditem.TextureName == indexedName || (cubemapParent != null && textExp.ObjectNameString == cubemapParent)))
                     {
                         if (selecteditem.CFormat == "TextureMovie")
                         {

@@ -22,8 +22,8 @@
         xmlns:meshplorer="clr-namespace:ME3Explorer.Meshplorer"
         xmlns:materialViewer="clr-namespace:ME3Explorer.MaterialViewer"
         xmlns:particleSystems="clr-namespace:ME3Explorer.ParticleSystems"
-        xmlns:me3Script="clr-namespace:ME3Explorer.ME3Script"
         xmlns:Packages="clr-namespace:ME3ExplorerCore.Packages;assembly=ME3ExplorerCore"
+        xmlns:ide="clr-namespace:ME3Explorer.ME3Script.IDE"
         Title="Package Editor" Height="720" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
@@ -106,7 +106,7 @@
                 <MenuItem Header="File" Padding="4" >
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
                     <MenuItem Header="Create new empty package" Command="{Binding NewFileCommand}" InputGestureText="Ctrl+N" ToolTip="Create a new package file"/>
-                    <MenuItem Header="Create new ME3 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 package with the minimum setup to load as a level"/>
+                    <MenuItem Header="Create new ME3 or ME2 level file" Command="{Binding NewLevelFileCommand}" ToolTip="Create a new ME3 or ME2 package with the minimum setup to load as a level"/>
                     <MenuItem Header="Save"  Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save a copy to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Open in...">
@@ -220,10 +220,13 @@
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check exports for invalid object references in properties" ToolTip="Enumerates all exports, reads their properties, and checks if any ObjectProperty items have invalid values" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
+                    <MenuItem Header="Enable experiments (Warning: dangerous)" ToolTip="Enables experiments used by toolset developers. These featuers are not tested, not supported, and can easily break the toolset and/or games without warning" IsChecked="{Binding ShowExperiments}" IsCheckable="True" StaysOpenOnClick="True"/>
                 </MenuItem>
-                <MenuItem Header="Experiments" Padding="4" Visibility="{x:Static global:App.IsDebugVisibility}">
+                <MenuItem Header="Experiments" Padding="4" Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}">
                     <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
-                    <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
                     <MenuItem Header="Rebuild Object Infos">
@@ -261,7 +264,9 @@
                         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
                         <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
                         <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
-                        <MenuItem Header="Scan folder for files containing objects of a specific class" Click="FindAllFilesWithSpecificClass"/>
+                        <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
+                        <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
+                        <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
                     </MenuItem>
                     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
                         <MenuItem Header="Enable Dynamic Lighting" Click="CreateDynamicLighting"/>
@@ -277,6 +282,8 @@
                         <MenuItem Header="Make List of ME1 files with externally referenced textures" Click="MakeME1TextureFileList"/>
                         <MenuItem Header="Condense All Level Archetypes" Click="CondenseAllArchetypes"/>
                         <MenuItem Header="Recompile All classes (ME3 Only!)" Click="RecompileAll_OnClick" />
+                        <MenuItem Header="Find OpCode" Click="FindOpCode_OnClick" />
+                        <MenuItem Header="Build Native Table" Click="BuildNativeTable_OnClick" />
                     </MenuItem>
                     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
                         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
@@ -292,8 +299,7 @@
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
-                <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
-                                                 GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
+                <SharedUI:StatusBarGameIDIndicator GameType="{Binding Pcc.Game}" Margin="0,-4"/>
                 <StatusBarItem>
                     <TextBlock x:Name="StatusBar_LeftMostText" Text="Select package file to load"/>
                 </StatusBarItem>
@@ -539,7 +545,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Script Viewer" ToolTip="View decompiled UnrealScript"/>
                         </TabItem.Header>
-                        <me3Script:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
+                        <ide:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>
                     <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

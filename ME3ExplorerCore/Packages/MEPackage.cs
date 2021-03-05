@@ -92,6 +92,15 @@ namespace ME3ExplorerCore.Packages
         /// </summary>
         public List<string> AdditionalPackagesToCook = new List<string>();
 
+        /// <summary>
+        /// Passthrough to UnrealPackageFile's IsModified
+        /// </summary>
+        bool IMEPackage.IsModified
+        {
+            // Not sure why I can't use a private setter here.
+            get => IsModified;
+            set => IsModified = value;
+        }
 
         public Endian Endian { get; }
         public MEGame Game { get; private set; } //can only be ME1, ME2, or ME3. UDK is a separate class
@@ -570,6 +579,7 @@ namespace ME3ExplorerCore.Packages
                 }
             }
 
+            RebuildLookupTable(); // Builds the export/import lookup tables.
 #if AZURE
             if (platformNeedsResolved)
             {
@@ -837,29 +847,52 @@ namespace ME3ExplorerCore.Packages
                 foreach (ExportEntry e in mePackage.exports)
                 {
                     //update offsets
+                    var newDataStartOffset = (int)ms.Position;
+
                     ObjectBinary objBin = null;
                     if (!e.IsDefaultObject)
                     {
-                        switch (e.ClassName)
+                        if (mePackage.Game == MEGame.ME1 && e.IsTexture())
                         {
-                            case "WwiseBank":
-                            case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
-                            case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
-                                objBin = ObjectBinary.From(e);
-                                break;
-                            case "ShaderCache":
-                                UpdateShaderCacheOffsets(e, (int)ms.Position);
-                                break;
+                            // For us to reliably have in-memory textures, the data offset of 'externally' stored textures
+                            // needs to be updated to be accurate so that master and slave textures are in sync.
+                            // So any texture mips stored as pccLZO needs their DataOffsets updated
+                            var t2d = ObjectBinary.From<UTexture2D>(e);
+                            var binStart = -1;
+                            foreach (var mip in t2d.Mips.Where(x => x.IsCompressed && x.IsLocallyStored))
+                            {
+                                if (binStart == -1)
+                                {
+                                    binStart = newDataStartOffset + e.propsEnd();
+                                }
+                                // This is 
+                                mip.DataOffset = binStart + mip.MipInfoOffsetFromBinStart + 0x10; // actual data offset is past storagetype, uncomp, comp, dataoffset
+                                objBin = t2d; // Assign it here so it gets picked up down below
+                            }
+                        }
+                        else
+                        {
+                            switch (e.ClassName)
+                            {
+                                //case "WwiseBank":
+                                case "WwiseStream" when e.GetProperty<NameProperty>("Filename") == null:
+                                case "TextureMovie" when e.GetProperty<NameProperty>("TextureFileCacheName") == null:
+                                    objBin = ObjectBinary.From(e);
+                                    break;
+                                case "ShaderCache":
+                                    UpdateShaderCacheOffsets(e, (int)ms.Position);
+                                    break;
+                            }
                         }
                     }
 
-                    e.DataOffset = (int)ms.Position;
                     if (objBin != null)
                     {
                         e.WriteBinary(objBin);
                     }
 
-
+                    // Update the header position
+                    e.DataOffset = (int)ms.Position;
 
                     ms.WriteFromBuffer(e.Data);
                     //update size and offset in already-written header
@@ -1188,9 +1221,9 @@ namespace ME3ExplorerCore.Packages
             {
                 foreach ((NameReference lang, BioTlkFileSet.BioTlkSet bioTlkSet) in tlkFileSet.TlkSets)
                 {
-                    if (CoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
+                    if (ME3ExplorerCoreLibSettings.Instance.TLKDefaultLanguage.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        exportsToLoad.Add(GetUExport(CoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                        exportsToLoad.Add(GetUExport(ME3ExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
                         break;
                     }
                 }

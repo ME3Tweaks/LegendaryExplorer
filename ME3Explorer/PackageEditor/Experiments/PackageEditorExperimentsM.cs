@@ -818,6 +818,26 @@ namespace ME3Explorer.PackageEditor.Experiments
             }
         }
 
+        public static void ShiftInterpTrackMove(ExportEntry interpTrackMove)
+        {
+            var offsetX = int.Parse(PromptDialog.Prompt(null, "Enter X shift offset", "Offset X", "0", true));
+            var offsetY = int.Parse(PromptDialog.Prompt(null, "Enter Y shift offset", "Offset Y", "0", true));
+            var offsetZ = int.Parse(PromptDialog.Prompt(null, "Enter Z shift offset", "Offset Z", "0", true));
+
+            var props = interpTrackMove.GetProperties();
+            var posTrack = props.GetProp<StructProperty>("PosTrack");
+            var points = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+            foreach (var point in points)
+            {
+                var outval = point.GetProp<StructProperty>("OutVal");
+                outval.GetProp<FloatProperty>("X").Value += offsetX;
+                outval.GetProp<FloatProperty>("Y").Value += offsetY;
+                outval.GetProp<FloatProperty>("Z").Value += offsetZ;
+            }
+
+            interpTrackMove.WriteProperties(props);
+        }
+
         /// <summary>
         /// Shifts an ME1 AnimCutscene by specified X Y Z values. Only supports 96NoW (3 32-bit float) animations
         /// By Mgamerz 
@@ -1300,10 +1320,14 @@ namespace ME3Explorer.PackageEditor.Experiments
             }
         }
 
-        public static void FindAllFilesWithClass(PackageEditorWPF packageEditorWpf)
+        /// <summary>
+        /// Asset Database doesn't search by memory entry, so if I'm looking to see if another entry exists I can't find it. For example I'm trying to find all copies of a specific FaceFX anim set.
+        /// </summary>
+        /// <param name="packageEditorWpf"></param>
+        public static void FindNamedObject(PackageEditorWPF packageEditorWpf)
         {
-            var classToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the class you want to search for in files", "Class finder");
-            if (!string.IsNullOrWhiteSpace(classToFind))
+            var namedObjToFind = PromptDialog.Prompt(packageEditorWpf, "Enter the name of the object you want to search for in files", "Object finder");
+            if (!string.IsNullOrWhiteSpace(namedObjToFind))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to scan (includes subdirectories)")
                 {
@@ -1318,29 +1342,65 @@ namespace ME3Explorer.PackageEditor.Experiments
                         ConcurrentDictionary<string, string> threadSafeList = new ConcurrentDictionary<string, string>();
                         packageEditorWpf.BusyText = "Getting list of all package files";
                         int numPackageFiles = 0;
-                        var files = Directory.GetFiles(dlg.FileName, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+                        var files = Directory.GetFiles(dlg.FileName, "*.pcc", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
                         var totalfiles = files.Count;
                         long filesDone = 0;
                         Parallel.ForEach(files, pf =>
                         {
-                            using var package = MEPackageHandler.OpenMEPackage(pf);
-                            var hasClass = package.Exports.Any(x => x.ClassName.Equals(classToFind, StringComparison.InvariantCultureIgnoreCase));
-                            if (hasClass)
+                            try
                             {
-                                threadSafeList.TryAdd(pf, pf);
+                                using var package = MEPackageHandler.OpenMEPackage(pf);
+                                var hasObject = package.Exports.Any(x => x.ObjectName.Name.Equals(namedObjToFind, StringComparison.InvariantCultureIgnoreCase));
+                                if (hasObject)
+                                {
+                                    threadSafeList.TryAdd(pf, pf);
+                                }
+                            }
+                            catch
+                            {
+
                             }
 
                             long v = Interlocked.Increment(ref filesDone);
                             packageEditorWpf.BusyText = $"Scanning files [{v}/{totalfiles}]";
                         });
                         return threadSafeList;
-                    }).ContinueWithOnUIThread(filesWithClass =>
+                    }).ContinueWithOnUIThread(filesWithObjName =>
                     {
                         packageEditorWpf.IsBusy = false;
-                        ListDialog ld = new ListDialog(filesWithClass.Result.Select(x => x.Value), "Class scan", "Here is the list of files that have this objects of this class within them.", packageEditorWpf);
+                        ListDialog ld = new ListDialog(filesWithObjName.Result.Select(x => x.Value), "Object name scan", "Here is the list of files that have this objects of this name within them.", packageEditorWpf);
                         ld.Show();
                     });
                 }
+            }
+        }
+
+        public static void CheckImports(IMEPackage Pcc)
+        {
+            List<IMEPackage> packages = new List<IMEPackage>();
+            // Enumerate and resolve all imports.
+            foreach (var import in Pcc.Imports)
+            {
+                Debug.WriteLine($@"Resolving {import.FullPath}");
+                var export = EntryImporter.ResolveImport(import);
+                if (export != null)
+                {
+                    if (!packages.Any(x => export.FileRef.FilePath == x.FilePath))
+                    {
+                        packages.Add(MEPackageHandler.OpenMEPackage(export.FileRef)); // Hold in memory
+                        MEPackageHandler.ForcePackageIntoCache(export.FileRef);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($@"UNRESOLVABLE IMPORT: {import.FullPath}!");
+                }
+            }
+
+            foreach (var v in packages)
+            {
+                // Do not hold open longer
+                v.Dispose();
             }
         }
 

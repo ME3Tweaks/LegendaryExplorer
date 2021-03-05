@@ -31,7 +31,7 @@ namespace ME3Explorer.SharedUI
         /// <param name="pcc">Package file to load entries from</param>
         /// <param name="supportedInputTypes">Supported selection types</param>
         /// <param name="entryPredicate">A predicate to narrow the displayed entries</param>
-        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null, Predicate<IEntry> entryPredicate = null)
+        private EntrySelector(Window owner, IMEPackage pcc, SupportedTypes supportedInputTypes, string directionsText = null, Predicate<IEntry> entryPredicate = null, bool supportRootSelection = false)
         {
             this.Pcc = pcc;
             this.SupportedInputTypes = supportedInputTypes;
@@ -58,12 +58,43 @@ namespace ME3Explorer.SharedUI
                     }
                 }
             }
+
+            if (supportRootSelection)
+            {
+                allEntriesBuilding.Insert(0, "[Package root]");
+            }
             AllEntriesList.ReplaceAll(allEntriesBuilding);
             Owner = owner;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
             EntrySelector_ComboBox.Focus();
+        }
+
+        public static (bool selectedPackageRoot, T selectedEntry) GetEntryWithNoOption<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
+        {
+            SupportedTypes supportedInputTypes = SupportedTypes.ExportsAndImports;
+            if (typeof(T) == typeof(ExportEntry))
+            {
+                supportedInputTypes = SupportedTypes.Exports;
+            }
+            else if (typeof(T) == typeof(ImportEntry))
+            {
+                supportedInputTypes = SupportedTypes.Imports;
+            }
+
+            Predicate<IEntry> entryPredicate = null;
+            if (predicate != null)
+            {
+                entryPredicate = entry => predicate((T)entry);
+            }
+            using var dlg = new EntrySelector(owner, pcc, supportedInputTypes, directionsText, entryPredicate, true);
+            if (dlg.ShowDialog() == true)
+            {
+                return (dlg.ChoseRoot, dlg.ChosenEntry as T);
+            }
+
+            return (false,null); //No option was picked.
         }
 
         public static T GetEntry<T>(Window owner, IMEPackage pcc, string directionsText = null, Predicate<T> predicate = null) where T : class, IEntry
@@ -100,17 +131,19 @@ namespace ME3Explorer.SharedUI
 
         private bool CanAcceptSelection()
         {
-            return EntrySelector_ComboBox.SelectedItem is IEntry;
+            return EntrySelector_ComboBox.SelectedItem != null;
         }
 
         private void AcceptSelection()
         {
             DialogResult = true;
             ChosenEntry = EntrySelector_ComboBox.SelectedItem as IEntry;
+            ChoseRoot = EntrySelector_ComboBox.SelectedItem is string;
             Dispose();
         }
 
         private IEntry ChosenEntry;
+        private bool ChoseRoot;
 
         private readonly SupportedTypes SupportedInputTypes;
 

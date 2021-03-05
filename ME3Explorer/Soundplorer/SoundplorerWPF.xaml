@@ -86,11 +86,7 @@
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
-                <StatusBarItem Padding="2" VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
-                    <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
-                        <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
-                    </Border>
-                </StatusBarItem>
+                <sharedUi:StatusBarGameIDIndicator GameType="{Binding StatusBarIDText}" Margin="0,-4"/>
                 <fa:ImageAwesome Icon="Solid_Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <StatusBarItem Padding="0">
                     <TextBlock Name="StatusBar_LeftMostText" Text="{Binding TaskbarText}"/>

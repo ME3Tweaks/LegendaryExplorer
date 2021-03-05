@@ -20,6 +20,7 @@ using System.IO;
 using System.Text;
 using ME3ExplorerCore.Gammtek.IO.Converters;
 using ME3ExplorerCore.Helpers;
+using ME3ExplorerCore.Packages;
 
 namespace ME3ExplorerCore.Gammtek.IO
 {
@@ -258,7 +259,9 @@ namespace ME3ExplorerCore.Gammtek.IO
         public override byte ReadByte()
         {
             var b = _source.ReadByte();
+#if DEBUG
             LittleEndianStream?.WriteByte(b);
+#endif
             return b;
         }
 
@@ -276,7 +279,9 @@ namespace ME3ExplorerCore.Gammtek.IO
         public override byte[] ReadBytes(int count)
         {
             var bytes = _source.ReadBytes(count);
+#if DEBUG
             LittleEndianStream?.WriteFromBuffer(bytes);
+#endif
             return bytes;
         }
 
@@ -323,7 +328,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteDouble(val);
+#endif
             return val;
         }
 
@@ -341,9 +348,13 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteInt16(val);
+#endif
             return val;
         }
+
+
 
         /// <summary>
         ///     Reads a 4-byte signed integer from the current stream and advances the current position of the stream by four bytes.
@@ -359,7 +370,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteInt32(val);
+#endif
             return val;
         }
 
@@ -377,7 +390,10 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
+
             LittleEndianStream?.WriteInt64(val);
+#endif
             return val;
         }
 
@@ -390,7 +406,9 @@ namespace ME3ExplorerCore.Gammtek.IO
         public override sbyte ReadSByte()
         {
             var val = (sbyte)ReadByte();
+#if DEBUG
             LittleEndianStream?.WriteByte((byte)val);
+#endif
             return val;
         }
 
@@ -409,7 +427,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteFloat(val);
+#endif
             return val;
         }
 
@@ -442,7 +462,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteUInt16(val);
+#endif
             return val;
         }
 
@@ -460,7 +482,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteUInt32(val);
+#endif
             return val;
         }
 
@@ -478,7 +502,9 @@ namespace ME3ExplorerCore.Gammtek.IO
                 return val;
             }
             val = _endianConverter.Convert(val);
+#if DEBUG
             LittleEndianStream?.WriteUInt64(val);
+#endif
             return val;
         }
 
@@ -493,7 +519,9 @@ namespace ME3ExplorerCore.Gammtek.IO
         public void Seek(long offset, SeekOrigin origin)
         {
             _source.BaseStream.Seek(offset, origin);
+#if DEBUG
             LittleEndianStream?.Seek(offset, origin);
+#endif
         }
 
         public long Position
@@ -502,8 +530,10 @@ namespace ME3ExplorerCore.Gammtek.IO
             set
             {
                 _source.BaseStream.Position = value;
+#if DEBUG
                 if (LittleEndianStream != null)
                     LittleEndianStream.Position = value;
+#endif
             }
         }
 
@@ -568,6 +598,29 @@ namespace ME3ExplorerCore.Gammtek.IO
             return ReadUInt32() > 0;
         }
 
+        /// <summary>
+        /// Reads a FaceFX string
+        /// </summary>
+        /// <param name="er"></param>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public string ReadFaceFXString(MEGame game, bool extended = false)
+        {
+            if (game == MEGame.ME2)
+            {
+                // ME2 strings appear to have a Int16 before the actual string.
+                // This appears to be the 'version' of the object.
+                if (extended) ReadInt16(); //It's 4 bytes
+                var objectVersion = ReadInt16(); // This seems like it's always 1. Older versions set it to zero. Looks like some sort of parser flag but it's on every string
+                if (objectVersion != 1)
+                {
+                    Debug.WriteLine($@"Expected pre-string value was not 1! Value was: {objectVersion}, position 0x{(Position - 2):X8}");
+                }
+            }
+
+            return ReadUnrealString();
+        }
+
         public float ReadFloat16()
         {
             var buffer = ReadBytes(sizeof(ushort));
@@ -576,6 +629,7 @@ namespace ME3ExplorerCore.Gammtek.IO
             ushort u = ToUInt16(buffer, 0, Endian);
 
             //This definitely needs checked
+#if DEBUG
             if (LittleEndianStream != null)
             {
                 if (Endian == Endian.Big)
@@ -589,7 +643,7 @@ namespace ME3ExplorerCore.Gammtek.IO
                     LittleEndianStream.WriteByte(buffer[1]);
                 }
             }
-
+#endif
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;
@@ -760,7 +814,7 @@ namespace ME3ExplorerCore.Gammtek.IO
         public static ulong ToUInt64(ReadOnlyCollection<byte> buffer, int offset, Endian endianness)
         {
 
-            ulong readMagic = (ulong) ((buffer[offset] << 56) + 
+            ulong readMagic = (ulong)((buffer[offset] << 56) +
                               (buffer[offset + 1] << 48) +
                               (buffer[offset + 2] << 40) +
                               (buffer[offset + 3] << 32) +
@@ -778,6 +832,7 @@ namespace ME3ExplorerCore.Gammtek.IO
 
         #endregion
 
+#if DEBUG
         /// <summary>
         /// Initializes the LittleEndianStream memorystream. All reads will write the little endian version to this stream. Used to reverse endian of files read by this reader
         /// </summary>
@@ -791,5 +846,6 @@ namespace ME3ExplorerCore.Gammtek.IO
         /// Only use this if you are trying to write-out a little endian version of big endian data. ADVANCED USE ONLY!
         /// </summary>
         public MemoryStream LittleEndianStream { get; private set; }
+#endif
     }
 }

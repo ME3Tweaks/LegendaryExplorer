@@ -95,7 +95,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             return relinkReport;
         }
 
-        public static List<EntryStringPair> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList, 
+        public static List<EntryStringPair> Relink(ExportEntry sourceExport, ExportEntry relinkingExport, OrderedMultiValueDictionary<IEntry, IEntry> crossPCCObjectMappingList,
             bool importExportDependencies = false, RelinkerCache relinkerCache = null)
         {
             var relinkFailedReport = new List<EntryStringPair>();
@@ -120,7 +120,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
 
                 uIndex = BitConverter.ToInt32(prePropBinary, 4);
-                relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode", 
+                relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: StateNode",
                                             crossPCCObjectMappingList, "", importExportDependencies, relinkerCache);
                 if (relinkResult is null)
                 {
@@ -161,6 +161,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
+                    // This doesn't work on functions! Finding the children through the probe doesn't work
                     List<(UIndex, string)> indices = objBin.GetUIndexes(relinkingExport.FileRef.Game);
 
                     foreach ((UIndex uIndex, string propName) in indices)
@@ -188,7 +189,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                         else
                         {
                             var func = sourceExport.ClassName == "State" ? UE3FunctionReader.ReadState(sourceExport) : UE3FunctionReader.ReadFunction(sourceExport);
-                            func.Decompile(new TextBuilder(), false); //parse bytecode
+                            func.Decompile(new TextBuilder(), false, false); //parse bytecode
                             var nameRefs = func.NameReferences;
                             var entryRefs = func.EntryReferences;
                             foreach ((long position, NameReference nameRef) in nameRefs)
@@ -213,7 +214,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                     return relinkFailedReport;
                 }
             }
-            catch (Exception e) when (!CoreLib.IsDebug)
+            catch (Exception e) when (!ME3ExplorerCoreLib.IsDebug)
             {
                 relinkFailedReport.Add(new EntryStringPair(relinkingExport, $"{relinkingExport.UIndex} {relinkingExport.FullPath} binary relinking failed due to exception: {e.Message}"));
             }
@@ -378,8 +379,8 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    existingEntry = destinationPcc.Exports.FirstOrDefault(x => x.InstancedFullPath == instancedFullPath);
-                    existingEntry ??= destinationPcc.Imports.FirstOrDefault(x => x.InstancedFullPath == instancedFullPath);
+                    existingEntry = destinationPcc.FindExport(instancedFullPath);
+                    existingEntry ??= destinationPcc.FindImport(instancedFullPath);
                 }
                 if (existingEntry != null)
                 {
@@ -419,7 +420,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                                             OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false, RelinkerCache relinkerCache = null)
         {
             var relinkFailedReport = new List<EntryStringPair>();
-            Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
+            //Debug.WriteLine($"Attempting function relink on token entry reference {entry.FullPath} at position {position}");
 
             int uIndex = entry.UIndex;
             var relinkResult = relinkUIndex(sourceExport.FileRef, destinationExport, ref uIndex, $"Entry {entry.FullPath} at 0x{position:X8}",
@@ -440,7 +441,7 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                                                 OrderedMultiValueDictionary<IEntry, IEntry> crossFileRefObjectMap, bool importExportDependencies = false, RelinkerCache relinkerCache = null)
         {
             var relinkFailedReport = new List<EntryStringPair>();
-            Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
+            //Debug.WriteLine($"Attempting function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
 
             foreach ((int pos, int type, int value) in t.inPackageReferences)
             {

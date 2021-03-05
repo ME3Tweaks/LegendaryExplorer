@@ -814,6 +814,24 @@ namespace ME3ExplorerCore.Unreal
                 }, StaticArrayIndex);
             }
         }
+
+        /// <summary>
+        /// Generates a StructProperty (with the specified name) from the specified Guid
+        /// </summary>
+        /// <param name="tfcGuid"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static StructProperty FromGuid(Guid guid, string name = null)
+        {
+            PropertyCollection pc = new PropertyCollection();
+            var ba = guid.ToByteArray();
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 0), "A"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 4), "B"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 8), "C"));
+            pc.Add(new IntProperty(BitConverter.ToInt32(ba, 12), "D"));
+            return new StructProperty("Guid", pc, name, true);
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

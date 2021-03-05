@@ -50,6 +50,10 @@ namespace ME3ExplorerCore.TLK.ME2ME3
         }
 
         public TLKHeader Header;
+        /// <summary>
+        /// Lookup table for strings. The result is a list - the first string is the main one, the second is the female one (if any).
+        /// </summary>
+        public Dictionary<int, List<TLKStringRef>> StringRefsTable;
         public List<ME1TalkFile.TLKStringRef> StringRefs;
         public string name;
         public string path;
@@ -148,6 +152,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
              * of another String present in rawStrings. 
              */
             StringRefs = new List<ME1TalkFile.TLKStringRef>();
+            StringRefsTable = new Dictionary<int, List<TLKStringRef>>();
             for (int i = 0; i < Header.MaleEntryCount + Header.FemaleEntryCount; i++)
             {
                 ME1TalkFile.TLKStringRef sref = new ME1TalkFile.TLKStringRef(r, false);
@@ -177,26 +182,33 @@ namespace ME3ExplorerCore.TLK.ME2ME3
                     }
                 }
                 StringRefs.Add(sref);
+                if (!StringRefsTable.TryGetValue(sref.StringID, out var srefList))
+                {
+                    srefList = new List<TLKStringRef>();
+                    StringRefsTable[sref.StringID] = srefList;
+                }
+                srefList.Add(sref);
             }
             r.Close();
         }
 
-        public string findDataById(int strRefID, bool withFileName = false)
+        public string findDataById(int strRefID, bool withFileName = false, bool returnNullIfNotFound = false, bool noQuotes = false)
         {
-            string data = "No Data";
-            for (int i = 0; i < StringRefs.Count; i++)
+            if (StringRefsTable.TryGetValue(strRefID, out var data) && data.Any())
             {
-                if (StringRefs[i].StringID == strRefID)
+                var strref = data[0];
+                if (noQuotes)
+                    return strref.Data;
+
+                var retdata = "\"" + strref.Data + "\"";
+                if (withFileName)
                 {
-                    data = "\"" + StringRefs[i].Data + "\"";
-                    if (withFileName)
-                    {
-                        data += " (" + name + ")";
-                    }
-                    break;
+                    retdata += " (" + name + ")";
                 }
+                return retdata;
             }
-            return data;
+
+            return returnNullIfNotFound ? null : "No Data";
         }
 
         /// <summary>
@@ -218,7 +230,7 @@ namespace ME3ExplorerCore.TLK.ME2ME3
 
             xr.WriteStartDocument();
             xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", CoreLib.GetVersion());
+            xr.WriteAttributeString("TLKToolVersion", ME3ExplorerCoreLib.GetVersion());
 
             xr.WriteComment("Male entries section begin");
 
@@ -319,11 +331,65 @@ namespace ME3ExplorerCore.TLK.ME2ME3
             return null;
         }
 
+        /// <summary>
+        /// If the TLK instance has been modified by the ReplaceString method.
+        /// </summary>
+        public bool IsModified { get; private set; }
+
+        /// <summary>
+        /// Replaces a string in the list of StringRefs. Does not work for Female strings as they share the same string ID (all instances will be replaced)
+        /// </summary>
+        /// <param name="stringID">The ID of the string to replace.</param>
+        /// <param name="newText">The new text of the string.</param>
+        /// <param name="addIfNotFound">If the string should be added as new stringref if it is not found. Default is false.</param>
+        /// <returns>True if the string was found, false otherwise.</returns>
+        public bool ReplaceString(int stringID, string newText, bool addIfNotFound = false)
+        {
+            if (StringRefsTable.TryGetValue(stringID, out var strRef))
+            {
+                IsModified = true;
+                foreach (var v in strRef)
+                {
+                    v.Data = newText;
+                }
+            }
+            else if (addIfNotFound)
+            {
+                IsModified = true;
+                AddString(new TLKStringRef(stringID, 0, newText));
+                return false; // Was not found, but was added.
+            }
+            else
+            {
+                // Not found, not added
+                return false;
+            }
+
+            return true;
+        }
+
         /* for sorting */
         private static int CompareTlkStringRef(ME1TalkFile.TLKStringRef strRef1, ME1TalkFile.TLKStringRef strRef2)
         {
             int result = strRef1.StringID.CompareTo(strRef2.StringID);
             return result;
+        }
+
+        /// <summary>
+        /// Adds a new string reference to the TLK. Marks the TLK as modified.
+        /// </summary>
+        /// <param name="sref"></param>
+        public void AddString(TLKStringRef sref)
+        {
+            StringRefs.Add(sref);
+            if (!StringRefsTable.TryGetValue(sref.StringID, out var srefList))
+            {
+                srefList = new List<TLKStringRef>();
+                StringRefsTable[sref.StringID] = srefList;
+            }
+            srefList.Add(sref);
+
+            IsModified = true;
         }
     }
 }
