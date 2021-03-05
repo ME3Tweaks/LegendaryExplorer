@@ -16,7 +16,7 @@ using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
-    public static class ME3ObjectToASTConverter
+    public static class ScriptObjectToASTConverter
     {
 
         public static Class ConvertClass(UClass uClass, bool decompileBytecode, FileLib lib = null)
@@ -104,9 +104,12 @@ namespace ME3Script.Decompiling
 
 
             var virtFuncLookup = new CaseInsensitiveDictionary<ushort>();
-            for (ushort i = 0; i < uClass.FullFunctionsList.Length; i++)
+            if (pcc.Game is MEGame.ME3)
             {
-                virtFuncLookup.Add(uClass.FullFunctionsList[i].GetEntry(pcc)?.ObjectName, i);
+                for (ushort i = 0; i < uClass.FullFunctionsList.Length; i++)
+                {
+                    virtFuncLookup.Add(uClass.FullFunctionsList[i].GetEntry(pcc)?.ObjectName, i);
+                }
             }
             AST.VirtualFunctionLookup = virtFuncLookup;
 
@@ -162,7 +165,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var body = decompileBytecode ? new ME3ByteCodeDecompiler(obj, containingClass, lib: lib).Decompile() : null;
+            var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, lib: lib).Decompile() : null;
 
             return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
         }
@@ -484,7 +487,7 @@ namespace ME3Script.Decompiling
             CodeBody body = null;
             if (decompileBytecode)
             {
-                body = new ME3ByteCodeDecompiler(obj, containingClass, parameters, returnType, lib).Decompile();
+                body = new ByteCodeDecompiler(obj, containingClass, parameters, returnType, lib).Decompile();
             }
 
 
@@ -495,6 +498,11 @@ namespace ME3Script.Decompiling
                 CoerceReturn = coerceReturn,
                 RetValNeedsDestruction = retValNeedsDestruction
             };
+            if (obj.Export.Game <= MEGame.ME2)
+            {
+                func.OperatorPrecedence = obj.OperatorPrecedence;
+                func.FriendlyName = obj.FriendlyName;
+            }
 
             foreach (var local in locals)
             {

@@ -100,7 +100,7 @@ namespace ME3Script
         {
             string fileName = Path.GetFileNameWithoutExtension(pcc.FilePath);
 #if DEBUGSCRIPT
-            string dumpFolderPath = Path.Combine(ME3Directory.DefaultGamePath, "ScriptDump", fileName);
+            string dumpFolderPath = Path.Combine(MEDirectories.GetDefaultGamePath(pcc.Game), "ScriptDump", fileName);
             Directory.CreateDirectory(dumpFolderPath);
 #endif
             var log = new MessageLog();
@@ -108,7 +108,7 @@ namespace ME3Script
             var classes = new List<(Class ast, string scriptText)>();
             foreach (ExportEntry export in pcc.Exports.Where(exp => exp.IsClass))
             {
-                Class cls = ME3ObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false);
+                Class cls = ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(), false);
                 if (!cls.IsFullyDefined)
                 {
                     continue;
@@ -194,7 +194,7 @@ namespace ME3Script
 
                 foreach (Function function in ast.Functions.Where(func => !func.IsNative && func.IsDefined))
                 {
-                    CodeBodyParser.ParseFunction(function, scriptText, symbols, log);
+                    CodeBodyParser.ParseFunction(function, pcc.Game, scriptText, symbols, log);
                     if (log.Content.Any())
                     {
                         DisplayError(scriptText, log.ToString());

@@ -3,7 +3,7 @@ using ME3Script.Utilities;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler
+    public partial class ByteCodeDecompiler
     {
         public IntegerLiteral DecompileIntConst()
         {

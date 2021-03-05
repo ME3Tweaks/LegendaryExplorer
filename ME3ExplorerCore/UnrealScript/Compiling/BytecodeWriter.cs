@@ -13,10 +13,14 @@ namespace ME3Script.Compiling
     {
 
         protected readonly IMEPackage Pcc;
+        protected readonly MEGame Game;
+        protected readonly byte extNativeIndex;
 
         protected BytecodeWriter(IMEPackage pcc)
         {
             Pcc = pcc;
+            Game = pcc.Game;
+            extNativeIndex = Game is MEGame.ME3 ? 0x70 : 0x60;
         }
 
         public byte[] GetByteCode() => bytecode.ToArray();
@@ -155,7 +159,7 @@ namespace ME3Script.Compiling
             }
             else
             {
-                WriteByte((byte)(0x70 + nativeIndex / 256));
+                WriteByte((byte)(extNativeIndex + nativeIndex / 256));
                 WriteByte((byte)(nativeIndex % 256));
             }
         }

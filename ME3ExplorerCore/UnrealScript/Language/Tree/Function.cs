@@ -27,6 +27,9 @@ namespace ME3Script.Language.Tree
 
         public bool RetValNeedsDestruction;
 
+        public byte OperatorPrecedence; //ME1/2
+        public string FriendlyName; //ME1/2
+
         public Function(string name, FunctionFlags flags, 
                         VariableType returntype, CodeBody body,
                         List<FunctionParameter> parameters = null,

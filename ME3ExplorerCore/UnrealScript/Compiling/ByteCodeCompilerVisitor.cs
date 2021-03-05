@@ -406,9 +406,9 @@ namespace ME3Script.Compiling
         private JumpPlaceholder EmitConditionalJump(Expression condition)
         {
             JumpPlaceholder jump;
-            if (condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
-                                                && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
-                                                && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
+            if (Game is MEGame.ME3 && condition is InOpReference inOp && inOp.LeftOperand.ResolveType()?.PropertyType == EPropertyType.Object
+                                                                      && inOp.LeftOperand.GetType() == typeof(SymbolReference) && inOp.RightOperand is NoneLiteral
+                                                                      && (inOp.Operator.OperatorKeyword == "==" || inOp.Operator.OperatorKeyword == "!="))
             {
                 SymbolReference symRef = (SymbolReference)inOp.LeftOperand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
@@ -416,8 +416,8 @@ namespace ME3Script.Compiling
                 WriteByte((byte)(inOp.Operator.OperatorKeyword == "!=" ? 1 : 0));
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
-                                                       && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
+            else if (Game is MEGame.ME3 && condition is PreOpReference preOp && preOp.Operator.OperatorKeyword == "!"
+                                                                             && preOp.Operand.GetType() == typeof(SymbolReference) && preOp.Operand.ResolveType() == SymbolTable.BoolType)
             {
                 SymbolReference symRef = (SymbolReference)preOp.Operand;
                 WriteOpCode(symRef.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
@@ -425,7 +425,7 @@ namespace ME3Script.Compiling
                 WriteByte(0);
                 jump = WriteJumpPlaceholder(JumpType.Conditional);
             }
-            else if (condition is SymbolReference sr && sr.GetType() == typeof(SymbolReference) && sr.ResolveType() == SymbolTable.BoolType)
+            else if (Game is MEGame.ME3 && condition is SymbolReference sr && sr.GetType() == typeof(SymbolReference) && sr.ResolveType() == SymbolTable.BoolType)
             {
                 WriteOpCode(sr.Node.Outer is Function ? OpCodes.OptIfLocal : OpCodes.OptIfInstance);
                 WriteObjectRef(ResolveSymbol(sr.Node));
@@ -651,13 +651,17 @@ namespace ME3Script.Compiling
             {
                 Emit(node.ObjectClass);
             }
-            if (node.Template is null)
+
+            if (Game >= MEGame.ME3)
             {
-                WriteOpCode(OpCodes.Nothing);
-            }
-            else
-            {
-                Emit(node.Template);
+                if (node.Template is null)
+                {
+                    WriteOpCode(OpCodes.Nothing);
+                }
+                else
+                {
+                    Emit(node.Template);
+                }
             }
             return true;
         }
@@ -679,7 +683,7 @@ namespace ME3Script.Compiling
                 WriteOpCode(OpCodes.FinalFunction);
                 WriteObjectRef(ResolveFunction(func));
             }
-            else if (node.IsCalledOnInterface)
+            else if (Game <= MEGame.ME2 || node.IsCalledOnInterface)
             {
                 WriteOpCode(OpCodes.VirtualFunction);
                 WriteName(func.Name);
@@ -838,7 +842,10 @@ namespace ME3Script.Compiling
                 case Function func:
                     WriteOpCode(OpCodes.DelegateProperty);
                     WriteName(func.Name);
-                    WriteObjectRef(func.Flags.Has(FunctionFlags.Delegate) ? ResolveFunction(func) : null);
+                    if (Game >= MEGame.ME3)
+                    {
+                        WriteObjectRef(func.Flags.Has(FunctionFlags.Delegate) ? ResolveFunction(func) : null);
+                    }
                     return true;
             }
 
@@ -858,7 +865,7 @@ namespace ME3Script.Compiling
                 {
                     WriteOpCode(OpCodes.LocalOutVariable);
                 }
-                else if (varDecl.IsStaticArray)
+                else if (varDecl.IsStaticArray || Game <= MEGame.ME2)
                 {
                     WriteOpCode(OpCodes.LocalVariable);
                 }
@@ -886,7 +893,7 @@ namespace ME3Script.Compiling
             }
             else
             {
-                if (varDecl.IsStaticArray)
+                if (varDecl.IsStaticArray || Game <= MEGame.ME2)
                 {
                     WriteOpCode(OpCodes.InstanceVariable);
                 }
@@ -988,8 +995,18 @@ namespace ME3Script.Compiling
         {
             WriteOpCode(OpCodes.DynArrayAdd);
             Emit(node.DynArrayExpression);
-            Emit(AddConversion(SymbolTable.IntType, node.CountArg));
-            WriteOpCode(OpCodes.EndFunctionParms);
+            if (Game is MEGame.ME2)
+            {
+                using (WriteSkipPlaceholder())
+                {
+                    Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+                }
+            }
+            else
+            {
+                Emit(AddConversion(SymbolTable.IntType, node.CountArg));
+                WriteOpCode(OpCodes.EndFunctionParms);
+            }
             return true;
         }
 
@@ -1001,7 +1018,10 @@ namespace ME3Script.Compiling
             {
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
                 Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
-                WriteOpCode(OpCodes.EndFunctionParms);
+                if (Game >= MEGame.ME3)
+                {
+                    WriteOpCode(OpCodes.EndFunctionParms);
+                }
             }
             return true;
         }
@@ -1012,7 +1032,10 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
             Emit(AddConversion(SymbolTable.IntType, node.CountArg));
-            WriteOpCode(OpCodes.EndFunctionParms);
+            if (Game >= MEGame.ME3)
+            {
+                WriteOpCode(OpCodes.EndFunctionParms);
+            }
             return true;
         }
 
@@ -1025,7 +1048,10 @@ namespace ME3Script.Compiling
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
                 Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
                 Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
-                WriteOpCode(OpCodes.EndFunctionParms);
+                if (Game >= MEGame.ME3)
+                {
+                    WriteOpCode(OpCodes.EndFunctionParms);
+                }
             }
             return true;
         }
@@ -1036,7 +1062,10 @@ namespace ME3Script.Compiling
             Emit(node.DynArrayExpression);
             Emit(AddConversion(SymbolTable.IntType, node.IndexArg));
             Emit(AddConversion(SymbolTable.IntType, node.CountArg));
-            WriteOpCode(OpCodes.EndFunctionParms);
+            if (Game >= MEGame.ME3)
+            {
+                WriteOpCode(OpCodes.EndFunctionParms);
+            }
             return true;
         }
 
@@ -1048,7 +1077,10 @@ namespace ME3Script.Compiling
             {
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
                 Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
-                WriteOpCode(OpCodes.EndFunctionParms);
+                if (Game >= MEGame.ME3)
+                {
+                    WriteOpCode(OpCodes.EndFunctionParms);
+                }
             }
             return true;
         }
@@ -1061,7 +1093,10 @@ namespace ME3Script.Compiling
             {
                 DynamicArrayType dynArrType = (DynamicArrayType)node.DynArrayExpression.ResolveType();
                 Emit(AddConversion(dynArrType.ElementType, node.ValueArg));
-                WriteOpCode(OpCodes.EndFunctionParms);
+                if (Game >= MEGame.ME3)
+                {
+                    WriteOpCode(OpCodes.EndFunctionParms);
+                }
             }
             return true;
         }
@@ -1074,7 +1109,10 @@ namespace ME3Script.Compiling
             {
                 Emit(node.MemberNameArg);
                 Emit(AddConversion(node.MemberType, node.ValueArg));
-                WriteOpCode(OpCodes.EndFunctionParms);
+                if (Game >= MEGame.ME3)
+                {
+                    WriteOpCode(OpCodes.EndFunctionParms);
+                }
             }
             return true;
         }
@@ -1335,35 +1373,42 @@ namespace ME3Script.Compiling
 
         private void EmitProperty(Expression expr)
         {
+            IEntry objRef;
+            byte propType;
             if (GetAffector(expr) is Function f)
             {
-                WriteObjectRef(ResolveReturnValue(f));
-                WriteByte(0);
+                objRef = ResolveReturnValue(f);
+                propType = 0;
             }
             else if (expr is InOpReference || expr is PreOpReference || expr is PostOpReference)
             {
-                WriteObjectRef(null);
-                WriteByte(0);
+                objRef = null;
+                propType = 0;
             }
             else if (expr is PrimitiveCast p)
             {
-                WriteObjectRef(null);
-                WriteByte((byte)p.CastType.PropertyType);
+                objRef = null;
+                propType = (byte)p.CastType.PropertyType;
             }
             else
             {
-                IEntry resolveSymbol = !(expr is DynArrayOperation) || expr is DynArraySort ? ResolveSymbol(expr) : null;
-                WriteObjectRef(resolveSymbol);
+                objRef = !(expr is DynArrayOperation) || expr is DynArraySort ? ResolveSymbol(expr) : null;
                 switch (expr)
                 {
                     case DynArrayOperation dynOp when dynOp.ResolveType() == SymbolTable.IntType:
-                        WriteByte((byte)EPropertyType.Int);
+                        propType = (byte)EPropertyType.Int;
                         break;
                     default:
-                        WriteByte(0);
+                        propType = 0;
                         break;
                 }
             }
+
+            if (Game >= MEGame.ME3)
+            {
+                WriteObjectRef(objRef);
+            }
+            WriteByte(propType);
         }
 
         #region Not Bytecode

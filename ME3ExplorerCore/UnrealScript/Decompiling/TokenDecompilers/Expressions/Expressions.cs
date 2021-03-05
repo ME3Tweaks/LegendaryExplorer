@@ -13,7 +13,7 @@ using static ME3Script.Utilities.Keywords;
 
 namespace ME3Script.Decompiling
 {
-    public partial class ME3ByteCodeDecompiler
+    public partial class ByteCodeDecompiler
     {
 
         public Expression DecompileExpression()
@@ -21,17 +21,20 @@ namespace ME3Script.Decompiling
             StartPositions.Push((ushort)Position);
             var token = PeekByte;
 
-            if (token >= 0x80) // native table
+            if (token >= extNativeIndex)
             {
-                return DecompileNativeFunction(PopByte());
-            }
-
-            if (token >= 0x71) // extended native table, 0x70 is unused
-            {
-                var higher = ReadByte() & 0x0F;
-                var lower = ReadByte();
-                int index = (higher << 8) + lower;
-                return DecompileNativeFunction((ushort)index);
+                PopByte();
+                int nativeIndex;
+                if ((token & 0xF0) == extNativeIndex) //Extended Native
+                {
+                    byte b2 = ReadByte();
+                    nativeIndex = ((token - extNativeIndex) << 8) + b2;
+                }
+                else
+                {
+                    nativeIndex = token; //Native
+                }
+                return DecompileNativeFunction(nativeIndex);
             }
 
             switch (token)
@@ -66,7 +69,7 @@ namespace ME3Script.Decompiling
                     return DecompileArrayRef();
 
                 // new (...) class (.)
-                case (byte)OpCodes.New: // TODO: support in AST
+                case (byte)OpCodes.New:
                     return DecompileNew();
 
                 // (class|object|struct).member
@@ -134,7 +137,7 @@ namespace ME3Script.Decompiling
 
                 // rot(1, 2, 3)
                 case (byte)OpCodes.RotationConst:
-                    return DecompileRotationConst();  //TODO: properly
+                    return DecompileRotationConst();
 
                 // vect(1.0, 2.0, 3.0)
                 case (byte)OpCodes.VectorConst:
@@ -333,7 +336,7 @@ namespace ME3Script.Decompiling
                     {
                         scope = scope is null ? cls.GetScope() : $"{cls.GetScope()}.{scope}";
                         if (ReadOnlySymbolTable.TryGetSymbolFromSpecificScope(obj.ObjectName, out ASTNode astNode, scope)
-                         && astNode is VariableDeclaration decl && decl.VarType is Enumeration enumeration)
+                         && astNode is VariableDeclaration {VarType: Enumeration enumeration})
                         {
                             node = enumeration;
                         }
@@ -343,7 +346,7 @@ namespace ME3Script.Decompiling
                 {
                     if (enumEntry is ExportEntry enumExp)
                     {
-                        node = ME3ObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
+                        node = ScriptObjectToASTConverter.ConvertEnum(enumExp.GetBinaryData<UEnum>());
                     }
                     else if (LibInitialized && ReadOnlySymbolTable.TryGetType(enumEntry.ObjectName, out Enumeration enumeration))
                     {
@@ -373,8 +376,11 @@ namespace ME3Script.Decompiling
             if (left == null)
                 return null; // ERROR
 
-            ReadInt16(); // discard MemSize value. (size of expr-right in half-bytes)
-            ReadObject(); // discard RetValRef.
+            ReadInt16(); // discard MemSize value. (memory size of expr-right)
+            if (Game >= MEGame.ME3)
+            {
+                ReadObject(); // discard RetValRef.
+            }
             ReadByte(); // discard unknown byte.
 
             isInContextExpression = true;
@@ -447,7 +453,7 @@ namespace ME3Script.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return value; // TODO: is this correct? should we contain it?
+            return value; 
         }
 
         public DelegateComparison DecompileDelegateComparison(bool isEqual)
@@ -510,7 +516,7 @@ namespace ME3Script.Decompiling
             return new ConditionalExpression(cond, trueExpr, falseExpr, null, null);
         }
 
-        public Expression DecompileNativeFunction(ushort index)
+        public Expression DecompileNativeFunction(int index)
         {
             var parameters = new List<Expression>();
             while (!CurrentIs(OpCodes.EndFunctionParms))
@@ -610,7 +616,7 @@ namespace ME3Script.Decompiling
             {
                 type = new ClassType(type);
             }
-            return new CastExpression(type, expr, null, null);
+            return new CastExpression(type, expr);
         }
 
         public Expression DecompilePrimitiveCast()
@@ -621,8 +627,7 @@ namespace ME3Script.Decompiling
             var expr = DecompileExpression();
             if (expr == null)
                 return null; // ERROR
-
-            // TODO: map this out, possibly most are implicit?
+            
             string type = PrimitiveCastTable[typeToken];
 
             StartPositions.Pop();
@@ -654,7 +659,7 @@ namespace ME3Script.Decompiling
                 var funcObj = ReadObject();
                 funcName = funcObj.ObjectName.Instanced;
 
-                if (AdditionalOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
+                if (NonNativeOperators.TryGetValue(funcName, out InOpDeclaration opDecl))
                 {
                     Expression parm1 = DecompileExpression();
                     if (parm1 is null)
@@ -761,7 +766,8 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var parms = new List<Expression>();
-            for (int n = 0; n < 5; n++)
+            int numParms = Game >= MEGame.ME3 ? 5 : 4;
+            for (int n = 0; n < numParms; n++)
             {
                 if (CurrentIs(OpCodes.Nothing))
                 {
@@ -778,7 +784,7 @@ namespace ME3Script.Decompiling
             }
 
             StartPositions.Pop();
-            return new NewOperator(parms[0], parms[1], parms[2], parms[3], parms[4]);
+            return new NewOperator(parms[0], parms[1], parms[2], parms[3], parms.Count > 4 ? parms[4] : null);
         }
 
         public Expression DecompileDelegateFunction() // TODO: is this proper? Is it even used in ME3?
@@ -800,7 +806,10 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var name = ReadNameReference();
-            var obj = ReadObject(); 
+            if (Game >= MEGame.ME3)
+            {
+                var obj = ReadObject();
+            } 
 
             StartPositions.Pop();
             return new SymbolReference(null, name, null, null);

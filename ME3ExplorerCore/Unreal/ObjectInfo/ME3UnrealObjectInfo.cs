@@ -1178,6 +1178,15 @@ namespace ME3ExplorerCore.Unreal
             };
             newSequenceObjects["SFXSeqAct_SetStuntGearMesh"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
 
+            //SirCxyrtyx - New Class - SFXSeqAct_SpawnHenchmenWeapons
+            NewClasses["SFXSeqAct_SpawnHenchmenWeapons"] = new ClassInfo
+            {
+                baseClass = "SequenceAction",
+                pccPath = UnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
+                exportIndex = 503, //in ME3Resources.pcc
+            };
+            newSequenceObjects["SFXSeqAct_SpawnHenchmenWeapons"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
+
             NewClasses["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
