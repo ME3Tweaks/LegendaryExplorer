@@ -22,17 +22,19 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                 entriesToTrash.AddRange(entry.GetAllDescendants());
             }
 
-            TrashEntries(entriesToTrash[0].FileRef, entriesToTrash);
+            // Trash in order of bottom first. This ensures that the package lookup tree stays correct. If we modified top first
+            // it would break the lookup tree as the InstancedFullPath would no longer be accurate
+            TrashEntries(entriesToTrash[0].FileRef, entriesToTrash.OrderByDescending(x => x.InstancedFullPath.Count(y => y == '.')));
         }
         public static void TrashEntryAndDescendants(IEntry entry)
         {
             var entriesToTrash = new List<IEntry> { entry };
             entriesToTrash.AddRange(entry.GetAllDescendants());
-            TrashEntries(entry.FileRef, entriesToTrash);
+            TrashEntries(entry.FileRef, entriesToTrash.OrderByDescending(x => x.InstancedFullPath.Count(y => y == '.')));
         }
         public static void TrashEntries(IMEPackage pcc, IEnumerable<IEntry> itemsToTrash)
         {
-            ExportEntry trashTopLevel = pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == UnrealPackageFile.TrashPackageName);
+            ExportEntry trashTopLevel = pcc.FindExport(UnrealPackageFile.TrashPackageName);
             IEntry packageClass = pcc.getEntryOrAddImport("Core.Package");
 
             foreach (IEntry entry in itemsToTrash)
@@ -58,7 +60,11 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             IMEPackage pcc = entry.FileRef;
             if (entry is ImportEntry imp)
             {
-                (pcc as UnrealPackageFile).EntryLookupTable.Remove(imp.InstancedFullPath);
+                if (!(pcc as UnrealPackageFile).EntryLookupTable.Remove(imp.InstancedFullPath))
+                {
+                    // Trashing an entry should always remove it from the lookup
+                    Debugger.Break();
+                }
                 if (trashContainer == null)
                 {
                     trashContainer = new ExportEntry(pcc);
@@ -75,7 +81,12 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
             }
             else if (entry is ExportEntry exp)
             {
-                (pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath);
+
+                if (!(pcc as UnrealPackageFile).EntryLookupTable.Remove(exp.InstancedFullPath))
+                {
+                    // Trashing an entry should always remove it from the lookup
+                    Debugger.Break();
+                }
                 using MemoryStream trashData = MemoryManager.GetMemoryStream();
                 trashData.WriteInt32(-1);
                 trashData.WriteInt32(pcc.FindNameOrAdd("None"));
@@ -110,8 +121,7 @@ namespace ME3ExplorerCore.Unreal.BinaryConverters
                     exp.ObjectName = "Trash";
                     exp.PackageGUID = Guid.Empty;
                 }
-                (pcc as UnrealPackageFile).EntryLookupTable[exp.InstancedFullPath] = exp;
-
+                //(pcc as UnrealPackageFile).EntryLookupTable[exp.InstancedFullPath] = exp;
             }
             return trashContainer;
         }
