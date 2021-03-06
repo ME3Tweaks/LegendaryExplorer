@@ -115,7 +115,7 @@
                             ME2: The correct version of Wwise is not available (ME2 predates public Wwise)
                             <LineBreak/>
                             ME3: Requires 
-                            <Hyperlink NavigateUri="" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="https://1drv.ms/u/s!AorirBfl09VNrC9eh-_sOj_eqLIa?e=8lzC4j" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="the 64 bit version of Wwise 2010.3.3 (Build 3773)"/>
                             </Hyperlink>
                             </Italic>
