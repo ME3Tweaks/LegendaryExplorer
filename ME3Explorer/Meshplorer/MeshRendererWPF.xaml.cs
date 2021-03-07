@@ -36,12 +36,19 @@ namespace ME3Explorer.Meshplorer
 
         #region 3D
 
-        private bool _rotating = true, _wireframe, _solid = true, _firstperson;
+        private bool _rotating = Properties.Settings.Default.MeshplorerViewRotating, _wireframe, _solid = true, _firstperson;
 
         public bool Rotating
         {
             get => _rotating;
-            set => SetProperty(ref _rotating, value);
+            set
+            {
+                if (SetProperty(ref _rotating, value))
+                {
+                    Properties.Settings.Default.MeshplorerViewRotating = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
         }
 
         public bool Wireframe
@@ -144,11 +151,23 @@ namespace ME3Explorer.Meshplorer
         #region Busy variables
         private bool _isBusy;
 
+        private Stopwatch sw = new Stopwatch();
         public bool IsBusy
         {
             get => _isBusy;
             set
             {
+                if (_isBusy && !value)
+                {
+                    sw.Stop();
+                    Debug.WriteLine($@"MeshRendererWPF busy time: {sw.Elapsed}");
+                }
+                else if (!_isBusy && value)
+                {
+                    sw.Reset();
+                    sw.Start();
+                }
+
                 if (SetProperty(ref _isBusy, value))
                 {
                     IsBusyChanged?.Invoke(this, EventArgs.Empty); //caller will just fetch and update this value
@@ -690,7 +709,7 @@ namespace ME3Explorer.Meshplorer
         {
             if (CurrentLoadedExport == null) return;
             var savewarning = CurrentLoadedExport.FileRef.IsModified ? MessageBoxResult.None : MessageBoxResult.OK;
-            
+
             // show if we have not shown before
             if (savewarning == MessageBoxResult.None)
             {
@@ -987,7 +1006,7 @@ namespace ME3Explorer.Meshplorer
                 elhw.Show();
             }
         }
-    
+
 
         public override void Dispose()
         {
