@@ -16,7 +16,8 @@
 	d:DesignHeight="600" d:DesignWidth="800">
 	<!-- UserControl Resources -->
 	<UserControl.Resources>
-		<Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
+        <views:NameConverter x:Key="NameConverter" />
+        <Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
 			<Style.Triggers>
 				<Trigger Property="HasItems" Value="True">
 					<Setter Property="SelectedIndex" Value="0" />
@@ -207,639 +208,650 @@
 
 					<Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveStateEventElement_Click"/>
 				</Grid>
+                
+                <!-- Selected State Event Element Detail-->
+                <ContentControl x:Name="SelectedStateEventElementContent" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Margin="5,0,5,0" BorderThickness="0"
+                                Content="{Binding SelectedStateEventElement}">
+                    <ContentControl.Resources>
+                        <!-- Bool Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementBool}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-				<!-- Selected State Event Element StackPanel -->
-				<TabControl Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Margin="5,0,5,0" BorderThickness="0">
-					<!-- Resources -->
-					<TabControl.Resources>
-						<Style TargetType="TabItem">
-							<Setter Property="Template">
-								<Setter.Value>
-									<ControlTemplate TargetType="TabItem" />
-								</Setter.Value>
-							</Setter>
-						</Style>
-					</TabControl.Resources>
-
-					<!-- TabItems -->
-					<TabItem Header="Empty" IsSelected="True" />
-
-					<!-- Boolean Event Element -->
-					<TabItem Header="BioStateEventElementBool"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementBool}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<!-- Global Bool -->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!-- Global Bool -->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Global Bool"
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.GlobalBool), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=GlobalBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" Minimum="0" VerticalAlignment="Center" Width="150" />
 
-							<!-- New State -->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!-- New State -->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value"
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
-							<ComboBox Grid.Column="1" Grid.Row="1"
-								SelectedIndex="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.NewState), 
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+								SelectedIndex="{Binding Path=NewState, 
 									Mode=TwoWay, Converter={markup:TypeConverter system:Boolean, system:Int32}}"
 								HorizontalAlignment="Left" Margin="5,5" VerticalAlignment="Center" Width="150">
-								<ComboBoxItem Content="False" />
-								<ComboBoxItem Content="True" />
-							</ComboBox>
+                                    <ComboBoxItem Content="False" />
+                                    <ComboBoxItem Content="True" />
+                                </ComboBox>
 
-							<!-- Use Param -->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!-- Use Param -->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Use Param"
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.UseParam), Mode=TwoWay}"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}"
 								HorizontalAlignment="Left" Margin="5,5" VerticalAlignment="Center" Width="150" />
 
-							<!-- Instance Version -->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!-- Instance Version -->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Instance Version"
 								HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementBool.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								HorizontalAlignment="Left" Margin="5,5" VerticalAlignment="Center" Width="150" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Consequence Event Element -->
-					<TabItem Header="BioStateEventElementConsequence"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementConsequence}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Consequence Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementConsequence}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!-- Consequence -->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!-- Consequence -->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Consequence" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.Consequence), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=Consequence, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!-- Instance Version -->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!-- Instance Version -->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementConsequence.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Float Event Element -->
-					<TabItem Header="BioStateEventElementFloat"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementFloat}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Float Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementFloat}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Global Float" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.GlobalFloat), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=GlobalFloat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+                                <xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=NewValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" ParsingNumberStyle="Float" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Increment" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.Increment), Mode=TwoWay}" Width="150"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=Increment, Mode=TwoWay}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Use Param" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="3"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.UseParam), Mode=TwoWay}" Width="150" Margin="5,5"
+                                <CheckBox Grid.Column="1" Grid.Row="3"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFloat.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Function Event Element -->
-					<TabItem Header="BioStateEventElementFunction"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementFunction}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Function Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementFunction}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!-- Function Package Name -->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Function Package (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionPackageName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=FunctionPackageName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource NameConverter}">
+                                            <Binding Path="DataContext.package" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="FunctionPackageName"/>
+                                            <Binding Path="FunctionPackageNameFlags" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                
+                                <!-- Function Class Name -->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="Function Class (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionClassName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=FunctionClassName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource NameConverter}">
+                                            <Binding Path="DataContext.package" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="FunctionClassName"/>
+                                            <Binding Path="FunctionClassNameFlags" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                         
+                                <!-- Function Name -->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
+								Text="{Binding Path=FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Padding="3,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource NameConverter}">
+                                            <Binding Path="DataContext.package" ElementName="SelectedStateEventElementContent"/>
+                                            <Binding Path="FunctionName"/>
+                                            <Binding Path="FunctionNameFlags" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                
+                                <!-- Function Parameter -->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Parameter" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.Parameter), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
+								Text="{Binding Path=Parameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!-- Instance Version -->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementFunction.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Integer Event Element -->
-					<TabItem Header="BioStateEventElementInt"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementInt}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Int Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementInt}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Global Int" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.GlobalInt), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=GlobalInt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=NewValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Increment" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.Increment), Mode=TwoWay}" Width="150" Margin="5,5"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=Increment, Mode=TwoWay}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Use Param" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="3"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.UseParam), Mode=TwoWay}" Width="150" Margin="5,5"
+                                <CheckBox Grid.Column="1" Grid.Row="3"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementInt.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="4"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Local Bool Event Element -->
-					<TabItem Header="BioStateEventElementLocalBool"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementLocalBool}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Local Bool Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementLocalBool}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<ComboBox Grid.Column="1" Grid.Row="1"
-								SelectedIndex="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.NewValue), Mode=TwoWay, Converter={markup:TypeConverter system:Boolean, system:Int32}}"
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+								SelectedIndex="{Binding Path=NewValue, Mode=TwoWay, Converter={markup:TypeConverter system:Boolean, system:Int32}}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-								<ComboBoxItem Content="False" />
-								<ComboBoxItem Content="True" />
-							</ComboBox>
+                                    <ComboBoxItem Content="False" />
+                                    <ComboBoxItem Content="True" />
+                                </ComboBox>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Object Tag (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.ObjectTag), Mode=TwoWay}" Width="150"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=ObjectTag, Mode=TwoWay}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Object Type (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
+								Text="{Binding Path=ObjectType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Use Param" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="4"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.UseParam), Mode=TwoWay}" Width="150"
+                                <CheckBox Grid.Column="1" Grid.Row="4"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="5"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="5"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalBool.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Local Float Event Element -->
-					<TabItem Header="BioStateEventElementLocalFloat"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementLocalFloat}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Local Float Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementLocalFloat}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Function Name (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5" Minimum="0"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
-								HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <xctk:SingleUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=NewValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5,5"
+								HorizontalAlignment="Left" VerticalAlignment="Center" ParsingNumberStyle="Float" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Object Tag (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.ObjectTag), Mode=TwoWay}" Width="150"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=ObjectTag, Mode=TwoWay}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Object Type (Index)" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
+								Text="{Binding Path=ObjectType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Use Param" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="4"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.UseParam), Mode=TwoWay}" Width="150"
+                                <CheckBox Grid.Column="1" Grid.Row="4"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="5"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="5"
 								Content="Instance Version" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalFloat.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"
 								Margin="5,5"
 								HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Local Int Event Element -->
-					<TabItem Header="BioStateEventElementLocalInt"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementLocalInt}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Local Int Event -->
+                        <DataTemplate DataType="{x:Type stateEventMap:BioStateEventElementLocalInt}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Function Name (Index)"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.FunctionName), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New Value"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.NewValue), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+								Text="{Binding Path=NewValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Object Tag (Index)"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="2"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.ObjectTag), Mode=TwoWay}"
+                                <CheckBox Grid.Column="1" Grid.Row="2"
+								IsChecked="{Binding Path=ObjectTag, Mode=TwoWay}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Object Type (Index)"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.ObjectType), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="3"
+								Text="{Binding Path=ObjectType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Use Param"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="4"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.UseParam), Mode=TwoWay}"
+                                <CheckBox Grid.Column="1" Grid.Row="4"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!---->
-							<Label Grid.Column="0" Grid.Row="5"
+                                <!---->
+                                <Label Grid.Column="0" Grid.Row="5"
 								Content="Instance Version"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementLocalInt.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="5"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
+                            </Grid>
+                        </DataTemplate>
 
-					<!-- Substate Event Element -->
-					<TabItem Header="BioStateEventElementSubstate"
-						IsSelected="{Binding SelectedStateEventElement, Converter={data:TypeOfConverter {x:Type stateEventMap:BioStateEventElementSubstate}}, FallbackValue=False}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+                        <!-- Substate Event -->
+                        <DataTemplate x:Name="SubstateEventDataTemplate"  DataType="{x:Type stateEventMap:BioStateEventElementSubstate}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-							<!-- Global Bool -->
-							<Label Grid.Column="0" Grid.Row="0"
+                                <!-- Global Bool -->
+                                <Label Grid.Column="0" Grid.Row="0"
 								Content="Global Bool"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.GlobalBool), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0"
+								Text="{Binding Path=GlobalBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Width="150" Margin="5,5" Minimum="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!-- New State -->
-							<Label Grid.Column="0" Grid.Row="1"
+                                <!-- New State -->
+                                <Label Grid.Column="0" Grid.Row="1"
 								Content="New State"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<ComboBox Grid.Column="1" Grid.Row="1"
-								SelectedIndex="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.NewState), Mode=TwoWay, Converter={markup:TypeConverter system:Boolean, system:Int32}}"
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+								SelectedIndex="{Binding Path=NewState, Mode=TwoWay, Converter={markup:TypeConverter system:Boolean, system:Int32}}"
 								Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-								<ComboBoxItem Content="False" />
-								<ComboBoxItem Content="True" />
-							</ComboBox>
+                                    <ComboBoxItem Content="False" />
+                                    <ComboBoxItem Content="True" />
+                                </ComboBox>
 
-							<!-- Parent Index -->
-							<Label Grid.Column="0" Grid.Row="2"
+                                <!-- Parent Index -->
+                                <Label Grid.Column="0" Grid.Row="2"
 								Content="Parent Index"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.ParentIndex), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2"
+								Text="{Binding Path=ParentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!-- Parent Type Or (Needs new name) -->
-							<Label Grid.Column="0" Grid.Row="3"
+                                <!-- Parent Type Or (Needs new name) -->
+                                <Label Grid.Column="0" Grid.Row="3"
 								Content="Parent Type Or"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="3"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.ParentTypeOr), Mode=TwoWay}"
+                                <CheckBox Grid.Column="1" Grid.Row="3"
+								IsChecked="{Binding Path=ParentTypeOr, Mode=TwoWay}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!-- Sibling Indicies -->
-							<Label Grid.Column="0" Grid.Row="4"
+                                <!-- Sibling Indicies -->
+                                <Label Grid.Column="0" Grid.Row="4"
 								Content="Sibling Indicies"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<Grid Grid.Column="1" Grid.Row="4" Margin="0,5,0,0">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="*" />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
+                                <Grid Grid.Column="1" Grid.Row="4" Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-								<ListBox x:Name="SubstateStateEventSiblingIndicesListBox" Grid.Column="0" Grid.Row="0"
-									ItemsSource="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.SiblingIndices)}"
+                                    <ListBox x:Name="SubstateStateEventSiblingIndicesListBox" Grid.Column="0" Grid.Row="0"
+									ItemsSource="{Binding Path=SiblingIndices}"
 									Width="150" Height="60" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-								<Grid Grid.Column="0" Grid.Row="1" Width="150" Margin="5,5">
-									<!-- Grid Definitions -->
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="5" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="Auto" />
-									</Grid.RowDefinitions>
+                                    <Grid Grid.Column="0" Grid.Row="1" Width="150" Margin="5,5">
+                                        <!-- Grid Definitions -->
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="5" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-									<!-- Grid Content -->
-									<Button Grid.Column="0" Grid.Row="0" Content="Add" Click="AddSubstateSiblingIndex_Click"/>
+                                        <!-- Grid Content -->
+                                        <Button Grid.Column="0" Grid.Row="0" Content="Add" Click="AddSubstateSiblingIndex_Click"/>
 
-									<Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveSubstateSiblingIndex_Click">
-										<Button.Style>
-											<Style TargetType="Button">
-												<Style.Triggers>
-													<DataTrigger Binding="{Binding ElementName=SubstateStateEventSiblingIndicesListBox, Path=SelectedIndex}" Value="-1">
-														<Setter Property="IsEnabled" Value="False" />
-													</DataTrigger>
-												</Style.Triggers>
-											</Style>
-										</Button.Style>
-									</Button>
-								</Grid>
-							</Grid>
+                                        <Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveSubstateSiblingIndex_Click" Tag="{Binding ElementName=SubstateStateEventSiblingIndicesListBox, Path=SelectedIndex}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=SubstateStateEventSiblingIndicesListBox, Path=SelectedIndex}" Value="-1">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
 
-							<!-- Use Param -->
-							<Label Grid.Column="0" Grid.Row="5"
+                                <!-- Use Param -->
+                                <Label Grid.Column="0" Grid.Row="5"
 								Content="Use Param"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<CheckBox Grid.Column="1" Grid.Row="5"
-								IsChecked="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.UseParam), Mode=TwoWay}"
+                                <CheckBox Grid.Column="1" Grid.Row="5"
+								IsChecked="{Binding Path=UseParam, Mode=TwoWay}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<!-- Instance Version -->
-							<Label Grid.Column="0" Grid.Row="6"
+                                <!-- Instance Version -->
+                                <Label Grid.Column="0" Grid.Row="6"
 								Content="Instance Version"
 								Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-							<xctk:IntegerUpDown Grid.Column="1" Grid.Row="6"
-								Text="{Binding Path=SelectedStateEventElement.(stateEventMap:BioStateEventElementSubstate.InstanceVersion), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="6"
+								Text="{Binding Path=InstanceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 								Margin="5,5" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" />
-						</Grid>
-					</TabItem>
-				</TabControl>
-			</Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </Grid>
 		</Grid>
 	</Grid>
 </global:NotifyPropertyChangedControlBase>
