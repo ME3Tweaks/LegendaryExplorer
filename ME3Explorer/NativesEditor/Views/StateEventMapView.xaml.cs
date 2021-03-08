@@ -532,9 +532,10 @@ namespace MassEffect.NativesEditor.Views
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is IMEPackage pcc && values[1] is int index)
+            if (values[0] is IMEPackage pcc && values[1] is int index && values[2] is int instanceNum)
             {
-                return new NameReference(pcc.GetNameEntry(index), (values[2] as int) ?? 0).Instanced;
+                return new ME3ExplorerCore.Unreal.NameReference(pcc.GetNameEntry(index), instanceNum).Instanced;
+
 
             }
             return "";
