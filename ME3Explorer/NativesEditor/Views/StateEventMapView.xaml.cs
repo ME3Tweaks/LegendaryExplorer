@@ -534,7 +534,8 @@ namespace MassEffect.NativesEditor.Views
         {
             if (values[0] is IMEPackage pcc && values[1] is int index)
             {
-                return $"{pcc.GetNameEntry(index)}_{values[2]}";
+                return new NameReference(pcc.GetNameEntry(index), (values[2] as int) ?? 0).Instanced;
+
             }
             return "";
         }
