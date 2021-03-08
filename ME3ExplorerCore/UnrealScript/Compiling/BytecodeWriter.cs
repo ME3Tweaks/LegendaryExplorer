@@ -20,7 +20,7 @@ namespace ME3Script.Compiling
         {
             Pcc = pcc;
             Game = pcc.Game;
-            extNativeIndex = Game is MEGame.ME3 ? 0x70 : 0x60;
+            extNativeIndex = (byte) (Game is MEGame.ME3 ? 0x70 : 0x60);
         }
 
         public byte[] GetByteCode() => bytecode.ToArray();

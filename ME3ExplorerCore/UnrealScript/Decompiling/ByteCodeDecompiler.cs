@@ -86,7 +86,7 @@ namespace ME3Script.Decompiling
             ReturnType = returnType;
             FileLib = lib;
             Game = dataContainer.Export.Game;
-            extNativeIndex = Game is MEGame.ME3 ? 0x70 : 0x60;
+            extNativeIndex = (byte) (Game is MEGame.ME3 ? 0x70 : 0x60);
         }
 
         public CodeBody Decompile()
