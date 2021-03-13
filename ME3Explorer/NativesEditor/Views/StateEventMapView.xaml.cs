@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Data;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Dialogs;
 using ME3Explorer;
@@ -306,16 +310,23 @@ namespace MassEffect.NativesEditor.Views
             }
         }
 
-        public static bool TryFindStateEventMap(IMEPackage pcc, out ExportEntry export)
+        public static bool TryFindStateEventMap(IMEPackage pcc, out ExportEntry export, string objectName="StateTransitionMap")
         {
-            export = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "BioStateEventMap" && exp.ObjectName == "StateTransitionMap"); //ME1 has 2 BioStateEventMaps only want one named StateTransitionMap
+            // ME1 has 2 BioStateEventMaps. We generally want the one called StateTransitionMap, but there is an optional
+            // parameter for other ones, such as ConsequenceMap.
+
+            // BioConsequenceMaps have the same format as BioStateEventMaps
+            string[] stateEventClasses = { "BioStateEventMap", "BioConsequenceMap" };
+            export = pcc.Exports.FirstOrDefault(exp => stateEventClasses.Contains(exp.ClassName) && exp.ObjectName == objectName);
 
             return export != null;
         }
 
-        public void Open(IMEPackage pcc)
+        public IMEPackage package { get; private set; }
+
+        public void Open(IMEPackage pcc, string objectName = "StateTransitionMap")
         {
-            if (!TryFindStateEventMap(pcc, out ExportEntry export))
+            if (!TryFindStateEventMap(pcc, out ExportEntry export, objectName))
             {
                 return;
             }
@@ -323,6 +334,7 @@ namespace MassEffect.NativesEditor.Views
             var stateEventMap = BinaryBioStateEventMap.Load(export);
             StateEvents = InitCollection(stateEventMap.StateEvents.OrderBy(stateEvent => stateEvent.Key));
             SetListsAsBindable();
+            package = pcc;
         }
 
         
@@ -508,7 +520,30 @@ namespace MassEffect.NativesEditor.Views
 
         private void RemoveSubstateSiblingIndex_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            RemoveSubstateSiblingIndex(SubstateStateEventSiblingIndicesListBox.SelectedIndex);
+            var button = (Button)sender;
+            RemoveSubstateSiblingIndex((int)button.Tag);
+        }
+    }
+
+    /// <summary>
+	///   Resolves a name entry for a given Pcc
+	/// </summary>
+    public class NameConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is IMEPackage pcc && values[1] is int index && values[2] is int instanceNum)
+            {
+                return new ME3ExplorerCore.Unreal.NameReference(pcc.GetNameEntry(index), instanceNum).Instanced;
+
+
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
