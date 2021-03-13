@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ME3Script.Lexing.Tokenizing
+namespace Unrealscript.Lexing.Tokenizing
 {
     public class TokenizableDataStream<D> : IEnumerable<D> where D : class
     {

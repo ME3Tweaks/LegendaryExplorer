@@ -5,9 +5,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:views="clr-namespace:MassEffect.NativesEditor.Views"
     xmlns:global="clr-namespace:ME3Explorer"
-                xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
-                xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-                mc:Ignorable="d"
+    xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+    xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+    mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Height="600" 
     Width="800" 
@@ -20,6 +20,7 @@
     <Window.Resources>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <Converters:GameToVisibilityConverter x:Key="GameToVisibilityConverter"/>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
@@ -69,6 +70,9 @@
             </TabItem>
             <TabItem Header="Quest Map">
                 <views:QuestMapView x:Name="QuestMapControl" />
+            </TabItem>
+            <TabItem Header="Consequence Map" Visibility="{Binding Pcc.Game, Converter={StaticResource GameToVisibilityConverter}, ConverterParameter='Not_ME3'}">
+                <views:StateEventMapView x:Name="ConsequenceMapControl" />
             </TabItem>
             <TabItem Header="State Event Map">
                 <views:StateEventMapView x:Name="StateEventMapControl" />

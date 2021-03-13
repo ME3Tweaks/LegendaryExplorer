@@ -1,7 +1,7 @@
-﻿using ME3Script.Language.Tree;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unrealscript.Language.Tree;
 
-namespace ME3Script.Language.Util
+namespace Unrealscript.Language.Util
 {
     public interface IContainsByteCode
     {

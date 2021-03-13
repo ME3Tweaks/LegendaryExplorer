@@ -1,6 +1,4 @@
-﻿
-using ME3Script.Language.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,12 +7,13 @@ using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Analysis.Symbols;
-using ME3Script.Lexing;
-using ME3Script.Parsing;
-using ME3Script.Utilities;
+using Unrealscript.Analysis.Symbols;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing;
+using Unrealscript.Parsing;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     public static class ScriptObjectToASTConverter
     {
@@ -59,7 +58,7 @@ namespace ME3Script.Decompiling
                         nextItem = uEnum.Next;
                         break;
                     case UFunction uFunction:
-                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecode));
+                        Funcs.Add(ConvertFunction(uFunction, uClass, decompileBytecode, lib));
                         nextItem = uFunction.Next;
                         break;
                     case UProperty uProperty:
@@ -72,7 +71,7 @@ namespace ME3Script.Decompiling
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState, uClass, decompileBytecode));
+                        States.Add(ConvertState(uState, uClass, decompileBytecode, lib));
                         break;
                     default:
                         nextItem = 0;
@@ -165,7 +164,7 @@ namespace ME3Script.Decompiling
                 }
             }
 
-            var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, lib: lib).Decompile() : null;
+            var body = decompileBytecode ? new ByteCodeDecompiler(obj, containingClass, lib).Decompile() : null;
 
             return new State(obj.Export.ObjectName.Instanced, body, obj.StateFlags, parent, Funcs, Ignores, new List<Label>(), null, null);
         }
@@ -487,7 +486,7 @@ namespace ME3Script.Decompiling
             CodeBody body = null;
             if (decompileBytecode)
             {
-                body = new ByteCodeDecompiler(obj, containingClass, parameters, returnType, lib).Decompile();
+                body = new ByteCodeDecompiler(obj, containingClass, lib, parameters, returnType).Decompile();
             }
 
 

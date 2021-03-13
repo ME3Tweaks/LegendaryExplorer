@@ -1,16 +1,16 @@
-﻿using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
-using ME3Script.Lexing.Tokenizing;
-using ME3Script.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ME3ExplorerCore.Helpers;
-using ME3Script.Analysis.Visitors;
-using static ME3Script.Utilities.Keywords;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing.Tokenizing;
+using Unrealscript.Utilities;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Parsing
+namespace Unrealscript.Parsing
 {
     public abstract class StringParserBase
     {

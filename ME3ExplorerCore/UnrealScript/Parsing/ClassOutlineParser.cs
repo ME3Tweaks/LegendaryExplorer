@@ -1,14 +1,14 @@
-﻿using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
-using ME3Script.Lexing.Tokenizing;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
+using Unrealscript.Lexing.Tokenizing;
+using Unrealscript.Utilities;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
-using static ME3Script.Utilities.Keywords;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Parsing
+namespace Unrealscript.Parsing
 {
     public class ClassOutlineParser : StringParserBase
     {
@@ -512,7 +512,7 @@ namespace ME3Script.Parsing
 
                 if (hasOptionalParams)
                 {
-                    flags |= FunctionFlags.HasOptionalParms;
+                    flags |= FunctionFlags.HasOptionalParms; //TODO: does this flag exist in ME1/ME2?
                 }
                 if (Consume(TokenType.RightParenth) == null) throw ParseError("Expected ')'!", CurrentPosition);
 

@@ -1,6 +1,4 @@
-﻿using ME3Script.Language.ByteCode;
-using ME3Script.Language.Tree;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,10 +6,12 @@ using ME3Explorer.ME3Script;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Utilities;
-using static ME3Script.Utilities.Keywords;
+using Unrealscript.Language.ByteCode;
+using Unrealscript.Language.Tree;
+using Unrealscript.Utilities;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     public partial class ByteCodeDecompiler
     {
@@ -381,13 +381,23 @@ namespace ME3Script.Decompiling
             {
                 ReadObject(); // discard RetValRef.
             }
-            ReadByte(); // discard unknown byte.
+            var propType = ReadByte(); // discard propType.
 
             isInContextExpression = true;
             var right = DecompileExpression();
             if (right == null)
                 return null; // ERROR
             isInContextExpression = false;
+
+            //testing code TODO: remove when done testing
+            if (false)//Game <= MEGame.ME2)
+            {
+                if (right is not PrimitiveCast && propType is not (0 or 1 or 4 or 8 or 12 or 0x24))
+                {
+                    string message = $"proptype: {propType} for expression of type {right.GetType()}";
+                    Debugger.Log(0, "", $"{message}\n");
+                }
+            }
 
             StartPositions.Pop();
             switch (right)
@@ -766,8 +776,7 @@ namespace ME3Script.Decompiling
         {
             PopByte();
             var parms = new List<Expression>();
-            int numParms = Game >= MEGame.ME3 ? 5 : 4;
-            for (int n = 0; n < numParms; n++)
+            for (int n = 0; n < 5; n++)
             {
                 if (CurrentIs(OpCodes.Nothing))
                 {

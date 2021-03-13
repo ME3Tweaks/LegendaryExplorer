@@ -64,6 +64,8 @@ namespace MassEffect.NativesEditor.Views
 
             StateEventMapControl?.Open(Pcc);
 
+            ConsequenceMapControl?.Open(Pcc, "ConsequenceMap");
+
             RecentsController.AddRecent(path, false);
             RecentsController.SaveRecentList(true);
             Title = $"Plot Editor - {path}";
@@ -128,6 +130,23 @@ namespace MassEffect.NativesEditor.Views
                         var binaryStateEventMap = new BinaryBioStateEventMap(stateEventMap.StateEvents);
 
                         binaryStateEventMap.Save(stream);
+
+                        export.WriteBinary(stream.ToArray());
+                    }
+                }
+            }
+
+            if (ConsequenceMapControl != null)
+            {
+
+                if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export, "ConsequenceMap"))
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        var consequenceMap = ConsequenceMapControl.ToStateEventMap();
+                        var binaryConsequenceMap = new BinaryBioStateEventMap(consequenceMap.StateEvents);
+
+                        binaryConsequenceMap.Save(stream);
 
                         export.WriteBinary(stream.ToArray());
                     }

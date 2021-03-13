@@ -1,4 +1,4 @@
-﻿namespace ME3Script.Analysis.Visitors
+﻿namespace Unrealscript.Analysis.Visitors
 {
     interface IAcceptASTVisitor
     {

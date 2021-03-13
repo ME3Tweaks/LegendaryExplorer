@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class PostOpDeclaration : OperatorDeclaration
     {

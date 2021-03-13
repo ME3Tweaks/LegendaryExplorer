@@ -1,8 +1,7 @@
-﻿
-using ME3Script.Language.Tree;
-using ME3Script.Utilities;
+﻿using Unrealscript.Utilities;
+using Unrealscript.Language.Tree;
 
-namespace ME3Script.Decompiling
+namespace Unrealscript.Decompiling
 {
     /*
      * These are transient classes for use during bytecode decompilation only.
@@ -47,12 +46,9 @@ namespace ME3Script.Decompiling
 
     public class NullJump : ConditionalJump
     {
-        public bool Not;
-
         public NullJump(ushort jumpLoc, Expression condition, bool not) : base(jumpLoc, condition)
         {
-            Not = not;
-            Condition = new InOpReference(new InOpDeclaration(Not ? "!=" : "==", 0, 0, null, null, null), Condition, new NoneLiteral());
+            Condition = new InOpReference(new InOpDeclaration(not ? "!=" : "==", 0, 0, null, null, null), Condition, new NoneLiteral());
         }
     }
 
