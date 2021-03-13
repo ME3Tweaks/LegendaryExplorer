@@ -1,9 +1,9 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public enum ASTNodeType
     {

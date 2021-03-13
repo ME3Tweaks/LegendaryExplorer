@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ME3ExplorerCore.Packages;
-using ME3Script;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
+using Unrealscript;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ME3ExplorerCore.Tests
@@ -19,14 +19,6 @@ namespace ME3ExplorerCore.Tests
         {
             GlobalTest.Init();
 
-            bool standardLibInitialized = StandardLibrary.InitializeStandardLib(
-#if AZURE
-                Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME3", "SFXGame.pcc")
-#endif
-                ).Result;
-
-            Assert.IsTrue(standardLibInitialized, "ME3 Script standard library failed to compile!");
-
             using (var biopProEar = MEPackageHandler.OpenMEPackage(Path.Combine(GlobalTest.GetTestPackagesDirectory(), "PC", "ME3", "BioP_ProEar.pcc")))
             {
                 var biopProEarLib = new FileLib(biopProEar);
@@ -35,11 +27,11 @@ namespace ME3ExplorerCore.Tests
 
                 foreach (ExportEntry funcExport in biopProEar.Exports.Where(exp => exp.ClassName == "Function"))
                 {
-                    (ASTNode astNode, string text) = ME3ScriptCompiler.DecompileExport(funcExport, biopProEarLib);
+                    (ASTNode astNode, string text) = UnrealScriptCompiler.DecompileExport(funcExport, biopProEarLib);
 
                     Assert.IsInstanceOfType(astNode, typeof(Function), $"#{funcExport.UIndex} {funcExport.InstancedFullPath} in BioP_ProEar did not decompile!");
 
-                    (_, MessageLog log) = ME3ScriptCompiler.CompileFunction(funcExport, text, biopProEarLib);
+                    (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(funcExport, text, biopProEarLib);
 
                     if (log.AllErrors.Any())
                     {

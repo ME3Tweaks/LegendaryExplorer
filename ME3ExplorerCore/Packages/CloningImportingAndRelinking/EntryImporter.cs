@@ -743,9 +743,12 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
 #endif
 
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
-        private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "BIOC_Base.u", "BIOC_BaseDLC_Vegas.u", "BIOC_BaseDLC_UNC.u" };
+        private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" };
 
-        private static readonly string[] me2FilesSafeToImportFrom = { "Core.pcc", "Engine.pcc", "SFXGame.pcc", "WwiseAudio.pcc", "Startup_INT.pcc" };
+        private static readonly string[] me2FilesSafeToImportFrom =
+        {
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+        };
 
         private static readonly string[] me3FilesSafeToImportFrom =
         {
@@ -909,12 +912,15 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        public static List<string> GetPossibleAssociatedFiles(IMEPackage package)
+        public static List<string> GetPossibleAssociatedFiles(IMEPackage package, bool includeNonBioPRelated = true)
         {
             string filenameWithoutExtension = Path.GetFileNameWithoutExtension(package.FilePath).ToLower();
             var associatedFiles = new List<string>();
             string bioFileExt = package.Game == MEGame.ME1 ? ".sfm" : ".pcc";
-            associatedFiles.Add($"{filenameWithoutExtension}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+            if (includeNonBioPRelated)
+            {
+                associatedFiles.Add($"{filenameWithoutExtension}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+            }
             var isBioXfile = filenameWithoutExtension.Length > 5 && filenameWithoutExtension.StartsWith("bio") && filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
@@ -948,8 +954,15 @@ namespace ME3ExplorerCore.Packages.CloningImportingAndRelinking
                 string nextfile = bioXNextFileLookup(filenameWithoutExtension);
                 while (nextfile != null)
                 {
-                    associatedFiles.Add($"{nextfile}{bioFileExt}");
-                    associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+                    if (includeNonBioPRelated)
+                    {
+                        associatedFiles.Add($"{nextfile}{bioFileExt}");
+                        associatedFiles.Add($"{nextfile}_LOC_INT{bioFileExt}"); //todo: support users setting preferred language of game files
+                    }
+                    else if (nextfile.Length > 3 && nextfile[3] == 'p')
+                    {
+                        associatedFiles.Add($"{nextfile}{bioFileExt}");
+                    }
                     nextfile = bioXNextFileLookup(nextfile.ToLower());
                 }
             }

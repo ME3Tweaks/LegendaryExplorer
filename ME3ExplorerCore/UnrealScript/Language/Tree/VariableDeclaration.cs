@@ -1,9 +1,9 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ME3ExplorerCore.Unreal;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class VariableDeclaration : Statement
     {
@@ -41,6 +41,6 @@ namespace ME3Script.Language.Tree
             }
         }
 
-        public int GetSize() => VarType?.Size ?? 0 * ArrayLength;
+        public int GetSize() => VarType?.Size ?? 0;
     }
 }

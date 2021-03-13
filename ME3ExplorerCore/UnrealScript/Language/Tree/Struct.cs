@@ -1,11 +1,13 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ME3ExplorerCore.Gammtek.Extensions;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Unreal.BinaryConverters;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public sealed class Struct : VariableType, IObjectType
     {
@@ -73,7 +75,75 @@ namespace ME3Script.Language.Tree
             return str;
         }
 
-        public override int Size => VariableDeclarations.Sum(decl => decl.GetSize()) + ((Parent as Struct)?.Size ?? 0);
+        public override int Size
+        {
+            get
+            {
+                (int structSize, _) = GetSizeAndAlign();
+                return structSize;
+            }
+        }
+
+        private (int structSize, int structAlign) GetSizeAndAlign()
+        {
+            int structSize = 0;
+            int structAlign = 4;
+            VariableType prev = null;
+            int bitfieldPos = 0;
+            foreach (VariableDeclaration varDecl in VariableDeclarations)
+            {
+                VariableType cur = varDecl.VarType;
+                int varSize = cur.Size;
+                int varAlign = 4;
+                if (cur is StaticArrayType staticArrayType)
+                {
+                    cur = staticArrayType.ElementType;
+                }
+                if (cur.PropertyType == EPropertyType.Bool)
+                {
+                    if (prev?.PropertyType == EPropertyType.Bool)
+                    {
+                        varSize = 0;
+                        bitfieldPos++;
+                        if (bitfieldPos > 32)
+                        {
+                            //cannot pack more than 32 bools into a single bitfield (not that this will ever come up...)
+                            cur = null;
+                        }
+                    }
+                    else
+                    {
+                        bitfieldPos = 0;
+                    }
+                }
+                else if (cur.PropertyType == EPropertyType.Byte)
+                {
+                    varAlign = 1;
+                }
+                else if (cur.PropertyType == EPropertyType.String)
+                {
+                    varSize = 12 * varDecl.ArrayLength; //TODO: verify this
+                }
+                else if (cur is DynamicArrayType)
+                {
+                    varSize = 12; //TODO: verify this
+                }
+                else if (cur is Struct curStruct)
+                {
+                    (varSize, varAlign) = curStruct.GetSizeAndAlign();
+                    varSize *= varDecl.ArrayLength;
+                }
+
+                structSize = structSize.Align(varAlign) + varSize;
+
+                structAlign = Math.Max(structAlign, varAlign);
+                prev = cur;
+            }
+
+            structSize = structSize.Align(structAlign);
+
+            return (structSize, structAlign);
+        }
 
         public override IEnumerable<ASTNode> ChildNodes
         {

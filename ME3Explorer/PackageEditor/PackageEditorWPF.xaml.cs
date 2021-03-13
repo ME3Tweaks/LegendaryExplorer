@@ -30,8 +30,8 @@ using ME3ExplorerCore.Packages;
 using ME3ExplorerCore.Packages.CloningImportingAndRelinking;
 using ME3ExplorerCore.Unreal;
 using ME3ExplorerCore.Unreal.BinaryConverters;
-using ME3Script.Compiling.Errors;
-using ME3Script.Language.Tree;
+using Unrealscript.Compiling.Errors;
+using Unrealscript.Language.Tree;
 using static ME3ExplorerCore.Unreal.UnrealFlags;
 using Guid = System.Guid;
 using ME3ExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -39,7 +39,7 @@ using ME3ExplorerCore.Gammtek.IO;
 using ME3ExplorerCore.Helpers;
 using ME3ExplorerCore.Misc;
 using ME3ExplorerCore.TLK.ME1;
-using ME3Script;
+using Unrealscript;
 using ME3ExplorerCore.GameFilesystem;
 
 namespace ME3Explorer
@@ -4615,13 +4615,14 @@ namespace ME3Explorer
 
         private void RecompileAll_OnClick(object sender, RoutedEventArgs e)
         {
-            if (PackageIsLoaded() && Pcc.Game == MEGame.ME3)
+            if (PackageIsLoaded() && Pcc.Platform == MEPackage.GamePlatform.PC && Pcc.Game != MEGame.UDK)
             {
                 var exportsWithDecompilationErrors = new List<EntryStringPair>();
+                var fileLib = new FileLib(Pcc);
                 foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
                 {
-                    (_, string script) = ME3ScriptCompiler.DecompileExport(export);
-                    (ASTNode ast, MessageLog log) = ME3ScriptCompiler.CompileAST(script, export.ClassName);
+                    (_, string script) = UnrealScriptCompiler.DecompileExport(export, fileLib);
+                    (ASTNode ast, MessageLog log) = UnrealScriptCompiler.CompileAST(script, export.ClassName);
                     if (ast == null)
                     {
                         exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));

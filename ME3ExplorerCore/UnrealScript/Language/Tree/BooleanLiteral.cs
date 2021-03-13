@@ -1,8 +1,8 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using ME3Script.Analysis.Symbols;
+﻿using Unrealscript.Analysis.Symbols;
+using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class BooleanLiteral : Expression
     {

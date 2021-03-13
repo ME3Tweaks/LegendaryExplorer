@@ -328,7 +328,7 @@ namespace ME3ExplorerCore.ME1.Unreal.UnhoodBytecode
                         return parsingExp.ClassName;
                     }
                     var nCdx = EndianReader.ToInt32(data, 0x10, Export.FileRef.Endian);
-                    if (nCdx == childIdx || parsingExp.UIndex != Export.UIndex)
+                    if (nCdx == childIdx || parsingExp.UIndex == Export.UIndex)
                     {
                         throw new Exception("Infinite loop detected while parsing function!");
                     }

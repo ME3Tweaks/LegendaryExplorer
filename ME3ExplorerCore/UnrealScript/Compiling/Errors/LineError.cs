@@ -1,6 +1,6 @@
-﻿using ME3Script.Utilities;
+﻿using Unrealscript.Utilities;
 
-namespace ME3Script.Compiling.Errors
+namespace Unrealscript.Compiling.Errors
 {
     public class LineError : PositionedMessage
     {

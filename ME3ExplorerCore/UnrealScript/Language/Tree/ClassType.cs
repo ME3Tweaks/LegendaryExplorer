@@ -1,8 +1,8 @@
-﻿using ME3Script.Analysis.Visitors;
-using ME3Script.Utilities;
-using static ME3Script.Utilities.Keywords;
+﻿using Unrealscript.Analysis.Visitors;
+using Unrealscript.Utilities;
+using static Unrealscript.Utilities.Keywords;
 
-namespace ME3Script.Language.Tree
+namespace Unrealscript.Language.Tree
 {
     public class ClassType : VariableType
     {
